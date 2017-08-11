@@ -1,0 +1,22 @@
+version: 2.0
+jobs:
+  build:
+    working_directory: ~/bigtest
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore yarn cache
+          key: bigtest-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install dependencies
+          command: yarn
+      - run:
+          name: Run tests
+          command: yarn test
+      - save_cache:
+          name: Save yarn cache
+          key: bigtest-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths:
+            - "node_modules"
