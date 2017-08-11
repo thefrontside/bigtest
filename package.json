@@ -1,0 +1,9 @@
+{
+  "name": "bigtest",
+  "version": "0.0.1",
+  "description": "Test Big. Test with Satisfaction.",
+  "main": "lib/index.js",
+  "author": "",
+  "license": "MIT",
+  "repository": "https://github.com/thefrontside/bigtest"
+}
