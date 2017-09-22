@@ -25,7 +25,7 @@ describe('BigTest Converge: convergent', function() {
   });
 
   describe('with a specific timeout', function() {
-    let timeout = 200;
+    let timeout = 50;
 
     beforeEach(function() {
       test = convergent((num) => {
@@ -34,12 +34,12 @@ describe('BigTest Converge: convergent', function() {
     });
 
     it('resolves when the assertion passes within the timeout', function() {
-      setTimeout(() => total = 5, timeout - 100);
+      setTimeout(() => total = 5, timeout - 30);
       return expect(test(5)).to.be.fulfilled;
     });
 
     it('rejects if the assertion does not pass within the timeout', function() {
-      setTimeout(() => total = 5, timeout + 100);
+      setTimeout(() => total = 5, timeout + 30);
       return expect(test(5)).to.be.rejected;
     });
   });
@@ -49,7 +49,7 @@ describe('BigTest Converge: convergent', function() {
       total = 5;
       test = convergent((num) => {
         expect(total).to.equal(num);
-      }, 200, true);
+      }, 50, true);
     });
 
     it('resolves if the assertion does not fail throughout the timeout', function() {
@@ -57,7 +57,7 @@ describe('BigTest Converge: convergent', function() {
     });
 
     it('rejects when the assertion fails within the timeout', function() {
-      setTimeout(() => total = 0, 100);
+      setTimeout(() => total = 0, 30);
       return expect(test(5)).to.be.rejected;
     });
   });
@@ -72,6 +72,36 @@ describe('BigTest Converge: convergent', function() {
 
     it('should curry the context to our assertion', function() {
       return expect(test()).to.be.fulfilled;
+    });
+  });
+
+  describe('when the assertion returns `false`', function() {
+    beforeEach(function() {
+      test = convergent((num) => total >= num, 50);
+    });
+
+    it('should reject if `false` was continually returned', function() {
+      return expect(test(10)).to.be.rejectedWith('the assertion returned `false`');
+    });
+
+    it('should resolve when `false` is not returned', function() {
+      setTimeout(() => total = 10, 30);
+      return expect(test(10)).to.be.fulfilled;
+    });
+
+    describe('and `invert` is true', function() {
+      beforeEach(function() {
+        test = convergent((num) => total < num, 50, true);
+      });
+
+      it('should resolve if `false` was never returned', function() {
+        return expect(test(10)).to.be.fulfilled;
+      });
+
+      it('should reject when `false` is returned', function() {
+        setTimeout(() => total = 10, 30);
+        return expect(test(10)).to.be.rejectedWith('the assertion returned `false`');
+      });
     });
   });
 });

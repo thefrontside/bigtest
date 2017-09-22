@@ -34,24 +34,26 @@
  * @returns {Promise} resolves if assertion passes at least once.
  */
 export function convergeOn(assertion, timeout = 2000, invert) {
-  const context = this;
-  const start = Date.now();
-  const interval = 10;
+  let context = this;
+  let start = Date.now();
+  let interval = 10;
 
   return new Promise((resolve, reject) => {
     (function loop() {
-      const ellapsed = Date.now() - start;
+      let ellapsed = Date.now() - start;
 
       // sometimes it takes almost an entire interval before the promise
       // is actually rejected, so we need to stop looping before the
       // second from last interval.
-      const doLoop = ellapsed + (interval * 2) < timeout;
+      let doLoop = ellapsed + (interval * 2) < timeout;
 
       try {
-        const ret = assertion.call(context);
+        let ret = assertion.call(context);
 
         if (invert && doLoop) {
           setTimeout(loop, interval);
+        } else if (ret === false) {
+          throw new Error('the assertion returned `false`');
         } else if (ret && typeof ret.then === 'function') {
           ret.then(resolve);
         } else {
