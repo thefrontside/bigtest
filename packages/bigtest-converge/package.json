@@ -4,5 +4,5 @@
   "version": "0.1.0",
   "license": "MIT",
   "repository": "https://github.com/thefrontside/bigtest/tree/master/packages/bigtest-converge",
-  "main": "src/index.js"
+  "main": "lib/index.js"
 }
