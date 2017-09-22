@@ -56,10 +56,8 @@ export function convergeOn(assertion, timeout = 2000, invert) {
           setTimeout(loop, interval);
         } else if (ret === false) {
           throw new Error('the assertion returned `false`');
-        } else if (ret && typeof ret.then === 'function') {
-          ret.then(resolve);
         } else {
-          resolve();
+          resolve(ret);
         }
       } catch(error) {
         if (!invert && doLoop) {
