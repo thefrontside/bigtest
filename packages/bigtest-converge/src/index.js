@@ -12,8 +12,10 @@
  * has. It does this by returning a Promise that resolves when the
  * condition passes.
  *
- * After a given timeout, if the `assertion` does not pass, then it
- * will give up and reject the promise.
+ * An assertion is considered to be passing if it does not throw any
+ * errors and does not return `false`. After a given timeout, if the
+ * `assertion` does _not_ pass, then it will give up and reject the
+ * promise.
  *
  * By default, `convergeOn` checks that an assertion passes at least
  * once during the timeout window. Sometimes however, you want to
