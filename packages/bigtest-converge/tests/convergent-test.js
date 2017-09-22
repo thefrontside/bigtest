@@ -6,13 +6,19 @@ import { convergent } from '../src';
 use(chaiAsPromised);
 
 describe('BigTest Converge: convergent', function() {
-  let total, test;
+  let total, test, timeout;
 
   beforeEach(function() {
     total = 0;
     test = convergent((num) => {
       expect(total).to.equal(num);
     });
+  });
+
+  afterEach(function() {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
   });
 
   it('resolves when the assertion passes', function() {
@@ -34,12 +40,12 @@ describe('BigTest Converge: convergent', function() {
     });
 
     it('resolves when the assertion passes within the timeout', function() {
-      setTimeout(() => total = 5, timeout - 30);
+      timeout = setTimeout(() => total = 5, timeout - 30);
       return expect(test(5)).to.be.fulfilled;
     });
 
     it('rejects if the assertion does not pass within the timeout', function() {
-      setTimeout(() => total = 5, timeout + 30);
+      timeout = setTimeout(() => total = 5, timeout + 30);
       return expect(test(5)).to.be.rejected;
     });
   });
@@ -57,7 +63,7 @@ describe('BigTest Converge: convergent', function() {
     });
 
     it('rejects when the assertion fails within the timeout', function() {
-      setTimeout(() => total = 0, 30);
+      timeout = setTimeout(() => total = 0, 30);
       return expect(test(5)).to.be.rejected;
     });
   });
@@ -85,7 +91,7 @@ describe('BigTest Converge: convergent', function() {
     });
 
     it('should resolve when `false` is not returned', function() {
-      setTimeout(() => total = 10, 30);
+      timeout = setTimeout(() => total = 10, 30);
       return expect(test(10)).to.be.fulfilled;
     });
 
@@ -99,7 +105,7 @@ describe('BigTest Converge: convergent', function() {
       });
 
       it('should reject when `false` is returned', function() {
-        setTimeout(() => total = 10, 30);
+        timeout = setTimeout(() => total = 10, 30);
         return expect(test(10)).to.be.rejectedWith('the assertion returned `false`');
       });
     });
