@@ -1,13 +1,10 @@
 {
   "name": "bigtest",
-  "version": "0.0.1",
-  "description": "Test Big. Test with Satisfaction.",
-  "main": "lib/index.js",
-  "author": "",
+  "private": true,
   "license": "MIT",
   "repository": "https://github.com/thefrontside/bigtest",
   "scripts": {
-    "test": "mocha --require babel-register --recursive ./tests"
+    "test": "mocha --require babel-register --recursive ./packages/**/tests"
   },
   "devDependencies": {
     "babel-preset-env": "^1.6.0",
@@ -15,5 +12,8 @@
     "chai": "^4.1.1",
     "chai-as-promised": "^7.1.1",
     "mocha": "^3.5.0"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

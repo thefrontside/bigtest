@@ -1,11 +1,11 @@
 import { describe, beforeEach, it } from 'mocha';
 import { use, expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import convergent from '../lib/convergence';
+import { convergent } from '../src';
 
 use(chaiAsPromised);
 
-describe('convergent helper', function() {
+describe('BigTest Converge: convergent', function() {
   let total, test;
 
   beforeEach(function() {

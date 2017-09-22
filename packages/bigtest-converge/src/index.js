@@ -112,7 +112,7 @@ export function convergeOn(assertion, timeout = 2000, invert) {
  *   // uncommenting this line will cause the promise to be rejected
  *   // setTimeout(() => total = 0, 400);
  */
-export default function convergent(assertion, timeout, invert) {
+export function convergent(assertion, timeout, invert) {
   return function(...args) {
     return convergeOn.call(this, assertion.bind(this, ...args), timeout, invert);
   };
