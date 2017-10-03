@@ -1,6 +1,7 @@
 import {module, test} from 'qunit';
-import Server from 'ember-cli-mirage/server';
-import { Model } from 'ember-cli-mirage';
+import Server, { Response } from 'mirage-server';
+import { Model } from 'mirage-server';
+import $ from 'jquery';
 
 module('Integration | HTTP Verbs', {
   beforeEach() {

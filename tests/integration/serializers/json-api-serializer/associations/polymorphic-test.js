@@ -1,7 +1,5 @@
-import Schema from 'ember-cli-mirage/orm/schema';
-import Db from 'ember-cli-mirage/db';
-import SerializerRegistry from 'ember-cli-mirage/serializer-registry';
-import { Model, belongsTo, hasMany, JSONAPISerializer } from 'ember-cli-mirage';
+import { Schema, Db, SerializerRegistry } from 'mirage-server';
+import { Model, belongsTo, hasMany, JSONAPISerializer } from 'mirage-server';
 import { module, test } from 'qunit';
 
 module('Integration | Serializers | JSON API Serializer | Associations | Polymorphic');

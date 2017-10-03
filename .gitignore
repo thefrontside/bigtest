@@ -1,24 +1,3 @@
-# See http://help.github.com/ignore-files/ for more about ignoring files.
-
-# compiled output
-/dist
-/tmp
-
-# dependencies
 /node_modules
-/bower_components
-
-# misc
-/.sass-cache
-/connect.lock
-/coverage/*
-/libpeerconnection.log
-npm-debug.log*
-testem.log
-.floo
-_site
-jekyll-tmp
-
-# IDE
-/.idea/
-/*.iml
+/package-lock.json
+/yarn.lock

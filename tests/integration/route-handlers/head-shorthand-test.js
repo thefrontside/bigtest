@@ -2,10 +2,10 @@ import { module, test } from 'qunit';
 import {
   Model,
   JSONAPISerializer,
-  Response
-} from 'ember-cli-mirage';
-import Server from 'ember-cli-mirage/server';
-import HeadShorthandRouteHandler from 'ember-cli-mirage/route-handlers/shorthands/head';
+  Response,
+  HeadShorthandRouteHandler
+} from 'mirage-server';
+import Server from 'mirage-server';
 
 module('Integration | Route Handlers | HEAD shorthand', {
   beforeEach() {

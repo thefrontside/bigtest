@@ -1,6 +1,6 @@
-import Server, { defaultPassthroughs } from 'ember-cli-mirage/server';
+import Server, { defaultPassthroughs } from 'mirage-server';
 import {module, test} from 'qunit';
-import { Model, Factory, belongsTo, hasMany, trait, association } from 'ember-cli-mirage';
+import { Model, Factory, belongsTo, hasMany, trait, association } from 'mirage-server';
 
 module('Unit | Server');
 

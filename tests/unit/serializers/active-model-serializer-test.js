@@ -1,4 +1,4 @@
-import ActiveModelSerializer from 'ember-cli-mirage/serializers/active-model-serializer';
+import { ActiveModelSerializer } from 'mirage-server';
 
 import {module, test} from 'qunit';
 
@@ -67,4 +67,3 @@ test('it works without an id', function(assert) {
     }
   });
 });
-

@@ -1,6 +1,6 @@
 import {module, test} from 'qunit';
-import Server from 'ember-cli-mirage/server';
-import { Model, Factory } from 'ember-cli-mirage';
+import Server from 'mirage-server';
+import { Model, Factory } from 'mirage-server';
 
 module('Integration | Database', {
   beforeEach() {
@@ -36,4 +36,3 @@ test(`[regression] When loaded, fixture files correctly update the database's au
   assert.equal(authors.length, 2);
   assert.deepEqual(authors.map((a) => a.id), ['1', '2']);
 });
-

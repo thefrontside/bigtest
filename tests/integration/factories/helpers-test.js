@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
-import { Model, Factory, belongsTo, hasMany, trait, association } from 'ember-cli-mirage';
-import Server from 'ember-cli-mirage/server';
+import { Model, Factory, belongsTo, hasMany, trait, association } from 'mirage-server';
+import Server from 'mirage-server';
 
 module('Integration | Server | Factories | helpers', {
   beforeEach() {

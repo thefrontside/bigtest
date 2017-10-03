@@ -1,4 +1,4 @@
-import SerializerRegistry from 'ember-cli-mirage/serializer-registry';
+import { SerializerRegistry } from 'mirage-server';
 import schemaHelper from '../schema-helper';
 import { module, test } from 'qunit';
 

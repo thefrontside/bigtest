@@ -1,6 +1,4 @@
-import { Model, belongsTo } from 'ember-cli-mirage';
-import Schema from 'ember-cli-mirage/orm/schema';
-import Db from 'ember-cli-mirage/db';
+import { Schema, Model, Db, belongsTo } from 'mirage-server';
 import { module, test } from 'qunit';
 
 module('Integration | ORM | Belongs To | Basic | regressions');

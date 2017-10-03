@@ -1,9 +1,5 @@
 import {module, test} from 'qunit';
-import Server from 'ember-cli-mirage/server';
-import Model from 'ember-cli-mirage/orm/model';
-import Mirage from 'ember-cli-mirage';
-import DeleteShorthandRouteHandler from 'ember-cli-mirage/route-handlers/shorthands/delete';
-import JSONAPISerializer from 'ember-cli-mirage/serializers/json-api-serializer';
+import Server, { Model, hasMany, JSONAPISerializer, DeleteShorthandRouteHandler } from 'mirage-server';
 
 module('Integration | Route Handlers | DELETE shorthand', {
 
@@ -12,7 +8,7 @@ module('Integration | Route Handlers | DELETE shorthand', {
       environment: 'development',
       models: {
         wordSmith: Model.extend({
-          blogPosts: Mirage.hasMany()
+          blogPosts: hasMany()
         }),
         blogPost: Model
       }

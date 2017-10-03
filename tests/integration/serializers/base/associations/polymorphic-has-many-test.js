@@ -1,8 +1,5 @@
-import { Model, hasMany } from 'ember-cli-mirage';
-import Schema from 'ember-cli-mirage/orm/schema';
-import Db from 'ember-cli-mirage/db';
-import Serializer from 'ember-cli-mirage/serializer';
-import SerializerRegistry from 'ember-cli-mirage/serializer-registry';
+import { Serializer, SerializerRegistry, Model, hasMany, Db } from 'mirage-server';
+import { Schema } from 'mirage-server';
 import { module, test } from 'qunit';
 
 module('Integration | Serializers | Base | Associations | Polymorphic Has Many', {

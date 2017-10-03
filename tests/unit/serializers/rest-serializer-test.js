@@ -1,4 +1,4 @@
-import RestSerializer from 'ember-cli-mirage/serializers/rest-serializer';
+import { RestSerializer } from 'mirage-server';
 
 import {module, test} from 'qunit';
 

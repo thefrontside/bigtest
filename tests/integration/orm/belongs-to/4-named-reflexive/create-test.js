@@ -1,5 +1,5 @@
 import Helper from './_helper';
-import { Model } from 'ember-cli-mirage';
+import { Model } from 'mirage-server';
 import { module, test } from 'qunit';
 
 module('Integration | ORM | Belongs To | Named Reflexive | create', {

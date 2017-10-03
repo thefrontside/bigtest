@@ -1,44 +1,40 @@
-[![Build Status](https://travis-ci.org/samselikoff/ember-cli-mirage.svg?branch=master)](https://travis-ci.org/samselikoff/ember-cli-mirage)
-[![npm version](https://badge.fury.io/js/ember-cli-mirage.svg)](http://badge.fury.io/js/ember-cli-mirage)
-[![Ember Observer Score](http://emberobserver.com/badges/ember-cli-mirage.svg)](http://emberobserver.com/addons/ember-cli-mirage)
+## Mirage Server
 
-# Ember CLI Mirage
+[![Build Status](https://travis-ci.org/cowboyd/mirage-server.svg?branch=master)](https://travis-ci.org/cowboyd/mirage-server)
 
+A client-side server to develop, test and prototype your app.
 
-A client-side server to develop, test and prototype your Ember CLI app.
+This project is a plain vanilla javascript extraction of the
+[ember-cli-mirage][1] project. It can be used inside of any framework,
+including React. The goal is for it to be eventually used upstream
+by Ember mirage proper.
 
-<http://www.ember-cli-mirage.com/>
+## Usage
 
-----
+``` javascript
+import MirageServer, { Factory } from 'mirage-server';
 
-Are you tired of
+let server = new MirageServer({
+  environment: 'test',
+  factories: {
+    address: Factory
+  }
+});
 
-- Writing one set of fixtures for your tests, and another for development?
-- Wiring up tests for each of your apps manually, from scratch?
-- Changing lots of files/tests when your API changes?
+// do some stuff with the server.
 
-Ember CLI Mirage may be for you! It lets you create a client-side server using [Pretender](https://github.com/trek/pretender) to help you develop and test your app. By default, it only runs if you're not in production and if you're not proxying to an explicit API server via `ember serve --proxy`.
-
-## Installation
-
-```sh
-ember install ember-cli-mirage  # install:addon for Ember CLI < 0.2.3
+// stop intercepting requests
+server.shutdown()
 ```
 
-## Updating
+## Development
 
-When updating your project to a newer version of Ember CLI Mirage, please consult [the changelog](/CHANGELOG.md) for any update notes.
+Test suite is running in QUnit and Karma.
 
-## Getting started
+```
+$ yarn
+$ yarn start // karma server
+$ yarn test // single run
+```
 
-Check out the [Docs](http://www.ember-cli-mirage.com/docs/v0.3.x/)!
-
-## Support
-
-Having trouble? Open an issue!
-
-You can use the [Mirage Boilerplate Twiddle](https://ember-twiddle.com/eedfd390d8394d54d5bfd0ed988a5d0f) to reproduce your issue.
-
-## Contributing
-
-Have a look at our [Contributing guidelines](./CONTRIBUTING.md).
+[1]: http://www.ember-cli-mirage.com/

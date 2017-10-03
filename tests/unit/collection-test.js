@@ -1,5 +1,5 @@
-import Collection from 'ember-cli-mirage/orm/collection';
-import {module, test} from 'qunit';
+import { Collection } from 'mirage-server';
+import { module, test } from 'qunit';
 
 module('Unit | Collection');
 
@@ -10,9 +10,15 @@ test('it can be instantiated', function(assert) {
 });
 
 test('it cannot be instantiated without a modelName', function(assert) {
-  assert.throws(() => {
-    new Collection();
-  }, /must pass a `modelName`/);
+  let error = console.error;
+  console.error = ()=> { };
+  try {
+    assert.throws(() => {
+      new Collection();
+    }, /must pass a `modelName`/);
+  } finally {
+    console.error = error;
+  }
 });
 
 test('it knows its modelname', function(assert) {

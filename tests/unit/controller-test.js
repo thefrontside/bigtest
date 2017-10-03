@@ -1,5 +1,4 @@
 // import Controller from 'ember-cli-mirage/controller';
-// import Db from 'ember-cli-mirage/db';
 // import Response from 'ember-cli-mirage/response';
 
 // import {module, test} from 'qunit';

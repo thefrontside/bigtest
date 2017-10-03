@@ -1,8 +1,8 @@
 import {module, test} from 'qunit';
-import { Model } from 'ember-cli-mirage';
-import Server from 'ember-cli-mirage/server';
-import ActiveModelSerializer from 'ember-cli-mirage/serializers/active-model-serializer';
-import RestSerializer from 'ember-cli-mirage/serializers/rest-serializer';
+import { Model } from 'mirage-server';
+import Server from 'mirage-server';
+import { ActiveModelSerializer } from 'mirage-server';
+import { RestSerializer } from 'mirage-server';
 
 module('Integration | Server Config', {
   beforeEach() {

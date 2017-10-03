@@ -1,6 +1,5 @@
-import { Model, hasMany, belongsTo } from 'ember-cli-mirage';
-import Schema from 'ember-cli-mirage/orm/schema';
-import Db from 'ember-cli-mirage/db';
+import { Model, hasMany, belongsTo, Db } from 'mirage-server';
+import { Schema } from 'mirage-server';
 
 /*
   A model with a hasMany association can be in eight states

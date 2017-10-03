@@ -1,5 +1,5 @@
-import Model from 'ember-cli-mirage/orm/model';
-import {module, test} from 'qunit';
+import { Model } from 'mirage-server';
+import { module, test } from 'qunit';
 
 module('Unit | Model');
 

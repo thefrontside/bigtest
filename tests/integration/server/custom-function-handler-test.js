@@ -1,6 +1,5 @@
 import { module, test } from 'qunit';
-import { Model, Factory, ActiveModelSerializer } from 'ember-cli-mirage';
-import Server from 'ember-cli-mirage/server';
+import Server, { Model, Factory, ActiveModelSerializer } from 'mirage-server';
 
 module('Integration | Server | Custom function handler', {
   beforeEach() {

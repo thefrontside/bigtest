@@ -1,6 +1,4 @@
-import Schema from 'ember-cli-mirage/orm/schema';
-import Db from 'ember-cli-mirage/db';
-import { Model, belongsTo } from 'ember-cli-mirage';
+import { Schema, Db, Model, belongsTo } from 'mirage-server';
 import {module, test} from 'qunit';
 
 module('Unit | Schema');

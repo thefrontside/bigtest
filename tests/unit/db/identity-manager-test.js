@@ -1,4 +1,4 @@
-import IdentityManager from 'ember-cli-mirage/identity-manager';
+import { IdentityManager } from 'mirage-server';
 
 import {module, test} from 'qunit';
 

@@ -1,7 +1,6 @@
 // jscs:disable disallowVar
-import { Model, hasMany } from 'ember-cli-mirage';
-import Schema from 'ember-cli-mirage/orm/schema';
-import Db from 'ember-cli-mirage/db';
+import { Model, hasMany, Db } from 'mirage-server';
+import { Schema } from 'mirage-server';
 import {module, test} from 'qunit';
 
 // Model classes are defined statically, just like in a typical app

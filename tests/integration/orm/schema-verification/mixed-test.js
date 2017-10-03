@@ -1,6 +1,5 @@
-import { Model, hasMany, belongsTo } from 'ember-cli-mirage';
-import Schema from 'ember-cli-mirage/orm/schema';
-import Db from 'ember-cli-mirage/db';
+import { Model, hasMany, belongsTo, Db } from 'mirage-server';
+import { Schema } from 'mirage-server';
 import { module, test } from 'qunit';
 
 module('Integration | ORM | Schema Verification | Mixed');

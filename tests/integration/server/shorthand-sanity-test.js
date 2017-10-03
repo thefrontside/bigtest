@@ -1,6 +1,6 @@
 import {module, test} from 'qunit';
-import { Model, ActiveModelSerializer } from 'ember-cli-mirage';
-import Server from 'ember-cli-mirage/server';
+import { Model, ActiveModelSerializer } from 'mirage-server';
+import Server from 'mirage-server';
 
 module('Integration | Server | Shorthand sanity check', {
   beforeEach() {

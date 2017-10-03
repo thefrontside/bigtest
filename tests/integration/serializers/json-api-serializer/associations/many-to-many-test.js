@@ -1,8 +1,6 @@
 import { module, skip } from 'qunit';
-import { Collection, Model, hasMany, belongsTo, JSONAPISerializer } from 'ember-cli-mirage';
-import Db from 'ember-cli-mirage/db';
-import Schema from 'ember-cli-mirage/orm/schema';
-import SerializerRegistry from 'ember-cli-mirage/serializer-registry';
+import { Collection, Model, hasMany, belongsTo, JSONAPISerializer, Db, SerializerRegistry } from 'mirage-server';
+import { Schema } from 'mirage-server';
 
 module('Integration | Serializers | JSON API Serializer | Associations | Many To Many', {
   beforeEach() {

@@ -1,5 +1,5 @@
 import {module, test} from 'qunit';
-import Server from 'ember-cli-mirage/server';
+import Server from 'mirage-server';
 
 module('Integration | Server | Get full path', {
   beforeEach() {

@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
-import { Model, hasMany, belongsTo } from 'ember-cli-mirage';
-import Server from 'ember-cli-mirage/server';
-import DefaultIdentityManager from 'ember-cli-mirage/identity-manager';
+import { Model, hasMany, belongsTo } from 'mirage-server';
+import Server from 'mirage-server';
+import { IdentityManager } from 'mirage-server';
 
 const CustomIdentityManager = class {
   constructor() {
@@ -37,7 +37,7 @@ module('Integration | Server | Factory creation', {
     this.server = new Server({
       environment: 'test',
       identityManagers: {
-        post: DefaultIdentityManager,
+        post: IdentityManager,
         author: CustomIdentityManager
       },
       models: {

@@ -1,14 +1,13 @@
 import { module, test } from 'qunit';
-import {
+import Server, {
   Model,
+  Collection,
   hasMany,
   belongsTo,
   JSONAPISerializer,
-  Response
-} from 'ember-cli-mirage';
-import Collection from 'ember-cli-mirage/orm/collection';
-import Server from 'ember-cli-mirage/server';
-import GetShorthandRouteHandler from 'ember-cli-mirage/route-handlers/shorthands/get';
+  Response,
+  GetShorthandRouteHandler
+} from 'mirage-server';
 
 module('Integration | Route Handlers | GET shorthand', {
   beforeEach() {

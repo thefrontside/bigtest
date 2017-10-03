@@ -1,4 +1,4 @@
-import referenceSort from 'ember-cli-mirage/utils/reference-sort';
+import { referenceSort } from 'mirage-server';
 import {module, test} from 'qunit';
 
 module('mirage:reference-sort');

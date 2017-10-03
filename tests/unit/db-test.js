@@ -1,5 +1,4 @@
-import Db from 'ember-cli-mirage/db';
-import DefaultIdentityManager from 'ember-cli-mirage/identity-manager';
+import { Db, IdentityManager as DefaultIdentityManager } from 'mirage-server';
 
 import {module, test} from 'qunit';
 
