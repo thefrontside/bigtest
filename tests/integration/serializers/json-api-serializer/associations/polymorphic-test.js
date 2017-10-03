@@ -14,7 +14,10 @@ test('it works for belongs to polymorphic relationships', function(assert) {
   });
 
   let registry = new SerializerRegistry(this.schema, {
-    application: JSONAPISerializer
+    application: JSONAPISerializer,
+    comment: JSONAPISerializer.extend({
+      include: ['commentable']
+    })
   });
   let photo = schema.photos.create({ title: 'Foo' });
   schema.comments.create({ text: 'Pretty foo!', commentable: photo });
@@ -49,6 +52,22 @@ test('it works for belongs to polymorphic relationships', function(assert) {
         },
         "type": "comments"
       }
+    ],
+    included: [
+      {
+        attributes: {
+          title: "Foo"
+        },
+        id: "1",
+        type: "photos"
+      },
+      {
+        attributes: {
+          "title": "Bar"
+        },
+        id: "1",
+        type: "videos"
+      }
     ]
   });
 });
@@ -63,7 +82,10 @@ test('it works for has many polymorphic relationships', function(assert) {
   });
 
   let registry = new SerializerRegistry(this.schema, {
-    application: JSONAPISerializer
+    application: JSONAPISerializer,
+    user: JSONAPISerializer.extend({
+      include: ['things']
+    })
   });
 
   let car = schema.cars.create({ make: 'Infiniti' });
@@ -90,6 +112,22 @@ test('it works for has many polymorphic relationships', function(assert) {
         }
       },
       "type": "users"
-    }
+    },
+    "included": [
+      {
+        "attributes": {
+          "make": "Infiniti"
+        },
+        "id": "1",
+        "type": "cars"
+      },
+      {
+        "attributes": {
+          "make": "Citizen"
+        },
+        "id": "1",
+        "type": "watches"
+      }
+    ]
   });
 });
