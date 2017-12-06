@@ -115,7 +115,65 @@ export function convergeOn(assertion, timeout = 2000, invert) {
  *   // setTimeout(() => total = 0, 400);
  */
 export function convergent(assertion, timeout, invert) {
-  return function(...args) {
-    return convergeOn.call(this, assertion.bind(this, ...args), timeout, invert);
+  let converge = function converge(...args) {
+    return convergeOn.apply(this, [
+      assertion.bind(this, ...args),
+      converge.timeout,
+      invert
+    ]);
   };
+
+  // allows modification of the timeout before execution
+  converge.timeout = timeout;
+
+  // flags this function as a convergent one
+  converge.convergent = true;
+
+  return converge;
+}
+
+/**
+ * Convergent helper that ensures a set of convergent functions all
+ * converge after one another within a timeout period. If a provided
+ * function is not convergent, it is simply invoked with the previous
+ * resolved value and its return value is passed to the next function
+ * in the series.
+ *
+ * This function works by modifying the timeout period of convergent
+ * functions created using the convergent helper above so that the
+ * combined timeout period does not exceed a given value.
+ *
+ * Example:
+ *   beforeEach(() => {
+ *     return convergeSeries([
+ *       convergent(() => {
+ *         let $el = $(selector);
+ *         expect($el).to.exist;
+ *         return $el.get(0);
+ *       }),
+ *       (node) => {
+ *         node.click();
+ *       },
+ *       convergent(() => {
+ *         expect(sideEffect).to.be.true;
+ *       });
+ *     ]);
+ *   });
+ *
+ * @param {[Function]} funcs - Array of possibly convergent functions
+ * @param {Number} [timeout=2000] - Timeout that all functions must
+ * converge within
+ */
+export function convergeSeries(funcs, timeout = 2000) {
+  let start = Date.now();
+
+  return funcs.reduce((promise, fn) => {
+    let ellapsed = Date.now() - start;
+
+    if (fn.convergent) {
+      fn.timeout = timeout - ellapsed;
+    }
+
+    return promise.then(fn);
+  }, Promise.resolve());
 }
