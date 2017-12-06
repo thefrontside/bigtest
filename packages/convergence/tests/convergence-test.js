@@ -5,7 +5,7 @@ import { convergent } from '../src';
 
 use(chaiAsPromised);
 
-describe('BigTest Converge: convergent', function() {
+describe('BigTest Convergence', function() {
   let total, test, timeout;
 
   beforeEach(function() {

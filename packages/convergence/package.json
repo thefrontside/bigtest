@@ -1,8 +1,8 @@
 {
-  "name": "bigtest-converge",
+  "name": "@bigtest/convergence",
   "description": "Convergence helpers for testing big",
   "version": "0.1.0",
   "license": "MIT",
-  "repository": "https://github.com/thefrontside/bigtest/tree/master/packages/bigtest-converge",
+  "repository": "https://github.com/thefrontside/bigtest/tree/master/packages/convergence",
   "main": "lib/index.js"
 }
