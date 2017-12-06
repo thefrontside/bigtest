@@ -1,4 +1,4 @@
-import { describe, beforeEach, it } from 'mocha';
+import { describe, beforeEach, afterEach, it } from 'mocha';
 import { use, expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { convergent } from '../src';
@@ -31,22 +31,26 @@ describe('BigTest Converge: convergent', function() {
   });
 
   describe('with a specific timeout', function() {
-    let timeout = 50;
-
     beforeEach(function() {
       test = convergent((num) => {
         expect(total).to.equal(num);
-      }, timeout);
+      }, 50);
     });
 
     it('resolves when the assertion passes within the timeout', function() {
-      timeout = setTimeout(() => total = 5, timeout - 30);
+      timeout = setTimeout(() => total = 5, 30);
       return expect(test(5)).to.be.fulfilled;
     });
 
     it('rejects if the assertion does not pass within the timeout', function() {
-      timeout = setTimeout(() => total = 5, timeout + 30);
+      timeout = setTimeout(() => total = 5, 80);
       return expect(test(5)).to.be.rejected;
+    });
+
+    it('allows changing the timeout before execution', function() {
+      test.timeout = 100;
+      timeout = setTimeout(() => total = 5, 80);
+      return expect(test(5)).to.be.fulfilled;
     });
   });
 
