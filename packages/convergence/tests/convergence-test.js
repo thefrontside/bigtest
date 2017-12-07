@@ -1,112 +1,273 @@
-import { describe, beforeEach, it } from 'mocha';
+import { describe, beforeEach, afterEach, it } from 'mocha';
 import { use, expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { convergent } from '../src';
+import Convergence from '../src/convergence';
 
 use(chaiAsPromised);
 
-describe('BigTest Convergence', function() {
-  let total, test, timeout;
+describe('BigTest Convergence', () => {
+  describe('creating a new instance', () => {
+    it('has a default timeout of 2000ms', () => {
+      expect(new Convergence().timeout()).to.equal(2000);
+    });
 
-  beforeEach(function() {
-    total = 0;
-    test = convergent((num) => {
-      expect(total).to.equal(num);
+    it('allows initializing with a different timeout', () => {
+      expect(new Convergence(50).timeout()).to.equal(50);
     });
   });
 
-  afterEach(function() {
-    if (timeout) {
-      clearTimeout(timeout);
-    }
-  });
+  describe('with an existing instance', () => {
+    let converge;
 
-  it('resolves when the assertion passes', function() {
-    total = 5;
-    return expect(test(5)).to.be.fulfilled;
-  });
-
-  it('rejects when the assertion does not pass', function() {
-    return expect(test(5)).to.be.rejected;
-  });
-
-  describe('with a specific timeout', function() {
-    let timeout = 50;
-
-    beforeEach(function() {
-      test = convergent((num) => {
-        expect(total).to.equal(num);
-      }, timeout);
+    beforeEach(() => {
+      converge = new Convergence();
     });
 
-    it('resolves when the assertion passes within the timeout', function() {
-      timeout = setTimeout(() => total = 5, timeout - 30);
-      return expect(test(5)).to.be.fulfilled;
-    });
+    describe('setting a new timeout', () => {
+      let quick;
 
-    it('rejects if the assertion does not pass within the timeout', function() {
-      timeout = setTimeout(() => total = 5, timeout + 30);
-      return expect(test(5)).to.be.rejected;
-    });
-  });
-
-  describe('when `invert` is true', function() {
-    beforeEach(function() {
-      total = 5;
-      test = convergent((num) => {
-        expect(total).to.equal(num);
-      }, 50, true);
-    });
-
-    it('resolves if the assertion does not fail throughout the timeout', function() {
-      return expect(test(5)).to.be.fulfilled;
-    });
-
-    it('rejects when the assertion fails within the timeout', function() {
-      timeout = setTimeout(() => total = 0, 30);
-      return expect(test(5)).to.be.rejected;
-    });
-  });
-
-  describe('when bound to the testing context', function() {
-    beforeEach(function() {
-      this.convergent = true;
-      test = convergent(function() {
-        expect(this.convergent).to.be.true;
-      }).bind(this);
-    });
-
-    it('should curry the context to our assertion', function() {
-      return expect(test()).to.be.fulfilled;
-    });
-  });
-
-  describe('when the assertion returns `false`', function() {
-    beforeEach(function() {
-      test = convergent((num) => total >= num, 50);
-    });
-
-    it('should reject if `false` was continually returned', function() {
-      return expect(test(10)).to.be.rejectedWith('the assertion returned `false`');
-    });
-
-    it('should resolve when `false` is not returned', function() {
-      timeout = setTimeout(() => total = 10, 30);
-      return expect(test(10)).to.be.fulfilled;
-    });
-
-    describe('and `invert` is true', function() {
-      beforeEach(function() {
-        test = convergent((num) => total < num, 50, true);
+      beforeEach(() => {
+        quick = converge.timeout(50);
       });
 
-      it('should resolve if `false` was never returned', function() {
-        return expect(test(10)).to.be.fulfilled;
+      it('creates a new instance', () => {
+        expect(quick).to.be.an.instanceOf(Convergence);
+        expect(quick).to.not.equal(converge);
       });
 
-      it('should reject when `false` is returned', function() {
-        timeout = setTimeout(() => total = 10, 30);
-        return expect(test(10)).to.be.rejectedWith('the assertion returned `false`');
+      it('has a new timeout', () => {
+        expect(quick.timeout()).to.equal(50);
+        expect(converge.timeout()).to.equal(2000);
+      });
+    });
+
+    describe('adding assertions with `.and()`', () => {
+      let assertion;
+
+      beforeEach(() => {
+        assertion = converge.and(() => {});
+      });
+
+      it('creates a new instance', () => {
+        expect(assertion).to.be.an.instanceOf(Convergence);
+        expect(assertion).to.not.equal(converge);
+      });
+
+      it('creates a new stack', () => {
+        expect(assertion._stack).to.not.equal(converge._stack);
+        expect(assertion._stack).to.have.lengthOf(1);
+        expect(converge._stack).to.have.lengthOf(0);
+      });
+
+      it('adds the assertion to the new stack', () => {
+        let assert = () => {};
+
+        assertion = assertion.and(assert);
+        expect(assertion._stack[1]).to.have.property('assert', assert);
+      });
+    });
+
+    describe('adding assertions with `.still()`', () => {
+      let assertion;
+
+      beforeEach(() => {
+        assertion = converge.still(() => {});
+      });
+
+      it('creates a new instance', () => {
+        expect(assertion).to.be.an.instanceOf(Convergence);
+        expect(assertion).to.not.equal(converge);
+      });
+
+      it('creates a new stack', () => {
+        expect(assertion._stack).to.not.equal(converge._stack);
+        expect(assertion._stack).to.have.lengthOf(1);
+        expect(converge._stack).to.have.lengthOf(0);
+      });
+
+      it('adds to a new stack with an `invert` flag and own timeout', () => {
+        let assert = () => {};
+
+        assertion = assertion.still(assert);
+        expect(assertion._stack[1]).to.have.property('assert', assert);
+        expect(assertion._stack[1]).to.have.property('invert', true);
+        expect(assertion._stack[1]).to.have.property('timeout', 200);
+      });
+
+      it('should be able to customize own timeout', () => {
+        assertion = assertion.still(() => {}, 50);
+        expect(assertion._stack[1]).to.have.property('timeout', 50);
+      });
+    });
+
+    describe('adding callbacks with `.tap()`', () => {
+      let tapped;
+
+      beforeEach(() => {
+        tapped = converge.tap(() => {});
+      });
+
+      it('creates a new instance', () => {
+        expect(tapped).to.be.an.instanceOf(Convergence);
+        expect(tapped).to.not.equal(converge);
+      });
+
+      it('creates a new stack', () => {
+        expect(tapped._stack).to.not.equal(converge._stack);
+        expect(tapped._stack).to.have.lengthOf(1);
+        expect(converge._stack).to.have.lengthOf(0);
+      });
+
+      it('adds to a new stack with an `exec` property', () => {
+        let callback = () => {};
+
+        tapped = tapped.tap(callback);
+        expect(tapped._stack[1]).to.have.property('exec', callback);
+      });
+    });
+  });
+
+  describe('running convergences', () => {
+    let total, converge, timeouts;
+    let createTimeout = (...args) => {
+      timeouts.push(setTimeout(...args));
+    };
+
+    beforeEach(() => {
+      total = 0;
+      converge = new Convergence(100);
+      timeouts = [];
+    });
+
+    afterEach(() => {
+      timeouts.forEach((timeout) => {
+        clearTimeout(timeout);
+      });
+    });
+
+    it('returns a promise', () => {
+      expect(converge.run()).to.be.an.instanceOf(Promise);
+    });
+
+    it('should be fulfilled when there are no assertions', () => {
+      return expect(converge.run()).to.be.fulfilled;
+    });
+
+    describe('after using `.add()`', () => {
+      let assertion;
+
+      beforeEach(() => {
+        assertion = converge.and(() => expect(total).to.equal(5));
+      });
+
+      it('resolves after assertions converge', async () => {
+        let start = Date.now();
+
+        createTimeout(() => total = 5, 30);
+        await expect(assertion.run()).to.be.fulfilled;
+        expect(Date.now() - start).to.be.within(30, 50);
+      });
+
+      it('rejects when an assertion is not met', () => {
+        return expect(assertion.run()).to.be.rejected;
+      });
+
+      describe('with additional chaining', () => {
+        beforeEach(() => {
+          assertion = assertion.and(() => expect(total).to.equal(10));
+        });
+
+        it('resolves after at all assertions are met', async () => {
+          let start = Date.now();
+
+          createTimeout(() => total = 5, 30);
+          createTimeout(() => total = 10, 50);
+          await expect(assertion.run()).to.be.fulfilled;
+          expect(Date.now() - start).to.be.within(50, 70);
+        });
+
+        it('rejects if assertions are not met in order', () => {
+          createTimeout(() => total = 10, 30);
+          createTimeout(() => total = 5, 50);
+          return expect(assertion.run()).to.be.rejected;
+        });
+      });
+    });
+
+    describe('after using `.still()`', () => {
+      let assertion;
+
+      beforeEach(() => {
+        total = 5;
+        assertion = converge.still(() => {
+          expect(total).to.equal(5);
+        }, 50);
+      });
+
+      it('resolves just before the 100ms timeout', async () => {
+        let start = Date.now();
+        await expect(assertion.run()).to.be.fulfilled;
+        expect(Date.now() - start).to.be.within(80, 100);
+      });
+
+      it('rejects when the assertion fails', () => {
+        createTimeout(() => total = 10, 50);
+        return expect(assertion.run()).to.be.rejected;
+      });
+
+      describe('with additional chaining', () => {
+        beforeEach(() => {
+          assertion = assertion
+            .tap(() => total = 10)
+            .and(() => expect(total).to.equal(10));
+        });
+
+        it('resolves after at least 50ms', async () => {
+          let start = Date.now();
+          await expect(assertion.run()).to.be.fulfilled;
+          expect(Date.now() - start).to.be.within(30, 50);
+        });
+
+        it('rejects if the assertion fails within 50ms', () => {
+          createTimeout(() => total = 10, 30);
+          return expect(assertion.run()).to.be.rejected;
+        });
+      });
+    });
+
+    describe('after using `.tap()`', () => {
+      it('triggers the callback before resolving', () => {
+        let assertion = converge
+          .and(() => expect(total).to.equal(5))
+          .tap(() => total * 100);
+
+        createTimeout(() => total = 5, 50);
+        return expect(assertion.run()).to.be.fulfilled
+          .and.eventually.equal(500);
+      });
+
+      it('passes the previous return value to the callback', () => {
+        let assertion = converge
+          .and(() => {
+            expect(total).to.equal(5);
+            return total * 100;
+          })
+          .tap((n) => n / 20);
+
+        createTimeout(() => total = 5, 50);
+        return expect(assertion.run()).to.be.fulfilled
+          .and.eventually.equal(25);
+      });
+
+      it('is not called when a previous assertion fails', async () => {
+        let called = false;
+
+        let assertion = converge
+          .and(() => expect(total).to.equal(5))
+          .tap(() => called = true);
+
+        await expect(assertion.run()).to.be.rejected;
+        expect(called).to.be.false;
       });
     });
   });
