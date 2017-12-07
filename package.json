@@ -5,11 +5,12 @@
   "repository": "https://github.com/thefrontside/bigtest",
   "scripts": {
     "build": "gulp build",
-    "test": "mocha --require babel-register --recursive ./packages/**/tests"
+    "test": "mocha --opts ./mocha.opts --recursive ./packages/**/tests"
   },
   "devDependencies": {
+    "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.0",
-    "babel-register": "^6.24.1",
+    "babel-register": "^6.26.0",
     "chai": "^4.1.1",
     "chai-as-promised": "^7.1.1",
     "chalk": "^2.1.0",
