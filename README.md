@@ -1,11 +1,16 @@
 # BigTest [![CircleCI](https://circleci.com/gh/thefrontside/bigtest/tree/master.svg?style=svg&circle-token=78c5d879b0ace4fe137c203bfc9ca20d732eb6e3)](https://circleci.com/gh/thefrontside/bigtest/tree/master)
 
-A Suite of JavaScript applications and frameworks to help you answer
+A Suite of JavaScript libraries and framework extensions to help you answer
 the question: _Does my application work in real life?_.
 
 It's a big question, and it can't be answered with small tests that
 observe a tiny portion of your code that isn't integrated with any
 thing else. Big questions need big tests.
+
+> Bigtest is in the process of being extracted from several different
+> projects and so it is very much in the "component pieces"
+> phase. You can use [these][1] [pieces][2] in your own projects, but there is
+> going to be some manual integration involved.
 
 What does a big test look like?
 
@@ -37,8 +42,6 @@ the network too. Otherwise, you're measuring air.
 
 - [@bigtest/mirage][2]
 
-
-
-
 [1]: packages/convergence
 [2]: https://github.com/cowboyd/mirage-server
+[3]: https://github.com/thefrontside/ui-eholdings
