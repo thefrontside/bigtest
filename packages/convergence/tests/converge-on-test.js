@@ -125,7 +125,7 @@ describe('BigTest Convergence - convergeOn', () => {
 
       expect(stats.start).to.be.within(start, start + 1);
       expect(stats.end).to.be.within(end - 1, end);
-      expect(stats.elapsed).to.be.within(30, 50);
+      expect(stats.elapsed).to.be.within(28, 52);
       expect(stats.runs).to.equal(4);
       expect(stats.always).to.be.false;
       expect(stats.timeout).to.equal(50);
