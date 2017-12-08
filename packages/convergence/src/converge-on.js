@@ -6,7 +6,7 @@
  * the timeout period with the last error it recieved while running
  * the assertion.
  *
- * If `invert` is true, then the promise will resolve only if the
+ * If `always` is true, then the promise will resolve only if the
  * condition has been met consistently over the entire timeout
  * period. And it will reject the first time it encounters an
  * error.
@@ -17,13 +17,13 @@
  *
  * @param {Function} assertion - run to test condition repeatedly
  * @param {Number} [timeout=2000] - milliseconds to check assertion
- * @param {Boolean} [invert] - if true, the assertion must pass
+ * @param {Boolean} [always] - if true, the assertion must pass
  * throughout the entire timeout period
  * @param {Boolean} [useStats] - if true, resolves with a stats object
  * @returns {Promise} resolves if the assertion passes at least once;
- * if `invert` is true, then rejects at the first error instead
+ * if `always` is true, then rejects at the first error instead
  */
-export default function convergeOn(assertion, timeout = 2000, invert, useStats) {
+export default function convergeOn(assertion, timeout = 2000, always, useStats) {
   let context = this;
   let start = Date.now();
   let interval = 10;
@@ -34,9 +34,9 @@ export default function convergeOn(assertion, timeout = 2000, invert, useStats) 
     runs: 0,
     end: start,
     elapsed: 0,
-    inverted: invert,
-    value: undefined,
-    timeout
+    always,
+    timeout,
+    value: undefined
   };
 
   return new Promise((resolve, reject) => {
@@ -52,7 +52,7 @@ export default function convergeOn(assertion, timeout = 2000, invert, useStats) 
       try {
         let ret = assertion.call(context);
 
-        if (invert && doLoop) {
+        if (always && doLoop) {
           setTimeout(loop, interval);
         } else if (ret === false) {
           throw new Error('convergent assertion returned `false`');
@@ -66,9 +66,9 @@ export default function convergeOn(assertion, timeout = 2000, invert, useStats) 
           resolve(useStats ? stats : ret);
         }
       } catch(error) {
-        if (!invert && doLoop) {
+        if (!always && doLoop) {
           setTimeout(loop, interval);
-        } else if (invert || !doLoop) {
+        } else if (always || !doLoop) {
           reject(error);
         }
       }

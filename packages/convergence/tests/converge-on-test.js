@@ -48,7 +48,7 @@ describe('BigTest Convergence - convergeOn', () => {
     });
   });
 
-  describe('when `invert` is true', () => {
+  describe('when `always` is true', () => {
     beforeEach(() => {
       total = 5;
       test = (num) => convergeOn(() => {
@@ -93,7 +93,7 @@ describe('BigTest Convergence - convergeOn', () => {
       return expect(test(10)).to.be.fulfilled;
     });
 
-    describe('and `invert` is true', () => {
+    describe('and `always` is true', () => {
       beforeEach(() => {
         test = (num) => convergeOn(() => total < num, 50, true);
       });
@@ -127,7 +127,7 @@ describe('BigTest Convergence - convergeOn', () => {
       expect(stats.end).to.be.within(end - 1, end);
       expect(stats.elapsed).to.be.within(30, 50);
       expect(stats.runs).to.equal(4);
-      expect(stats.inverted).to.be.false;
+      expect(stats.always).to.be.false;
       expect(stats.timeout).to.equal(50);
       expect(stats.value).to.equal(500);
     });

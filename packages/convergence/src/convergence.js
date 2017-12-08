@@ -29,11 +29,11 @@ import convergeOn from './converge-on';
  *
  * Example:
  *   let first = new Convergence(100)
- *     .and(() => expect(foo).to.equal('bar'))
+ *     .once(() => expect(foo).to.equal('bar'))
  *
  *   let second = first.timeout(200)
- *     .tap(() => console.log('foo', foo))
- *     .still(() => expect(foo).to.equal('bar'))
+ *     .do(() => console.log('foo', foo))
+ *     .always(() => expect(foo).to.equal('bar'))
  *
  * `first.run()` has 100ms to converge on it's assertion.
  *
@@ -75,14 +75,14 @@ export default class Convergence {
   /**
    * Creates a new convergence with the given assertion added to its
    * stack. The new convergence's initial stack will be inherited from
-   * this convergence instance. The assertion given to `.and()` will
+   * this convergence instance. The assertion given to `.once()` will
    * be converged on using the `convergeOn` helper, but it's timeout
    * will be managed by this convergence instance
    *
    * @param {Function} assert - the assertion to converge on
    * @returns {Convergence} a new convergence instance
    */
-  and(assert) {
+  once(assert) {
     return new Convergence(this._timeout, [
       ...this._stack,
       { assert }
@@ -90,14 +90,15 @@ export default class Convergence {
   }
 
   /**
-   * Similar to `.and()`, creates a new convergence with the given
+   * Similar to `.once()`, creates a new convergence with the given
    * assertion added to its stack. However, the assertion given to
-   * `.still()` will become inverted via the `convergeOn` helper.
-   * When a `.still()` is last in a stack, it will use the remaining
-   * convergence time to ensure the assertion continues to pass. The
-   * timeout is used when there are more assertions later in the
-   * stack, in which case this assertion needs to finish with enough
-   * time for other possible assertions to also run
+   * `.always()` will be ran until it fails, or passes for its entire
+   * timeout period. When an `.always()` is last in a stack, it will
+   * use the remaining convergence time to ensure the assertion
+   * continues to pass. The timeout is used when there are more
+   * assertions later in the stack, in which case this assertion needs
+   * to finish with enough time for other possible assertions to also
+   * have a chance to run
    *
    * @param {Function} assert - the assertion to converge on
    * @param {Number} [timeout] - this assertions timeout unless
@@ -105,12 +106,12 @@ export default class Convergence {
    * of the total timeout (minimum 20ms)
    * @returns {Convergence} a new convergence instance
    */
-  still(assert, timeout) {
+  always(assert, timeout) {
     timeout = Math.max(timeout || (this._timeout / 10), 20);
 
     return new Convergence(this._timeout, [
       ...this._stack,
-      { assert, timeout, invert: true }
+      { assert, timeout, always: true }
     ]);
   }
 
@@ -118,7 +119,7 @@ export default class Convergence {
    * Creates a new convergence with the given callback added to its
    * stack. The new convergence's initial stack will be inherited from
    * this convergence instance. When a running convergence instance
-   * encounters a `.tap()`, it will invoke the callback with the value
+   * encounters a `.do()`, it will invoke the callback with the value
    * returned from the last function in the stack. The resulting
    * return value will also be provided to the following function in
    * the stack
@@ -126,7 +127,7 @@ export default class Convergence {
    * @param {Function} exec - the callback to execute during the convergence
    * @returns {Convergence} a new convergence instance
    */
-  tap(exec) {
+  do(exec) {
     return new Convergence(this._timeout, [
       ...this._stack,
       { exec }
@@ -176,24 +177,24 @@ export default class Convergence {
           let timeout = stats.timeout - elapsed;
           let assert = subject.assert.bind(null, ret);
 
-          // inverted convergences need timeouts smaller than the
+          // always convergences need timeouts smaller than the
           // total timeout so that any future assertions can still
           // converge within the total timeout period
-          if (subject.invert) {
-            // if the last assertion in the chain is an inverted
+          if (subject.always) {
+            // if the last assertion in the chain is an always
             // convergence, then it is allowed to take the remaining
             // timeout period
             timeout = last ? timeout : Math.min(timeout, subject.timeout);
           }
 
-          return convergeOn(assert, timeout, subject.invert, true)
+          return convergeOn(assert, timeout, subject.always, true)
           // incorporate stats and curry the assertion return value
             .then((convergeStats) => {
               addStats(convergeStats);
               return convergeStats.value;
             });
 
-        // taps are run once previous assertions converge
+        // `.do()` blocks are run once previous assertions converge
         } else if (subject.exec) {
           let execStats = { runs: 1 };
 

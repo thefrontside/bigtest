@@ -41,11 +41,11 @@ describe('BigTest Convergence', () => {
       });
     });
 
-    describe('adding assertions with `.and()`', () => {
+    describe('adding assertions with `.once()`', () => {
       let assertion;
 
       beforeEach(() => {
-        assertion = converge.and(() => {});
+        assertion = converge.once(() => {});
       });
 
       it('creates a new instance', () => {
@@ -62,16 +62,16 @@ describe('BigTest Convergence', () => {
       it('adds the assertion to the new stack', () => {
         let assert = () => {};
 
-        assertion = assertion.and(assert);
+        assertion = assertion.once(assert);
         expect(assertion._stack[1]).to.have.property('assert', assert);
       });
     });
 
-    describe('adding assertions with `.still()`', () => {
+    describe('adding assertions with `.always()`', () => {
       let assertion;
 
       beforeEach(() => {
-        assertion = converge.still(() => {});
+        assertion = converge.always(() => {});
       });
 
       it('creates a new instance', () => {
@@ -85,44 +85,44 @@ describe('BigTest Convergence', () => {
         expect(converge._stack).to.have.lengthOf(0);
       });
 
-      it('adds to a new stack with an `invert` flag and own timeout', () => {
+      it('adds to a new stack with an `always` flag and own timeout', () => {
         let assert = () => {};
 
-        assertion = assertion.still(assert);
+        assertion = assertion.always(assert);
         expect(assertion._stack[1]).to.have.property('assert', assert);
-        expect(assertion._stack[1]).to.have.property('invert', true);
+        expect(assertion._stack[1]).to.have.property('always', true);
         expect(assertion._stack[1]).to.have.property('timeout', 200);
       });
 
       it('should be able to customize own timeout', () => {
-        assertion = assertion.still(() => {}, 50);
+        assertion = assertion.always(() => {}, 50);
         expect(assertion._stack[1]).to.have.property('timeout', 50);
       });
     });
 
-    describe('adding callbacks with `.tap()`', () => {
-      let tapped;
+    describe('adding callbacks with `.do()`', () => {
+      let callback;
 
       beforeEach(() => {
-        tapped = converge.tap(() => {});
+        callback = converge.do(() => {});
       });
 
       it('creates a new instance', () => {
-        expect(tapped).to.be.an.instanceOf(Convergence);
-        expect(tapped).to.not.equal(converge);
+        expect(callback).to.be.an.instanceOf(Convergence);
+        expect(callback).to.not.equal(converge);
       });
 
       it('creates a new stack', () => {
-        expect(tapped._stack).to.not.equal(converge._stack);
-        expect(tapped._stack).to.have.lengthOf(1);
+        expect(callback._stack).to.not.equal(converge._stack);
+        expect(callback._stack).to.have.lengthOf(1);
         expect(converge._stack).to.have.lengthOf(0);
       });
 
       it('adds to a new stack with an `exec` property', () => {
-        let callback = () => {};
+        let fn = () => {};
 
-        tapped = tapped.tap(callback);
-        expect(tapped._stack[1]).to.have.property('exec', callback);
+        callback = callback.do(fn);
+        expect(callback._stack[1]).to.have.property('exec', fn);
       });
     });
   });
@@ -157,7 +157,7 @@ describe('BigTest Convergence', () => {
       let assertion;
 
       beforeEach(() => {
-        assertion = converge.and(() => expect(total).to.equal(5));
+        assertion = converge.once(() => expect(total).to.equal(5));
       });
 
       it('resolves after assertions converge', async () => {
@@ -174,7 +174,7 @@ describe('BigTest Convergence', () => {
 
       describe('with additional chaining', () => {
         beforeEach(() => {
-          assertion = assertion.and(() => expect(total).to.equal(10));
+          assertion = assertion.once(() => expect(total).to.equal(10));
         });
 
         it('resolves after at all assertions are met', async () => {
@@ -194,12 +194,12 @@ describe('BigTest Convergence', () => {
       });
     });
 
-    describe('after using `.still()`', () => {
+    describe('after using `.always()`', () => {
       let assertion;
 
       beforeEach(() => {
         total = 5;
-        assertion = converge.still(() => {
+        assertion = converge.always(() => {
           expect(total).to.equal(5);
         }, 50);
       });
@@ -218,8 +218,8 @@ describe('BigTest Convergence', () => {
       describe('with additional chaining', () => {
         beforeEach(() => {
           assertion = assertion
-            .tap(() => total = 10)
-            .and(() => expect(total).to.equal(10));
+            .do(() => total = 10)
+            .once(() => expect(total).to.equal(10));
         });
 
         it('resolves after at least 50ms', async () => {
@@ -235,11 +235,11 @@ describe('BigTest Convergence', () => {
       });
     });
 
-    describe('after using `.tap()`', () => {
+    describe('after using `.do()`', () => {
       it('triggers the callback before resolving', () => {
         let assertion = converge
-          .and(() => expect(total).to.equal(5))
-          .tap(() => total * 100);
+          .once(() => expect(total).to.equal(5))
+          .do(() => total * 100);
 
         createTimeout(() => total = 5, 50);
         return expect(assertion.run()).to.be.fulfilled
@@ -248,11 +248,11 @@ describe('BigTest Convergence', () => {
 
       it('passes the previous return value to the callback', () => {
         let assertion = converge
-          .and(() => {
+          .once(() => {
             expect(total).to.equal(5);
             return total * 100;
           })
-          .tap((n) => n / 20);
+          .do((n) => n / 20);
 
         createTimeout(() => total = 5, 50);
         return expect(assertion.run()).to.be.fulfilled
@@ -263,8 +263,8 @@ describe('BigTest Convergence', () => {
         let called = false;
 
         let assertion = converge
-          .and(() => expect(total).to.equal(5))
-          .tap(() => called = true);
+          .once(() => expect(total).to.equal(5))
+          .do(() => called = true);
 
         await expect(assertion.run()).to.be.rejected;
         expect(called).to.be.false;
@@ -274,10 +274,10 @@ describe('BigTest Convergence', () => {
     describe('after using various chain methods', () => {
       it('resolves with a stats object', async () => {
         let assertion = converge
-          .and(() => expect(total).to.equal(5))
-          .tap(() => total = 10)
-          .still(() => expect(total).to.equal(10))
-          .tap(() => total * 5);
+          .once(() => expect(total).to.equal(5))
+          .do(() => total = 10)
+          .always(() => expect(total).to.equal(10))
+          .do(() => total * 5);
 
         createTimeout(() => total = 5, 50);
 
@@ -291,6 +291,7 @@ describe('BigTest Convergence', () => {
         expect(stats.runs).to.be.within(8, 12);
         expect(stats.timeout).to.equal(100);
         expect(stats.value).to.equal(50);
+        expect(stats.stack).to.have.lengthOf(4);
       });
     });
   });
