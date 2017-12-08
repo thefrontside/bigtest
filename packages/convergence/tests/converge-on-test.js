@@ -108,4 +108,28 @@ describe('BigTest Convergence - convergeOn', () => {
       });
     });
   });
+
+  describe('when `useStats` is true', () => {
+    beforeEach(() => {
+      test = (num) => convergeOn(() => {
+        return total === num && num * 100;
+      }, 50, false, true);
+    });
+
+    it('resolves with a stats object', async () => {
+      timeout = setTimeout(() => total = 5, 30);
+
+      let start = Date.now();
+      let stats = await expect(test(5)).to.be.fulfilled;
+      let end = Date.now();
+
+      expect(stats.start).to.be.within(start, start + 1);
+      expect(stats.end).to.be.within(end - 1, end);
+      expect(stats.elapsed).to.be.within(30, 50);
+      expect(stats.runs).to.equal(4);
+      expect(stats.inverted).to.be.false;
+      expect(stats.timeout).to.equal(50);
+      expect(stats.value).to.equal(500);
+    });
+  });
 });

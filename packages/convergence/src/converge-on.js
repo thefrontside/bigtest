@@ -11,26 +11,43 @@
  * period. And it will reject the first time it encounters an
  * error.
  *
+ * When `useStats` is true, the returned promise will resolve with a
+ * stats object. This stats object holds various information about how
+ * this convergent assertion ran.
+ *
  * @param {Function} assertion - run to test condition repeatedly
  * @param {Number} [timeout=2000] - milliseconds to check assertion
  * @param {Boolean} [invert] - if true, the assertion must pass
  * throughout the entire timeout period
+ * @param {Boolean} [useStats] - if true, resolves with a stats object
  * @returns {Promise} resolves if the assertion passes at least once;
  * if `invert` is true, then rejects at the first error instead
  */
-export default function convergeOn(assertion, timeout = 2000, invert) {
+export default function convergeOn(assertion, timeout = 2000, invert, useStats) {
   let context = this;
   let start = Date.now();
   let interval = 10;
 
+  // track various stats
+  let stats = {
+    start,
+    runs: 0,
+    end: start,
+    elapsed: 0,
+    inverted: invert,
+    value: undefined,
+    timeout
+  };
+
   return new Promise((resolve, reject) => {
     (function loop() {
-      let ellapsed = Date.now() - start;
-
       // sometimes it takes almost an entire interval before the promise
       // is actually rejected, so we need to stop looping before the
       // second from last interval.
-      let doLoop = ellapsed + (interval * 2) < timeout;
+      let doLoop = (Date.now() - start) + (interval * 2) < timeout;
+
+      // track stats
+      stats.runs += 1;
 
       try {
         let ret = assertion.call(context);
@@ -40,7 +57,13 @@ export default function convergeOn(assertion, timeout = 2000, invert) {
         } else if (ret === false) {
           throw new Error('convergent assertion returned `false`');
         } else {
-          resolve(ret);
+          // calculate some stats right before resolving
+          stats.end = Date.now();
+          stats.elapsed = stats.end - start;
+          stats.value = ret;
+
+          // resolve with stats or the assertion return value
+          resolve(useStats ? stats : ret);
         }
       } catch(error) {
         if (!invert && doLoop) {

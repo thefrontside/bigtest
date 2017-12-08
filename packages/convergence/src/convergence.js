@@ -138,14 +138,33 @@ export default class Convergence {
    * stack have been met within this instance's timeout period. The
    * return value from previous functions in the stack will be given
    * to the following functions in the stack. The promise will be
-   * resolved with the last value returned from the stack. The promise
-   * will be rejected whenever any convergence in the stack fails
+   * resolved with a stats object indicating various information.
+   * The promise will be rejected whenever any convergence in the
+   * stack fail
    *
    * @returns {Promise} resolves when all convergences have been met;
    * immediately rejects when any of them fail
    */
   run() {
     let start = Date.now();
+
+    let stats = {
+      start,
+      runs: 0,
+      end: start,
+      elapsed: 0,
+      value: undefined,
+      timeout: this._timeout,
+      stack: []
+    };
+
+    let addStats = (newStats) => {
+      stats.runs += newStats.runs;
+      stats.elapsed += newStats.elapsed;
+      stats.end = newStats.end;
+      stats.value = newStats.value;
+      stats.stack.push(newStats);
+    };
 
     return this._stack.reduce((promise, subject, i) => {
       let last = i === (this._stack.length - 1);
@@ -154,7 +173,7 @@ export default class Convergence {
         // an assertion should be convergent
         if (subject.assert) {
           let elapsed = Date.now() - start;
-          let timeout = this._timeout - elapsed;
+          let timeout = stats.timeout - elapsed;
           let assert = subject.assert.bind(null, ret);
 
           // inverted convergences need timeouts smaller than the
@@ -167,13 +186,28 @@ export default class Convergence {
             timeout = last ? timeout : Math.min(timeout, subject.timeout);
           }
 
-          return convergeOn(assert, timeout, subject.invert);
+          return convergeOn(assert, timeout, subject.invert, true)
+          // incorporate stats and curry the assertion return value
+            .then((convergeStats) => {
+              addStats(convergeStats);
+              return convergeStats.value;
+            });
 
         // taps are run once previous assertions converge
         } else if (subject.exec) {
-          return subject.exec(ret);
+          let execStats = { runs: 1 };
+
+          execStats.start = Date.now();
+          execStats.value = subject.exec(ret);
+          execStats.end = Date.now();
+          execStats.elapsed = execStats.end - execStats.start;
+          addStats(execStats);
+
+          return execStats.value;
         }
       });
-    }, Promise.resolve());
+    }, Promise.resolve())
+      // always resolve with the stats object
+      .then(() => stats);
   }
 }

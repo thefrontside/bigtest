@@ -243,7 +243,7 @@ describe('BigTest Convergence', () => {
 
         createTimeout(() => total = 5, 50);
         return expect(assertion.run()).to.be.fulfilled
-          .and.eventually.equal(500);
+          .and.eventually.have.property('value', 500);
       });
 
       it('passes the previous return value to the callback', () => {
@@ -256,7 +256,7 @@ describe('BigTest Convergence', () => {
 
         createTimeout(() => total = 5, 50);
         return expect(assertion.run()).to.be.fulfilled
-          .and.eventually.equal(25);
+          .and.eventually.have.property('value', 25);
       });
 
       it('is not called when a previous assertion fails', async () => {
@@ -268,6 +268,29 @@ describe('BigTest Convergence', () => {
 
         await expect(assertion.run()).to.be.rejected;
         expect(called).to.be.false;
+      });
+    });
+
+    describe('after using various chain methods', () => {
+      it('resolves with a stats object', async () => {
+        let assertion = converge
+          .and(() => expect(total).to.equal(5))
+          .tap(() => total = 10)
+          .still(() => expect(total).to.equal(10))
+          .tap(() => total * 5);
+
+        createTimeout(() => total = 5, 50);
+
+        let start = Date.now();
+        let stats = await assertion.run();
+        let end = Date.now();
+
+        expect(stats.start).to.be.within(start, start + 1);
+        expect(stats.end).to.be.within(end - 1, end);
+        expect(stats.elapsed).to.be.within(50, 70);
+        expect(stats.runs).to.be.within(8, 12);
+        expect(stats.timeout).to.equal(100);
+        expect(stats.value).to.equal(50);
       });
     });
   });
