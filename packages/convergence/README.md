@@ -21,7 +21,10 @@ bit longer, then your test would have passed. So sad!
 
 In fact, test flakiness is the reason most people shy away from
 writing big tests in JavaScript in the first place. It seems almost
-impossible to write robust tests without visibility
+impossible to write robust tests without having visibility into the
+internals of your runtime so that you can manually synchronize on
+things like rendering and data loading. Unfortunately, those can be a
+moving target, and worse, they couple you to your framework.
 
 But what if instead of trying to run our assertions at just the right
 time, we ran them _many_ times until they either pass or we decide to
