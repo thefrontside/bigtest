@@ -4,8 +4,15 @@
   "license": "MIT",
   "repository": "https://github.com/thefrontside/bigtest",
   "scripts": {
+    "build": "bin/each-pkg yarn build",
+    "test": "bin/each-pkg yarn test"
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "chalk": "^2.3.0",
+    "commander": "^2.12.2",
+    "semver": "^5.4.1"
+  }
 }
