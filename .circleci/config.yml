@@ -12,14 +12,6 @@ references:
       name: Restore cache
       key: *cache_key
 
-  filter_master: &filter_master
-    branches:
-      only: master
-
-  filter_branch: &filter_branch
-    branches:
-      ignore: master
-
 version: 2.0
 jobs:
   install:
@@ -47,15 +39,6 @@ jobs:
           name: Run tests
           command: yarn test
 
-  test-changed:
-    <<: *defaults
-    steps:
-      - checkout
-      - *restore_cache
-      - run:
-          name: Run tests
-          command: ./bin/each-pkg --changed yarn test
-
   build:
     <<: *defaults
     steps:
@@ -67,15 +50,6 @@ jobs:
       - persist_to_workspace:
           root: .
           paths: packages/**/dist
-
-  build-changed:
-    <<: *defaults
-    steps:
-      - checkout
-      - *restore_cache
-      - run:
-          name: Build packages
-          command: ./bin/each-pkg --changed yarn build
 
   deploy:
     <<: *defaults
@@ -92,33 +66,19 @@ jobs:
 
 workflows:
   version: 2
-  branch:
+  default:
     jobs:
-      - install:
-          filters: *filter_branch
-      - test-changed:
-          requires:
-            - install
-          filters: *filter_branch
-      - build-changed:
-          requires:
-            - install
-          filters: *filter_branch
-
-  master:
-    jobs:
-      - install:
-          filters: *filter_master
+      - install
       - test:
           requires:
             - install
-          filters: *filter_master
       - build:
           requires:
             - install
-          filters: *filter_master
       - deploy:
           requires:
             - test
             - build
-          filters: *filter_master
+          filters:
+            branches:
+              only: master
