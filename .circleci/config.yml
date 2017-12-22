@@ -1,22 +1,125 @@
-version: 2.0
-jobs:
-  build:
+references:
+  defaults: &defaults
     working_directory: ~/bigtest
     docker:
       - image: circleci/node:8
+
+  cache_key: &cache_key
+    bigtest-{{ .Branch }}-{{ checksum "yarn.lock" }}
+
+  restore_cache: &restore_cache
+    restore_cache:
+      name: Restore cache
+      key: *cache_key
+
+  filter_master: &filter_master
+    branches:
+      only: master
+
+  filter_branch: &filter_branch
+    branches:
+      ignore: master
+
+version: 2.0
+jobs:
+  install:
+    <<: *defaults
     steps:
       - checkout
-      - restore_cache:
-          name: Restore yarn cache
-          key: bigtest-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - *restore_cache
       - run:
           name: Install dependencies
           command: yarn
+      - save_cache:
+          name: Save cache
+          key: *cache_key
+          paths:
+            - node_modules
+            - packages/**/node_modules
+
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - *restore_cache
       - run:
           name: Run tests
           command: yarn test
-      - save_cache:
-          name: Save yarn cache
-          key: bigtest-{{ .Branch }}-{{ checksum "yarn.lock" }}
-          paths:
-            - "node_modules"
+
+  test-changed:
+    <<: *defaults
+    steps:
+      - checkout
+      - *restore_cache
+      - run:
+          name: Run tests
+          command: ./bin/each-pkg --changed yarn test
+
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      - *restore_cache
+      - run:
+          name: Build packages
+          command: yarn build
+      - persist_to_workspace:
+          root: .
+          paths: packages/**/dist
+
+  build-changed:
+    <<: *defaults
+    steps:
+      - checkout
+      - *restore_cache
+      - run:
+          name: Build packages
+          command: ./bin/each-pkg --changed yarn build
+      - persist_to_workspace:
+          root: .
+          paths: packages/**/dist
+
+  deploy:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/bigtest
+      - run:
+          name: Setup NPM
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      - run:
+          name: Publish to NPM
+          command: ./bin/each-pkg --newer npm publish
+
+workflows:
+  version: 2
+  branch:
+    jobs:
+      - install:
+          filters: *filter_branch
+      - test-changed:
+          requires:
+            - install
+          filters: *filter_branch
+      - build-changed:
+          requires:
+            - test-changed
+          filters: *filter_branch
+
+  master:
+    jobs:
+      - install:
+          filters: *filter_master
+      - test:
+          requires:
+            - install
+          filters: *filter_master
+      - build:
+          requires:
+            - test
+          filters: *filter_master
+      - deploy:
+          requires:
+            - build
+          filters: *filter_master
