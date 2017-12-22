@@ -55,6 +55,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - *restore_cache
       - attach_workspace:
           at: ~/bigtest
       - run:
