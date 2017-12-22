@@ -35,7 +35,8 @@ jobs:
           key: *cache_key
           paths:
             - node_modules
-            - packages/**/node_modules
+            # globs don't work for save_cache :(
+            - packages/convergence/node_modules
 
   test:
     <<: *defaults
@@ -75,9 +76,6 @@ jobs:
       - run:
           name: Build packages
           command: ./bin/each-pkg --changed yarn build
-      - persist_to_workspace:
-          root: .
-          paths: packages/**/dist
 
   deploy:
     <<: *defaults
@@ -104,7 +102,7 @@ workflows:
           filters: *filter_branch
       - build-changed:
           requires:
-            - test-changed
+            - install
           filters: *filter_branch
 
   master:
@@ -117,9 +115,10 @@ workflows:
           filters: *filter_master
       - build:
           requires:
-            - test
+            - install
           filters: *filter_master
       - deploy:
           requires:
+            - test
             - build
           filters: *filter_master
