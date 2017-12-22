@@ -1,22 +1,84 @@
-version: 2.0
-jobs:
-  build:
+references:
+  defaults: &defaults
     working_directory: ~/bigtest
     docker:
       - image: circleci/node:8
+
+  cache_key: &cache_key
+    bigtest-{{ .Branch }}-{{ checksum "yarn.lock" }}
+
+  restore_cache: &restore_cache
+    restore_cache:
+      name: Restore cache
+      key: *cache_key
+
+version: 2.0
+jobs:
+  install:
+    <<: *defaults
     steps:
       - checkout
-      - restore_cache:
-          name: Restore yarn cache
-          key: bigtest-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - *restore_cache
       - run:
           name: Install dependencies
           command: yarn
+      - save_cache:
+          name: Save cache
+          key: *cache_key
+          paths:
+            - node_modules
+            # globs don't work for save_cache :(
+            - packages/convergence/node_modules
+
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - *restore_cache
       - run:
           name: Run tests
           command: yarn test
-      - save_cache:
-          name: Save yarn cache
-          key: bigtest-{{ .Branch }}-{{ checksum "yarn.lock" }}
-          paths:
-            - "node_modules"
+
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      - *restore_cache
+      - run:
+          name: Build packages
+          command: yarn build
+      - persist_to_workspace:
+          root: .
+          paths: packages/**/dist
+
+  deploy:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/bigtest
+      - run:
+          name: Setup NPM
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      - run:
+          name: Publish to NPM
+          command: ./bin/each-pkg --newer npm publish
+
+workflows:
+  version: 2
+  default:
+    jobs:
+      - install
+      - test:
+          requires:
+            - install
+      - build:
+          requires:
+            - install
+      - deploy:
+          requires:
+            - test
+            - build
+          filters:
+            branches:
+              only: master
