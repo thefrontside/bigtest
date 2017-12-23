@@ -12,6 +12,10 @@ references:
       name: Restore cache
       key: *cache_key
 
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: ~/bigtest
+
 version: 2.0
 jobs:
   install:
@@ -30,15 +34,6 @@ jobs:
             # globs don't work for save_cache :(
             - packages/convergence/node_modules
 
-  test:
-    <<: *defaults
-    steps:
-      - checkout
-      - *restore_cache
-      - run:
-          name: Run tests
-          command: yarn test
-
   build:
     <<: *defaults
     steps:
@@ -51,13 +46,22 @@ jobs:
           root: .
           paths: packages/**/dist
 
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - *restore_cache
+      - *attach_workspace
+      - run:
+          name: Run tests
+          command: yarn test
+
   deploy:
     <<: *defaults
     steps:
       - checkout
       - *restore_cache
-      - attach_workspace:
-          at: ~/bigtest
+      - *attach_workspace
       - run:
           name: Setup NPM
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
@@ -70,16 +74,15 @@ workflows:
   default:
     jobs:
       - install
-      - test:
-          requires:
-            - install
       - build:
           requires:
             - install
+      - test:
+          requires:
+            - build
       - deploy:
           requires:
             - test
-            - build
           filters:
             branches:
               only: master
