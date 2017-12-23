@@ -10,8 +10,12 @@ export default {
   plugins: [
     babel({
       babelrc: false,
-      presets: [['env', { modules: false }]],
-      plugins: ['external-helpers', 'remove-comments']
+      presets: [
+        ['@babel/preset-env', {
+          modules: false,
+          comments: false
+        }]
+      ]
     })
   ]
 };
