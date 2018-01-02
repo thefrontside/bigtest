@@ -70,7 +70,7 @@ function hasChanged(pkg, commit = 'origin/master') {
  * @returns {Boolean} true if the package is newer
  */
 function isNewer(pkg) {
-  let published = spawnSync('npm', ['view', pkg.path, 'version']);
+  let published = spawnSync('npm', ['view', pkg.name, 'version']);
 
   if (published.status === 0) {
     return semver.gt(pkg.version, published.stdout.toString());
