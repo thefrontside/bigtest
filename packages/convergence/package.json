@@ -1,7 +1,7 @@
 {
   "name": "@bigtest/convergence",
   "description": "Convergence helpers for testing big",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "repository": "https://github.com/thefrontside/bigtest/tree/master/packages/convergence",
   "main": "dist/index.js",
@@ -10,15 +10,14 @@
     "test": "mocha --opts ./tests/mocha.opts ./tests"
   },
   "devDependencies": {
-    "babel-plugin-external-helpers": "^6.22.0",
-    "babel-plugin-remove-comments": "^2.0.0",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-register": "^6.26.0",
+    "@babel/core": "^7.0.0-beta.35",
+    "@babel/polyfill": "^7.0.0-beta.35",
+    "@babel/preset-env": "^7.0.0-beta.35",
+    "@babel/register": "^7.0.0-beta.35",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "mocha": "^4.0.1",
-    "rollup": "^0.52.2",
-    "rollup-plugin-babel": "^3.0.2"
+    "rollup": "^0.53.0",
+    "rollup-plugin-babel": "^4.0.0-beta.0"
   }
 }
