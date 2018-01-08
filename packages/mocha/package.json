@@ -1,0 +1,29 @@
+{
+  "name": "@bigtest/mocha",
+  "description": "Mocha helpers for testing big",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": "https://github.com/thefrontside/bigtest/tree/master/packages/mocha",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rollup --config",
+    "test": "mocha --opts ./tests/mocha.opts ./tests"
+  },
+  "dependencies": {
+    "@bigtest/convergence": "^0.1.2"
+  },
+  "peerDependencies": {
+    "mocha": "^4.0.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.35",
+    "@babel/preset-env": "^7.0.0-beta.35",
+    "@babel/register": "^7.0.0-beta.35",
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
+    "rollup": "^0.53.0",
+    "rollup-plugin-babel": "^4.0.0-beta.0",
+    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-node-resolve": "^3.0.0"
+  }
+}
