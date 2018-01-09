@@ -5,6 +5,7 @@
   "license": "MIT",
   "repository": "https://github.com/thefrontside/bigtest/tree/master/packages/mocha",
   "main": "dist/index.js",
+  "module": "src/index.js",
   "scripts": {
     "build": "rollup --config",
     "test": "mocha --opts ./tests/mocha.opts ./tests"
