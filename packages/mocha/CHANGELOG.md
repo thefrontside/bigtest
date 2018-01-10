@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+### Removed
+
+- `rollup-plugin-commonjs` as it is no longer required to import
+  @bigtest/convergence. #22
+
 ### Fixed
 
 - correctly remove comments from compiled files
