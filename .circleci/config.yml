@@ -68,6 +68,9 @@ jobs:
       - run:
           name: Publish to NPM
           command: ./bin/each-pkg --newer npm publish -- --access=public
+      - run:
+          name: Push Tags
+          command: git push --tags
 
 workflows:
   version: 2

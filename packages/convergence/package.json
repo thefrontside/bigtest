@@ -8,7 +8,8 @@
   "module": "src/index.js",
   "scripts": {
     "build": "rollup --config",
-    "test": "mocha --opts ./tests/mocha.opts ./tests"
+    "test": "mocha --opts ./tests/mocha.opts ./tests",
+    "postpublish": "../../bin/tag-pkg"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.35",
