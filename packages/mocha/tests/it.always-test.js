@@ -18,7 +18,7 @@ describe('BigTest Mocha: it.always', () => {
 
   it('throws when the assertion fails', () => {
     expect(tests[1].duration).to.be.within(100, 120);
-    expect(tests[1].err).to.have.property('expected', 0);
+    expect(tests[1].err).to.have.property('expected', '0');
   });
 
   it('.only has multiple aliases', () => {
