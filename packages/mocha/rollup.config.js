@@ -16,10 +16,10 @@ export default {
     commonjs(),
     babel({
       babelrc: false,
+      comments: false,
       presets: [
         ['@babel/preset-env', {
-          modules: false,
-          comments: false
+          modules: false
         }]
       ]
     })

@@ -10,10 +10,10 @@ export default {
   plugins: [
     babel({
       babelrc: false,
+      comments: false,
       presets: [
         ['@babel/preset-env', {
-          modules: false,
-          comments: false
+          modules: false
         }]
       ]
     })
