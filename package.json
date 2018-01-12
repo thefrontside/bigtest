@@ -12,7 +12,6 @@
   ],
   "devDependencies": {
     "chalk": "^2.3.0",
-    "commander": "^2.12.2",
-    "semver": "^5.4.1"
+    "commander": "^2.12.2"
   }
 }
