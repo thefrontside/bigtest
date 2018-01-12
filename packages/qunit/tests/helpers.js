@@ -11,7 +11,7 @@ function qunit(args) {
   return new Promise((resolve, reject) => {
     let output = '';
     let listener = (data) => output += data;
-    let qunit = spawn('qunit'); // TODO: revisit how to call qunit
+    let qunit = spawn('qunit', [...args]); // TODO: revisit how to call qunit
 
     qunit.stdout.on('data', listener);
     qunit.stderr.on('data', listener);

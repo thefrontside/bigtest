@@ -49,4 +49,4 @@ export {
   module,
   beforeEach,
   afterEach
-} from 'mocha';
+} from 'qunit';

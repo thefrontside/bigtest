@@ -8,7 +8,7 @@
   "module": "src/index.js",
   "scripts": {
     "build": "rollup --config",
-    "test": "qunit ./tests"
+    "test": "qunit ./tests/test-test.js"
   },
   "dependencies": {
     "@bigtest/convergence": "^0.1.2"
