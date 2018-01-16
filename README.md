@@ -1,16 +1,16 @@
 # BigTest [![CircleCI](https://circleci.com/gh/thefrontside/bigtest/tree/master.svg?style=svg&circle-token=78c5d879b0ace4fe137c203bfc9ca20d732eb6e3)](https://circleci.com/gh/thefrontside/bigtest/tree/master)
 
-A Suite of JavaScript libraries and framework extensions to help you answer
-the question: _Does my application work in real life?_.
+A Suite of JavaScript libraries and framework extensions to help you
+answer the question: _Does my application work in real life?_.
 
 It's a big question, and it can't be answered with small tests that
 observe a tiny portion of your code that isn't integrated with any
 thing else. Big questions need big tests.
 
 > Bigtest is in the process of being extracted from several different
-> projects and so it is very much in the "component pieces"
-> phase. You can use [these][1] [pieces][2] in your own projects, but there is
-> going to be some manual integration involved.
+> projects and so it is very much in the "component pieces" phase. You
+> can [use][1] [these][2] [pieces][3] in your own projects, but there
+> is going to be some manual integration involved.
 
 What does a big test look like?
 
@@ -34,14 +34,15 @@ things happening concurrently inside your application; including user
 interactions.
 
 - [@bigtest/convergence][1]
+- [@bigtest/mocha][2]
 
 ### Real API Requests
 
 Does your app make requests to an API? Then your tests should hammer
 the network too. Otherwise, you're measuring air.
 
-- [@bigtest/mirage][2]
+- [@bigtest/mirage][3]
 
 [1]: packages/convergence
-[2]: https://github.com/cowboyd/mirage-server
-[3]: https://github.com/thefrontside/ui-eholdings
+[2]: packages/mocha
+[3]: https://github.com/cowboyd/mirage-server
