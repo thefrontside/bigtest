@@ -55,6 +55,10 @@ package wraps Mocha's `it` in a convergence helper so that any
 assertions you write using `it` become convergent assertions that
 allow you to easily test asynchronous states.
 
+This package also wraps the Mocha hooks `before`, `after`,
+`beforeEach`, and `afterEach` to support automatically timing and
+running returned `Convergence` instances from `@bigtest/convergence`.
+
 ### Writing Tests
 
 Because convergent assertions are run repeatedly until they pass, it
@@ -130,17 +134,18 @@ describe('clicking my button', () => {
 Sometimes you may attempt to perform an async task to find it fails
 due to a preconceived state not being met. For example, you can't
 click a button if it doesn't exist in the DOM. You may use
-`@bigtest/convergence` to converge on these states and return a
-promise in your hooks to wait for async tasks.
+`@bigtest/convergence` to converge on these states and return
+convergences inside of your hooks. The hooks provided by
+`@bigtest/mocha` will automatically set the timeout and run returned
+`Convergence` instances.
 
 ``` javascript
 describe('clicking my button', () => {
-  // .run() returns a promise that will cause Mocha to wait for the
-  // convergence to resolve before continuing with the assertions
+  // @bigtest/mocha will wait for a returned Convergence to converge
+  // before continuing with the assertions
   beforeEach(() => new Convergence()
     .once(() => expect($button).to.exist)
-    .do(() => $button.click())
-    .run());
+    .do(() => $button.click()));
 
   it('shows a loading indicator', () => {
     expect($button.className).to.include('is-loading');
