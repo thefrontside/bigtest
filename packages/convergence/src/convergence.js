@@ -47,7 +47,7 @@ export default class Convergence {
    * @param {Number} [timeout=2000] - timeout for this convergence
    * @param {Array} [stack=[]] - the initial stack for this convergence
    */
-  constructor(timeout = 2000, stack = []) {
+  constructor (timeout = 2000, stack = []) {
     Object.defineProperties(this, {
       _timeout: { value: timeout },
       _stack: { value: stack }
@@ -64,7 +64,7 @@ export default class Convergence {
    * @returns {Number|Convergence} the current timeout or a new
    * convergence instance
    */
-  timeout(timeout) {
+  timeout (timeout) {
     if (typeof timeout !== 'undefined') {
       return new Convergence(timeout, [...this._stack]);
     } else {
@@ -82,7 +82,7 @@ export default class Convergence {
    * @param {Function} assert - the assertion to converge on
    * @returns {Convergence} a new convergence instance
    */
-  once(assert) {
+  once (assert) {
     return new Convergence(this._timeout, [
       ...this._stack,
       { assert }
@@ -106,7 +106,7 @@ export default class Convergence {
    * of the total timeout (minimum 20ms)
    * @returns {Convergence} a new convergence instance
    */
-  always(assert, timeout) {
+  always (assert, timeout) {
     timeout = Math.max(timeout || (this._timeout / 10), 20);
 
     return new Convergence(this._timeout, [
@@ -127,7 +127,7 @@ export default class Convergence {
    * @param {Function} exec - the callback to execute during the convergence
    * @returns {Convergence} a new convergence instance
    */
-  do(exec) {
+  do (exec) {
     return new Convergence(this._timeout, [
       ...this._stack,
       { exec }
@@ -146,7 +146,7 @@ export default class Convergence {
    * @returns {Promise} resolves when all convergences have been met;
    * immediately rejects when any of them fail
    */
-  run() {
+  run () {
     let start = Date.now();
 
     let stats = {
