@@ -9,8 +9,8 @@ import Convergence from '@bigtest/convergence';
  * @param {Boolean} always - true when the assertion should always pass
  * @returns {Function} assertion to use with mocha's it
  */
-function convergent(assertion, always) {
-  return function() {
+function convergent (assertion, always) {
+  return function () {
     let timeout = 2000;
 
     if (typeof this.timeout === 'function') {
@@ -35,11 +35,10 @@ function convergent(assertion, always) {
  * @param {String} title - specification description
  * @param {Function} assertion - the assertion to converge on
  */
-function test(title, assertion) {
+function test (title, assertion) {
   if (!assertion) return qunitTest.skip(title);
   return qunitTest(title, convergent(assertion));
 }
-
 
 // export our convergent test
 export { test };
@@ -49,4 +48,4 @@ export {
   module,
   beforeEach,
   afterEach
-} from 'mocha';
+} from 'qunit';
