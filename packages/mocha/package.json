@@ -10,8 +10,11 @@
     "build": "rollup --config",
     "test": "mocha --opts ./tests/mocha.opts ./tests",
     "postpublish": "../../bin/tag-pkg",
-    "lint": "./node_modules/.bin/eslint ./src/**.js ./tests/**.js"
+    "lint": "eslint ./"
   },
+  "eslintIgnore": [
+    "/dist/"
+  ],
   "dependencies": {
     "@bigtest/convergence": "^0.1.2"
   },

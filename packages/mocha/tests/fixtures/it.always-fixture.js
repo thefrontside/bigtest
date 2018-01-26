@@ -1,7 +1,7 @@
 import { describe, beforeEach, afterEach, it } from '../../src';
 import { expect } from 'chai';
 
-describe('it.always', function () {
+describe('it.always', function() {
   let value = 0;
   let timeout;
 

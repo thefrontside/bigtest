@@ -1,9 +1,12 @@
 {
-    "extends": "standard",
-    "rules": {
-        "semi": [2, "always"],
-        "space-before-function-paren": [2, "never"],
-        "no-unused-expressions": 0,
-        "no-return-assign": 0
-    }
+  "extends": "standard",
+  "rules": {
+    "semi": ["error", "always"],
+    "space-before-function-paren": ["error", {
+      "anonymous": "never",
+      "named": "never",
+      "asyncArrow": "always"
+      }],
+    "indent": ["error", 2]
+  }
 }

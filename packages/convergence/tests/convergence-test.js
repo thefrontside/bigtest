@@ -160,7 +160,7 @@ describe('BigTest Convergence', () => {
         assertion = converge.once(() => expect(total).to.equal(5));
       });
 
-      it('resolves after assertions converge', async() => {
+      it('resolves after assertions converge', async () => {
         let start = Date.now();
 
         createTimeout(() => total = 5, 30);
@@ -177,7 +177,7 @@ describe('BigTest Convergence', () => {
           assertion = assertion.once(() => expect(total).to.equal(10));
         });
 
-        it('resolves after at all assertions are met', async() => {
+        it('resolves after at all assertions are met', async () => {
           let start = Date.now();
 
           createTimeout(() => total = 5, 30);
@@ -204,7 +204,7 @@ describe('BigTest Convergence', () => {
         }, 50);
       });
 
-      it('resolves just before the 100ms timeout', async() => {
+      it('resolves just before the 100ms timeout', async () => {
         let start = Date.now();
         await expect(assertion.run()).to.be.fulfilled;
         expect(Date.now() - start).to.be.within(80, 100);
@@ -222,7 +222,7 @@ describe('BigTest Convergence', () => {
             .once(() => expect(total).to.equal(10));
         });
 
-        it('resolves after at least 50ms', async() => {
+        it('resolves after at least 50ms', async () => {
           let start = Date.now();
           await expect(assertion.run()).to.be.fulfilled;
           expect(Date.now() - start).to.be.within(30, 50);
@@ -259,7 +259,7 @@ describe('BigTest Convergence', () => {
           .and.eventually.have.property('value', 25);
       });
 
-      it('is not called when a previous assertion fails', async() => {
+      it('is not called when a previous assertion fails', async () => {
         let called = false;
 
         let assertion = converge
@@ -272,7 +272,7 @@ describe('BigTest Convergence', () => {
     });
 
     describe('after using various chain methods', () => {
-      it('resolves with a stats object', async() => {
+      it('resolves with a stats object', async () => {
         let assertion = converge
           .once(() => expect(total).to.equal(5))
           .do(() => total = 10)
