@@ -1,6 +1,6 @@
 import DbCollection from './db-collection';
 import IdentityManager from './identity-manager';
-import { singularize } from 'mirage-server';
+import { singularize } from '@bigtest/mirage';
 import _cloneDeep from 'lodash/cloneDeep';
 
 /**

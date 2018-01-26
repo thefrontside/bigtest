@@ -7,7 +7,7 @@ import Server, {
   JSONAPISerializer,
   Response,
   GetShorthandRouteHandler
-} from 'mirage-server';
+} from '@bigtest/mirage';
 
 module('Integration | Route Handlers | GET shorthand', {
   beforeEach() {

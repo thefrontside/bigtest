@@ -1,5 +1,5 @@
 import {module, test} from 'qunit';
-import Server, { Model, JSONAPISerializer, PostShorthandRouteHandler } from 'mirage-server';
+import Server, { Model, JSONAPISerializer, PostShorthandRouteHandler } from '@bigtest/mirage';
 
 module('Integration | Route Handlers | POST shorthand', {
   beforeEach() {

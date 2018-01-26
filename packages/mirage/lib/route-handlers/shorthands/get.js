@@ -1,7 +1,7 @@
 import assert from '../../assert';
 import BaseShorthandRouteHandler from './base';
-import { Response } from 'mirage-server';
-import { singularize, camelize } from 'mirage-server';
+import { Response } from '@bigtest/mirage';
+import { singularize, camelize } from '@bigtest/mirage';
 
 export default class GetShorthandRouteHandler extends BaseShorthandRouteHandler {
 

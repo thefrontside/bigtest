@@ -1,5 +1,5 @@
-import { Model, hasMany, Db } from 'mirage-server';
-import { Schema } from 'mirage-server';
+import { Model, hasMany, Db } from '@bigtest/mirage';
+import { Schema } from '@bigtest/mirage';
 
 /*
   A model with a hasMany association can be in eight states

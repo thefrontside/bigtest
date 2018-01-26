@@ -1,4 +1,4 @@
-import { Schema, Model, Db, belongsTo } from 'mirage-server';
+import { Schema, Model, Db, belongsTo } from '@bigtest/mirage';
 
 /*
   A model with a belongsTo association can be in six states

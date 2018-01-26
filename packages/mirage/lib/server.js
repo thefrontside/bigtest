@@ -1,6 +1,6 @@
 /* eslint no-console: 0 */
 
-import { pluralize, camelize } from 'mirage-server';
+import { pluralize, camelize } from '@bigtest/mirage';
 import { toCollectionName } from './utils/normalize-name';
 import isAssociation from './utils/is-association';
 import Pretender from 'pretender';

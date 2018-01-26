@@ -1,4 +1,4 @@
-import Server, { Model, Serializer, hasMany, belongsTo } from 'mirage-server';
+import Server, { Model, Serializer, hasMany, belongsTo } from '@bigtest/mirage';
 import {module, test} from 'qunit';
 
 module('Integration | Serializers | Base | Full Request', {

@@ -45,4 +45,4 @@ the network too. Otherwise, you're measuring air.
 
 [1]: packages/convergence
 [2]: packages/mocha
-[3]: https://github.com/cowboyd/mirage-server
+[3]: packages/mirage

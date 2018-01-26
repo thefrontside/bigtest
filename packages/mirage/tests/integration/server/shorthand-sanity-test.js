@@ -1,6 +1,6 @@
 import {module, test} from 'qunit';
-import { Model, ActiveModelSerializer } from 'mirage-server';
-import Server from 'mirage-server';
+import { Model, ActiveModelSerializer } from '@bigtest/mirage';
+import Server from '@bigtest/mirage';
 
 module('Integration | Server | Shorthand sanity check', {
   beforeEach() {

@@ -1,4 +1,4 @@
-import { dasherize } from 'mirage-server';
+import { dasherize } from '@bigtest/mirage';
 
 export default class Association {
 

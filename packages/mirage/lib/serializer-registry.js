@@ -1,4 +1,4 @@
-import { Model, Collection, Serializer, JSONAPISerializer } from 'mirage-server';
+import { Model, Collection, Serializer, JSONAPISerializer } from '@bigtest/mirage';
 import { pluralize, camelize } from './utils/inflector';
 import assert from './assert';
 

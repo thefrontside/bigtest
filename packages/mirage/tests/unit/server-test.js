@@ -1,6 +1,6 @@
-import Server, { defaultPassthroughs } from 'mirage-server';
+import Server, { defaultPassthroughs } from '@bigtest/mirage';
 import {module, test} from 'qunit';
-import { Model, Factory, belongsTo, hasMany, trait, association } from 'mirage-server';
+import { Model, Factory, belongsTo, hasMany, trait, association } from '@bigtest/mirage';
 
 module('Unit | Server');
 

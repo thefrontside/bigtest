@@ -4,7 +4,7 @@ import {
   singularize,
   dasherize,
   underscore
-} from 'mirage-server';
+} from '@bigtest/mirage';
 
 export function toCollectionName(type) {
   let modelName = dasherize(type);

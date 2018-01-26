@@ -1,4 +1,4 @@
-import { Serializer, SerializerRegistry } from 'mirage-server';
+import { Serializer, SerializerRegistry } from '@bigtest/mirage';
 import schemaHelper from '../schema-helper';
 import { module, test } from 'qunit';
 

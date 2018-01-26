@@ -1,4 +1,4 @@
-import { IdentityManager } from 'mirage-server';
+import { IdentityManager } from '@bigtest/mirage';
 
 import {module, test} from 'qunit';
 

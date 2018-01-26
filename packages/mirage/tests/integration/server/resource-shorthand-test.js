@@ -1,5 +1,5 @@
 import {module, test} from 'qunit';
-import Server, { Model, ActiveModelSerializer } from 'mirage-server';
+import Server, { Model, ActiveModelSerializer } from '@bigtest/mirage';
 
 module('Integration | Server | Resource shorthand', {
   beforeEach() {

@@ -1,5 +1,5 @@
 import Serializer from '../serializer';
-import { dasherize, pluralize, camelize } from 'mirage-server';
+import { dasherize, pluralize, camelize } from '@bigtest/mirage';
 
 import _get from 'lodash/get';
 import _ from 'lodash';

@@ -1,4 +1,4 @@
-import { Response } from 'mirage-server';
+import { Response } from '@bigtest/mirage';
 
 import {module, test} from 'qunit';
 

@@ -1,4 +1,4 @@
-import { RestSerializer } from 'mirage-server';
+import { RestSerializer } from '@bigtest/mirage';
 
 import {module, test} from 'qunit';
 

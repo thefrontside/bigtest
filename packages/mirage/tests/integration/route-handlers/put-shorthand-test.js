@@ -1,5 +1,5 @@
 import {module, test} from 'qunit';
-import Server, { Model, JSONAPISerializer, PutShorthandRouteHandler } from 'mirage-server';
+import Server, { Model, JSONAPISerializer, PutShorthandRouteHandler } from '@bigtest/mirage';
 
 module('Integration | Route Handlers | PUT shorthand', {
 

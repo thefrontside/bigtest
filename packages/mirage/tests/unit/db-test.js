@@ -1,4 +1,4 @@
-import { Db, IdentityManager as DefaultIdentityManager } from 'mirage-server';
+import { Db, IdentityManager as DefaultIdentityManager } from '@bigtest/mirage';
 
 import {module, test} from 'qunit';
 

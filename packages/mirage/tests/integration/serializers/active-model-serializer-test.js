@@ -1,4 +1,4 @@
-import { Schema, SerializerRegistry, ActiveModelSerializer, Model, hasMany, belongsTo, Db } from 'mirage-server';
+import { Schema, SerializerRegistry, ActiveModelSerializer, Model, hasMany, belongsTo, Db } from '@bigtest/mirage';
 import { module, test } from 'qunit';
 
 module('Integration | Serializer | ActiveModelSerializer', {

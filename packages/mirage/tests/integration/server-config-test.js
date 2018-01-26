@@ -1,8 +1,8 @@
 import {module, test} from 'qunit';
-import { Model } from 'mirage-server';
-import Server from 'mirage-server';
-import { ActiveModelSerializer } from 'mirage-server';
-import { RestSerializer } from 'mirage-server';
+import { Model } from '@bigtest/mirage';
+import Server from '@bigtest/mirage';
+import { ActiveModelSerializer } from '@bigtest/mirage';
+import { RestSerializer } from '@bigtest/mirage';
 
 module('Integration | Server Config', {
   beforeEach() {

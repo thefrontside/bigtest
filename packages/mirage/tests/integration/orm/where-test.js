@@ -1,4 +1,4 @@
-import { Schema, Db, Model, Collection } from 'mirage-server';
+import { Schema, Db, Model, Collection } from '@bigtest/mirage';
 import {module, test} from 'qunit';
 
 let schema;

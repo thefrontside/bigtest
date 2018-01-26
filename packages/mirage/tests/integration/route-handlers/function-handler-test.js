@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import Server, { Response, Model, Collection, Serializer, FunctionRouteHandler } from 'mirage-server';
+import Server, { Response, Model, Collection, Serializer, FunctionRouteHandler } from '@bigtest/mirage';
 import _uniqBy from 'lodash/uniqBy';
 import $ from 'jquery';
 

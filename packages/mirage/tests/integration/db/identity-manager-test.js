@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
-import { Model, hasMany, belongsTo } from 'mirage-server';
-import Server from 'mirage-server';
-import { IdentityManager } from 'mirage-server';
+import { Model, hasMany, belongsTo } from '@bigtest/mirage';
+import Server from '@bigtest/mirage';
+import { IdentityManager } from '@bigtest/mirage';
 
 const CustomIdentityManager = class {
   constructor() {

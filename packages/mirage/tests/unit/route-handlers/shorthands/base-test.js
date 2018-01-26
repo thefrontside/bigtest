@@ -1,4 +1,4 @@
-import { BaseShorthandRouteHandler } from 'mirage-server';
+import { BaseShorthandRouteHandler } from '@bigtest/mirage';
 
 import {module, test} from 'qunit';
 

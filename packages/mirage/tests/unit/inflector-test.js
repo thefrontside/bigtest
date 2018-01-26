@@ -1,4 +1,4 @@
-import { singularize, pluralize, dasherize, camelize } from 'mirage-server';
+import { singularize, pluralize, dasherize, camelize } from '@bigtest/mirage';
 
 import {module, test} from 'qunit';
 

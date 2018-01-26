@@ -1,5 +1,5 @@
 import {module, test} from 'qunit';
-import Server, { Model, ActiveModelSerializer, camelize } from 'mirage-server';
+import Server, { Model, ActiveModelSerializer, camelize } from '@bigtest/mirage';
 
 module('Integration | Server | Customized normalize method', {
   beforeEach() {

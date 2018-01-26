@@ -2,7 +2,7 @@ import Model from './orm/model';
 import Collection from './orm/collection';
 import PolymorphicCollection from './orm/polymorphic-collection';
 import extend from './utils/extend';
-import { singularize, pluralize, camelize } from 'mirage-server';
+import { singularize, pluralize, camelize } from '@bigtest/mirage';
 
 import _isFunction from 'lodash/isFunction';
 import _isArray from 'lodash/isArray';

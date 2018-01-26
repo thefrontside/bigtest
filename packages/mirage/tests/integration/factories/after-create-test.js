@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
-import { Model, Factory, belongsTo } from 'mirage-server';
-import Server from 'mirage-server';
+import { Model, Factory, belongsTo } from '@bigtest/mirage';
+import Server from '@bigtest/mirage';
 
 module('Integration | Server | Factories | afterCreate', {
   beforeEach() {

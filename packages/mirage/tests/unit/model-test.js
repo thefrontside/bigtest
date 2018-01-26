@@ -1,4 +1,4 @@
-import { Model } from 'mirage-server';
+import { Model } from '@bigtest/mirage';
 import { module, test } from 'qunit';
 
 module('Unit | Model');

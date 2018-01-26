@@ -1,6 +1,6 @@
 import Association from './association';
 import _assign from 'lodash/assign';
-import { capitalize, camelize } from 'mirage-server';
+import { capitalize, camelize } from '@bigtest/mirage';
 import { toCollectionName } from '../../utils/normalize-name';
 import assert from '../../assert';
 

@@ -1,5 +1,5 @@
 import Helper from './_helper';
-import { Model } from 'mirage-server';
+import { Model } from '@bigtest/mirage';
 import { module, test } from 'qunit';
 
 module('Integration | ORM | Mixed | One To Many Polymorphic | create', {

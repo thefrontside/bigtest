@@ -1,4 +1,4 @@
-import { ActiveModelSerializer } from 'mirage-server';
+import { ActiveModelSerializer } from '@bigtest/mirage';
 
 import {module, test} from 'qunit';
 

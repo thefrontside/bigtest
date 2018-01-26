@@ -1,4 +1,4 @@
-import { Schema, Model, Db, SerializerRegistry, JSONAPISerializer, underscore } from 'mirage-server';
+import { Schema, Model, Db, SerializerRegistry, JSONAPISerializer, underscore } from '@bigtest/mirage';
 import { module, test } from 'qunit';
 
 module('Integration | Serializers | JSON API Serializer | Key Formatting', {

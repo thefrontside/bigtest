@@ -1,6 +1,6 @@
-import { Schema, Db, SerializerRegistry } from 'mirage-server';
-import { Model, hasMany, JSONAPISerializer } from 'mirage-server';
-import { underscore } from 'mirage-server';
+import { Schema, Db, SerializerRegistry } from '@bigtest/mirage';
+import { Model, hasMany, JSONAPISerializer } from '@bigtest/mirage';
+import { underscore } from '@bigtest/mirage';
 import { module, test } from 'qunit';
 
 module('Integration | Serializers | JSON API Serializer | Key for relationship', {

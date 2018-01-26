@@ -1,6 +1,6 @@
-import { RestSerializer, Db, Model, SerializerRegistry } from 'mirage-server';
-import { hasMany, belongsTo } from 'mirage-server';
-import { Schema } from 'mirage-server';
+import { RestSerializer, Db, Model, SerializerRegistry } from '@bigtest/mirage';
+import { hasMany, belongsTo } from '@bigtest/mirage';
+import { Schema } from '@bigtest/mirage';
 import { module, test } from 'qunit';
 
 module('Integration | Serializer | RestSerializer', {

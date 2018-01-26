@@ -1,4 +1,4 @@
-import { pluralize, camelize, dasherize } from 'mirage-server';
+import { pluralize, camelize, dasherize } from '@bigtest/mirage';
 import { toCollectionName, toModelName } from '../utils/normalize-name';
 import Association from './associations/association';
 import Collection from './collection';

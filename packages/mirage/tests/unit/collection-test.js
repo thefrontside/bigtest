@@ -1,4 +1,4 @@
-import { Collection } from 'mirage-server';
+import { Collection } from '@bigtest/mirage';
 import { module, test } from 'qunit';
 
 module('Unit | Collection');

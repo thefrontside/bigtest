@@ -1,5 +1,5 @@
 import assert from '../assert';
-import { camelize, singularize, dasherize } from 'mirage-server';
+import { camelize, singularize, dasherize } from '@bigtest/mirage';
 
 export default class BaseRouteHandler {
 

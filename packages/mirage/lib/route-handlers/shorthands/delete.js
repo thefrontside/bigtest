@@ -1,6 +1,6 @@
 import assert from '../../assert';
 import BaseShorthandRouteHandler from './base';
-import { pluralize, camelize } from 'mirage-server';
+import { pluralize, camelize } from '@bigtest/mirage';
 
 export default class DeleteShorthandRouteHandler extends BaseShorthandRouteHandler {
 

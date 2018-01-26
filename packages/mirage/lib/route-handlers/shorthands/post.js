@@ -1,6 +1,6 @@
 import assert from '../../assert';
 import BaseShorthandRouteHandler from './base';
-import { camelize } from 'mirage-server';
+import { camelize } from '@bigtest/mirage';
 
 export default class PostShorthandRouteHandler extends BaseShorthandRouteHandler {
 

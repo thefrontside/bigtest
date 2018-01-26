@@ -1,4 +1,4 @@
-import { Schema, Model, Db, hasMany, belongsTo } from 'mirage-server';
+import { Schema, Model, Db, hasMany, belongsTo } from '@bigtest/mirage';
 
 export default {
 

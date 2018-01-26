@@ -1,4 +1,4 @@
-import { Schema, Model, Db, belongsTo } from 'mirage-server';
+import { Schema, Model, Db, belongsTo } from '@bigtest/mirage';
 import { module, test } from 'qunit';
 
 module('Integration | ORM | Belongs To | Basic | regressions');

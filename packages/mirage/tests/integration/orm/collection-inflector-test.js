@@ -1,4 +1,4 @@
-import { Schema, Model, Db } from 'mirage-server';
+import { Schema, Model, Db } from '@bigtest/mirage';
 import { inflections } from 'inflected';
 
 import {module, test} from 'qunit';

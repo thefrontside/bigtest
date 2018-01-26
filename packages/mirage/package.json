@@ -1,5 +1,5 @@
 {
-  "name": "mirage-server",
+  "name": "@bigtest/mirage",
   "version": "0.0.1",
   "description": "A client-side server to develop, test and prototype your app.",
   "main": "lib/index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cowboyd/mirage-server.git"
+    "url": "git+https://github.com/thefrontside/bigtest.git"
   },
   "keywords": [
     "test",
@@ -27,9 +27,9 @@
   "author": "Frontside Engineering <engineering@frontside.io>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/cowboyd/mirage-server/issues"
+    "url": "https://github.com/thefrontside/bigtest/issues"
   },
-  "homepage": "https://github.com/cowboyd/mirage-server#readme",
+  "homepage": "https://github.com/thefrontside/bigtest/blob/master/packages/mirage/README.md",
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-loader": "^7.1.1",

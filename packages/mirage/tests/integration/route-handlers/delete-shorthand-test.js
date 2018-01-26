@@ -1,5 +1,5 @@
 import {module, test} from 'qunit';
-import Server, { Model, hasMany, JSONAPISerializer, DeleteShorthandRouteHandler } from 'mirage-server';
+import Server, { Model, hasMany, JSONAPISerializer, DeleteShorthandRouteHandler } from '@bigtest/mirage';
 
 module('Integration | Route Handlers | DELETE shorthand', {
 

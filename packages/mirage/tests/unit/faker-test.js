@@ -1,4 +1,4 @@
-import { faker } from 'mirage-server';
+import { faker } from '@bigtest/mirage';
 
 import {module, test} from 'qunit';
 

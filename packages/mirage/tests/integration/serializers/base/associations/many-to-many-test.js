@@ -1,5 +1,5 @@
 import { module, skip } from 'qunit';
-import { Schema, Collection, Model, hasMany, belongsTo, Serializer, SerializerRegistry, Db } from 'mirage-server';
+import { Schema, Collection, Model, hasMany, belongsTo, Serializer, SerializerRegistry, Db } from '@bigtest/mirage';
 
 module('Integration | Serializers | Base | Associations | Many To Many', {
   beforeEach() {

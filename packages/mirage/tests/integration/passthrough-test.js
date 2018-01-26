@@ -1,5 +1,5 @@
 import {module, test} from 'qunit';
-import Server from 'mirage-server';
+import Server from '@bigtest/mirage';
 
 module('Integration | Passthrough', {
   beforeEach() {

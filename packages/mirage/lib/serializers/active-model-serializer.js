@@ -1,5 +1,5 @@
 import Serializer from '../serializer';
-import { underscore, pluralize, dasherize, singularize } from 'mirage-server';
+import { underscore, pluralize, dasherize, singularize } from '@bigtest/mirage';
 
 export default class ActiveModelSerializer extends Serializer {
 

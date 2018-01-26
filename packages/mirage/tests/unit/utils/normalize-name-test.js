@@ -1,4 +1,4 @@
-import { toCollectionName, toModelName } from 'mirage-server';
+import { toCollectionName, toModelName } from '@bigtest/mirage';
 import { inflections } from 'inflected';
 
 import {module, test} from 'qunit';

@@ -3,7 +3,7 @@ import Collection from '../collection';
 import PolymorphicCollection from '../polymorphic-collection';
 import _assign from 'lodash/assign';
 import _compact from 'lodash/compact';
-import { capitalize, camelize, singularize } from 'mirage-server';
+import { capitalize, camelize, singularize } from '@bigtest/mirage';
 import { toCollectionName } from '../../utils/normalize-name';
 import assert from '../../assert';
 

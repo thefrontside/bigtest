@@ -1,6 +1,6 @@
 // jscs:disable disallowVar
-import { Model, hasMany, Db } from 'mirage-server';
-import { Schema } from 'mirage-server';
+import { Model, hasMany, Db } from '@bigtest/mirage';
+import { Schema } from '@bigtest/mirage';
 import {module, test} from 'qunit';
 
 // Model classes are defined statically, just like in a typical app

@@ -1,6 +1,6 @@
 import { module, skip } from 'qunit';
-import { Collection, Model, hasMany, belongsTo, JSONAPISerializer, Db, SerializerRegistry } from 'mirage-server';
-import { Schema } from 'mirage-server';
+import { Collection, Model, hasMany, belongsTo, JSONAPISerializer, Db, SerializerRegistry } from '@bigtest/mirage';
+import { Schema } from '@bigtest/mirage';
 
 module('Integration | Serializers | JSON API Serializer | Associations | Many To Many', {
   beforeEach() {
