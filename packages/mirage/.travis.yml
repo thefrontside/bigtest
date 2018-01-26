@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+  - node
+addons:
+  chrome: stable
+sudo: false
+before_install:
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 0.27.5
+  - export PATH=$HOME/.yarn/bin:$PATH
+install:
+  - yarn
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+script:
+  - yarn test
+cache:
+  yarn: true

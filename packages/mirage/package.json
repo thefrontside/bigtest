@@ -1,0 +1,53 @@
+{
+  "name": "mirage-server",
+  "version": "0.0.1",
+  "description": "A client-side server to develop, test and prototype your app.",
+  "main": "lib/index.js",
+  "scripts": {
+    "start": "karma start",
+    "test": "karma start --single-run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cowboyd/mirage-server.git"
+  },
+  "keywords": [
+    "test",
+    "mock",
+    "server",
+    "xhr",
+    "xmlhttprequest",
+    "rest",
+    "graphql",
+    "fetch",
+    "react",
+    "ember",
+    "angular"
+  ],
+  "author": "Frontside Engineering <engineering@frontside.io>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cowboyd/mirage-server/issues"
+  },
+  "homepage": "https://github.com/cowboyd/mirage-server#readme",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-loader": "^7.1.1",
+    "babel-preset-es2016": "^6.24.1",
+    "karma": "^1.7.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-firefox-launcher": "^1.0.1",
+    "karma-jquery": "^0.2.2",
+    "karma-mocha-reporter": "^2.2.3",
+    "karma-qunit": "^1.2.1",
+    "karma-webpack": "^2.0.4",
+    "qunit": "^1.0.0",
+    "webpack": "^3.3.0"
+  },
+  "dependencies": {
+    "faker": "^4.1.0",
+    "inflected": "^2.0.2",
+    "lodash": "^4.17.4",
+    "pretender": "http://github.com/cowboyd/pretender#9ffecb8b789c6162e411ee8f023b5d635129a722"
+  }
+}
