@@ -2,8 +2,10 @@
   "name": "@bigtest/mirage",
   "version": "0.0.1",
   "description": "A client-side server to develop, test and prototype your app.",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
+  "module": "lib/index.js",
   "scripts": {
+    "build": "rollup --config",
     "start": "karma start",
     "test": "karma start --single-run"
   },
@@ -42,6 +44,8 @@
     "karma-qunit": "^1.2.1",
     "karma-webpack": "^2.0.4",
     "qunit": "^1.0.0",
+    "rollup": "^0.55.1",
+    "rollup-plugin-babel": "^4.0.0-beta.0",
     "webpack": "^3.3.0"
   },
   "dependencies": {
