@@ -5,7 +5,8 @@
   "repository": "https://github.com/thefrontside/bigtest",
   "scripts": {
     "build": "bin/each-pkg yarn build",
-    "test": "bin/each-pkg yarn test"
+    "test": "bin/each-pkg yarn test",
+    "lint": "bin/each-pkg yarn lint"
   },
   "workspaces": [
     "packages/*"

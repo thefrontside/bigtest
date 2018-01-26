@@ -23,7 +23,7 @@
  * @returns {Promise} resolves if the assertion passes at least once;
  * if `always` is true, then rejects at the first error instead
  */
-export default function convergeOn (assertion, timeout = 2000, always, useStats) {
+export default function convergeOn(assertion, timeout = 2000, always, useStats) {
   let context = this;
   let start = Date.now();
   let interval = 10;
@@ -40,7 +40,7 @@ export default function convergeOn (assertion, timeout = 2000, always, useStats)
   };
 
   return new Promise((resolve, reject) => {
-    (function loop () {
+    (function loop() {
       // sometimes it takes almost an entire interval before the promise
       // is actually rejected, so we need to stop looping before the
       // second from last interval.

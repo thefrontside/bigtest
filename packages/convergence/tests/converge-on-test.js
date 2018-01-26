@@ -116,7 +116,7 @@ describe('BigTest Convergence - convergeOn', () => {
       }, 50, false, true);
     });
 
-    it('resolves with a stats object', async () => {
+    it('resolves with a stats object', async() => {
       timeout = setTimeout(() => total = 5, 30);
 
       let start = Date.now();

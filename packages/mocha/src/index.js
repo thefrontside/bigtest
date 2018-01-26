@@ -9,8 +9,8 @@ import Convergence from '@bigtest/convergence';
  * @param {Boolean} always - true when the assertion should always pass
  * @returns {Function} assertion to use with mocha's it
  */
-function convergent (assertion, always) {
-  return function () {
+function convergent(assertion, always) {
+  return function() {
     let timeout = 2000;
 
     if (typeof this.timeout === 'function') {
@@ -35,7 +35,7 @@ function convergent (assertion, always) {
  * @param {String} title - specification description
  * @param {Function} assertion - the assertion to converge on
  */
-function it (title, assertion) {
+function it(title, assertion) {
   if (!assertion) return mochaIt.skip(title);
   return mochaIt(title, convergent(assertion));
 }
@@ -47,7 +47,7 @@ function it (title, assertion) {
  * @param {String} title - specification description
  * @param {Function} assertion - the assertion to inversely converge on
  */
-function itAlways (title, assertion) {
+function itAlways(title, assertion) {
   if (!assertion) return mochaIt.skip(title);
   return mochaIt(title, convergent(assertion, true));
 }
@@ -58,7 +58,7 @@ function itAlways (title, assertion) {
  * @param {String} title - specification description
  * @param {Function} assertion - the assertion to converge on
  */
-function itOnly (title, assertion) {
+function itOnly(title, assertion) {
   if (!assertion) return mochaIt.skip(title);
   return mochaIt.only(title, convergent(assertion));
 }
@@ -69,7 +69,7 @@ function itOnly (title, assertion) {
  * @param {String} title - specification description
  * @param {Function} assertion - the assertion to inversely converge on
  */
-function itAlwaysOnly (title, assertion) {
+function itAlwaysOnly(title, assertion) {
   if (!assertion) return mochaIt.skip(title);
   return mochaIt.only(title, convergent(assertion, true));
 }
@@ -80,8 +80,8 @@ function itAlwaysOnly (title, assertion) {
  *
  * @param {String} title - specification description
  */
-function itPause (title) {
-  return mochaIt(title, function () {
+function itPause(title) {
+  return mochaIt(title, function() {
     return new Promise(() => {});
   }).timeout(0);
 }
@@ -91,8 +91,8 @@ function itPause (title) {
  *
  * @param {String} title - specification description
  */
-function itPauseOnly (title) {
-  return mochaIt.only(title, function () {
+function itPauseOnly(title) {
+  return mochaIt.only(title, function() {
     return new Promise(() => {});
   }).timeout(0);
 }

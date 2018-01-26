@@ -9,7 +9,8 @@
   "scripts": {
     "build": "rollup --config",
     "test": "mocha --opts ./tests/mocha.opts ./tests",
-    "postpublish": "../../bin/tag-pkg"
+    "postpublish": "../../bin/tag-pkg",
+    "lint": "./node_modules/.bin/eslint ./src/**.js ./tests/**.js"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.35",
@@ -18,16 +19,14 @@
     "@babel/register": "^7.0.0-beta.35",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
-    "mocha": "^4.0.1",
-    "rollup": "^0.53.0",
-    "rollup-plugin-babel": "^4.0.0-beta.0",
-    "rollup-plugin-eslint": "^4.0.0"
-  },
-  "dependencies": {
+    "eslint": "^4.16.0",
     "eslint-config-standard": "^11.0.0-beta.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.6.0",
-    "eslint-plugin-standard": "^3.0.1"
+    "eslint-plugin-standard": "^3.0.1",
+    "mocha": "^4.0.1",
+    "rollup": "^0.53.0",
+    "rollup-plugin-babel": "^4.0.0-beta.0"
   }
 }
