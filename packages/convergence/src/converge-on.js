@@ -65,7 +65,7 @@ export default function convergeOn(assertion, timeout = 2000, always, useStats) 
           // resolve with stats or the assertion return value
           resolve(useStats ? stats : ret);
         }
-      } catch(error) {
+      } catch (error) {
         if (!always && doLoop) {
           setTimeout(loop, interval);
         } else if (always || !doLoop) {
