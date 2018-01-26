@@ -47,7 +47,7 @@ jobs:
       - checkout
       - *restore_cache
       - run:
-          name: Link packages
+          name: Lint packages
           command: yarn lint
       - run:
           name: Build packages
