@@ -2,7 +2,7 @@ references:
   defaults: &defaults
     working_directory: ~/bigtest
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:8-browsers
 
   add_ssh_keys: &add_ssh_keys
     add_ssh_keys:
