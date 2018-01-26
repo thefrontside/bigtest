@@ -3,7 +3,6 @@
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
-const semver = require('semver');
 const program = require('commander');
 const { spawn, spawnSync } = require('child_process');
 
@@ -63,17 +62,18 @@ function hasChanged(pkg, commit = 'origin/master') {
 }
 
 /**
- * Returns true if a package is newer than the published version
+ * Returns true if a package's version has not been published
  *
  * @param {String} pkg.path - package directory path
  * @param {String} pkg.version - package version
- * @returns {Boolean} true if the package is newer
+ * @returns {Boolean} true if the package version is not published
  */
-function isNewer(pkg) {
-  let published = spawnSync('npm', ['view', pkg.name, 'version']);
+function isNew(pkg) {
+  let published = spawnSync('npm', ['view', pkg.name, 'versions']);
 
   if (published.status === 0) {
-    return semver.gt(pkg.version, published.stdout.toString());
+    let versions = JSON.parse(published.stdout.toString().replace(/'/g, '"'));
+    return !versions.includes(pkg.version);
   } else {
     return true;
   }
@@ -81,13 +81,13 @@ function isNewer(pkg) {
 
 /**
  * Executes a command for each package, optionally filtered by changed
- * or newer packages. Explicity providing a package name is also
- * supported in conjunction with the changed and newer options.
+ * or new packages. Explicity providing a package name is also
+ * supported in conjunction with the changed and new options.
  */
 program
   .description('Executes the specified command for each package')
   .arguments('<cmd> [args...]')
-  .option('-n, --newer', 'target newer versioned packages only')
+  .option('-n, --new', 'target unpublished packages only')
   .option('-c, --changed', 'target packages that have diverged from master')
   .option('-p, --package <name>', 'target a specific package (can be combined with the above)')
   .option('--diff <commit>', 'target packages that have diverged from a specific commit')
@@ -98,8 +98,8 @@ program
 
       if (targeted && (this.changed || this.diff)) {
         return hasChanged(pkg, this.diff);
-      } else if (targeted && this.newer) {
-        return isNewer(pkg);
+      } else if (targeted && this.new) {
+        return isNew(pkg);
       } else {
         return targeted;
       }

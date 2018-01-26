@@ -4,6 +4,11 @@ references:
     docker:
       - image: circleci/node:8
 
+  add_ssh_keys: &add_ssh_keys
+    add_ssh_keys:
+      fingerprints:
+        - 2e:3e:1e:98:92:42:17:a6:ee:23:fb:d6:cb:cc:42:5e
+
   cache_key: &cache_key
     bigtest-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
@@ -21,6 +26,7 @@ jobs:
   install:
     <<: *defaults
     steps:
+      - *add_ssh_keys
       - checkout
       - *restore_cache
       - run:
@@ -37,6 +43,7 @@ jobs:
   build:
     <<: *defaults
     steps:
+      - *add_ssh_keys
       - checkout
       - *restore_cache
       - run:
@@ -59,6 +66,7 @@ jobs:
   deploy:
     <<: *defaults
     steps:
+      - *add_ssh_keys
       - checkout
       - *restore_cache
       - *attach_workspace
@@ -67,7 +75,10 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
           name: Publish to NPM
-          command: ./bin/each-pkg --newer npm publish -- --access=public
+          command: ./bin/each-pkg --new npm publish -- --access=public
+      - run:
+          name: Push Tags
+          command: git push --tags
 
 workflows:
   version: 2
