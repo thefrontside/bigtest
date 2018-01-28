@@ -1,0 +1,26 @@
+import { createPropertyDescriptor } from '../helpers';
+
+/**
+ * Adds a convergence for clicking an element existing in the DOM
+ *
+ * @param {String} selector - query selector
+ * @returns {Interaction}
+ */
+export function click(selector) {
+  return this.select(selector)
+    .do(($node) => $node.click());
+}
+
+/**
+ * Page-object property creator
+ *
+ * @param {String} selector - query selector
+ * @returns {Object} property descriptor
+ */
+export default function(selector) {
+  return createPropertyDescriptor({
+    value() {
+      return this.click(selector);
+    }
+  });
+}
