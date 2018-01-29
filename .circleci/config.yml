@@ -47,6 +47,9 @@ jobs:
       - checkout
       - *restore_cache
       - run:
+          name: Lint packages
+          command: yarn lint
+      - run:
           name: Build packages
           command: yarn build
       - persist_to_workspace:

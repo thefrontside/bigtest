@@ -1,7 +1,7 @@
 import { describe, before, after, it } from '../../src';
 import { expect } from 'chai';
 
-describe('it.only', function () {
+describe('it.only', function() {
   let value = 0;
   let interval;
 
