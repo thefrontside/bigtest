@@ -1,5 +1,4 @@
-import { Serializer, SerializerRegistry, Model, hasMany, Db } from '@bigtest/mirage';
-import { Schema } from '@bigtest/mirage';
+import { Serializer, SerializerRegistry, Model, hasMany, Db, Schema } from '@bigtest/mirage';
 import { module, test } from 'qunit';
 
 module('Integration | Serializers | Base | Associations | Polymorphic Has Many', {

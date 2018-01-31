@@ -11,7 +11,6 @@ module('Integration | ORM | Belongs To | Named One-Way Reflexive | association #
   The model can create a belongs-to association, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can create an associated parent`, function(assert) {
     let [ child ] = this.helper[state]();
 
@@ -22,5 +21,4 @@ states.forEach((state) => {
     assert.equal(child.parentId, ganon.id);
     assert.equal(this.helper.schema.users.find(child.id).parentId, ganon.id, 'the child was persisted');
   });
-
 });

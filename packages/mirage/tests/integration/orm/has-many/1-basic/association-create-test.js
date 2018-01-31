@@ -11,7 +11,6 @@ module('Integration | ORM | Has Many | Basic | association #create', {
   The model can create a has-many association, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can create an associated parent`, function(assert) {
     let [ user ] = this.helper[state]();
     let initialCount = user.posts.models.length;
@@ -24,5 +23,4 @@ states.forEach((state) => {
     assert.ok(user.postIds.indexOf(post.id) > -1, 'the id was added to the fks array');
     assert.ok(user.attrs.postIds.indexOf(post.id) > -1, 'fks were persisted');
   });
-
 });

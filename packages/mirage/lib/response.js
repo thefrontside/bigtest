@@ -1,5 +1,4 @@
 export default class Response {
-
   constructor(code, headers = {}, data = {}) {
     this.code = code;
     this.headers = headers;
@@ -14,5 +13,4 @@ export default class Response {
 
     return [this.code, this.headers, this.data];
   }
-
 }

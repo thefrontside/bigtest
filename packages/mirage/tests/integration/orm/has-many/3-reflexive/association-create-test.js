@@ -11,7 +11,6 @@ module('Integration | ORM | Has Many | Reflexive | association #create', {
   The model can create a has-many association, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can create an associated child`, function(assert) {
     let [ tag ] = this.helper[state]();
     let initialCount = tag.tags.models.length;
@@ -35,5 +34,4 @@ states.forEach((state) => {
     assert.equal(blueTag.tags.models.length, 1);
     assert.ok(blueTag.tags.includes(tag), 'the inverse was set');
   });
-
 });

@@ -1,5 +1,4 @@
-import { Model, hasMany, belongsTo, Db } from '@bigtest/mirage';
-import { Schema } from '@bigtest/mirage';
+import { Model, hasMany, belongsTo, Db, Schema } from '@bigtest/mirage';
 import { module, test } from 'qunit';
 
 module('Integration | ORM | Schema Verification | Mixed');

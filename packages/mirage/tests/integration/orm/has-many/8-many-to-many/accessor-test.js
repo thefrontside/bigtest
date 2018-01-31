@@ -8,7 +8,6 @@ module('Integration | ORM | Has Many | Many to Many | accessor', {
 });
 
 states.forEach((state) => {
-
   test(`the references of a ${state} are correct`, function(assert) {
     let [ order, products ] = this.helper[state]();
 
@@ -26,5 +25,4 @@ states.forEach((state) => {
       assert.ok(p.orders.includes(order));
     });
   });
-
 });

@@ -11,7 +11,6 @@ module('Integration | ORM | Belongs To | One-way Polymorphic | association #crea
   The model can create a belongs-to association, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can create an associated parent`, function(assert) {
     let [ comment ] = this.helper[state]();
 
@@ -22,5 +21,4 @@ states.forEach((state) => {
     assert.deepEqual(comment.commentableId, { id: post.id, type: 'post' });
     assert.ok(this.helper.db.posts.find(post.id), 'the child was persisted');
   });
-
 });

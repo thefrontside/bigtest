@@ -1,6 +1,5 @@
-import Server, { defaultPassthroughs } from '@bigtest/mirage';
+import { Server, Model, Factory, belongsTo, hasMany, trait, association, defaultPassthroughs } from '@bigtest/mirage';
 import {module, test} from 'qunit';
-import { Model, Factory, belongsTo, hasMany, trait, association } from '@bigtest/mirage';
 
 module('Unit | Server');
 
@@ -304,7 +303,9 @@ test('create allows to extend factory with trait', function(assert) {
   let publishedArticle = server.create('article', 'published');
 
   assert.deepEqual(article, { id: '1', title: 'Lorem ipsum' });
-  assert.deepEqual(publishedArticle, { id: '2', title: 'Lorem ipsum', isPublished: true,
+  assert.deepEqual(publishedArticle, { id: '2',
+    title: 'Lorem ipsum',
+    isPublished: true,
     publishedAt: '2010-01-01 10:00:00' });
 
   server.shutdown();
@@ -336,10 +337,15 @@ test('create allows to extend factory with multiple traits', function(assert) {
   let publishedArticleWithContent = server.create('article', 'published', 'withContent');
 
   assert.deepEqual(article, { id: '1', title: 'Lorem ipsum' });
-  assert.deepEqual(publishedArticle, { id: '2', title: 'Lorem ipsum', isPublished: true,
+  assert.deepEqual(publishedArticle, { id: '2',
+    title: 'Lorem ipsum',
+    isPublished: true,
     publishedAt: '2010-01-01 10:00:00' });
-  assert.deepEqual(publishedArticleWithContent, { id: '3', title: 'Lorem ipsum', isPublished: true,
-    publishedAt: '2010-01-01 10:00:00', content: 'content' });
+  assert.deepEqual(publishedArticleWithContent, { id: '3',
+    title: 'Lorem ipsum',
+    isPublished: true,
+    publishedAt: '2010-01-01 10:00:00',
+    content: 'content' });
 
   server.shutdown();
 });
@@ -430,8 +436,11 @@ test('create allows to extend with multiple traits and to apply attr overrides',
   };
   let publishedArticleWithContent = server.create('article', 'published', 'withContent', overrides);
 
-  assert.deepEqual(publishedArticleWithContent, { id: '1', title: 'Lorem ipsum', isPublished: true,
-    publishedAt: '2012-01-01 10:00:00', content: 'content' });
+  assert.deepEqual(publishedArticleWithContent, { id: '1',
+    title: 'Lorem ipsum',
+    isPublished: true,
+    publishedAt: '2012-01-01 10:00:00',
+    content: 'content' });
 
   server.shutdown();
 });
@@ -642,10 +651,16 @@ test('createList respects traits', function(assert) {
 
   let articles = this.server.createList('article', 2, 'published', 'withContent');
 
-  assert.deepEqual(articles[0], { id: '1', title: 'Lorem ipsum', isPublished: true,
-    publishedAt: '2010-01-01 10:00:00', content: 'content' });
-  assert.deepEqual(articles[1], { id: '2', title: 'Lorem ipsum', isPublished: true,
-    publishedAt: '2010-01-01 10:00:00', content: 'content' });
+  assert.deepEqual(articles[0], { id: '1',
+    title: 'Lorem ipsum',
+    isPublished: true,
+    publishedAt: '2010-01-01 10:00:00',
+    content: 'content' });
+  assert.deepEqual(articles[1], { id: '2',
+    title: 'Lorem ipsum',
+    isPublished: true,
+    publishedAt: '2010-01-01 10:00:00',
+    content: 'content' });
 });
 
 test('createList respects traits with attr overrides', function(assert) {
@@ -669,10 +684,16 @@ test('createList respects traits with attr overrides', function(assert) {
   let overrides = { publishedAt: '2012-01-01 10:00:00' };
   let articles = this.server.createList('article', 2, 'published', 'withContent', overrides);
 
-  assert.deepEqual(articles[0], { id: '1', title: 'Lorem ipsum', isPublished: true,
-    publishedAt: '2012-01-01 10:00:00', content: 'content' });
-  assert.deepEqual(articles[1], { id: '2', title: 'Lorem ipsum', isPublished: true,
-    publishedAt: '2012-01-01 10:00:00', content: 'content' });
+  assert.deepEqual(articles[0], { id: '1',
+    title: 'Lorem ipsum',
+    isPublished: true,
+    publishedAt: '2012-01-01 10:00:00',
+    content: 'content' });
+  assert.deepEqual(articles[1], { id: '2',
+    title: 'Lorem ipsum',
+    isPublished: true,
+    publishedAt: '2012-01-01 10:00:00',
+    content: 'content' });
 });
 
 test('createList throws errors when using trait that is not defined and distinquishes between traits and non-traits', function(assert) {
@@ -851,7 +872,8 @@ test('build allows to extend factory with trait', function(assert) {
   let publishedArticle = this.server.build('article', 'published');
 
   assert.deepEqual(article, { title: 'Lorem ipsum' });
-  assert.deepEqual(publishedArticle, { title: 'Lorem ipsum', isPublished: true,
+  assert.deepEqual(publishedArticle, { title: 'Lorem ipsum',
+    isPublished: true,
     publishedAt: '2010-01-01 10:00:00' });
 });
 
@@ -878,10 +900,13 @@ test('build allows to extend factory with multiple traits', function(assert) {
   let publishedArticleWithContent = this.server.build('article', 'published', 'withContent');
 
   assert.deepEqual(article, { title: 'Lorem ipsum' });
-  assert.deepEqual(publishedArticle, { title: 'Lorem ipsum', isPublished: true,
+  assert.deepEqual(publishedArticle, { title: 'Lorem ipsum',
+    isPublished: true,
     publishedAt: '2010-01-01 10:00:00' });
-  assert.deepEqual(publishedArticleWithContent, { title: 'Lorem ipsum', isPublished: true,
-    publishedAt: '2010-01-01 10:00:00', content: 'content' });
+  assert.deepEqual(publishedArticleWithContent, { title: 'Lorem ipsum',
+    isPublished: true,
+    publishedAt: '2010-01-01 10:00:00',
+    content: 'content' });
 });
 
 test('build allows to extend with multiple traits and to apply attr overrides', function(assert) {
@@ -907,8 +932,10 @@ test('build allows to extend with multiple traits and to apply attr overrides', 
   };
   let publishedArticleWithContent = this.server.build('article', 'published', 'withContent', overrides);
 
-  assert.deepEqual(publishedArticleWithContent, { title: 'Lorem ipsum', isPublished: true,
-    publishedAt: '2012-01-01 10:00:00', content: 'content' });
+  assert.deepEqual(publishedArticleWithContent, { title: 'Lorem ipsum',
+    isPublished: true,
+    publishedAt: '2012-01-01 10:00:00',
+    content: 'content' });
 });
 
 test('build allows to build objects with associations', function(assert) {
@@ -952,8 +979,8 @@ test('build allows to build objects with associations', function(assert) {
   let article = this.server.build('article', 'withCategory');
 
   assert.deepEqual(article, { title: 'Lorem ipsum', authorId: '1', awesomeCategoryId: '1' });
-  assert.equal(server.db.authors.length, 1);
-  assert.equal(server.db.categories.length, 1);
+  assert.equal(this.server.db.authors.length, 1);
+  assert.equal(this.server.db.categories.length, 1);
 });
 
 test('build allows to build objects with associations with traits and overrides for associations', function(assert) {
@@ -1172,10 +1199,14 @@ test('buildList respects traits', function(assert) {
 
   let articles = this.server.buildList('article', 2, 'published', 'withContent');
 
-  assert.deepEqual(articles[0], { title: 'Lorem ipsum', isPublished: true,
-    publishedAt: '2010-01-01 10:00:00', content: 'content' });
-  assert.deepEqual(articles[1], { title: 'Lorem ipsum', isPublished: true,
-    publishedAt: '2010-01-01 10:00:00', content: 'content' });
+  assert.deepEqual(articles[0], { title: 'Lorem ipsum',
+    isPublished: true,
+    publishedAt: '2010-01-01 10:00:00',
+    content: 'content' });
+  assert.deepEqual(articles[1], { title: 'Lorem ipsum',
+    isPublished: true,
+    publishedAt: '2010-01-01 10:00:00',
+    content: 'content' });
 });
 
 test('buildList respects traits with attr overrides', function(assert) {
@@ -1199,10 +1230,14 @@ test('buildList respects traits with attr overrides', function(assert) {
   let overrides = { publishedAt: '2012-01-01 10:00:00' };
   let articles = this.server.buildList('article', 2, 'published', 'withContent', overrides);
 
-  assert.deepEqual(articles[0], { title: 'Lorem ipsum', isPublished: true,
-    publishedAt: '2012-01-01 10:00:00', content: 'content' });
-  assert.deepEqual(articles[1], { title: 'Lorem ipsum', isPublished: true,
-    publishedAt: '2012-01-01 10:00:00', content: 'content' });
+  assert.deepEqual(articles[0], { title: 'Lorem ipsum',
+    isPublished: true,
+    publishedAt: '2012-01-01 10:00:00',
+    content: 'content' });
+  assert.deepEqual(articles[1], { title: 'Lorem ipsum',
+    isPublished: true,
+    publishedAt: '2012-01-01 10:00:00',
+    content: 'content' });
 });
 
 test('buildList throws errors when using trait that is not defined and distinquishes between traits and non-traits', function(assert) {

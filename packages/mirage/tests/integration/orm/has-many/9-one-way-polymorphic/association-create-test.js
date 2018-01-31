@@ -11,7 +11,6 @@ module('Integration | ORM | Has Many | One-way Polymorphic | association #create
   The model can create a has-many association, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can create an associated parent`, function(assert) {
     let [ user ] = this.helper[state]();
     let initialCount = user.things.models.length;
@@ -28,5 +27,4 @@ states.forEach((state) => {
       return (obj.id === post.id && obj.type === 'post');
     }), 'fks were persisted');
   });
-
 });

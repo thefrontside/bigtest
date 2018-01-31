@@ -12,7 +12,6 @@ module('Integration | ORM | Has Many | Many-to-many Polymorphic | association #n
 */
 
 states.forEach((state) => {
-
   test(`a ${state} can build a new associated parent`, function(assert) {
     let [ user ] = this.helper[state]();
     let initialCount = user.commentables.models.length;
@@ -33,5 +32,4 @@ states.forEach((state) => {
     }), 'the id was added to the fks array');
     assert.ok(post.users.includes(user), 'the inverse was set');
   });
-
 });

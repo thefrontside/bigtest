@@ -13,7 +13,6 @@ import _get from 'lodash/get';
 import _ from 'lodash';
 
 class Serializer {
-
   constructor(registry, type, request) {
     this.registry = registry;
     this.type = type;
@@ -43,13 +42,11 @@ class Serializer {
   buildPayload(primaryResource, toInclude, didSerialize, json) {
     if (!primaryResource && _isEmpty(toInclude)) {
       return json;
-
     } else if (primaryResource) {
       let [resourceHash, newIncludes] = this.getHashForPrimaryResource(primaryResource);
       let newDidSerialize = (this.isCollection(primaryResource) ? primaryResource.models : [primaryResource]);
 
       return this.buildPayload(undefined, newIncludes, newDidSerialize, resourceHash);
-
     } else {
       let nextIncludedResource = toInclude.shift();
       let [resourceHash, newIncludes] = this.getHashForIncludedResource(nextIncludedResource);
@@ -88,7 +85,6 @@ class Serializer {
     if (resource instanceof PolymorphicCollection) {
       hashWithRoot = {};
       addToIncludes = resource.models;
-
     } else {
       let serializer = this.serializerFor(resource.modelName);
       let [ hash, newModels ] = serializer.getHashForResource(resource);
@@ -114,7 +110,6 @@ class Serializer {
 
     if (this.embed) {
       return [hash];
-
     } else {
       let addToIncludes = _(serializer.getKeysForIncluded())
         .map((key) => {

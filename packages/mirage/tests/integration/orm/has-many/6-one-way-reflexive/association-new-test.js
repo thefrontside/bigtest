@@ -12,7 +12,6 @@ module('Integration | ORM | Has Many | One-Way Reflexive | association #new', {
 */
 
 states.forEach((state) => {
-
   test(`a ${state} can build a new associated child`, function(assert) {
     let [ tag ] = this.helper[state]();
     let initialCount = tag.tags.models.length;
@@ -31,5 +30,4 @@ states.forEach((state) => {
     assert.ok(tag.tagIds.indexOf(blueTag.id) > -1, 'the id was added to the fks array');
     assert.notOk(blueTag.tags.includes(tag), 'the inverse was not set');
   });
-
 });

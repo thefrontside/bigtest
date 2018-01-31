@@ -1,5 +1,6 @@
 import {module, test} from 'qunit';
 import Server, { Model, ActiveModelSerializer } from '@bigtest/mirage';
+import $ from 'jquery';
 
 module('Integration | Server | Resource shorthand', {
   beforeEach() {
@@ -293,7 +294,7 @@ test('resource generates shorthands which are whitelisted by :only option', func
   });
 
   server.resource('contacts', { only: ['index'] });
-  server.resource('blog-posts', { path: '/posts',  only: ['index'] });
+  server.resource('blog-posts', { path: '/posts', only: ['index'] });
 
   $.ajax({
     method: 'GET',

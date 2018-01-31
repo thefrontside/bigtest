@@ -1,6 +1,5 @@
 import {module, test} from 'qunit';
-import { Model, Factory } from '@bigtest/mirage';
-import Server from '@bigtest/mirage';
+import { Model, Factory, Server } from '@bigtest/mirage';
 
 module('Integration | Server with ORM', {
   beforeEach() {
@@ -27,7 +26,7 @@ test('a single blogPost db collection is made', function(assert) {
 });
 
 test('create looks up the appropriate db collection', function(assert) {
-  server.create('blog-post');
+  this.server.create('blog-post');
 
   assert.equal(this.server.db.blogPosts.length, 1);
 });

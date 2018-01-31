@@ -74,7 +74,7 @@ test('it can load an object of data', function(assert) {
   assert.deepEqual(db.addresses, data.addresses);
 });
 
-test("it clones all data so nothing is passed by reference", function(assert) {
+test('it clones all data so nothing is passed by reference', function(assert) {
   let data = {
     contacts: [{ id: '1', someArray: ['foo', 'bar'] }]
   };
@@ -344,9 +344,9 @@ module('Unit | Db #where', {
     db = new Db();
     db.createCollection('contacts');
     db.contacts.insert([
-      { name: 'Link',  evil: false, age: 17 },
+      { name: 'Link', evil: false, age: 17 },
       { name: 'Zelda', evil: false, age: 17 },
-      { name: 'Ganon', evil: true,  age: 45 }
+      { name: 'Ganon', evil: true, age: 45 }
     ]);
   },
   afterEach() {

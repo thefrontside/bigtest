@@ -1,7 +1,6 @@
 import BaseRouteHandler from './base';
 
 export default class FunctionRouteHandler extends BaseRouteHandler {
-
   constructor(schema, serializerOrRegistry, userFunction, path) {
     super();
     this.schema = schema;

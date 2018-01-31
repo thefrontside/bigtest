@@ -1,5 +1,4 @@
-import { Serializer, SerializerRegistry, Model, hasMany, belongsTo, Db } from '@bigtest/mirage';
-import { Schema } from '@bigtest/mirage';
+import { Serializer, SerializerRegistry, Model, hasMany, belongsTo, Db, Schema } from '@bigtest/mirage';
 import { module, test } from 'qunit';
 
 module('Integration | Serializers | Base | Associations | Embedded Models', {
@@ -77,9 +76,11 @@ test(`it can embed a chain of has-many relationships`, function(assert) {
       id: '1',
       name: 'Link',
       posts: [
-        { id: '1', title: 'Lorem', comments: [
-          { id: '1', text: 'pwned' }
-        ] },
+        { id: '1',
+          title: 'Lorem',
+          comments: [
+            { id: '1', text: 'pwned' }
+          ] },
         { id: '2', title: 'Ipsum', comments: [] }
       ]
     }
@@ -185,9 +186,11 @@ test(`it ignores relationships that refer to serialized ancestor resources, mult
       id: '1',
       name: 'Link',
       posts: [
-        { id: '1', title: 'Lorem', comments: [
-          { id: '1', text: 'pwned' }
-        ] },
+        { id: '1',
+          title: 'Lorem',
+          comments: [
+            { id: '1', text: 'pwned' }
+          ] },
         { id: '2', title: 'Ipsum', comments: [] }
       ]
     }

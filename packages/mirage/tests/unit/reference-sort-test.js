@@ -23,7 +23,6 @@ test('it throws on circular dependency', function(assert) {
   }, function(e) {
     return e.toString() === 'Error: Cyclic dependency in properties ["propB","propA"]';
   });
-
 });
 
 test('it works with no references', function(assert) {

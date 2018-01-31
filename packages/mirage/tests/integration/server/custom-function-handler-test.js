@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
 import Server, { Model, Factory, ActiveModelSerializer } from '@bigtest/mirage';
+import $ from 'jquery';
 
 module('Integration | Server | Custom function handler', {
   beforeEach() {

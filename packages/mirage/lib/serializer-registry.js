@@ -5,7 +5,6 @@ import assert from './assert';
 import _assign from 'lodash/assign';
 
 export default class SerializerRegistry {
-
   constructor(schema, serializerMap = {}) {
     this.schema = schema;
     this._serializerMap = serializerMap;
@@ -34,7 +33,6 @@ export default class SerializerRegistry {
 
         return json;
       }, {});
-
     } else {
       return response;
     }
@@ -49,10 +47,10 @@ export default class SerializerRegistry {
       SerializerForResponse = SerializerForResponse || this._serializerMap.application || Serializer;
 
       assert(
-        !SerializerForResponse
-        || (SerializerForResponse.prototype.embed)
-        || (SerializerForResponse.prototype.root)
-        || (new SerializerForResponse() instanceof JSONAPISerializer),
+        !SerializerForResponse ||
+        (SerializerForResponse.prototype.embed) ||
+        (SerializerForResponse.prototype.root) ||
+        (new SerializerForResponse() instanceof JSONAPISerializer),
         'You cannot have a serializer that sideloads (embed: false) and disables the root (root: false).'
       );
     }
@@ -79,5 +77,4 @@ export default class SerializerRegistry {
       newSerializerMaps
     );
   }
-
 }

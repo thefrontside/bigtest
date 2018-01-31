@@ -1,7 +1,5 @@
 import { module, test } from 'qunit';
-import { Model, hasMany, belongsTo } from '@bigtest/mirage';
-import Server from '@bigtest/mirage';
-import { IdentityManager } from '@bigtest/mirage';
+import { Model, hasMany, belongsTo, Server, IdentityManager } from '@bigtest/mirage';
 
 const CustomIdentityManager = class {
   constructor() {
@@ -55,9 +53,9 @@ module('Integration | Server | Factory creation', {
 });
 
 test('it uses identity managers defined by config', function(assert) {
-  let author = server.create('author');
-  let comment = server.create('comment');
-  let post = server.create('post');
+  let author = this.server.create('author');
+  let comment = this.server.create('comment');
+  let post = this.server.create('post');
   assert.equal(author.id, 'custom-id', 'custom identity manager defined in config is used');
   assert.equal(post.id, '1', 'ember-cli-mirage identity manager defined in config is used');
   assert.equal(comment.id, '1', 'falls back to ember-cli-mirage identity manager if no one is defined in config for model');

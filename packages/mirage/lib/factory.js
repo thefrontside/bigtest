@@ -41,7 +41,6 @@ let Factory = function() {
       } else {
         object[key] = buildSingleValue(value);
       }
-
     });
 
     return object;

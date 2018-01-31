@@ -11,7 +11,6 @@ module('Integration | ORM | Has Many | Named One-Way Reflexive | association #se
   The model can update its association via parent, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can update its association to a list of saved children`, function(assert) {
     let [ tag ] = this.helper[state]();
     let savedTag = this.helper.savedChild();
@@ -59,5 +58,4 @@ states.forEach((state) => {
 
     tag.save();
   });
-
 });

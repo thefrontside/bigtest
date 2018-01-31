@@ -1,5 +1,4 @@
-import { Serializer, SerializerRegistry, Schema, Db } from '@bigtest/mirage';
-import { Model, hasMany, belongsTo } from '@bigtest/mirage';
+import { Serializer, SerializerRegistry, Schema, Db, Model, hasMany, belongsTo } from '@bigtest/mirage';
 import { module, test } from 'qunit';
 
 module('Integration | Serializers | Base | Associations | Sideloading Models', {
@@ -47,7 +46,6 @@ test(`it throws an error if embed is false and root is false`, function(assert) 
   assert.throws(function() {
     registry.serialize(link);
   }, /disables the root/);
-
 });
 
 test(`it can sideload a model with a has-many relationship`, function(assert) {

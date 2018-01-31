@@ -8,7 +8,6 @@ module('Integration | ORM | Has Many | Many-to-many Polymorphic | delete', {
 });
 
 states.forEach((state) => {
-
   test(`deleting children updates the parent's foreign key for a ${state}`, function(assert) {
     let [ user, posts ] = this.helper[state]();
 
@@ -20,5 +19,4 @@ states.forEach((state) => {
     assert.equal(user.commentables.length, 0);
     assert.equal(user.commentableIds.length, 0);
   });
-
 });

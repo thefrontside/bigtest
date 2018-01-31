@@ -11,7 +11,6 @@ module('Integration | ORM | Has Many | Many-to-many Polymorphic | association #s
   The model can update its association via parent, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can update its association to a list of saved children`, function(assert) {
     let [ user, originalPosts ] = this.helper[state]();
     let savedPost = this.helper.savedChild();
@@ -79,5 +78,4 @@ states.forEach((state) => {
       assert.notOk(post.users.includes(user), 'old inverses were cleared');
     });
   });
-
 });

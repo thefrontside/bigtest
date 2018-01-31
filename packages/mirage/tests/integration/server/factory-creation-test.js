@@ -1,6 +1,5 @@
 import { module, test } from 'qunit';
-import { Model, Factory, hasMany, belongsTo } from '@bigtest/mirage';
-import Server from '@bigtest/mirage';
+import { Model, Factory, hasMany, belongsTo, Server } from '@bigtest/mirage';
 
 module('Integration | Server | Factory creation', {
   beforeEach() {
@@ -74,7 +73,7 @@ test('createList falls back to a model if no factory is defined', function(asser
 });
 
 test('create sets up the db correctly when passing in fks', function(assert) {
-  let author = server.create('author');
+  let author = this.server.create('author');
   let post = this.server.create('post', {
     authorId: author.id
   });
@@ -86,7 +85,7 @@ test('create sets up the db correctly when passing in fks', function(assert) {
 });
 
 test('create sets up the db correctly when passing in models', function(assert) {
-  let author = server.create('author');
+  let author = this.server.create('author');
   let post = this.server.create('post', {
     author
   });

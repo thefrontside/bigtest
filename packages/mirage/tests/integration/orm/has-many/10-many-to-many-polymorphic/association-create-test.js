@@ -11,7 +11,6 @@ module('Integration | ORM | Has Many | Many-to-many Polymorphic | association #c
   The model can create a has-many association, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can create an associated parent`, function(assert) {
     let [ user ] = this.helper[state]();
     let initialCount = user.commentables.models.length;
@@ -29,5 +28,4 @@ states.forEach((state) => {
     }), 'fks were persisted');
     assert.ok(post.users.includes(user), 'the inverse was set');
   });
-
 });

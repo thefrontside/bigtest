@@ -3,7 +3,7 @@ import { inflections } from 'inflected';
 
 import {module, test} from 'qunit';
 
-const EN = inflections("en");
+const EN = inflections('en');
 
 module('Unit | Normalize name');
 
@@ -18,7 +18,6 @@ test('can convert DbCollection name to Model name', function(assert) {
 });
 
 test('can convert Model name to DbCollection using custom inflector rules', function(assert) {
-
   EN.irregular('head-of-state', 'heads-of-state');
   assert.equal(toCollectionName('head-of-state'), 'headsOfState');
 });

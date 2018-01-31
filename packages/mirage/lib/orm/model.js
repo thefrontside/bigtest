@@ -21,7 +21,6 @@ import _assign from 'lodash/assign';
   Constructor
 */
 class Model {
-
   // TODO: schema and modelName now set statically at registration, need to remove
   constructor(schema, modelName, attrs, fks) {
     assert(schema, 'A model requires a schema');
@@ -53,7 +52,6 @@ class Model {
 
       // Ensure the id getter/setter is set
       this._definePlainAttribute('id');
-
     } else {
       this._schema.db[collection].update(this.attrs.id, this.attrs);
     }
@@ -379,7 +377,6 @@ class Model {
    * @private
    */
   _definePlainAttribute(attr) {
-
     // Ensure the property hasn't already been defined
     let existingProperty = Object.getOwnPropertyDescriptor(this, attr);
     if (existingProperty && existingProperty.get) {
@@ -467,7 +464,6 @@ class Model {
 
       let foreignKeyLabel = association.isPolymorphic ? foreignKeys.map(fk => `${fk.type}:${fk.id}`).join(',') : foreignKeys;
       assert(found.length === foreignKeys.length, `You're instantiating a ${this.modelName} that has a ${foreignKeyName} of ${foreignKeyLabel}, but some of those records don't exist in the database.`);
-
     } else {
       let association = Object.keys(this.belongsToAssociations)
         .map(key => this.belongsToAssociations[key])
@@ -628,9 +624,7 @@ class Model {
             return { type: child.modelName, id: child.id };
           })
         });
-
       } else {
-
         if (tempAssociate === null) {
           this._updateInDb({ [fk]: null });
         } else {
@@ -638,7 +632,7 @@ class Model {
 
           let fkValue;
           if (association.isPolymorphic) {
-            fkValue = { id: tempAssociate.id, type: tempAssociate.modelName};
+            fkValue = { id: tempAssociate.id, type: tempAssociate.modelName };
           } else {
             fkValue = tempAssociate.id;
           }
@@ -672,7 +666,6 @@ class Model {
 
       if (modelOrCollection instanceof Model) {
         this._associateModelWithInverse(modelOrCollection, association);
-
       } else if (modelOrCollection instanceof Collection || modelOrCollection instanceof PolymorphicCollection) {
         modelOrCollection.models
           .forEach(model => {
@@ -692,7 +685,6 @@ class Model {
       if (inverse instanceof BelongsTo) {
         this._schema.db[toCollectionName(model.modelName)]
           .update(model.id, { [inverseFk]: this.id });
-
       } else {
         let ownerId = this.id;
         let inverseCollection = this._schema.db[toCollectionName(model.modelName)];

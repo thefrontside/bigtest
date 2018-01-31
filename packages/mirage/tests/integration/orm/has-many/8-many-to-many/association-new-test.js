@@ -12,7 +12,6 @@ module('Integration | ORM | Has Many | Many to Many | association #new', {
 */
 
 states.forEach((state) => {
-
   test(`a ${state} can build a new associated child`, function(assert) {
     let [ order ] = this.helper[state]();
     let initialCount = order.products.models.length;
@@ -31,5 +30,4 @@ states.forEach((state) => {
     assert.ok(order.productIds.indexOf(blueProduct.id) > -1, 'the id was added to the fks array');
     assert.ok(blueProduct.orders.includes(order), 'the inverse was set');
   });
-
 });

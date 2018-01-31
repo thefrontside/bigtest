@@ -2,7 +2,6 @@ import Serializer from '../serializer';
 import { underscore, pluralize, dasherize, singularize } from '@bigtest/mirage';
 
 export default class ActiveModelSerializer extends Serializer {
-
   keyForModel(type) {
     return underscore(type);
   }
@@ -56,5 +55,4 @@ export default class ActiveModelSerializer extends Serializer {
 
     return jsonApiPayload;
   }
-
 };

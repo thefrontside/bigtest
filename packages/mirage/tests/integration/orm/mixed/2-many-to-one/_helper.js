@@ -1,6 +1,4 @@
-import { Model, hasMany, belongsTo, Db } from '@bigtest/mirage';
-import { Schema } from '@bigtest/mirage';
-
+import { Model, hasMany, belongsTo, Db, Schema } from '@bigtest/mirage';
 /*
   A model with a hasMany association can be in eight states
   with respect to its association. This helper class
@@ -13,7 +11,6 @@ import { Schema } from '@bigtest/mirage';
   where the children array may be empty.
 */
 export default class Helper {
-
   constructor() {
     this.db = new Db();
 
@@ -90,7 +87,6 @@ export default class Helper {
   newParent() {
     return this.schema.users.new({ name: 'Link' });
   }
-
 }
 
 export const states = [

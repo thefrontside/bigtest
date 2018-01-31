@@ -2,7 +2,6 @@ import { toCollectionName } from '../../utils/normalize-name';
 import BaseRouteHandler from '../base';
 
 export default class BaseShorthandRouteHandler extends BaseRouteHandler {
-
   constructor(schema, serializerOrRegistry, shorthand, path, options = {}) {
     super();
     shorthand = shorthand || this.getModelClassFromPath(path);
@@ -32,5 +31,4 @@ export default class BaseShorthandRouteHandler extends BaseRouteHandler {
   // handleArrayShorthand() {
   //
   // }
-
 }

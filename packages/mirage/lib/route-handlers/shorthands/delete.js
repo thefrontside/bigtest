@@ -3,7 +3,6 @@ import BaseShorthandRouteHandler from './base';
 import { pluralize, camelize } from '@bigtest/mirage';
 
 export default class DeleteShorthandRouteHandler extends BaseShorthandRouteHandler {
-
   /*
     Remove the model from the db of type *camelizedModelName*.
 
@@ -40,5 +39,4 @@ export default class DeleteShorthandRouteHandler extends BaseShorthandRouteHandl
     childTypes.forEach((type) => parent[type].destroy());
     parent.destroy();
   }
-
 }

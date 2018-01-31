@@ -8,7 +8,6 @@ module('Integration | ORM | Has Many | Many to Many | association #setIds', {
 });
 
 states.forEach((state) => {
-
   test(`a ${state} can update its association to include a saved child via childIds`, function(assert) {
     let [ order, originalProducts ] = this.helper[state]();
     let savedProduct = this.helper.savedChild();
@@ -45,5 +44,4 @@ states.forEach((state) => {
       assert.notOk(p.orders.includes(order), 'old inverses were cleared');
     });
   });
-
 });

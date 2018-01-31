@@ -2,7 +2,6 @@ import assert from '../assert';
 import { camelize, singularize, dasherize } from '@bigtest/mirage';
 
 export default class BaseRouteHandler {
-
   getModelClassFromPath(fullPath) {
     if (!fullPath) {
       return;
@@ -86,7 +85,7 @@ export default class BaseRouteHandler {
 
     attrs = urlEncodedParts.reduce((a, urlEncodedPart) => {
       let [key, value] = urlEncodedPart.split('=');
-      a[key] = decodeURIComponent(value.replace(/\+/g,  ' '));
+      a[key] = decodeURIComponent(value.replace(/\+/g, ' '));
       return a;
     }, {});
 

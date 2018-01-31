@@ -9,7 +9,6 @@ function isNumber(n) {
  * @public
  */
 class IdentityManager {
-
   constructor() {
     this._nextId = 1;
     this._ids = {};

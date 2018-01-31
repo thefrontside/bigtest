@@ -8,7 +8,6 @@ module('Integration | ORM | Has Many | Many to Many | delete', {
 });
 
 states.forEach((state) => {
-
   test(`deleting children updates the parent's foreign key for a ${state}`, function(assert) {
     let [ order, products ] = this.helper[state]();
 
@@ -20,5 +19,4 @@ states.forEach((state) => {
     assert.equal(order.products.length, 0);
     assert.equal(order.productIds.length, 0);
   });
-
 });

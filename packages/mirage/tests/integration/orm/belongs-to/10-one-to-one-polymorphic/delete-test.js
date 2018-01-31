@@ -8,7 +8,6 @@ module('Integration | ORM | Belongs To | One-to-one Polymorphic | delete', {
 });
 
 states.forEach((state) => {
-
   test(`deleting the parent updates the child's foreign key for a ${state}`, function(assert) {
     let [ comment, post ] = this.helper[state]();
 
@@ -20,5 +19,4 @@ states.forEach((state) => {
     assert.equal(comment.commentableId, null);
     assert.deepEqual(comment.commentable, null);
   });
-
 });

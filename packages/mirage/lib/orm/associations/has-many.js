@@ -14,7 +14,6 @@ import assert from '../../assert';
  * @public
  */
 export default class HasMany extends Association {
-
   /**
    * @method getForeignKeyArray
    * @return {Array} Array of camelized model name of associated objects
@@ -98,9 +97,9 @@ export default class HasMany extends Association {
 
           if (association.isPolymorphic) {
             assert(ids.every((el) => {
-              return ((typeof el === 'object')
-                && (typeof el.type !== undefined)
-                && (typeof el.id !== undefined)
+              return ((typeof el === 'object') &&
+                (typeof el.type !== 'undefined') &&
+                (typeof el.id !== 'undefined')
               );
             }), `You must pass in an array of polymorphic identifiers (objects of shape { type, id }) when setting ${foreignKey} on ${this}`);
 

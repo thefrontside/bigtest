@@ -11,7 +11,7 @@ test('it can be instantiated', function(assert) {
 
 test('it cannot be instantiated without a modelName', function(assert) {
   let error = console.error;
-  console.error = ()=> { };
+  console.error = () => { };
   try {
     assert.throws(() => {
       new Collection();

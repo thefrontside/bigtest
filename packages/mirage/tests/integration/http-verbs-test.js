@@ -1,6 +1,5 @@
 import {module, test} from 'qunit';
-import Server, { Response } from '@bigtest/mirage';
-import { Model } from '@bigtest/mirage';
+import {Server, Model} from '@bigtest/mirage';
 import $ from 'jquery';
 
 module('Integration | HTTP Verbs', {

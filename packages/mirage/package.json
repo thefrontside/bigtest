@@ -7,8 +7,12 @@
   "scripts": {
     "build": "rollup --config",
     "start": "karma start",
-    "test": "karma start --single-run"
+    "test": "karma start --single-run",
+    "lint": "eslint ./"
   },
+  "eslintIgnore": [
+    "/dist/"
+],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thefrontside/bigtest.git"
@@ -46,7 +50,13 @@
     "qunit": "^1.0.0",
     "rollup": "^0.53.0",
     "rollup-plugin-babel": "^4.0.0-beta.0",
-    "webpack": "^3.3.0"
+    "webpack": "^3.3.0",
+    "eslint": "^4.16.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1"
   },
   "dependencies": {
     "faker": "^4.1.0",

@@ -3,7 +3,6 @@ import BaseShorthandRouteHandler from './base';
 import { camelize } from '@bigtest/mirage';
 
 export default class PutShorthandRouteHandler extends BaseShorthandRouteHandler {
-
   /*
     Update an object from the db, specifying the type.
 
@@ -23,5 +22,4 @@ export default class PutShorthandRouteHandler extends BaseShorthandRouteHandler 
 
     return modelClass.find(id).update(attrs);
   }
-
 }

@@ -40,7 +40,7 @@ function createPretender(server) {
 
         try {
           loggedResponse = JSON.parse(responseText);
-        } catch(e) {
+        } catch (e) {
           loggedResponse = responseText;
         }
 
@@ -128,7 +128,6 @@ function extractRouteArguments(args) {
  * @public
  */
 export default class Server {
-
   /**
    * Build the new server object.
    *
@@ -142,7 +141,7 @@ export default class Server {
   config(config = {}) {
     let didOverrideConfig = (config.environment && (this.environment && (this.environment !== config.environment)));
     assert(!didOverrideConfig,
-    'You cannot modify Mirage\'s environment once the server is created');
+      'You cannot modify Mirage\'s environment once the server is created');
     this.environment = config.environment || 'development';
 
     this.options = config;
@@ -371,7 +370,6 @@ export default class Server {
       let modelClass = this.schema[toCollectionName(type)];
 
       modelOrRecord = modelClass.create(attrs);
-
     } else {
       let collection, collectionName;
 
@@ -423,7 +421,7 @@ export default class Server {
     except = except || [];
 
     if (only.length > 0 && except.length > 0) {
-      throw 'cannot use both :only and :except options';
+      throw new Error('cannot use both :only and :except options');
     }
 
     let actionsMethodsAndsPathsMappings = {
@@ -435,9 +433,9 @@ export default class Server {
     };
 
     let allActions = Object.keys(actionsMethodsAndsPathsMappings);
-    let actions = only.length > 0 && only
-                  || except.length > 0 && allActions.filter((action) => (except.indexOf(action) === -1))
-                  || allActions;
+    let actions = (only.length > 0 && only) ||
+                  (except.length > 0 && allActions.filter((action) => (except.indexOf(action) === -1))) ||
+                  allActions;
 
     actions.forEach((action) => {
       let methodsWithPath = actionsMethodsAndsPathsMappings[action];
@@ -478,15 +476,18 @@ export default class Server {
   }
 
   _registerRouteHandler(verb, path, rawHandler, customizedCode, options) {
-
     let routeHandler = new RouteHandler({
       schema: this.schema,
-      verb, rawHandler, customizedCode, options, path,
+      verb,
+      rawHandler,
+      customizedCode,
+      options,
+      path,
       serializerOrRegistry: this.serializerOrRegistry
     });
 
     let fullPath = this._getFullPath(path);
-    let timing = options.timing !== undefined ? options.timing : (() => this.timing);
+    let timing = options.timing !== undefined ? options.timing : () => this.timing;
 
     this.pretender[verb](
       fullPath,
@@ -529,15 +530,15 @@ export default class Server {
         namespace = this.namespace.substring(0, this.namespace.length - 1).substring(1);
       }
 
-      if (this.namespace[0] === '/' &&  this.namespace[this.namespace.length - 1] !== '/') {
+      if (this.namespace[0] === '/' && this.namespace[this.namespace.length - 1] !== '/') {
         namespace = this.namespace.substring(1);
       }
 
-      if (this.namespace[0] !== '/' &&  this.namespace[this.namespace.length - 1] === '/') {
+      if (this.namespace[0] !== '/' && this.namespace[this.namespace.length - 1] === '/') {
         namespace = this.namespace.substring(0, this.namespace.length - 1);
       }
 
-      if (this.namespace[0] !== '/' &&  this.namespace[this.namespace.length - 1] !== '/') {
+      if (this.namespace[0] !== '/' && this.namespace[this.namespace.length - 1] !== '/') {
         namespace = this.namespace;
       }
     }
@@ -548,16 +549,16 @@ export default class Server {
         namespace = this.namespace.substring(0, this.namespace.length - 1);
       }
 
-      if (this.namespace[0] === '/' &&  this.namespace[this.namespace.length - 1] !== '/') {
+      if (this.namespace[0] === '/' && this.namespace[this.namespace.length - 1] !== '/') {
         namespace = this.namespace;
       }
 
-      if (this.namespace[0] !== '/' &&  this.namespace[this.namespace.length - 1] === '/') {
+      if (this.namespace[0] !== '/' && this.namespace[this.namespace.length - 1] === '/') {
         let namespaceSub = this.namespace.substring(0, this.namespace.length - 1);
         namespace = `/${namespaceSub}`;
       }
 
-      if (this.namespace[0] !== '/' &&  this.namespace[this.namespace.length - 1] !== '/') {
+      if (this.namespace[0] !== '/' && this.namespace[this.namespace.length - 1] !== '/') {
         namespace = `/${this.namespace}`;
       }
     }

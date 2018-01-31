@@ -12,7 +12,6 @@ module('Integration | ORM | Belongs To | Named One-Way Reflexive | association #
 */
 
 states.forEach((state) => {
-
   test(`a ${state} can build a new associated parent`, function(assert) {
     let [ child ] = this.helper[state]();
 
@@ -27,5 +26,4 @@ states.forEach((state) => {
     assert.ok(ganon.id, 'saving the child persists the parent');
     assert.equal(child.parentId, ganon.id, 'the childs fk was updated');
   });
-
 });

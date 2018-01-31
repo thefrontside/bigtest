@@ -1,5 +1,4 @@
-import { Factory } from '@bigtest/mirage';
-import { trait } from '@bigtest/mirage';
+import { Factory, trait } from '@bigtest/mirage';
 
 import {module, test} from 'qunit';
 

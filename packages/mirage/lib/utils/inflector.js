@@ -1,7 +1,7 @@
 import {
   underscore,
   camelize as _camelize,
-  dasherize as _dasherize,
+  dasherize as _dasherize
 } from 'inflected';
 
 export function camelize(word) {

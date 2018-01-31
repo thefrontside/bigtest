@@ -18,7 +18,6 @@ function duplicate(data) {
  *  @public
  */
 class DbCollection {
-
   constructor(name, initialData, IdentityManager) {
     this.name = name;
     this._records = [];
@@ -168,7 +167,6 @@ class DbCollection {
       });
 
       return changedRecords;
-
     } else if (typeof target === 'number' || typeof target === 'string') {
       let id = target;
       let record = this._findRecord(id);
@@ -176,7 +174,6 @@ class DbCollection {
       this._updateRecord(record, attrs);
 
       return record;
-
     } else if (Array.isArray(target)) {
       let ids = target;
       records = this._findRecords(ids);
@@ -186,7 +183,6 @@ class DbCollection {
       });
 
       return records;
-
     } else if (typeof target === 'object') {
       let query = target;
       records = this._findRecordsWhere(query);
@@ -217,22 +213,19 @@ class DbCollection {
     if (typeof target === 'undefined') {
       this._records = [];
       this.identityManager.reset();
-
     } else if (typeof target === 'number' || typeof target === 'string') {
       let record = this._findRecord(target);
       let index = this._records.indexOf(record);
       this._records.splice(index, 1);
-
     } else if (Array.isArray(target)) {
       records = this._findRecords(target);
-      records.forEach((record) =>  {
+      records.forEach((record) => {
         let index = this._records.indexOf(record);
         this._records.splice(index, 1);
       });
-
     } else if (typeof target === 'object') {
       records = this._findRecordsWhere(target);
-      records.forEach((record) =>  {
+      records.forEach((record) => {
         let index = this._records.indexOf(record);
         this._records.splice(index, 1);
       });

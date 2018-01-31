@@ -11,7 +11,6 @@ module('Integration | ORM | Mixed | One To Many Polymorphic | association #setId
   The model can update its association via parentId, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can update its association to a saved parent via parentId`, function(assert) {
     let [ user, originalPosts ] = this.helper[state]();
     let savedPost = this.helper.savedChild();
@@ -55,5 +54,4 @@ states.forEach((state) => {
       }
     });
   });
-
 });

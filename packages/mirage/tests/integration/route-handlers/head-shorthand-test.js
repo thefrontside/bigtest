@@ -3,9 +3,9 @@ import {
   Model,
   JSONAPISerializer,
   Response,
-  HeadShorthandRouteHandler
+  HeadShorthandRouteHandler,
+  Server
 } from '@bigtest/mirage';
-import Server from '@bigtest/mirage';
 
 module('Integration | Route Handlers | HEAD shorthand', {
   beforeEach() {

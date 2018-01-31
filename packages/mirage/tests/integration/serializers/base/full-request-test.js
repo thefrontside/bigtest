@@ -1,5 +1,6 @@
 import Server, { Model, Serializer, hasMany, belongsTo } from '@bigtest/mirage';
 import {module, test} from 'qunit';
+import $ from 'jquery';
 
 module('Integration | Serializers | Base | Full Request', {
   beforeEach() {

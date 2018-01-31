@@ -11,7 +11,6 @@ module('Integration | ORM | Has Many | Named Reflexive | association #set', {
   The model can update its association via parent, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can update its association to a list of saved children`, function(assert) {
     let [ tag, originalTags ] = this.helper[state]();
     let savedTag = this.helper.savedChild();
@@ -77,5 +76,4 @@ states.forEach((state) => {
       assert.notOk(originalTag.labels.includes(tag), 'old inverses were cleared');
     });
   });
-
 });

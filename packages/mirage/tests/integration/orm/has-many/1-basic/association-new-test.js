@@ -12,7 +12,6 @@ module('Integration | ORM | Has Many | Basic | association #new', {
 */
 
 states.forEach((state) => {
-
   test(`a ${state} can build a new associated parent`, function(assert) {
     let [ user ] = this.helper[state]();
     let initialCount = user.posts.models.length;
@@ -29,5 +28,4 @@ states.forEach((state) => {
     assert.deepEqual(user.posts.models.filter((a) => a.id === post.id)[0], post, 'the model was added to user.posts');
     assert.ok(user.postIds.indexOf(post.id) > -1, 'the id was added to the fks array');
   });
-
 });

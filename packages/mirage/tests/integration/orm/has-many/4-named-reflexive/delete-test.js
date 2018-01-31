@@ -8,7 +8,6 @@ module('Integration | ORM | Has Many | Named Reflexive | delete', {
 });
 
 states.forEach((state) => {
-
   test(`deleting children updates the parent's foreign key for a ${state}`, function(assert) {
     let [ tag, labels ] = this.helper[state]();
 
@@ -20,5 +19,4 @@ states.forEach((state) => {
     assert.equal(tag.labels.length, 0);
     assert.equal(tag.labelIds.length, 0);
   });
-
 });

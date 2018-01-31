@@ -2,7 +2,6 @@ import ActiveModelSerializer from './active-model-serializer';
 import { camelize, singularize, pluralize } from '@bigtest/mirage';
 
 export default class RestSerializer extends ActiveModelSerializer {
-
   keyForModel(type) {
     return camelize(type);
   }

@@ -1,7 +1,6 @@
 import { dasherize } from '@bigtest/mirage';
 
 export default class Association {
-
   constructor(modelName, opts) {
     if (typeof modelName === 'object') {
       // Received opts only

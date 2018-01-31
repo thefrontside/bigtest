@@ -10,7 +10,6 @@ import _cloneDeep from 'lodash/cloneDeep';
  * @public
  */
 class Db {
-
   constructor(initialData, identityManagers) {
     this._collections = [];
 
@@ -71,7 +70,6 @@ class Db {
       });
 
       this._collections.push(newCollection);
-
     } else if (initialData) {
       this[name].insert(initialData);
     }

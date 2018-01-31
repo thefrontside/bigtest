@@ -6,7 +6,7 @@ import {module, test} from 'qunit';
 var db, schema, HeadOfState;
 module('Integration | ORM | inflector-collectionName integration', {
   beforeEach() {
-    inflections("en").irregular('head-of-state', 'heads-of-state');
+    inflections('en').irregular('head-of-state', 'heads-of-state');
 
     HeadOfState = Model.extend();
     db = new Db({});

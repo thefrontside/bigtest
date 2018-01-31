@@ -13,7 +13,6 @@ import assert from '../../assert';
  * @public
  */
 export default class BelongsTo extends Association {
-
   /**
    * @method getForeignKeyArray
    * @return {Array} Array of camelized name of the model owning the association
@@ -73,7 +72,6 @@ export default class BelongsTo extends Association {
         if (tempParent === null) {
           id = null;
         } else {
-
           if (association.isPolymorphic) {
             if (tempParent) {
               id = { id: tempParent.id, type: tempParent.modelName };
@@ -87,7 +85,6 @@ export default class BelongsTo extends Association {
               id = this.attrs[foreignKey];
             }
           }
-
         }
 
         return id;
@@ -108,7 +105,7 @@ export default class BelongsTo extends Association {
             tempParent = association.schema[toCollectionName(id.type)].find(id.id);
           } else {
             tempParent = association.schema[toCollectionName(association.modelName)].find(id);
-            assert(tempParent, `Couldn\'t find ${association.modelName} with id = ${id}`);
+            assert(tempParent, `Couldn't find ${association.modelName} with id = ${id}`);
           }
         }
 

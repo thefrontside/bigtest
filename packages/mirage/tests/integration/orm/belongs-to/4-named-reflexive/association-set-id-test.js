@@ -11,7 +11,6 @@ module('Integration | ORM | Belongs To | Named Reflexive | association #setId', 
   The model can update its association via parentId, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can update its association to a saved parent via parentId`, function(assert) {
     let [ user ] = this.helper[state]();
     let friend = this.helper.savedParent();
@@ -21,14 +20,12 @@ states.forEach((state) => {
     assert.equal(user.bestFriendId, friend.id);
     assert.deepEqual(user.bestFriend.attrs, friend.attrs);
   });
-
 });
 
 [
   'savedChildSavedParent',
   'newChildSavedParent'
 ].forEach((state) => {
-
   test(`a ${state} can clear its association via a null parentId`, function(assert) {
     let [ user ] = this.helper[state]();
 
@@ -37,5 +34,4 @@ states.forEach((state) => {
     assert.equal(user.bestFriendId, null);
     assert.equal(user.bestFriend, null);
   });
-
 });

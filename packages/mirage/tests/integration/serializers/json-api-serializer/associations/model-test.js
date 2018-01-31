@@ -1,5 +1,4 @@
-import { Schema, Db, SerializerRegistry } from '@bigtest/mirage';
-import { Model, hasMany, belongsTo, JSONAPISerializer } from '@bigtest/mirage';
+import { Schema, Db, SerializerRegistry, Model, hasMany, belongsTo, JSONAPISerializer } from '@bigtest/mirage';
 import { module, test } from 'qunit';
 
 module('Integration | Serializers | JSON API Serializer | Associations | Model', {

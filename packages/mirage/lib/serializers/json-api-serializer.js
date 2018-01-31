@@ -100,7 +100,6 @@ const JSONAPISerializer = Serializer.extend({
       } else if (this.isCollection(relationship)) {
         modelsToAdd = relationship.models;
       }
-
     } else {
       resource.models.forEach((model) => {
         let relationship = model[nameForCurrentResource];

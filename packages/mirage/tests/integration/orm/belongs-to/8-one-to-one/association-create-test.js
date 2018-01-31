@@ -11,7 +11,6 @@ module('Integration | ORM | Belongs To | One To One | association #create', {
   The model can create a belongs-to association, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can create an associated parent`, function(assert) {
     let [ user ] = this.helper[state]();
 
@@ -23,5 +22,4 @@ states.forEach((state) => {
     assert.equal(user.profileId, profile.id);
     assert.equal(this.helper.schema.users.find(user.id).profileId, profile.id, 'the user was persisted');
   });
-
 });

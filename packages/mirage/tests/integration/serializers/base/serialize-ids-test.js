@@ -1,6 +1,5 @@
 import { module, test } from 'qunit';
-import { Schema, Db, SerializerRegistry } from '@bigtest/mirage';
-import { Serializer, Model, hasMany } from '@bigtest/mirage';
+import { Schema, Db, SerializerRegistry, Serializer, Model, hasMany } from '@bigtest/mirage';
 
 module('Integration | Serializers | Base | Serialize ids', {
   beforeEach() {

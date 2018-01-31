@@ -12,7 +12,6 @@ module('Integration | ORM | Mixed | Many To One | association #new', {
 */
 
 states.forEach((state) => {
-
   test(`a ${state} can build a new associated parent`, function(assert) {
     let [ post, originalUser ] = this.helper[state]();
 
@@ -38,5 +37,4 @@ states.forEach((state) => {
       assert.notOk(originalUser.posts.includes(post));
     }
   });
-
 });

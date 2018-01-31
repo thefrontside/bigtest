@@ -12,7 +12,6 @@ module('Integration | ORM | Belongs To | Reflexive | association #new', {
 */
 
 states.forEach((state) => {
-
   test(`a ${state} can build a new associated parent`, function(assert) {
     let [ user, originalUser ] = this.helper[state]();
 
@@ -33,5 +32,4 @@ states.forEach((state) => {
       assert.equal(originalUser.userId, null, 'old inverses were cleared out');
     }
   });
-
 });

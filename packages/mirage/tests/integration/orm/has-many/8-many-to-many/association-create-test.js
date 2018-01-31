@@ -11,7 +11,6 @@ module('Integration | ORM | Has Many | Many to Many | association #create', {
   The model can create a has-many association, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can create an associated child`, function(assert) {
     let [ order ] = this.helper[state]();
     let initialCount = order.products.models.length;
@@ -25,5 +24,4 @@ states.forEach((state) => {
     assert.ok(order.attrs.productIds.indexOf(orangeProduct.id) > -1, 'fks were persisted');
     assert.ok(orangeProduct.orders.includes(order), 'the inverse was set');
   });
-
 });

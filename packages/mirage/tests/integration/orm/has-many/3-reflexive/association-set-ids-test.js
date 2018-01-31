@@ -8,7 +8,6 @@ module('Integration | ORM | Has Many | Reflexive | association #setIds', {
 });
 
 states.forEach((state) => {
-
   test(`a ${state} can update its association to include a saved child via childIds`, function(assert) {
     let [ tag, originalTags ] = this.helper[state]();
     let savedTag = this.helper.savedChild();
@@ -44,5 +43,4 @@ states.forEach((state) => {
       assert.notOk(originalTag.tags.includes(tag), 'old inverses were cleared');
     });
   });
-
 });

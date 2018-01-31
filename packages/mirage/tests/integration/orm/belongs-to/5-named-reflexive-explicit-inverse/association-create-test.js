@@ -11,7 +11,6 @@ module('Integration | ORM | Belongs To | Named Reflexive Explicit Inverse | asso
   The model can create a belongs-to association, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can create an associated parent`, function(assert) {
     let [ user ] = this.helper[state]();
 
@@ -22,5 +21,4 @@ states.forEach((state) => {
     assert.equal(user.bestFriendId, ganon.id);
     assert.equal(this.helper.schema.users.find(user.id).bestFriendId, ganon.id, 'the user was persisted');
   });
-
 });

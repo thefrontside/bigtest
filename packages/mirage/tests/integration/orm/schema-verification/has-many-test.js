@@ -1,5 +1,4 @@
-import { Model, hasMany, Db } from '@bigtest/mirage';
-import { Schema } from '@bigtest/mirage';
+import { Model, hasMany, Db, Schema } from '@bigtest/mirage';
 import { module, test } from 'qunit';
 
 module('Integration | ORM | Schema Verification | Has Many');

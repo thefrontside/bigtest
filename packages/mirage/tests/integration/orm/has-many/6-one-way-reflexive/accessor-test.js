@@ -8,7 +8,6 @@ module('Integration | ORM | Has Many | One-Way Reflexive | accessor', {
 });
 
 states.forEach((state) => {
-
   test(`the references of a ${state} are correct`, function(assert) {
     let [ tag, tags ] = this.helper[state]();
 
@@ -23,5 +22,4 @@ states.forEach((state) => {
       }
     });
   });
-
 });

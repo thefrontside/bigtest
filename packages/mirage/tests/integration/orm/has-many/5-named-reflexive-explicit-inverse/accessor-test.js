@@ -8,7 +8,6 @@ module('Integration | ORM | Has Many | Named Reflexive Explicit Inverse | access
 });
 
 states.forEach((state) => {
-
   test(`the references of a ${state} are correct`, function(assert) {
     let [ tag, tags ] = this.helper[state]();
 
@@ -26,5 +25,4 @@ states.forEach((state) => {
       assert.ok(t.labels.includes(tag));
     });
   });
-
 });

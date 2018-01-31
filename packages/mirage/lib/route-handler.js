@@ -1,4 +1,4 @@
-import { isBlank, typeOf }  from './utils/ember-shims';
+import { isBlank, typeOf } from './utils/ember-shims';
 import { MirageError } from './assert';
 import Response from './response';
 import FunctionHandler from './route-handlers/function';
@@ -9,11 +9,10 @@ import PutShorthandHandler from './route-handlers/shorthands/put';
 import DeleteShorthandHandler from './route-handlers/shorthands/delete';
 import HeadShorthandHandler from './route-handlers/shorthands/head';
 
-
 function isNotBlankResponse(response) {
-  return response
-    && !((typeof response) === 'object' && Object.keys(response).length === 0)
-    && (Array.isArray(response) || !isBlank(response));
+  return response &&
+    !((typeof response) === 'object' && Object.keys(response).length === 0) &&
+    (Array.isArray(response) || !isBlank(response));
 }
 
 const DEFAULT_CODES = { get: 200, put: 204, post: 201, 'delete': 204 };
@@ -42,7 +41,6 @@ function createHandler({ verb, schema, serializerOrRegistry, path, rawHandler, o
 }
 
 export default class RouteHandler {
-
   constructor({ schema, verb, rawHandler, customizedCode, options, path, serializerOrRegistry }) {
     this.verb = verb;
     this.customizedCode = customizedCode;
@@ -72,10 +70,9 @@ export default class RouteHandler {
       }
 
       result = this.handler.handle(request);
-    } catch(e) {
+    } catch (e) {
       if (e instanceof MirageError) {
         throw e;
-
       } else {
         let message = (typeOf(e) === 'string') ? e : e.message;
         let error = new MirageError(`Your ${request.method} handler for the url ${request.url} threw an error: ${message}`);
@@ -100,7 +97,6 @@ export default class RouteHandler {
         }
         resolve(mirageResponse);
       });
-
     });
   }
 

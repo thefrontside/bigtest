@@ -11,7 +11,6 @@ module('Integration | ORM | Belongs To | Basic | association #setId', {
   The model can update its association via parentId, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can update its association to a saved parent via parentId`, function(assert) {
     let [ post ] = this.helper[state]();
     let savedAuthor = this.helper.savedParent();
@@ -21,14 +20,12 @@ states.forEach((state) => {
     assert.equal(post.authorId, savedAuthor.id);
     assert.deepEqual(post.author.attrs, savedAuthor.attrs);
   });
-
 });
 
 [
   'savedChildSavedParent',
   'newChildSavedParent'
 ].forEach((state) => {
-
   test(`a ${state} can clear its association via a null parentId`, function(assert) {
     let [ post ] = this.helper[state]();
 
@@ -37,5 +34,4 @@ states.forEach((state) => {
     assert.equal(post.authorId, null);
     assert.deepEqual(post.author, null);
   });
-
 });

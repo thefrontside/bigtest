@@ -11,7 +11,6 @@ module('Integration | ORM | Belongs To | Reflexive | association #create', {
   The model can create a belongs-to association, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can create an associated parent`, function(assert) {
     let [ user, originalUser ] = this.helper[state]();
 
@@ -29,5 +28,4 @@ states.forEach((state) => {
       assert.equal(originalUser.userId, null, 'old inverses were cleared out');
     }
   });
-
 });

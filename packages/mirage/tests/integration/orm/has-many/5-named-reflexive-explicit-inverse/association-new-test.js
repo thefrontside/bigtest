@@ -12,7 +12,6 @@ module('Integration | ORM | Has Many | Named Reflexive Explicit Inverse | associ
 */
 
 states.forEach((state) => {
-
   test(`a ${state} can build a new associated child`, function(assert) {
     let [ tag ] = this.helper[state]();
     let initialCount = tag.labels.models.length;
@@ -31,5 +30,4 @@ states.forEach((state) => {
     assert.ok(tag.labelIds.indexOf(blueTag.id) > -1, 'the id was added to the fks array');
     assert.ok(blueTag.labels.includes(tag), 'the inverse was set');
   });
-
 });

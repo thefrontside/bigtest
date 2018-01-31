@@ -11,7 +11,6 @@ module('Integration | ORM | Belongs To | One-to-one Polymorphic | accessor', {
   The reference to a belongs-to association is correct, for all states
 */
 states.forEach((state) => {
-
   test(`the references of a ${state} are correct`, function(assert) {
     let [ comment, post ] = this.helper[state]();
 
@@ -30,5 +29,4 @@ states.forEach((state) => {
       assert.equal(post.commentId, comment.id, 'the inverse modelId reference is correct');
     }
   });
-
 });

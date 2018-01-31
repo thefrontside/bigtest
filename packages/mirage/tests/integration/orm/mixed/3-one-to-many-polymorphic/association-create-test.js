@@ -11,7 +11,6 @@ module('Integration | ORM | Mixed | One To Many Polymorphic | association #creat
   The model can create a has-many association, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can create an associated parent`, function(assert) {
     let [ user ] = this.helper[state]();
     let initialCount = user.things.models.length;
@@ -32,5 +31,4 @@ states.forEach((state) => {
     assert.deepEqual(post.user.attrs, user.attrs);
     assert.deepEqual(post.userId, user.id);
   });
-
 });

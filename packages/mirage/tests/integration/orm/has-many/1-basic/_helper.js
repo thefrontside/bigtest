@@ -12,7 +12,6 @@ import { Schema, Model, Db, hasMany } from '@bigtest/mirage';
   where the children array may be empty.
 */
 export default class Helper {
-
   constructor() {
     this.db = new Db();
 
@@ -107,7 +106,6 @@ export default class Helper {
   newChild() {
     return this.schema.posts.new({ title: 'Lorem' });
   }
-
 }
 
 export const states = [

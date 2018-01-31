@@ -11,7 +11,6 @@ module('Integration | ORM | Belongs To | One-Way Reflexive | accessor', {
   The reference to a belongs-to association is correct, for all states
 */
 states.forEach((state) => {
-
   test(`the references of a ${state} are correct`, function(assert) {
     let [ user, parent ] = this.helper[state]();
 
@@ -24,5 +23,4 @@ states.forEach((state) => {
       assert.equal(user.userId, null, 'the modelId reference is correct');
     }
   });
-
 });

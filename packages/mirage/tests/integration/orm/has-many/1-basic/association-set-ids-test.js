@@ -11,7 +11,6 @@ module('Integration | ORM | Has Many | Basic | association #setIds', {
   The model can update its association via parentId, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can update its association to a saved parent via parentId`, function(assert) {
     let [ user ] = this.helper[state]();
     let savedPost = this.helper.savedChild();
@@ -30,5 +29,4 @@ states.forEach((state) => {
     assert.deepEqual(user.posts.models, []);
     assert.deepEqual(user.postIds, []);
   });
-
 });

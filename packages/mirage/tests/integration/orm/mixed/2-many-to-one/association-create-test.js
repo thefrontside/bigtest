@@ -11,7 +11,6 @@ module('Integration | ORM | Mixed | Many To One | association #create', {
   The model can create a has-many association, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can create an associated parent`, function(assert) {
     let [ post, originalUser ] = this.helper[state]();
 
@@ -30,5 +29,4 @@ states.forEach((state) => {
       assert.notOk(originalUser.posts.includes(post));
     }
   });
-
 });

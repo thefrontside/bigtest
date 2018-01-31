@@ -12,7 +12,6 @@ import { Schema, Db, Model, belongsTo } from '@bigtest/mirage';
   where the parent may be undefined.
 */
 export default class BelongsToHelper {
-
   constructor() {
     this.db = new Db();
     this.loadData = this.db.loadData.bind(this.db);
@@ -98,7 +97,6 @@ export default class BelongsToHelper {
   newParent() {
     return this.schema.posts.new({ title: 'Bob' });
   }
-
 }
 
 export const states = [

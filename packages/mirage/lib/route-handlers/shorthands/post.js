@@ -3,7 +3,6 @@ import BaseShorthandRouteHandler from './base';
 import { camelize } from '@bigtest/mirage';
 
 export default class PostShorthandRouteHandler extends BaseShorthandRouteHandler {
-
   /*
     Push a new model of type *camelizedModelName* to the db.
 
@@ -22,5 +21,4 @@ export default class PostShorthandRouteHandler extends BaseShorthandRouteHandler
     let attrs = this._getAttrsForRequest(request, modelClass.camelizedModelName);
     return modelClass.create(attrs);
   }
-
 }

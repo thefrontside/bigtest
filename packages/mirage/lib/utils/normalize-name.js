@@ -2,8 +2,7 @@ import {
   camelize,
   pluralize,
   singularize,
-  dasherize,
-  underscore
+  dasherize
 } from '@bigtest/mirage';
 
 export function toCollectionName(type) {

@@ -1,5 +1,6 @@
 import {module, test} from 'qunit';
 import Server, { Model, ActiveModelSerializer, camelize } from '@bigtest/mirage';
+import $ from 'jquery';
 
 module('Integration | Server | Customized normalize method', {
   beforeEach() {

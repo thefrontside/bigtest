@@ -56,7 +56,6 @@ export function isEmpty(obj) {
 
   let objectType = typeof obj;
 
-
   if (typeof obj.length === 'number' && objectType !== 'function') {
     return !obj.length;
   }
@@ -93,19 +92,18 @@ export function isBlank(obj) {
 }
 
 const TYPE_MAP = {
-  '[object Boolean]':  'boolean',
-  '[object Number]':   'number',
-  '[object String]':   'string',
+  '[object Boolean]': 'boolean',
+  '[object Number]': 'number',
+  '[object String]': 'string',
   '[object Function]': 'function',
-  '[object Array]':    'array',
-  '[object Date]':     'date',
-  '[object RegExp]':   'regexp',
-  '[object Object]':   'object',
+  '[object Array]': 'array',
+  '[object Date]': 'date',
+  '[object RegExp]': 'regexp',
+  '[object Object]': 'object',
   '[object FileList]': 'filelist'
 };
 
 const { toString } = Object.prototype;
-
 
 /**
   Returns a consistent type for the passed object.

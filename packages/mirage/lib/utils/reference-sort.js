@@ -10,7 +10,6 @@ export default function(edges) {
   let i = cursor;
 
   let visit = function(node, i, predecessors) {
-
     if (predecessors.indexOf(node) >= 0) {
       throw new Error(`Cyclic dependency in properties ${JSON.stringify(predecessors)}`);
     }
@@ -46,5 +45,4 @@ export default function(edges) {
   }
 
   return sorted.reverse();
-
 }

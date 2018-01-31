@@ -11,7 +11,6 @@ module('Integration | ORM | Mixed | Many To One | association #set', {
   The model can update its association via parent, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can update its association to a saved parent`, function(assert) {
     let [ post, originalUser ] = this.helper[state]();
     let savedUser = this.helper.savedParent();
@@ -63,5 +62,4 @@ states.forEach((state) => {
       assert.notOk(originalUser.posts.includes(post));
     }
   });
-
 });

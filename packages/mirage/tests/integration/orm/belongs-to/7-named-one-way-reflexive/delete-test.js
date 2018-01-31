@@ -8,7 +8,6 @@ module('Integration | ORM | Belongs To | Named One-Way Reflexive | delete', {
 });
 
 states.forEach((state) => {
-
   test(`deleting the parent updates the child's foreign key for a ${state}`, function(assert) {
     let [ user, parent ] = this.helper[state]();
 
@@ -20,5 +19,4 @@ states.forEach((state) => {
     assert.equal(user.parentId, null);
     assert.deepEqual(user.parent, null);
   });
-
 });

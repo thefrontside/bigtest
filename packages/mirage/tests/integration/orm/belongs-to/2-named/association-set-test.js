@@ -11,7 +11,6 @@ module('Integration | ORM | Belongs To | Named | association #set', {
   The model can update its association via parent, for all states
 */
 states.forEach((state) => {
-
   test(`a ${state} can update its association to a saved parent`, function(assert) {
     let [ post ] = this.helper[state]();
     let savedAuthor = this.helper.savedParent();
@@ -40,5 +39,4 @@ states.forEach((state) => {
     assert.equal(post.authorId, null);
     assert.deepEqual(post.author, null);
   });
-
 });

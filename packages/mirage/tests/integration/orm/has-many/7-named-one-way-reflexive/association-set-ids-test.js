@@ -8,7 +8,6 @@ module('Integration | ORM | Has Many | Named One-Way Reflexive | association #se
 });
 
 states.forEach((state) => {
-
   test(`a ${state} can update its association to include a saved child via childIds`, function(assert) {
     let [ tag ] = this.helper[state]();
     let savedTag = this.helper.savedChild();
@@ -34,5 +33,4 @@ states.forEach((state) => {
 
     tag.save();
   });
-
 });

@@ -1,6 +1,5 @@
-import { Model, hasMany, belongsTo, JSONAPISerializer, Db, SerializerRegistry } from '@bigtest/mirage';
+import { Model, hasMany, belongsTo, JSONAPISerializer, Db, SerializerRegistry, Schema } from '@bigtest/mirage';
 import { module, test } from 'qunit';
-import { Schema } from '@bigtest/mirage';
 
 module('Integration | Serializers | JSON API Serializer | Associations | Links', {
   beforeEach() {
@@ -107,9 +106,9 @@ test(`it supports links alongside data linkage`, function(assert) {
       },
       relationships: {
         'word-smith': {
-          "data": {
-            "id": "3",
-            "type": "word-smiths"
+          'data': {
+            'id': '3',
+            'type': 'word-smiths'
           },
           links: {
             related: `/api/word_smiths/${link.id}`,

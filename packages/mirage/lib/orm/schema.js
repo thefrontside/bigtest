@@ -13,7 +13,6 @@ import assert from '../assert';
  * @public
  */
 export default class Schema {
-
   constructor(db, modelsMap = {}) {
     assert(db, 'A schema requires a db');
 
@@ -56,10 +55,10 @@ export default class Schema {
     ModelClass.prototype._schema = this;
     ModelClass.prototype.modelName = modelName;
     // Set up associations
-    ModelClass.prototype.hasManyAssociations = {};   // a registry of the model's hasMany associations. Key is key from model definition, value is association instance itself
+    ModelClass.prototype.hasManyAssociations = {}; // a registry of the model's hasMany associations. Key is key from model definition, value is association instance itself
     ModelClass.prototype.belongsToAssociations = {}; // a registry of the model's belongsTo associations. Key is key from model definition, value is association instance itself
-    ModelClass.prototype.associationKeys = [];       // ex: address.user, user.addresses
-    ModelClass.prototype.associationIdKeys = [];     // ex: address.user_id, user.address_ids
+    ModelClass.prototype.associationKeys = []; // ex: address.user, user.addresses
+    ModelClass.prototype.associationIdKeys = []; // ex: address.user_id, user.address_ids
     ModelClass.prototype.dependentAssociations = []; // a registry of associations that depend on this model, needed for deletion cleanup.
 
     let fksAddedFromThisModel = {};

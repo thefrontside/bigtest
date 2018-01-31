@@ -1,10 +1,8 @@
 import assert from '../../assert';
 import BaseShorthandRouteHandler from './base';
-import { Response } from '@bigtest/mirage';
-import { singularize, camelize } from '@bigtest/mirage';
+import { Response, singularize, camelize } from '@bigtest/mirage';
 
 export default class GetShorthandRouteHandler extends BaseShorthandRouteHandler {
-
   /*
     Retrieve a model/collection from the db.
 
@@ -64,5 +62,4 @@ export default class GetShorthandRouteHandler extends BaseShorthandRouteHandler 
 
     return modelClasses.map((modelClass) => modelClass.all());
   }
-
 }

@@ -1,3 +1,6 @@
+import BelongsTo from './orm/associations/belongs-to';
+import HasMany from './orm/associations/has-many.js';
+
 export { default as Collection } from './orm/collection';
 export { default as Db } from './db';
 export { default as IdentityManager } from './identity-manager';
@@ -6,7 +9,7 @@ export { default as faker } from './faker';
 export { default as Response } from './response';
 export { default, default as Server, defaultPassthroughs } from './server';
 export { default as association } from './association';
-export { default as trait } from './trait'
+export { default as trait } from './trait';
 export { default as Model } from './orm/model';
 export { default as Schema } from './orm/schema';
 export { default as Serializer } from './serializer';
@@ -25,10 +28,6 @@ export { default as HeadShorthandRouteHandler } from './route-handlers/shorthand
 export { default as FunctionRouteHandler } from './route-handlers/function.js';
 export * from './utils/inflector';
 export * from './utils/normalize-name';
-
-
-import BelongsTo from './orm/associations/belongs-to';
-import HasMany from './orm/associations/has-many.js';
 
 export function hasMany(...args) {
   return new HasMany(...args);

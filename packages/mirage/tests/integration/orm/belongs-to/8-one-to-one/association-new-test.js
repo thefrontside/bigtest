@@ -12,7 +12,6 @@ module('Integration | ORM | Belongs To | One To One | association #new', {
 */
 
 states.forEach((state) => {
-
   test(`a ${state} can build a new associated parent`, function(assert) {
     let [ user ] = this.helper[state]();
 
@@ -29,5 +28,4 @@ states.forEach((state) => {
     assert.ok(profile.id, 'saving the child persists the parent');
     assert.equal(user.profileId, profile.id, 'the childs fk was updated');
   });
-
 });

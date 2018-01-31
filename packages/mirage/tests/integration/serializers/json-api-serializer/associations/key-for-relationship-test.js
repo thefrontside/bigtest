@@ -1,6 +1,4 @@
-import { Schema, Db, SerializerRegistry } from '@bigtest/mirage';
-import { Model, hasMany, JSONAPISerializer } from '@bigtest/mirage';
-import { underscore } from '@bigtest/mirage';
+import { Schema, Db, SerializerRegistry, Model, hasMany, JSONAPISerializer, underscore } from '@bigtest/mirage';
 import { module, test } from 'qunit';
 
 module('Integration | Serializers | JSON API Serializer | Key for relationship', {
@@ -56,10 +54,10 @@ test(`keyForRelationship works`, function(assert) {
     included: [
       {
         attributes: {
-          title: "Lorem ipsum"
+          title: 'Lorem ipsum'
         },
-        id: "1",
-        type: "blog-posts"
+        id: '1',
+        type: 'blog-posts'
       }
     ]
   });

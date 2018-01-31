@@ -1,5 +1,4 @@
-import { Schema, Db, SerializerRegistry } from '@bigtest/mirage';
-import { Model, belongsTo, hasMany, JSONAPISerializer } from '@bigtest/mirage';
+import { Schema, Db, SerializerRegistry, Model, belongsTo, hasMany, JSONAPISerializer } from '@bigtest/mirage';
 import { module, test } from 'qunit';
 
 module('Integration | Serializers | JSON API Serializer | Associations | Polymorphic');
@@ -29,44 +28,44 @@ test('it works for belongs to polymorphic relationships', function(assert) {
   assert.deepEqual(result, {
     data: [
       {
-        "attributes": {
-          "text": "Pretty foo!"
+        'attributes': {
+          'text': 'Pretty foo!'
         },
-        "id": "1",
-        "relationships": {
-          "commentable": {
-            "data": { id: '1', type: 'photos' }
+        'id': '1',
+        'relationships': {
+          'commentable': {
+            'data': { id: '1', type: 'photos' }
           }
         },
-        "type": "comments"
+        'type': 'comments'
       },
       {
-        "attributes": {
-          "text": "Love the bar!"
+        'attributes': {
+          'text': 'Love the bar!'
         },
-        "id": "2",
-        "relationships": {
-          "commentable": {
-            "data": { id: '1', type: 'videos' }
+        'id': '2',
+        'relationships': {
+          'commentable': {
+            'data': { id: '1', type: 'videos' }
           }
         },
-        "type": "comments"
+        'type': 'comments'
       }
     ],
     included: [
       {
         attributes: {
-          title: "Foo"
+          title: 'Foo'
         },
-        id: "1",
-        type: "photos"
+        id: '1',
+        type: 'photos'
       },
       {
         attributes: {
-          "title": "Bar"
+          'title': 'Bar'
         },
-        id: "1",
-        type: "videos"
+        id: '1',
+        type: 'videos'
       }
     ]
   });
@@ -99,34 +98,34 @@ test('it works for has many polymorphic relationships', function(assert) {
 
   assert.deepEqual(json, {
     data: {
-      "attributes": {
-        "name": "Sam"
+      'attributes': {
+        'name': 'Sam'
       },
-      "id": "1",
-      "relationships": {
-        "things": {
-          "data": [
+      'id': '1',
+      'relationships': {
+        'things': {
+          'data': [
             { id: '1', type: 'cars' },
             { id: '1', type: 'watches' }
           ]
         }
       },
-      "type": "users"
+      'type': 'users'
     },
-    "included": [
+    'included': [
       {
-        "attributes": {
-          "make": "Infiniti"
+        'attributes': {
+          'make': 'Infiniti'
         },
-        "id": "1",
-        "type": "cars"
+        'id': '1',
+        'type': 'cars'
       },
       {
-        "attributes": {
-          "make": "Citizen"
+        'attributes': {
+          'make': 'Citizen'
         },
-        "id": "1",
-        "type": "watches"
+        'id': '1',
+        'type': 'watches'
       }
     ]
   });

@@ -1,10 +1,8 @@
 import assert from '../../assert';
 import BaseShorthandRouteHandler from './base';
-import { Response } from '@bigtest/mirage';
-import { camelize } from '@bigtest/mirage';
+import { Response, camelize } from '@bigtest/mirage';
 
 export default class HeadShorthandRouteHandler extends BaseShorthandRouteHandler {
-
   /*
     Retrieve a model/collection from the db.
 

@@ -12,7 +12,6 @@ module('Integration | ORM | Belongs To | One-to-one Polymorphic | association #n
 */
 
 states.forEach((state) => {
-
   test(`a ${state} can build a new associated parent`, function(assert) {
     let [ comment ] = this.helper[state]();
 
@@ -29,5 +28,4 @@ states.forEach((state) => {
     assert.ok(post.id, 'saving the child persists the parent');
     assert.deepEqual(comment.commentableId, { type: 'post', id: post.id }, 'the childs fk was updated');
   });
-
 });

@@ -33,7 +33,7 @@ test('a meaningful error is thrown if a custom route handler throws an error', f
   let done = assert.async();
 
   this.server.get('/users', function() {
-    throw 'I goofed';
+    throw new Error('I goofed');
   });
 
   $.ajax({
