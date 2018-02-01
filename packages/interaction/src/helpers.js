@@ -25,6 +25,28 @@ export function $(selector, $ctx = document) {
 }
 
 /**
+ * Selects all of the matching elements using a selector via
+ * `$scope.querySelectorAll()`
+ *
+ * @param {String} selector - query selector string
+ * @param {Element} [$scope=document] - optional scope that
+ * supports `.querySelectorAll()`
+ */
+export function $$(selector, $ctx = document) {
+  let nodes = [];
+
+  if (!$ctx || typeof $ctx.querySelectorAll !== 'function') {
+    throw new Error('unable to use the current context');
+  }
+
+  if (typeof selector === 'string') {
+    nodes = [].slice.call($ctx.querySelectorAll(selector));
+  }
+
+  return nodes;
+}
+
+/**
  * Returns true if the provided object looks like a
  * property descriptor
  *
