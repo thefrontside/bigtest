@@ -7,7 +7,7 @@ describe('BigTest Interaction: fillable', () => {
   let value = '';
   let events = [];
 
-  useFixture('fill-fixture');
+  useFixture('input-fixture');
 
   beforeEach(() => {
     events = [];
