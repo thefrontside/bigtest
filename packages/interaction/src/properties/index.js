@@ -11,3 +11,4 @@ export { default as text } from './text';
 export { default as value } from './value';
 export { default as attribute } from './attribute';
 export { default as property } from './property';
+export { default as hasClass } from './has-class';
