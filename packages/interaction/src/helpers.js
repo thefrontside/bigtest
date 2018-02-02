@@ -5,6 +5,7 @@
  * @param {String} selector - query selector string
  * @param {Element} [$scope=document] - optional scope that
  * supports `.querySelector()`
+ * @returns {Element} matching element node
  */
 export function $(selector, $ctx = document) {
   let $node = selector;
@@ -35,6 +36,7 @@ export function $(selector, $ctx = document) {
  * @param {String} selector - query selector string
  * @param {Element} [$scope=document] - optional scope that
  * supports `.querySelectorAll()`
+ * @returns {Array} array of element nodes
  */
 export function $$(selector, $ctx = document) {
   let nodes = [];
@@ -48,6 +50,21 @@ export function $$(selector, $ctx = document) {
   }
 
   return nodes;
+}
+
+/**
+ * IE compatible polyfill for Element.matches
+ *
+ * @param {Element} $el - DOM element
+ * @param {String} selector - query selector string
+ * @returns {Boolean}
+ */
+export function elementMatches($el, selector) {
+  if (!$el.matches) {
+    return $el.msMatchesSelector(selector);
+  } else {
+    return $el.matches(selector);
+  }
 }
 
 /**
