@@ -3,6 +3,7 @@ export { default as clickable } from './clickable';
 export { default as fillable } from './fillable';
 export { default as focusable } from './focusable';
 export { default as blurrable } from './blurrable';
+export { default as triggerable } from './triggerable';
 export { default as collection } from './collection';
 
 // read-only properties
