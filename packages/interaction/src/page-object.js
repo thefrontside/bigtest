@@ -79,6 +79,23 @@ export default function page(Class) {
     }
   }
 
+  // get a list of default interactions to make available on our page-object
+  let defaultActions = Object.keys(Object.getOwnPropertyDescriptors(Interaction.prototype));
+
+  for (let i = 0, l = defaultActions.length; i < l; i++) {
+    let name = defaultActions[i];
+
+    // prevent constructor and existing properties from being overridden
+    if (name !== 'constructor' && !pageProto[name]) {
+      pageProto[defaultActions[i]] = {
+        value() {
+          let action = this.interaction[name];
+          return action.apply(this.interaction, arguments);
+        }
+      };
+    }
+  }
+
   // extend the new page-object class
   Object.defineProperties(Page.prototype, Object.assign(classProto, pageProto));
   Object.defineProperty(Page, 'name', { value: Class.name });

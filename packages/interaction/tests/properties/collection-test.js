@@ -56,5 +56,17 @@ describe('BigTest Interaction: collection', () => {
       await expect(item.clickBtn().run()).to.be.fulfilled;
       expect(clicked).to.be.true;
     });
+
+    it('allows clicking directly on the scoped element', async () => {
+      let item = new TestPage().items(0);
+      let clicked = false;
+
+      document.querySelector('#a')
+        .addEventListener('click', () => clicked = true);
+
+      expect(item).to.respondTo('click');
+      await expect(item.click().run()).to.be.fulfilled;
+      expect(clicked).to.be.true;
+    });
   });
 });

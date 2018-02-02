@@ -50,8 +50,12 @@ describe('BigTest Interaction: blurrable', () => {
       });
     });
 
-    it('has a blurrable method', () => {
-      expect(new TestPage().blurInput).to.be.a('function');
+    it('has a blur method', () => {
+      expect(new TestPage()).to.respondTo('blur');
+    });
+
+    it('has a custom blurrable method', () => {
+      expect(new TestPage()).to.respondTo('blurInput');
     });
 
     it('returns a custom interaction', () => {
@@ -65,7 +69,13 @@ describe('BigTest Interaction: blurrable', () => {
       expect(blur.blurInput).to.be.a('function');
     });
 
-    it('eventually blurs the element', async () => {
+    it('eventually blurs the given element', async () => {
+      let blur = new TestPage().blur('.test-input');
+      await expect(blur.run()).to.be.fulfilled;
+      expect(blurred).to.be.true;
+    });
+
+    it('eventually blurs the specified element', async () => {
       let blur = new TestPage().blurInput();
       await expect(blur.run()).to.be.fulfilled;
       expect(blurred).to.be.true;

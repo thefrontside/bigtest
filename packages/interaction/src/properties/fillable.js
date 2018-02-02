@@ -2,15 +2,32 @@
 import { createPropertyDescriptor } from '../helpers';
 
 /**
- * Adds a convergence for filling an input existing in the DOM
+ * Adds a convergence for filling an input existing in the DOM. This
+ * method works with one or two arguments. If given one argument, it
+ * is used as the value to fill in the interaction's scoped
+ * element. Given a second argument, the first is used a query
+ * selector string to select an element for filling.
  *
  * Works around react by caching any custom value property descriptor
  * and reapplying it after an input event is dispatched on the node
  *
- * @param {String} selector - jQuery selector
+ * @param {String} selectorOrValue - query selector string or value if
+ * the second argument is not provided
+ * @param {String} [value] - if provided, the first argument is used
+ * as the query selector string
  * @returns {Interaction}
  */
-export function fill(selector, value) {
+export function fill(selectorOrValue, value) {
+  let selector;
+
+  // if value is not defined, it is assumed that the only passed
+  // argument is the value for the root element
+  if (typeof value === 'undefined') {
+    value = selectorOrValue;
+  } else {
+    selector = selectorOrValue;
+  }
+
   return this.select(selector)
     .do(($node) => {
       // cache artificial value property descriptor

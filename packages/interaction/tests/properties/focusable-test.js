@@ -50,8 +50,12 @@ describe('BigTest Interaction: focusable', () => {
       });
     });
 
-    it('has a focusable method', () => {
-      expect(new TestPage().focusInput).to.be.a('function');
+    it('has a focus method', () => {
+      expect(new TestPage()).to.respondTo('focus');
+    });
+
+    it('has a custom focusable method', () => {
+      expect(new TestPage()).to.respondTo('focusInput');
     });
 
     it('returns a custom interaction', () => {
@@ -65,7 +69,13 @@ describe('BigTest Interaction: focusable', () => {
       expect(focus.focusInput).to.be.a('function');
     });
 
-    it('eventually focuses the element', async () => {
+    it('eventually focuses the given element', async () => {
+      let focus = new TestPage().focus('.test-input');
+      await expect(focus.run()).to.be.fulfilled;
+      expect(focused).to.be.true;
+    });
+
+    it('eventually focuses the specified element', async () => {
       let focus = new TestPage().focusInput();
       await expect(focus.run()).to.be.fulfilled;
       expect(focused).to.be.true;

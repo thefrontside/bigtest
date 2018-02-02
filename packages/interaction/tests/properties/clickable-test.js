@@ -37,6 +37,12 @@ describe('BigTest Interaction: clickable', () => {
       await expect(click.run()).to.be.fulfilled;
       expect(clicked).to.be.true;
     });
+
+    it('eventually clicks the scoped element', async () => {
+      let click = new Interaction('.test-btn').click();
+      await expect(click.run()).to.be.fulfilled;
+      expect(clicked).to.be.true;
+    });
   });
 
   describe('Page Object', () => {
@@ -50,7 +56,11 @@ describe('BigTest Interaction: clickable', () => {
       });
     });
 
-    it('has a clickable method', () => {
+    it('has a click method', () => {
+      expect(new TestPage().click).to.be.a('function');
+    });
+
+    it('has a custom clickable method', () => {
       expect(new TestPage().clickBtn).to.be.a('function');
     });
 
@@ -65,7 +75,13 @@ describe('BigTest Interaction: clickable', () => {
       expect(click.clickBtn).to.be.a('function');
     });
 
-    it('eventually clicks the element', async () => {
+    it('eventually clicks a given element', async () => {
+      let click = new TestPage().click('.test-btn');
+      await expect(click.run()).to.be.fulfilled;
+      expect(clicked).to.be.true;
+    });
+
+    it('eventually clicks the specified element', async () => {
       let click = new TestPage().clickBtn();
       await expect(click.run()).to.be.fulfilled;
       expect(clicked).to.be.true;

@@ -41,6 +41,12 @@ describe('BigTest Interaction: fillable', () => {
       expect(fill).to.be.an.instanceof(Interaction);
     });
 
+    it('eventually fills the scoped element', async () => {
+      let fill = new Interaction('.test-input').fill('hello scope');
+      await expect(fill.run()).to.be.fulfilled;
+      expect(value).to.equal('hello scope');
+    });
+
     it('eventually fills the element', async () => {
       let fill = interaction.fill('.test-input', 'hello world');
       await expect(fill.run()).to.be.fulfilled;
@@ -65,8 +71,12 @@ describe('BigTest Interaction: fillable', () => {
       });
     });
 
-    it('has a fillable method', () => {
-      expect(new TestPage().fillInput).to.be.a('function');
+    it('has a fill method', () => {
+      expect(new TestPage()).to.respondTo('fill');
+    });
+
+    it('has a custom fillable method', () => {
+      expect(new TestPage()).to.respondTo('fillInput');
     });
 
     it('returns a custom interaction', () => {
@@ -80,10 +90,16 @@ describe('BigTest Interaction: fillable', () => {
       expect(fill.fillInput).to.be.a('function');
     });
 
-    it('eventually fills the input element', async () => {
-      let fill = new TestPage().fillInput('filled');
+    it('eventually fills a given input element', async () => {
+      let fill = new TestPage().fill('.test-input', 'given');
       await expect(fill.run()).to.be.fulfilled;
-      expect(value).to.equal('filled');
+      expect(value).to.equal('given');
+    });
+
+    it('eventually fills the specified input element', async () => {
+      let fill = new TestPage().fillInput('specified');
+      await expect(fill.run()).to.be.fulfilled;
+      expect(value).to.equal('specified');
     });
 
     it('eventually fires input and change events', async () => {

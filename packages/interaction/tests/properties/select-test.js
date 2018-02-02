@@ -79,6 +79,11 @@ describe('BigTest Interaction: select', () => {
       });
     });
 
+    it('has a select method', () => {
+      expect(new TestPage()).to.respondTo('select');
+      expect(new TestPage().select('.test-p')).to.be.an.instanceOf(Interaction);
+    });
+
     it('gets the element', () => {
       expect(new TestPage().$test).to.be.an.instanceOf(Element);
     });

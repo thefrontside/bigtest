@@ -15,6 +15,10 @@ export function $(selector, $ctx = document) {
 
   if (typeof selector === 'string') {
     $node = $ctx.querySelector(selector);
+
+  // if a non-string is falsy, return the context element
+  } else if (!selector) {
+    return $ctx;
   }
 
   if (!$node) {
