@@ -1,9 +1,6 @@
 import Interaction from './interaction';
 import { $, isPropertyDescriptor } from './helpers';
 
-// export page-object property helpers
-export * from './properties';
-
 // the base page-object class
 class PageObject {
   /**
