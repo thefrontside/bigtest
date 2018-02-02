@@ -13,3 +13,5 @@ export { default as attribute } from './attribute';
 export { default as property } from './property';
 export { default as hasClass } from './has-class';
 export { default as is } from './is';
+export { default as isVisible } from './is-visible';
+export { default as isHidden } from './is-hidden';
