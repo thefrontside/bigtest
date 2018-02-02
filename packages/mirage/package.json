@@ -64,6 +64,6 @@
     "faker": "^4.1.0",
     "inflected": "^2.0.2",
     "lodash": "^4.17.4",
-    "pretender": "http://github.com/cowboyd/pretender#9ffecb8b789c6162e411ee8f023b5d635129a722"
+    "pretender": "^2.0.0"
   }
 }
