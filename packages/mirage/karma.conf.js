@@ -1,56 +1,52 @@
+const path = require('path');
+
 module.exports = function(config) {
   config.set({
-
-    // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
-
-    // frameworks to use
-    // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['qunit', 'jquery-2.1.4'],
+    reporters: ['mocha'],
+    browsers: ['Chrome'],
 
-    // files to watch
     files: [
-      { pattern: 'lib/**/*.js', served: false, included: false },
       'tests/index.js'
     ],
 
-    // processors per file
     preprocessors: {
       'tests/index.js': ['webpack']
     },
 
-    // test results reporter to use
-    // possible values: 'dots', 'progress'
-    // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['mocha'],
+    // enable the browser UI
+    client: {
+      clearContext: false,
+      qunit: {
+        showUI: true,
+        testTimeout: 5000
+      }
+    },
 
-    // web server port
-    port: 9876,
+    webpack: {
+      resolve: {
+        alias: {
+          qunit: path.resolve(__dirname, 'tests/qunit-shim.js'),
+          jquery: path.resolve(__dirname, 'tests/jquery-shim.js'),
+          '@bigtest/mirage': path.resolve(__dirname, 'lib/index.js')
+        }
+      },
 
-    // enable / disable colors in the output (reporters and logs)
-    colors: true,
-
-    // level of logging
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
-
-    // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
-
-    // start these browsers
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
-
-    // Continuous Integration mode
-    // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
-
-    // Concurrency level
-    // how many browser should be started simultaneous
-    concurrency: Infinity,
-
-    // webpack configuration
-    webpack: require('./webpack.config.js'),
+      module: {
+        rules: [
+          {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            use: [{
+              loader: 'babel-loader',
+              options: {
+                presets: ['es2016']
+              }
+            }]
+          }
+        ]
+      }
+    },
 
     // webpack-dev-middleware config
     webpackMiddleware: {
@@ -64,15 +60,6 @@ module.exports = function(config) {
       require('karma-webpack'),
       require('karma-chrome-launcher'),
       require('karma-mocha-reporter')
-    ],
-
-    // enable the browser UI
-    client: {
-      clearContext: false,
-      qunit: {
-        showUI: true,
-        testTimeout: 5000
-      }
-    }
+    ]
   });
 };
