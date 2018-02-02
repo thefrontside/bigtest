@@ -1,4 +1,6 @@
 import babel from 'rollup-plugin-babel';
+import resolve from 'rollup-plugin-node-resolve';
+import commonjs from 'rollup-plugin-commonjs';
 
 export default {
   input: 'lib/index.js',
@@ -8,6 +10,8 @@ export default {
     name: 'BigTest.Mirage'
   },
   plugins: [
+    resolve(),
+    commonjs(),
     babel({
       babelrc: false,
       comments: false,
