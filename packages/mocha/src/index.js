@@ -2,7 +2,7 @@ import * as mocha from 'mocha';
 import Convergence from '@bigtest/convergence';
 
 /**
- * Helper to create a convergent assertion using the current testing
+ * Creates a convergent assertion using the current testing
  * context's timeout.
  *
  * @param {Function} assertion - assertion to converge on
@@ -29,9 +29,22 @@ function convergent(assertion, always) {
 }
 
 /**
- * Helper to allow automatically running returned objects that implement
+ * Allows automatically running returned objects that implement
  * a Convergence interface. A Convergence interface is an immutable
  * instance that supports both `.timeout` and `.run` methods.
+ *
+ * Convergences are not only useful for assertions, but also for
+ * setting up your tests as well. For example, converging on the
+ * existence of a button before clicking it. Mocha works with promises
+ * out of the box, so you can use convergences by returning
+ * `convergence.run()` in your mocha hooks. To time it properly, you'd
+ * also have to call `convergence.timeout()` with the same timeout
+ * used for the current mocha context.
+ *
+ * This function allows us to wrap our hooks and automatically set the
+ * `timeout()` and call `run()` on any returned convergence or
+ * convergence-like object. This reduces the boilerplate needed when
+ * using convergences with Mocha's hooks.
  *
  * @param {Function} fn - function that may return a Convergence interface
  * @returns {Function} a function able to run the returned object
