@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+### Added
+
+- wrapped hooks that allow automatically running returned convergences
+  with the current timeout
+
 ### Removed
 
 - `rollup-plugin-commonjs` as it is no longer required to import
