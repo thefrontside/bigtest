@@ -1,0 +1,9 @@
+{
+  "extends": "../../../.eslintrc.json",
+  "rules": {
+    "no-return-assign": 0,
+    "no-unused-expressions": 0,
+    "standard/no-callback-literal": 0,
+    "no-new": 0
+  }
+}
