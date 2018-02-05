@@ -1,8 +1,8 @@
-import { it as mochaIt } from 'mocha';
+import * as mocha from 'mocha';
 import Convergence from '@bigtest/convergence';
 
 /**
- * Helper to create a convergent assertion using the current testing
+ * Creates a convergent assertion using the current testing
  * context's timeout.
  *
  * @param {Function} assertion - assertion to converge on
@@ -29,6 +29,50 @@ function convergent(assertion, always) {
 }
 
 /**
+ * Allows automatically running returned objects that implement
+ * a Convergence interface. A Convergence interface is an immutable
+ * instance that supports both `.timeout` and `.run` methods.
+ *
+ * Convergences are not only useful for assertions, but also for
+ * setting up your tests as well. For example, converging on the
+ * existence of a button before clicking it. Mocha works with promises
+ * out of the box, so you can use convergences by returning
+ * `convergence.run()` in your mocha hooks. To time it properly, you'd
+ * also have to call `convergence.timeout()` with the same timeout
+ * used for the current mocha context.
+ *
+ * This function allows us to wrap our hooks and automatically set the
+ * `timeout()` and call `run()` on any returned convergence or
+ * convergence-like object. This reduces the boilerplate needed when
+ * using convergences with Mocha's hooks.
+ *
+ * @param {Function} fn - function that may return a Convergence interface
+ * @returns {Function} a function able to run the returned object
+ */
+function handleRunnable(fn) {
+  let isRunnable = (obj) => {
+    return typeof obj.timeout === 'function' &&
+      typeof obj.run === 'function';
+  };
+
+  return function() {
+    let result = fn.apply(this, arguments);
+
+    if (result && isRunnable(result)) {
+      let timeout = 2000;
+
+      if (typeof this.timeout === 'function') {
+        timeout = this.timeout();
+      }
+
+      return result.timeout(timeout).run();
+    } else {
+      return result;
+    }
+  };
+}
+
+/**
  * Convergent it will use the convergent helper to keep testing the assertion
  * repeatedly until it passes or until the timeout is reached
  *
@@ -36,20 +80,20 @@ function convergent(assertion, always) {
  * @param {Function} assertion - the assertion to converge on
  */
 function it(title, assertion) {
-  if (!assertion) return mochaIt.skip(title);
-  return mochaIt(title, convergent(assertion));
+  if (!assertion) return mocha.it.skip(title);
+  return mocha.it(title, convergent(assertion));
 }
 
 /**
- * Convergent it that will inversely keep testing an assertion reapeatedly until
+ * Convergent it that will inversely keep testing an assertion repeatedly until
  * it fails or until the timeout is reached
  *
  * @param {String} title - specification description
  * @param {Function} assertion - the assertion to inversely converge on
  */
 function itAlways(title, assertion) {
-  if (!assertion) return mochaIt.skip(title);
-  return mochaIt(title, convergent(assertion, true));
+  if (!assertion) return mocha.it.skip(title);
+  return mocha.it(title, convergent(assertion, true));
 }
 
 /**
@@ -59,8 +103,8 @@ function itAlways(title, assertion) {
  * @param {Function} assertion - the assertion to converge on
  */
 function itOnly(title, assertion) {
-  if (!assertion) return mochaIt.skip(title);
-  return mochaIt.only(title, convergent(assertion));
+  if (!assertion) return mocha.it.skip(title);
+  return mocha.it.only(title, convergent(assertion));
 }
 
 /**
@@ -70,8 +114,8 @@ function itOnly(title, assertion) {
  * @param {Function} assertion - the assertion to inversely converge on
  */
 function itAlwaysOnly(title, assertion) {
-  if (!assertion) return mochaIt.skip(title);
-  return mochaIt.only(title, convergent(assertion, true));
+  if (!assertion) return mocha.it.skip(title);
+  return mocha.it.only(title, convergent(assertion, true));
 }
 
 /**
@@ -81,7 +125,7 @@ function itAlwaysOnly(title, assertion) {
  * @param {String} title - specification description
  */
 function itPause(title) {
-  return mochaIt(title, function() {
+  return mocha.it(title, function() {
     return new Promise(() => {});
   }).timeout(0);
 }
@@ -92,7 +136,7 @@ function itPause(title) {
  * @param {String} title - specification description
  */
 function itPauseOnly(title) {
-  return mochaIt.only(title, function() {
+  return mocha.it.only(title, function() {
     return new Promise(() => {});
   }).timeout(0);
 }
@@ -107,30 +151,69 @@ it.pause.only = itPauseOnly;
 it.only.pause = itPauseOnly;
 
 // alias mocha's it.skip
-it.skip = mochaIt.skip;
-it.always.skip = mochaIt.skip;
+it.skip = mocha.it.skip;
+it.always.skip = mocha.it.skip;
 
-// in BDD interface `specify` is an alias for `it`
-let specify = it;
+/**
+ * Just like mocha's before, but with the ability to automatically
+ * run Convergence-like instances.
+ *
+ * @param {Function} setup - setup function
+ */
+function before(setup) {
+  return mocha.before(handleRunnable(setup));
+}
 
-// in TDD interface `test` is an alias for `it`
-let test = it;
+/**
+ * Just like mocha's beforeEach, but with the ability to automatically
+ * run Convergence-like instances.
+ *
+ * @param {Function} setup - setup function
+ */
+function beforeEach(setup) {
+  return mocha.beforeEach(handleRunnable(setup));
+}
 
-// export our convergent it (and aliases)
-export { it, specify, test };
+/**
+ * Just like mocha's after, but with the ability to automatically
+ * run Convergence-like instances.
+ *
+ * @param {Function} teardown - teardown function
+ */
+function after(teardown) {
+  return mocha.after(handleRunnable(teardown));
+}
+
+/**
+ * Just like mocha's afterEach, but with the ability to automatically
+ * run Convergence-like instances.
+ *
+ * @param {Function} teardown - teardown function
+ */
+function afterEach(teardown) {
+  return mocha.afterEach(handleRunnable(teardown));
+}
+
+// export our convergent it, wrapped hooks, and their aliases
+export {
+  it,
+  before,
+  beforeEach,
+  after,
+  afterEach,
+  // TDD interface aliases
+  it as test,
+  // BDD interface aliases
+  it as specify,
+  before as suiteSetup,
+  beforeEach as setup,
+  after as suiteTeardown,
+  afterEach as teardown
+};
 
 // export other mocha functions used for testing
 export {
   describe,
   context,
-  before,
-  beforeEach,
-  after,
-  afterEach,
-  // BDD interface functions
-  suite,
-  suiteSetup,
-  setup,
-  suiteTeardown,
-  teardown
+  suite
 } from 'mocha';
