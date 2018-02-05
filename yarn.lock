@@ -1958,9 +1958,9 @@ extsprintf@^1.2.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
 
-fake-xml-http-request@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/fake-xml-http-request/-/fake-xml-http-request-1.6.0.tgz#bd0ac79ae3e2660098282048a12c730a6f64d550"
+fake-xml-http-request@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/fake-xml-http-request/-/fake-xml-http-request-2.0.0.tgz#41a92f0ca539477700cb1dafd2df251d55dac8ff"
 
 faker@^4.1.0:
   version "4.1.0"
@@ -3374,11 +3374,11 @@ preserve@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/preserve/-/preserve-0.2.0.tgz#815ed1f6ebc65926f865b310c0713bcb3315ce4b"
 
-"pretender@http://github.com/cowboyd/pretender#9ffecb8b789c6162e411ee8f023b5d635129a722":
-  version "1.5.1"
-  resolved "http://github.com/cowboyd/pretender#9ffecb8b789c6162e411ee8f023b5d635129a722"
+pretender@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/pretender/-/pretender-2.0.0.tgz#5adae189f1d5b25f86113f9225df25bed54f4072"
   dependencies:
-    fake-xml-http-request "^1.6.0"
+    fake-xml-http-request "^2.0.0"
     route-recognizer "^0.3.3"
 
 private@^0.1.6, private@^0.1.7:
