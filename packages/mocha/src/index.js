@@ -1,4 +1,4 @@
-import * as mocha from 'mocha';
+import * as mocha from './mocha';
 import Convergence from '@bigtest/convergence';
 
 /**
@@ -194,6 +194,9 @@ function afterEach(teardown) {
   return mocha.afterEach(handleRunnable(teardown));
 }
 
+// destructure this for exporting
+let { describe } = mocha;
+
 // export our convergent it, wrapped hooks, and their aliases
 export {
   it,
@@ -201,19 +204,15 @@ export {
   beforeEach,
   after,
   afterEach,
+  describe,
   // TDD interface aliases
   it as test,
+  describe as context,
   // BDD interface aliases
   it as specify,
   before as suiteSetup,
   beforeEach as setup,
   after as suiteTeardown,
-  afterEach as teardown
+  afterEach as teardown,
+  describe as suite
 };
-
-// export other mocha functions used for testing
-export {
-  describe,
-  context,
-  suite
-} from 'mocha';
