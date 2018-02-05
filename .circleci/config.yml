@@ -39,6 +39,7 @@ jobs:
             - node_modules
             # globs don't work for save_cache :(
             - packages/convergence/node_modules
+            - packages/mirage/node_modules
 
   build:
     <<: *defaults
