@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [0.2.0] - 2018-02-05
+
 ### Added
 
 - wrapped hooks that allow automatically running returned convergences
@@ -18,6 +20,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 ### Fixed
 
 - correctly remove comments from compiled files
+- do not directly import mocha in browser environments
 
 ## [0.1.1] - 2018-01-09
 
