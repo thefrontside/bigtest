@@ -73,7 +73,7 @@ describe('BigTest Interaction: Interaction', () => {
 
     it('throws when scope does not exist', () => {
       let scoped = new Interaction('#not-scoped').timeout(50);
-      expect(() => scoped.$scope).to.throw('unable to select "#not-scoped"');
+      expect(() => scoped.$scope).to.throw('unable to find "#not-scoped"');
     });
   });
 });

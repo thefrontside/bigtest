@@ -25,7 +25,7 @@ export function scroll(selectorOrScrollTo, scrollTo) {
     selector = selectorOrScrollTo;
   }
 
-  return this.select(selector)
+  return this.find(selector)
     .do(($node) => {
       if (typeof scrollTo.left === 'number') {
         $node.scrollLeft = scrollTo.left;

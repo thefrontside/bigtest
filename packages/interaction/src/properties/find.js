@@ -6,7 +6,7 @@ import { $, createPropertyDescriptor } from '../helpers';
  * @param {String} selector - query selector
  * @returns {Interaction}
  */
-export function select(selector) {
+export function find(selector) {
   return this.once(() => {
     return $(selector, this.$scope);
   });

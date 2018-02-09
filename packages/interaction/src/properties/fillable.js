@@ -28,7 +28,7 @@ export function fill(selectorOrValue, value) {
     selector = selectorOrValue;
   }
 
-  return this.select(selector)
+  return this.find(selector)
     .do(($node) => {
       // cache artificial value property descriptor
       let descriptor = Object.getOwnPropertyDescriptor($node, 'value');

@@ -32,7 +32,7 @@ export function trigger(selectorOrEventName, eventNameOrOptions, options) {
     options = {};
   }
 
-  return this.select(selector)
+  return this.find(selector)
     .do(($node) => {
       // default options for any event
       let bubbles = options.hasOwnProperty('bubbles') ? options.bubbles : true;

@@ -8,7 +8,7 @@ import { createPropertyDescriptor } from '../helpers';
  * @returns {Interaction}
  */
 export function blur(selector) {
-  return this.select(selector)
+  return this.find(selector)
     .do(($node) => {
       $node.dispatchEvent(
         new Event('blur', {

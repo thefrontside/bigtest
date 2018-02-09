@@ -23,7 +23,7 @@ export function $(selector, $ctx = document) {
   }
 
   if (!$node) {
-    throw new Error(`unable to select "${selector}"`);
+    throw new Error(`unable to find "${selector}"`);
   }
 
   return $node;
