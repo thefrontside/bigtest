@@ -1,4 +1,5 @@
 export { find } from './find';
+export { findAll } from './find-all';
 export { click } from './clickable';
 export { fill } from './fillable';
 export { focus } from './focusable';

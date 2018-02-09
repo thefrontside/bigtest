@@ -8,6 +8,7 @@ export { default as collection } from './collection';
 
 // read-only properties
 export { default as find } from './find';
+export { default as findAll } from './find-all';
 export { default as count } from './count';
 export { default as text } from './text';
 export { default as value } from './value';
