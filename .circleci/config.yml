@@ -10,7 +10,7 @@ references:
         - 2e:3e:1e:98:92:42:17:a6:ee:23:fb:d6:cb:cc:42:5e
 
   cache_key: &cache_key
-    bigtest-{{ .Branch }}-{{ checksum "yarn.lock" }}
+    bigtest-v2-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
   restore_cache: &restore_cache
     restore_cache:
