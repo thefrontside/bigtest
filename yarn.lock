@@ -452,6 +452,10 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
+"@bigtest/convergence@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@bigtest/convergence/-/convergence-0.1.2.tgz#0cac3eac36ad4525e3c8cf28dc2fe001c9d1af39"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
