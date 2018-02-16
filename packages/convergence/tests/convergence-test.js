@@ -125,6 +125,37 @@ describe('BigTest Convergence', () => {
         expect(callback._stack[1]).to.have.property('exec', fn);
       });
     });
+
+    describe('combining convergences with `.append()`', () => {
+      let combined;
+
+      beforeEach(() => {
+        combined = converge.append(
+          new Convergence().once(() => {})
+        );
+      });
+
+      it('creates a new instance', () => {
+        expect(combined).to.be.an.instanceOf(Convergence);
+        expect(combined).to.not.equal(converge);
+      });
+
+      it('creates a new stack', () => {
+        expect(combined._stack).to.not.equal(converge._stack);
+        expect(combined._stack).to.have.lengthOf(1);
+        expect(converge._stack).to.have.lengthOf(0);
+      });
+
+      it('combines the two stacks', () => {
+        let fn = () => {};
+
+        combined = combined.append(
+          new Convergence().do(fn)
+        );
+
+        expect(combined._stack[1]).to.have.property('exec', fn);
+      });
+    });
   });
 
   describe('running convergences', () => {
@@ -268,6 +299,19 @@ describe('BigTest Convergence', () => {
 
         await expect(assertion.run()).to.be.rejected;
         expect(called).to.be.false;
+      });
+    });
+
+    describe('after using `.append()`', () => {
+      it('runs methods from the other convergence', async () => {
+        let called = false;
+
+        let assertion = converge.once(() => expect(total).to.equal(5));
+        assertion = assertion.append(converge.do(() => called = true));
+
+        createTimeout(() => total = 5, 50);
+        await expect(assertion.run()).to.be.fulfilled;
+        expect(called).to.be.true;
       });
     });
 

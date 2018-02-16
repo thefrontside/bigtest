@@ -228,6 +228,19 @@ converge
   })
 ```
 
+**`.append()`**
+
+Combines convergences to allow composing them together to create brand
+new convergence instances.
+
+``` javascript
+let converge1 = converge.once(() => total === 1)
+let converge5 = converge.once(() => total === 5)
+
+// converges when the total first equals `1` and then equals `5`
+converge1.append(converge5)
+```
+
 **`.run()`**
 
 In order to actually run a `Convergence` instance, you must call the

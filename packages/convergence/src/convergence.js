@@ -135,6 +135,24 @@ export default class Convergence {
   }
 
   /**
+   * Appends a convergence to this convergence's stack to allow
+   * composing different convergences together
+   *
+   * @param {Convergence} convergence - a convergence instance
+   * @returns {Convergence} a new convergence instance
+   */
+  append(convergence) {
+    if (!(convergence instanceof Convergence)) {
+      throw new Error('.append() only works with other convergence instances');
+    }
+
+    return new Convergence(this._timeout, [
+      ...this._stack,
+      ...convergence._stack
+    ]);
+  }
+
+  /**
    * Returns a promise that will resolve once all convergences in the
    * stack have been met within this instance's timeout period. The
    * return value from previous functions in the stack will be given
