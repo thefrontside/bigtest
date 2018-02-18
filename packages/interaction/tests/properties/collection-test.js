@@ -68,5 +68,15 @@ describe('BigTest Interaction: collection', () => {
       await expect(item.click().run()).to.be.fulfilled;
       expect(clicked).to.be.true;
     });
+
+    it('is not chainable from interaction methods', () => {
+      let interaction = new TestPage().click('#a button');
+      expect(interaction).to.not.respondTo('items');
+    });
+
+    it('throws an error when the element does not exist', () => {
+      expect(() => new TestPage().items(99))
+        .to.throw('unable to find ".test-item" at index 99');
+    });
   });
 });

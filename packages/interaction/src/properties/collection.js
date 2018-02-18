@@ -1,4 +1,4 @@
-import { $$, createPropertyDescriptor } from '../helpers';
+import { $$ } from '../helpers';
 import page from '../page-object';
 
 /**
@@ -6,10 +6,10 @@ import page from '../page-object';
  * have their own scoped properties
  *
  * @param {String} selector - query selector
- * @param {Object} descriptors - page-object property descriptors
+ * @param {Object} [descriptors] - page-object property descriptors
  * @returns {Object} property descriptor
  */
-export default function(selector, descriptors) {
+export default function(selector, descriptors = {}) {
   let CollectionObject = page(class {
     constructor() {
       for (let [key, val] of Object.entries(descriptors)) {
@@ -18,15 +18,15 @@ export default function(selector, descriptors) {
     }
   });
 
-  return createPropertyDescriptor({
-    value(index) {
-      let items = $$(selector, this.$scope);
+  return function(index) {
+    let items = $$(selector, this.$scope);
 
-      if (typeof index === 'undefined') {
-        return items.map((item) => new CollectionObject(item));
-      } else {
-        return new CollectionObject(items[index]);
-      }
+    if (typeof index === 'undefined') {
+      return items.map((item) => new CollectionObject(item));
+    } else if (items[index]) {
+      return new CollectionObject(items[index]);
+    } else {
+      throw new Error(`unable to find "${selector}" at index ${index}`);
     }
-  });
+  };
 }
