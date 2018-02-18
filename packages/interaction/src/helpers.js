@@ -84,12 +84,17 @@ export function isPropertyDescriptor(descr) {
 
 /**
  * Creates a property descriptor that would satisfy the above, given
- * an additional `value` or `get` property
+ * an additional `get` property or a method function
  *
- * @param {Object} descr - descriptor properties
+ * @param {Object|Function} descr - descriptor properties or a
+ * function for creating a method descriptor
  * @returns {Object} property descriptor
  */
 export function createPropertyDescriptor(descr) {
+  if (typeof descr === 'function') {
+    descr = { value: descr };
+  }
+
   return Object.assign({
     enumerable: false,
     configurable: false

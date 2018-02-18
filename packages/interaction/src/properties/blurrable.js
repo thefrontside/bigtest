@@ -26,9 +26,7 @@ export function blur(selector) {
  * @returns {Object} property descriptor
  */
 export default function(selector) {
-  return createPropertyDescriptor({
-    value() {
-      return this.blur(selector);
-    }
+  return createPropertyDescriptor(function() {
+    return this.blur(selector);
   });
 }

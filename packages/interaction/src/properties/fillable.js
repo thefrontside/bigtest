@@ -69,9 +69,7 @@ export function fill(selectorOrValue, value) {
  * @returns {Object} property descriptor
  */
 export default function(selector) {
-  return createPropertyDescriptor({
-    value(value) {
-      return this.fill(selector, value);
-    }
+  return createPropertyDescriptor(function(value) {
+    return this.fill(selector, value);
   });
 }

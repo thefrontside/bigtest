@@ -51,9 +51,7 @@ export function scroll(selectorOrScrollTo, scrollTo) {
  * @returns {Object} property descriptor
  */
 export default function(selector) {
-  return createPropertyDescriptor({
-    value(scrollTo) {
-      return this.scroll(selector, scrollTo);
-    }
+  return createPropertyDescriptor(function(scrollTo) {
+    return this.scroll(selector, scrollTo);
   });
 }

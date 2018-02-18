@@ -26,9 +26,7 @@ export function focus(selector) {
  * @returns {Object} property descriptor
  */
 export default function(selector) {
-  return createPropertyDescriptor({
-    value() {
-      return this.focus(selector);
-    }
+  return createPropertyDescriptor(function() {
+    return this.focus(selector);
   });
 }

@@ -18,9 +18,7 @@ export function click(selector) {
  * @returns {Object} property descriptor
  */
 export default function(selector) {
-  return createPropertyDescriptor({
-    value() {
-      return this.click(selector);
-    }
+  return createPropertyDescriptor(function() {
+    return this.click(selector);
   });
 }

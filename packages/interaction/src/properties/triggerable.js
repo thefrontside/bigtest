@@ -73,9 +73,7 @@ export default function(eventName, selectorOrOptions, options) {
     options = selectorOrOptions;
   }
 
-  return createPropertyDescriptor({
-    value() {
-      return this.trigger(selector, eventName, options);
-    }
+  return createPropertyDescriptor(function() {
+    return this.trigger(selector, eventName, options);
   });
 }
