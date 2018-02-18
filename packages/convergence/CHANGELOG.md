@@ -5,6 +5,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+### Added
+
+- ability to extend the convergence class
+
+### Changed
+
+- convergence constructor to be more general to allow subclasses to
+  handle their own construction
+
 ## [0.2.0] - 2018-02-16
 
 ### Added

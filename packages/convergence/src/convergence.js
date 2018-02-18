@@ -44,13 +44,26 @@ import convergeOn from './converge-on';
 export default class Convergence {
   /**
    * @constructor
-   * @param {Number} [timeout=2000] - timeout for this convergence
-   * @param {Array} [stack=[]] - the initial stack for this convergence
+   * @param {Object|Number} options - internal options, or a timeout
+   * @param {Convergence} [prev] - previous convergence to extend
    */
-  constructor(timeout = 2000, stack = []) {
+  constructor(options = {}, prev = {}) {
+    // a timeout was given
+    if (typeof options === 'number') {
+      options = { _timeout: options };
+    }
+
+    let {
+      _timeout = prev._timeout || 2000,
+      _stack = []
+    } = options;
+
+    // merge with the previous stack, if given
+    _stack = [...(prev._stack || []), ..._stack];
+
     Object.defineProperties(this, {
-      _timeout: { value: timeout },
-      _stack: { value: stack }
+      _timeout: { value: _timeout },
+      _stack: { value: _stack }
     });
   }
 
@@ -66,7 +79,7 @@ export default class Convergence {
    */
   timeout(timeout) {
     if (typeof timeout !== 'undefined') {
-      return new Convergence(timeout, [...this._stack]);
+      return new this.constructor(timeout, this);
     } else {
       return this._timeout;
     }
@@ -83,10 +96,9 @@ export default class Convergence {
    * @returns {Convergence} a new convergence instance
    */
   once(assert) {
-    return new Convergence(this._timeout, [
-      ...this._stack,
-      { assert }
-    ]);
+    return new this.constructor({
+      _stack: [{ assert }]
+    }, this);
   }
 
   /**
@@ -107,12 +119,13 @@ export default class Convergence {
    * @returns {Convergence} a new convergence instance
    */
   always(assert, timeout) {
-    timeout = Math.max(timeout || (this._timeout / 10), 20);
-
-    return new Convergence(this._timeout, [
-      ...this._stack,
-      { assert, timeout, always: true }
-    ]);
+    return new this.constructor({
+      _stack: [{
+        timeout: Math.max(timeout || (this._timeout / 10), 20),
+        always: true,
+        assert
+      }]
+    }, this);
   }
 
   /**
@@ -128,10 +141,9 @@ export default class Convergence {
    * @returns {Convergence} a new convergence instance
    */
   do(exec) {
-    return new Convergence(this._timeout, [
-      ...this._stack,
-      { exec }
-    ]);
+    return new this.constructor({
+      _stack: [{ exec }]
+    }, this);
   }
 
   /**
@@ -143,13 +155,12 @@ export default class Convergence {
    */
   append(convergence) {
     if (!(convergence instanceof Convergence)) {
-      throw new Error('.append() only works with other convergence instances');
+      throw new Error('.append() only works with convergence instances');
     }
 
-    return new Convergence(this._timeout, [
-      ...this._stack,
-      ...convergence._stack
-    ]);
+    return new this.constructor({
+      _stack: convergence._stack
+    }, this);
   }
 
   /**
