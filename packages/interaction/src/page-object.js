@@ -26,6 +26,22 @@ class PageObject {
 }
 
 /**
+ * Returns a property descriptor for a page that calls the interaction
+ * method with the given arguments
+ *
+ * @param {String} name - interaction method name
+ * @returns {Object} page-object property descriptor
+ */
+function wrapPageInteraction(name) {
+  return {
+    value() {
+      let method = this.interaction[name];
+      return method.apply(this.interaction, arguments);
+    }
+  };
+}
+
+/**
  * Decorates a class using page-object properties
  *
  * Example:
@@ -41,37 +57,32 @@ class PageObject {
  * @returns {Class} the decorated class
  */
 export default function page(Class) {
-  let instance = new Class();
-  let properties = Object.getOwnPropertyNames(instance);
-
   // create the new page-object classes
   let Page = class extends PageObject {};
   Page.Interaction = class extends Interaction {};
 
   // additional prototypes are added with page-object properties
-  let pageProto = Object.getOwnPropertyDescriptors(Page.prototype);
-  let classProto = Object.getOwnPropertyDescriptors(Class.prototype);
+  let pageProto = Object.create(null);
+  let interactionProto = Object.create(null);
 
-  // check instance for page-object properties
-  for (let i = 0, l = properties.length; i < l; i++) {
-    let key = properties[i];
-    let value = instance[key];
+  // make default interaction methods available on our page-object
+  for (let name of Object.getOwnPropertyNames(Interaction.prototype)) {
+    if (name !== 'constructor') {
+      pageProto[name] = wrapPageInteraction(name);
+    }
+  }
 
+  // check instance properties for page-object property descriptors
+  for (let [key, value] of Object.entries(new Class())) {
     // preserve raw values
     if (!isPropertyDescriptor(value)) {
       pageProto[key] = { value };
 
-    // add to the custom interaction
+    // method descriptors are added to the custom interaction and
+    // the page-object method wraps the interaction method
     } else if (typeof value.value === 'function') {
-      Page.Interaction.register(key, value.value);
-
-      // forward to the custom interaction
-      pageProto[key] = {
-        value() {
-          let action = this.interaction[key];
-          return action.apply(this.interaction, arguments);
-        }
-      };
+      interactionProto[key] = value;
+      pageProto[key] = wrapPageInteraction(key);
 
     // preserve other descriptors
     } else {
@@ -79,23 +90,13 @@ export default function page(Class) {
     }
   }
 
-  // get a list of default interactions to make available on our page-object
-  let defaultActions = Object.keys(Object.getOwnPropertyDescriptors(Interaction.prototype));
+  // keep the class prototype, minus the constructor
+  let classProto = Object.getOwnPropertyDescriptors(Class.prototype);
+  delete classProto.constructor;
 
-  for (let name of defaultActions) {
-    // prevent constructor and existing properties from being overridden
-    if (name !== 'constructor' && !pageProto[name]) {
-      pageProto[name] = {
-        value() {
-          let action = this.interaction[name];
-          return action.apply(this.interaction, arguments);
-        }
-      };
-    }
-  }
-
-  // extend the new page-object class
+  // extend the new page-object class and interaction
   Object.defineProperties(Page.prototype, Object.assign(classProto, pageProto));
+  Object.defineProperties(Page.Interaction.prototype, interactionProto);
   Object.defineProperty(Page, 'name', { value: Class.name });
 
   return Page;
