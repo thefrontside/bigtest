@@ -8,21 +8,6 @@ import * as interactions from './properties/interactions';
  */
 export default class Interaction {
   /**
-   * Registers a new helper method on this interaction instance
-   * @param {String} name - the name of the method
-   * @param {Function} helper - the method function
-   */
-  static register(name, helper) {
-    if (['once', 'always', 'do', 'timeout', 'run'].includes(name)) {
-      throw new Error('cannot overwrite convergence methods');
-    }
-
-    Object.defineProperty(this.prototype, name, {
-      value: helper
-    });
-  }
-
-  /**
    * @constructor
    * @param {Node|String} [$scope] - the node this interaction is scoped to
    * @param {Convergence} [convergence] - the convergence to start with
@@ -68,7 +53,10 @@ export default class Interaction {
   }
 }
 
-// Register default actions
-Object.entries(interactions).forEach(([name, action]) => {
-  Interaction.register(name, action);
-});
+// default interaction methods
+Object.defineProperties(
+  Interaction.prototype,
+  Object.entries(interactions).reduce((props, [name, value]) => {
+    return Object.assign(props, { [name]: { value } });
+  }, {})
+);

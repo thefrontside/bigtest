@@ -20,35 +20,6 @@ describe('BigTest Interaction: Interaction', () => {
     });
   });
 
-  it('has the ability to register new helpers', async () => {
-    let test = false;
-
-    Interaction.register('test', function() {
-      return this.do(() => test = true);
-    });
-
-    let newInteraction = new Interaction();
-
-    expect(newInteraction).to.respondTo('test');
-
-    let testInteraction = interaction.test();
-
-    expect(testInteraction).to.not.equal(newInteraction);
-    expect(test).to.be.false;
-
-    let promise = testInteraction.run();
-
-    await expect(promise).to.be.fulfilled;
-    expect(test).to.be.true;
-  });
-
-  it('cannot re-register convergence methods', () => {
-    ['once', 'always', 'do', 'timeout', 'run'].forEach((method) => {
-      expect(() => Interaction.register(method, () => {}))
-        .to.throw('cannot overwrite convergence methods');
-    });
-  });
-
   describe('with a scope', () => {
     useFixture('scoped-fixture');
 
