@@ -6,50 +6,26 @@ import * as interactions from './properties/interactions';
  * Interaction class to perform multiple interactions with the DOM
  * within one convergence period
  */
-export default class Interaction {
+export default class Interaction extends Convergence {
   /**
    * @constructor
    * @param {Node|String} [$scope] - the node this interaction is scoped to
    * @param {Convergence} [convergence] - the convergence to start with
    */
-  constructor($scope, convergence) {
-    let properties = {
-      // the convergence for this instance
-      convergence: {
-        value: convergence || new Convergence()
-      },
+  constructor(options = {}, prev = {}) {
+    super(options, prev);
 
-      // Sometimes, due to it's immutability, this class can be
-      // initialized with a previous $scope descriptor. We use the
-      // existing descriptor in this case, otherwise we create one.
-      $scope: isPropertyDescriptor($scope) ? $scope : {
-        get() {
-          return $($scope || document.body);
-        }
-      },
+    // a scope selector or element was given
+    if (typeof options === 'string' || options instanceof Element) {
+      options = { $scope: options };
+    }
 
-      // .run() forwards to the convergence
-      run: {
-        value() {
-          return this.convergence.run();
-        }
-      }
-    };
+    // use the previous scope descriptor if there was one
+    let prevScope = Object.getOwnPropertyDescriptor(prev, '$scope');
 
-    // wrap convergence methods for immutability
-    ['once', 'always', 'do', 'timeout'].forEach((method) => {
-      properties[method] = {
-        value(...args) {
-          return new this.constructor(
-            Object.getOwnPropertyDescriptor(this, '$scope'),
-            this.convergence[method](...args)
-          );
-        }
-      };
+    Object.defineProperty(this, '$scope',  prevScope || {
+      get: () => $(options.$scope || document.body)
     });
-
-    // define instance properties
-    Object.defineProperties(this, properties);
   }
 }
 

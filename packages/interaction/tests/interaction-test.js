@@ -1,5 +1,6 @@
 /* global describe, beforeEach, it */
 import { expect } from 'chai';
+import Convergence from '@bigtest/convergence';
 import { useFixture } from './helpers';
 import Interaction from '../src/interaction';
 
@@ -14,10 +15,29 @@ describe('BigTest Interaction: Interaction', () => {
     expect(interaction).to.be.an.instanceOf(Interaction);
   });
 
-  it('has a convergence interface', () => {
-    ['once', 'always', 'do', 'timeout', 'run'].forEach((method) => {
-      expect(interaction).to.respondTo(method);
-    });
+  it('extends the convergence class', () => {
+    expect(interaction).to.be.an.instanceOf(Convergence);
+  });
+
+  it('is extendable', async () => {
+    let test = false;
+
+    class CustomInteraction extends Interaction {
+      test() {
+        return this.do(() => test = true);
+      }
+    };
+
+    interaction = new CustomInteraction();
+    expect(interaction).to.respondTo('test');
+
+    let testInteraction = interaction.test();
+
+    expect(testInteraction).to.not.equal(interaction);
+    expect(test).to.be.false;
+
+    await expect(testInteraction.run()).to.be.fulfilled;
+    expect(test).to.be.true;
   });
 
   describe('with a scope', () => {
