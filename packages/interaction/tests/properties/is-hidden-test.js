@@ -17,7 +17,7 @@ describe('BigTest Interaction: isHidden', () => {
       });
     });
 
-    it('has an "isVisible" property', () => {
+    it('has an "isHidden" property', () => {
       expect(new TestPage('#not-visible'))
         .to.have.property('isDisplayHidden')
         .that.is.a('boolean');
