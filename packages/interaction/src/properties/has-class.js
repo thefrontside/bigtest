@@ -1,4 +1,5 @@
-import { $, createPropertyDescriptor } from '../helpers';
+import { $ } from '../helpers';
+import { computed } from './helpers';
 
 /**
  * Page-object property creator for returning true or false if the
@@ -9,9 +10,7 @@ import { $, createPropertyDescriptor } from '../helpers';
  * @returns {Object} property descriptor
  */
 export default function(className, selector) {
-  return createPropertyDescriptor({
-    get() {
-      return $(selector, this.$root).classList.contains(className);
-    }
+  return computed(function() {
+    return $(selector, this.$root).classList.contains(className);
   });
 }

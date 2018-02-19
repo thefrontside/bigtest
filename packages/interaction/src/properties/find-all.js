@@ -1,4 +1,5 @@
-import { $$, createPropertyDescriptor } from '../helpers';
+import { $$ } from '../helpers';
+import { computed } from './helpers';
 
 /**
  * Adds a convergence for finding elements in the DOM. If the elements
@@ -20,9 +21,7 @@ export function findAll(selector) {
  * @returns {Object} property descriptor
  */
 export default function(selector) {
-  return createPropertyDescriptor({
-    get() {
-      return $$(selector, this.$root);
-    }
+  return computed(function() {
+    return $$(selector, this.$root);
   });
 }

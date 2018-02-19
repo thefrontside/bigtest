@@ -1,5 +1,5 @@
 /* global Event */
-import { createPropertyDescriptor } from '../helpers';
+import { action } from './helpers';
 
 /**
  * Adds a convergence for focusing an element existing in the DOM
@@ -26,7 +26,7 @@ export function focus(selector) {
  * @returns {Object} property descriptor
  */
 export default function(selector) {
-  return createPropertyDescriptor(function() {
+  return action(function() {
     return this.focus(selector);
   });
 }

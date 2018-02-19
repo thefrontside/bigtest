@@ -1,4 +1,5 @@
-import { $, createPropertyDescriptor } from '../helpers';
+import { $ } from '../helpers';
+import { computed } from './helpers';
 
 /**
  * Page-object property creator for returning the value
@@ -8,9 +9,7 @@ import { $, createPropertyDescriptor } from '../helpers';
  * @returns {Object} property descriptor
  */
 export default function(selector) {
-  return createPropertyDescriptor({
-    get() {
-      return $(selector, this.$root).value;
-    }
+  return computed(function() {
+    return $(selector, this.$root).value;
   });
 }

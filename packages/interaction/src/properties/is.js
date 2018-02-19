@@ -1,4 +1,5 @@
-import { $, elementMatches, createPropertyDescriptor } from '../helpers';
+import { $, elementMatches } from '../helpers';
+import { computed } from './helpers';
 
 /**
  * Page-object property creator for returning true or false depending
@@ -9,9 +10,7 @@ import { $, elementMatches, createPropertyDescriptor } from '../helpers';
  * @returns {Object} property descriptor
  */
 export default function(match, selector) {
-  return createPropertyDescriptor({
-    get() {
-      return elementMatches($(selector, this.$root), match);
-    }
+  return computed(function() {
+    return elementMatches($(selector, this.$root), match);
   });
 }

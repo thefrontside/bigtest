@@ -1,5 +1,5 @@
 /* global Event */
-import { createPropertyDescriptor } from '../helpers';
+import { action } from './helpers';
 
 /**
  * Adds a convergence for scrolling an element existing in the
@@ -51,7 +51,7 @@ export function scroll(selectorOrScrollTo, scrollTo) {
  * @returns {Object} property descriptor
  */
 export default function(selector) {
-  return createPropertyDescriptor(function(scrollTo) {
+  return action(function(scrollTo) {
     return this.scroll(selector, scrollTo);
   });
 }

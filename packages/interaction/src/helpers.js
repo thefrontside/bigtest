@@ -68,8 +68,9 @@ export function elementMatches($el, selector) {
 }
 
 /**
- * Returns true if the provided object looks like a
- * property descriptor
+ * Returns true if the provided object looks like a property
+ * descriptor and have both `enumerable` and `configurable` properties
+ * in addition to a `value` or `get` property.
  *
  * @param {Object} descr - maybe a property descriptor
  * @returns {Boolean} true if it looks like a descriptor
@@ -80,23 +81,4 @@ export function isPropertyDescriptor(descr) {
      Object.hasOwnProperty.call(descr, 'value')) &&
     Object.hasOwnProperty.call(descr, 'enumerable') &&
     Object.hasOwnProperty.call(descr, 'configurable');
-}
-
-/**
- * Creates a property descriptor that would satisfy the above, given
- * an additional `get` property or a method function
- *
- * @param {Object|Function} descr - descriptor properties or a
- * function for creating a method descriptor
- * @returns {Object} property descriptor
- */
-export function createPropertyDescriptor(descr) {
-  if (typeof descr === 'function') {
-    descr = { value: descr };
-  }
-
-  return Object.assign({
-    enumerable: false,
-    configurable: false
-  }, descr);
 }

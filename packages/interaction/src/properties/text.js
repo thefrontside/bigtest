@@ -1,4 +1,5 @@
-import { $, createPropertyDescriptor } from '../helpers';
+import { $ } from '../helpers';
+import { computed } from './helpers';
 
 /**
  * Page-object property creator for returning the innerText
@@ -8,10 +9,8 @@ import { $, createPropertyDescriptor } from '../helpers';
  * @returns {Object} property descriptor
  */
 export default function(selector) {
-  return createPropertyDescriptor({
-    get() {
-      return $(selector, this.$root).textContent
-        .replace(/[\n\r]+|\s{2,}/, ' ').trim();
-    }
+  return computed(function() {
+    return $(selector, this.$root).textContent
+      .replace(/[\n\r]+|\s{2,}/, ' ').trim();
   });
 }

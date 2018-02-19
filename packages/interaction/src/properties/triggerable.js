@@ -1,5 +1,5 @@
 /* global Event */
-import { createPropertyDescriptor } from '../helpers';
+import { action } from './helpers';
 
 /**
  * Adds a convergence for triggering an event on an element existing
@@ -73,7 +73,7 @@ export default function(eventName, selectorOrOptions, options) {
     options = selectorOrOptions;
   }
 
-  return createPropertyDescriptor(function() {
+  return action(function() {
     return this.trigger(selector, eventName, options);
   });
 }

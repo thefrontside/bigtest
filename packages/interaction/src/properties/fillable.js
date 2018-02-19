@@ -1,5 +1,5 @@
 /* global Event */
-import { createPropertyDescriptor } from '../helpers';
+import { action } from './helpers';
 
 /**
  * Adds a convergence for filling an input existing in the DOM. This
@@ -69,7 +69,7 @@ export function fill(selectorOrValue, value) {
  * @returns {Object} property descriptor
  */
 export default function(selector) {
-  return createPropertyDescriptor(function(value) {
+  return action(function(value) {
     return this.fill(selector, value);
   });
 }

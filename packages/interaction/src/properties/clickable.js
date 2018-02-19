@@ -1,4 +1,4 @@
-import { createPropertyDescriptor } from '../helpers';
+import { action } from './helpers';
 
 /**
  * Adds a convergence for clicking an element existing in the DOM
@@ -18,7 +18,7 @@ export function click(selector) {
  * @returns {Object} property descriptor
  */
 export default function(selector) {
-  return createPropertyDescriptor(function() {
+  return action(function() {
     return this.click(selector);
   });
 }
