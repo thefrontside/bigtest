@@ -53,21 +53,6 @@ export function $$(selector, $ctx = document) {
 }
 
 /**
- * IE compatible polyfill for Element.matches
- *
- * @param {Element} $el - DOM element
- * @param {String} selector - query selector string
- * @returns {Boolean}
- */
-export function elementMatches($el, selector) {
-  if (!$el.matches) {
-    return $el.msMatchesSelector(selector);
-  } else {
-    return $el.matches(selector);
-  }
-}
-
-/**
  * Returns true if the provided object looks like a property
  * descriptor and have both `enumerable` and `configurable` properties
  * in addition to a `value` or `get` property.
