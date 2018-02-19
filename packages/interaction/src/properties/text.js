@@ -10,7 +10,8 @@ import { $, createPropertyDescriptor } from '../helpers';
 export default function(selector) {
   return createPropertyDescriptor({
     get() {
-      return $(selector, this.$root).innerText;
+      return $(selector, this.$root).textContent
+        .replace(/[\n\r]+|\s{2,}/, ' ').trim();
     }
   });
 }
