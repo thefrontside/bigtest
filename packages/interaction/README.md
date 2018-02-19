@@ -62,21 +62,22 @@ Similarly, there is `.findAll(selector)`, but this method does not
 converge on elements existing. Instead it will return an empty array
 if it cannot find any elements matching `selector`.
 
-### Custom Interaction Methods
+### Custom Interactions
 
-You can register custom interaction methods and use them in new
-`Interaction` instances.
+You can create custom interactions by extending the `Interaction` class:
 
 ``` javascript
-Interaction.register('logIn', function(email, password) {
-  return this
-    .fill('.email-input', email)
-    .blur('.email-input')
-    .fill('.pass-input', password)
-    .click('.submit-btn')
-});
+class CustomInteraction extends Interaction {
+  logIn(email, password) {
+    return this
+      .fill('.email-input', email)
+      .blur('.email-input')
+      .fill('.pass-input', password)
+      .click('.submit-btn')
+  });
+}
 
-new Interaction()
+new CustomInteraction()
   .logIn('email@domain.tld', '5up3rS3cr37')
   .timout(500)
   .run()
@@ -202,8 +203,9 @@ describe('Logging in', () => {
 - `attribute(attr, selector)`
 - `isVisible(selector)`
 - `isHidden(selector)`
-- `hasClass(selector)`
+- `isPresent(selector)`
 - `is(match, selector)`
+- `hasClass(selector)`
 
 **Methods**
 
@@ -220,8 +222,7 @@ available as `pageObject.$root` and is lazy just like other
 page-object getters.
 
 In addition to all of the above properties, page-objects also have
-default interaction properties determined by the registered and
-available interaction methods.
+default methods named according to their interaction counterparts.
 
 For example:
 
@@ -255,35 +256,32 @@ be called directly from the page-object.
 new PageObject().selectRadio('yes').run()
 ```
 
-You may also define custom page-object properties as initializer
-descriptors. When defining a method (where `value` is a function),
-this method _will_ be made available to the page-object's custom
-interaction.
+You may also define custom page-object properties using the provided
+property helpers. Methods added using `action` will also be made
+available on interaction instances returned from other methods.
 
 ``` javascript
-let doubleClick = (selector) => {
-  return {
-    value() {
-      return this
-        .find(selector)
-        .click()
-        .click()
-    },
+import { page, action, computed } from '@bigtest/interaction'
 
-    // these two properties are required in addition to `get` or
-    // `value` so this object is recognized as a property descriptor
-    enumerable: false,
-    configurable: false
-  }
+let doubleClickable = (selector) => {
+  return action(function() {
+    return this
+      .find(selector)
+      .click()
+      .click()
+  });
 };
 
 @page class PageObject {
-  clicky = doubleClick('.btn')
+  clicky = doubleClickable('.btn');
+  title = computed(() => document.title);
 }
 
 new PageObject()
   .fill('input', 'name')
   .clicky() // calls the custom property
+
+new PageObject().title // returns the document's title
 ```
 
 ### Without Decorators or Property Initializers
