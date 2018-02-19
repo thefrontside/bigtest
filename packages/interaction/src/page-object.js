@@ -1,5 +1,5 @@
 import Interaction from './interaction';
-import { $, $$, isPropertyDescriptor } from './helpers';
+import { $, $$, isPropertyDescriptor } from './utils';
 
 // the base page-object class
 class PageObject {

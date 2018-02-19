@@ -1,6 +1,6 @@
 /* global Element */
 import Convergence from '@bigtest/convergence';
-import { $ } from './helpers';
+import { $ } from './utils';
 
 // import all default interaction methods
 import * as interactions from './properties/interactions';

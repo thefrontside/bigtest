@@ -1,4 +1,4 @@
-import { $ } from '../helpers';
+import { $ } from '../utils';
 import { computed } from './helpers';
 
 /**
