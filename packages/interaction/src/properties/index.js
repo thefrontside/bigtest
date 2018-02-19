@@ -18,3 +18,4 @@ export { default as hasClass } from './has-class';
 export { default as is } from './is';
 export { default as isVisible } from './is-visible';
 export { default as isHidden } from './is-hidden';
+export { default as isPresent } from './is-present';
