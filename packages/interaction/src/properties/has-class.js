@@ -1,4 +1,3 @@
-import { $ } from '../helpers';
 import { computed } from './helpers';
 
 /**
@@ -11,6 +10,6 @@ import { computed } from './helpers';
  */
 export default function(className, selector) {
   return computed(function() {
-    return $(selector, this.$root).classList.contains(className);
+    return this.$(selector).classList.contains(className);
   });
 }

@@ -1,5 +1,5 @@
 import Interaction from './interaction';
-import { $, isPropertyDescriptor } from './helpers';
+import { $, $$, isPropertyDescriptor } from './helpers';
 
 // the base page-object class
 class PageObject {
@@ -19,6 +19,19 @@ class PageObject {
       $root: {
         get() {
           return $($root || document.body);
+        }
+      },
+
+      // DOM helpers
+      $: {
+        value(selector) {
+          return $(selector, this.$root);
+        }
+      },
+
+      $$: {
+        value(selector) {
+          return $$(selector, this.$root);
         }
       }
     });

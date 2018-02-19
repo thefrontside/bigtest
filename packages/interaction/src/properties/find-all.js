@@ -22,6 +22,6 @@ export function findAll(selector) {
  */
 export default function(selector) {
   return computed(function() {
-    return $$(selector, this.$root);
+    return this.$$(selector);
   });
 }

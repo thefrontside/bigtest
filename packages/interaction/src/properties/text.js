@@ -1,4 +1,3 @@
-import { $ } from '../helpers';
 import { computed } from './helpers';
 
 /**
@@ -10,7 +9,7 @@ import { computed } from './helpers';
  */
 export default function(selector) {
   return computed(function() {
-    return $(selector, this.$root).textContent
+    return this.$(selector).textContent
       .replace(/[\n\r]+|\s{2,}/, ' ').trim();
   });
 }

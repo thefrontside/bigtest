@@ -1,5 +1,6 @@
-/* global describe, beforeEach, it */
+/* global describe, beforeEach, it, Element */
 import { expect } from 'chai';
+import { useFixture } from './helpers';
 import { Interaction, page } from '../src';
 
 describe('BigTest Interaction: Page Object', () => {
@@ -51,5 +52,28 @@ describe('BigTest Interaction: Page Object', () => {
 
   it('preserves property descriptors', () => {
     expect(new TestPage()).to.have.property('getter', 'got');
+  });
+
+  describe('DOM helpers', () => {
+    useFixture('find-fixture');
+
+    beforeEach(() => {
+      TestPage = page(class TestPage {});
+    });
+
+    it('has a helper for finding a single DOM element', () => {
+      expect(new TestPage().$('.test-p')).to.be.an.instanceOf(Element);
+      expect(new TestPage('.test-p').$()).to.be.an.instanceOf(Element);
+    });
+
+    it('throws when finding a single element that does not exist', () => {
+      expect(() => new TestPage().$('.test-exists'))
+        .to.throw('unable to find ".test-exists"');
+    });
+
+    it('has a helper for finding multiple DOM elements', () => {
+      expect(new TestPage().$$('.test-p')).to.have.lengthOf(2);
+      expect(new TestPage('.test-p').$$()).to.have.lengthOf(0);
+    });
   });
 });

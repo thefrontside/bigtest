@@ -1,4 +1,3 @@
-import { $ } from '../helpers';
 import { computed } from './helpers';
 
 /**
@@ -11,6 +10,6 @@ import { computed } from './helpers';
  */
 export default function(attr, selector) {
   return computed(function() {
-    return $(selector, this.$root).getAttribute(attr);
+    return this.$(selector).getAttribute(attr);
   });
 }

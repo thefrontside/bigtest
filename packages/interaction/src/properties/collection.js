@@ -1,4 +1,3 @@
-import { $$ } from '../helpers';
 import page from '../page-object';
 
 /**
@@ -19,7 +18,7 @@ export default function(selector, descriptors = {}) {
   });
 
   return function(index) {
-    let items = $$(selector, this.$scope);
+    let items = this.$$(selector);
 
     if (typeof index === 'undefined') {
       return items.map((item) => new CollectionObject(item));

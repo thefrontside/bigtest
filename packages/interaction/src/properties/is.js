@@ -1,4 +1,3 @@
-import { $ } from '../helpers';
 import { computed } from './helpers';
 
 /**
@@ -26,6 +25,6 @@ function elementMatches($el, selector) {
  */
 export default function(match, selector) {
   return computed(function() {
-    return elementMatches($(selector, this.$root), match);
+    return elementMatches(this.$(selector), match);
   });
 }
