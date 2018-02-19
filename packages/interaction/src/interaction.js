@@ -1,5 +1,8 @@
+/* global Element */
 import Convergence from '@bigtest/convergence';
-import { $, isPropertyDescriptor } from './helpers';
+import { $ } from './helpers';
+
+// import all default interaction methods
 import * as interactions from './properties/interactions';
 
 /**
@@ -23,13 +26,13 @@ export default class Interaction extends Convergence {
     // use the previous scope descriptor if there was one
     let prevScope = Object.getOwnPropertyDescriptor(prev, '$scope');
 
-    Object.defineProperty(this, '$scope',  prevScope || {
+    Object.defineProperty(this, '$scope', prevScope || {
       get: () => $(options.$scope || document.body)
     });
   }
 }
 
-// default interaction methods
+// add default interaction methods
 Object.defineProperties(
   Interaction.prototype,
   Object.entries(interactions).reduce((props, [name, value]) => {
