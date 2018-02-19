@@ -237,6 +237,32 @@ And again, by omitting `selector`, you can interact directly with the
 new PageObject('#welcome-page').scroll({ top: 1000 })
 ```
 
+**Misc**
+
+- `collection(selector, properties)`
+
+The `collection` property is a method that returns the item at an
+index. This item is just like another scoped page-object that has it's
+own properties defined by the second argument.
+
+``` javascript
+@page class PageObject {
+  items = collection('li', {
+    title: text('p'),
+    select: click('a')
+  })
+}
+
+// will throw if the index cannot be found
+let item = new PageObject('ul').items(2);
+
+item.title    //=> text content of `ul li p`
+item.select() //=> interaction specific to this item instance
+
+// an array of all items may be returned by omitting the index
+let allItems = new PageObject('ul').items();
+```
+
 ### Custom Page Object Properties
 
 Methods defined in a page-object class can reference any page-object
