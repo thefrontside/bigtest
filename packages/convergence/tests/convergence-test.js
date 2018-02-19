@@ -16,6 +16,62 @@ describe('BigTest Convergence', () => {
     });
   });
 
+  describe('extending convergences', () => {
+    let custom;
+
+    class CustomConvergence extends Convergence {
+      constructor(options = {}, prev = {}) {
+        super(options, prev);
+
+        Object.defineProperty(this, 'test', {
+          value: options.test || prev.test
+        });
+      }
+
+      setTest(test) {
+        return new this.constructor({ test }, this);
+      }
+    }
+
+    beforeEach(() => {
+      custom = new CustomConvergence({ test: 'a' });
+    });
+
+    it('returns the custom instance', () => {
+      expect(custom).to.be.an.instanceOf(CustomConvergence);
+      expect(custom).to.be.an.instanceOf(Convergence);
+      expect(custom).to.have.property('test', 'a');
+    });
+
+    it('has custom immutable methods', () => {
+      let next = custom.setTest('b');
+
+      expect(next).to.be.an.instanceOf(CustomConvergence);
+      expect(next).to.not.equal(custom);
+      expect(next.test).to.equal('b');
+      expect(custom.test).to.equal('a');
+    });
+
+    it('existing methods return a custom instance', () => {
+      let next = custom.timeout(100);
+
+      expect(next).to.be.an.instanceOf(CustomConvergence);
+      expect(next).to.not.equal(custom);
+      expect(next.test).to.equal(custom.test);
+    });
+
+    it('preserves properties across instances', () => {
+      let next = custom.timeout(100);
+
+      expect(next.timeout()).to.equal(100);
+      expect(next).to.have.property('test', 'a');
+
+      next = next.setTest('c');
+      expect(next.timeout()).to.equal(100);
+      expect(next.test).to.equal('c');
+    });
+  });
+
   describe('with an existing instance', () => {
     let converge;
 
@@ -184,7 +240,7 @@ describe('BigTest Convergence', () => {
       return expect(converge.run()).to.be.fulfilled;
     });
 
-    describe('after using `.add()`', () => {
+    describe('after using `.once()`', () => {
       let assertion;
 
       beforeEach(() => {
