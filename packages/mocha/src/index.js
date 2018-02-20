@@ -93,7 +93,7 @@ function it(title, assertion) {
  */
 function itAlways(title, assertion) {
   if (!assertion) return mocha.it.skip(title);
-  return mocha.it(title, convergent(assertion, true));
+  return mocha.it(title, convergent(assertion, true)).timeout(100);
 }
 
 /**
@@ -115,7 +115,7 @@ function itOnly(title, assertion) {
  */
 function itAlwaysOnly(title, assertion) {
   if (!assertion) return mocha.it.skip(title);
-  return mocha.it.only(title, convergent(assertion, true));
+  return mocha.it.only(title, convergent(assertion, true)).timeout(100);
 }
 
 /**

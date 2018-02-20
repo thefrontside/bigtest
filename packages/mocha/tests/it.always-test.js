@@ -21,6 +21,11 @@ describe('BigTest Mocha: it.always', () => {
     expect(tests[1].err).to.have.property('expected', '0');
   });
 
+  it('can modify the timeout', () => {
+    expect(tests[2].duration).to.be.within(30, 50);
+    expect(tests[2].err).to.be.empty;
+  });
+
   it('.only has multiple aliases', () => {
     expect(convergentIt.always.only).to.equal(convergentIt.only.always);
   });
