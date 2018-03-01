@@ -37,14 +37,20 @@ describe('BigTest Convergence - convergeOn', () => {
       }, 50);
     });
 
-    it('resolves when the assertion passes within the timeout', () => {
+    it('resolves when the assertion passes within the timeout', async () => {
       timeout = setTimeout(() => total = 5, 30);
-      return expect(test(5)).to.be.fulfilled;
+
+      let start = Date.now();
+      await expect(test(5)).to.be.fulfilled;
+      expect(Date.now() - start).to.be.within(30, 50);
     });
 
-    it('rejects if the assertion does not pass within the timeout', () => {
+    it('rejects if the assertion does not pass within the timeout', async () => {
       timeout = setTimeout(() => total = 5, 80);
-      return expect(test(5)).to.be.rejected;
+
+      let start = Date.now();
+      await expect(test(5)).to.be.rejected;
+      expect(Date.now() - start).to.be.lt(50);
     });
   });
 
@@ -56,13 +62,18 @@ describe('BigTest Convergence - convergeOn', () => {
       }, 50, true);
     });
 
-    it('resolves if the assertion does not fail throughout the timeout', () => {
-      return expect(test(5)).to.be.fulfilled;
+    it('resolves if the assertion does not fail throughout the timeout', async () => {
+      let start = Date.now();
+      await expect(test(5)).to.be.fulfilled;
+      expect(Date.now() - start).to.be.lt(50);
     });
 
-    it('rejects when the assertion fails within the timeout', () => {
+    it('rejects when the assertion fails within the timeout', async () => {
       timeout = setTimeout(() => total = 0, 30);
-      return expect(test(5)).to.be.rejected;
+
+      let start = Date.now();
+      await expect(test(5)).to.be.rejected;
+      expect(Date.now() - start).to.be.within(30, 50);
     });
   });
 
