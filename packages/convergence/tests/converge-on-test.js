@@ -120,6 +120,40 @@ describe('BigTest Convergence - convergeOn', () => {
     });
   });
 
+  describe('with a slight latency', () => {
+    // exploits `while` to block the current event loop
+    let latency = (ms) => {
+      let start = Date.now();
+      let end = start;
+
+      while (end < start + ms) {
+        end = Date.now();
+      }
+    };
+
+    it('rejects within the timeout', async () => {
+      let start = Date.now();
+
+      await expect(
+        // 5-10ms latencies start causing an increasing amount of
+        // flakiness, anything higher fails more often than not
+        convergeOn(() => !!latency(20), 100)
+      ).to.be.rejected;
+
+      expect(Date.now() - start).to.be.lt(100);
+    });
+
+    it('using always resolves within the timeout', async () => {
+      let start = Date.now();
+
+      await expect(
+        convergeOn(() => latency(20), 100, true)
+      ).to.be.fulfilled;
+
+      expect(Date.now() - start).to.be.lt(100);
+    });
+  });
+
   describe('when `useStats` is true', () => {
     beforeEach(() => {
       test = (num) => convergeOn(() => {
