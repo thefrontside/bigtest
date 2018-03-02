@@ -19,7 +19,7 @@
     "/dist/"
   ],
   "dependencies": {
-    "@bigtest/convergence": "^0.3.0"
+    "@bigtest/convergence": "0.3.0"
   },
   "peerDependencies": {
     "mocha": "^4.0.1"
