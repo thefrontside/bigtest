@@ -291,15 +291,18 @@ describe('BigTest Convergence', () => {
         }, 50);
       });
 
-      it('resolves just before the 100ms timeout', async () => {
+      it('resolves after the 100ms timeout', async () => {
         let start = Date.now();
         await expect(assertion.run()).to.be.fulfilled;
-        expect(Date.now() - start).to.be.within(80, 100);
+        expect(Date.now() - start).to.be.within(100, 120);
       });
 
-      it('rejects when the assertion fails', () => {
+      it('rejects when the assertion fails', async () => {
         createTimeout(() => total = 10, 50);
-        return expect(assertion.run()).to.be.rejected;
+
+        let start = Date.now();
+        await expect(assertion.run()).to.be.rejected;
+        expect(Date.now() - start).to.be.within(50, 70);
       });
 
       describe('with additional chaining', () => {
@@ -312,12 +315,15 @@ describe('BigTest Convergence', () => {
         it('resolves after at least 50ms', async () => {
           let start = Date.now();
           await expect(assertion.run()).to.be.fulfilled;
-          expect(Date.now() - start).to.be.within(30, 50);
+          expect(Date.now() - start).to.be.within(50, 70);
         });
 
-        it('rejects if the assertion fails within 50ms', () => {
+        it('rejects if the assertion fails within 50ms', async () => {
           createTimeout(() => total = 10, 30);
-          return expect(assertion.run()).to.be.rejected;
+
+          let start = Date.now();
+          await expect(assertion.run()).to.be.rejected;
+          expect(Date.now() - start).to.be.within(30, 50);
         });
       });
     });
@@ -372,7 +378,7 @@ describe('BigTest Convergence', () => {
     });
 
     describe('after using various chain methods', () => {
-      it('resolves with a stats object', async () => {
+      it('resolves with a combined stats object', async () => {
         let assertion = converge
           .once(() => expect(total).to.equal(5))
           .do(() => total = 10)
@@ -387,7 +393,7 @@ describe('BigTest Convergence', () => {
 
         expect(stats.start).to.be.within(start, start + 1);
         expect(stats.end).to.be.within(end - 1, end);
-        expect(stats.elapsed).to.be.within(50, 70);
+        expect(stats.elapsed).to.be.within(70, 90);
         expect(stats.runs).to.be.within(8, 12);
         expect(stats.timeout).to.equal(100);
         expect(stats.value).to.equal(50);

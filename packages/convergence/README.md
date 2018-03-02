@@ -47,8 +47,7 @@ longer returns false or throws an error. When the function is finally
 successfully executed, it is considered to be passing and a converging
 promise will resolve. However, if the converging function does not pass
 within the provided timeout period the promise will reject with the
-last error thrown from the function. A converging promise will reject
-right before the timeout so it is never reached during it's execution.
+last error thrown from the function.
 
 ### Using `Convergence`
 
@@ -142,7 +141,7 @@ convergeLong.timeout(); // => 5000
 Returns a new `Convergence` instance and adds the provided assertion
 to its stack. When this instance is ran, the `assert` function will be
 looped over repeatedly until it passes, or until the convergence's
-timeout has almost been met.
+timeout has been exceeded.
 
 ``` javascript
 // this convergence will resolve once `total` equals `5`

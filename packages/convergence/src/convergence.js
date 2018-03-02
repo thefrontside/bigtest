@@ -38,8 +38,8 @@ import convergeOn from './converge-on';
  * `first.run()` has 100ms to converge on it's assertion.
  *
  * `second.run()` will log `foo` once the first assertion converges
- * and continue to assert the second assertion until just before the
- * 200ms timeout period has expired.
+ * and continue to assert the second assertion until the 200ms timeout
+ * period has expired.
  */
 export default class Convergence {
   /**
@@ -216,7 +216,7 @@ export default class Convergence {
             timeout = last ? timeout : Math.min(timeout, subject.timeout);
           }
 
-          return convergeOn(assert, timeout, subject.always, true)
+          return convergeOn(assert, timeout, subject.always)
           // incorporate stats and curry the assertion return value
             .then((convergeStats) => {
               addStats(convergeStats);
