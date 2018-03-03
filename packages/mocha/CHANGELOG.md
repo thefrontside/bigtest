@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [0.2.2] - 2018-03-02
+
+### Changed
+
+- lock `@bigtest/convergence` at `0.3.0`
+
 ## [0.2.1] - 2018-02-20
 
 ### Added

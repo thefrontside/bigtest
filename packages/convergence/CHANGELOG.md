@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [0.4.0] - 2018-03-02
+
+### Changed
+
+- convergent assertions no longer attempt to resolve or reject before
+  their timeout
+
 ## [0.3.0] - 2018-02-18
 
 ### Added

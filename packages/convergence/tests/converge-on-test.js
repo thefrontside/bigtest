@@ -12,7 +12,7 @@ describe('BigTest Convergence - convergeOn', () => {
     total = 0;
     test = (num) => convergeOn(() => {
       expect(total).to.equal(num);
-    });
+    }, 50);
   });
 
   afterEach(() => {
@@ -21,31 +21,44 @@ describe('BigTest Convergence - convergeOn', () => {
     }
   });
 
-  it('resolves when the assertion passes', () => {
-    total = 5;
-    return expect(test(5)).to.be.fulfilled;
+  it('resolves when the assertion passes within the timeout', async () => {
+    timeout = setTimeout(() => total = 5, 30);
+
+    let start = Date.now();
+    await expect(test(5)).to.be.fulfilled;
+    expect(Date.now() - start).to.be.within(30, 50);
   });
 
-  it('rejects when the assertion does not pass', () => {
-    return expect(test(5)).to.be.rejected;
+  it('rejects when the assertion does not pass within the timeout', async () => {
+    let start = Date.now();
+    await expect(test(5)).to.be.rejectedWith('expected 0 to equal 5');
+    expect(Date.now() - start).to.be.within(50, 70);
   });
 
-  describe('with a specific timeout', () => {
-    beforeEach(() => {
-      test = (num) => convergeOn(() => {
-        expect(total).to.equal(num);
-      }, 50);
-    });
+  it('rejects if the assertion passes, but just after the timeout', async () => {
+    timeout = setTimeout(() => total = 5, 51);
 
-    it('resolves when the assertion passes within the timeout', () => {
-      timeout = setTimeout(() => total = 5, 30);
-      return expect(test(5)).to.be.fulfilled;
-    });
+    let start = Date.now();
+    await expect(test(5)).to.be
+      .rejectedWith('convergent assertion was successful, but exceeded the 50ms timeout');
+    expect(Date.now() - start).to.be.within(50, 70);
+  });
 
-    it('rejects if the assertion does not pass within the timeout', () => {
-      timeout = setTimeout(() => total = 5, 80);
-      return expect(test(5)).to.be.rejected;
-    });
+  it('resolves with a stats object', async () => {
+    test = (num) => convergeOn(() => total === 5 && total * 100);
+    timeout = setTimeout(() => total = 5, 30);
+
+    let start = Date.now();
+    let stats = await expect(test(5)).to.be.fulfilled;
+    let end = Date.now();
+
+    expect(stats.start).to.be.within(start, start + 1);
+    expect(stats.end).to.be.within(end - 1, end);
+    expect(stats.elapsed).to.be.within(30, 50);
+    expect(stats.runs).to.equal(4);
+    expect(stats.always).to.be.false;
+    expect(stats.timeout).to.equal(2000);
+    expect(stats.value).to.equal(500);
   });
 
   describe('when `always` is true', () => {
@@ -56,13 +69,18 @@ describe('BigTest Convergence - convergeOn', () => {
       }, 50, true);
     });
 
-    it('resolves if the assertion does not fail throughout the timeout', () => {
-      return expect(test(5)).to.be.fulfilled;
+    it('resolves if the assertion does not fail throughout the timeout', async () => {
+      let start = Date.now();
+      await expect(test(5)).to.be.fulfilled;
+      expect(Date.now() - start).to.be.within(50, 70);
     });
 
-    it('rejects when the assertion fails within the timeout', () => {
+    it('rejects when the assertion fails within the timeout', async () => {
       timeout = setTimeout(() => total = 0, 30);
-      return expect(test(5)).to.be.rejected;
+
+      let start = Date.now();
+      await expect(test(5)).to.be.rejected;
+      expect(Date.now() - start).to.be.within(30, 50);
     });
   });
 
@@ -109,27 +127,38 @@ describe('BigTest Convergence - convergeOn', () => {
     });
   });
 
-  describe('when `useStats` is true', () => {
-    beforeEach(() => {
-      test = (num) => convergeOn(() => {
-        return total === num && num * 100;
-      }, 50, false, true);
+  describe('with a slight latency', () => {
+    // exploits `while` to block the current event loop
+    let latency = (ms) => {
+      let start = Date.now();
+      let end = start;
+
+      while (end < start + ms) {
+        end = Date.now();
+      }
+    };
+
+    it('rejects as soon as it can after the timeout', async () => {
+      let start = Date.now();
+
+      await expect(
+        // 5-10ms latencies start causing an increasing amount of
+        // flakiness, anything higher fails more often than not
+        convergeOn(() => !!latency(20), 50)
+      ).to.be.rejected;
+
+      // 10ms loop interval + 20ms latency = ~+30ms final latency
+      expect(Date.now() - start).to.be.within(50, 80);
     });
 
-    it('resolves with a stats object', async () => {
-      timeout = setTimeout(() => total = 5, 30);
-
+    it('using always resolves as soon as it can after the timeout', async () => {
       let start = Date.now();
-      let stats = await expect(test(5)).to.be.fulfilled;
-      let end = Date.now();
 
-      expect(stats.start).to.be.within(start, start + 1);
-      expect(stats.end).to.be.within(end - 1, end);
-      expect(stats.elapsed).to.be.within(28, 52);
-      expect(stats.runs).to.equal(4);
-      expect(stats.always).to.be.false;
-      expect(stats.timeout).to.equal(50);
-      expect(stats.value).to.equal(500);
+      await expect(
+        convergeOn(() => latency(20), 50, true)
+      ).to.be.fulfilled;
+
+      expect(Date.now() - start).to.be.within(50, 80);
     });
   });
 });
