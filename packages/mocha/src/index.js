@@ -1,201 +1,93 @@
 import * as mocha from './mocha';
-import Convergence from '@bigtest/convergence';
+import {
+  convergent,
+  handleConvergence,
+  wrappedContext
+} from './utils';
 
 /**
- * Creates a convergent assertion using the current testing
- * context's timeout.
+ * Creates a convergent it function. Accepts the original it as the
+ * first argument and a boolean to indicate that this should be an
+ * always convergence.
  *
- * @param {Function} assertion - assertion to converge on
- * @param {Boolean} always - true when the assertion should always pass
- * @returns {Function} assertion to use with mocha's it
+ * @param {Function} it - original it function
+ * @param {Boolean} always - true to use an always convergence
+ * @returns {Function} convergent it function
  */
-function convergent(assertion, always) {
-  return function() {
-    let timeout = 2000;
-
-    if (typeof this.timeout === 'function') {
-      timeout = this.timeout();
-    }
-
-    let converge = new Convergence(timeout);
-    let assert = assertion.bind(this);
-
-    if (always) {
-      return converge.always(assert).run();
-    } else {
-      return converge.once(assert).run();
-    }
+function convergentIt(it, always) {
+  return (title, assertion) => {
+    let test = it(title, assertion && convergent(assertion, always));
+    // it.always has a default timeout of 100ms
+    return always ? test.timeout(100) : test;
   };
 }
 
 /**
- * Allows automatically running returned objects that implement
- * a Convergence interface. A Convergence interface is an immutable
- * instance that supports both `.timeout` and `.run` methods.
+ * Creates a hook capable of auto-running returned convergences
  *
- * Convergences are not only useful for assertions, but also for
- * setting up your tests as well. For example, converging on the
- * existence of a button before clicking it. Mocha works with promises
- * out of the box, so you can use convergences by returning
- * `convergence.run()` in your mocha hooks. To time it properly, you'd
- * also have to call `convergence.timeout()` with the same timeout
- * used for the current mocha context.
- *
- * This function allows us to wrap our hooks and automatically set the
- * `timeout()` and call `run()` on any returned convergence or
- * convergence-like object. This reduces the boilerplate needed when
- * using convergences with Mocha's hooks.
- *
- * @param {Function} fn - function that may return a Convergence interface
- * @returns {Function} a function able to run the returned object
+ * @param {Function} hook - original hook function
+ * @returns {Function} new hook function
  */
-function handleRunnable(fn) {
-  let isRunnable = (obj) => {
-    return typeof obj.timeout === 'function' &&
-      typeof obj.run === 'function';
-  };
-
-  return function() {
-    let result = fn.apply(this, arguments);
-
-    if (result && isRunnable(result)) {
-      let timeout = 2000;
-
-      if (typeof this.timeout === 'function') {
-        timeout = this.timeout();
-      }
-
-      return result.timeout(timeout).run();
-    } else {
-      return result;
-    }
-  };
+function convergentHook(hook) {
+  return (fn) => hook(handleConvergence(fn));
 }
 
 /**
- * Convergent it will use the convergent helper to keep testing the assertion
- * repeatedly until it passes or until the timeout is reached
+ * Wraps a suite function so that subsequent hooks and tests get
+ * wrapped with the ability to configure the latency used when running
+ * hook and test convergences.
  *
- * @param {String} title - specification description
- * @param {Function} assertion - the assertion to converge on
+ * @param {Function} suite - original suite function
+ * @returns {Function} wrapped suite function
  */
-function it(title, assertion) {
-  if (!assertion) return mocha.it.skip(title);
-  return mocha.it(title, convergent(assertion));
+function wrapSuite(suite) {
+  return (title, fn) => suite(title, fn && function() {
+    wrappedContext(this);
+    this.on('beforeAll', wrappedContext);
+    this.on('beforeEach', wrappedContext);
+    this.on('afterAll', wrappedContext);
+    this.on('afterEach', wrappedContext);
+    this.on('test', wrappedContext);
+    return fn.apply(this, arguments);
+  });
 }
 
 /**
- * Convergent it that will inversely keep testing an assertion repeatedly until
- * it fails or until the timeout is reached
+ * Simple pause test helper that sets the current timeout to 0 and
+ * returns a promise that never resolves or rejects
  *
- * @param {String} title - specification description
- * @param {Function} assertion - the assertion to inversely converge on
+ * @param {Function} it - original it function
+ * @returns {Function} new it function that will pause the test
  */
-function itAlways(title, assertion) {
-  if (!assertion) return mocha.it.skip(title);
-  return mocha.it(title, convergent(assertion, true)).timeout(100);
-}
-
-/**
- * Convergent it, but using mocha `.only`
- *
- * @param {String} title - specification description
- * @param {Function} assertion - the assertion to converge on
- */
-function itOnly(title, assertion) {
-  if (!assertion) return mocha.it.skip(title);
-  return mocha.it.only(title, convergent(assertion));
-}
-
-/**
- * Inverted convergent it, but using mocha `.only`
- *
- * @param {String} title - specification description
- * @param {Function} assertion - the assertion to inversely converge on
- */
-function itAlwaysOnly(title, assertion) {
-  if (!assertion) return mocha.it.skip(title);
-  return mocha.it.only(title, convergent(assertion, true)).timeout(100);
-}
-
-/**
- * Pauses a test by setting the timeout to zero, and returning
- * a promise that never resolves
- *
- * @param {String} title - specification description
- */
-function itPause(title) {
-  return mocha.it(title, function() {
+function pauseTest(it) {
+  return (title) => it(title, function() {
+    this.timeout(0);
     return new Promise(() => {});
-  }).timeout(0);
+  });
 }
 
-/**
- * Pauses a test, but using mocha `.only`
- *
- * @param {String} title - specification description
- */
-function itPauseOnly(title) {
-  return mocha.it.only(title, function() {
-    return new Promise(() => {});
-  }).timeout(0);
-}
-
-// attach everything to `it`
-it.only = itOnly;
-it.always = itAlways;
-it.always.only = itAlwaysOnly;
-it.only.always = itAlwaysOnly;
-it.pause = itPause;
-it.pause.only = itPauseOnly;
-it.only.pause = itPauseOnly;
-
-// alias mocha's it.skip
+// all variations of `it`
+const it = convergentIt(mocha.it);
+it.only = convergentIt(mocha.it.only);
+it.always = convergentIt(mocha.it, true);
+it.always.only = convergentIt(mocha.it.only, true);
+it.only.always = it.always.only;
+it.pause = pauseTest(mocha.it);
+it.pause.only = pauseTest(mocha.it.only);
+it.only.pause = it.pause.only;
 it.skip = mocha.it.skip;
 it.always.skip = mocha.it.skip;
 
-/**
- * Just like mocha's before, but with the ability to automatically
- * run Convergence-like instances.
- *
- * @param {Function} setup - setup function
- */
-function before(setup) {
-  return mocha.before(handleRunnable(setup));
-}
+// convergent hooks
+const before = convergentHook(mocha.before);
+const beforeEach = convergentHook(mocha.beforeEach);
+const after = convergentHook(mocha.after);
+const afterEach = convergentHook(mocha.afterEach);
 
-/**
- * Just like mocha's beforeEach, but with the ability to automatically
- * run Convergence-like instances.
- *
- * @param {Function} setup - setup function
- */
-function beforeEach(setup) {
-  return mocha.beforeEach(handleRunnable(setup));
-}
-
-/**
- * Just like mocha's after, but with the ability to automatically
- * run Convergence-like instances.
- *
- * @param {Function} teardown - teardown function
- */
-function after(teardown) {
-  return mocha.after(handleRunnable(teardown));
-}
-
-/**
- * Just like mocha's afterEach, but with the ability to automatically
- * run Convergence-like instances.
- *
- * @param {Function} teardown - teardown function
- */
-function afterEach(teardown) {
-  return mocha.afterEach(handleRunnable(teardown));
-}
-
-// destructure this for exporting
-let { describe } = mocha;
+// wrapped suites
+const describe = wrapSuite(mocha.describe);
+describe.only = wrapSuite(mocha.describe.only);
+describe.skip = mocha.describe.skip;
 
 // export our convergent it, wrapped hooks, and their aliases
 export {
