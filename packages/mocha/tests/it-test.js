@@ -14,8 +14,8 @@ describe('BigTest Mocha: it', () => {
     expect(tests[0].err).to.be.empty;
   });
 
-  it('throws on failure before the timeout', () => {
-    expect(tests[1].duration).to.be.within(180, 200);
+  it('throws on failure after the timeout', () => {
+    expect(tests[1].duration).to.be.within(200, 220);
     expect(tests[1].err).to.have.property('expected', '200');
   });
 });

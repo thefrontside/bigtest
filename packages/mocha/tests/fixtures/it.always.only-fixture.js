@@ -6,7 +6,7 @@ describe('it.always.only', () => {
   let timeout;
 
   beforeEach(() => {
-    timeout = setTimeout(() => value = 1, 100);
+    timeout = setTimeout(() => value = 1, 200);
   });
 
   afterEach(() => {
@@ -15,7 +15,7 @@ describe('it.always.only', () => {
 
   it.always.only('runs this test', () => {
     expect(value).to.equal(0);
-  }).timeout(100);
+  });
 
   it('does not run this test', () => {
     expect(0).to.equal(1, 'this test should have been skipped');

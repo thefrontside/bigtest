@@ -17,7 +17,7 @@ describe('it', () => {
     expect(value).to.equal(5);
   });
 
-  it('throws just before the timeout', () => {
+  it('throws the original error after the timeout', () => {
     expect(value).to.equal(200);
   }).timeout(200);
 });

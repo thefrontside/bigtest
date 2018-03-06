@@ -1,4 +1,4 @@
-import { describe, before, it } from 'mocha';
+import { describe, beforeEach, it } from 'mocha';
 import { expect } from 'chai';
 
 import { it as convergentIt } from '../src';
@@ -6,11 +6,12 @@ import { it as convergentIt } from '../src';
 describe('BigTest Mocha: it.pause', () => {
   let test;
 
-  before(() => {
+  beforeEach(() => {
     test = convergentIt.pause('test');
   });
 
-  it('should set the timeout to 0', () => {
+  it('should always set the timeout to 0', () => {
+    test.timeout(2000).fn();
     expect(test._timeout).to.equal(0);
   });
 
