@@ -38,9 +38,9 @@ that state!
 This package uses
 [`@bigtest/convergence`](https://github.com/thefrontside/bigtest/tree/master/packages/convergence)
 to repeatedly run assertions until they pass, or until the timeout has
-almost expired. Performing tests in this way allows them to pass the
-moment the desired state is achieved. This results in very fast tests
-when testing asynchronous things.
+expired. Performing tests in this way allows them to pass the moment
+the desired state is achieved. This results in very fast tests when
+testing asynchronous things.
 
 _Read the `@bigtest/convergence` [docs on
 convergences](https://github.com/thefrontside/bigtest/tree/master/packages/convergence#why-convergence)
@@ -101,6 +101,8 @@ describe('clicking my button', () => {
 });
 ```
 
+#### Asserting that something _has not happened_
+
 Another common scenario is asserting that something **has not**
 happened. If you were to test for this normally (or even with a
 convergent assertion above) the test could potentially pass
@@ -114,18 +116,17 @@ to be passing."
 `@bigtest/mocha` provides an `it.always` method to do just this. This
 method will run the assertion throughout the entire timeout period
 ensuring it never fails. When the assertion does fail, the test
-fails. If the assertion never fails, it will pass just before the
-timeout period expires.
+fails. If the assertion never fails, it will pass just after the
+timeout period.
 
 ``` javascript
 describe('clicking my button', () => {
   beforeEach(() => $button.click());
 
-  // mocha's default timeout is 2000ms, for the sake of speed we only
-  // need to run this assertion for about 200ms
-  it.always('does not navigate away', () => {
+  // the default timeout for it.always is 100ms
+  it.always('does not navigate away for at least 1 second', () => {
     expect(app.location).to.equal('/');
-  }).timeout(200);
+  }).timeout(1000);
 });
 ```
 
@@ -176,5 +177,52 @@ describe('clicking my button', () => {
   it.pause('shows a loading indicator', () => {
     expect($button.className).to.include('is-loading');
   });
+});
+```
+
+### Mocha Timeout Errors
+
+When using this package, if you see errors such as this:
+
+```
+Timeout of 2000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves.
+```
+
+This means that the convergent hooks or assertions were not able to
+settle within the mocha timeout period. When there is some latency,
+such as in CI environments, the convergences might take a little
+longer to settle. Usually about the same amount of time as the total
+latency of the assertion / hook. So if an assertion using `it.always`
+has a `20ms` latency, the convergence would settle around `120ms`.
+
+By default, `@bigtest/mocha` will add a `100ms` latency to mocha's
+timeout to give convergences a little more time to settle. This
+latency is basically a gap between a convergence's timeout, and the
+test/hook's timeout. If, for some reason, you experience latencies
+greater than `100ms`, you can configure the latency with the
+`.latency()` method in your tests.
+
+``` javascript
+describe('with a large latency', function() {
+  // like .timeout(), this configures the latency for this entire suite
+  this.latency(200);
+
+  beforeEach(function() {
+    // hooks have their own latency that inherit from the suite
+    this.latency(100);
+
+    // the hook latency is used when you return a convergence
+    return new Convergence()
+      .once(() => expect($button).to.exist)
+      .do(() => $button.click())
+  });
+
+  // you should never set the timeout or latency within an assertion;
+  // these assertions are meant to be pure, without side-effects
+  it('clicked the button', function() {
+    expect(clickCount).to.equal(1);
+
+  // tests can be configured via chainable methods
+  }).timeout(500).latency(300);
 });
 ```
