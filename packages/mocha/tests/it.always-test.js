@@ -25,6 +25,14 @@ describe('BigTest Mocha: it.always', () => {
     expect(tests[2].duration).to.be.within(200, 220);
     expect(tests[2].err).to.have.property('expected', '0');
   });
+
+  it('always sets the test timeout to 0', () => {
+    let test = convergentIt.always('test', () => {});
+
+    return test.timeout(50).fn().then(() => {
+      expect(test.timeout()).to.equal(0);
+    });
+  });
 });
 
 describe('BigTest Mocha: it.always.only', () => {

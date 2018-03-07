@@ -1,9 +1,5 @@
 import * as mocha from './mocha';
-import {
-  convergent,
-  handleConvergence,
-  wrappedContext
-} from './utils';
+import { convergent, handleConvergence } from './utils';
 
 /**
  * Creates a convergent it function. Accepts the original it as the
@@ -30,26 +26,6 @@ function convergentIt(it, always) {
  */
 function convergentHook(hook) {
   return (fn) => hook(handleConvergence(fn));
-}
-
-/**
- * Wraps a suite function so that subsequent hooks and tests get
- * wrapped with the ability to configure the latency used when running
- * hook and test convergences.
- *
- * @param {Function} suite - original suite function
- * @returns {Function} wrapped suite function
- */
-function wrapSuite(suite) {
-  return (title, fn) => suite(title, fn && function() {
-    wrappedContext(this);
-    this.on('beforeAll', wrappedContext);
-    this.on('beforeEach', wrappedContext);
-    this.on('afterAll', wrappedContext);
-    this.on('afterEach', wrappedContext);
-    this.on('test', wrappedContext);
-    return fn.apply(this, arguments);
-  });
 }
 
 /**
@@ -84,10 +60,8 @@ const beforeEach = convergentHook(mocha.beforeEach);
 const after = convergentHook(mocha.after);
 const afterEach = convergentHook(mocha.afterEach);
 
-// wrapped suites
-const describe = wrapSuite(mocha.describe);
-describe.only = wrapSuite(mocha.describe.only);
-describe.skip = mocha.describe.skip;
+// destructure describe for exporting
+const { describe } = mocha;
 
 // export our convergent it, wrapped hooks, and their aliases
 export {

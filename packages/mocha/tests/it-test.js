@@ -2,6 +2,8 @@ import { describe, before, it } from 'mocha';
 import { expect } from 'chai';
 import { run } from './helpers';
 
+import { it as convergentIt } from '../src';
+
 describe('BigTest Mocha: it', () => {
   let tests;
 
@@ -17,6 +19,14 @@ describe('BigTest Mocha: it', () => {
   it('throws on failure after the timeout', () => {
     expect(tests[1].duration).to.be.within(200, 220);
     expect(tests[1].err).to.have.property('expected', '200');
+  });
+
+  it('always sets the test timeout to 0', () => {
+    let test = convergentIt('test', () => {});
+
+    return test.timeout(500).fn().then(() => {
+      expect(test.timeout()).to.equal(0);
+    });
   });
 });
 
