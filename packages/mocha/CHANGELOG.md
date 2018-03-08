@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [0.3.1]
+
 ### Fixed
 
 - correctly identify a convergence interface when auto-running from hooks
