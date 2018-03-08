@@ -6,22 +6,22 @@ describe('it.always', () => {
 
   beforeEach(() => {
     value = 0;
-    timeout = setTimeout(() => value = 1, 100);
+    timeout = setTimeout(() => value = 1, 200);
   });
 
   afterEach(() => {
     clearTimeout(timeout);
   });
 
-  it.always('eventually passes before the timeout', () => {
+  it.always('eventually passes after the timeout', () => {
     expect(value).to.equal(0);
   });
-
-  it.always('throws if the assertion eventually fails', () => {
-    expect(value).to.equal(0);
-  }).timeout(200);
 
   it.always('can modify the timeout', () => {
     expect(value).to.equal(0);
   }).timeout(50);
+
+  it.always('throws if the assertion eventually fails', () => {
+    expect(value).to.equal(0);
+  }).timeout(300);
 });

@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [0.3.0] - 2018-03-05
+
+### Changed
+
+- upgraded `@bigtest/convergence` to `^0.4.0`
+- tests and hooks will now always set the timeout to zero
+
 ## [0.2.2] - 2018-03-03
 
 ### Changed

@@ -41,8 +41,14 @@ export function run(fixture) {
   let fixturePath = path.join('./tests/fixtures', fixture);
 
   return mocha(['--reporter', 'json', fixturePath]).then((res) => {
-    var result = JSON.parse(res.output);
-    result.code = res.code;
-    return result;
+    try {
+      var result = JSON.parse(res.output);
+      result.code = res.code;
+      return result;
+    // if unparsable, it was probably an error we should log
+    } catch (error) {
+      console.error(res.output);
+      throw error;
+    }
   });
 }

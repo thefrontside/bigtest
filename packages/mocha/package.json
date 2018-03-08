@@ -1,7 +1,7 @@
 {
   "name": "@bigtest/mocha",
   "description": "Mocha helpers for testing big",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "license": "MIT",
   "repository": "https://github.com/thefrontside/bigtest/tree/master/packages/mocha",
   "main": "dist/index.js",
@@ -19,7 +19,7 @@
     "/dist/"
   ],
   "dependencies": {
-    "@bigtest/convergence": "0.3.0"
+    "@bigtest/convergence": "^0.4.0"
   },
   "peerDependencies": {
     "mocha": "^4.0.1"
