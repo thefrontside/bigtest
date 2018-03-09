@@ -9,6 +9,11 @@ import { computed } from './helpers';
  */
 export default function(selector) {
   return computed(function() {
-    return !!this.$$(selector).length;
+    try {
+      // throws if the root element cannot be found
+      return !!this.$$(selector).length;
+    } catch (e) {
+      return false;
+    }
   });
 }

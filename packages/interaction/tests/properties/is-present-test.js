@@ -31,5 +31,9 @@ describe('BigTest Interaction: isVisible', () => {
     it('returns false if the element does not exist', () => {
       expect(new TestPage().isNotThere).to.be.false;
     });
+
+    it('returns false with a non-existent scope', () => {
+      expect(new TestPage('#no-exist').isThere).to.be.false;
+    });
   });
 });
