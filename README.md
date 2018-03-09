@@ -1,7 +1,19 @@
-# BigTest [![CircleCI](https://circleci.com/gh/thefrontside/bigtest/tree/master.svg?style=svg&circle-token=78c5d879b0ace4fe137c203bfc9ca20d732eb6e3)](https://circleci.com/gh/thefrontside/bigtest/tree/master)
+<p align="center">
+  <img alt="bigtest" src="logo.svg" width="500">
+</p>
 
-A Suite of JavaScript libraries and framework extensions to help you
-answer the question: _Does my application work in real life?_.
+<p align="center">
+  <a href="https://circleci.com/gh/thefrontside/bigtest/tree/master">
+    <img alt="CircleCI Status" src="https://circleci.com/gh/thefrontside/bigtest/tree/master.svg?style=svg&circle-token=78c5d879b0ace4fe137c203bfc9ca20d732eb6e3" />
+  </a>
+</p>
+
+<p align="center">
+  A Suite of JavaScript libraries and framework extensions to help you
+  answer the question:</br><i>Does my application work in real life?</i>.
+</p>
+
+---
 
 It's a big question, and it can't be answered with small tests that
 observe a tiny portion of your code that isn't integrated with any
