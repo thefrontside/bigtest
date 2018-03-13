@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 - full support for returning promises in `.do()` blocks
 - timeout error thrown when convergence exceeds timeout
+- support for returning convergence in `.do()` blocks
 
 ## [0.4.0] - 2018-03-02
 

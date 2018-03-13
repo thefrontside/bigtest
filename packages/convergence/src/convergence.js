@@ -251,9 +251,28 @@ export default class Convergence {
             return value;
           };
 
+          // a convergence is called with the current remaining timeout
+          if (result && result._stack &&
+              typeof result.timeout === 'function' &&
+              typeof result.run === 'function') {
+            let timeout = stats.timeout - getElapsedSince(start);
+
+            // this .do() just prevents the last .always() from using
+            // the entire timeout
+            return result.do(ret => ret).timeout(timeout).run()
+              // merge stats and curry the return value
+              .then((convergeStats) => {
+                // update elapsed time for sanity
+                convergeStats.elapsed = getElapsedSince(execStart);
+                addStats(convergeStats);
+                return convergeStats.value;
+              });
+
           // a promise will need to settle first
-          if (result && typeof result.then === 'function') {
+          } else if (result && typeof result.then === 'function') {
             return result.then(collectStats);
+
+          // any other result is just returned
           } else {
             return collectStats(result);
           }
