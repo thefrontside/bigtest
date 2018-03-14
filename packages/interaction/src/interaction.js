@@ -30,6 +30,14 @@ export default class Interaction extends Convergence {
       get: () => $(options.$scope || document.body)
     });
   }
+
+  /**
+   * Pauses an interaction by halting the convergence while it is
+   * running with an unresolving promise
+   */
+  pause() {
+    return this.do(() => new Promise(() => {}));
+  }
 }
 
 // add default interaction methods
