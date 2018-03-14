@@ -362,6 +362,50 @@ describe('BigTest Convergence', () => {
         await expect(assertion.run()).to.be.rejected;
         expect(called).to.be.false;
       });
+
+      describe('and returning a promise', () => {
+        let assertion, resolve, reject;
+
+        beforeEach(() => {
+          assertion = converge.do(() => {
+            // eslint-disable-next-line promise/param-names
+            return new Promise((res, rej) => {
+              [resolve, reject] = [res, rej];
+            });
+          });
+        });
+
+        it('waits for the promise to settle', async () => {
+          let start = Date.now();
+
+          createTimeout(() => resolve(), 60);
+          await expect(assertion.run()).to.be.fulfilled;
+          expect(Date.now() - start).to.be.within(50, 70);
+        });
+
+        it('rejects when the promise does', async () => {
+          let start = Date.now();
+
+          createTimeout(() => reject(), 60);
+          await expect(assertion.run()).to.be.rejected;
+          expect(Date.now() - start).to.be.within(50, 70);
+        });
+
+        it('curries the resolved value to the next function', () => {
+          assertion = assertion
+            .do((val) => expect(val).to.equal(1));
+
+          createTimeout(() => resolve(1), 10);
+          return expect(assertion.run()).to.be.fulfilled
+            .and.eventually.have.nested.property('stack[0].value', 1);
+        });
+
+        it('rejects after the exceeding the timeout', () => {
+          createTimeout(() => resolve(), 60);
+          return expect(assertion.timeout(50).run()).to.be
+            .rejectedWith('convergence exceeded the 50ms timeout');
+        });
+      });
     });
 
     describe('after using `.append()`', () => {

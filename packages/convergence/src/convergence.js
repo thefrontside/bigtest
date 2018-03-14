@@ -196,14 +196,25 @@ export default class Convergence {
       stats.stack.push(newStats);
     };
 
+    // throws when the elapsed time exceeds the timeout
+    let getElapsedSince = (start) => {
+      let elapsed = Date.now() - start;
+
+      // we shouldn't continue beyond the timeout
+      if (elapsed >= stats.timeout) {
+        throw new Error(`convergence exceeded the ${stats.timeout}ms timeout`);
+      }
+
+      return elapsed;
+    };
+
     return this._stack.reduce((promise, subject, i) => {
       let last = i === (this._stack.length - 1);
 
       return promise.then((ret) => {
         // an assertion should be convergent
         if (subject.assert) {
-          let elapsed = Date.now() - start;
-          let timeout = stats.timeout - elapsed;
+          let timeout = stats.timeout - getElapsedSince(start);
           let assert = subject.assert.bind(null, ret);
 
           // always convergences need timeouts smaller than the
@@ -225,15 +236,27 @@ export default class Convergence {
 
         // `.do()` blocks are run once previous assertions converge
         } else if (subject.exec) {
-          let execStats = { runs: 1 };
+          let execStart = Date.now();
+          let result = subject.exec(ret);
 
-          execStats.start = Date.now();
-          execStats.value = subject.exec(ret);
-          execStats.end = Date.now();
-          execStats.elapsed = execStats.end - execStats.start;
-          addStats(execStats);
+          let collectStats = (value) => {
+            addStats({
+              runs: 1,
+              start: execStart,
+              end: Date.now(),
+              elapsed: getElapsedSince(execStart),
+              value
+            });
 
-          return execStats.value;
+            return value;
+          };
+
+          // a promise will need to settle first
+          if (result && typeof result.then === 'function') {
+            return result.then(collectStats);
+          } else {
+            return collectStats(result);
+          }
         }
       });
     }, Promise.resolve())
