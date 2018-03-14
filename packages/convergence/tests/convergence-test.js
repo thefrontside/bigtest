@@ -144,15 +144,10 @@ describe('BigTest Convergence', () => {
       it('adds to a new stack with an `always` flag and own timeout', () => {
         let assert = () => {};
 
-        assertion = assertion.always(assert);
+        assertion = assertion.always(assert, 200);
         expect(assertion._stack[1]).to.have.property('assert', assert);
         expect(assertion._stack[1]).to.have.property('always', true);
         expect(assertion._stack[1]).to.have.property('timeout', 200);
-      });
-
-      it('should be able to customize own timeout', () => {
-        assertion = assertion.always(() => {}, 50);
-        expect(assertion._stack[1]).to.have.property('timeout', 50);
       });
     });
 
@@ -363,6 +358,66 @@ describe('BigTest Convergence', () => {
         expect(called).to.be.false;
       });
 
+      describe('and returning a convergence', () => {
+        let assertion;
+
+        beforeEach(() => {
+          // converge reference can be modified before running
+          assertion = converge.do(() => converge);
+        });
+
+        it('waits for the convergence to settle', async () => {
+          let start = Date.now();
+          let done = false;
+
+          converge = converge.once(() => done === true);
+          createTimeout(() => done = true, 50);
+
+          await expect(assertion.run()).to.be.fulfilled;
+          expect(Date.now() - start).to.be.within(50, 70);
+        });
+
+        it('rejects when the convergence does', async () => {
+          let start = Date.now();
+          let called = false;
+
+          converge = converge.once(() => false);
+          assertion = assertion.do(() => called = true);
+
+          await expect(assertion.timeout(50).run()).to.be.rejected;
+          expect(Date.now() - start).to.be.within(50, 70);
+          expect(called).to.be.false;
+        });
+
+        it('gives the final `.always()` the remaining timeout', async () => {
+          let start = Date.now();
+
+          converge = converge.always(() => true, 200);
+          await expect(assertion.timeout(50).run()).to.be.fulfilled;
+          expect(Date.now() - start).to.be.within(50, 70);
+        });
+
+        it('curries the resolved value to the next function', () => {
+          assertion = assertion
+            .once((val) => expect(val).to.equal(1));
+
+          converge = converge.do(() => 1);
+          return expect(assertion.run()).to.be.fulfilled
+            .and.eventually.have.nested.property('stack[0].value', 1);
+        });
+
+        it('rejects after the exceeding the timeout', () => {
+          converge = converge.do(() => {
+            return new Promise((resolve) => {
+              createTimeout(resolve, 60);
+            });
+          });
+
+          return expect(assertion.timeout(50).run()).to.be
+            .rejectedWith('convergence exceeded the 50ms timeout');
+        });
+      });
+
       describe('and returning a promise', () => {
         let assertion, resolve, reject;
 
@@ -393,7 +448,7 @@ describe('BigTest Convergence', () => {
 
         it('curries the resolved value to the next function', () => {
           assertion = assertion
-            .do((val) => expect(val).to.equal(1));
+            .once((val) => expect(val).to.equal(1));
 
           createTimeout(() => resolve(1), 10);
           return expect(assertion.run()).to.be.fulfilled

@@ -227,6 +227,19 @@ converge
   })
 ```
 
+You can even return promises, or other convergences from this method.
+
+``` javascript
+converge
+  .do(() => Promise.resolve(5))
+  .do((total) => new Convergence()
+    // the final always will still get the remaining time
+    .always(() => total === 5 && total))
+  // ... unless it is followed by additional methods
+  .do((total) => total *= 100)
+```
+
+
 **`.append()`**
 
 Combines convergences to allow composing them together to create brand

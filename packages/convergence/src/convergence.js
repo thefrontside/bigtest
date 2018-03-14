@@ -1,4 +1,8 @@
-import convergeOn from './converge-on';
+import {
+  isConvergence,
+  runAssertion,
+  runExec
+} from './utils';
 
 /**
  * The convergence class. Creating a new Convergence instance allows
@@ -41,7 +45,7 @@ import convergeOn from './converge-on';
  * and continue to assert the second assertion until the 200ms timeout
  * period has expired.
  */
-export default class Convergence {
+class Convergence {
   /**
    * @constructor
    * @param {Object|Number} options - internal options, or a timeout
@@ -121,8 +125,8 @@ export default class Convergence {
   always(assert, timeout) {
     return new this.constructor({
       _stack: [{
-        timeout: Math.max(timeout || (this._timeout / 10), 20),
         always: true,
+        timeout,
         assert
       }]
     }, this);
@@ -188,75 +192,15 @@ export default class Convergence {
       stack: []
     };
 
-    let addStats = (newStats) => {
-      stats.runs += newStats.runs;
-      stats.elapsed += newStats.elapsed;
-      stats.end = newStats.end;
-      stats.value = newStats.value;
-      stats.stack.push(newStats);
-    };
-
-    // throws when the elapsed time exceeds the timeout
-    let getElapsedSince = (start) => {
-      let elapsed = Date.now() - start;
-
-      // we shouldn't continue beyond the timeout
-      if (elapsed >= stats.timeout) {
-        throw new Error(`convergence exceeded the ${stats.timeout}ms timeout`);
-      }
-
-      return elapsed;
-    };
-
+    // reduce to a single promise that runs each item in the stack
     return this._stack.reduce((promise, subject, i) => {
       let last = i === (this._stack.length - 1);
 
       return promise.then((ret) => {
-        // an assertion should be convergent
         if (subject.assert) {
-          let timeout = stats.timeout - getElapsedSince(start);
-          let assert = subject.assert.bind(null, ret);
-
-          // always convergences need timeouts smaller than the
-          // total timeout so that any future assertions can still
-          // converge within the total timeout period
-          if (subject.always) {
-            // if the last assertion in the chain is an always
-            // convergence, then it is allowed to take the remaining
-            // timeout period
-            timeout = last ? timeout : Math.min(timeout, subject.timeout);
-          }
-
-          return convergeOn(assert, timeout, subject.always)
-          // incorporate stats and curry the assertion return value
-            .then((convergeStats) => {
-              addStats(convergeStats);
-              return convergeStats.value;
-            });
-
-        // `.do()` blocks are run once previous assertions converge
+          return runAssertion(subject, ret, last, stats);
         } else if (subject.exec) {
-          let execStart = Date.now();
-          let result = subject.exec(ret);
-
-          let collectStats = (value) => {
-            addStats({
-              runs: 1,
-              start: execStart,
-              end: Date.now(),
-              elapsed: getElapsedSince(execStart),
-              value
-            });
-
-            return value;
-          };
-
-          // a promise will need to settle first
-          if (result && typeof result.then === 'function') {
-            return result.then(collectStats);
-          } else {
-            return collectStats(result);
-          }
+          return runExec(subject, ret, last, stats);
         }
       });
     }, Promise.resolve())
@@ -264,3 +208,8 @@ export default class Convergence {
       .then(() => stats);
   }
 }
+
+// static `isConvergence` method
+Convergence.isConvergence = isConvergence;
+
+export default Convergence;
