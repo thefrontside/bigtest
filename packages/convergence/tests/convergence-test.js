@@ -144,15 +144,10 @@ describe('BigTest Convergence', () => {
       it('adds to a new stack with an `always` flag and own timeout', () => {
         let assert = () => {};
 
-        assertion = assertion.always(assert);
+        assertion = assertion.always(assert, 200);
         expect(assertion._stack[1]).to.have.property('assert', assert);
         expect(assertion._stack[1]).to.have.property('always', true);
         expect(assertion._stack[1]).to.have.property('timeout', 200);
-      });
-
-      it('should be able to customize own timeout', () => {
-        assertion = assertion.always(() => {}, 50);
-        expect(assertion._stack[1]).to.have.property('timeout', 50);
       });
     });
 
@@ -373,8 +368,11 @@ describe('BigTest Convergence', () => {
 
         it('waits for the convergence to settle', async () => {
           let start = Date.now();
+          let done = false;
 
-          converge = converge.always(() => true, 50);
+          converge = converge.once(() => done === true);
+          createTimeout(() => done = true, 50);
+
           await expect(assertion.run()).to.be.fulfilled;
           expect(Date.now() - start).to.be.within(50, 70);
         });
@@ -391,6 +389,14 @@ describe('BigTest Convergence', () => {
           expect(called).to.be.false;
         });
 
+        it('gives the final `.always()` the remaining timeout', async () => {
+          let start = Date.now();
+
+          converge = converge.always(() => true, 200);
+          await expect(assertion.timeout(50).run()).to.be.fulfilled;
+          expect(Date.now() - start).to.be.within(50, 70);
+        });
+
         it('curries the resolved value to the next function', () => {
           assertion = assertion
             .once((val) => expect(val).to.equal(1));
@@ -401,7 +407,12 @@ describe('BigTest Convergence', () => {
         });
 
         it('rejects after the exceeding the timeout', () => {
-          converge = converge.always(() => true, 60);
+          converge = converge.do(() => {
+            return new Promise((resolve) => {
+              createTimeout(resolve, 60);
+            });
+          });
+
           return expect(assertion.timeout(50).run()).to.be
             .rejectedWith('convergence exceeded the 50ms timeout');
         });
