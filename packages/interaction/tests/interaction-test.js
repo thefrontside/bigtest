@@ -19,6 +19,12 @@ describe('BigTest Interaction: Interaction', () => {
     expect(interaction).to.be.an.instanceOf(Convergence);
   });
 
+  it('has a `pause` method', () => {
+    expect(interaction).to.respondTo('pause');
+    expect(interaction.pause()).to.be.an.instanceOf(Interaction);
+    expect(interaction.pause()).to.not.equal(interaction);
+  });
+
   it('is extendable', async () => {
     let test = false;
 

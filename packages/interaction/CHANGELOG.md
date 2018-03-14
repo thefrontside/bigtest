@@ -12,3 +12,4 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 ### Fixed
 
 - `isPresent` property returns false when the root does not exist
+- `.pause()` methods that halts the convergence when it is encountered
