@@ -49,18 +49,11 @@ export function convergent(assertion, always) {
  * @returns {Function} a function able to run the returned object
  */
 export function handleConvergence(fn) {
-  let hasConvergenceInterface = (obj) => {
-    return obj &&
-      Array.isArray(obj._stack) &&
-      typeof obj.timeout === 'function' &&
-      typeof obj.run === 'function';
-  };
-
   return function() {
     let result = fn.apply(this, arguments);
     let timeout = this.timeout();
 
-    if (hasConvergenceInterface(result)) {
+    if (Convergence.isConvergence(result)) {
       // convergences have their own timeout
       this.timeout(0);
       // run the convergence with the original timeout
