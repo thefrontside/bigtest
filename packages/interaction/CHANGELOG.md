@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ### Changed
 
-- upgrade `@bigtest/convergence` to `0.4.0`
+- upgrade `@bigtest/convergence` to `0.5.0`
 
 ### Fixed
 
