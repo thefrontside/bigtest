@@ -56,8 +56,12 @@ export function handleConvergence(fn) {
     if (Convergence.isConvergence(result)) {
       // convergences have their own timeout
       this.timeout(0);
+
+      return result
+      // set the mocha timeout back for *each hooks
+        .do(() => this.timeout(timeout))
       // run the convergence with the original timeout
-      return result.timeout(timeout).run();
+        .timeout(timeout).run();
     } else {
       return result;
     }

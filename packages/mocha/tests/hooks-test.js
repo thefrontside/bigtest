@@ -22,8 +22,8 @@ describe('BigTest Mocha: hooks timing', () => {
     stats = results.stats;
   }));
 
-  it('runs the convergence within the timeout', () => {
-    expect(stats.passes).to.equal(1);
+  it('runs returned convergences within the timeout', () => {
+    expect(stats.passes).to.equal(stats.tests);
     expect(stats.failures).to.equal(0);
   });
 });
