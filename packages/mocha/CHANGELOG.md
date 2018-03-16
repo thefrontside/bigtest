@@ -5,18 +5,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [0.3.3] - 2018-03-16
+
 ### Fixed
 
 - each hooks set the timeout back to the original timeout when running
   returned convergences
 
-## [0.3.2]
+## [0.3.2] - 2018-03-14
 
 ### Changed
 
 - upgraded `@bigtest/convergence` to `^0.5.0`
 
-## [0.3.1]
+## [0.3.1] - 2018-03-08
 
 ### Fixed
 
