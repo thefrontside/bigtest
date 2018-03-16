@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+### Changed
+
+- upgrade `@bigtest/convergence` to `0.6.0` to support async/await syntax
+
 ## [0.2.0] - 2018-03-14
 
 ### Changed
