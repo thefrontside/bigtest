@@ -207,6 +207,32 @@ class Convergence {
       // always resolve with the stats object
       .then(() => stats);
   }
+
+  /**
+   * By being thennable we can enable the usage of async/await syntax
+   * with convergences. This allows us to naturally chain convergences
+   * without calling `.run()`.
+   *
+   * For example:
+   *   async function clickElement(selector) {
+   *     // will resolve when the element exists
+   *     let node = await new Convergence().once(() => {
+   *       let el = document.querySelector('.element');
+   *       return !!el && el;
+   *     });
+   *
+   *     $node.click();
+   *   }
+   *
+   * @private
+   * @returns {Promise}
+   */
+  then() {
+    // resolve with the value of the last function in the stack
+    let promise = this.run().then(({ value }) => value);
+    // pass promise arguments onward
+    return promise.then.apply(promise, arguments);
+  }
 }
 
 // static `isConvergence` method
