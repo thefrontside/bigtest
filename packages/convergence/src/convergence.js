@@ -158,7 +158,7 @@ class Convergence {
    * @returns {Convergence} a new convergence instance
    */
   append(convergence) {
-    if (!(convergence instanceof Convergence)) {
+    if (!isConvergence(convergence)) {
       throw new Error('.append() only works with convergence instances');
     }
 
