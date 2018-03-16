@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+### Fixed
+
+- each hooks set the timeout back to the original timeout when running
+  returned convergences
+
 ## [0.3.2]
 
 ### Changed
