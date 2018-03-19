@@ -13,6 +13,7 @@
   ],
   "devDependencies": {
     "chalk": "^2.3.0",
-    "commander": "^2.12.2"
+    "commander": "^2.12.2",
+    "jsdoc-api": "^4.0.3"
   }
 }
