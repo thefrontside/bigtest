@@ -1,7 +1,7 @@
 import {
   isConvergence,
   runAssertion,
-  runExec
+  runCallback
 } from './utils';
 
 /**
@@ -99,9 +99,9 @@ class Convergence {
    * @param {Function} assert - the assertion to converge on
    * @returns {Convergence} a new convergence instance
    */
-  when(assert) {
+  when(assertion) {
     return new this.constructor({
-      _stack: [{ assert }]
+      _stack: [{ assertion }]
     }, this);
   }
 
@@ -133,12 +133,12 @@ class Convergence {
    * of the total timeout (minimum 20ms)
    * @returns {Convergence} a new convergence instance
    */
-  always(assert, timeout) {
+  always(assertion, timeout) {
     return new this.constructor({
       _stack: [{
         always: true,
-        timeout,
-        assert
+        assertion,
+        timeout
       }]
     }, this);
   }
@@ -155,9 +155,9 @@ class Convergence {
    * @param {Function} exec - the callback to execute during the convergence
    * @returns {Convergence} a new convergence instance
    */
-  do(exec) {
+  do(callback) {
     return new this.constructor({
-      _stack: [{ exec }]
+      _stack: [{ callback }]
     }, this);
   }
 
@@ -208,10 +208,10 @@ class Convergence {
       let last = i === (this._stack.length - 1);
 
       return promise.then((ret) => {
-        if (subject.assert) {
+        if (subject.assertion) {
           return runAssertion(subject, ret, last, stats);
-        } else if (subject.exec) {
-          return runExec(subject, ret, last, stats);
+        } else if (subject.callback) {
+          return runCallback(subject, ret, last, stats);
         }
       });
     }, Promise.resolve())

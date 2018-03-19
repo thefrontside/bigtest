@@ -63,7 +63,7 @@ export function isConvergence(obj) {
  */
 export function runAssertion(subject, arg, last, stats) {
   let timeout = stats.timeout - getElapsedSince(stats.start, stats.timeout);
-  let assert = subject.assert.bind(null, arg);
+  let assertion = subject.assertion.bind(null, arg);
 
   // the last always uses the remaining timeout
   if (subject.always && !last) {
@@ -76,7 +76,7 @@ export function runAssertion(subject, arg, last, stats) {
     }
   }
 
-  return convergeOn(assert, timeout, subject.always)
+  return convergeOn(assertion, timeout, subject.always)
   // incorporate stats and curry the assertion return value
     .then((convergeStats) => collectStats(stats, convergeStats));
 }
@@ -98,9 +98,9 @@ export function runAssertion(subject, arg, last, stats) {
  * @param {Object} stats - stats accumulator object
  * @returns {Promise} resolves with the function's return value
  */
-export function runExec(subject, arg, last, stats) {
+export function runCallback(subject, arg, last, stats) {
   let start = Date.now();
-  let result = subject.exec(arg);
+  let result = subject.callback(arg);
 
   let collectExecStats = (value) => {
     return collectStats(stats, {

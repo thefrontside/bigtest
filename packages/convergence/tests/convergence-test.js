@@ -131,7 +131,7 @@ describe('BigTest Convergence', () => {
         let assert = () => {};
 
         assertion = assertion.when(assert);
-        expect(assertion._stack[1]).to.have.property('assert', assert);
+        expect(assertion._stack[1]).to.have.property('assertion', assert);
       });
     });
 
@@ -157,7 +157,7 @@ describe('BigTest Convergence', () => {
         let assert = () => {};
 
         assertion = assertion.always(assert, 200);
-        expect(assertion._stack[1]).to.have.property('assert', assert);
+        expect(assertion._stack[1]).to.have.property('assertion', assert);
         expect(assertion._stack[1]).to.have.property('always', true);
         expect(assertion._stack[1]).to.have.property('timeout', 200);
       });
@@ -185,7 +185,7 @@ describe('BigTest Convergence', () => {
         let fn = () => {};
 
         callback = callback.do(fn);
-        expect(callback._stack[1]).to.have.property('exec', fn);
+        expect(callback._stack[1]).to.have.property('callback', fn);
       });
     });
 
@@ -216,7 +216,7 @@ describe('BigTest Convergence', () => {
           new Convergence().do(fn)
         );
 
-        expect(combined._stack[1]).to.have.property('exec', fn);
+        expect(combined._stack[1]).to.have.property('callback', fn);
       });
     });
   });
