@@ -1,21 +1,26 @@
 /**
- * Capture a promise that will only resolve once a given condition has
- * been met. The condition will be tested once every 10ms and is
- * considered to be met when it does not error or return false. If the
- * assertion never passes within the timeout period, then the promise
- * will reject as soon as it can with the last error it recieved while
- * running the assertion.
+ * This is the internal mechanism for converging on assertions. You
+ * should always use the `Convergence` class for creating convergences,
+ * as this allows them to be chainable and reusable.
+ *
+ * This function captures a promise that will only resolve once a given
+ * condition has been met. The condition will be tested once every
+ * 10ms and is considered to be met when it does not error or return
+ * false. If the assertion never passes within the timeout period,
+ * then the promise will reject as soon as it can with the last error
+ * it recieved while running the assertion.
  *
  * If `always` is true, then the promise will resolve only if the
  * condition has been met consistently over the entire timeout
- * period. And it will reject the first time it encounters an
- * error.
+ * period. And it will reject the first time it encounters an error.
  *
- * @param {Function} assertion - run to test condition repeatedly
- * @param {Number} [timeout=2000] - milliseconds to check assertion
- * @param {Boolean} [always] - if true, the assertion must pass
+ * @private
+ * @function convergeOn
+ * @param {Function} assertion - Run to test condition repeatedly
+ * @param {Number} [timeout=2000] - Milliseconds to check assertion
+ * @param {Boolean} [always=false] - If true, the assertion must pass
  * throughout the entire timeout period
- * @returns {Promise} resolves if the assertion passes at least once;
+ * @returns {Promise} Resolves if the assertion passes at least once;
  * if `always` is true, then rejects at the first error instead
  */
 export default function convergeOn(assertion, timeout = 2000, always = false) {

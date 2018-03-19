@@ -4,10 +4,11 @@ import convergeOn from './converge-on';
  * Gets the elapsed time since a `start` time; throws if it exceeds
  * the allowed `max` timeout.
  *
- * @param {Number} start - start time
- * @param {Number} max - maximum elapsed time
- * @returns {Number} elapsed time since `start`
- * @throws {Error} if the elapsed time exceeds `max`
+ * @private
+ * @param {Number} start - Start time
+ * @param {Number} max - Maximum elapsed time
+ * @returns {Number} Elapsed time since `start`
+ * @throws {Error} If the elapsed time exceeds `max`
  */
 function getElapsedSince(start, max) {
   let elapsed = Date.now() - start;
@@ -23,9 +24,10 @@ function getElapsedSince(start, max) {
 /**
  * Adds stats to the accumulator and returns `stats.value`
  *
- * @param {Object} accumulator - stats accumulator
- * @param {Object} stats - new stats to add
- * @returns {*} stats.value
+ * @private
+ * @param {Object} accumulator - Stats accumulator
+ * @param {Object} stats - New stats to add
+ * @returns {*}
  */
 function collectStats(accumulator, stats) {
   accumulator.runs += stats.runs;
@@ -38,10 +40,22 @@ function collectStats(accumulator, stats) {
 }
 
 /**
- * Returns `true` if the object has `_stack`, `timeout`, and `run`
- * properties of the correct type
+ * Returns `true` if the object has common convergence properties of
+ * the correct type.
  *
- * @param {Object} obj - a possible convergence object
+ * ``` javascript
+ * let result = maybeConvergence()
+ *
+ * if (isConvergence(result)) {
+ *   await result.do(something).timeout(100)
+ * } else {
+ *   something(result)
+ * }
+ * ```
+ *
+ * @static
+ * @alias Convergence.isConvergence
+ * @param {Object} obj - A possible convergence object
  * @returns {Boolean}
  */
 export function isConvergence(obj) {
@@ -55,11 +69,12 @@ export function isConvergence(obj) {
  * Runs a single assertion from a convergence stack with `arg` as the
  * assertion's argument. Adds convergence stats to the `stats` object.
  *
- * @param {Object} subject - convergence assertion stack item
- * @param {*} arg - passed as the assertion's argument
- * @param {Boolean} last - true if this assertion is last in the stack
- * @param {Object} stats - stats accumulator object
- * @returns {Promise} resolves with the assertion's return value
+ * @private
+ * @param {Object} subject - Convergence assertion stack item
+ * @param {*} arg - Passed as the assertion's argument
+ * @param {Boolean} last - True if this assertion is last in the stack
+ * @param {Object} stats - Stats accumulator object
+ * @returns {Promise} Resolves with the assertion's return value
  */
 export function runAssertion(subject, arg, last, stats) {
   let timeout = stats.timeout - getElapsedSince(stats.start, stats.timeout);
@@ -92,11 +107,12 @@ export function runAssertion(subject, arg, last, stats) {
  * incorporated into the `stats` object, and it's final return value
  * is curried on.
  *
- * @param {Object} subject - convergence exec stack item
- * @param {*} arg - passed as the function's argument
- * @param {Boolean} last - true if this item is last in the stack
- * @param {Object} stats - stats accumulator object
- * @returns {Promise} resolves with the function's return value
+ * @private
+ * @param {Object} subject - Convergence exec stack item
+ * @param {*} arg - Passed as the function's argument
+ * @param {Boolean} last - True if this item is last in the stack
+ * @param {Object} stats - Stats accumulator object
+ * @returns {Promise} Resolves with the function's return value
  */
 export function runCallback(subject, arg, last, stats) {
   let start = Date.now();
