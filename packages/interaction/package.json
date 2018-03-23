@@ -1,7 +1,7 @@
 {
   "name": "@bigtest/interaction",
   "description": "Interaction library for testing big",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "MIT",
   "repository": "https://github.com/thefrontside/bigtest/tree/master/packages/interaction",
   "main": "dist/index.js",
@@ -43,6 +43,6 @@
     "webpack": "^3.10.0"
   },
   "dependencies": {
-    "@bigtest/convergence": "^0.5.0"
+    "@bigtest/convergence": "^0.6.0"
   }
 }

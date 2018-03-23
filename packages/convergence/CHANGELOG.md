@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [0.6.0] - 2018-03-16
+
+### Added
+
+- then method to support async / await syntax without calling `.run()`
+
+### Fixed
+
+- `.append()` method to use `isConvergence` instead of `instanceof`
+
 ## [0.5.0] - 2018-03-14
 
 ### Added
