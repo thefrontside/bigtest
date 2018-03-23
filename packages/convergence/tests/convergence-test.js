@@ -109,11 +109,11 @@ describe('BigTest Convergence', () => {
       });
     });
 
-    describe('adding assertions with `.once()`', () => {
+    describe('adding assertions with `.when()`', () => {
       let assertion;
 
       beforeEach(() => {
-        assertion = converge.once(() => {});
+        assertion = converge.when(() => {});
       });
 
       it('creates a new instance', () => {
@@ -130,7 +130,7 @@ describe('BigTest Convergence', () => {
       it('adds the assertion to the new stack', () => {
         let assert = () => {};
 
-        assertion = assertion.once(assert);
+        assertion = assertion.when(assert);
         expect(assertion._stack[1]).to.have.property('assert', assert);
       });
     });
@@ -194,7 +194,7 @@ describe('BigTest Convergence', () => {
 
       beforeEach(() => {
         combined = converge.append(
-          new Convergence().once(() => {})
+          new Convergence().when(() => {})
         );
       });
 
@@ -247,11 +247,11 @@ describe('BigTest Convergence', () => {
       return expect(converge.run()).to.be.fulfilled;
     });
 
-    describe('after using `.once()`', () => {
+    describe('after using `.when()`', () => {
       let assertion;
 
       beforeEach(() => {
-        assertion = converge.once(() => expect(total).to.equal(5));
+        assertion = converge.when(() => expect(total).to.equal(5));
       });
 
       it('resolves after assertions converge', async () => {
@@ -268,7 +268,7 @@ describe('BigTest Convergence', () => {
 
       describe('with additional chaining', () => {
         beforeEach(() => {
-          assertion = assertion.once(() => expect(total).to.equal(10));
+          assertion = assertion.when(() => expect(total).to.equal(10));
         });
 
         it('resolves after at all assertions are met', async () => {
@@ -316,7 +316,7 @@ describe('BigTest Convergence', () => {
         beforeEach(() => {
           assertion = assertion
             .do(() => total = 10)
-            .once(() => expect(total).to.equal(10));
+            .when(() => expect(total).to.equal(10));
         });
 
         it('resolves after at least 50ms', async () => {
@@ -338,7 +338,7 @@ describe('BigTest Convergence', () => {
     describe('after using `.do()`', () => {
       it('triggers the callback before resolving', () => {
         let assertion = converge
-          .once(() => expect(total).to.equal(5))
+          .when(() => expect(total).to.equal(5))
           .do(() => total * 100);
 
         createTimeout(() => total = 5, 50);
@@ -348,7 +348,7 @@ describe('BigTest Convergence', () => {
 
       it('passes the previous return value to the callback', () => {
         let assertion = converge
-          .once(() => {
+          .when(() => {
             expect(total).to.equal(5);
             return total * 100;
           })
@@ -363,7 +363,7 @@ describe('BigTest Convergence', () => {
         let called = false;
 
         let assertion = converge
-          .once(() => expect(total).to.equal(5))
+          .when(() => expect(total).to.equal(5))
           .do(() => called = true);
 
         await expect(assertion.run()).to.be.rejected;
@@ -382,7 +382,7 @@ describe('BigTest Convergence', () => {
           let start = Date.now();
           let done = false;
 
-          converge = converge.once(() => done === true);
+          converge = converge.when(() => done === true);
           createTimeout(() => done = true, 50);
 
           await expect(assertion.run()).to.be.fulfilled;
@@ -393,7 +393,7 @@ describe('BigTest Convergence', () => {
           let start = Date.now();
           let called = false;
 
-          converge = converge.once(() => false);
+          converge = converge.when(() => false);
           assertion = assertion.do(() => called = true);
 
           await expect(assertion.timeout(50).run()).to.be.rejected;
@@ -411,7 +411,7 @@ describe('BigTest Convergence', () => {
 
         it('curries the resolved value to the next function', () => {
           assertion = assertion
-            .once((val) => expect(val).to.equal(1));
+            .when((val) => expect(val).to.equal(1));
 
           converge = converge.do(() => 1);
           return expect(assertion.run()).to.be.fulfilled
@@ -460,7 +460,7 @@ describe('BigTest Convergence', () => {
 
         it('curries the resolved value to the next function', () => {
           assertion = assertion
-            .once((val) => expect(val).to.equal(1));
+            .when((val) => expect(val).to.equal(1));
 
           createTimeout(() => resolve(1), 10);
           return expect(assertion.run()).to.be.fulfilled
@@ -479,7 +479,7 @@ describe('BigTest Convergence', () => {
       it('runs methods from the other convergence', async () => {
         let called = false;
 
-        let assertion = converge.once(() => expect(total).to.equal(5));
+        let assertion = converge.when(() => expect(total).to.equal(5));
         assertion = assertion.append(converge.do(() => called = true));
 
         createTimeout(() => total = 5, 50);
@@ -491,7 +491,7 @@ describe('BigTest Convergence', () => {
     describe('after using various chain methods', () => {
       it('resolves with a combined stats object', async () => {
         let assertion = converge
-          .once(() => expect(total).to.equal(5))
+          .when(() => expect(total).to.equal(5))
           .do(() => total = 10)
           .always(() => expect(total).to.equal(10))
           .do(() => total * 5);

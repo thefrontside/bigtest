@@ -33,7 +33,7 @@ import {
  *
  * Example:
  *   let first = new Convergence(100)
- *     .once(() => expect(foo).to.equal('bar'))
+ *     .when(() => expect(foo).to.equal('bar'))
  *
  *   let second = first.timeout(200)
  *     .do(() => console.log('foo', foo))
@@ -41,7 +41,7 @@ import {
  *
  * `first.run()` has 100ms to converge on it's assertion.
  *
- * `second.run()` will log `foo` once the first assertion converges
+ * `second.run()` will log `foo` when the first assertion converges
  * and continue to assert the second assertion until the 200ms timeout
  * period has expired.
  */
@@ -92,21 +92,31 @@ class Convergence {
   /**
    * Creates a new convergence with the given assertion added to its
    * stack. The new convergence's initial stack will be inherited from
-   * this convergence instance. The assertion given to `.once()` will
+   * this convergence instance. The assertion given to `.when()` will
    * be converged on using the `convergeOn` helper, but it's timeout
    * will be managed by this convergence instance
    *
    * @param {Function} assert - the assertion to converge on
    * @returns {Convergence} a new convergence instance
    */
-  once(assert) {
+  when(assert) {
     return new this.constructor({
       _stack: [{ assert }]
     }, this);
   }
 
   /**
-   * Similar to `.once()`, creates a new convergence with the given
+   * Alias for `.when()`
+   *
+   * @deprecated
+   * @returns {Convergence} a new convergence instance
+   */
+  once() {
+    return this.when(...arguments);
+  }
+
+  /**
+   * Similar to `.when()`, creates a new convergence with the given
    * assertion added to its stack. However, the assertion given to
    * `.always()` will be ran until it fails, or passes for its entire
    * timeout period. When an `.always()` is last in a stack, it will
@@ -216,7 +226,7 @@ class Convergence {
    * For example:
    *   async function clickElement(selector) {
    *     // will resolve when the element exists
-   *     let node = await new Convergence().once(() => {
+   *     let node = await new Convergence().when(() => {
    *       let el = document.querySelector('.element');
    *       return !!el && el;
    *     });
