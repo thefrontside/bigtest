@@ -15,6 +15,8 @@
 
 ---
 
+[![Join the chat at https://gitter.im/thefrontside/bigtest](https://badges.gitter.im/thefrontside/bigtest.svg)](https://gitter.im/thefrontside/bigtest?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 It's a big question, and it can't be answered with small tests that
 observe a tiny portion of your code that isn't integrated with any
 thing else. Big questions need big tests.
