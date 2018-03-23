@@ -112,6 +112,7 @@ class Convergence {
    * @returns {Convergence} a new convergence instance
    */
   once() {
+    console.warn('#once() has been deprecated in favor of #when()');
     return this.when(...arguments);
   }
 
