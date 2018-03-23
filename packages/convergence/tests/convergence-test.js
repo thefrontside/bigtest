@@ -14,6 +14,18 @@ describe('BigTest Convergence', () => {
     it('allows initializing with a different timeout', () => {
       expect(new Convergence(50).timeout()).to.equal(50);
     });
+
+    it('is thennable', async () => {
+      let converge = new Convergence();
+      expect(converge).to.respondTo('then');
+
+      let value = await converge.do(() => 'hello');
+      expect(value).to.equal('hello');
+
+      await expect(converge.do(() => {
+        throw new Error('catch me');
+      })).to.be.rejectedWith('catch me');
+    });
   });
 
   describe('extending convergences', () => {
