@@ -6,7 +6,8 @@
   "scripts": {
     "build": "bin/each-pkg yarn build",
     "test": "bin/each-pkg yarn test",
-    "lint": "bin/each-pkg yarn lint"
+    "lint": "bin/each-pkg yarn lint",
+    "docs": "bin/each-pkg yarn docs"
   },
   "workspaces": [
     "packages/*"

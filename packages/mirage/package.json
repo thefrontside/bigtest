@@ -8,6 +8,7 @@
     "build": "rollup --config",
     "start": "karma start",
     "test": "karma start --single-run",
+    "docs": "../../bin/docs ./lib",
     "lint": "eslint ./"
   },
   "eslintIgnore": [

@@ -5,6 +5,8 @@ const path = require('path');
 const jsdoc = require('jsdoc-api');
 
 const cwd = process.cwd();
+const input = process.argv[2] || './src';
+const output = process.argv[3] || './docs/data.json';
 
 function removeCwd(path) {
   return path.replace(cwd, '');
@@ -24,7 +26,7 @@ function writeFile(filename, data) {
 
 function generateDocs() {
   let docs = jsdoc.explainSync({
-    files: path.join(cwd, 'src/*.js')
+    files: path.join(cwd, `${input}/*.js`)
   }).filter((doc) => {
     // don't document undocumented docs...
     return !doc.undocumented &&
@@ -40,7 +42,7 @@ function generateDocs() {
   });
 
   writeFile(
-    path.join(cwd, 'docs/data.json'),
+    path.join(cwd, output),
     JSON.stringify(docs, null, 2)
   );
 }
