@@ -6,6 +6,9 @@
   <a href="https://circleci.com/gh/thefrontside/bigtest/tree/master">
     <img alt="CircleCI Status" src="https://circleci.com/gh/thefrontside/bigtest/tree/master.svg?style=svg&circle-token=78c5d879b0ace4fe137c203bfc9ca20d732eb6e3" />
   </a>
+  <a href="https://gitter.im/thefrontside/bigtest?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
+    <img alt="Chat on Gitter" src="https://badges.gitter.im/thefrontside/bigtest.svg" />
+  </a>
 </p>
 
 <p align="center">
