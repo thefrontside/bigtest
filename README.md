@@ -10,7 +10,7 @@
 
 <p align="center">
   A Suite of JavaScript libraries and framework extensions to help you
-  answer the question:</br><i>Does my application work in real life?</i>.
+  answer the question:</br><i>Does my application work in real life?</i>
 </p>
 
 ---
