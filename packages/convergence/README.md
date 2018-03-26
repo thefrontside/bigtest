@@ -33,7 +33,7 @@ give up?
 ![Image of convergent assertion](https://raw.githubusercontent.com/thefrontside/bigtest/master/packages/convergence/images/convergent-assertion.png)
 
 This is the essence of what `@bigtest/convergence` provides:
-repeatedly testing for a condition and then allowing code to run once
+repeatedly testing for a condition and then allowing code to run when
 that condition has been met.
 
 And it isn't just for assertions either. Because it is a general
@@ -61,14 +61,14 @@ import Convergence from '@bigtest/convergence'
 // starts a new stack
 new Convergence()
   // adds a convergent function to the stack
-  .once(() => expect($el).to.exist)
+  .when(() => expect($el).to.exist)
   // called when the previous function converges
   .do(() => $el.get(0).click())
   // adds a convergent function that resolves when it is true
   // for the remaining timeout period
   .always(() => expect($el).to.have.prop('disabled', true))
   // starts converging and returns a promise that resolves
-  // once all convergences have been met
+  // when all convergences have been met
   .run()
 ```
 
@@ -78,12 +78,12 @@ new Convergence()
 return new instances.
 
 ``` javascript
-// will converge once the total equals 5
-let convergeOnce = new Convergence()
-  .once(() => total === 5);
+// will converge when the total equals 5
+let convergeWhen = new Convergence()
+  .when(() => total === 5);
 
 // will log the total after the first convergence
-let convergeAndLog = convergeOnce
+let convergeAndLog = convergeWhen
   .do(() => console.log(total));
 
 // after logging the total, will converge when it remains 5 for the
@@ -92,7 +92,7 @@ let convergeAlways = convergeAndLog
   .always(() => total === 5);
 
 // all three convergences can be ran in parallel
-convergeOnce.run();
+convergeWhen.run();
 convergeAndLog.run();
 convergeAlways.run();
 ```
@@ -136,7 +136,7 @@ converge.timeout();  // => 1000
 convergeLong.timeout(); // => 5000
 ```
 
-**`.once(assert)`**
+**`.when(assert)`**
 
 Returns a new `Convergence` instance and adds the provided assertion
 to its stack. When this instance is ran, the `assert` function will be
@@ -144,8 +144,8 @@ looped over repeatedly until it passes, or until the convergence's
 timeout has been exceeded.
 
 ``` javascript
-// this convergence will resolve once `total` equals `5`
-converge.once(() => total === 5)
+// this convergence will resolve when `total` equals `5`
+converge.when(() => total === 5)
 ```
 
 **`.always(assert[, timeout])`**
@@ -154,7 +154,7 @@ Another common pattern is asserting that something **has not**
 changed. With a typical convergence, the state may change after an
 assertion converges immediately. So for these scenarios, you want to
 converge _when the assertion passes for the duration of a timeout._
-`.always()` is just like `.once()` above, except that the `assert`
+`.always()` is just like `.when()` above, except that the `assert`
 function is looped over repeatedly until it fails for the first time
 or never fails for the duration of the timeout.
 
@@ -178,7 +178,7 @@ converge
 converge
   // will use the 500ms timeout instead
   .always(() => total === 5, 500)
-  .once(() => total === 10)
+  .when(() => total === 10)
 
 new Convergence(2000)
   // defaults to 200ms
@@ -196,7 +196,7 @@ allows you to run side effects between convergences.
 
 ``` javascript
 converge
-  .once(() => total === 5)
+  .when(() => total === 5)
   // executes after the total is equal to 5
   .do(() => total *= 100)
   // starts converging after the total has been multiplied
@@ -211,7 +211,7 @@ given to the next function in the stack.
 ``` javascript
 converge
   // returns the element when it exists in the DOM
-  .once(() => {
+  .when(() => {
     let $el = $('[data-test-element]');
     expect($el).to.exist;
     return $el;
@@ -246,8 +246,8 @@ Combines convergences to allow composing them together to create brand
 new convergence instances.
 
 ``` javascript
-let converge1 = converge.once(() => total === 1)
-let converge5 = converge.once(() => total === 5)
+let converge1 = converge.when(() => total === 1)
+let converge5 = converge.when(() => total === 5)
 
 // converges when the total first equals `1` and then equals `5`
 converge1.append(converge5)

@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+### Added
+
+- `.when()` to replace the `.once()` method
+
+### Deprecated
+
+- `.once()` in favor of `.when()`
+
 ## [0.6.0] - 2018-03-16
 
 ### Added
