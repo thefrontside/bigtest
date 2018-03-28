@@ -1,11 +1,13 @@
+import { isConvergence } from '@bigtest/convergence';
+
 /**
- * Selects the first element using a selector via
- * `$scope.querySelector()`
+ * Gets the first element matching a selector via `querySelector`.
  *
- * @param {String} selector - query selector string
- * @param {Element} [$scope=document] - optional scope that
- * supports `.querySelector()`
- * @returns {Element} matching element node
+ * @private
+ * @param {String} selector - Query selector string
+ * @param {Element} [$ctx=document] - optional context that supports
+ * the `querySelector` method
+ * @returns {Element} Matching element
  */
 export function $(selector, $ctx = document) {
   let $node = selector;
@@ -30,13 +32,13 @@ export function $(selector, $ctx = document) {
 }
 
 /**
- * Selects all of the matching elements using a selector via
- * `$scope.querySelectorAll()`
+ * Gets all elements matching a selector via `querySelectorAll()`.
  *
- * @param {String} selector - query selector string
- * @param {Element} [$scope=document] - optional scope that
- * supports `.querySelectorAll()`
- * @returns {Array} array of element nodes
+ * @private
+ * @param {String} selector - Query selector string
+ * @param {Element} [$ctx=document] - optional context that supports
+ * the `querySelectorAll` method
+ * @returns {Array} Array of elements
  */
 export function $$(selector, $ctx = document) {
   let nodes = [];
@@ -53,12 +55,38 @@ export function $$(selector, $ctx = document) {
 }
 
 /**
- * Returns true if the provided object looks like a property
+ * Returns `true` if the object has common interactor properties
+ *
+ * ``` javascript
+ * let result = maybeInteractor()
+ *
+ * if (isInteractor(result)) {
+ *   await result.login(user)
+ * } else {
+ *   something(result)
+ * }
+ * ```
+ *
+ * @static
+ * @alias Interactor.isInteractor
+ * @param {Object} obj - A possible interactor object
+ * @returns {Boolean}
+ */
+export function isInteractor(obj) {
+  return isConvergence(obj) &&
+    '$' in obj && typeof obj.$ === 'function' &&
+    '$$' in obj && typeof obj.$$ === 'function' &&
+    '$root' in obj;
+}
+
+/**
+ * Returns `true` if the provided object looks like a property
  * descriptor and have both `enumerable` and `configurable` properties
  * in addition to a `value` or `get` property.
  *
- * @param {Object} descr - maybe a property descriptor
- * @returns {Boolean} true if it looks like a descriptor
+ * @private
+ * @param {Object} descr - Maybe a property descriptor
+ * @returns {Boolean}
  */
 export function isPropertyDescriptor(descr) {
   return descr &&
