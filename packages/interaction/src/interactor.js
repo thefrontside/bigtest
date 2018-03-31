@@ -1,7 +1,7 @@
 /* global Element */
 import Convergence from '@bigtest/convergence';
 import { $, $$, isInteractor } from './utils';
-import * as methods from './interactions/methods';
+import { methods, properties } from './interactions';
 
 /**
  * ``` javascript
@@ -207,5 +207,13 @@ Object.defineProperties(
   Interactor.prototype,
   Object.entries(methods).reduce((descriptors, [name, method]) => {
     return Object.assign(descriptors, { [name]: { value: method } });
+  }, {})
+);
+
+// default interaction properties
+Object.defineProperties(
+  Interactor.prototype,
+  Object.entries(properties).reduce((descriptors, [name, getter]) => {
+    return Object.assign(descriptors, { [name]: { get: getter } });
   }, {})
 );

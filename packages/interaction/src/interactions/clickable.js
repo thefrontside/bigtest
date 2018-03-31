@@ -1,10 +1,27 @@
 import { action } from './helpers';
 
 /**
- * Adds a convergence for clicking an element existing in the DOM
+ * Converges on an element first existing in the DOM, then triggers a
+ * click on that element.
  *
- * @param {String} selector - query selector
- * @returns {Interaction}
+ * ``` html
+ * <form ...>
+ *   <button type="submit">
+ *     ...
+ *   </button>
+ *   ...
+ * </form>
+ * ```
+ *
+ * ``` javascript
+ * await new Interactor('button').click()
+ * await new Interactor('form').click('[type="submit"]')
+ * ```
+ *
+ * @method click
+ * @memberOf Interactor
+ * @param {String} [selector] - Nested element query selector
+ * @returns {Interactor} A new instance with additional convergences
  */
 export function click(selector) {
   return this.find(selector)
@@ -12,10 +29,31 @@ export function click(selector) {
 }
 
 /**
- * Page-object property creator
+ * Interaction creator for clicking a specific element within a
+ * custom interactor class.
  *
- * @param {String} selector - query selector
- * @returns {Object} property descriptor
+ * ``` html
+ * <div class="card">
+ *   ...
+ *   <a class="card-link" href="#bar">
+ *     ...
+ *   </a>
+ * </div>
+ * ```
+ *
+ * ``` javascript
+ * @interactor class CardInteractor {
+ *   clickThrough = clickable('.card-link')
+ * }
+ * ```
+ *
+ * ``` javascript
+ * await new CardInteractor('.card').clickThrough()
+ * ```
+ *
+ * @function clickable
+ * @param {String} selector - Element query selector
+ * @returns {Object} Property descriptor
  */
 export default function(selector) {
   return action(function() {

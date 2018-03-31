@@ -2,23 +2,27 @@
 import { action } from './helpers';
 
 /**
- * Adds a convergence for scrolling an element existing in the
- * DOM. This method works with one or two arguments. If given one
- * argument, it is used as the scroll values to scroll the interaction's
- * scoped element. Given a second argument, the first is used a query
- * selector string to select an element for scrolling.
+ * Converges on an element first existing in the DOM, then sets the
+ * `scrollTop` and/or `scrollLeft` properties of the element, and then
+ * finally triggers a scroll event on the element.
  *
- * @param {String} selectorOrScrollTo - query selector string or
- * scroll values if the second argument is not provided
- * @param {String} [scrollTo] - if provided, the first argument is
- * used as the query selector string
- * @returns {Interaction}
+ * ``` javascript
+ * await new Interaction('#page').scroll({ top: 100 })
+ * await new Interaction('#page').scroll('.nested-view', { left: 100 })
+ * ```
+ *
+ * @method scroll
+ * @memberOf Interactor
+ * @param {String} [selector] - Nested element query selector
+ * @param {Number} scrollTo.top - Number of pixels to scroll the top-offset
+ * @param {Number} scrollTo.left - Number of pixels to scroll the left-offset
+ * @returns {Interactor} A new instance with additional convergences
  */
 export function scroll(selectorOrScrollTo, scrollTo) {
   let selector;
 
-  // if scrollTo is not defined, it is assumed that the only passed
-  // argument is the scroll values for the root element
+  // if `scrollTo` is not defined, it is assumed that the only passed
+  // argument is the scroll values for the scoped element
   if (typeof scrollTo === 'undefined') {
     scrollTo = selectorOrScrollTo;
   } else {
@@ -45,10 +49,22 @@ export function scroll(selectorOrScrollTo, scrollTo) {
 }
 
 /**
- * Page-object property creator
+ * Interaction creator for scrollilng a specific element within a
+ * custom interactor class.
  *
- * @param {String} selector - query selector
- * @returns {Object} property descriptor
+ * ``` javascript
+ * @interactor class PageInteractor {
+ *   scrollSection = scrollable('.scrollview')
+ * }
+ * ```
+ *
+ * ``` javascript
+ * await new PageInteractor('#page').scrollSection({ top: 100 })
+ * ```
+ *
+ * @function scrollable
+ * @param {String} selector - Element query selector
+ * @returns {Object} Property descriptor
  */
 export default function(selector) {
   return action(function(scrollTo) {

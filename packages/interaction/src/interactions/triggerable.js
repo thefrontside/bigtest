@@ -2,41 +2,61 @@
 import { action } from './helpers';
 
 /**
- * Adds a convergence for triggering an event on an element existing
- * in the DOM. If the second argument is not an event name, we assume
- * the event name was passed as the first argument and the second
- * argument becomes the event options. Otherwise, the first arugment
- * is used as the selector, the second as the event name, and the
- * third argument is for the event options.
+ * Trigger has two forms, both of which have an optional last
+ * argument. This function normalizes the shorter form to match the
+ * argument positions of the longer form.
  *
- * @param {String} selectorOrEventName - query selector string or event name
- * @param {String|Object} [eventNameOrOptions] - event name or options object
- * @param {Object} [options] - the event options
- * @returns {Interaction}
+ * @param {Array} args - Arguments for `#trigger()`
+ * @returns {Array} Normalized arguments
  */
-export function trigger(selectorOrEventName, eventNameOrOptions, options) {
-  let selector, eventName;
+function getTriggerArgs(args) {
+  let selector, eventName, options;
 
-  // if the second argument is not an event name, we assume that the
-  // event name was given as the first argument
-  if (typeof eventNameOrOptions !== 'string') {
-    eventName = selectorOrEventName;
-    options = eventNameOrOptions;
+  // trigger(selector, eventName, options)
+  if (args.length === 3) {
+    [selector, eventName, options] = args;
+
+  // trigger(selector, eventName)
+  // trigger(eventName, options)
+  } else if (args.length === 2) {
+    if (typeof args[1] === 'string') {
+      [selector, eventName] = args;
+    } else {
+      [eventName, options] = args;
+    }
+
+  // trigger(eventName)
   } else {
-    selector = selectorOrEventName;
-    eventName = eventNameOrOptions;
+    [eventName] = args;
   }
 
-  // default options to an empty object
-  if (!options) {
-    options = {};
-  }
+  return [selector, eventName, options];
+}
+
+/**
+ * Converges on an element first existing in the DOM, then triggers a
+ * specified event with optional event init options.
+ *
+ * ``` javascript
+ * await new Interactor('#foo').trigger('customEvent')
+ * await new Interactor('#foo').trigger('customEvent', { ... })
+ * await new Interactor('#foo').trigger('#bar', 'customEvent')
+ * await new Interactor('#foo').trigger('#bar', 'customEvent', { ... })
+ * ```
+ *
+ * @param {String} [selector] - Nested element query selector
+ * @param {String} eventName - Event name or options object
+ * @param {Object} [options] - Event init options
+ * @returns {Interactor} A new instance with additional convergences
+ */
+export function trigger(...args) {
+  let [selector, eventName, options = {}] = getTriggerArgs(args);
 
   return this.find(selector)
     .do(($node) => {
       // default options for any event
-      let bubbles = options.hasOwnProperty('bubbles') ? options.bubbles : true;
-      let cancelable = options.hasOwnProperty('cancelable') ? options.cancelable : true;
+      let bubbles = 'bubbles' in options ? options.bubbles : true;
+      let cancelable = 'cancelable' in options ? options.cancelable : true;
 
       // remove these so we can assign the rest later
       delete options.bubbles;
@@ -52,28 +72,33 @@ export function trigger(selectorOrEventName, eventNameOrOptions, options) {
 }
 
 /**
- * Page-object property creator. Optionally, the selector can be
- * omitted as the second argument to target the root element and
- * options can be provided as the second argument instead.
+ * Interaction creator for triggering an event on a specific element
+ * within a custom interactor class.
  *
- * @param {String} eventName - event name
- * @param {String|Object} [selectorOrOptions] - query selector string
- * or options object
- * @param {Object} [options] - options object if a selector is provided
- * @returns {Object} property descriptor
+ * ``` javascript
+ * @interactor class PageInteractor {
+ *   triggerEvent = triggerable('customEvent', { ... })
+ *   triggerFooEvent = triggerable('#foo', 'customEvent')
+ * }
+ * ```
+ *
+ * ``` javascript
+ * await new PageInteractor().triggerEvent()
+ * await new PageInteractor().triggerEvent({ ... })
+ * await new PageInteractor().triggerFooEvent()
+ * await new PageInteractor().triggerFooEvent({ ... })
+ * ```
+ *
+ * @param {String} [selector] - Element query selector
+ * @param {String} eventName - Event name or options object
+ * @param {Object} [options] - Event init options
+ * @returns {Object} Property descriptor
  */
-export default function(eventName, selectorOrOptions, options) {
-  let selector;
+export default function(...args) {
+  let [selector, eventName, options = {}] = getTriggerArgs(args);
 
-  // if the second argument is a string, we assume it is a selector,
-  // otherwise it is options
-  if (typeof selectorOrOptions === 'string') {
-    selector = selectorOrOptions;
-  } else {
-    options = selectorOrOptions;
-  }
-
-  return action(function() {
-    return this.trigger(selector, eventName, options);
+  return action(function(opts) {
+    opts = Object.assign({}, options, opts);
+    return this.trigger(selector, eventName, opts);
   });
 }

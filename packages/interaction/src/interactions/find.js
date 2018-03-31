@@ -1,23 +1,40 @@
-import { $ } from '../utils';
 import { computed } from './helpers';
 
 /**
- * Adds a convergence for an element existing in the DOM
+ * Converges on an element existing in the DOM.
  *
- * @param {String} selector - query selector
- * @returns {Interaction}
+ * ``` javascript
+ * let $el = await new Interactor().find('.some-element')
+ * ```
+ *
+ * @method find
+ * @memberOf Interactor
+ * @param {String} selector - Element query selector
+ * @returns {Interactor} A new instance with additional convergences
  */
 export function find(selector) {
-  return this.once(() => {
-    return $(selector, this.$scope);
+  return this.when(() => {
+    return this.$(selector);
   });
 }
 
 /**
- * Page-object property creator
+ * Interaction creator for finding a specific element within a custom
+ * interactor class.
  *
- * @param {String} selector - query selector
- * @returns {Object} property descriptor
+ * ``` javascript
+ * @interactor class PageInteractor {
+ *   getHeading = find('h1.heading')
+ * }
+ * ```
+ *
+ * ``` javascript
+ * let $heading = await new Interactor().getHeading()
+ * ```
+ *
+ * @function find
+ * @param {String} selector - Element query selector
+ * @returns {Object} Property descriptor
  */
 export default function(selector) {
   return computed(function() {

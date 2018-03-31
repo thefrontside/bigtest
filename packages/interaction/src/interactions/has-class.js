@@ -1,14 +1,41 @@
 import { computed } from './helpers';
 
 /**
- * Page-object property creator for returning true or false if the
- * element's classList contains the specified class
+ * Property creator for returning `true` or `false` when an element
+ * has a specific class.
  *
- * @param {String} className - class name to check
- * @param {String} selector - query selector string
- * @returns {Object} property descriptor
+ * ``` html
+ * <form class="error" ...>
+ *   <input id="name" class="error"/>
+ *   <input type="email" id="email"/>
+ * </form>
+ * ```
+ *
+ * ``` javascript
+ * @interactor class FormInteractor {
+ *   hasErrors = hasClass('error')
+ *   hasNameError = hasClass('input#name', 'error')
+ *   hasEmailError = hasClass('input#email', 'error')
+ * }
+ * ```
+ *
+ * ``` javascript
+ * new FormInteractor('form').hasErrors //=> true
+ * new FormInteractor('form').hasNameError //=> true
+ * new FormInteractor('form').hasEmailError //=> false
+ * ```
+ *
+ * @function hasClass
+ * @param {String} [selector] - Nested element query selector
+ * @param {String} className - Classname to check for
+ * @returns {Object} Property descriptor
  */
-export default function(className, selector) {
+export default function(selector, className) {
+  if (!className) {
+    className = selector;
+    selector = null;
+  }
+
   return computed(function() {
     return this.$(selector).classList.contains(className);
   });

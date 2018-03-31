@@ -1,11 +1,32 @@
 import { computed } from './helpers';
 
 /**
- * Page-object property creator for returning the number of
- * elements found using a selector
+ * Property creator for returning the number of elements found via a
+ * query selector. Will throw an error if the interactor scope cannot
+ * be found.
  *
- * @param {String} selector - query selector
- * @returns {Object} property descriptor
+ * ``` html
+ * <ul >
+ *   <li>...</li>
+ *   <li>...</li>
+ *   <li>...</li>
+ * </ul>
+ * ```
+ *
+ * ``` javascript
+ * @interaction class ListInteractor {
+ *   size = count('li')
+ * }
+ * ```
+ *
+ * ``` javascript
+ * new ListInteractor('ul').size //=> 3
+ * ```
+ *
+ * @function count
+ * @param {String} selector - Element query selector
+ * @throws {Error} When the interactor scope cannot be found
+ * @returns {Object} Property descriptor
  */
 export default function(selector) {
   return computed(function() {

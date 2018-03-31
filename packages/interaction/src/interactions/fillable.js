@@ -2,20 +2,27 @@
 import { action } from './helpers';
 
 /**
- * Adds a convergence for filling an input existing in the DOM. This
- * method works with one or two arguments. If given one argument, it
- * is used as the value to fill in the interaction's scoped
- * element. Given a second argument, the first is used a query
- * selector string to select an element for filling.
+ * Converges on an element first existing in the DOM, then sets its
+ * `value` property to the passed value, and triggers both `input` and
+ * `change` events for the element.
  *
- * Works around react by caching any custom value property descriptor
- * and reapplying it after an input event is dispatched on the node
+ * ``` html
+ * <form ...>
+ *   <input id="name"/>
+ *   ...
+ * </form>
+ * ```
  *
- * @param {String} selectorOrValue - query selector string or value if
- * the second argument is not provided
- * @param {String} [value] - if provided, the first argument is used
- * as the query selector string
- * @returns {Interaction}
+ * ``` javascript
+ * await new Interactor('input').fill('value')
+ * await new Interactor('form').fill('input#name', 'value')
+ * ```
+ *
+ * @method fill
+ * @memberOf Interactor
+ * @param {String} [selector] - Nested element query selector
+ * @param {String} value - Value to set
+ * @returns {Interactor} A new instance with additional convergences
  */
 export function fill(selectorOrValue, value) {
   let selector;
@@ -30,10 +37,13 @@ export function fill(selectorOrValue, value) {
 
   return this.find(selector)
     .do(($node) => {
-      // cache artificial value property descriptor
+      // React has a custom property descriptor for the `value`
+      // property of input elements. To work around this, we cache any
+      // custom value property descriptor and reapply it after an
+      // input event was dispatched on the node.
       let descriptor = Object.getOwnPropertyDescriptor($node, 'value');
 
-      // remove artificial value property
+      // remove any artificial value property
       if (descriptor) delete $node.value;
 
       // set the actual value
@@ -63,10 +73,29 @@ export function fill(selectorOrValue, value) {
 }
 
 /**
- * Page-object property creator
+ * Interaction creator for setting the value of a specific element
+ * within a custom interactor class.
  *
- * @param {String} selector - query selector
- * @returns {Object} property descriptor
+ * ``` html
+ * <form ...>
+ *   <input id="name"/>
+ *   ...
+ * </form>
+ * ```
+ *
+ * ``` javascript
+ * @interactor class FormInteractor {
+ *   fillName = fillable('input#name')
+ * }
+ * ```
+ *
+ * ``` javascript
+ * await new FormInteractor('form').fillName('value')
+ * ```
+ *
+ * @function fillable
+ * @param {String} selector - Element query selector
+ * @returns {Object} Property descriptor
  */
 export default function(selector) {
   return action(function(value) {

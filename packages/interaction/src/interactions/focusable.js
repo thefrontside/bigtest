@@ -2,10 +2,25 @@
 import { action } from './helpers';
 
 /**
- * Adds a convergence for focusing an element existing in the DOM
+ * Converges on an element first existing in the DOM, then triggers a
+ * focus event on that element.
  *
- * @param {String} selector - query selector
- * @returns {Interaction}
+ * ``` html
+ * <form ...>
+ *   <input type="email"/>
+ *   ...
+ * </form>
+ * ```
+ *
+ * ``` javascript
+ * await new Interactor('input').focus()
+ * await new Interactor('form').focus('input[type="email"]')
+ * ```
+ *
+ * @method focus
+ * @memberOf Interactor
+ * @param {String} selector - Nested element query selector
+ * @returns {Interactor} A new instance with additional convergences
  */
 export function focus(selector) {
   return this.find(selector)
@@ -20,10 +35,29 @@ export function focus(selector) {
 }
 
 /**
- * Page-object property creator
+ * Interaction creator for focusing a specific element within a custom
+ * interactor class.
  *
- * @param {String} selector - query selector
- * @returns {Object} property descriptor
+ * ``` html
+ * <form ...>
+ *   <input type="email"/>
+ *   ...
+ * </form>
+ * ```
+ *
+ * ``` javascript
+ * @interactor class FormInteractor {
+ *   focusEmail = focusable('input[type="email"]')
+ * }
+ * ```
+ *
+ * ``` javascript
+ * await new FormInteractor('form').focusEmail()
+ * ```
+ *
+ * @function focusable
+ * @param {String} selector - Element query selector
+ * @returns {Object} Property descriptor
  */
 export default function(selector) {
   return action(function() {

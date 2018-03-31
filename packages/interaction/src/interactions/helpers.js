@@ -1,22 +1,55 @@
 /**
- * Creates a property descriptor for page-object getter properties
+ * Creates a property descriptor for interaction property getters.
  *
- * @param {Function} func - function used as the property getter
- * @returns {Object} page-object property descriptor
+ * ``` javascript
+ * function data(key, selector) {
+ *   return computed(function() {
+ *     return this.$(selector).dataset[key]
+ *   })
+ * }
+ * ```
+ *
+ * ``` javascript
+ * @interactor class PageInteractor {
+ *   username = data('user', '#user-info')
+ * }
+ * ```
+ *
+ * @function computed
+ * @param {Function} getter - Property getter
+ * @returns {Object} Property descriptor
  */
-export function computed(func) {
+export function computed(getter) {
   return Object.assign({
     enumerable: false,
     configurable: false,
-    get: func
+    get: getter
   });
 }
 
 /**
- * Creates a property descriptor for interaction methods that also get
- * wrapped by a page-object method with the same name
+ * Creates a property descriptor for interaction methods.
  *
- * @param {Function} method - function body for the interaction method
+ * ``` javascript
+ * function check(selector) {
+ *   return action(function(name) {
+ *     return this.click(`${selector}[name="${name}"]`)
+ *   })
+ * }
+ * ```
+ *
+ * ``` javascript
+ * @interactor class CheckboxGroupInteractor {
+ *   check = check('input[type="checkbox"]')
+ * }
+ * ```
+ *
+ * ``` javascript
+ * new CheckboxGroupinteractor('.checkboxes').check('option-1')
+ * ```
+ *
+ * @function action
+ * @param {Function} method - Function body for the interaction method
  * @returns {Object} page-object property descriptor
  */
 export function action(method) {
