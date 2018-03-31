@@ -24,7 +24,6 @@
  * if `always` is true, then rejects at the first error instead
  */
 export default function convergeOn(assertion, timeout = 2000, always = false) {
-  let context = this;
   let start = Date.now();
   let interval = 10;
 
@@ -45,7 +44,7 @@ export default function convergeOn(assertion, timeout = 2000, always = false) {
       stats.runs += 1;
 
       try {
-        let results = assertion.call(context);
+        let results = assertion();
 
         // the timeout calculation comes after the assertion so that
         // the assertion's execution time is accounted for

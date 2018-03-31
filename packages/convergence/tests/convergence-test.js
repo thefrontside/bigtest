@@ -266,6 +266,14 @@ describe('BigTest Convergence', () => {
         return expect(assertion.run()).to.be.rejected;
       });
 
+      it('retains the instance context', () => {
+        assertion = converge.when(function() {
+          expect(this).to.equal(assertion);
+        });
+
+        return expect(assertion.run()).to.be.fulfilled;
+      });
+
       describe('with additional chaining', () => {
         beforeEach(() => {
           assertion = assertion.when(() => expect(total).to.equal(10));
@@ -296,6 +304,14 @@ describe('BigTest Convergence', () => {
         assertion = converge.always(() => {
           expect(total).to.equal(5);
         }, 50);
+      });
+
+      it('retains the instance context', () => {
+        assertion = converge.always(function() {
+          expect(this).to.equal(assertion);
+        });
+
+        return expect(assertion.run()).to.be.fulfilled;
       });
 
       it('resolves after the 100ms timeout', async () => {
@@ -336,8 +352,10 @@ describe('BigTest Convergence', () => {
     });
 
     describe('after using `.do()`', () => {
+      let assertion;
+
       it('triggers the callback before resolving', () => {
-        let assertion = converge
+        assertion = converge
           .when(() => expect(total).to.equal(5))
           .do(() => total * 100);
 
@@ -347,7 +365,7 @@ describe('BigTest Convergence', () => {
       });
 
       it('passes the previous return value to the callback', () => {
-        let assertion = converge
+        assertion = converge
           .when(() => {
             expect(total).to.equal(5);
             return total * 100;
@@ -362,7 +380,7 @@ describe('BigTest Convergence', () => {
       it('is not called when a previous assertion fails', async () => {
         let called = false;
 
-        let assertion = converge
+        assertion = converge
           .when(() => expect(total).to.equal(5))
           .do(() => called = true);
 
@@ -370,9 +388,15 @@ describe('BigTest Convergence', () => {
         expect(called).to.be.false;
       });
 
-      describe('and returning a convergence', () => {
-        let assertion;
+      it('retains the instance context', () => {
+        assertion = converge.do(function() {
+          expect(this).to.equal(assertion);
+        });
 
+        return expect(assertion.run()).to.be.fulfilled;
+      });
+
+      describe('and returning a convergence', () => {
         beforeEach(() => {
           // converge reference can be modified before running
           assertion = converge.do(() => converge);
@@ -431,7 +455,7 @@ describe('BigTest Convergence', () => {
       });
 
       describe('and returning a promise', () => {
-        let assertion, resolve, reject;
+        let resolve, reject;
 
         beforeEach(() => {
           assertion = converge.do(() => {

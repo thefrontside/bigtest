@@ -72,16 +72,15 @@ export function isConvergence(obj) {
  * @private
  * @param {Object} subject - Convergence assertion stack item
  * @param {*} arg - Passed as the assertion's argument
- * @param {Boolean} last - True if this assertion is last in the stack
  * @param {Object} stats - Stats accumulator object
  * @returns {Promise} Resolves with the assertion's return value
  */
-export function runAssertion(subject, arg, last, stats) {
+export function runAssertion(subject, arg, stats) {
   let timeout = stats.timeout - getElapsedSince(stats.start, stats.timeout);
-  let assertion = subject.assertion.bind(null, arg);
+  let assertion = subject.assertion.bind(this, arg);
 
   // the last always uses the remaining timeout
-  if (subject.always && !last) {
+  if (subject.always && !subject.last) {
     // timeout needs to be smaller than the total timeout
     if (subject.timeout) {
       timeout = Math.min(timeout, subject.timeout);
@@ -110,13 +109,12 @@ export function runAssertion(subject, arg, last, stats) {
  * @private
  * @param {Object} subject - Convergence exec stack item
  * @param {*} arg - Passed as the function's argument
- * @param {Boolean} last - True if this item is last in the stack
  * @param {Object} stats - Stats accumulator object
  * @returns {Promise} Resolves with the function's return value
  */
-export function runCallback(subject, arg, last, stats) {
+export function runCallback(subject, arg, stats) {
   let start = Date.now();
-  let result = subject.callback(arg);
+  let result = subject.callback.call(this, arg);
 
   let collectExecStats = (value) => {
     return collectStats(stats, {
@@ -132,7 +130,7 @@ export function runCallback(subject, arg, last, stats) {
   if (isConvergence(result)) {
     let timeout = stats.timeout - getElapsedSince(start, stats.timeout);
 
-    if (!last) {
+    if (!subject.last) {
       // this .do() just prevents the last .always() from
       // using the entire timeout
       result = result.do(ret => ret);

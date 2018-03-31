@@ -13,10 +13,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 ### Changed
 
 - updated inline api docs
+- `Convergence` assertions retain the instance context
 
 ### Deprecated
 
 - `.once()` in favor of `.when()`
+
+### Removed
+
+- context currying from `convergeOn`
 
 ## [0.6.0] - 2018-03-16
 

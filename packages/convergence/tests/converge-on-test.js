@@ -84,19 +84,6 @@ describe('BigTest Convergence - convergeOn', () => {
     });
   });
 
-  describe('when bound to the testing context', () => {
-    beforeEach(function() {
-      this.convergent = true;
-      test = () => convergeOn.call(this, function() {
-        expect(this.convergent).to.be.true;
-      });
-    });
-
-    it('should curry the context to our assertion', () => {
-      return expect(test()).to.be.fulfilled;
-    });
-  });
-
   describe('when the assertion returns `false`', () => {
     beforeEach(() => {
       test = (num) => convergeOn(() => total >= num, 50);

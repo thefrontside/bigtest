@@ -373,13 +373,16 @@ class Convergence {
 
     // reduce to a single promise that runs each item in the stack
     return this._stack.reduce((promise, subject, i) => {
-      let last = i === (this._stack.length - 1);
+      // the last subject will receive the remaining timeout
+      if (i === (this._stack.length - 1)) {
+        subject = Object.assign({ last: true }, subject);
+      }
 
       return promise.then((ret) => {
         if (subject.assertion) {
-          return runAssertion(subject, ret, last, stats);
+          return runAssertion.call(this, subject, ret, stats);
         } else if (subject.callback) {
-          return runCallback(subject, ret, last, stats);
+          return runCallback.call(this, subject, ret, stats);
         }
       });
     }, Promise.resolve())
