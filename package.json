@@ -6,13 +6,15 @@
   "scripts": {
     "build": "bin/each-pkg yarn build",
     "test": "bin/each-pkg yarn test",
-    "lint": "bin/each-pkg yarn lint"
+    "lint": "bin/each-pkg yarn lint",
+    "docs": "bin/each-pkg yarn docs"
   },
   "workspaces": [
     "packages/*"
   ],
   "devDependencies": {
     "chalk": "^2.3.0",
-    "commander": "^2.12.2"
+    "commander": "^2.12.2",
+    "jsdoc-api": "^4.0.3"
   }
 }

@@ -43,7 +43,7 @@ jobs:
             - packages/mocha/node_modules
             - packages/mirage/node_modules
 
-  build:
+  lint:
     <<: *defaults
     steps:
       - *add_ssh_keys
@@ -52,12 +52,24 @@ jobs:
       - run:
           name: Lint packages
           command: yarn lint
+
+  build:
+    <<: *defaults
+    steps:
+      - *add_ssh_keys
+      - checkout
+      - *restore_cache
+      - run:
+          name: Build documentation
+          command: yarn docs
       - run:
           name: Build packages
           command: yarn build
       - persist_to_workspace:
           root: .
-          paths: packages/**/dist
+          paths:
+            - packages/**/dist
+            - packages/**/docs
 
   test:
     <<: *defaults
@@ -91,11 +103,15 @@ workflows:
   default:
     jobs:
       - install
+      - lint:
+          requires:
+            - install
       - build:
           requires:
             - install
       - test:
           requires:
+            - lint
             - build
       - deploy:
           requires:

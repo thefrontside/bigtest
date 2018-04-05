@@ -13,6 +13,7 @@
     "build": "rollup --config",
     "test": "mocha --opts ./tests/mocha.opts ./tests",
     "postpublish": "../../bin/tag-pkg",
+    "docs": "../../bin/docs",
     "lint": "eslint ./"
   },
   "eslintIgnore": [

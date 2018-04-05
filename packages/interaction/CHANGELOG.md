@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+### Added
+
+- `docs` script to generate documentation
+
 ## [0.3.0] - 2018-03-16
 
 ### Changed

@@ -11,6 +11,7 @@
     "start": "karma start",
     "test": "karma start --single-run",
     "postpublish": "../../bin/tag-pkg",
+    "docs": "../../bin/docs",
     "lint": "eslint ./"
   },
   "eslintIgnore": [

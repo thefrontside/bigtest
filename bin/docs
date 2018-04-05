@@ -1,0 +1,50 @@
+#! /usr/bin/env node
+
+const fs = require('fs');
+const path = require('path');
+const jsdoc = require('jsdoc-api');
+
+const cwd = process.cwd();
+const input = process.argv[2] || './src';
+const output = process.argv[3] || './docs/data.json';
+
+function removeCwd(path) {
+  return path.replace(cwd, '');
+}
+
+function writeFile(filename, data) {
+  let dir = path.dirname(filename);
+
+  try {
+    fs.statSync(dir);
+  } catch (e) {
+    fs.mkdirSync(dir);
+  }
+
+  fs.writeFileSync(filename, data);
+}
+
+function generateDocs() {
+  let docs = jsdoc.explainSync({
+    files: path.join(cwd, `${input}/*.js`)
+  }).filter((doc) => {
+    // don't document undocumented docs...
+    return !doc.undocumented &&
+      // or private docs that don't belong to anything
+      (doc.access !== 'private' || !!doc.memberof);
+  }).map((doc) => {
+    // remove cwd from file paths
+    if (doc.meta && doc.meta.path) {
+      doc.meta.path = removeCwd(doc.meta.path);
+    }
+
+    return doc;
+  });
+
+  writeFile(
+    path.join(cwd, output),
+    JSON.stringify(docs, null, 2)
+  );
+}
+
+generateDocs();
