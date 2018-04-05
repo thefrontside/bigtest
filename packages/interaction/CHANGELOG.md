@@ -8,6 +8,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 ### Added
 
 - `docs` script to generate documentation
+- some default property getters to new `Interactor` instances
+- nested interactor methods now return an instance of the topmost
+  interactor parent when using the `@interactor` decorator
+
+### Changed
+
+- `Interaction` class is now `Interactor`
+- `@page` decorator is now `@interactor`
+- interaction creator arguments are now ordered with the optional
+  selector as the first argument
+- the `collection` helper now lazily finds the root for collection
+  interactors instead of eagerly doing so
+
+### Removed
+
+- `PageObject` class
 
 ## [0.3.0] - 2018-03-16
 
