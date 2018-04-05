@@ -62,6 +62,23 @@ describe('BigTest Interaction: Interactor', () => {
       scopeID = 'not-scoped';
       expect(() => scoped.$root).to.throw('unable to find "#not-scoped"');
     });
+
+    describe('and a custom default scope', () => {
+      class ScopedInteractor extends Interactor {}
+      Object.defineProperty(ScopedInteractor, 'defaultScope', { value: '#scoped' });
+
+      it('uses the custom default scope', () => {
+        let scoped = new ScopedInteractor();
+
+        expect(scoped.$root).to.not.equal(document.body);
+        expect(scoped.$root.id).to.equal('scoped');
+      });
+
+      it('can still override the scope', () => {
+        let scoped = new ScopedInteractor(document.body);
+        expect(scoped.$root).to.equal(document.body);
+      });
+    });
   });
 
   describe('DOM helpers', () => {

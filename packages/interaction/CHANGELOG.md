@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 - some default property getters to new `Interactor` instances
 - nested interactor methods now return an instance of the topmost
   interactor parent when using the `@interactor` decorator
+- `defaultScope` static property
 
 ### Changed
 
