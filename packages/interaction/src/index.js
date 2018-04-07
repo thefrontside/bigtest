@@ -1,3 +1,3 @@
-export { default as Interaction } from './interaction';
-export { default as page } from './page-object';
-export * from './properties';
+export { default as Interactor } from './interactor';
+export { default as interactor } from './decorator';
+export * from './interactions';
