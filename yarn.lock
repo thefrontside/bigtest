@@ -456,6 +456,10 @@
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@bigtest/convergence/-/convergence-0.5.0.tgz#1d84f05e8e88869358050dabc28cf883872c41ca"
 
+"@bigtest/convergence@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@bigtest/convergence/-/convergence-0.6.0.tgz#19f322f00ad76a3325034a6c57ff2f532f10ff97"
+
 JSONStream@^1.0.3:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/JSONStream/-/JSONStream-1.3.2.tgz#c102371b6ec3a7cf3b847ca00c20bb0fce4c6dea"
