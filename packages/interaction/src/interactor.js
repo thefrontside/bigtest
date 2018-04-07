@@ -119,7 +119,7 @@ export default class Interactor extends Convergence {
 
     let {
       parent = null,
-      scope = document.body
+      scope = this.constructor.defaultScope
     } = options;
 
     // the topmost parent is the real parent
@@ -197,9 +197,35 @@ export default class Interactor extends Convergence {
   }
 }
 
-// static `isInteractor` method
+// static methods and properties
 Object.defineProperties(Interactor, {
-  isInteractor: { value: isInteractor }
+  isInteractor: { value: isInteractor },
+
+  /**
+   * The default selector or element an interactor is scoped to when a
+   * scope is not provided during initialization.
+   *
+   * ``` javascript
+   * new Interactor().$root //=> document.body
+   * ```
+   *
+   * When extending the `Interactor` class, this static property may
+   * be overridden to define a new default scope.
+   *
+   * ``` javascript
+   * class CustomInteractor extends Interactor {
+   *   static defaultScope = '#some-element'
+   * }
+   *
+   * new CustomInteractor().$root //=> <div id="some-element">...</div>
+   * ```
+   *
+   * @static
+   * @member {String|Element} defaultScope
+   * @alias Interactor.defaultScope
+   * @default document.body
+   */
+  defaultScope: { value: document.body }
 });
 
 // default interaction methods

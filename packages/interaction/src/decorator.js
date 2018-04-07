@@ -19,6 +19,9 @@ import { isInteractor, isPropertyDescriptor } from './utils';
  * } from '@bigtest/interactor';
  *
  * @interactor class CustomInteractor {
+ *   // optional default scope for this interactor
+ *   static defaultScope = '#some-element'
+ *
  *   // `isPresent` returns a getter descriptor
  *   hasError = isPresent('div.error')
  *
@@ -78,6 +81,11 @@ export default function interactor(Class) {
   // extend the custom interactor's prototype
   Object.defineProperties(CustomInteractor.prototype, proto);
   Object.defineProperty(CustomInteractor, 'name', { value: Class.name });
+
+  // if a default scope was defined, use it
+  if (Class.defaultScope) {
+    Object.defineProperty(CustomInteractor, 'defaultScope', { value: Class.defaultScope });
+  }
 
   return CustomInteractor;
 }
