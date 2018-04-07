@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [0.4.0] - 2018-04-07
+
 ### Added
 
 - `docs` script to generate documentation
@@ -21,6 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
   selector as the first argument
 - the `collection` helper now lazily finds the root for collection
   interactors instead of eagerly doing so
+- upgrade `@bigtest/convergence` to `0.7.0`
 
 ### Removed
 
