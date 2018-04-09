@@ -9,28 +9,28 @@ interface.
 This libarary uses convergences from
 [`@bigtest/convergence`](https://github.com/thefrontside/bigtest/tree/master/packages/convergence)
 to ensure that elements exist in the DOM before being interacted
-with. As such, the `Interaction` class provided by this library
+with. As such, the `Interactor` class provided by this library
 supports the `Convergence` methods  as well as interaction specific
 ones.
 
 ``` javascript
-import { Interaction } from '@bigtest/interaction';
+import { Interactor } from '@bigtest/interaction';
 
-let logIn = new Interaction('#login-form')  // optional scope selector
+let logIn = new Interactor('#login-form')   // optional scope selector
   .fill('.email-input', 'email@domain.tld') // fills in an email
   .blur('.email-input')                     // triggers blur validation
   .fill('.pass-input', '5up3rS3cr37')       // fills in a password
   .click('.submit-btn')                     // submits the form
-  .once(() => !!user.loggedIn)              // ensures we've logged in
+  .when(() => !!user.loggedIn)              // ensures we've logged in
 
-// runs the interaction and bails if it cannot complete in 1 second
+// runs the interactor and bails if it cannot complete in 1 second
 logIn.timeout(1000).run()
   // .run() returns a promise
   .then(() => {...})  // user has been logged in
   .catch(() => {...}) // something went wrong along the way
 
-// interactions are immutable and can be run multiple times
-logIn.do(() => console.log('logged in')).timeout(500).run()
+// interactors are immutable and can be run multiple times
+await logIn.do(() => console.log('logged in')).timeout(500)
 ```
 
 ### Available Interaction Methods
@@ -50,24 +50,23 @@ to converge on an element existing. That element is then passed on to
 the next convergence method in the stack.
 
 ``` javascript
-new Interaction('#login-page')
+new Interactor('#login-page')
   .find('h1.heading')
-  .once((h1) => h1.innerText === 'Log In')
+  .when((h1) => h1.innerText === 'Log In')
   .do(() => console.log('looks good!'))
   .timeout(100)
-  .run()
 ```
 
 Similarly, there is `.findAll(selector)`, but this method does not
 converge on elements existing. Instead it will return an empty array
 if it cannot find any elements matching `selector`.
 
-### Custom Interactions
+## Custom Interactors
 
-You can create custom interactions by extending the `Interaction` class:
+You can create custom interactors by extending the `Interactor` class:
 
 ``` javascript
-class CustomInteraction extends Interaction {
+class CustomInteractor extends Interactor {
   logIn(email, password) {
     return this
       .fill('.email-input', email)
@@ -77,26 +76,20 @@ class CustomInteraction extends Interaction {
   });
 }
 
-new CustomInteraction()
+await new CustomInteractor()
   .logIn('email@domain.tld', '5up3rS3cr37')
   .timout(500)
   .run()
 ```
 
-## Page Objects
-
-`@bigtest/interaction` also provides support for creating page-objects
-consisting of custom interactions.
-
-A `@bigtest/interaction` page-object can be created by using the
-`page` class decorator and defining property initializers using the
-various page-object property helpers.
+You can also create custom interactors by using the `interactor` class
+decorator along with interaction helpers:
 
 ``` javascript
 /* tests/pages/login-page.js */
 
 import {
-  page,
+  interactor,
   text,
   count,
   isVisible,
@@ -105,7 +98,7 @@ import {
   clickable
 } from '@bigtest/interaction';
 
-export default @page class LoginPage {
+export default @interactor class LoginPageInteractor {
   heading = text('h1.heading');
   errors = count('p.login-error')
   fillEmail = fillable('.email-input');
@@ -124,34 +117,30 @@ export default @page class LoginPage {
 }
 ```
 
-The `*able` helpers provide methods that return a custom interaction
-specific to this page-object. This custom interaction can then be
-chained with other methods defined using the `*able` helpers. To kick
-off the interaction you must call `.run()`, which returns a
-promise. But if you're using `@bigtest/mocha`, it will automatically
-call `.timeout()` and `.run()` for you when you return an object with
-a convergence-like interface.
+The `*able` interaction helpers provide methods that return new
+instances of the custom interactor. This instance can then be chained
+with other methods created with `*able` helpers.
 
-The other page-object property helpers return getters for lazily
-returning the desired results. If the element does not exist when the
-getter is accessed, it will immediately throw an error.
+The other property helpers return getters for lazily returning the
+desired results. If the element does not exist when the getter is
+accessed, it will immediately throw an error.
 
 ``` javascript
 /* tests/login-test.js */
 
-// @bigtest/mocha has support for auto-running convergences
+// @bigtest/mocha uses convergent assertions
 import { describe, beforeEach, it } from '@bigtest/mocha';
 import { expect } from 'chai';
 
-import LoginPage from './pages/login-page'
+import LoginPageInteractor from './pages/login-page'
 
-// You can use a single page-object class for multiple scoped instances
-let loginPage = new LoginPage('#login-page');
+// You can use a single interactor class for multiple scoped instances
+let loginPage = new LoginPageInteractor('#login-page');
 
 describe('Logging in', () => {
   // if this getter throws an error, @bigtest/mocha's convergent it
   // will keep running this assertion until it passes or the timeout
-  // is almost met
+  // is exceeded
   it('has a "log in" heading', () => {
     expect(loginPage.heading).to.eq('Log In');
   });
@@ -190,7 +179,7 @@ describe('Logging in', () => {
 });
 ```
 
-### Available Page Object Properties
+### Available Helpers
 
 **Getters:**
 
@@ -199,12 +188,12 @@ describe('Logging in', () => {
 - `text(selector)`
 - `value(selector)`
 - `count(selector)`
-- `property(prop, selector)`
-- `attribute(attr, selector)`
+- `property(selector, prop)`
+- `attribute(selector, attr)`
 - `isVisible(selector)`
 - `isHidden(selector)`
 - `isPresent(selector)`
-- `is(match, selector)`
+- `is(selector, match)`
 - `hasClass(selector)`
 
 **Methods**
@@ -212,66 +201,48 @@ describe('Logging in', () => {
 - `clickable(selector)`
 - `focusable(selector)`
 - `blurrable(selector)`
-- `triggerable(event, selector, eventOptions)`
+- `triggerable(selector, event, eventOptions)`
 - `fillable(selector) => function(value)`
 - `scrollable(selector) => function({ left, top })`
 
-Just like interactions, you may omit any `selector` to interact
-directly with the root page-object element. This root element is also
-available as `pageObject.$root` and is lazy just like other
-page-object getters.
-
-In addition to all of the above properties, page-objects also have
-default methods named according to their interaction counterparts.
-
-For example:
-
-``` javascript
-new PageObject().click('.btn') //=> custom interaction
-```
-
-And again, by omitting `selector`, you can interact directly with the
-`$root` element.
-
-``` javascript
-new PageObject('#welcome-page').scroll({ top: 1000 })
-```
+Just like interactor methods, you may omit any `selector` to interact
+directly with the root element. This root element is also available as
+`interactor.$root` and is lazy just like other property getters.
 
 **Misc**
 
 - `collection(selector, properties)`
 
 The `collection` property is a method that returns the item at an
-index. This item is just like another scoped page-object that has it's
+index. This item is just like another scoped interactor that has it's
 own properties defined by the second argument.
 
 ``` javascript
-@page class PageObject {
+@interactor class ListInteractor {
   items = collection('li', {
     title: text('p'),
     select: click('a')
   })
 }
 
-// will throw if the index cannot be found
-let item = new PageObject('ul').items(2);
+// clicks the 2nd indexed item's anchor element
+await new ListInteractor('ul')
+  .items(2).select()
 
-item.title    //=> text content of `ul li p`
-item.select() //=> interaction specific to this item instance
+// returns the text content of `ul li p`, or throws
+// an error when the element cannot be found
+let itemTitle = new Listinteractor('ul').items(2).title
 
 // an array of all items may be returned by omitting the index
-let allItems = new PageObject('ul').items();
+let allItems = new ListInteractor('ul').items();
 ```
 
-### Custom Page Object Properties
+### Custom Properties
 
-Methods defined in a page-object class can reference any page-object
-properties and chain interactions together. The custom interaction
-does not recieve these methods, so these custom-defined methods must
-be called directly from the page-object.
+Methods and getters defined in an interactor class work as expected
 
 ``` javascript
-@page class PageObject {
+@interactor class PageInteractor {
   selectRadio(value) {
     return this
       .click(`input[type="radio"][value="${value}"]`)
@@ -279,15 +250,14 @@ be called directly from the page-object.
   }
 }
 
-new PageObject().selectRadio('yes').run()
+await new PageInteractor().selectRadio('yes')
 ```
 
-You may also define custom page-object properties using the provided
-property helpers. Methods added using `action` will also be made
-available on interaction instances returned from other methods.
+You can also create custom property helpers using the `action` and
+`computed` helpers.
 
 ``` javascript
-import { page, action, computed } from '@bigtest/interaction'
+import { interactor, action, computed } from '@bigtest/interaction'
 
 let doubleClickable = (selector) => {
   return action(function() {
@@ -298,16 +268,16 @@ let doubleClickable = (selector) => {
   });
 };
 
-@page class PageObject {
+@interactor class PageInteractor {
   clicky = doubleClickable('.btn');
   title = computed(() => document.title);
 }
 
-new PageObject()
+new PageInteractor()
   .fill('input', 'name')
   .clicky() // calls the custom property
 
-new PageObject().title // returns the document's title
+new PageInteractor().title // returns the document's title
 ```
 
 ### Without Decorators or Property Initializers
@@ -317,7 +287,7 @@ current JavaScript spec, you can still use these helpers in a more
 traditional manner:
 
 ``` javascript
-const PageObject = page(class PageObject {
+const PageInteractor = interactor(class PageInteractor {
   constructor() {
     this.fillName = fillable('.name-input');
     this.submit = clickable('.submit-btn');
