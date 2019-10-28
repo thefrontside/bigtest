@@ -1,0 +1,34 @@
+{
+  "name": "@bigtest/server",
+  "version": "0.1.0",
+  "description": "BigTest Server",
+  "main": "index.js",
+  "repository": "https://github.com/bigtestjs/server.git",
+  "author": "Frontside Engineering <engineering@frontside.io>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "ts-node bin/start.ts"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.3.2",
+    "@typescript-eslint/parser": "^2.3.2",
+    "eslint": "^6.5.1",
+    "eslint-plugin-prefer-let": "^1.0.1"
+  },
+  "dependencies": {
+    "@types/express": "^4.17.1",
+    "@types/node": "^12.7.11",
+    "effection": "^0.3.1",
+    "express": "^4.17.1",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.3"
+  },
+  "engines": {
+    "node": "12.11.1"
+  },
+  "volta": {
+    "node": "12.11.1",
+    "yarn": "1.19.1"
+  }
+}
