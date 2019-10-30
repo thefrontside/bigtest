@@ -20,7 +20,7 @@
   "dependencies": {
     "@types/express": "^4.17.1",
     "@types/node": "^12.7.11",
-    "effection": "^0.3.1-2f60e15",
+    "effection": "~0.3.2",
     "ts-node": "^8.4.1",
     "typescript": "^3.6.3",
     "websocket": "^1.0.30"
