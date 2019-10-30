@@ -11,6 +11,7 @@
     "start": "ts-node bin/start.ts"
   },
   "devDependencies": {
+    "@types/websocket": "^1.0.0",
     "@typescript-eslint/eslint-plugin": "^2.3.2",
     "@typescript-eslint/parser": "^2.3.2",
     "eslint": "^6.5.1",
@@ -19,9 +20,10 @@
   "dependencies": {
     "@types/express": "^4.17.1",
     "@types/node": "^12.7.11",
-    "effection": "^0.3.1",
+    "effection": "^0.3.1-2f60e15",
     "ts-node": "^8.4.1",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.3",
+    "websocket": "^1.0.30"
   },
   "engines": {
     "node": "12.11.1"
