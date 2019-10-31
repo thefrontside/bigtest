@@ -2,11 +2,11 @@ import * as http from 'http';
 import { IncomingMessage, ServerResponse } from 'http';
 import { Execution, Operation, Sequence, fork } from 'effection';
 
-export { IncomingMessage, ServerResponse } from 'http';
+export { IncomingMessage } from 'http';
 
-import { getCurrentExecution } from './util';
+import { getCurrentExecution, resumeOnCb } from './util';
 
-export type RequestHandler = (req: IncomingMessage, res: ServerResponse) => Operation;
+export type RequestHandler = (req: IncomingMessage, res: Response) => Operation;
 export type ReadyCallback = (server: http.Server) => void;
 
 export function* createServer(port: number, handler: RequestHandler, ready: ReadyCallback = x => x): Sequence {
@@ -23,19 +23,31 @@ export function* createServer(port: number, handler: RequestHandler, ready: Read
   try {
     while (true) {
       let [request, response] = yield;
-      fork(handler(request, response));
+      fork(handler(request, new Response(response)));
     }
   } finally {
     server.close();
   }
 }
 
-export function end(res: ServerResponse, body: string): Operation {
-  return (execution: Execution<void>) => {
-    let fail = (error: Error) => execution.throw(error);
-    res.end(body, () => execution.resume());
+export class Response {
+  private inner: ServerResponse
 
-    return () => res.off("error", fail);
+  constructor(response) {
+    this.inner = response;
+  }
+
+  writeHead(statusCode: number, headers?: http.OutgoingHttpHeaders): http.ServerResponse {
+    return this.inner.writeHead(statusCode, headers);
+  };
+
+  end(body): Operation {
+    return (execution: Execution<void>) => {
+      let fail = (error: Error) => execution.throw(error);
+      this.inner.end(body, () => execution.resume());
+      this.inner.on("error", fail);
+      return () => this.inner.off("error", fail);
+    }
   }
 }
 

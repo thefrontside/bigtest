@@ -1,5 +1,5 @@
 import { Execution, Operation, Sequence, fork, timeout } from 'effection';
-import { createServer, end, IncomingMessage, ServerResponse } from './http';
+import { createServer, IncomingMessage, Response } from './http';
 import { createSocketServer, Connection, Message } from './ws';
 import { AddressInfo } from 'net';
 
@@ -28,11 +28,11 @@ export function* main(): Sequence {
   // fork(buildServer);
 }
 
-function* commandServer(req: IncomingMessage, res: ServerResponse): Sequence {
+function* commandServer(req: IncomingMessage, res: Response): Sequence {
   res.writeHead(200, {
     'X-Powered-By': 'effection'
   });
-  yield end(res, "Your wish is my command\n");
+  yield res.end("Your wish is my command\n");
 }
 
 function* connectionServer(connection: Connection): Sequence {
