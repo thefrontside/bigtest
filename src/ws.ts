@@ -1,13 +1,13 @@
 import { createServer } from 'http';
 import {
   server as WebSocketServer,
-  connection as Connection,
+  connection as WebSocketConnection,
   request as Request,
   IMessage as Message
 } from 'websocket';
 
 import { fork, Sequence, Operation, Execution } from 'effection';
-import { getCurrentExecution } from './util';
+import { getCurrentExecution, resumeOnCb, resumeOnEvent } from './util';
 
 import { listen, ReadyCallback } from './http';
 
@@ -33,7 +33,7 @@ export function* createSocketServer(port: number, handler: ConnectionHandler, re
 
   try {
     while (true) {
-      let connection: Connection = yield;
+      let connection: WebSocketConnection = yield;
 
       let handle = fork(function* setupConnection() {
         let halt = () => handle.halt();
@@ -41,7 +41,7 @@ export function* createSocketServer(port: number, handler: ConnectionHandler, re
         connection.on("error", fail);
         connection.on("close", halt);
         try {
-          yield handler(connection);
+          yield handler(new Connection(connection));
         } finally {
           connection.off("close", halt);
           connection.off("error", fail);
@@ -56,21 +56,18 @@ export function* createSocketServer(port: number, handler: ConnectionHandler, re
   }
 }
 
-function send(connection: Connection, data: string): Operation {
-  return (execution: Execution<void>) => {
-    let iCare = true;
-    connection.send(data, error => {
-      if (iCare) {
-        if (error) {
-          execution.throw(error);
-        } else {
-          execution.resume();
-        }
-      }
-    });
-    return () => iCare = false;
+class Connection {
+  constructor(private inner: WebSocketConnection) {}
+
+  send(data: String): Operation {
+    return resumeOnCb((cb) => this.inner.send(data, cb));
+  }
+
+  receiveMessage() {
+    return resumeOnEvent(this.inner, "message");
   }
 }
-export { Connection, Message, send }
+
+export { Connection, Message }
 
 type ConnectionHandler = (conn: Connection) => Operation;

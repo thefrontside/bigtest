@@ -303,9 +303,9 @@ doctrine@^3.0.0:
     esutils "^2.0.2"
 
 effection@~0.3.2:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/effection/-/effection-0.3.2.tgz#a1dc32a8b247a73b34064ce24e2223edbb42a8d6"
-  integrity sha512-X1YPh5JNdlb2pRSV57vofRh9Vou90rMB3+i1lpsOIlFph9Ldhm7Z8hWysrm13oCD6cPeDzhSbQH/UWPYcZDJ+w==
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/effection/-/effection-0.3.3.tgz#418de2698fe8bc9ef4cdee065b01730ed22bc601"
+  integrity sha512-JP7t68WyLfUgFBfRFBDA0eP7PLV8VqIzFN1d441op/ENXDslDFfTC5w8STDAC10L9SqMywC+zvTbVtx9R0eCqQ==
 
 emoji-regex@^7.0.1:
   version "7.0.3"
