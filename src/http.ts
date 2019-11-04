@@ -31,11 +31,7 @@ export function* createServer(port: number, handler: RequestHandler, ready: Read
 }
 
 export class Response {
-  private inner: ServerResponse
-
-  constructor(response) {
-    this.inner = response;
-  }
+  constructor(private inner: ServerResponse) {}
 
   writeHead(statusCode: number, headers?: http.OutgoingHttpHeaders): http.ServerResponse {
     return this.inner.writeHead(statusCode, headers);

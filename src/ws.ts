@@ -56,13 +56,8 @@ export function* createSocketServer(port: number, handler: ConnectionHandler, re
   }
 }
 
-
 class Connection {
-  private inner: WebSocketConnection;
-
-  constructor(connection: WebSocketConnection) {
-    this.inner = connection;
-  }
+  constructor(private inner: WebSocketConnection) {}
 
   send(data: String): Operation {
     return resumeOnCb((cb) => this.inner.send(data, cb));
