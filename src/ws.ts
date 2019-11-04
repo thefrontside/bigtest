@@ -7,7 +7,7 @@ import {
 } from 'websocket';
 
 import { fork, Sequence, Operation, Execution } from 'effection';
-import { getCurrentExecution, resumeOnCb, resumeOnEvent } from './util';
+import { getCurrentExecution, resumeOnCb, EventEmitter } from './util';
 
 import { listen, ReadyCallback } from './http';
 
@@ -58,15 +58,9 @@ export function* createSocketServer(port: number, handler: ConnectionHandler, re
 
 type ConnectionEvent = "message" | "frame" | "close" | "error" | "drain" | "pause" | "resume" | "ping" | "pong";
 
-class Connection {
-  constructor(private inner: WebSocketConnection) {}
-
+class Connection extends EventEmitter<WebSocketConnection, ConnectionEvent> {
   send(data: String): Operation {
     return resumeOnCb((cb) => this.inner.send(data, cb));
-  }
-
-  on(event: ConnectionEvent): Operation {
-    return resumeOnEvent(this.inner, event);
   }
 }
 
