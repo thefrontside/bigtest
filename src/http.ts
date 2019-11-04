@@ -4,7 +4,7 @@ import { Execution, Operation, Sequence, fork } from 'effection';
 
 export { IncomingMessage } from 'http';
 
-import { getCurrentExecution, resumeOnCb } from './util';
+import { getCurrentExecution, resumeOnCb, resumeOnEvent } from './util';
 
 export type RequestHandler = (req: IncomingMessage, res: Response) => Operation;
 export type ReadyCallback = (server: http.Server) => void;
@@ -23,7 +23,20 @@ export function* createServer(port: number, handler: RequestHandler, ready: Read
   try {
     while (true) {
       let [request, response] = yield;
-      fork(handler(request, new Response(response)));
+      fork(function* outerRequestHandler() {
+        let requestErrorMonitor = fork(function* () {
+          throw yield resumeOnEvent(request, "error");
+        });
+        let responseErrorMonitor = fork(function* () {
+          throw yield resumeOnEvent(response, "error");
+        });
+        try {
+          yield handler(request, new Response(response));
+        } finally {
+          requestErrorMonitor.halt();
+          responseErrorMonitor.halt();
+        }
+      });
     }
   } finally {
     server.close();
@@ -38,12 +51,7 @@ export class Response {
   };
 
   end(body): Operation {
-    return (execution: Execution<void>) => {
-      let fail = (error: Error) => execution.throw(error);
-      this.inner.end(body, () => execution.resume());
-      this.inner.on("error", fail);
-      return () => this.inner.off("error", fail);
-    }
+    return resumeOnCb((cb) => this.inner.end(body, cb));
   }
 }
 

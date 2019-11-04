@@ -20,7 +20,7 @@ export function getCurrentExecution(): Execution {
  * parameter, and wraps it to return a yieldable Operation
  * instead.
  */
-export function resumeOnCb(fn: (cb: (error: Error) => void) => void): Operation {
+export function resumeOnCb(fn: (cb: (error?: Error) => void) => void): Operation {
   return (execution: Execution<void>) => {
     let iCare = true;
     fn((error: Error) => {
