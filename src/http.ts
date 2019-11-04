@@ -25,10 +25,12 @@ export function* createServer(port: number, handler: RequestHandler, ready: Read
       let [request, response] = yield;
       fork(function* outerRequestHandler() {
         let requestErrorMonitor = fork(function* () {
-          throw yield resumeOnEvent(request, "error");
+          let [error]: [Error] = yield resumeOnEvent(request, "error");
+          throw error;
         });
         let responseErrorMonitor = fork(function* () {
-          throw yield resumeOnEvent(response, "error");
+          let [error]: [Error] = yield resumeOnEvent(response, "error");
+          throw error;
         });
         try {
           yield handler(request, new Response(response));
