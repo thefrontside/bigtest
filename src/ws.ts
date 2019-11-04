@@ -56,6 +56,8 @@ export function* createSocketServer(port: number, handler: ConnectionHandler, re
   }
 }
 
+type ConnectionEvent = "message" | "frame" | "close" | "error" | "drain" | "pause" | "resume" | "ping" | "pong";
+
 class Connection {
   constructor(private inner: WebSocketConnection) {}
 
@@ -63,8 +65,8 @@ class Connection {
     return resumeOnCb((cb) => this.inner.send(data, cb));
   }
 
-  receiveMessage() {
-    return resumeOnEvent(this.inner, "message");
+  on(event: ConnectionEvent): Operation {
+    return resumeOnEvent(this.inner, event);
   }
 }
 

@@ -44,7 +44,7 @@ function* connectionServer(connection: Connection): Sequence {
   })
 
   while (true) {
-    let message: Message = yield connection.receiveMessage();
+    let [message]: [Message] = yield connection.on("message");
     console.log(`mesage = `, message);
   }
 }
