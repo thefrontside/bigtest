@@ -1,5 +1,5 @@
 import { fork, Execution, Operation } from 'effection';
-import { EventEmitter } from 'events';
+import * as events from 'events';
 
 const Fork = fork(function*() {}).constructor;
 
@@ -40,10 +40,18 @@ export function resumeOnCb(fn: (cb: (error?: Error) => void) => void): Operation
  * Takes an event emitter and event name and returns a yieldable
  * operation which resumes when the event occurrs.
  */
-export function resumeOnEvent(emitter: EventEmitter, eventName: string): Operation {
+export function resumeOnEvent(emitter: events.EventEmitter, eventName: string | symbol): Operation {
   return (execution: Execution) => {
-    let resume = (event) => execution.resume(event);
+    let resume = (...args) => execution.resume(args);
     emitter.on(eventName, resume);
     return () => emitter.off(eventName, resume);
+  }
+}
+
+export class EventEmitter<T extends events.EventEmitter, E extends string | symbol> {
+  constructor(protected inner: T) {}
+
+  on(event: E): Operation {
+    return resumeOnEvent(this.inner, event);
   }
 }
