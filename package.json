@@ -21,9 +21,12 @@
   },
   "dependencies": {
     "@types/express": "^4.17.1",
+    "@types/http-proxy": "^1.17.0",
     "@types/node": "^12.7.11",
     "effection": "~0.3.2",
     "module-alias": "^2.2.2",
+    "http-proxy": "^1.18.0",
+    "trumpet": "^1.7.2",
     "ts-node": "^8.4.1",
     "typescript": "^3.6.3",
     "websocket": "^1.0.30"
