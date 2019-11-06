@@ -1,6 +1,7 @@
 import { fork, Execution, Operation } from 'effection';
 import * as events from 'events';
 
+//eslint-disable-next-line @typescript-eslint/no-empty-function
 const Fork = fork(function*() {}).constructor;
 
 /**
