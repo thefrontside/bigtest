@@ -48,11 +48,3 @@ export function resumeOnEvent(emitter: events.EventEmitter, eventName: string | 
     return () => emitter.off(eventName, resume);
   }
 }
-
-export class EventEmitter<T extends events.EventEmitter, E extends string | symbol> {
-  constructor(protected inner: T) {}
-
-  on(event: E): Operation {
-    return resumeOnEvent(this.inner, event);
-  }
-}

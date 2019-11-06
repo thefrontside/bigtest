@@ -6,7 +6,11 @@
     "typeRoots": [
       "./node_modules/@types",
       "./typings"
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@effection*": ["src/effection*"]
+    }
   },
   "include": [
     "src/**/*.ts",

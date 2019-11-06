@@ -7,7 +7,9 @@ import {
 } from 'websocket';
 
 import { fork, Sequence, Operation } from 'effection';
-import { getCurrentExecution, resumeOnCb, EventEmitter } from './util';
+import { getCurrentExecution, resumeOnCb } from './util';
+
+import { EventEmitter } from '@effection/events';
 
 import { listen, ReadyCallback } from './http';
 

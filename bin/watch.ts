@@ -1,14 +1,12 @@
-import * as cp from 'child_process';
-import * as fs from 'fs';
 import { fork, Sequence } from 'effection';
+import { spawn } from '@effection/node/child_process';
+import { watch } from '@effection/node/fs';
 
-import { EventEmitter } from '../src/util';
-
-function* watch(): Sequence {
+function* start(): Sequence {
   let [ cmd, ...args ] = process.argv.slice(2);
 
   let listener = fork(function* changes() {
-    let watcher = FileWatcher.watch('src', { recursive: true });
+    let watcher = watch('src', { recursive: true });
     try {
       while (true) {
         yield watcher.on("change");
@@ -36,38 +34,8 @@ function* watch(): Sequence {
   restart();
 }
 
-
-
-interface WatchOptions {
-  encoding?: BufferEncoding | null;
-  persistent?: boolean;
-  recursive?: boolean;
-}
-
-type WatchOptionsType = WatchOptions | BufferEncoding | undefined | null;
-
-class FileWatcher extends EventEmitter<fs.FSWatcher, "change"> {
-  static watch(filename: string, options: WatchOptionsType) {
-    return new FileWatcher(fs.watch(filename, options));
-  }
-
-  close() {
-    this.inner.close();
-  }
-}
-
-class ChildProcess extends EventEmitter<cp.ChildProcess, "error" | "exit"> {
-  static spawn(cmd: string, args: string[] = [], options: cp.SpawnOptions) {
-    return new ChildProcess(cp.spawn(cmd, args, options));
-  }
-
-  kill(signal?: string) {
-    this.inner.kill(signal);
-  }
-}
-
 function* launch(cmd: string, args: string[]): Sequence {
-  let child = ChildProcess.spawn(cmd, args, { stdio: 'inherit'});
+  let child = spawn(cmd, args, { stdio: 'inherit'});
 
   fork(function*() {
     let errors = fork(function*() {
@@ -94,7 +62,7 @@ fork(function* main() {
   let interrupt = () => { console.log('');  this.halt()};
   process.on('SIGINT', interrupt);
   try {
-    yield watch;
+    yield start;
   } catch (e) {
     console.log(e);
   } finally {
