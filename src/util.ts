@@ -48,8 +48,8 @@ export function resumeOnEvent(emitter: events.EventEmitter, eventName: string | 
   }
 }
 
-export function forkOnEvent(emitter: events.EventEmitter, eventName: string | symbol, operation: (...any) => Operation) {
-  fork(function*() {
+export function forkOnEvent(emitter: events.EventEmitter, eventName: string | symbol, operation: (...any) => Operation): Execution {
+  return fork(function*() {
     while(true) {
       let args = yield resumeOnEvent(emitter, eventName);
 

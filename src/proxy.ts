@@ -1,9 +1,9 @@
-import { Sequence } from 'effection';
+import { fork, Sequence } from 'effection';
 import { AddressInfo } from 'net';
 import * as proxy from 'http-proxy';
 import * as http from 'http';
 import { listen, ReadyCallback } from './http';
-import { EventEmitter, forkOnEvent } from './util';
+import { EventEmitter, forkOnEvent, resumeOnEvent } from './util';
 import * as trumpet from 'trumpet';
 import * as zlib from 'zlib';
 
@@ -12,6 +12,21 @@ interface ProxyOptions {
   targetPort: number
   inject?: string
 };
+
+function pipe(from, to) {
+  fork(function*() {
+    let writer = forkOnEvent(from, 'data', function*(chunk) {
+      to.write(chunk);
+    });
+
+    try {
+      yield resumeOnEvent(from, 'end');
+      to.end();
+    } finally {
+      writer.halt();
+    }
+  });
+}
 
 export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback = x => x): Sequence {
   let proxyServer = proxy.createProxyServer({
@@ -45,23 +60,16 @@ export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback =
       if(contentEncoding && contentEncoding.toLowerCase() == 'gzip') {
         let zip = zlib.createGunzip();
 
-        zip.on('data', (chunk) => tr.write(chunk));
-        zip.on('end', () => tr.end());
-
-        proxyRes.on('data', (chunk) => zip.write(chunk));
-        proxyRes.on('end', () => zip.end());
+        pipe(proxyRes, zip);
+        pipe(zip, tr);
       } else {
-        proxyRes.on('data', (chunk) => tr.write(chunk));
-        proxyRes.on('end', () => tr.end());
+        pipe(proxyRes, tr);
       }
 
-      tr.on('data', (chunk) => res.write(chunk));
-      tr.on('end', () => res.end());
+      pipe(tr, res);
     } else {
       res.writeHead(proxyRes.statusCode, proxyRes.statusMessage);
-
-      proxyRes.on('data', (chunk) => res.write(chunk));
-      proxyRes.on('end', (chunk) => res.end(chunk));
+      pipe(proxyRes, res);
     }
   });
 
@@ -70,8 +78,13 @@ export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback =
     res.end(`Proxy error: ${err}`);
   });
 
-  proxyServer.on('open', () => console.debug('socket connection opened'));
-  proxyServer.on('close', () => console.debug('socket connection closed'));
+  forkOnEvent(proxyServer, 'open', function*() {
+    console.debug('socket connection opened');
+  });
+
+  forkOnEvent(proxyServer, 'close', function*() {
+    console.debug('socket connection closed');
+  });
 
   let server = http.createServer();
 
@@ -79,11 +92,11 @@ export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback =
 
   ready(server);
 
-  server.on('request', (req, res) => {
+  forkOnEvent(server, 'request', function*(req, res) {
     proxyServer.web(req, res);
   });
 
-  server.on('upgrade', (req, socket, head) => {
+  forkOnEvent(server, 'upgrade', function*(req, socket, head) {
     proxyServer.ws(req, socket, head);
   });
 
