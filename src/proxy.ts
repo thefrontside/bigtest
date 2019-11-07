@@ -2,7 +2,8 @@ import { Sequence } from 'effection';
 import { AddressInfo } from 'net';
 import * as proxy from 'http-proxy';
 import * as http from 'http';
-import { EventEmitter } from './util';
+import { listen, ReadyCallback } from './http';
+import { EventEmitter, forkOnEvent } from './util';
 import * as trumpet from 'trumpet';
 import * as zlib from 'zlib';
 
@@ -12,20 +13,13 @@ interface ProxyOptions {
   inject?: string
 };
 
-export function* createProxyServer(options: ProxyOptions): Sequence {
+export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback = x => x): Sequence {
   let proxyServer = proxy.createProxyServer({
     target: `http://localhost:${options.targetPort}`,
     selfHandleResponse: true
   });
 
-  let server = http.createServer();
-
-  server.listen(options.port, () => {
-    let address = server.address() as AddressInfo;
-    console.log(`-> proxy listening on port ${address.port}`)
-  });
-
-  proxyServer.on('proxyRes', (proxyRes, req, res) => {
+  forkOnEvent(proxyServer, 'proxyRes', function*(proxyRes, req, res) {
     for(let [key, value] of Object.entries(proxyRes.headers)) {
       res.setHeader(key, value);
     }
@@ -33,7 +27,7 @@ export function* createProxyServer(options: ProxyOptions): Sequence {
     let contentType = proxyRes.headers['content-type'] as string;
     let contentEncoding = proxyRes.headers['content-encoding'] as string;
 
-    if(contentType && contentType.split(";")[0] === "text/html") {
+    if(contentType && contentType.split(';')[0] === 'text/html') {
       res.removeHeader('content-length');
       res.removeHeader('content-encoding');
 
@@ -41,14 +35,14 @@ export function* createProxyServer(options: ProxyOptions): Sequence {
 
       let tr = trumpet();
 
-      tr.select("head", (node) => {
+      tr.select('head', (node) => {
         let rs = node.createReadStream();
         let ws = node.createWriteStream();
-        ws.write(options.inject || "");
+        ws.write(options.inject || '');
         rs.pipe(ws);
       });
 
-      if(contentEncoding && contentEncoding.toLowerCase() == "gzip") {
+      if(contentEncoding && contentEncoding.toLowerCase() == 'gzip') {
         let zip = zlib.createGunzip();
 
         zip.on('data', (chunk) => tr.write(chunk));
@@ -71,15 +65,19 @@ export function* createProxyServer(options: ProxyOptions): Sequence {
     }
   });
 
-  proxyServer.on('error', function(err, req, res) {
-    console.error("PROXY ERROR", err);
-
+  forkOnEvent(proxyServer, 'error', function*(err, req, res) {
     res.writeHead(502, { 'Content-Type': 'text/plain' });
     res.end(`Proxy error: ${err}`);
   });
 
-  proxyServer.on('open', () => console.debug("socket connection opened"));
-  proxyServer.on('close', () => console.debug("socket connection closed"));
+  proxyServer.on('open', () => console.debug('socket connection opened'));
+  proxyServer.on('close', () => console.debug('socket connection closed'));
+
+  let server = http.createServer();
+
+  yield listen(server, options.port);
+
+  ready(server);
 
   server.on('request', (req, res) => {
     proxyServer.web(req, res);

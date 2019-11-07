@@ -15,12 +15,14 @@ export function* main(): Sequence {
     port: 4001,
     targetPort: 4002,
     inject: "<script>console.log('Hello world');</script>"
+  }, (server) => {
+    let address = server.address() as AddressInfo;
+    console.log(`-> proxy server listening on port ${address.port}`);
   }));
 
   // accept commands from the outside world (CLI, UI, etc...)
   fork(createServer(4000, commandServer, server => {
     let address = server.address() as AddressInfo;
-
     console.log(`-> listening for commands on port ${address.port}`);
   }));
 

@@ -35,3 +35,33 @@ export function resumeOnCb(fn: (cb: (error?: Error) => void) => void): Operation
     return () => iCare = false;
   }
 }
+
+/**
+ * Takes an event emitter and event name and returns a yieldable
+ * operation which resumes when the event occurrs.
+ */
+export function resumeOnEvent(emitter: events.EventEmitter, eventName: string | symbol): Operation {
+  return (execution: Execution) => {
+    let resume = (...args) => execution.resume(args);
+    emitter.on(eventName, resume);
+    return () => emitter.off(eventName, resume);
+  }
+}
+
+export function forkOnEvent(emitter: events.EventEmitter, eventName: string | symbol, operation: (...any) => Operation) {
+  fork(function*() {
+    while(true) {
+      let args = yield resumeOnEvent(emitter, eventName);
+
+      fork(operation(...args));
+    }
+  });
+}
+
+export class EventEmitter<T extends events.EventEmitter, E extends string | symbol> {
+  constructor(protected inner: T) {}
+
+  on(event: E): Operation {
+    return resumeOnEvent(this.inner, event);
+  }
+}
