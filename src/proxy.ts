@@ -9,6 +9,7 @@ import * as zlib from 'zlib';
 interface ProxyOptions {
   port: number,
   targetPort: number
+  inject?: string
 };
 
 export function* createProxyServer(options: ProxyOptions): Sequence {
@@ -43,7 +44,7 @@ export function* createProxyServer(options: ProxyOptions): Sequence {
       tr.select("head", (node) => {
         let rs = node.createReadStream();
         let ws = node.createWriteStream();
-        ws.write("<script>console.log('Hello world!');</script>");
+        ws.write(options.inject || "");
         rs.pipe(ws);
       });
 

@@ -11,7 +11,11 @@ export function* main(): Sequence {
   console.log('BigTest Server');
 
   // proxies requests to application server and injects our harness
-  fork(createProxyServer({ port: 4001, targetPort: 4002 }));
+  fork(createProxyServer({
+    port: 4001,
+    targetPort: 4002,
+    inject: "<script>console.log('Hello world');</script>"
+  }));
 
   // accept commands from the outside world (CLI, UI, etc...)
   fork(createServer(4000, commandServer, server => {
