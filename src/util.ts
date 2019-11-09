@@ -1,5 +1,4 @@
 import { fork, Execution, Operation } from 'effection';
-import * as events from 'events';
 
 //eslint-disable-next-line @typescript-eslint/no-empty-function
 const Fork = fork(function*() {}).constructor;
@@ -34,17 +33,5 @@ export function resumeOnCb(fn: (cb: (error?: Error) => void) => void): Operation
       }
     });
     return () => iCare = false;
-  }
-}
-
-/**
- * Takes an event emitter and event name and returns a yieldable
- * operation which resumes when the event occurrs.
- */
-export function resumeOnEvent(emitter: events.EventEmitter, eventName: string | symbol): Operation {
-  return (execution: Execution) => {
-    let resume = (...args) => execution.resume(args);
-    emitter.on(eventName, resume);
-    return () => emitter.off(eventName, resume);
   }
 }

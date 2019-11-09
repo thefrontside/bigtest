@@ -1,6 +1,7 @@
+import { watch } from 'fs';
+import { spawn } from 'child_process';
 import { fork, Sequence } from 'effection';
-import { spawn } from '@effection/node/child_process';
-import { watch } from '@effection/node/fs';
+import { on } from '@effection/events';
 
 function* start(): Sequence {
   let [ cmd, ...args ] = process.argv.slice(2);
@@ -9,7 +10,7 @@ function* start(): Sequence {
     let watcher = watch('src', { recursive: true });
     try {
       while (true) {
-        yield watcher.on("change");
+        yield on(watcher, "change");
         console.log('change detected, restarting....');
         restart();
       }
@@ -39,12 +40,12 @@ function* launch(cmd: string, args: string[]): Sequence {
 
   fork(function*() {
     let errors = fork(function*() {
-      let [ error ] = yield child.on("error");
+      let [ error ] = yield on(child, "error");
       throw error;
     });
 
     try {
-      let [ code ] = yield child.on('exit');
+      let [ code ] = yield on(child, 'exit');
       errors.halt();
 
       if (code > 0) {
