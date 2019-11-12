@@ -1,6 +1,8 @@
 import { Sequence, fork, timeout } from 'effection';
+import { on } from '@effection/events';
+
 import { createServer, IncomingMessage, Response } from './http';
-import { createSocketServer, Connection, Message } from './ws';
+import { createSocketServer, Connection, Message, send } from './ws';
 import { AddressInfo } from 'net';
 
 // entry point for bigtestd
@@ -39,12 +41,12 @@ function* connectionServer(connection: Connection): Sequence {
   fork(function* heartbeat() {
     while (true) {
       yield timeout(10000);
-      yield connection.send(JSON.stringify({type: "heartbeat"}));
+      yield send(connection, JSON.stringify({type: "heartbeat"}));
     }
   })
 
   while (true) {
-    let [message]: [Message] = yield connection.on("message");
+    let [message]: [Message] = yield on(connection, "message");
     console.log(`mesage = `, message);
   }
 }
