@@ -8,7 +8,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "ts-node bin/start.ts"
+    "start": "ts-node bin/start.ts",
+    "lint": "eslint src/**/*.ts bin/**/*.ts"
   },
   "devDependencies": {
     "@types/websocket": "^1.0.0",

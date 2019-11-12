@@ -20,7 +20,7 @@ function* watch(): Sequence {
     }
   });
 
-  let current = { halt() {} };
+  let current = { halt: (x = undefined) => x };
   let restart = () => {
     current.halt();
     current = this.fork(function*() {
@@ -38,8 +38,16 @@ function* watch(): Sequence {
 
 
 
+interface WatchOptions {
+  encoding?: BufferEncoding | null;
+  persistent?: boolean;
+  recursive?: boolean;
+}
+
+type WatchOptionsType = WatchOptions | BufferEncoding | undefined | null;
+
 class FileWatcher extends EventEmitter<fs.FSWatcher, "change"> {
-  static watch(filename: string, options: any) {
+  static watch(filename: string, options: WatchOptionsType) {
     return new FileWatcher(fs.watch(filename, options));
   }
 

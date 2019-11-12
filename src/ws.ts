@@ -6,7 +6,7 @@ import {
   IMessage as Message
 } from 'websocket';
 
-import { fork, Sequence, Operation, Execution } from 'effection';
+import { fork, Sequence, Operation } from 'effection';
 import { getCurrentExecution, resumeOnCb, EventEmitter } from './util';
 
 import { listen, ReadyCallback } from './http';
@@ -47,7 +47,7 @@ export function* createSocketServer(port: number, handler: ConnectionHandler, re
           connection.off("error", fail);
           connection.close();
         }
-      }) as any;
+      });
 
     }
   } finally {
@@ -59,7 +59,7 @@ export function* createSocketServer(port: number, handler: ConnectionHandler, re
 type ConnectionEvent = "message" | "frame" | "close" | "error" | "drain" | "pause" | "resume" | "ping" | "pong";
 
 class Connection extends EventEmitter<WebSocketConnection, ConnectionEvent> {
-  send(data: String): Operation {
+  send(data: string): Operation {
     return resumeOnCb((cb) => this.inner.send(data, cb));
   }
 }

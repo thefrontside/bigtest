@@ -1,4 +1,4 @@
-import { Execution, Operation, Sequence, fork, timeout } from 'effection';
+import { Sequence, fork, timeout } from 'effection';
 import { createServer, IncomingMessage, Response } from './http';
 import { createSocketServer, Connection, Message } from './ws';
 import { AddressInfo } from 'net';
