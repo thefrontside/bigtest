@@ -1,17 +1,17 @@
 import { fork, Sequence } from 'effection';
 import { on } from '@effection/events';
-import { AddressInfo } from 'net';
 import * as proxy from 'http-proxy';
 import * as http from 'http';
 import { listen, ReadyCallback } from './http';
 import { forkOnEvent,  } from './util';
 import * as trumpet from 'trumpet';
 import * as zlib from 'zlib';
+import { Readable, Writable } from 'stream';
 
 interface ProxyOptions {
-  port: number,
-  targetPort: number
-  inject?: string
+  port: number;
+  targetPort: number;
+  inject?: string;
 };
 
 function pipe(from, to) {
