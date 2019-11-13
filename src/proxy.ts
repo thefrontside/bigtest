@@ -15,15 +15,9 @@ interface ProxyOptions {
 
 function pipe(from, to): Controller {
   let listener = fork(function*() {
-    forkOnEvent(from, 'data', function*(chunk) {
-      to.write(chunk);
-    });
-    forkOnEvent(from, 'error', function*(error) {
-      throw error;
-    });
-    forkOnEvent(to, 'error', function*(error) {
-      throw error;
-    });
+    forkOnEvent(from, 'data', function*(chunk) { to.write(chunk); });
+    forkOnEvent(from, 'error', function*(error) { throw error; });
+    forkOnEvent(to, 'error', function*(error) { throw error; });
   });
 
   return (execution: Execution) => {
