@@ -54,11 +54,15 @@ export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback =
 
       let tr = trumpet();
 
-      tr.select('head', (node) => {
-        let rs = node.createReadStream();
-        let ws = node.createWriteStream();
-        ws.write(options.inject || '');
-        rs.pipe(ws);
+      let nodeHandler = fork(function* () {
+        tr.select('head', (node) => nodeHandler.resume(node));
+        while(true) {
+          let node = yield;
+          let rs = node.createReadStream();
+          let ws = node.createWriteStream();
+          ws.write(options.inject || '');
+          rs.pipe(ws);
+        }
       });
 
       if(contentEncoding && contentEncoding.toLowerCase() == 'gzip') {
@@ -71,6 +75,7 @@ export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback =
       }
 
       yield pipe(tr, res);
+      nodeHandler.halt();
     } else {
       res.writeHead(proxyRes.statusCode, proxyRes.statusMessage);
       yield pipe(proxyRes, res);
