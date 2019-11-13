@@ -29,7 +29,7 @@ export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback =
     let contentType = proxyRes.headers['content-type'] as string;
     let contentEncoding = proxyRes.headers['content-encoding'] as string;
 
-    forkOnEvent(proxyRes, 'error', function*(error) { throw error; });
+    let proxyResMonitor = forkOnEvent(proxyRes, 'error', function*(error) { throw error; });
 
     if(contentType && contentType.split(';')[0] === 'text/html') {
       res.removeHeader('content-length');
@@ -38,10 +38,13 @@ export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback =
       res.writeHead(proxyRes.statusCode, proxyRes.statusMessage);
 
       let tr = trumpet();
-      forkOnEvent(tr, 'error', function*(error) { throw error; });
+      let trMonitor = forkOnEvent(tr, 'error', function*(error) { throw error; });
 
-      let nodeHandler = fork(function* () {
-        tr.select('head', (node) => nodeHandler.resume(node));
+      let unzip = zlib.createGunzip();
+      let unzipMonitor = forkOnEvent(unzip, 'error', function*(error) { throw error; });
+
+      let nodeMonitor = fork(function* () {
+        tr.select('head', (node) => nodeMonitor.resume(node));
         while(true) {
           let node = yield;
           let rs = node.createReadStream();
@@ -52,8 +55,6 @@ export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback =
       });
 
       if(contentEncoding && contentEncoding.toLowerCase() == 'gzip') {
-        let unzip = zlib.createGunzip();
-        forkOnEvent(unzip, 'error', function*(error) { throw error; });
 
         proxyRes.pipe(unzip);
         unzip.pipe(tr);
@@ -63,15 +64,27 @@ export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback =
 
       tr.pipe(res);
 
-      yield on(tr, "end");
+      try {
+        yield on(tr, "end");
+      } finally {
+        // tr.close(); there is no close method on Trumpet, how do we not leak it in case of errors?
+        unzip.close();
 
-      nodeHandler.halt();
+        proxyResMonitor.halt();
+        trMonitor.halt();
+        unzipMonitor.halt();
+        nodeMonitor.halt();
+      }
     } else {
       res.writeHead(proxyRes.statusCode, proxyRes.statusMessage);
 
       proxyRes.pipe(res);
 
-      yield on(proxyRes, "end");
+      try {
+        yield on(proxyRes, "end");
+      } finally {
+        proxyResMonitor.halt();
+      }
     }
     console.debug("[proxy]", "finish", req.method, req.url);
   });
