@@ -1,4 +1,5 @@
 import { fork, Sequence, Controller, Execution } from 'effection';
+import { on } from '@effection/events';
 import * as proxy from 'http-proxy';
 import * as http from 'http';
 import { listen, ReadyCallback } from './http';
@@ -12,26 +13,6 @@ interface ProxyOptions {
   targetPort: number;
   inject?: string;
 };
-
-function pipe(from, to): Controller {
-  let listener = fork(function*() {
-    forkOnEvent(from, 'data', function*(chunk) { to.write(chunk); });
-    forkOnEvent(from, 'error', function*(error) { throw error; });
-    forkOnEvent(to, 'error', function*(error) { throw error; });
-  });
-
-  return (execution: Execution) => {
-    let resume = () => {
-      to.end();
-      execution.resume([]);
-    }
-    from.on("end", resume);
-    return () => {
-      listener.halt();
-      from.off("end", resume);
-    }
-  };
-}
 
 export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback = x => x): Sequence {
   let proxyServer = proxy.createProxyServer({
@@ -48,6 +29,8 @@ export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback =
     let contentType = proxyRes.headers['content-type'] as string;
     let contentEncoding = proxyRes.headers['content-encoding'] as string;
 
+    forkOnEvent(proxyRes, 'error', function*(error) { throw error; });
+
     if(contentType && contentType.split(';')[0] === 'text/html') {
       res.removeHeader('content-length');
       res.removeHeader('content-encoding');
@@ -55,6 +38,7 @@ export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback =
       res.writeHead(proxyRes.statusCode, proxyRes.statusMessage);
 
       let tr = trumpet();
+      forkOnEvent(tr, 'error', function*(error) { throw error; });
 
       let nodeHandler = fork(function* () {
         tr.select('head', (node) => nodeHandler.resume(node));
@@ -69,18 +53,25 @@ export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback =
 
       if(contentEncoding && contentEncoding.toLowerCase() == 'gzip') {
         let unzip = zlib.createGunzip();
+        forkOnEvent(unzip, 'error', function*(error) { throw error; });
 
-        fork(function*() { yield pipe(proxyRes, unzip) });
-        fork(function*() { yield pipe(unzip, tr) });
+        proxyRes.pipe(unzip);
+        unzip.pipe(tr);
       } else {
-        fork(function*() { yield pipe(proxyRes, tr) });
+        proxyRes.pipe(tr);
       }
 
-      yield pipe(tr, res);
+      tr.pipe(res);
+
+      yield on(tr, "end");
+
       nodeHandler.halt();
     } else {
       res.writeHead(proxyRes.statusCode, proxyRes.statusMessage);
-      yield pipe(proxyRes, res);
+
+      proxyRes.pipe(res);
+
+      yield on(proxyRes, "end");
     }
     console.debug("[proxy]", "finish", req.method, req.url);
   });
