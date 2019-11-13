@@ -1,5 +1,4 @@
-import { fork, Sequence } from 'effection';
-import { on } from '@effection/events';
+import { fork, Sequence, Controller, Execution } from 'effection';
 import * as proxy from 'http-proxy';
 import * as http from 'http';
 import { listen, ReadyCallback } from './http';
@@ -14,19 +13,22 @@ interface ProxyOptions {
   inject?: string;
 };
 
-function pipe(from, to) {
-  fork(function*() {
-    let writer = forkOnEvent(from, 'data', function*(chunk) {
-      to.write(chunk);
-    });
-
-    try {
-      yield on(from, 'end');
-      to.end();
-    } finally {
-      writer.halt();
-    }
+function pipe(from, to): Controller {
+  let writer = forkOnEvent(from, 'data', function*(chunk) {
+    to.write(chunk);
   });
+
+  return (execution: Execution) => {
+    let resume = () => {
+      to.end();
+      execution.resume([]);
+    }
+    from.on("end", resume);
+    return () => {
+      writer.halt();
+      from.off("end", resume);
+    }
+  };
 }
 
 export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback = x => x): Sequence {
@@ -36,6 +38,7 @@ export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback =
   });
 
   forkOnEvent(proxyServer, 'proxyRes', function*(proxyRes, req, res) {
+    console.debug("[proxy]", "start", req.method, req.url);
     for(let [key, value] of Object.entries(proxyRes.headers)) {
       res.setHeader(key, value);
     }
@@ -61,17 +64,18 @@ export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback =
       if(contentEncoding && contentEncoding.toLowerCase() == 'gzip') {
         let zip = zlib.createGunzip();
 
-        pipe(proxyRes, zip);
-        pipe(zip, tr);
+        fork(function*() { yield pipe(proxyRes, zip) });
+        fork(function*() { yield pipe(zip, tr) });
       } else {
-        pipe(proxyRes, tr);
+        fork(function*() { yield pipe(proxyRes, tr) });
       }
 
-      pipe(tr, res);
+      yield pipe(tr, res);
     } else {
       res.writeHead(proxyRes.statusCode, proxyRes.statusMessage);
-      pipe(proxyRes, res);
+      yield pipe(proxyRes, res);
     }
+    console.debug("[proxy]", "finish", req.method, req.url);
   });
 
   forkOnEvent(proxyServer, 'error', function*(err, req, res) {
