@@ -14,8 +14,16 @@ interface ProxyOptions {
 };
 
 function pipe(from, to): Controller {
-  let writer = forkOnEvent(from, 'data', function*(chunk) {
-    to.write(chunk);
+  let listener = fork(function*() {
+    forkOnEvent(from, 'data', function*(chunk) {
+      to.write(chunk);
+    });
+    forkOnEvent(from, 'error', function*(error) {
+      throw error;
+    });
+    forkOnEvent(to, 'error', function*(error) {
+      throw error;
+    });
   });
 
   return (execution: Execution) => {
@@ -25,7 +33,7 @@ function pipe(from, to): Controller {
     }
     from.on("end", resume);
     return () => {
-      writer.halt();
+      listener.halt();
       from.off("end", resume);
     }
   };
