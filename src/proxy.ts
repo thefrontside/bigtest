@@ -66,10 +66,10 @@ export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback =
       });
 
       if(contentEncoding && contentEncoding.toLowerCase() == 'gzip') {
-        let zip = zlib.createGunzip();
+        let unzip = zlib.createGunzip();
 
-        fork(function*() { yield pipe(proxyRes, zip) });
-        fork(function*() { yield pipe(zip, tr) });
+        fork(function*() { yield pipe(proxyRes, unzip) });
+        fork(function*() { yield pipe(unzip, tr) });
       } else {
         fork(function*() { yield pipe(proxyRes, tr) });
       }
