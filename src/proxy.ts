@@ -55,7 +55,6 @@ export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback =
       });
 
       if(contentEncoding && contentEncoding.toLowerCase() == 'gzip') {
-
         proxyRes.pipe(unzip);
         unzip.pipe(tr);
       } else {
