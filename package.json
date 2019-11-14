@@ -10,7 +10,7 @@
   "scripts": {
     "start": "ts-node -r module-alias/register bin/start.ts",
     "watch": "ts-node -r module-alias/register bin/watch.ts",
-    "lint": "eslint 'src/**/*.ts' 'bin/**/*.ts'"
+    "lint": "eslint 'src/**/*.ts' 'bin/**/*.ts' 'agent/**/*.ts'"
   },
   "devDependencies": {
     "@types/websocket": "^1.0.0",
