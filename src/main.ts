@@ -4,21 +4,27 @@ import { on } from '@effection/events';
 import { createServer, IncomingMessage, Response } from './http';
 import { createSocketServer, Connection, Message, send } from './ws';
 import { AddressInfo } from 'net';
+import { createProxyServer } from './proxy';
 
 // entry point for bigtestd
 export function* main(): Sequence {
   console.log('BigTest Server');
+
+  // proxies requests to application server and injects our harness
+  fork(createProxyServer({
+    port: 4001,
+    targetPort: 4002,
+    inject: "<script>console.log('Hello world');</script>"
+  }, (server) => {
+    let address = server.address() as AddressInfo;
+    console.log(`-> proxy server listening on port ${address.port}`);
+  }));
 
   // accept commands from the outside world (CLI, UI, etc...)
   fork(createServer(4000, commandServer, server => {
     let address = server.address() as AddressInfo;
     console.log(`-> listening for commands on port ${address.port}`);
   }));
-
-
-  // TODO: serves the application with our special controls injected.
-  // fork(proxyServer);
-
 
   // TODO: realtime socket communication with browsers
   fork(createSocketServer(5001, connectionServer, server => {
