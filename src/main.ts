@@ -51,6 +51,7 @@ function* commandServer(req: IncomingMessage, res: Response): Sequence {
 }
 
 function* connectionServer(connection: Connection): Sequence {
+  console.log('connection established');
   fork(function* heartbeat() {
     while (true) {
       yield timeout(10000);
@@ -58,8 +59,12 @@ function* connectionServer(connection: Connection): Sequence {
     }
   })
 
-  while (true) {
-    let [message]: [Message] = yield on(connection, "message");
-    console.log(`mesage = `, message);
+  try {
+    while (true) {
+      let [message]: [Message] = yield on(connection, "message");
+      console.log('message:', message);
+    }
+  } finally {
+    console.log('connection closed');
   }
 }
