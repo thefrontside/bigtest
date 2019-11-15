@@ -10,7 +10,7 @@
   "scripts": {
     "start": "ts-node -r module-alias/register bin/start.ts",
     "watch": "ts-node -r module-alias/register bin/watch.ts",
-    "lint": "eslint 'src/**/*.ts' 'bin/**/*.ts'"
+    "lint": "eslint 'src/**/*.ts' 'bin/**/*.ts' 'agent/**/*.ts'"
   },
   "devDependencies": {
     "@types/websocket": "^1.0.0",
@@ -24,8 +24,10 @@
     "@types/http-proxy": "^1.17.0",
     "@types/node": "^12.7.11",
     "effection": "~0.3.2",
-    "module-alias": "^2.2.2",
     "http-proxy": "^1.18.0",
+    "module-alias": "^2.2.2",
+    "parcel": "^1.12.4",
+    "parcel-bundler": "^1.12.4",
     "trumpet": "^1.7.2",
     "ts-node": "^8.4.1",
     "typescript": "^3.6.3",

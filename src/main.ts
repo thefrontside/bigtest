@@ -5,6 +5,7 @@ import { createServer, IncomingMessage, Response } from './http';
 import { createSocketServer, Connection, Message, send } from './ws';
 import { AddressInfo } from 'net';
 import { createProxyServer } from './proxy';
+import { agentServer } from './agent-server';
 
 // entry point for bigtestd
 export function* main(): Sequence {
@@ -14,7 +15,7 @@ export function* main(): Sequence {
   fork(createProxyServer({
     port: 4001,
     targetPort: 4002,
-    inject: "<script>console.log('Hello world');</script>"
+    inject: '<script src="http://localhost:4004/harness.js"></script>'
   }, (server) => {
     let address = server.address() as AddressInfo;
     console.log(`-> proxy server listening on port ${address.port}`);
@@ -25,6 +26,12 @@ export function* main(): Sequence {
     let address = server.address() as AddressInfo;
     console.log(`-> listening for commands on port ${address.port}`);
   }));
+
+  fork(agentServer(4004, server => {
+    let address = server.address() as AddressInfo;
+    console.log(`-> agent server running on ${address.port}`);
+  }));
+
 
   // TODO: realtime socket communication with browsers
   fork(createSocketServer(5001, connectionServer, server => {
