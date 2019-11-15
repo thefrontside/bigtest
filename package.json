@@ -11,7 +11,7 @@
     "start": "ts-node -r module-alias/register bin/start.ts",
     "watch": "ts-node -r module-alias/register bin/watch.ts",
     "lint": "eslint 'src/**/*.ts' 'bin/**/*.ts' 'agent/**/*.ts'",
-    "test": "echo 'success!"
+    "test": "echo 'success!'"
   },
   "devDependencies": {
     "@types/websocket": "^1.0.0",
