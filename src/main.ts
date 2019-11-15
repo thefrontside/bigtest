@@ -7,9 +7,11 @@ import { AddressInfo } from 'net';
 import { createProxyServer } from './proxy';
 import { agentServer } from './agent-server';
 
+import { log } from './logger';
+
 // entry point for bigtestd
 export function* main(): Sequence {
-  console.log('BigTest Server');
+  log.info('BigTest Server');
 
   // proxies requests to application server and injects our harness
   fork(createProxyServer({
@@ -18,25 +20,22 @@ export function* main(): Sequence {
     inject: '<script src="http://localhost:4004/harness.js"></script>'
   }, (server) => {
     let address = server.address() as AddressInfo;
-    console.log(`-> proxy server listening on port ${address.port}`);
+    log.info(`-> proxy server listening on port ${address.port}`);
   }));
 
   // accept commands from the outside world (CLI, UI, etc...)
   fork(createServer(4000, commandServer, server => {
     let address = server.address() as AddressInfo;
-    console.log(`-> listening for commands on port ${address.port}`);
+    log.info(`-> listening for commands on port ${address.port}`);
   }));
 
-  fork(agentServer(4004, server => {
-    let address = server.address() as AddressInfo;
-    console.log(`-> agent server running on ${address.port}`);
-  }));
+  fork(agentServer(4004));
 
 
   // TODO: realtime socket communication with browsers
   fork(createSocketServer(5001, connectionServer, server => {
     let address = server.address() as AddressInfo;
-    console.log(`-> accepting agent connections on port ${address.port}`);
+    log.info(`-> accepting agent connections on port ${address.port}`);
   }));
 
   // TODO: serves the raw application
@@ -51,7 +50,7 @@ function* commandServer(req: IncomingMessage, res: Response): Sequence {
 }
 
 function* connectionServer(connection: Connection): Sequence {
-  console.log('connection established');
+  log.info('connection established');
   fork(function* heartbeat() {
     while (true) {
       yield timeout(10000);
@@ -62,9 +61,9 @@ function* connectionServer(connection: Connection): Sequence {
   try {
     while (true) {
       let [message]: [Message] = yield on(connection, "message");
-      console.log('message:', message);
+      log.info(`mesage = `, message);
     }
   } finally {
-    console.log('connection closed');
+    log.info('connection closed');
   }
 }
