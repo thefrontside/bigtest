@@ -1,23 +1,22 @@
-import * as Bundler from 'parcel-bundler';
-import * as Path from 'path';
-import * as http from 'http';
+import { fork } from 'effection';
+import { on } from '@effection/events';
 
-export type ReadyCallback = (server: http.Server) => void;
+import { spawn } from 'child_process';
 
-const entryFiles = [
-  Path.join(__dirname, '../agent/index.html'),
-  Path.join(__dirname, '../agent/harness.ts'),
-];
+export function* agentServer(port: number) {
 
-export function* agentServer(port: number, ready: ReadyCallback = x => x) {
-  let bundler = new Bundler(entryFiles, {});
-  let server = yield bundler.serve(port);
+  let child = spawn('parcel', ['-p', `${port}`, 'agent/index.html', 'agent/harness.ts'], {
+    stdio: 'inherit'
+  });
 
-  ready(server);
+  fork(function*() {
+    let [error]: [Error] = yield on(child, "error");
+    throw error;
+  })
 
   try {
-    yield;
+    yield on(child, "exit");
   } finally {
-    server.close();
+    child.kill();
   }
 }

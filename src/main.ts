@@ -27,10 +27,7 @@ export function* main(): Sequence {
     console.log(`-> listening for commands on port ${address.port}`);
   }));
 
-  fork(agentServer(4004, server => {
-    let address = server.address() as AddressInfo;
-    console.log(`-> agent server running on ${address.port}`);
-  }));
+  fork(agentServer(4004));
 
 
   // TODO: realtime socket communication with browsers
@@ -62,7 +59,7 @@ function* connectionServer(connection: Connection): Sequence {
   try {
     while (true) {
       let [message]: [Message] = yield on(connection, "message");
-      console.log('message:', message);
+      console.log(`mesage = `, message);
     }
   } finally {
     console.log('connection closed');
