@@ -4,7 +4,7 @@ import { fork, Execution, Operation } from 'effection';
 
 import { beforeEach, afterEach } from 'mocha';
 
-import { log } from '../src/logger';
+import { setLogLevel } from '../src/log-level';
 
 interface Actions {
   fork(operation: Operation): this;
@@ -63,12 +63,10 @@ let currentWorld: World;
 let info: (...args: unknown[]) => void;
 
 beforeEach(() => {
-  info = log.info;
-  log.info = () => {};
+  setLogLevel("warn");
   currentWorld = new World();
 });
 
 afterEach(() => {
-  log.info = info;
   currentWorld.destroy();
 })
