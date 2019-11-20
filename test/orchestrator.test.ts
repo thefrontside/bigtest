@@ -2,13 +2,12 @@ import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 
 import { Response } from 'node-fetch';
-import orchestrator from './test-orchestrator';
 
 import { actions } from './helpers';
 
-describe("server", () => {
+describe("orchestrator", () => {
   beforeEach(() => {
-    actions.fork(orchestrator);
+    actions.startOrchestrator();
   });
 
   describe('connecting to the command server', () => {
