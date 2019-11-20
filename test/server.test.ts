@@ -2,20 +2,20 @@ import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 
 import { Response } from 'node-fetch';
+import orchestrator from './test-orchestrator';
 
-import { main } from '../src/main';
 import { actions } from './helpers';
 
 describe("server", () => {
   beforeEach(() => {
-    actions.fork(main);
+    actions.fork(orchestrator);
   });
 
   describe('connecting to the command server', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
-      response = await actions.get('http://localhost:4000');
+      response = await actions.get('http://localhost:24102');
       body = await response.text();
     });
 
