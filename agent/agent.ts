@@ -1,26 +1,47 @@
-console.log('[agent] hello from agent');
+function parseQueryParams(params) {
+  return params
+    .replace(/^\?/, "")
+    .split("&")
+    .map((line) => line.split("=", 2).map(decodeURIComponent))
+    .reduce((agg, [key, value]) => {
+      agg[key] = value
+      return agg
+    }, {});
+}
 
 let testElement = document.getElementById('test-frame') as HTMLIFrameElement;
 
-testElement.src = 'http://localhost:4001';
+let { orchestrator } = parseQueryParams(location.search);
 
 window.addEventListener("message", (message) => {
   console.log('[agent] received message:', message.data);
   testElement.contentWindow.postMessage('message from agent', '*');
 });
 
-let socket = new WebSocket('ws://localhost:5001');
+if(orchestrator) {
+  console.log('[agent] connecting to orchestrator at', orchestrator);
+  let socket = new WebSocket(orchestrator);
 
-socket.addEventListener('open', () => {
-  socket.send('websocket message from agent');
-  console.log('[agent] socket connection established');
-});
+  socket.addEventListener('open', () => {
+    socket.send('websocket message from agent');
+    console.log('[agent] socket connection established');
+  });
 
-socket.addEventListener('message', function (event) {
-  console.log('[agent] got message:', event.data);
-});
+  socket.addEventListener('message', function (event) {
+    let message = JSON.parse(event.data)
 
-socket.addEventListener('close', () => {
-  socket.send('websocket message from agent');
-  console.log('[agent] socket connection closed');
-});
+    console.log('[agent] got message:', message);
+
+    if(message.type === "open") {
+      console.log('[agent] loading test app via', message.url);
+      testElement.src = message.url;
+    }
+  });
+
+  socket.addEventListener('close', () => {
+    socket.send('websocket message from agent');
+    console.log('[agent] socket connection closed');
+  });
+} else {
+  throw new Error("no orchestrator URL given, please specify the URL of the orchestrator by setting the `orchestrator` query param");
+}

@@ -6,12 +6,15 @@ import { beforeEach, afterEach } from 'mocha';
 
 import { setLogLevel } from '../src/log-level';
 
+import { createOrchestrator } from '../src/orchestrator';
+
 interface Actions {
-  fork(operation: Operation): this;
+  fork(operation: Operation): Execution;
   get(url: string): Promise<Response>;
+  startOrchestrator(): Execution;
 }
 
-class World implements Actions {
+class World {
   execution: Execution;
   constructor() {
     this.execution = fork(function*() { yield; });
@@ -21,9 +24,8 @@ class World implements Actions {
     this.execution.halt();
   }
 
-  fork(operation: Operation): this {
-    (this.execution as any).fork(operation);
-    return this;
+  fork(operation: Operation): Execution {
+    return (this.execution as any).fork(operation);
   }
 
   get(url: string): Promise<Response>{
@@ -50,12 +52,22 @@ class World implements Actions {
 type RequestMethod = 'post' | 'get';
 
 export const actions: Actions = {
-  fork(operation: Operation) {
+  fork(operation: Operation): Execution {
     return currentWorld.fork(operation);
   },
 
   get(url: string): Promise<Response> {
     return currentWorld.get(url);
+  },
+
+  startOrchestrator(): Execution {
+    return this.fork(createOrchestrator({
+      appPort: 24100,
+      proxyPort: 24101,
+      commandPort: 24102,
+      connectionPort: 24103,
+      agentPort: 24104,
+    }));
   }
 }
 
