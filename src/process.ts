@@ -1,12 +1,12 @@
 import { Operation, Execution, fork } from 'effection';
 
-type Process = Execution & { started: Promise<void> };
+type Process = Execution & { ready: Promise<void> };
 
-export function process(fn: (started: () => void) => Operation): Process {
+export function process(fn: (ready: () => void) => Operation): Process {
   let execution;
   let promise = new Promise((resolve) => {
     execution = fork(fn(resolve));
   });
-  execution.started = promise;
+  execution.ready = promise;
   return execution;
 }

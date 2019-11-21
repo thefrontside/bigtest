@@ -12,9 +12,10 @@ interface ProxyOptions {
   port: number;
   targetPort: number;
   inject?: string;
+  onReady: ReadyCallback;
 };
 
-export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback = x => x): Sequence {
+export function* createProxyServer(options: ProxyOptions): Sequence {
   let proxyServer = proxy.createProxyServer({
     target: `http://localhost:${options.targetPort}`,
     selfHandleResponse: true
@@ -105,7 +106,7 @@ export function* createProxyServer(options: ProxyOptions, ready: ReadyCallback =
 
   yield listen(server, options.port);
 
-  ready(server);
+  options.onReady && options.onReady(server);
 
   forkOnEvent(server, 'request', function*(req, res) {
     proxyServer.web(req, res);
