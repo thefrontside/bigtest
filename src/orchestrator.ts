@@ -6,6 +6,8 @@ import { createSocketServer, Connection, Message, send } from './ws';
 import { AddressInfo } from 'net';
 import { createProxyServer } from './proxy';
 import { agentServer } from './agent-server';
+import { process } from './process';
+import { getCurrentExecution } from './util';
 
 type OrchestratorOptions = {
   appPort: number;
@@ -17,35 +19,39 @@ type OrchestratorOptions = {
 
 export function createOrchestrator(options: OrchestratorOptions): Operation {
   return function* orchestrator(): Sequence {
-    console.log('BigTest Server');
+    console.log('[orchestrator] starting', getCurrentExecution().id);
 
-    // proxies requests to application server and injects our harness
-    fork(createProxyServer({
+    let proxyServerProcess = process((started) => createProxyServer({
       port: options.proxyPort,
       targetPort: options.appPort,
       inject: `<script src="http://localhost:${options.agentPort}/harness.js"></script>`
-    }, (server) => {
-      let address = server.address() as AddressInfo;
-      console.log(`-> proxy server listening on port ${address.port}`);
-    }));
+    }, started));
+    let commandServerProcess = process((started) => createServer(options.commandPort, commandServer, started));
+    let connectionServerProcess = process((started) => createSocketServer(options.connectionPort, connectionServer, started))
+    let agentServerProcess = fork(agentServer(options.agentPort));
 
-    // accept commands from the outside world (CLI, UI, etc...)
-    fork(createServer(options.commandPort, commandServer, server => {
-      let address = server.address() as AddressInfo;
-      console.log(`-> listening for commands on port ${address.port}`);
-    }));
+    yield fork(function*() {
+      console.log('wait', this.id);
+      fork(function*() {
+        let server = yield proxyServerProcess.started;
+        let address = server.address() as AddressInfo;
+        console.log(`[proxy] server listening on port ${address.port}`);
+      });
 
-    fork(agentServer(options.agentPort));
+      fork(function*() {
+        let server = yield commandServerProcess.started;
+        let address = server.address() as AddressInfo;
+        console.log(`[command] server listening on port ${address.port}`);
+      });
 
+      fork(function*() {
+        let server = yield connectionServerProcess.started;
+        let address = server.address() as AddressInfo;
+        console.log(`[connection] server listening on port ${address.port}`);
+      });
+    });
 
-    // TODO: realtime socket communication with browsers
-    fork(createSocketServer(options.connectionPort, connectionServer, server => {
-      let address = server.address() as AddressInfo;
-      console.log(`-> accepting agent connections on port ${address.port}`);
-    }));
-
-    // TODO: serves the raw application
-    // fork(buildServer);
+    console.log("[orchestrator] running!");
   };
 
   function* commandServer(req: IncomingMessage, res: Response): Sequence {

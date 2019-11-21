@@ -14,10 +14,10 @@
     "test": "mocha -r module-alias/register -r ts-node/register test/**/*.test.ts"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.3.2",
-    "@typescript-eslint/parser": "^2.3.2",
     "@types/mocha": "^5.2.7",
     "@types/node-fetch": "^2.5.3",
+    "@typescript-eslint/eslint-plugin": "^2.3.2",
+    "@typescript-eslint/parser": "^2.3.2",
     "abort-controller": "^3.0.0",
     "eslint": "^6.5.1",
     "eslint-plugin-prefer-let": "^1.0.1",
@@ -30,7 +30,7 @@
     "@types/http-proxy": "^1.17.0",
     "@types/node": "^12.7.11",
     "@types/websocket": "^1.0.0",
-    "effection": "~0.4.0",
+    "effection": "^0.4.0-9675f2c",
     "http-proxy": "^1.18.0",
     "module-alias": "^2.2.2",
     "parcel": "^1.12.4",

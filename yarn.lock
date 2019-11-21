@@ -2243,10 +2243,10 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-effection@~0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/effection/-/effection-0.4.0.tgz#ea16784300f69dff388436b2a0bf5a954a780ab5"
-  integrity sha512-E1x+on6RtIqqw1P6VpaXy2N2Odc1cAkIoCdAwUulkjGF5q/XnA82zJo3DibeOz7jgbrt7KSDFQMVuN93KPqrXg==
+effection@^0.4.0-9675f2c:
+  version "0.4.0-9675f2c"
+  resolved "https://registry.yarnpkg.com/effection/-/effection-0.4.0-9675f2c.tgz#6ec59e2ec6bf2301b807b1c7360b9cf577480465"
+  integrity sha512-5+e6CS+WW+4kgfpfdz3MV+T9gz2x2Ll6hEfPZN8XVzdw6gbW4LJMaKCAUiJBLgKTi1/TWOyYhkbC56SzIbO/bA==
 
 electron-to-chromium@^1.3.295:
   version "1.3.306"
