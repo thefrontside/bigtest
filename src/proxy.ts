@@ -20,7 +20,7 @@ export class ProxyServer extends Process {
     super();
   }
 
-  *run(ready): Sequence {
+  protected *run(ready): Sequence {
     let { inject, port, targetPort } = this.options;
 
     let proxyServer = proxy.createProxyServer({

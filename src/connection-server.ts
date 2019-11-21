@@ -14,7 +14,7 @@ export class ConnectionServer extends Process {
     super();
   }
 
-  *run(ready): Sequence {
+  protected *run(ready): Sequence {
     let { proxyPort } = this.options;
     function* handleConnection(connection: Connection): Sequence {
       console.log('connection established');

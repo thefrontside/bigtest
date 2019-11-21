@@ -11,7 +11,7 @@ export class CommandServer extends Process {
     super();
   }
 
-  *run(ready): Sequence {
+  protected *run(ready): Sequence {
     function* handleRequest(req: IncomingMessage, res: Response): Sequence {
       res.writeHead(200, {
         'X-Powered-By': 'effection'

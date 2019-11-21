@@ -26,6 +26,6 @@ export abstract class Process extends EventEmitter {
     }
   }
 
-  *run(ready): Sequence {}
+  protected *run(ready): Sequence {}
 }
 

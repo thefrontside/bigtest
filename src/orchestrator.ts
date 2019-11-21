@@ -21,7 +21,7 @@ export class Orchestrator extends Process {
     super();
   }
 
-  *run(ready) {
+  protected *run(ready) {
     console.log('[orchestrator] starting');
 
     let proxyServer = new ProxyServer({
