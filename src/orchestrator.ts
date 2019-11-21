@@ -16,25 +16,33 @@ type OrchestratorOptions = {
 }
 
 export class Orchestrator extends Process {
+  private proxyServer: ProxyServer;
+  private commandServer: CommandServer;
+  private connectionServer: ConnectionServer;
+
   constructor(public options: OrchestratorOptions) {
     super();
+
+    this.proxyServer = new ProxyServer({
+      port: this.options.proxyPort,
+      targetPort: this.options.appPort,
+      inject: `<script src="http://localhost:${this.options.agentPort}/harness.js"></script>`,
+    });
+
+    this.commandServer = new CommandServer({
+      port: this.options.commandPort
+    });
+
+    this.connectionServer = new ConnectionServer({
+      port: this.options.connectionPort,
+      proxyPort: this.options.proxyPort,
+    });
   }
 
   protected *run(ready) {
     console.log('[orchestrator] starting');
 
-    let proxyServer = new ProxyServer({
-      port: this.options.proxyPort,
-      targetPort: this.options.appPort,
-      inject: `<script src="http://localhost:${this.options.agentPort}/harness.js"></script>`,
-    });
-    let commandServer = new CommandServer({
-      port: this.options.commandPort
-    });
-    let connectionServer = new ConnectionServer({
-      port: this.options.connectionPort,
-      proxyPort: this.options.proxyPort,
-    });
+    let { proxyServer, commandServer, connectionServer } = this;
 
     let proxyReady = proxyServer.start();
     let commandReady = commandServer.start();
