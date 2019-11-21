@@ -1,5 +1,4 @@
-import { Operation, Sequence, fork } from 'effection';
-import { AddressInfo } from 'net';
+import { fork } from 'effection';
 
 import { ProxyServer } from './proxy';
 import { CommandServer } from './command-server';
@@ -41,7 +40,7 @@ export class Orchestrator extends Process {
     let commandReady = commandServer.start();
     let connectionReady = connectionServer.start();
 
-    let agentServerProcess = fork(agentServer(this.options.agentPort));
+    fork(agentServer(this.options.agentPort));
 
     yield fork(function*() {
       fork(function*() {

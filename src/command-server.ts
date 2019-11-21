@@ -1,4 +1,4 @@
-import { Sequence, Execution, fork } from 'effection';
+import { Sequence } from 'effection';
 import { createServer, IncomingMessage, Response } from './http';
 import { Process } from './process';
 

@@ -4,7 +4,8 @@ import { EventEmitter } from  'events';
 export abstract class Process extends EventEmitter {
   private execution?: Execution;
 
-  start(): Promise<any> {
+  start(): Promise<unknown> {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     let that = this;
     return new Promise((ready) => {
       if(!this.execution) {
@@ -26,6 +27,7 @@ export abstract class Process extends EventEmitter {
     }
   }
 
-  protected *run(ready): Sequence {}
+  // eslint-disable-next-line
+  protected *run(ready: () => void): Sequence {}
 }
 

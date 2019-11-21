@@ -1,12 +1,13 @@
-import { fork, Sequence, Controller, Execution } from 'effection';
+import { fork, Sequence } from 'effection';
 import { on } from '@effection/events';
+
 import * as proxy from 'http-proxy';
 import * as http from 'http';
-import { listen, ReadyCallback } from './http';
-import { forkOnEvent,  } from './util';
 import * as trumpet from 'trumpet';
 import * as zlib from 'zlib';
-import { Readable, Writable } from 'stream';
+
+import { listen } from './http';
+import { forkOnEvent } from './util';
 import { Process } from './process';
 
 interface ProxyOptions {

@@ -6,7 +6,7 @@ import { Process } from './process';
 
 interface ConnectionServerOptions {
   port: number;
-  proxyPort: number,
+  proxyPort: number;
 };
 
 export class ConnectionServer extends Process {
