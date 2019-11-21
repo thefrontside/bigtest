@@ -47,16 +47,15 @@ export class Orchestrator extends Process {
   protected *run(ready) {
     console.log('[orchestrator] starting');
 
-    let { proxyServer, commandServer, connectionServer, agentServer } = this;
-
-    let proxyReady = proxyServer.start();
-    let commandReady = commandServer.start();
-    let connectionReady = connectionServer.start();
-    let agentReady = agentServer.start();
-
-    yield Promise.all([proxyReady, commandReady, connectionReady, agentReady]);
+    yield Promise.all([
+      this.proxyServer.start(),
+      this.commandServer.start(),
+      this.connectionServer.start(),
+      this.agentServer.start(),
+    ]);
 
     console.log("[orchestrator] running!");
+
     ready();
 
     try {
