@@ -5,9 +5,16 @@ export abstract class Process extends EventEmitter {
   private execution?: Execution;
 
   start(): Promise<any> {
+    let that = this;
     return new Promise((ready) => {
       if(!this.execution) {
-        this.execution = fork(this.run(ready));
+        this.execution = fork(function*() {
+          try {
+            yield that.run(ready);
+          } finally {
+            that.execution = null;
+          }
+        });
       }
     });
   }
@@ -15,6 +22,7 @@ export abstract class Process extends EventEmitter {
   stop() {
     if(this.execution) {
       this.execution.halt();
+      this.execution = null;
     }
   }
 
