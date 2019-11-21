@@ -1,22 +1,35 @@
-import { fork } from 'effection';
+import { fork, Sequence } from 'effection';
 import { on } from '@effection/events';
-
 import { spawn } from 'child_process';
 
-export function* agentServer(port: number) {
+import { Process } from './process';
 
-  let child = spawn('parcel', ['-p', `${port}`, 'agent/index.html', 'agent/harness.ts'], {
-    stdio: 'inherit'
-  });
+interface AgensServerOptions {
+  port: number;
+};
 
-  fork(function*() {
-    let [error]: [Error] = yield on(child, "error");
-    throw error;
-  })
+export class AgentServer extends Process {
+  constructor(public options: AgensServerOptions) {
+    super();
+  }
 
-  try {
-    yield on(child, "exit");
-  } finally {
-    child.kill();
+  protected *run(ready): Sequence {
+    let child = spawn('parcel', ['-p', `${this.options.port}`, 'agent/index.html', 'agent/harness.ts'], {
+      stdio: 'inherit'
+    });
+
+    fork(function*() {
+      let [error]: [Error] = yield on(child, "error");
+      throw error;
+    })
+
+    // TODO: this isn't *actually* when the agent is ready
+    ready();
+
+    try {
+      yield on(child, "exit");
+    } finally {
+      child.kill();
+    }
   }
 }

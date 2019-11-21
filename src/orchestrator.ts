@@ -3,7 +3,7 @@ import { fork } from 'effection';
 import { ProxyServer } from './proxy';
 import { CommandServer } from './command-server';
 import { ConnectionServer } from './connection-server';
-import { agentServer } from './agent-server';
+import { AgentServer } from './agent-server';
 
 import { Process } from './process';
 
@@ -19,6 +19,7 @@ export class Orchestrator extends Process {
   private proxyServer: ProxyServer;
   private commandServer: CommandServer;
   private connectionServer: ConnectionServer;
+  private agentServer: AgentServer;
 
   constructor(public options: OrchestratorOptions) {
     super();
@@ -37,35 +38,23 @@ export class Orchestrator extends Process {
       port: this.options.connectionPort,
       proxyPort: this.options.proxyPort,
     });
+
+    this.agentServer = new AgentServer({
+      port: this.options.agentPort,
+    });
   }
 
   protected *run(ready) {
     console.log('[orchestrator] starting');
 
-    let { proxyServer, commandServer, connectionServer } = this;
+    let { proxyServer, commandServer, connectionServer, agentServer } = this;
 
     let proxyReady = proxyServer.start();
     let commandReady = commandServer.start();
     let connectionReady = connectionServer.start();
+    let agentReady = agentServer.start();
 
-    fork(agentServer(this.options.agentPort));
-
-    yield fork(function*() {
-      fork(function*() {
-        yield proxyReady;
-        console.log(`[proxy] server listening on port ${proxyServer.options.port}`);
-      });
-
-      fork(function*() {
-        yield commandReady;
-        console.log(`[command] server listening on port ${commandServer.options.port}`);
-      });
-
-      fork(function*() {
-        yield connectionReady;
-        console.log(`[connection] server listening on port ${connectionServer.options.port}`);
-      });
-    });
+    yield Promise.all([proxyReady, commandReady, connectionReady, agentReady]);
 
     console.log("[orchestrator] running!");
     ready();
