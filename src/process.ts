@@ -1,12 +1,33 @@
-import { Operation, Execution, fork } from 'effection';
+import { Sequence, Execution, fork } from 'effection';
+import { EventEmitter } from  'events';
 
-type Process = Execution & { ready: Promise<void> };
+export abstract class Process extends EventEmitter {
+  private execution?: Execution;
+  public ready: Promise<any>;
 
-export function process(fn: (ready: () => void) => Operation): Process {
-  let execution;
-  let promise = new Promise((resolve) => {
-    execution = fork(fn(resolve));
-  });
-  execution.ready = promise;
-  return execution;
+  constructor() {
+    super();
+    this.ready = new Promise((resolve) => {
+      this.once("ready", resolve);
+    });
+  }
+
+  start() {
+    if(!this.execution) {
+      this.execution = fork(this.run());
+    }
+  }
+
+  stop() {
+    if(this.execution) {
+      this.execution.halt();
+    }
+  }
+
+  *run(): Sequence {}
+
+  protected isReady = () => {
+    this.emit("ready")
+  }
 }
+

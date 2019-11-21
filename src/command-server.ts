@@ -1,18 +1,23 @@
-import { Sequence } from 'effection';
+import { Sequence, Execution, fork } from 'effection';
 import { createServer, IncomingMessage, Response } from './http';
-import { ReadyCallback } from './http';
+import { Process } from './process';
 
 interface CommandServerOptions {
   port: number;
-  onReady: ReadyCallback;
 };
 
-export function createCommandServer(options: CommandServerOptions): Sequence {
-  function* handleRequest(req: IncomingMessage, res: Response): Sequence {
-    res.writeHead(200, {
-      'X-Powered-By': 'effection'
-    });
-    yield res.end("Your wish is my command\n");
+export class CommandServer extends Process {
+  constructor(public options: CommandServerOptions) {
+    super();
   }
-  return createServer(options.port, handleRequest, options.onReady);
-};
+
+  *run(): Sequence {
+    function* handleRequest(req: IncomingMessage, res: Response): Sequence {
+      res.writeHead(200, {
+        'X-Powered-By': 'effection'
+      });
+      yield res.end("Your wish is my command\n");
+    }
+    yield createServer(this.options.port, handleRequest, this.isReady);
+  }
+}
