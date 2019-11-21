@@ -14,7 +14,7 @@ export class ConnectionServer extends Process {
     super();
   }
 
-  *run(): Sequence {
+  *run(ready): Sequence {
     let { proxyPort } = this.options;
     function* handleConnection(connection: Connection): Sequence {
       console.log('connection established');
@@ -38,6 +38,6 @@ export class ConnectionServer extends Process {
         console.log('connection closed');
       }
     }
-    yield createSocketServer(this.options.port, handleConnection, this.isReady);
+    yield createSocketServer(this.options.port, handleConnection, ready);
   }
 }

@@ -11,13 +11,13 @@ export class CommandServer extends Process {
     super();
   }
 
-  *run(): Sequence {
+  *run(ready): Sequence {
     function* handleRequest(req: IncomingMessage, res: Response): Sequence {
       res.writeHead(200, {
         'X-Powered-By': 'effection'
       });
       yield res.end("Your wish is my command\n");
     }
-    yield createServer(this.options.port, handleRequest, this.isReady);
+    yield createServer(this.options.port, handleRequest, ready);
   }
 }

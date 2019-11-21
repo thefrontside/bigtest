@@ -3,19 +3,13 @@ import { EventEmitter } from  'events';
 
 export abstract class Process extends EventEmitter {
   private execution?: Execution;
-  public ready: Promise<any>;
 
-  constructor() {
-    super();
-    this.ready = new Promise((resolve) => {
-      this.once("ready", resolve);
+  start(): Promise<any> {
+    return new Promise((ready) => {
+      if(!this.execution) {
+        this.execution = fork(this.run(ready));
+      }
     });
-  }
-
-  start() {
-    if(!this.execution) {
-      this.execution = fork(this.run());
-    }
   }
 
   stop() {
@@ -24,10 +18,6 @@ export abstract class Process extends EventEmitter {
     }
   }
 
-  *run(): Sequence {}
-
-  protected isReady = () => {
-    this.emit("ready")
-  }
+  *run(ready): Sequence {}
 }
 

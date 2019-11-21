@@ -31,25 +31,25 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
       proxyPort: options.proxyPort,
     });
 
-    proxyServer.start();
-    commandServer.start();
-    connectionServer.start();
+    let proxyReady = proxyServer.start();
+    let commandReady = commandServer.start();
+    let connectionReady = connectionServer.start();
 
     let agentServerProcess = fork(agentServer(options.agentPort));
 
     yield fork(function*() {
       fork(function*() {
-        yield proxyServer.ready;
+        yield proxyReady;
         console.log(`[proxy] server listening on port ${proxyServer.options.port}`);
       });
 
       fork(function*() {
-        yield commandServer.ready;
+        yield commandReady;
         console.log(`[command] server listening on port ${commandServer.options.port}`);
       });
 
       fork(function*() {
-        yield connectionServer.ready;
+        yield connectionReady;
         console.log(`[connection] server listening on port ${connectionServer.options.port}`);
       });
     });

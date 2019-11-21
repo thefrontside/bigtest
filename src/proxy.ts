@@ -20,7 +20,7 @@ export class ProxyServer extends Process {
     super();
   }
 
-  *run(): Sequence {
+  *run(ready): Sequence {
     let { inject, port, targetPort } = this.options;
 
     let proxyServer = proxy.createProxyServer({
@@ -113,7 +113,7 @@ export class ProxyServer extends Process {
 
     yield listen(server, port);
 
-    this.isReady();
+    ready && ready();
 
     forkOnEvent(server, 'request', function*(req, res) {
       proxyServer.web(req, res);
