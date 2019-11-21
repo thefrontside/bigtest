@@ -6,6 +6,8 @@ import { CommandServer } from './command-server';
 import { ConnectionServer } from './connection-server';
 import { agentServer } from './agent-server';
 
+import { Process } from './process';
+
 type OrchestratorOptions = {
   appPort: number;
   proxyPort: number;
@@ -14,28 +16,32 @@ type OrchestratorOptions = {
   agentPort: number;
 }
 
-export function createOrchestrator(options: OrchestratorOptions): Operation {
-  return function* orchestrator(): Sequence {
+export class Orchestrator extends Process {
+  constructor(public options: OrchestratorOptions) {
+    super();
+  }
+
+  *run(ready) {
     console.log('[orchestrator] starting');
 
     let proxyServer = new ProxyServer({
-      port: options.proxyPort,
-      targetPort: options.appPort,
-      inject: `<script src="http://localhost:${options.agentPort}/harness.js"></script>`,
+      port: this.options.proxyPort,
+      targetPort: this.options.appPort,
+      inject: `<script src="http://localhost:${this.options.agentPort}/harness.js"></script>`,
     });
     let commandServer = new CommandServer({
-      port: options.commandPort
+      port: this.options.commandPort
     });
     let connectionServer = new ConnectionServer({
-      port: options.connectionPort,
-      proxyPort: options.proxyPort,
+      port: this.options.connectionPort,
+      proxyPort: this.options.proxyPort,
     });
 
     let proxyReady = proxyServer.start();
     let commandReady = commandServer.start();
     let connectionReady = connectionServer.start();
 
-    let agentServerProcess = fork(agentServer(options.agentPort));
+    let agentServerProcess = fork(agentServer(this.options.agentPort));
 
     yield fork(function*() {
       fork(function*() {
@@ -55,7 +61,12 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
     });
 
     console.log("[orchestrator] running!");
-  };
+    ready();
 
-
-};
+    try {
+      yield
+    } finally {
+      console.log("[orchestrator] shutting down!");
+    }
+  }
+}
