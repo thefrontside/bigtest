@@ -26,7 +26,15 @@ fork(function*() {
       port: argv.port,
     });
 
-    parcelServer.start();
+    yield parcelServer.start();
+
+    if (process.send) {
+      process.send({ type: "ready" });
+    }
+
+    process.on('message', message => {
+      console.log('message from parent:', message);
+    });
 
     yield;
   } catch (e) {

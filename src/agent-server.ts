@@ -6,10 +6,15 @@ interface AgentServerOptions {
   port: number;
 };
 
-export function createAgentServer(orchestrator: Execution, options: AgentServerOptions): Operation {
-  return function *agentServer(): Sequence {
-    let child = spawn('parcel', ['-p', `${options.port}`, 'agent/index.html', 'agent/harness.ts'], {
-      stdio: 'inherit'
+export class AgentServer extends Process {
+  constructor(public options: AgentServerOptions) {
+    super();
+  }
+
+  protected *run(ready): Sequence {
+    // TODO: what is the correct way of specifying the path here?
+    let child = forkProcess('./bin/parcel-server', ['-p', `${this.options.port}`, 'agent/index.html', 'agent/harness.ts'], {
+      stdio: ['inherit', 'inherit', 'inherit', 'ipc']
     });
 
     fork(function*() {
@@ -17,8 +22,12 @@ export function createAgentServer(orchestrator: Execution, options: AgentServerO
       throw error;
     })
 
-    // TODO: this isn't *actually* when the agent is ready
-    orchestrator.send({ ready: "agent" });
+    let message;
+    do {
+      [message] = yield on(child, "message");
+    } while(message.type !== "ready");
+
+    ready();
 
     try {
       yield on(child, "exit");
