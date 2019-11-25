@@ -32,7 +32,7 @@ export class AgentServer extends Process {
     try {
       yield on(child, "exit");
     } finally {
-      child.kill();
+      child.kill('SIGINT');
     }
   }
 }

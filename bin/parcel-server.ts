@@ -18,7 +18,7 @@ const argv =
 
 
 fork(function*() {
-  let interrupt = () => { console.log('');  this.halt()};
+  let interrupt = () => { this.halt() };
   process.on('SIGINT', interrupt);
 
   try {

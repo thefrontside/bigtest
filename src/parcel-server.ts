@@ -26,6 +26,7 @@ export class ParcelServer extends Process {
     try {
       yield;
     } finally {
+      (bundler as any).stop();
       server.close();
     }
   }
