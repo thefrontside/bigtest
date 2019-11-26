@@ -42,19 +42,15 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
     yield fork(function*() {
       fork(function*() {
         yield receive(orchestrator, { ready: "proxy" });
-        console.log("[orchestrator] proxy started!");
       });
       fork(function*() {
         yield receive(orchestrator, { ready: "command" });
-        console.log("[orchestrator] command started!");
       });
       fork(function*() {
         yield receive(orchestrator, { ready: "connection" });
-        console.log("[orchestrator] connection started!");
       });
       fork(function*() {
         yield receive(orchestrator, { ready: "agent" });
-        console.log("[orchestrator] agent started!");
       });
     });
 
