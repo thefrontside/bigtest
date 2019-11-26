@@ -1,1 +1,1 @@
-export { Orchestrator } from './orchestrator';
+export { createOrchestrator } from './orchestrator';

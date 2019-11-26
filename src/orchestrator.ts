@@ -1,11 +1,9 @@
-import { fork } from 'effection';
+import { Sequence, Operation, Execution } from 'effection';
 
 import { ProxyServer } from './proxy';
 import { CommandServer } from './command-server';
 import { ConnectionServer } from './connection-server';
 import { AgentServer } from './agent-server';
-
-import { Process } from './process';
 
 type OrchestratorOptions = {
   appPort: number;
@@ -13,50 +11,44 @@ type OrchestratorOptions = {
   commandPort: number;
   connectionPort: number;
   agentPort: number;
+  delegate?: Execution;
 }
 
-export class Orchestrator extends Process {
-  private proxyServer: ProxyServer;
-  private commandServer: CommandServer;
-  private connectionServer: ConnectionServer;
-  private agentServer: AgentServer;
-
-  constructor(public options: OrchestratorOptions) {
-    super();
-
-    this.proxyServer = new ProxyServer({
-      port: this.options.proxyPort,
-      targetPort: this.options.appPort,
-      inject: `<script src="http://localhost:${this.options.agentPort}/harness.js"></script>`,
-    });
-
-    this.commandServer = new CommandServer({
-      port: this.options.commandPort
-    });
-
-    this.connectionServer = new ConnectionServer({
-      port: this.options.connectionPort,
-      proxyPort: this.options.proxyPort,
-    });
-
-    this.agentServer = new AgentServer({
-      port: this.options.agentPort,
-    });
-  }
-
-  protected *run(ready) {
+export function createOrchestrator(options: OrchestratorOptions): Operation {
+  return function *orchestrator(): Sequence {
     console.log('[orchestrator] starting');
 
+    let proxyServer = new ProxyServer({
+      port: options.proxyPort,
+      targetPort: options.appPort,
+      inject: `<script src="http://localhost:${options.agentPort}/harness.js"></script>`,
+    });
+
+    let commandServer = new CommandServer({
+      port: options.commandPort
+    });
+
+    let connectionServer = new ConnectionServer({
+      port: options.connectionPort,
+      proxyPort: options.proxyPort,
+    });
+
+    let agentServer = new AgentServer({
+      port: options.agentPort,
+    });
+
     yield Promise.all([
-      this.proxyServer.start(),
-      this.commandServer.start(),
-      this.connectionServer.start(),
-      this.agentServer.start(),
+      proxyServer.start(),
+      commandServer.start(),
+      connectionServer.start(),
+      agentServer.start(),
     ]);
 
     console.log("[orchestrator] running!");
 
-    ready();
+    if(options.delegate) {
+      options.delegate.send({ ready: "orchestrator" });
+    }
 
     try {
       yield

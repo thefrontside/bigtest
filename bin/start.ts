@@ -1,13 +1,14 @@
-import { fork } from 'effection';
+import { fork, receive } from 'effection';
 
-import { Orchestrator } from '../src/index';
+import { createOrchestrator } from '../src/index';
 
 fork(function*() {
   let interrupt = () => { console.log('');  this.halt()};
   process.on('SIGINT', interrupt);
 
   try {
-    let orchestrator = new Orchestrator({
+    let orchestrator = createOrchestrator({
+      delegate: this,
       appPort: 24000,
       proxyPort: 24001,
       commandPort: 24002,
@@ -15,9 +16,13 @@ fork(function*() {
       agentPort: 24004,
     });
 
-    orchestrator.start();
+    fork(orchestrator);
 
-    yield;
+    yield receive({ ready: "orchestrator" });
+
+    console.log("[cli] orchestrator ready!");
+
+    yield
   } catch (e) {
     console.log(e);
   } finally {
