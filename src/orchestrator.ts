@@ -2,7 +2,7 @@ import { fork, receive, Sequence, Operation, Execution } from 'effection';
 
 import { createProxyServer } from './proxy';
 import { createCommandServer } from './command-server';
-import { ConnectionServer } from './connection-server';
+import { createConnectionServer } from './connection-server';
 import { AgentServer } from './agent-server';
 
 type OrchestratorOptions = {
@@ -30,16 +30,15 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
       port: options.commandPort,
     }));
 
-    let connectionServer = new ConnectionServer({
+    let connectionServer = fork(createConnectionServer(orchestrator, {
       port: options.connectionPort,
       proxyPort: options.proxyPort,
-    });
+    }));
 
     let agentServer = new AgentServer({
       port: options.agentPort,
     });
 
-    let connectionReady = connectionServer.start();
     let agentReady = agentServer.start();
 
     let thing = fork(function*() {
@@ -52,7 +51,7 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
         console.log("[orchestrator] command started!");
       });
       fork(function*() {
-        yield connectionReady;
+        yield receive(orchestrator, { ready: "connection" });
         console.log("[orchestrator] connection started!");
       });
       fork(function*() {

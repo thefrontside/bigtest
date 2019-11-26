@@ -1,4 +1,4 @@
-import { Sequence, fork, timeout } from 'effection';
+import { Sequence, Execution, Operation, fork, timeout } from 'effection';
 import { on } from '@effection/events';
 
 import { createSocketServer, Connection, Message, send } from './ws';
@@ -9,13 +9,8 @@ interface ConnectionServerOptions {
   proxyPort: number;
 };
 
-export class ConnectionServer extends Process {
-  constructor(public options: ConnectionServerOptions) {
-    super();
-  }
-
-  protected *run(ready): Sequence {
-    let { proxyPort } = this.options;
+export function createConnectionServer(orchestrator: Execution, options: ConnectionServerOptions): Operation {
+  return function *connectionServer(): Sequence {
     function* handleConnection(connection: Connection): Sequence {
       console.log('connection established');
       fork(function* heartbeat() {
@@ -26,7 +21,7 @@ export class ConnectionServer extends Process {
       })
 
       fork(function* sendRun() {
-        yield send(connection, JSON.stringify({type: "open", url: `http://localhost:${proxyPort}`}));
+        yield send(connection, JSON.stringify({type: "open", url: `http://localhost:${options.proxyPort}`}));
       });
 
       try {
@@ -38,6 +33,8 @@ export class ConnectionServer extends Process {
         console.log('connection closed');
       }
     }
-    yield createSocketServer(this.options.port, handleConnection, ready);
+    yield createSocketServer(options.port, handleConnection, () => {
+      orchestrator.send({ ready: "connection" });
+    });
   }
 }
