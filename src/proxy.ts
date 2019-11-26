@@ -1,4 +1,4 @@
-import { fork, Sequence } from 'effection';
+import { fork, Sequence, Execution, Operation } from 'effection';
 import { on } from '@effection/events';
 
 import * as proxy from 'http-proxy';
@@ -16,16 +16,10 @@ interface ProxyOptions {
   inject?: string;
 };
 
-export class ProxyServer extends Process {
-  constructor(public options: ProxyOptions) {
-    super();
-  }
-
-  protected *run(ready): Sequence {
-    let { inject, port, targetPort } = this.options;
-
+export function createProxyServer(orchestrator: Execution, options: ProxyOptions): Operation {
+  return function *proxyServer(): Sequence {
     let proxyServer = proxy.createProxyServer({
-      target: `http://localhost:${targetPort}`,
+      target: `http://localhost:${options.targetPort}`,
       selfHandleResponse: true
     });
 
@@ -58,7 +52,7 @@ export class ProxyServer extends Process {
             let node = yield;
             let rs = node.createReadStream();
             let ws = node.createWriteStream();
-            ws.write(inject || '');
+            ws.write(options.inject || '');
             rs.pipe(ws);
           }
         });
@@ -112,9 +106,9 @@ export class ProxyServer extends Process {
 
     let server = http.createServer();
 
-    yield listen(server, port);
+    yield listen(server, options.port);
 
-    ready && ready();
+    orchestrator.send({ ready: "proxy" });
 
     forkOnEvent(server, 'request', function*(req, res) {
       proxyServer.web(req, res);
@@ -131,4 +125,4 @@ export class ProxyServer extends Process {
       proxyServer.close();
     }
   }
-}
+};

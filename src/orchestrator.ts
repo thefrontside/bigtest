@@ -1,6 +1,6 @@
 import { fork, receive, Sequence, Operation, Execution } from 'effection';
 
-import { ProxyServer } from './proxy';
+import { createProxyServer } from './proxy';
 import { createCommandServer } from './command-server';
 import { ConnectionServer } from './connection-server';
 import { AgentServer } from './agent-server';
@@ -20,11 +20,11 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
 
     console.log('[orchestrator] starting');
 
-    let proxyServer = new ProxyServer({
+    let proxyServer = fork(createProxyServer(orchestrator, {
       port: options.proxyPort,
       targetPort: options.appPort,
       inject: `<script src="http://localhost:${options.agentPort}/harness.js"></script>`,
-    });
+    }));
 
     let commandServer = fork(createCommandServer(orchestrator, {
       port: options.commandPort,
@@ -39,13 +39,12 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
       port: options.agentPort,
     });
 
-    let proxyReady = proxyServer.start();
     let connectionReady = connectionServer.start();
     let agentReady = agentServer.start();
 
     let thing = fork(function*() {
       fork(function*() {
-        yield proxyReady;
+        yield receive(orchestrator, { ready: "proxy" });
         console.log("[orchestrator] proxy started!");
       });
       fork(function*() {
