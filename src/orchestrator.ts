@@ -1,7 +1,7 @@
-import { Sequence, Operation, Execution } from 'effection';
+import { fork, receive, Sequence, Operation, Execution } from 'effection';
 
 import { ProxyServer } from './proxy';
-import { CommandServer } from './command-server';
+import { createCommandServer } from './command-server';
 import { ConnectionServer } from './connection-server';
 import { AgentServer } from './agent-server';
 
@@ -11,11 +11,13 @@ type OrchestratorOptions = {
   commandPort: number;
   connectionPort: number;
   agentPort: number;
-  delegate?: Execution;
+  delegate?: Execution,
 }
 
 export function createOrchestrator(options: OrchestratorOptions): Operation {
   return function *orchestrator(): Sequence {
+    let orchestrator = this;
+
     console.log('[orchestrator] starting');
 
     let proxyServer = new ProxyServer({
@@ -24,9 +26,9 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
       inject: `<script src="http://localhost:${options.agentPort}/harness.js"></script>`,
     });
 
-    let commandServer = new CommandServer({
-      port: options.commandPort
-    });
+    let commandServer = fork(createCommandServer(orchestrator, {
+      port: options.commandPort,
+    }));
 
     let connectionServer = new ConnectionServer({
       port: options.connectionPort,
@@ -37,12 +39,30 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
       port: options.agentPort,
     });
 
-    yield Promise.all([
-      proxyServer.start(),
-      commandServer.start(),
-      connectionServer.start(),
-      agentServer.start(),
-    ]);
+    let proxyReady = proxyServer.start();
+    let connectionReady = connectionServer.start();
+    let agentReady = agentServer.start();
+
+    let thing = fork(function*() {
+      fork(function*() {
+        yield proxyReady;
+        console.log("[orchestrator] proxy started!");
+      });
+      fork(function*() {
+        yield receive(orchestrator, { ready: "command" });
+        console.log("[orchestrator] command started!");
+      });
+      fork(function*() {
+        yield connectionReady;
+        console.log("[orchestrator] connection started!");
+      });
+      fork(function*() {
+        yield agentReady;
+        console.log("[orchestrator] agent started!");
+      });
+    });
+
+    yield thing;
 
     console.log("[orchestrator] running!");
 
