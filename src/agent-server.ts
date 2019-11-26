@@ -1,20 +1,16 @@
-import { fork, Sequence } from 'effection';
+import { fork, Sequence, Operation, Execution } from 'effection';
 import { on } from '@effection/events';
 import { spawn } from 'child_process';
 
 import { Process } from './process';
 
-interface AgensServerOptions {
+interface AgentServerOptions {
   port: number;
 };
 
-export class AgentServer extends Process {
-  constructor(public options: AgensServerOptions) {
-    super();
-  }
-
-  protected *run(ready): Sequence {
-    let child = spawn('parcel', ['-p', `${this.options.port}`, 'agent/index.html', 'agent/harness.ts'], {
+export function createAgentServer(orchestrator: Execution, options: AgentServerOptions): Operation {
+  return function *agentServer(): Sequence {
+    let child = spawn('parcel', ['-p', `${options.port}`, 'agent/index.html', 'agent/harness.ts'], {
       stdio: 'inherit'
     });
 
@@ -24,7 +20,7 @@ export class AgentServer extends Process {
     })
 
     // TODO: this isn't *actually* when the agent is ready
-    ready();
+    orchestrator.send({ ready: "agent" });
 
     try {
       yield on(child, "exit");
