@@ -1,6 +1,5 @@
 import { Sequence, Operation, Execution } from 'effection';
 import { createServer, IncomingMessage, Response } from './http';
-import { Process } from './process';
 
 interface CommandServerOptions {
   port: number;

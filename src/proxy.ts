@@ -7,7 +7,6 @@ import * as trumpet from 'trumpet';
 import * as zlib from 'zlib';
 
 import { listen } from './http';
-import { Process } from './process';
 
 interface ProxyOptions {
   port: number;
@@ -92,7 +91,7 @@ export function createProxyServer(orchestrator: Execution, options: ProxyOptions
       let { event, args } = yield receive({ event: any("string") });
 
       if(event == "error") {
-        let [err, req, res] = args;
+        let [err,, res] = args;
         res.writeHead(502, { 'Content-Type': 'text/plain' });
         res.end(`Proxy error: ${err}`);
       }

@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { fork, receive, Execution, Sequence, SequenceFn, Operation } from 'effection';
+import { Execution } from 'effection';
 
 type EventName = string | symbol;
 

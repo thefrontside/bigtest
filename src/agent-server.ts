@@ -2,8 +2,6 @@ import { fork, Sequence, Operation, Execution } from 'effection';
 import { on } from '@effection/events';
 import { spawn } from 'child_process';
 
-import { Process } from './process';
-
 interface AgentServerOptions {
   port: number;
 };

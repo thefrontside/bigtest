@@ -2,7 +2,6 @@ import { Sequence, Execution, Operation, fork, timeout } from 'effection';
 import { on } from '@effection/events';
 
 import { createSocketServer, Connection, Message, send } from './ws';
-import { Process } from './process';
 
 interface ConnectionServerOptions {
   port: number;

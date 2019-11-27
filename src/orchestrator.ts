@@ -11,31 +11,31 @@ type OrchestratorOptions = {
   commandPort: number;
   connectionPort: number;
   agentPort: number;
-  delegate?: Execution,
+  delegate?: Execution;
 }
 
 export function createOrchestrator(options: OrchestratorOptions): Operation {
   return function *orchestrator(): Sequence {
-    let orchestrator = this;
+    let orchestrator = this; // eslint-disable-line @typescript-eslint/no-this-alias
 
     console.log('[orchestrator] starting');
 
-    let proxyServer = fork(createProxyServer(orchestrator, {
+    fork(createProxyServer(orchestrator, {
       port: options.proxyPort,
       targetPort: options.appPort,
       inject: `<script src="http://localhost:${options.agentPort}/harness.js"></script>`,
     }));
 
-    let commandServer = fork(createCommandServer(orchestrator, {
+    fork(createCommandServer(orchestrator, {
       port: options.commandPort,
     }));
 
-    let connectionServer = fork(createConnectionServer(orchestrator, {
+    fork(createConnectionServer(orchestrator, {
       port: options.connectionPort,
       proxyPort: options.proxyPort,
     }));
 
-    let agentServer = fork(createAgentServer(orchestrator, {
+    fork(createAgentServer(orchestrator, {
       port: options.agentPort,
     }));
 
