@@ -1,5 +1,9 @@
-import { Sequence, Operation, Execution } from 'effection';
-import { createServer, IncomingMessage, Response } from './http';
+import { Sequence, Operation, Execution, fork } from 'effection';
+import { on } from '@effection/events';
+import * as express from 'express';
+import * as graphqlHTTP from 'express-graphql';
+
+import { schema } from './schema';
 
 interface CommandServerOptions {
   port: number;
@@ -7,14 +11,34 @@ interface CommandServerOptions {
 
 export function createCommandServer(orchestrator: Execution, options: CommandServerOptions): Operation {
   return function *commandServer(): Sequence {
-    function* handleRequest(req: IncomingMessage, res: Response): Sequence {
-      res.writeHead(200, {
-        'X-Powered-By': 'effection'
-      });
-      yield res.end("Your wish is my command\n");
-    }
-    yield createServer(options.port, handleRequest, () => {
-      orchestrator.send({ ready: "command" });
+    let app = createApp();
+    let server = app.listen(options.port);
+
+    fork(function*() {
+      let [error]: [Error] = yield on(server, 'error');
+      throw error;
     });
+
+    try {
+      yield on(server, 'listening');
+
+      orchestrator.send({ ready: "command" });
+
+      yield
+    } finally {
+      server.close();
+    }
   }
+}
+
+function createApp() {
+  return express()
+    .use('/', graphqlHTTP({
+      schema,
+      rootValue: {
+        echo: ({text}) => text
+      },
+      graphiql: true,
+    }));
+
 }
