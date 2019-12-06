@@ -1,4 +1,4 @@
-import { fork, Sequence, Operation, Execution } from 'effection';
+import { fork, Sequence, Execution } from 'effection';
 import { on } from '@effection/events';
 import { fork as forkProcess } from 'child_process';
 
@@ -6,33 +6,29 @@ interface AgentServerOptions {
   port: number;
 };
 
-export class AgentServer extends Process {
-  constructor(public options: AgentServerOptions) {
-    super();
-  }
 
-  protected *run(ready): Sequence {
-    // TODO: what is the correct way of specifying the path here?
-    let child = forkProcess('./bin/parcel-server', ['-p', `${this.options.port}`, 'agent/index.html', 'agent/harness.ts'], {
-      stdio: ['inherit', 'inherit', 'inherit', 'ipc']
-    });
+export function* createAgentServer(orchestrator: Execution, options: AgentServerOptions): Sequence {
+  // TODO: what is the correct way of specifying the path here?
+  let child = forkProcess('./bin/parcel-server', ['-p', `${options.port}`, 'agent/index.html', 'agent/harness.ts'], {
+    stdio: ['pipe', 'pipe', 'pipe', 'ipc']
+  });
 
-    fork(function*() {
-      let [error]: [Error] = yield on(child, "error");
-      throw error;
-    })
+  fork(function*() {
+    let [error]: [Error] = yield on(child, "error");
+    throw error;
+  })
 
-    let message;
+  try {
+
+    let message: {type: string};
     do {
       [message] = yield on(child, "message");
     } while(message.type !== "ready");
 
-    ready();
+    orchestrator.send({ ready: "agent" });
 
-    try {
-      yield on(child, "exit");
-    } finally {
-      child.kill('SIGINT');
-    }
+    yield on(child, "exit");
+  } finally {
+    child.kill('SIGINT');
   }
 }

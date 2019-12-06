@@ -1,5 +1,5 @@
 import { fork } from 'effection';
-import { ParcelServer } from '../src/parcel-server';
+import { createParcelServer } from '../src/parcel-server';
 import * as yargs from 'yargs';
 
 const argv =
@@ -22,23 +22,9 @@ fork(function*() {
   process.on('SIGINT', interrupt);
 
   try {
-    let parcelServer = new ParcelServer(argv.files as string[], {
+    yield createParcelServer(argv.files as string[], {
       port: argv.port,
     });
-
-    yield parcelServer.start();
-
-    if (process.send) {
-      process.send({ type: "ready" });
-    }
-
-    process.on('message', message => {
-      console.log('message from parent:', message);
-    });
-
-    yield;
-  } catch (e) {
-    console.log(e);
   } finally {
     process.off('SIGINT', interrupt);
   }
