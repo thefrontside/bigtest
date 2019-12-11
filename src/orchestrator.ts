@@ -1,11 +1,9 @@
-import { Operation, Sequence, fork, timeout } from 'effection';
-import { on } from '@effection/events';
+import { fork, receive, Sequence, Operation, Execution } from 'effection';
 
-import { createServer, IncomingMessage, Response } from './http';
-import { createSocketServer, Connection, Message, send } from './ws';
-import { AddressInfo } from 'net';
 import { createProxyServer } from './proxy';
-import { agentServer } from './agent-server';
+import { createCommandServer } from './command-server';
+import { createConnectionServer } from './connection-server';
+import { createAgentServer } from './agent-server';
 
 type OrchestratorOptions = {
   appPort: number;
@@ -13,68 +11,59 @@ type OrchestratorOptions = {
   commandPort: number;
   connectionPort: number;
   agentPort: number;
+  delegate?: Execution;
 }
 
 export function createOrchestrator(options: OrchestratorOptions): Operation {
-  return function* orchestrator(): Sequence {
-    console.log('BigTest Server');
+  return function *orchestrator(): Sequence {
+    let orchestrator = this; // eslint-disable-line @typescript-eslint/no-this-alias
 
-    // proxies requests to application server and injects our harness
-    fork(createProxyServer({
+    console.log('[orchestrator] starting');
+
+    fork(createProxyServer(orchestrator, {
       port: options.proxyPort,
       targetPort: options.appPort,
-      inject: `<script src="http://localhost:${options.agentPort}/harness.js"></script>`
-    }, (server) => {
-      let address = server.address() as AddressInfo;
-      console.log(`-> proxy server listening on port ${address.port}`);
+      inject: `<script src="http://localhost:${options.agentPort}/harness.js"></script>`,
     }));
 
-    // accept commands from the outside world (CLI, UI, etc...)
-    fork(createServer(options.commandPort, commandServer, server => {
-      let address = server.address() as AddressInfo;
-      console.log(`-> listening for commands on port ${address.port}`);
+    fork(createCommandServer(orchestrator, {
+      port: options.commandPort,
     }));
 
-    fork(agentServer(options.agentPort));
-
-
-    // TODO: realtime socket communication with browsers
-    fork(createSocketServer(options.connectionPort, connectionServer, server => {
-      let address = server.address() as AddressInfo;
-      console.log(`-> accepting agent connections on port ${address.port}`);
+    fork(createConnectionServer(orchestrator, {
+      port: options.connectionPort,
+      proxyPort: options.proxyPort,
     }));
 
-    // TODO: serves the raw application
-    // fork(buildServer);
-  };
+    fork(createAgentServer(orchestrator, {
+      port: options.agentPort,
+    }));
 
-  function* commandServer(req: IncomingMessage, res: Response): Sequence {
-    res.writeHead(200, {
-      'X-Powered-By': 'effection'
+    yield fork(function*() {
+      fork(function*() {
+        yield receive(orchestrator, { ready: "proxy" });
+      });
+      fork(function*() {
+        yield receive(orchestrator, { ready: "command" });
+      });
+      fork(function*() {
+        yield receive(orchestrator, { ready: "connection" });
+      });
+      fork(function*() {
+        yield receive(orchestrator, { ready: "agent" });
+      });
     });
-    yield res.end("Your wish is my command\n");
-  }
 
-  function* connectionServer(connection: Connection): Sequence {
-    console.log('connection established');
-    fork(function* heartbeat() {
-      while (true) {
-        yield timeout(10000);
-        yield send(connection, JSON.stringify({type: "heartbeat"}));
-      }
-    })
+    console.log("[orchestrator] running!");
 
-    fork(function* sendRun() {
-      yield send(connection, JSON.stringify({type: "open", url: `http://localhost:${options.proxyPort}`}));
-    });
+    if(options.delegate) {
+      options.delegate.send({ ready: "orchestrator" });
+    }
 
     try {
-      while (true) {
-        let [message]: [Message] = yield on(connection, "message");
-        console.log(`mesage = `, message);
-      }
+      yield
     } finally {
-      console.log('connection closed');
+      console.log("[orchestrator] shutting down!");
     }
   }
-};
+}

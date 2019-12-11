@@ -6,8 +6,8 @@ import { Response } from 'node-fetch';
 import { actions } from './helpers';
 
 describe("orchestrator", () => {
-  beforeEach(() => {
-    actions.startOrchestrator();
+  beforeEach(async () => {
+    await actions.startOrchestrator();
   });
 
   describe('connecting to the command server', () => {

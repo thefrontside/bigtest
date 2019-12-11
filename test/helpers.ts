@@ -1,17 +1,17 @@
 import { AbortController } from 'abort-controller';
 import fetch, { Response } from 'node-fetch';
-import { fork, Execution, Operation } from 'effection';
+import { fork, receive, Execution, Operation } from 'effection';
 
 import { beforeEach, afterEach } from 'mocha';
 
 import { setLogLevel } from '../src/log-level';
 
-import { createOrchestrator } from '../src/orchestrator';
+import { createOrchestrator } from '../src/index';
 
 interface Actions {
   fork(operation: Operation): Execution;
   get(url: string): Promise<Response>;
-  startOrchestrator(): Execution;
+  startOrchestrator(): Promise<any>;
 }
 
 class World {
@@ -60,14 +60,21 @@ export const actions: Actions = {
     return currentWorld.get(url);
   },
 
-  startOrchestrator(): Execution {
-    return this.fork(createOrchestrator({
+  async startOrchestrator() {
+    let readiness = this.fork(function*() {
+      yield receive({ ready: "orchestrator" });
+    });
+
+    let orchestrator = this.fork(createOrchestrator({
+      delegate: readiness,
       appPort: 24100,
       proxyPort: 24101,
       commandPort: 24102,
       connectionPort: 24103,
       agentPort: 24104,
     }));
+
+    await readiness;
   }
 }
 
