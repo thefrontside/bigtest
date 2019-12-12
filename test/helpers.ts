@@ -11,7 +11,6 @@ import { createOrchestrator } from '../src/index';
 interface Actions {
   fork(operation: Operation): Execution;
   get(url: string): Promise<Response>;
-  startOrchestrator(): Promise<any>;
 }
 
 class World {
@@ -59,27 +58,37 @@ export const actions: Actions = {
   get(url: string): Promise<Response> {
     return currentWorld.get(url);
   },
-
-  async startOrchestrator() {
-    let readiness = this.fork(function*() {
-      yield receive({ ready: "orchestrator" });
-    });
-
-    let orchestrator = this.fork(createOrchestrator({
-      delegate: readiness,
-      appPort: 24100,
-      proxyPort: 24101,
-      commandPort: 24102,
-      connectionPort: 24103,
-      agentPort: 24104,
-    }));
-
-    await readiness;
-  }
 }
 
 let currentWorld: World;
 let info: (...args: unknown[]) => void;
+
+let orchestrator;
+before(async function() {
+  this.timeout(20000);
+  setLogLevel("warn");
+  let readiness = fork(function*() {
+    yield receive({ ready: "orchestrator" });
+  });
+
+  orchestrator = fork(createOrchestrator({
+    delegate: readiness,
+    appCommand: "PORT=24100 BROWSER=none yarn test:app:start",
+    appPort: 24100,
+    proxyPort: 24101,
+    commandPort: 24102,
+    connectionPort: 24103,
+    agentPort: 24104,
+  }));
+
+  await readiness;
+});
+
+after(async function() {
+  if(orchestrator) {
+    orchestrator.halt();
+  }
+});
 
 beforeEach(() => {
   setLogLevel("warn");

@@ -4,9 +4,12 @@ import { createProxyServer } from './proxy';
 import { createCommandServer } from './command-server';
 import { createConnectionServer } from './connection-server';
 import { createAgentServer } from './agent-server';
+import { createAppServer } from './app-server';
 
 type OrchestratorOptions = {
   appPort: number;
+  appCommand: string;
+  appDir?: string;
   proxyPort: number;
   commandPort: number;
   connectionPort: number;
@@ -39,6 +42,12 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
       port: options.agentPort,
     }));
 
+    fork(createAppServer(orchestrator, {
+      dir: options.appDir,
+      command: options.appCommand,
+      port: options.appPort,
+    }));
+
     yield fork(function*() {
       fork(function*() {
         yield receive(orchestrator, { ready: "proxy" });
@@ -51,6 +60,9 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
       });
       fork(function*() {
         yield receive(orchestrator, { ready: "agent" });
+      });
+      fork(function*() {
+        yield receive(orchestrator, { ready: "app" });
       });
     });
 

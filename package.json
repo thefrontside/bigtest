@@ -12,7 +12,7 @@
     "watch": "ts-node -r module-alias/register bin/watch.ts",
     "lint": "eslint 'src/**/*.ts' 'bin/**/*.ts' 'agent/**/*.ts'",
     "test": "mocha -r module-alias/register -r ts-node/register test/**/*.test.ts",
-    "test:app:start": "cd test/app && PORT=24200 react-scripts start",
+    "test:app:start": "cd test/app && react-scripts start",
     "test:app:build": "cd test/app && react-scripts build"
   },
   "devDependencies": {
