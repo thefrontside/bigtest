@@ -1,4 +1,4 @@
-import { fork, timeout, Sequence, Operation, Execution } from 'effection';
+import { fork, timeout, Sequence, Operation, Execution, Controller } from 'effection';
 import { on } from '@effection/events';
 import { exec } from 'child_process';
 import { Socket } from 'net';
@@ -9,13 +9,13 @@ interface AppServerOptions {
   port: number;
 };
 
-function isReachable(port: number, options: { timeout: number } = { timeout: 10000 }) {
-  return new Promise(((resolve) => {
+function isReachable(port: number, options: { timeout: number } = { timeout: 10000 }): Controller {
+  return (execution) => {
     let socket = new Socket();
 
     let onError = () => {
       socket.destroy();
-      resolve(false);
+      execution.resume(false);
     };
 
     socket.setTimeout(options.timeout);
@@ -24,9 +24,11 @@ function isReachable(port: number, options: { timeout: number } = { timeout: 100
 
     socket.connect(port, '127.0.0.1', () => {
       socket.end();
-      resolve(true);
+      execution.resume(true);
     });
-  }));
+
+    return () => { socket.end() };
+  }
 };
 
 export function createAppServer(orchestrator: Execution, options: AppServerOptions): Operation {
