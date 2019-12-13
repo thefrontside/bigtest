@@ -60,18 +60,18 @@ export const actions: Actions = {
   },
 }
 
+let globalWorld = new World();
 let currentWorld: World;
 let info: (...args: unknown[]) => void;
 
-let orchestrator;
 before(async function() {
   this.timeout(20000);
   setLogLevel("warn");
-  let readiness = fork(function*() {
+  let readiness = globalWorld.fork(function*() {
     yield receive({ ready: "orchestrator" });
   });
 
-  orchestrator = fork(createOrchestrator({
+  globalWorld.fork(createOrchestrator({
     delegate: readiness,
     appCommand: "PORT=24100 BROWSER=none yarn test:app:start",
     appPort: 24100,
@@ -85,9 +85,7 @@ before(async function() {
 });
 
 after(async function() {
-  if(orchestrator) {
-    orchestrator.halt();
-  }
+  globalWorld.destroy();
 });
 
 beforeEach(() => {

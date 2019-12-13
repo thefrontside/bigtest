@@ -10,7 +10,7 @@ interface AppServerOptions {
 };
 
 function isReachable(port: number, options: { timeout: number } = { timeout: 10000 }) {
-  return new Promise(((resolve, reject) => {
+  return new Promise(((resolve) => {
     let socket = new Socket();
 
     let onError = () => {
