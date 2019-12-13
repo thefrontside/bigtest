@@ -27,7 +27,7 @@ function isReachable(port: number, options: { timeout: number } = { timeout: 100
       execution.resume(true);
     });
 
-    return () => { socket.end() };
+    return () => { socket.destroy() };
   }
 };
 
