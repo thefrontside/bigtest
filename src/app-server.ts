@@ -2,6 +2,7 @@ import { fork, timeout, Sequence, Operation, Execution, Controller } from 'effec
 import { on } from '@effection/events';
 import { spawn } from 'child_process';
 import { Socket } from 'net';
+import * as process from 'process';
 
 interface AppServerOptions {
   dir?: string;
@@ -37,7 +38,7 @@ export function createAppServer(orchestrator: Execution, options: AppServerOptio
   return function *agentServer(): Sequence {
     let child = spawn(options.command, options.args || [], {
       cwd: options.dir,
-      env: options.env
+      env: Object.assign({}, process.env, options.env),
     });
 
     let errorMonitor = fork(function*() {
