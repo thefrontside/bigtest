@@ -1,6 +1,6 @@
 import { fork, timeout, Sequence, Operation, Execution, Controller } from 'effection';
 import { on } from '@effection/events';
-import { spawn } from 'child_process';
+import { spawn } from '@effection/child_process';
 import { Socket } from 'net';
 import * as process from 'process';
 
@@ -36,7 +36,7 @@ function isReachable(port: number, options: { timeout: number } = { timeout: 100
 
 export function createAppServer(orchestrator: Execution, options: AppServerOptions): Operation {
   return function *agentServer(): Sequence {
-    let child = spawn(options.command, options.args || [], {
+    let child = yield spawn(options.command, options.args || [], {
       cwd: options.dir,
       detached: true,
       env: Object.assign({}, process.env, options.env),
@@ -48,7 +48,6 @@ export function createAppServer(orchestrator: Execution, options: AppServerOptio
     });
 
     this.atExit(() => errorMonitor.halt());
-    this.atExit(() => process.kill(-child.pid, "SIGINT"));
 
     while(!(yield isReachable(options.port))) {
       yield timeout(100);
