@@ -40,17 +40,15 @@ export function createAppServer(orchestrator: Execution, options: AppServerOptio
       throw error;
     });
 
+    this.atExit(() => errorMonitor.halt());
+    this.atExit(() => child.kill("SIGKILL"));
+
     while(!(yield isReachable(options.port))) {
       yield timeout(100);
     }
 
     orchestrator.send({ ready: "app" });
 
-    try {
-      yield on(child, "exit");
-    } finally {
-      errorMonitor.halt();
-      child.kill();
-    }
+    yield on(child, "exit");
   }
 }
