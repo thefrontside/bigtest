@@ -23,7 +23,7 @@ function isReachable(port: number, options: { timeout: number } = { timeout: 100
     socket.once('timeout', onError);
 
     socket.connect(port, '127.0.0.1', () => {
-      socket.end();
+      socket.destroy();
       execution.resume(true);
     });
 
