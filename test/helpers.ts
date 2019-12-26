@@ -73,7 +73,7 @@ before(async function() {
 
   globalWorld.fork(createOrchestrator({
     delegate: readiness,
-    appCommand: "PORT=24100 BROWSER=none react-scripts start",
+    appCommand: "python -m SimpleHTTPServer 24100",
     appDir: "test/app",
     appPort: 24100,
     proxyPort: 24101,
