@@ -38,6 +38,7 @@ export function createAppServer(orchestrator: Execution, options: AppServerOptio
   return function *agentServer(): Sequence {
     let child = spawn(options.command, options.args || [], {
       cwd: options.dir,
+      detached: true,
       env: Object.assign({}, process.env, options.env),
     });
 
@@ -47,7 +48,7 @@ export function createAppServer(orchestrator: Execution, options: AppServerOptio
     });
 
     this.atExit(() => errorMonitor.halt());
-    this.atExit(() => child.kill("SIGKILL"));
+    this.atExit(() => process.kill(-child.pid, "SIGINT"));
 
     while(!(yield isReachable(options.port))) {
       yield timeout(100);
