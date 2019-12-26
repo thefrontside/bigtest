@@ -9,6 +9,8 @@ import { createAppServer } from './app-server';
 type OrchestratorOptions = {
   appPort: number;
   appCommand: string;
+  appArgs?: string[];
+  appEnv?: Record<string, string>,
   appDir?: string;
   proxyPort: number;
   commandPort: number;
@@ -45,6 +47,8 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
     fork(createAppServer(orchestrator, {
       dir: options.appDir,
       command: options.appCommand,
+      args: options.appArgs,
+      env: options.appEnv,
       port: options.appPort,
     }));
 

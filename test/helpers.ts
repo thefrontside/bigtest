@@ -73,7 +73,9 @@ before(async function() {
 
   globalWorld.fork(createOrchestrator({
     delegate: readiness,
-    appCommand: "python -m SimpleHTTPServer 24100",
+    appCommand: "python",
+    appArgs: ["-m", "SimpleHTTPServer", "24100"],
+    appEnv: { "PORT": "24100", "BROWSER": "none" },
     appDir: "test/app",
     appPort: 24100,
     proxyPort: 24101,

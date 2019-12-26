@@ -1,11 +1,13 @@
 import { fork, timeout, Sequence, Operation, Execution, Controller } from 'effection';
 import { on } from '@effection/events';
-import { exec } from 'child_process';
+import { spawn } from 'child_process';
 import { Socket } from 'net';
 
 interface AppServerOptions {
   dir?: string;
   command: string;
+  args?: string[];
+  env?: Record<string, string>;
   port: number;
 };
 
@@ -33,7 +35,10 @@ function isReachable(port: number, options: { timeout: number } = { timeout: 100
 
 export function createAppServer(orchestrator: Execution, options: AppServerOptions): Operation {
   return function *agentServer(): Sequence {
-    let child = exec(options.command, { cwd: options.dir });
+    let child = spawn(options.command, options.args || [], {
+      cwd: options.dir,
+      env: options.env
+    });
 
     let errorMonitor = fork(function*() {
       let [error]: [Error] = yield on(child, "error");
