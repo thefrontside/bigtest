@@ -10,7 +10,7 @@ type OrchestratorOptions = {
   appPort: number;
   appCommand: string;
   appArgs?: string[];
-  appEnv?: Record<string, string>,
+  appEnv?: Record<string, string>;
   appDir?: string;
   proxyPort: number;
   commandPort: number;
