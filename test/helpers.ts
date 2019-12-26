@@ -73,7 +73,8 @@ before(async function() {
 
   globalWorld.fork(createOrchestrator({
     delegate: readiness,
-    appCommand: "PORT=24100 BROWSER=none yarn test:app:start",
+    appCommand: "PORT=24100 BROWSER=none react-scripts start",
+    appDir: "test/app",
     appPort: 24100,
     proxyPort: 24101,
     commandPort: 24102,
