@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "baseUrl": ".",
+    "declaration": true,
+    "declarationDir": "dist/types"
+  },
+  "include": ["src/**/*.ts"]
+}

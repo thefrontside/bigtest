@@ -1,13 +1,20 @@
 {
   "presets": [
-    ["@babel/env", {
-      "modules": false
-    }]
+    [
+      "@babel/env",
+      {
+        "modules": false
+      }
+    ]
   ],
   "plugins": [
-    ["@babel/proposal-decorators", {
-      "decoratorsBeforeExport": true
-    }],
-    "@babel/proposal-class-properties"
+    [
+      "@babel/proposal-decorators",
+      {
+        "decoratorsBeforeExport": true
+      }
+    ],
+    "@babel/proposal-class-properties",
+    "@babel/plugin-transform-typescript"
   ]
 }
