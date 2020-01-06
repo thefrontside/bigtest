@@ -4,6 +4,7 @@ import { SpawnOptions } from 'child_process';
 export function spawn(command: string, args?: ReadonlyArray<string>, options?: SpawnOptions) {
   return (execution) => {
     let child = childProcess.spawn(command, args, Object.assign({}, options, {
+      shell: true,
       detached: true,
     }));
     // Killing all child processes started by this command is surprisingly
