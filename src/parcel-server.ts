@@ -14,24 +14,6 @@ export function* createParcelServer(entryPoints: string[], options: ParcelServer
 
   if (process.send) {
     process.send({ type: "ready" });
-
-    fork(function* stdout() {
-      while (true) {
-        let [data]: [string] = yield on(process.stdout, 'data');
-        process.send({ stdout: data });
-      }
-    });
-
-    fork(function* stderr() {
-      while (true) {
-        let [data]: [string] = yield on(process.stderr, 'data');
-        process.send({ stderr: data });
-      }
-    });
-
-    process.on('message', message => {
-      console.log('message from parent:', message);
-    });
   }
 
   try {
