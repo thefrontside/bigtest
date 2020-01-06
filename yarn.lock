@@ -2124,13 +2124,6 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.11.tgz#be879b52031cfb5d295b047f5462d8ef1a716446"
   integrity sha512-Otxmr2rrZLKRYIybtdG/sgeO+tHY20GxeDjcGmUnmmlCWyEnv2a2x1ZXBo3BTec4OiTXMQCiazB8NMBf0iRlFw==
 
-"@types/parcel-bundler@^1.12.1":
-  version "1.12.1"
-  resolved "https://registry.yarnpkg.com/@types/parcel-bundler/-/parcel-bundler-1.12.1.tgz#21c16a4912393b2d6414d1f1f9e886a30f79f2e6"
-  integrity sha512-I7Cy3Uy/HqMa3E7dyPxTkiPFx0gi3bIQxAcZCP8v1vFx+esdVFgbZBnusa6VfoIeFk61/fnVl25RyYKgDHVLtw==
-  dependencies:
-    "@types/express-serve-static-core" "*"
-
 "@types/parse-json@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
@@ -4611,10 +4604,10 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-effection@^0.4.0-6f36fd9:
-  version "0.4.0-6f36fd9"
-  resolved "https://registry.yarnpkg.com/effection/-/effection-0.4.0-6f36fd9.tgz#e65d67a6e6ac8d362cbeba249c198852a342516d"
-  integrity sha512-4uXPkaRB+4iUF/URjc13+59CVh5XLkKlBtsWTfUEmtczJcOouVyeFaBCfvCzWjqGqvB37Ipq91mz2xmLtdlSdg==
+effection@^0.4.0-a3f2e20:
+  version "0.4.0-a3f2e20"
+  resolved "https://registry.yarnpkg.com/effection/-/effection-0.4.0-a3f2e20.tgz#1f933cf523d572c9980ced931dde9cd0840360b8"
+  integrity sha512-IGXSvUwuVCygtPMVIAD3UmpdyqUNOpzFZiXjRCp0FhPJlbybKWYcDEhLd/QYz8LRvkWJP8DuzgGpqAxAgLgwbg==
 
 electron-to-chromium@^1.3.295:
   version "1.3.306"

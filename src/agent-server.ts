@@ -1,6 +1,6 @@
-import { fork, Sequence, Execution } from 'effection';
+import { monitor, Sequence, Execution } from 'effection';
 import { on } from '@effection/events';
-import { fork as forkProcess } from 'child_process';
+import { ChildProcess, fork as forkProcess } from '@effection/child_process';
 
 interface AgentServerOptions {
   port: number;
@@ -8,27 +8,18 @@ interface AgentServerOptions {
 
 
 export function* createAgentServer(orchestrator: Execution, options: AgentServerOptions): Sequence {
-  // TODO: what is the correct way of specifying the path here?
-  let child = forkProcess('./bin/parcel-server', ['-p', `${options.port}`, 'agent/index.html', 'agent/harness.ts'], {
+  // TODO: this should use node rather than ts-node when running as a compiled package
+  let child: ChildProcess = yield forkProcess('./bin/parcel-server.ts', ['-p', `${options.port}`, 'agent/index.html', 'agent/harness.ts'], {
+    execPath: 'ts-node',
     stdio: ['pipe', 'pipe', 'pipe', 'ipc']
   });
 
-  fork(function*() {
-    let [error]: [Error] = yield on(child, "error");
-    throw error;
-  })
+  let message: {type: string};
+  do {
+    [message] = yield on(child, "message");
+  } while(message.type !== "ready");
 
-  try {
+  orchestrator.send({ ready: "agent" });
 
-    let message: {type: string};
-    do {
-      [message] = yield on(child, "message");
-    } while(message.type !== "ready");
-
-    orchestrator.send({ ready: "agent" });
-
-    yield on(child, "exit");
-  } finally {
-    child.kill('SIGINT');
-  }
+  yield on(child, "exit");
 }
