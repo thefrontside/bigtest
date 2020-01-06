@@ -1,5 +1,4 @@
-import { fork, Sequence } from 'effection';
-import { on } from '@effection/events';
+import { Sequence } from 'effection';
 import * as Bundler from 'parcel-bundler';
 import { ParcelOptions } from 'parcel-bundler';
 import { Server } from 'http';

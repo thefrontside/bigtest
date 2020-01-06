@@ -1,4 +1,4 @@
-import { monitor, Sequence, Execution } from 'effection';
+import { Sequence, Execution } from 'effection';
 import { on } from '@effection/events';
 import { ChildProcess, fork as forkProcess } from '@effection/child_process';
 
