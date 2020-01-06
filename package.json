@@ -37,7 +37,7 @@
     "@types/http-proxy": "^1.17.0",
     "@types/node": "^12.7.11",
     "@types/websocket": "^1.0.0",
-    "effection": "^0.4.0-7a355f6",
+    "effection": "^0.4.0-6f36fd9",
     "http-proxy": "^1.18.0",
     "module-alias": "^2.2.2",
     "parcel": "^1.12.4",
