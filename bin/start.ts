@@ -9,6 +9,12 @@ fork(function*() {
   try {
     fork(createOrchestrator({
       delegate: this,
+      appCommand: "yarn",
+      appArgs: ["test:app:start"],
+      appEnv: {
+        "PORT": "24000",
+        "BROWSER": "none",
+      },
       appPort: 24000,
       proxyPort: 24001,
       commandPort: 24002,

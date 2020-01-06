@@ -6,10 +6,6 @@ import { Response } from 'node-fetch';
 import { actions } from './helpers';
 
 describe("orchestrator", () => {
-  beforeEach(async () => {
-    await actions.startOrchestrator();
-  });
-
   describe('connecting to the command server', () => {
     let response: Response;
     let body: string;
