@@ -1,0 +1,10 @@
+<form onsubmit="event.preventDefault(); document.getElementById('result').innerHTML = 'ok';">
+  <input type="hidden" data-test-which-input="first" />
+  <input type="hidden" data-test-which-input="second" />
+  <input type="hidden" data-test-which-input="third" />
+  <input type="hidden" data-test-which-input="last" />
+  <input type="submit">
+    Click me
+  </input>
+</form>
+<div data-test-form-result id="result">not ok</div>
