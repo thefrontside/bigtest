@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { useFixture } from './helpers';
-import { createInteractor } from '~';
+import { createInteractor, button } from '~';
 import { when } from '~/when';
 
 const HiddenField = createInteractor('input[type="hidden"]', elem => ({
@@ -9,7 +9,7 @@ const HiddenField = createInteractor('input[type="hidden"]', elem => ({
   }
 }));
 
-const Submit = createInteractor('input[type="submit"]');
+const Submit = createInteractor(button('Submit'));
 
 const Form = createInteractor('form', elem => ({
   async submit() {

@@ -1,4 +1,8 @@
 import { when } from '~/when';
+import { Selector } from '~/common-types';
+
+export { button } from '~/selectors/button';
+export { Selector };
 
 const actions = Symbol('#actions');
 
@@ -31,12 +35,16 @@ interface IInteractor<UserActions extends IUserActions> {
 }
 
 export function createInteractor<UserActions extends IUserActions>(
-  defaultSelector: string,
+  defaultSelector: string | Selector<Element>,
   createUserActions: ActionsFactory<UserActions> = () => Object.create({}),
   container: ParentNode = document
 ): IInteractor<UserActions> {
   function getElements() {
-    return container.querySelectorAll(defaultSelector);
+    if (typeof defaultSelector === 'string') {
+      return Array.from(container.querySelectorAll(defaultSelector));
+    }
+
+    return defaultSelector(container);
   }
 
   async function getElement(index: number) {

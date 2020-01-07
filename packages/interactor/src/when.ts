@@ -1,11 +1,14 @@
-type WhenFunc = <Value>(effect: () => Promise<Value> | Value, timeout?: number) => Promise<Value>;
+type WhenFunc = <Value>(
+  effect: () => Promise<Value | undefined | null> | Value | undefined | null,
+  timeout?: number
+) => Promise<Value>;
 type When = WhenFunc & { timeout: number };
 
 export const when: When = async function when<Value>(
-  effect: () => Promise<Value> | Value,
+  effect: () => Promise<Value | undefined | null> | Value | undefined | null,
   timeout?: number
 ): Promise<Value> {
-  let result: Value;
+  let result: Value | undefined | null;
   let error: Error;
 
   return new Promise((resolve, reject) => {
