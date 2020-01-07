@@ -1,11 +1,17 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "~": ["src/index.ts"],
+      "~/*": ["src/*"]
+    },
     "target": "esnext",
     "moduleResolution": "node",
+    "allowJs": true,
     "strict": true,
-    "baseUrl": ".",
     "declaration": true,
-    "declarationDir": "dist/types"
+    "declarationDir": "dist/types",
+    "sourceMap": true
   },
-  "include": ["src/**/*.ts"]
+  "exclude": ["node_modules", "dist"]
 }

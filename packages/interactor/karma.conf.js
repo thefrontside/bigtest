@@ -12,13 +12,13 @@ module.exports = config => {
       {
         pattern: require.resolve('regenerator-runtime/runtime'),
         watched: false,
-        included: true,
+        included: true
       },
       {
-        pattern: 'tests/index.js',
+        pattern: 'tests/index.ts',
         watched: false,
-        included: true,
-      },
+        included: true
+      }
     ],
 
     // list of files / patterns to exclude
@@ -27,7 +27,7 @@ module.exports = config => {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'tests/index.js': ['webpack'],
+      'tests/index.ts': ['webpack']
     },
 
     // test results reporter to use
@@ -65,7 +65,7 @@ module.exports = config => {
     webpack: require('./webpack.config'),
 
     webpackMiddleware: {
-      logLevel: 'error',
-    },
+      logLevel: 'error'
+    }
   });
 };

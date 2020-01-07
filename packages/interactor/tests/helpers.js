@@ -6,16 +6,10 @@
  * @param {String} name - name of the fixture
  */
 export function useFixture(name) {
-  let html = require(`html-loader!./fixtures/${name}.html`);
+  let html = require(`./fixtures/${name}.html`);
 
   beforeEach(() => {
-    let $container = document.getElementById('test');
-
-    if ($container) {
-      document.body.removeChild($container);
-    }
-
-    $container = document.createElement('div');
+    const $container = document.createElement('div');
     $container.innerHTML = html;
     $container.id = 'test';
 
