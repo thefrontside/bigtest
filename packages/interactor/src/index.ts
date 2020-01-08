@@ -4,8 +4,6 @@ import { Selector } from '~/common-types';
 export { button } from '~/selectors/button';
 export { Selector };
 
-const actions = Symbol('#actions');
-
 interface IBuiltIns {
   $(): Promise<HTMLElement>;
   text(): Promise<string>;
@@ -21,17 +19,13 @@ type IActions<UserActions extends IUserActions> = UserActions & IBuiltIns;
 type ActionsFactory<UserActions extends IUserActions> = (elem: Promise<HTMLElement>) => UserActions;
 
 interface IInteractor<UserActions extends IUserActions> {
+  [Symbol.iterator](): Iterator<Element>;
   first(): IActions<UserActions>;
   second(): IActions<UserActions>;
   third(): IActions<UserActions>;
   last(): IActions<UserActions>;
   within(elem: Element): this;
   where(selector: string): this;
-  select<UserActions extends IUserActions>(
-    collection: IInteractor<UserActions>,
-    selector: string
-  ): IInteractor<UserActions>;
-  [actions]: ActionsFactory<UserActions>;
 }
 
 export function createInteractor<UserActions extends IUserActions>(
@@ -89,7 +83,9 @@ export function createInteractor<UserActions extends IUserActions>(
   }
 
   return {
-    [actions]: createUserActions,
+    [Symbol.iterator]() {
+      return getElements()[Symbol.iterator]();
+    },
 
     first() {
       return createActions(getElement(0));
@@ -113,10 +109,6 @@ export function createInteractor<UserActions extends IUserActions>(
 
     where(selector) {
       return createInteractor(selector, createUserActions);
-    },
-
-    select(newInteractor, newSelector) {
-      return createInteractor(`${defaultSelector} ${newSelector}`, newInteractor[actions]);
     }
   };
 }
