@@ -9,10 +9,14 @@ interface AgentServerOptions {
 
 export function* createAgentServer(orchestrator: Execution, options: AgentServerOptions): Sequence {
   // TODO: this should use node rather than ts-node when running as a compiled package
-  let child: ChildProcess = yield forkProcess('./bin/parcel-server.ts', ['-p', `${options.port}`, 'agent/index.html', 'agent/harness.ts'], {
-    execPath: 'ts-node',
-    stdio: ['pipe', 'pipe', 'pipe', 'ipc']
-  });
+  let child: ChildProcess = yield forkProcess(
+    './bin/parcel-server.ts',
+    ['-p', `${options.port}`, 'agent/index.html', 'agent/harness.ts'],
+    {
+      execPath: 'ts-node',
+      stdio: ['pipe', 'pipe', 'pipe', 'ipc']
+    }
+  );
 
   let message: {type: string};
   do {

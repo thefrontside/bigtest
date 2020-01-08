@@ -5,7 +5,7 @@ import { Response } from 'node-fetch';
 
 import { actions } from './helpers';
 
-describe("orchestrator", () => {
+describe('orchestrator', () => {
   describe('connecting to the command server', () => {
     let response: Response;
     let body: string;
@@ -19,7 +19,24 @@ describe("orchestrator", () => {
     });
 
     it('contains the ping text', () => {
-      expect(body).toContain("Your wish is my command");
+      expect(body).toContain('Your wish is my command');
+    });
+  });
+
+  describe('retrieving agent', () => {
+    let response: Response;
+    let body: string;
+    beforeEach(async () => {
+      response = await actions.get('http://localhost:24104/index.html');
+      body = await response.text();
+    });
+
+    it('responds successfully', () => {
+      expect(response.ok).toEqual(true);
+    });
+
+    it('returns the agent html', () => {
+      expect(body).toContain('<title>BigTest</title>');
     });
   });
 });
