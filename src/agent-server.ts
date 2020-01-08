@@ -1,29 +1,25 @@
-import { fork, Sequence, Operation, Execution } from 'effection';
+import { Sequence, Execution } from 'effection';
 import { on } from '@effection/events';
-import { spawn } from 'child_process';
+import { ChildProcess, fork as forkProcess } from '@effection/child_process';
 
 interface AgentServerOptions {
   port: number;
 };
 
-export function createAgentServer(orchestrator: Execution, options: AgentServerOptions): Operation {
-  return function *agentServer(): Sequence {
-    let child = spawn('parcel', ['-p', `${options.port}`, 'agent/index.html', 'agent/harness.ts'], {
-      stdio: 'inherit'
-    });
 
-    fork(function*() {
-      let [error]: [Error] = yield on(child, "error");
-      throw error;
-    })
+export function* createAgentServer(orchestrator: Execution, options: AgentServerOptions): Sequence {
+  // TODO: this should use node rather than ts-node when running as a compiled package
+  let child: ChildProcess = yield forkProcess('./bin/parcel-server.ts', ['-p', `${options.port}`, 'agent/index.html', 'agent/harness.ts'], {
+    execPath: 'ts-node',
+    stdio: ['pipe', 'pipe', 'pipe', 'ipc']
+  });
 
-    // TODO: this isn't *actually* when the agent is ready
-    orchestrator.send({ ready: "agent" });
+  let message: {type: string};
+  do {
+    [message] = yield on(child, "message");
+  } while(message.type !== "ready");
 
-    try {
-      yield on(child, "exit");
-    } finally {
-      child.kill();
-    }
-  }
+  orchestrator.send({ ready: "agent" });
+
+  yield on(child, "exit");
 }
