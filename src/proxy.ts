@@ -24,7 +24,7 @@ export function createProxyServer(orchestrator: Execution, options: ProxyOptions
     let contentType = proxyRes.headers['content-type'] as string;
     let contentEncoding = proxyRes.headers['content-encoding'] as string;
 
-    watchError(this, proxyRes);
+    yield watchError(proxyRes);
 
     if(contentType && contentType.split(';')[0] === 'text/html') {
       res.removeHeader('content-length');
@@ -35,8 +35,8 @@ export function createProxyServer(orchestrator: Execution, options: ProxyOptions
       let tr = trumpet();
       let unzip = zlib.createGunzip();
 
-      watchError(this, tr);
-      watchError(this, unzip);
+      yield watchError(tr);
+      yield watchError(unzip);
 
       tr.select('head', (node) => {
         let rs = node.createReadStream();
@@ -77,7 +77,7 @@ export function createProxyServer(orchestrator: Execution, options: ProxyOptions
     });
     this.atExit(() => proxyServer.close());
 
-    watch(this, proxyServer, ['proxyRes', 'error', 'open', 'close']);
+    yield watch(proxyServer, ['proxyRes', 'error', 'open', 'close']);
 
     let server = http.createServer();
     this.atExit(() => server.close());
