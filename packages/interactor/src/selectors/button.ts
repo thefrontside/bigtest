@@ -5,7 +5,7 @@ function isInput(elem: Element & { value?: any }): elem is HTMLInputElement {
 }
 
 export function button(text: string): Selector<HTMLElement> {
-  return container => {
+  const selector: Selector<HTMLElement> = container => {
     const buttons = Array.from(container.querySelectorAll('button')).filter(btn => btn.innerText === text);
     const inputs: Array<HTMLInputElement> = [
       ...container.querySelectorAll('input[type="submit"]'),
@@ -15,4 +15,8 @@ export function button(text: string): Selector<HTMLElement> {
 
     return [...buttons, ...inputs];
   };
+
+  selector.description = `Could not find button with text "${text}"`;
+
+  return selector;
 }

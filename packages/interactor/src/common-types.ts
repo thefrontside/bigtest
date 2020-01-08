@@ -1,1 +1,4 @@
-export type Selector<T extends Element> = (container: ParentNode) => Array<T>;
+export interface Selector<T extends Element> {
+  (container: ParentNode): Array<T>;
+  description: string;
+}

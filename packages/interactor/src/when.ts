@@ -1,12 +1,18 @@
-type WhenFunc = <Value>(
-  effect: () => Promise<Value | undefined | null> | Value | undefined | null,
-  timeout?: number
-) => Promise<Value>;
-type When = WhenFunc & { timeout: number };
+interface IOptions {
+  timeout?: number;
+  message?: string;
+}
+interface When {
+  <Value>(
+    effect: () => Promise<Value | undefined | null> | Value | undefined | null,
+    options?: IOptions
+  ): Promise<Value>;
+  timeout: number;
+}
 
 export const when: When = async function when<Value>(
   effect: () => Promise<Value | undefined | null> | Value | undefined | null,
-  timeout?: number
+  options: IOptions = {}
 ): Promise<Value> {
   let result: Value | undefined | null;
   let error: Error;
@@ -17,7 +23,7 @@ export const when: When = async function when<Value>(
         result = await effect();
 
         if (result == null) {
-          error = new Error('Result of convergence was nullish at timeout');
+          error = new Error(options.message || 'Result of `when()` was nullish at timeout');
           return;
         }
       } catch (e) {
@@ -33,7 +39,7 @@ export const when: When = async function when<Value>(
     const timeoutHandle = setTimeout(() => {
       clearInterval(intervalHandle);
       reject(error);
-    }, timeout || when['timeout']);
+    }, options.timeout || when['timeout']);
   });
 };
 

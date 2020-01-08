@@ -66,7 +66,7 @@ describe('BigTest Interaction: Interactor', () => {
       try {
         await Marquee.first().text();
       } catch (e) {
-        expect(e.message).to.eq('Result of convergence was nullish at timeout');
+        expect(e.message).to.eq('Could not find "marquee"');
         return;
       }
 

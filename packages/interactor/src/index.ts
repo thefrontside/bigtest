@@ -48,7 +48,11 @@ export function createInteractor<UserActions extends IUserActions>(
   }
 
   async function getElement(index: number) {
-    let elem = await when(() => getElements()[index]);
+    const message =
+      typeof defaultSelector === 'string'
+        ? `Could not find "${defaultSelector}"`
+        : defaultSelector.description;
+    const elem = await when(() => getElements()[index], { message });
 
     function isHtmlElement(e: Element & { click?: unknown }): e is HTMLElement {
       return typeof e.click === 'function';
