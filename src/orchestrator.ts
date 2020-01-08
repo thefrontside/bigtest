@@ -5,6 +5,7 @@ import { createCommandServer } from './command-server';
 import { createConnectionServer } from './connection-server';
 import { createAgentServer } from './agent-server';
 import { createAppServer } from './app-server';
+import { createTestFileWatcher } from './test-file-watcher';
 
 type OrchestratorOptions = {
   appPort: number;
@@ -17,6 +18,8 @@ type OrchestratorOptions = {
   connectionPort: number;
   agentPort: number;
   delegate?: Execution;
+  testFiles: [string];
+  testManifestPath: string;
 }
 
 export function createOrchestrator(options: OrchestratorOptions): Operation {
@@ -50,6 +53,11 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
       args: options.appArgs,
       env: options.appEnv,
       port: options.appPort,
+    }));
+
+    fork(createTestFileWatcher(orchestrator, {
+      files: options.testFiles,
+      manifestPath: options.testManifestPath,
     }));
 
     yield fork(function*() {

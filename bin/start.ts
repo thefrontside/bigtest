@@ -1,4 +1,5 @@
 import { fork, receive } from 'effection';
+import * as tempy from 'tempy';
 
 import { createOrchestrator } from '../src/index';
 
@@ -20,6 +21,8 @@ fork(function*() {
       commandPort: 24002,
       connectionPort: 24003,
       agentPort: 24004,
+      testFiles: ["./test/fixtures/*.t.ts"],
+      testManifestPath: tempy.file({ name: 'manifest.js' }),
     }));
 
     yield receive({ ready: "orchestrator" });
