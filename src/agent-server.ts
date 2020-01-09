@@ -14,6 +14,7 @@ export function* createAgentServer(orchestrator: Execution, options: AgentServer
     ['-p', `${options.port}`, 'agent/index.html', 'agent/harness.ts'],
     {
       execPath: 'ts-node',
+      execArgv: [],
       stdio: ['pipe', 'pipe', 'pipe', 'ipc']
     }
   );
