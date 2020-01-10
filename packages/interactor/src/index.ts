@@ -19,13 +19,10 @@ type IActions<UserActions extends IUserActions> = UserActions & IBuiltIns;
 type ActionsFactory<UserActions extends IUserActions> = (elem: Promise<HTMLElement>) => UserActions;
 
 interface IInteractor<UserActions extends IUserActions> {
+  (index?: number): IActions<UserActions>;
   [Symbol.iterator](): Iterator<Element>;
-  first(): IActions<UserActions>;
-  second(): IActions<UserActions>;
-  third(): IActions<UserActions>;
-  last(): IActions<UserActions>;
-  within(elem: Element): this;
-  where(selector: string): this;
+  within(elem: Element): IInteractor<UserActions>;
+  where(selector: string | Selector<Element>): IInteractor<UserActions>;
 }
 
 export function createInteractor<UserActions extends IUserActions>(
@@ -82,33 +79,21 @@ export function createInteractor<UserActions extends IUserActions>(
     };
   }
 
-  return {
+  function interactor(index = 0) {
+    return createActions(getElement(index));
+  }
+
+  return Object.assign(interactor, {
     [Symbol.iterator]() {
       return getElements()[Symbol.iterator]();
     },
 
-    first() {
-      return createActions(getElement(0));
-    },
-
-    second() {
-      return createActions(getElement(1));
-    },
-
-    third() {
-      return createActions(getElement(2));
-    },
-
-    last() {
-      return createActions(getElement(getElements().length - 1));
-    },
-
-    within(elem) {
+    within(elem: Element) {
       return createInteractor(defaultSelector, createUserActions, elem);
     },
 
-    where(selector) {
+    where(selector: string | Selector<Element>) {
       return createInteractor(selector, createUserActions);
     }
-  };
+  });
 }

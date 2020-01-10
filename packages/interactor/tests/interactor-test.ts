@@ -3,9 +3,9 @@ import { useFixture } from './helpers';
 import { createInteractor, button } from '~';
 import { when } from '~/when';
 
-const HiddenField = createInteractor('input[type="hidden"]', elem => ({
-  which() {
-    return when(async () => (await elem).getAttribute('data-test-which-input'));
+const Input = createInteractor('input', elem => ({
+  async which() {
+    return (await elem).getAttribute('data-test-which-input');
   }
 }));
 
@@ -13,9 +13,8 @@ const Submit = createInteractor(button('Submit'));
 
 const Form = createInteractor('form', elem => ({
   async submit() {
-    return Submit.within(await elem)
-      .first()
-      .click();
+    const ThisSubmit = Submit.within(await elem);
+    return ThisSubmit().click();
   }
 }));
 
@@ -26,27 +25,25 @@ const Marquee = createInteractor('marquee');
 describe('BigTest Interaction: Interactor', () => {
   useFixture('form-fixture');
 
-  describe('#first()', () => {
-    it('selects the first matching element', async () => {
-      expect(await HiddenField.first().which()).to.eq('first');
+  it('selects the first matching element', async () => {
+    expect(await Input().which()).to.eq('first');
+  });
+
+  it('selects the second matching element', async () => {
+    expect(await Input(1).which()).to.eq('second');
+  });
+
+  describe('#where', () => {
+    it('uses the given selector instead', async () => {
+      const HiddenInput = Input.where('input[type="hidden"]');
+      expect(await HiddenInput().which()).to.eq('first');
     });
   });
 
-  describe('#second()', () => {
-    it('selects the first matching element', async () => {
-      expect(await HiddenField.second().which()).to.eq('second');
-    });
-  });
-
-  describe('#third()', () => {
-    it('selects the first matching element', async () => {
-      expect(await HiddenField.third().which()).to.eq('third');
-    });
-  });
-
-  describe('#last()', () => {
-    it('selects the first matching element', async () => {
-      expect(await HiddenField.last().which()).to.eq('last');
+  describe('#within', () => {
+    it('looks within the given element', async () => {
+      const InputOfFirstForm = Input.within(await Form().$());
+      expect(await InputOfFirstForm().which()).to.eq('first');
     });
   });
 
@@ -64,7 +61,7 @@ describe('BigTest Interaction: Interactor', () => {
 
     it('rejects', async () => {
       try {
-        await Marquee.first().text();
+        await Marquee().text();
       } catch (e) {
         expect(e.message).to.eq('Could not find "marquee"');
         return;
@@ -76,11 +73,11 @@ describe('BigTest Interaction: Interactor', () => {
 
   describe('composition', () => {
     beforeEach(async () => {
-      await Form.first().submit();
+      await Form().submit();
     });
 
     it('works', async () => {
-      expect(await FormResult.first().text()).to.eq('ok');
+      expect(await FormResult().text()).to.eq('ok');
     });
   });
 });
