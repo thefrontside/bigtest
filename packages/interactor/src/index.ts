@@ -18,7 +18,7 @@ type IActions<UserActions extends IUserActions> = UserActions & IBuiltIns;
 
 type ActionsFactory<UserActions extends IUserActions> = (elem: Promise<HTMLElement>) => UserActions;
 
-interface IInteractor<UserActions extends IUserActions> {
+interface IInteractor<UserActions extends IUserActions> extends Iterable<Element> {
   (index?: number): IActions<UserActions>;
   [Symbol.iterator](): Iterator<Element>;
   within(elem: Element): IInteractor<UserActions>;
