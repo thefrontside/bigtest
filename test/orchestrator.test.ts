@@ -6,6 +6,11 @@ import { Response } from 'node-fetch';
 import { actions } from './helpers';
 
 describe('orchestrator', () => {
+  beforeEach(async function() {
+    this.timeout(20000);
+    await actions.startOrchestrator();
+  });
+
   describe('connecting to the command server', () => {
     let response: Response;
     let body: string;
