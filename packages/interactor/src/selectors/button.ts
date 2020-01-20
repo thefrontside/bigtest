@@ -1,11 +1,11 @@
-import { Selector } from '../common-types';
+import { ISelector } from '../types';
 
 function isInput(elem: Element & { value?: any }): elem is HTMLInputElement {
   return typeof elem.value === 'string';
 }
 
-export function button(text: string): Selector<HTMLElement> {
-  const selector: Selector<HTMLElement> = container => {
+export function button(text: string): ISelector<HTMLElement> {
+  const selector: ISelector<HTMLElement> = container => {
     const buttons = Array.from(container.querySelectorAll('button')).filter(btn => btn.innerText === text);
     const inputs: Array<HTMLInputElement> = [
       ...container.querySelectorAll('input[type="submit"]'),

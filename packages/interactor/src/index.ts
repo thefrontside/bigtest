@@ -1,99 +1,53 @@
 import { when } from '~/when';
-import { Selector } from '~/common-types';
+import { ActionsFactory, IUserActions, IActions, IBuiltIns, IActionContext } from './types';
 
-export { button } from '~/selectors/button';
-export { Selector };
+interface IQueryContext<T extends Element> {
+  element: T;
+  locator: string;
+}
+interface ISelectorContext<T extends Element> {
+  element: Promise<T>;
+  locator: string;
+}
+type Query<T extends Element, R extends Element> = (context: IQueryContext<T>) => R | undefined | null;
+type Selector<T extends Element, R extends Element> = (context: ISelectorContext<T>) => ISelectorContext<R>;
 
-interface IBuiltIns {
-  $(): Promise<HTMLElement>;
-  text(): Promise<string>;
-  click(): Promise<void>;
+type Interactor<UserActions extends IUserActions> = (locator: string) => IActions<UserActions>;
+
+export function selector<T extends Element, R extends Element>(query: Query<T, R>): Selector<T, R> {
+  return ({ element, locator }) => {
+    return { element: when(async () => query({ element: await element, locator })), locator };
+  };
 }
 
-interface IUserActions {
-  [key: string]: (...args: any[]) => Promise<any>;
-}
-
-type IActions<UserActions extends IUserActions> = UserActions & IBuiltIns;
-
-type ActionsFactory<UserActions extends IUserActions> = (elem: Promise<HTMLElement>) => UserActions;
-
-interface IInteractor<UserActions extends IUserActions> extends Iterable<Element> {
-  (index?: number): IActions<UserActions>;
-  [Symbol.iterator](): Iterator<Element>;
-  within(elem: Element): IInteractor<UserActions>;
-  where(selector: string | Selector<Element>): IInteractor<UserActions>;
-}
-
-export function createInteractor<UserActions extends IUserActions>(
-  defaultSelector: string | Selector<Element>,
-  createUserActions: ActionsFactory<UserActions> = () => Object.create({}),
-  container: ParentNode = document
-): IInteractor<UserActions> {
-  function getElements() {
-    if (typeof defaultSelector === 'string') {
-      return Array.from(container.querySelectorAll(defaultSelector));
-    }
-
-    return defaultSelector(container);
-  }
-
-  async function getElement(index: number) {
-    const message =
-      typeof defaultSelector === 'string'
-        ? `Could not find "${defaultSelector}"`
-        : defaultSelector.description;
-    const elem = await when(() => getElements()[index], { message });
-
-    function isHtmlElement(e: Element & { click?: unknown }): e is HTMLElement {
-      return typeof e.click === 'function';
-    }
-
-    if (!isHtmlElement(elem)) {
-      throw new Error('Expected an `HTMLElement` but did not find one');
-    }
-
-    return elem;
-  }
-
-  function createBuiltIns(elem: Promise<HTMLElement>): IBuiltIns {
+export function interactor<UserActions extends IUserActions>(
+  selector: Selector,
+  createUserActions: ActionsFactory<UserActions>
+): Interactor<UserActions> {
+  function createBuiltIns(subject: HTMLElement | null): IBuiltIns {
     return {
       $() {
-        return elem;
+        return when(() => subject);
       },
 
-      async text() {
-        return (await elem).innerText;
+      async getText() {
+        return (await when(() => subject)).innerText;
       },
 
       async click() {
-        return (await elem).click();
+        return (await when(() => subject)).click();
       }
     };
   }
 
-  function createActions(elem: Promise<HTMLElement>): IActions<UserActions> {
+  return locator => {
+    const [matches] = selector([[document.body], locator]);
+    const firstMatch = matches[0];
+    const subject = createBuiltIns(firstMatch);
+
     return {
-      ...createBuiltIns(elem),
-      ...createUserActions(elem)
+      ...createBuiltIns(firstMatch),
+      ...createUserActions({ subject, locator })
     };
-  }
-
-  function interactor(index = 0) {
-    return createActions(getElement(index));
-  }
-
-  return Object.assign(interactor, {
-    [Symbol.iterator]() {
-      return getElements()[Symbol.iterator]();
-    },
-
-    within(elem: Element) {
-      return createInteractor(defaultSelector, createUserActions, elem);
-    },
-
-    where(selector: string | Selector<Element>) {
-      return createInteractor(selector, createUserActions);
-    }
-  });
+  };
 }
