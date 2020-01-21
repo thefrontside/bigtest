@@ -1,12 +1,7 @@
 import { expect } from 'chai';
-import { useFixture } from './helpers';
-import { selector, interactor } from '~';
-
-const button = selector((locator, container) =>
-  Array.from(container.querySelectorAll('button')).filter(btn => btn.innerText === locator)
-);
-const css = selector((locator, container) => container.querySelectorAll(locator));
-const inputByType = selector((locator, container) => container.querySelectorAll(`input[type="${locator}"]`));
+import { useFixture } from './helpers/useFixture';
+import { interactor } from '~';
+import { button, css, inputByType, input } from './helpers/selectors';
 
 describe('interactor()', () => {
   describe('basics', () => {

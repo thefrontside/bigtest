@@ -1,7 +1,8 @@
 import { expect } from 'chai';
-import { useFixture } from './helpers';
+import { useFixture } from './helpers/useFixture';
 import { selector } from '~';
-import { throwIfEmpty, compact } from '~/util';
+import { throwIfEmpty } from '~/util';
+import { input } from './helpers/selectors';
 
 describe('selector()', () => {
   describe('basics', () => {
@@ -32,23 +33,6 @@ describe('selector()', () => {
   });
 
   describe('complex', () => {
-    const input = selector((locator, container) => {
-      const labels = throwIfEmpty(
-        Array.from(container.querySelectorAll('label')),
-        'Did not find any `<label>` elements'
-      );
-      const matchedLabels = throwIfEmpty(
-        labels.filter(label => label.innerText.trim() === locator),
-        `Did not find any labels with text "${locator}"`
-      );
-      const inputs = throwIfEmpty(
-        compact(matchedLabels.map(label => label.querySelector('input'))),
-        `An \`<input>\` could not be found for all labels matching "${locator}"`
-      );
-
-      return inputs;
-    });
-
     useFixture('form-fixture');
 
     it('gets elements', async () => {

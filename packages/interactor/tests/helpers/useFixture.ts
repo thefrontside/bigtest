@@ -1,5 +1,5 @@
 export function useFixture(name: string): void {
-  let html = require(`./fixtures/${name}.html`);
+  let html = require(`../fixtures/${name}.html`);
 
   beforeEach(() => {
     const $oldContainer = document.getElementById('test');
