@@ -1,5 +1,6 @@
 import { Selector } from '~/selector';
 import { isHTMLElement, isHTMLInputElement } from '~/util';
+import { when } from './when';
 
 export interface ISubject<Elem extends Element> {
   $(): Promise<Elem>;
@@ -9,13 +10,15 @@ export interface ISubject<Elem extends Element> {
 }
 
 export interface IBuiltIns {
-  getText(): Promise<string>;
-  getValue(): Promise<string>;
+  text: Promise<string>;
+  value: Promise<string>;
   click(): Promise<void>;
+  fill(val: string): Promise<void>;
+  keyPress(code: string): Promise<void>;
 }
 
 export interface IUserActions {
-  [key: string]: (...args: any[]) => Promise<any>;
+  [key: string]: ((...args: any[]) => Promise<void>) | Promise<any>;
 }
 
 export interface IActionContext<Elem extends Element> {
@@ -27,16 +30,31 @@ export type ActionsFactory<Elem extends Element, UserActions extends IUserAction
   context: IActionContext<Elem>
 ) => UserActions;
 
-export type Interactor<UserActions extends IUserActions> = (locator: string) => UserActions & IBuiltIns;
+type AnyFunction = (...args: any[]) => any;
+
+interface IDict<T = any> {
+  [key: string]: T;
+}
+
+type Chainable<Interface extends IDict<AnyFunction | Promise<any>>> = {
+  [Key in keyof Interface]: Interface[Key] extends AnyFunction
+    ? (...args: Parameters<Interface[Key]>) => Chainable<Interface> & Promise<void>
+    : Interface[Key];
+};
+
+export type Interactor<UserActions extends IUserActions> = (
+  locator: string,
+  options?: IInteractorOptions
+) => Chainable<IBuiltIns & UserActions>;
 
 export interface IInteractorOptions {
   within?: Element;
+  waitFor?: Promise<void>;
 }
 
 export function interactor<Elem extends Element, UserActions extends IUserActions>(
   selector: Selector<Elem>,
-  createUserActions: ActionsFactory<Elem, UserActions> = () => Object.create({}),
-  { within = document.body }: IInteractorOptions = { within: document.body }
+  createUserActions: ActionsFactory<Elem, UserActions> = () => Object.create({})
 ): Interactor<UserActions> {
   function createSubject(matches: Promise<Array<Elem>>): ISubject<Elem> {
     return {
@@ -60,33 +78,84 @@ export function interactor<Elem extends Element, UserActions extends IUserAction
 
   function createBuiltIns(elem: Promise<Elem>): IBuiltIns {
     return {
-      async getText() {
-        const e = await elem;
-        if (isHTMLElement(e)) return e.innerText;
-        throw new Error('Element was expected to be an HTMLElement');
+      get text() {
+        return elem.then(e => {
+          if (isHTMLElement(e)) return e.innerText;
+          throw new Error('Element was expected to be an HTMLElement');
+        });
       },
 
-      async getValue() {
-        const e = await elem;
-        if (isHTMLInputElement(e)) return e.value;
-        throw new Error('Element was expected to be an HTMLElement');
+      get value() {
+        return elem.then(e => {
+          if (isHTMLInputElement(e)) return e.value;
+          throw new Error('Element was expected to be an HTMLInputElement');
+        });
       },
 
       async click() {
         const e = await elem;
-        if (isHTMLElement(e)) return e.click();
+        if (isHTMLElement(e)) {
+          e.click();
+          return;
+        }
         throw new Error('Element was expected to be an HTMLElement');
+      },
+
+      async fill(val: string) {
+        const e = await elem;
+        if (isHTMLInputElement(e)) {
+          e.value = val;
+          return;
+        }
+        throw new Error('Element was expected to be an HTMLElement');
+      },
+
+      async keyPress(code: string) {
+        const e = await elem;
+        e.dispatchEvent(
+          new KeyboardEvent('keypress', {
+            code
+          })
+        );
       }
     };
   }
 
-  return locator => {
-    const matches = selector(locator, within);
-    const subject = createSubject(matches);
+  function createActions(subject: ISubject<Elem>, locator: string) {
+    const builtIns = createBuiltIns(subject.$());
+    const userActions = createUserActions({ subject, locator });
 
     return {
-      ...createBuiltIns(subject.$()),
-      ...createUserActions({ subject, locator })
+      ...builtIns,
+      ...userActions
     };
+  }
+
+  return (locator, options) => {
+    const { within = document.body, waitFor = Promise.resolve() } = options || {
+      within: document.body,
+      waitFor: Promise.resolve()
+    };
+    const actions = createActions(createSubject(waitFor.then(() => selector(locator, within))), locator);
+
+    return new Proxy(actions, {
+      get(target, key, receiver) {
+        const prop = Reflect.get(target, key, receiver);
+
+        if (typeof prop === 'function') {
+          return (...args: any[]) => {
+            // Swallowing the return value to keep actions effectual only
+            const previousAction = prop(...args).then(() => {});
+
+            return {
+              ...interactor(selector, createUserActions)(locator, { within, waitFor: previousAction }),
+              ...previousAction
+            };
+          };
+        }
+
+        return prop;
+      }
+    }) as Chainable<IBuiltIns & UserActions>;
   };
 }

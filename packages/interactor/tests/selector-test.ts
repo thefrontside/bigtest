@@ -3,8 +3,19 @@ import { useFixture } from './helpers/useFixture';
 import { selector } from '~';
 import { throwIfEmpty } from '~/util';
 import { input } from './helpers/selectors';
+import { when } from '~/when';
 
 describe('selector()', () => {
+  let timeoutOG = when.timeout;
+
+  before(() => {
+    when.timeout = 50;
+  });
+
+  after(() => {
+    when.timeout = timeoutOG;
+  });
+
   describe('basics', () => {
     const input = selector((locator, container) => {
       return container.querySelectorAll(`input[type="${locator}"]`);
