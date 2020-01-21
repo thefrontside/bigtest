@@ -1,37 +1,16 @@
 import { when } from '~/when';
+import { throwIfEmpty } from '~/util';
 
-interface IQueryContext<T extends Element> {
-  container: T;
-  locator: string;
-}
+type Query<T extends Element, R extends Element> = (container: T, locator: string) => Iterable<R>;
 
-interface ISelectorContext<T extends Element> {
-  locator: string;
-  containers: Array<T>;
-}
-
-interface ISelectorResult<T extends Element> {
-  locator: string;
-  matches: Array<T>;
-}
-
-type Query<T extends Element, R extends Element> = (context: IQueryContext<T>) => Iterable<R>;
-
-type Selector<T extends Element, R extends Element> = (
-  context: ISelectorContext<T>
-) => Promise<ISelectorResult<R>>;
-
-function flatten<T>(arrayOfArrays: Array<Array<T>>): T[] {
-  return arrayOfArrays.reduce((memo, array) => memo.concat(array), []);
-}
+type Selector<T extends Element, R extends Element> = (container: T, locator: string) => Promise<R[]>;
 
 export function selector<T extends Element, R extends Element>(query: Query<T, R>): Selector<T, R> {
-  return async ({ containers, locator }) => {
-    const matches = flatten(
-      await Promise.all(
-        containers.map(async container => Array.from(await when(() => query({ container, locator }))))
+  return (container, locator) =>
+    when(() =>
+      throwIfEmpty(
+        Array.from(query(container, locator)),
+        `Did not find any matches with locator "${locator}"`
       )
     );
-    return { matches, locator };
-  };
 }

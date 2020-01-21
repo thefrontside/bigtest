@@ -1,3 +1,2 @@
-import { when } from '~/when';
-
 export { selector } from '~/selector';
+export { interactor } from '~/interactor';

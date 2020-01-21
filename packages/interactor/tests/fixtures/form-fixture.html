@@ -1,5 +1,9 @@
 <form onsubmit="event.preventDefault(); document.getElementById('result').innerHTML = 'ok';">
-  <label>First<input type="hidden" data-test-which-input="first"/></label>
+  <label>
+    Name
+    <input type="text" />
+  </label>
+  <input type="hidden" data-test-which-input="first" />
   <input type="hidden" data-test-which-input="second" />
   <input type="hidden" data-test-which-input="last" />
   <button>
