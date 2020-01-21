@@ -43,6 +43,7 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
     fork(createConnectionServer(orchestrator, {
       port: options.connectionPort,
       proxyPort: options.proxyPort,
+      testFilePort: options.testFilePort,
     }));
 
     fork(createAgentServer(orchestrator, {

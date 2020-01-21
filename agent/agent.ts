@@ -35,6 +35,13 @@ if(orchestrator) {
     if(message.type === "open") {
       console.log('[agent] loading test app via', message.url);
       testElement.src = message.url;
+      let scriptElement = document.createElement('script') as HTMLScriptElement;
+      scriptElement.src = message.manifest;
+      scriptElement.addEventListener('load', () => {
+        console.log('[agent] loaded test manifest', __bigtestManifest);
+      });
+      document.body.appendChild(scriptElement);
+
     }
   });
 
