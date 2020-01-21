@@ -6,6 +6,7 @@ import { createConnectionServer } from './connection-server';
 import { createAgentServer } from './agent-server';
 import { createAppServer } from './app-server';
 import { createTestFileWatcher } from './test-file-watcher';
+import { createTestFileServer } from './test-file-server';
 
 type OrchestratorOptions = {
   appPort: number;
@@ -20,6 +21,7 @@ type OrchestratorOptions = {
   delegate?: Execution;
   testFiles: [string];
   testManifestPath: string;
+  testFilePort: number;
 }
 
 export function createOrchestrator(options: OrchestratorOptions): Operation {
@@ -60,6 +62,17 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
       manifestPath: options.testManifestPath,
     }));
 
+    // wait for manifest before starting test file server
+    fork(function*() {
+      yield receive(orchestrator, { ready: "manifest" });
+    });
+
+    fork(createTestFileServer(orchestrator, {
+      files: options.testFiles,
+      manifestPath: options.testManifestPath,
+      port: options.testFilePort,
+    }));
+
     yield fork(function*() {
       fork(function*() {
         yield receive(orchestrator, { ready: "proxy" });
@@ -76,6 +89,9 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
       fork(function*() {
         yield receive(orchestrator, { ready: "app" });
       });
+      fork(function*() {
+        yield receive(orchestrator, { ready: "test-files" });
+      });
     });
 
     console.log("[orchestrator] running!");
@@ -85,7 +101,9 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
     }
 
     try {
-      yield
+      while(true) {
+        yield receive(orchestrator);
+      }
     } finally {
       console.log("[orchestrator] shutting down!");
     }

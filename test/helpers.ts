@@ -41,6 +41,7 @@ export const actions: Actions = {
         commandPort: 24102,
         connectionPort: 24103,
         agentPort: 24104,
+        testFilePort: 24105,
       }));
     }
     return orchestratorPromise;
