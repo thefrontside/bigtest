@@ -5,14 +5,14 @@ import { throwIfEmpty, compact } from '~/util';
 
 describe('selector()', () => {
   describe('basics', () => {
-    const input = selector((container, locator) => {
+    const input = selector((locator, container) => {
       return container.querySelectorAll(`input[type="${locator}"]`);
     });
 
     useFixture('form-fixture');
 
     it('gets elements', async () => {
-      const matches = await input(document.body, 'hidden');
+      const matches = await input('hidden', document.body);
 
       expect(matches).to.have.lengthOf(2);
       expect(matches[0].getAttribute('data-test-which-input')).to.eq('second');
@@ -20,7 +20,7 @@ describe('selector()', () => {
 
     it('has a default error', async () => {
       try {
-        await input(document.body, 'phone');
+        await input('phone', document.body);
       } catch (err) {
         expect(err.name).to.eq('SelectorError');
         expect(err.message).to.eq('Did not find any matches with locator "phone"');
@@ -32,7 +32,7 @@ describe('selector()', () => {
   });
 
   describe('complex', () => {
-    const input = selector((container, locator) => {
+    const input = selector((locator, container) => {
       const labels = throwIfEmpty(
         Array.from(container.querySelectorAll('label')),
         'Did not find any `<label>` elements'
@@ -52,7 +52,7 @@ describe('selector()', () => {
     useFixture('form-fixture');
 
     it('gets elements', async () => {
-      const matches = await input(document.body, 'Name');
+      const matches = await input('Name', document.body);
 
       expect(matches).to.have.lengthOf(1);
       expect(matches[0].getAttribute('data-test-which-input')).to.eq('first');
@@ -60,7 +60,7 @@ describe('selector()', () => {
 
     it('errors nicely', async () => {
       try {
-        await input(document.body, 'Phone');
+        await input('Phone', document.body);
       } catch (err) {
         expect(err.name).to.eq('SelectorError');
         expect(err.message).to.eq('Did not find any labels with text "Phone"');
@@ -72,7 +72,7 @@ describe('selector()', () => {
   });
 
   describe('custom errors', () => {
-    const input = selector((container, locator) => {
+    const input = selector((locator, container) => {
       return throwIfEmpty(
         container.querySelectorAll(`input[type="${locator}"]`),
         `Did not find input of type "${locator}"`
@@ -83,7 +83,7 @@ describe('selector()', () => {
 
     it('surfaces custom errors', async () => {
       try {
-        await input(document.body, 'phone');
+        await input('phone', document.body);
       } catch (err) {
         expect(err.name).to.eq('SelectorError');
         expect(err.message).to.eq('Did not find input of type "phone"');

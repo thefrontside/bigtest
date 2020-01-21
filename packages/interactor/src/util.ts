@@ -17,3 +17,7 @@ export function compact<T>(arr: Array<T | null>): Array<T> {
 export function isHTMLElement(elem: any): elem is HTMLElement {
   return typeof elem.click === 'function';
 }
+
+export function isHTMLInputElement(elem: any): elem is HTMLInputElement {
+  return typeof elem.value === 'string';
+}

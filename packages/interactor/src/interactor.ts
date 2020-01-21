@@ -1,5 +1,5 @@
 import { Selector } from '~/selector';
-import { isHTMLElement } from '~/util';
+import { isHTMLElement, isHTMLInputElement } from '~/util';
 
 export interface ISubject<Elem extends Element> {
   $(): Promise<Elem>;
@@ -10,6 +10,7 @@ export interface ISubject<Elem extends Element> {
 
 export interface IBuiltIns {
   getText(): Promise<string>;
+  getValue(): Promise<string>;
   click(): Promise<void>;
 }
 
@@ -65,6 +66,12 @@ export function interactor<Elem extends Element, UserActions extends IUserAction
         throw new Error('Element was expected to be an HTMLElement');
       },
 
+      async getValue() {
+        const e = await elem;
+        if (isHTMLInputElement(e)) return e.value;
+        throw new Error('Element was expected to be an HTMLElement');
+      },
+
       async click() {
         const e = await elem;
         if (isHTMLElement(e)) return e.click();
@@ -74,7 +81,7 @@ export function interactor<Elem extends Element, UserActions extends IUserAction
   }
 
   return locator => {
-    const matches = selector(within, locator);
+    const matches = selector(locator, within);
     const subject = createSubject(matches);
 
     return {

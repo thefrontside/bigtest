@@ -7,7 +7,6 @@
     },
     "target": "esnext",
     "moduleResolution": "node",
-    "allowJs": true,
     "strict": true,
     "declaration": true,
     "declarationDir": "dist/types",

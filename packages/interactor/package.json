@@ -20,7 +20,8 @@
     "lint": "echo '[skip] interactor'",
     "start": "karma start",
     "test": "yarn start --single-run",
-    "prepack": "rollup --config"
+    "problems": "tsc --noEmit",
+    "prepack": "npm run docs && npm run build"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

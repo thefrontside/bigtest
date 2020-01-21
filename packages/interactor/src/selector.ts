@@ -1,15 +1,15 @@
 import { when } from '~/when';
 import { throwIfEmpty } from '~/util';
 
-type Query<R extends Element> = (container: Element, locator: string) => Iterable<R> | Promise<Iterable<R>>;
+type Query<R extends Element> = (locator: string, container: Element) => Iterable<R> | Promise<Iterable<R>>;
 
-export type Selector<R extends Element> = (container: Element, locator: string) => Promise<R[]>;
+export type Selector<R extends Element> = (locator: string, container: Element) => Promise<R[]>;
 
 export function selector<R extends Element>(query: Query<R>): Selector<R> {
-  return (container, locator) =>
+  return (locator, container) =>
     when(async () =>
       throwIfEmpty(
-        Array.from(await query(container, locator)),
+        Array.from(await query(locator, container)),
         `Did not find any matches with locator "${locator}"`
       )
     );
