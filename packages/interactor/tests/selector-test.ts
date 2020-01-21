@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { useFixture } from './helpers';
 import { selector } from '~';
-import { throwIfEmpty } from '~/util';
+import { throwIfEmpty, compact } from '~/util';
 
 describe('selector()', () => {
   describe('basics', () => {
@@ -14,8 +14,8 @@ describe('selector()', () => {
     it('gets elements', async () => {
       const matches = await input(document.body, 'hidden');
 
-      expect(matches).to.have.lengthOf(3);
-      expect(matches[0].getAttribute('data-test-which-input')).to.eq('first');
+      expect(matches).to.have.lengthOf(2);
+      expect(matches[0].getAttribute('data-test-which-input')).to.eq('second');
     });
 
     it('has a default error', async () => {
@@ -24,6 +24,46 @@ describe('selector()', () => {
       } catch (err) {
         expect(err.name).to.eq('SelectorError');
         expect(err.message).to.eq('Did not find any matches with locator "phone"');
+        return;
+      }
+
+      expect(false, 'Should not get here').to.be.true;
+    });
+  });
+
+  describe('complex', () => {
+    const input = selector((container, locator) => {
+      const labels = throwIfEmpty(
+        Array.from(container.querySelectorAll('label')),
+        'Did not find any `<label>` elements'
+      );
+      const matchedLabels = throwIfEmpty(
+        labels.filter(label => label.innerText.trim() === locator),
+        `Did not find any labels with text "${locator}"`
+      );
+      const inputs = throwIfEmpty(
+        compact(matchedLabels.map(label => label.querySelector('input'))),
+        `An \`<input>\` could not be found for all labels matching "${locator}"`
+      );
+
+      return inputs;
+    });
+
+    useFixture('form-fixture');
+
+    it('gets elements', async () => {
+      const matches = await input(document.body, 'Name');
+
+      expect(matches).to.have.lengthOf(1);
+      expect(matches[0].getAttribute('data-test-which-input')).to.eq('first');
+    });
+
+    it('errors nicely', async () => {
+      try {
+        await input(document.body, 'Phone');
+      } catch (err) {
+        expect(err.name).to.eq('SelectorError');
+        expect(err.message).to.eq('Did not find any labels with text "Phone"');
         return;
       }
 

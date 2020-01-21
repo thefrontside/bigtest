@@ -9,7 +9,8 @@ export interface ISelector<T extends Element> {
 }
 
 export interface IBuiltIns {
-  $(): Promise<HTMLElement>;
+  first(): Promise<Element>;
+  all(): Promise<Array<Element>>;
   getText(): Promise<string>;
   click(): Promise<void>;
 }
@@ -18,7 +19,7 @@ export interface IUserActions {
   [key: string]: (...args: any[]) => Promise<any>;
 }
 
-export type IActions<UserActions extends IUserActions> = UserActions & IBuiltIns;
+export type IActions<UserActions extends IUserActions> = (UserActions & IBuiltIns) | IBuiltIns;
 
 export interface IActionContext {
   subject: IBuiltIns;
@@ -26,10 +27,3 @@ export interface IActionContext {
 }
 
 export type ActionsFactory<UserActions extends IUserActions> = (context: IActionContext) => UserActions;
-
-export interface IInteractor<UserActions extends IUserActions> extends Iterable<Element> {
-  (...selectorArgs: any[]): IActions<UserActions>;
-  [Symbol.iterator](): Iterator<Element>;
-  within(elem: Element): IInteractor<UserActions>;
-  where(selector: ISelector<Element>): IInteractor<UserActions>;
-}
