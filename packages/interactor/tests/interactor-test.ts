@@ -1,8 +1,12 @@
 import { expect } from 'chai';
 import { useFixture } from './helpers';
 import { selector, interactor } from '~';
-import { button } from '~/selectors/button';
-import { css } from '~/selectors/css';
+
+const button = selector((locator, container) =>
+  Array.from(container.querySelectorAll('button')).filter(btn => btn.innerText === locator)
+);
+const css = selector((locator, container) => container.querySelectorAll(locator));
+const inputByType = selector((locator, container) => container.querySelectorAll(`input[type="${locator}"]`));
 
 describe('interactor()', () => {
   describe('basics', () => {
@@ -29,9 +33,6 @@ describe('interactor()', () => {
   });
 
   describe('multiple matches', () => {
-    const inputByType = selector((locator, container) =>
-      container.querySelectorAll(`input[type="${locator}"]`)
-    );
     const Input = interactor(inputByType, ({ subject }) => ({
       async getValues() {
         const elems = await subject.all();
