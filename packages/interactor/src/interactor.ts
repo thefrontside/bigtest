@@ -1,51 +1,85 @@
-import { ActionsFactory, IUserActions, IActions, IBuiltIns } from '~/types';
 import { Selector } from '~/selector';
-import { when } from '~/when';
 import { isHTMLElement } from '~/util';
 
-type Interactor<UserActions extends IUserActions> = (locator: string) => IActions<UserActions>;
+export interface ISubject<Elem extends Element> {
+  $(): Promise<Elem>;
+  $$(): Promise<Elem[]>;
+  first(): IBuiltIns;
+  all(): Promise<Array<IBuiltIns>>;
+}
+
+export interface IBuiltIns {
+  getText(): Promise<string>;
+  click(): Promise<void>;
+}
+
+export interface IUserActions {
+  [key: string]: (...args: any[]) => Promise<any>;
+}
+
+export interface IActionContext<Elem extends Element> {
+  subject: ISubject<Elem>;
+  locator: string;
+}
+
+export type ActionsFactory<Elem extends Element, UserActions extends IUserActions> = (
+  context: IActionContext<Elem>
+) => UserActions;
+
+export type Interactor<UserActions extends IUserActions> = (locator: string) => UserActions & IBuiltIns;
+
+export interface IInteractorOptions {
+  within?: Element;
+}
 
 export function interactor<Elem extends Element, UserActions extends IUserActions>(
   selector: Selector<Elem>,
-  createUserActions?: ActionsFactory<UserActions>
+  createUserActions: ActionsFactory<Elem, UserActions> = () => Object.create({}),
+  { within = document.body }: IInteractorOptions = { within: document.body }
 ): Interactor<UserActions> {
-  function createBuiltIns(matches: Promise<Array<Elem>>): IBuiltIns {
+  function createSubject(matches: Promise<Array<Elem>>): ISubject<Elem> {
     return {
-      async first() {
+      async $() {
         return (await matches)[0];
       },
 
-      all() {
+      $$() {
         return matches;
       },
 
+      first() {
+        return createBuiltIns(matches.then(ms => ms[0]));
+      },
+
+      async all() {
+        return (await matches).map(m => createBuiltIns(Promise.resolve(m)));
+      }
+    };
+  }
+
+  function createBuiltIns(elem: Promise<Elem>): IBuiltIns {
+    return {
       async getText() {
-        return when(async () => {
-          const first = (await matches)[0];
-          if (isHTMLElement(first)) return first.innerText;
-          throw new Error('Element was expected to be an HTMLElement');
-        });
+        const e = await elem;
+        if (isHTMLElement(e)) return e.innerText;
+        throw new Error('Element was expected to be an HTMLElement');
       },
 
       async click() {
-        const first = (await matches)[0];
-        if (isHTMLElement(first)) return first.click();
+        const e = await elem;
+        if (isHTMLElement(e)) return e.click();
         throw new Error('Element was expected to be an HTMLElement');
       }
     };
   }
 
   return locator => {
-    const matches = selector(document.body, locator);
-    const builtIns = createBuiltIns(matches);
+    const matches = selector(within, locator);
+    const subject = createSubject(matches);
 
-    if (typeof createUserActions === 'function') {
-      return {
-        ...builtIns,
-        ...createUserActions({ subject: builtIns, locator })
-      };
-    }
-
-    return builtIns;
+    return {
+      ...createBuiltIns(subject.$()),
+      ...createUserActions({ subject, locator })
+    };
   };
 }

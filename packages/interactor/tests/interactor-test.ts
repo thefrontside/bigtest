@@ -2,21 +2,29 @@ import { expect } from 'chai';
 import { useFixture } from './helpers';
 import { selector, interactor } from '~';
 import { throwIfEmpty, compact } from '~/util';
+import { button } from '~/selectors/button';
+import { css } from '~/selectors/css';
 
 describe('interactor()', () => {
-  describe('basics', () => {
-    const css = selector((container, locator) => container.querySelectorAll(locator));
-    const button = selector((container, locator) =>
-      Array.from(container.querySelectorAll('button')).filter(btn => btn.innerText === locator)
-    );
-    const Button = interactor(button);
-    const Element = interactor(css);
+  const Button = interactor(button, ({ subject }) => ({
+    async press() {
+      await subject.first().click();
+    }
+  }));
+  const Element = interactor(css);
 
+  describe('basics', () => {
     useFixture('form-fixture');
 
-    it('gets elements', async () => {
+    it('works', async () => {
       expect(await Element('#result').getText()).to.eq('not ok');
       await Button('Submit').click();
+      expect(await Element('#result').getText()).to.eq('ok');
+    });
+
+    it('has custom actions', async () => {
+      expect(await Element('#result').getText()).to.eq('not ok');
+      await Button('Submit').press();
       expect(await Element('#result').getText()).to.eq('ok');
     });
   });
