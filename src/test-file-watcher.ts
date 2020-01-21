@@ -8,13 +8,6 @@ import { promisify } from 'util';
 
 const { writeFile } = fs.promises;
 
-function emit(eventName: string | symbol) {
-  return (execution) => {
-    execution.emit(eventName);
-    execution.resume(null);
-  }
-}
-
 interface TestFileWatcherOptions {
   files: [string];
   manifestPath: string;
@@ -53,11 +46,12 @@ export function* createTestFileWatcher(orchestrator: Execution, options: TestFil
 
   yield writeManifest(options);
 
-  yield emit("ready");
+  orchestrator.send({ ready: "manifest" });
 
   while(true) {
     yield receive();
     yield writeManifest(options);
-    yield emit("change");
+
+    orchestrator.send({ change: "manifest" });
   }
 }

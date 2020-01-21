@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as rmrf from 'rimraf';
 
-import { fork } from 'effection';
+import { fork, receive, Execution, PatternMatchOptions } from 'effection';
 
 import { actions } from './helpers';
 
@@ -15,8 +15,10 @@ const { mkdir, readFile, writeFile, unlink } = fs.promises;
 const TEST_DIR = "./tmp/test-file-watcher"
 const MANIFEST_PATH = "./tmp/test-file-watcher/manifest.js"
 
-function awaitEvent(eventSource, eventName) {
-  return new Promise((resolve) => eventSource.once(eventName, resolve));
+async function awaitReceive(task: Execution, match?: PatternMatchOptions) {
+  await actions.fork(function*() {
+    return yield receive(task, match);
+  });
 }
 
 async function loadManifest() {
@@ -26,7 +28,7 @@ async function loadManifest() {
 }
 
 describe('test-file-watcher', () => {
-  let watcher;
+  let watcher, orchestrator;
 
   beforeEach((done) => rmrf(TEST_DIR, done));
   beforeEach(async () => {
@@ -34,7 +36,9 @@ describe('test-file-watcher', () => {
     await writeFile(TEST_DIR + "/test1.t.js", "module.exports = { hello: 'world' };");
     await writeFile(TEST_DIR + "/test2.t.js", "module.exports = { monkey: 'foo' };");
 
-    watcher = actions.fork(createTestFileWatcher(null, {
+    orchestrator = actions.fork(function*() { yield });
+
+    watcher = actions.fork(createTestFileWatcher(orchestrator, {
       files: [TEST_DIR + "/*.t.{js,ts}"],
       manifestPath: MANIFEST_PATH,
     }));
@@ -42,7 +46,7 @@ describe('test-file-watcher', () => {
 
   describe('starting', () => {
     it('writes the manifest', async () => {
-      await awaitEvent(watcher, "ready");
+      await awaitReceive(orchestrator, { ready: "manifest" });
 
       let manifest = await loadManifest();
 
@@ -58,10 +62,10 @@ describe('test-file-watcher', () => {
 
   describe('adding a test file', () => {
     it('rewrites the manifest', async () => {
-      await awaitEvent(watcher, "ready");
+      await awaitReceive(orchestrator, { ready: "manifest" });
 
       await Promise.all([
-        awaitEvent(watcher, "change"),
+        awaitReceive(orchestrator, { change: "manifest" }),
         writeFile(TEST_DIR + "/test3.t.js", "module.exports = { third: 'test' };"),
       ]);
 
@@ -81,10 +85,10 @@ describe('test-file-watcher', () => {
 
   describe('removing a test file', () => {
     it('rewrites the manifest', async () => {
-      await awaitEvent(watcher, "ready");
+      await awaitReceive(orchestrator, { ready: "manifest" });
 
       await Promise.all([
-        awaitEvent(watcher, "change"),
+        awaitReceive(orchestrator, { change: "manifest" }),
         unlink(TEST_DIR + "/test2.t.js"),
       ]);
 
