@@ -21,6 +21,7 @@ fork(function*() {
       commandPort: 24002,
       connectionPort: 24003,
       agentPort: 24004,
+      testFilePort: 24005,
       testFiles: ["./test/fixtures/*.t.ts"],
       testManifestPath: tempy.file({ name: 'manifest.js' }),
     }));

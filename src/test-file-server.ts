@@ -12,7 +12,7 @@ export function* createTestFileServer(orchestrator: Execution, options: TestFile
   // TODO: this should use node rather than ts-node when running as a compiled package
   let child: ChildProcess = yield forkProcess(
     './bin/parcel-server.ts',
-    ['-p', `${options.port}`, options.manifestPath],
+    ['-p', `${options.port}`, '--out-file', 'manifest.js', '--global', '__bigtestManifest', options.manifestPath],
     {
       execPath: 'ts-node',
       execArgv: [],
