@@ -29,15 +29,15 @@ describe('interactor()', () => {
   });
 
   describe('multiple matches', () => {
-    const Input = interactor(
-      selector((locator, container) => container.querySelectorAll(`input[type="${locator}"]`)),
-      ({ subject }) => ({
-        async getValues() {
-          const elems = await subject.all();
-          return Promise.all(elems.map(el => el.getValue()));
-        }
-      })
+    const inputByType = selector((locator, container) =>
+      container.querySelectorAll(`input[type="${locator}"]`)
     );
+    const Input = interactor(inputByType, ({ subject }) => ({
+      async getValues() {
+        const elems = await subject.all();
+        return Promise.all(elems.map(el => el.getValue()));
+      }
+    }));
 
     useFixture('form-fixture');
 

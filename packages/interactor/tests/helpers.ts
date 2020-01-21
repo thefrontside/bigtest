@@ -1,11 +1,4 @@
-/* global beforeEach */
-
-/**
- * Inserts a fixture's HTML into a testing DOM element
- *
- * @param {String} name - name of the fixture
- */
-export function useFixture(name) {
+export function useFixture(name: string): void {
   let html = require(`./fixtures/${name}.html`);
 
   beforeEach(() => {

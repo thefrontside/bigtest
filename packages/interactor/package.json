@@ -20,7 +20,7 @@
     "lint": "echo '[skip] interactor'",
     "start": "karma start",
     "test": "yarn start --single-run",
-    "problems": "tsc --noEmit",
+    "problems": "tsc --noEmit ",
     "prepack": "npm run docs && npm run build"
   },
   "devDependencies": {
