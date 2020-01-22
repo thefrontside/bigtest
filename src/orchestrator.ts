@@ -5,6 +5,8 @@ import { createCommandServer } from './command-server';
 import { createConnectionServer } from './connection-server';
 import { createAgentServer } from './agent-server';
 import { createAppServer } from './app-server';
+import { createTestFileWatcher } from './test-file-watcher';
+import { createTestFileServer } from './test-file-server';
 
 type OrchestratorOptions = {
   appPort: number;
@@ -17,6 +19,9 @@ type OrchestratorOptions = {
   connectionPort: number;
   agentPort: number;
   delegate?: Execution;
+  testFiles: [string];
+  testManifestPath: string;
+  testFilePort: number;
 }
 
 export function createOrchestrator(options: OrchestratorOptions): Operation {
@@ -38,6 +43,7 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
     fork(createConnectionServer(orchestrator, {
       port: options.connectionPort,
       proxyPort: options.proxyPort,
+      testFilePort: options.testFilePort,
     }));
 
     fork(createAgentServer(orchestrator, {
@@ -50,6 +56,20 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
       args: options.appArgs,
       env: options.appEnv,
       port: options.appPort,
+    }));
+
+    fork(createTestFileWatcher(orchestrator, {
+      files: options.testFiles,
+      manifestPath: options.testManifestPath,
+    }));
+
+    // wait for manifest before starting test file server
+    yield receive(orchestrator, { ready: "manifest" });
+
+    fork(createTestFileServer(orchestrator, {
+      files: options.testFiles,
+      manifestPath: options.testManifestPath,
+      port: options.testFilePort,
     }));
 
     yield fork(function*() {
@@ -68,6 +88,9 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
       fork(function*() {
         yield receive(orchestrator, { ready: "app" });
       });
+      fork(function*() {
+        yield receive(orchestrator, { ready: "test-files" });
+      });
     });
 
     console.log("[orchestrator] running!");
@@ -77,7 +100,9 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
     }
 
     try {
-      yield
+      while(true) {
+        yield receive(orchestrator);
+      }
     } finally {
       console.log("[orchestrator] shutting down!");
     }

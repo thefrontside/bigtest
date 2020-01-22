@@ -100,4 +100,21 @@ describe('orchestrator', () => {
       expect(body).toContain('<script src="http://localhost:24104/harness.js"></script>');
     });
   });
+
+  describe('retrieving test file manifest', () => {
+    let response: Response;
+    let body: string;
+    beforeEach(async () => {
+      response = await actions.get('http://localhost:24105/manifest.js');
+      body = await response.text();
+    });
+
+    it('responds successfully', () => {
+      expect(response.ok).toEqual(true);
+    });
+
+    it('serves the application', () => {
+      expect(body).toContain('hellofromexample');
+    });
+  });
 });

@@ -6,6 +6,7 @@ import { createSocketServer, Connection, Message, send } from './ws';
 interface ConnectionServerOptions {
   port: number;
   proxyPort: number;
+  testFilePort: number;
 };
 
 export function createConnectionServer(orchestrator: Execution, options: ConnectionServerOptions): Operation {
@@ -20,7 +21,11 @@ export function createConnectionServer(orchestrator: Execution, options: Connect
       })
 
       fork(function* sendRun() {
-        yield send(connection, JSON.stringify({type: "open", url: `http://localhost:${options.proxyPort}`}));
+        yield send(connection, JSON.stringify({
+          type: "open",
+          url: `http://localhost:${options.proxyPort}`,
+          manifest: `http://localhost:${options.testFilePort}/manifest.js`
+        }));
       });
 
       try {

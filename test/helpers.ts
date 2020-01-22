@@ -35,10 +35,13 @@ export const actions: Actions = {
         appEnv: { "PORT": "24100", "BROWSER": "none" },
         appDir: "test/app",
         appPort: 24100,
+        testFiles: ["test/fixtures/*.t.ts"],
+        testManifestPath: "test/manifest.js",
         proxyPort: 24101,
         commandPort: 24102,
         connectionPort: 24103,
         agentPort: 24104,
+        testFilePort: 24105,
       }));
     }
     return orchestratorPromise;
@@ -58,4 +61,4 @@ beforeEach(() => {
 
 afterEach(() => {
   currentWorld.destroy();
-})
+});

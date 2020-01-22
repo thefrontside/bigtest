@@ -3,3 +3,5 @@
 .node-version
 .cache
 dist
+tmp
+test/manifest.js
