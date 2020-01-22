@@ -64,9 +64,7 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
     }));
 
     // wait for manifest before starting test file server
-    fork(function*() {
-      yield receive(orchestrator, { ready: "manifest" });
-    });
+    yield receive(orchestrator, { ready: "manifest" });
 
     fork(createTestFileServer(orchestrator, {
       files: options.testFiles,
