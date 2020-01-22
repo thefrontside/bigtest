@@ -13,15 +13,6 @@ interface TestFileWatcherOptions {
   manifestPath: string;
 };
 
-function globWatcherController(files: [string]) {
-  return (execution) => {
-    let watcher = chokidar.watch(files, { ignoreInitial: true });
-
-    execution.atExit(() => watcher.close());
-    execution.resume(watcher);
-  }
-}
-
 function* writeManifest(options: TestFileWatcherOptions) {
   let files = yield Promise.all(options.files.map((pattern) => promisify(glob)(pattern))).then((l) => l.flat());
 
@@ -38,20 +29,24 @@ function* writeManifest(options: TestFileWatcherOptions) {
 }
 
 export function* createTestFileWatcher(orchestrator: Execution, options: TestFileWatcherOptions): Sequence {
-  let watcher = yield globWatcherController(options.files);
+  let watcher = chokidar.watch(options.files, { ignoreInitial: true });
 
-  yield watchError(watcher);
-  yield watch(watcher, 'add');
-  yield watch(watcher, 'unlink');
+  try {
+    yield watch(watcher, ['ready', 'add', 'unlink']);
+    yield watchError(watcher);
 
-  yield writeManifest(options);
-
-  orchestrator.send({ ready: "manifest" });
-
-  while(true) {
-    yield receive();
+    yield receive({ event: 'ready' });
     yield writeManifest(options);
 
-    orchestrator.send({ change: "manifest" });
+    orchestrator.send({ ready: "manifest" });
+
+    while(true) {
+      yield receive();
+      yield writeManifest(options);
+
+      orchestrator.send({ change: "manifest" });
+    }
+  } finally {
+    watcher.close();
   }
 }
