@@ -134,10 +134,14 @@ export function interactor<Elem extends Element, UserActions extends IUserAction
     const builtIns = createBuiltIns(subject.$());
     const userActions = createUserActions({ subject, locator });
 
-    return {
-      ...builtIns,
-      ...userActions
-    };
+    return new Proxy(builtIns, {
+      get(target, key, receiver) {
+        if (userActions.hasOwnProperty(key)) {
+          return Reflect.get(userActions, key, receiver);
+        }
+        return Reflect.get(target, key, receiver);
+      }
+    });
   }
 
   return (locator, within, options) => {
@@ -164,11 +168,7 @@ export function interactor<Elem extends Element, UserActions extends IUserAction
           return (...args: any[]) => {
             // Swallowing the return value to keep actions effectual only
             const previousAction = prop(...args).then(() => {});
-
-            return {
-              ...interactor(selector, createUserActions)(locator, within, { waitFor: previousAction }),
-              ...previousAction
-            };
+            return interactor(selector, createUserActions)(locator, within, { waitFor: previousAction });
           };
         }
 

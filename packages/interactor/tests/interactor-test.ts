@@ -3,6 +3,7 @@ import { useFixture } from './helpers/useFixture';
 import { interactor } from '~';
 import { button, css, inputByType, input } from './helpers/selectors';
 import { partial } from '~/selector';
+import { when } from '~/when';
 
 describe('interactor()', () => {
   useFixture('form-fixture');
@@ -85,19 +86,23 @@ describe('interactor()', () => {
         await subject.first().click();
       }
     }));
-    const SomeForm = interactor(partial(css, 'form'), ({ subject }) => ({
+    const SomeForm = interactor(css, ({ subject }) => ({
       async submit() {
         await Button('Submit', subject).press();
       },
       get result() {
-        return Element('#result', subject).text;
+        return Element('#result').text;
       }
     }));
 
-    it('works', async () => {
-      expect(await Element('#result').text).to.eq('not ok');
-      await Button('Submit').click();
-      expect(await Element('#result').text).to.eq('ok');
+    it.skip('works', async () => {
+      expect(await SomeForm('form').result).to.eq('not ok');
+      await SomeForm('form').submit();
+      await assertWhen(SomeForm('form').result, val => expect(val).to.eq('ok'));
     });
   });
 });
+
+async function assertWhen<T>(val: Promise<T>, assertion: (val: T) => Chai.Assertion) {
+  return when(async () => assertion(await val));
+}

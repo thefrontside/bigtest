@@ -11,7 +11,7 @@ interface When {
 }
 
 export const when: When = async function when<Value>(
-  effect: () => Promise<Value | undefined | null> | Value | undefined | null,
+  proc: () => Promise<Value | undefined | null> | Value | undefined | null,
   options: IOptions = {}
 ): Promise<Value> {
   let result: Value | undefined | null;
@@ -20,7 +20,7 @@ export const when: When = async function when<Value>(
   return new Promise((resolve, reject) => {
     const intervalHandle = setInterval(async () => {
       try {
-        result = await effect();
+        result = await proc();
 
         if (result == null) {
           error = new Error(options.message || 'Result of `when()` was nullish at timeout');
