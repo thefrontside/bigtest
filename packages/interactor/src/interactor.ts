@@ -43,7 +43,7 @@ type Chainable<Interface extends IDict<AnyFunction | Promise<any>>> = {
 
 export type Interactor<UserActions extends IUserActions> = (
   locator: string,
-  within?: ISubject<Element> | Element,
+  container?: ISubject<Element> | Element,
   options?: IInteractorOptions
 ) => Chainable<IBuiltIns & UserActions>;
 
@@ -134,27 +134,30 @@ export function interactor<Elem extends Element, UserActions extends IUserAction
     const builtIns = createBuiltIns(subject.$());
     const userActions = createUserActions({ subject, locator });
 
-    return new Proxy(builtIns, {
-      get(target, key, receiver) {
-        if (userActions.hasOwnProperty(key)) {
-          return Reflect.get(userActions, key, receiver);
+    return new Proxy(
+      {},
+      {
+        get(_, key, receiver) {
+          if (userActions.hasOwnProperty(key)) {
+            return Reflect.get(userActions, key, receiver);
+          }
+          return Reflect.get(builtIns, key, receiver);
         }
-        return Reflect.get(target, key, receiver);
       }
-    });
+    ) as IBuiltIns & UserActions;
   }
 
-  return (locator, within, options) => {
+  return (locator, container, options) => {
     const { waitFor = Promise.resolve() } = options || {
       waitFor: Promise.resolve()
     };
     const actions = createActions(
       createSubject(
         waitFor.then(async () => {
-          if (isSubject(within)) {
-            return selector(locator, await within.$());
+          if (isSubject(container)) {
+            return selector(locator, await container.$());
           }
-          return selector(locator, within || document.body);
+          return selector(locator, container || document.body);
         })
       ),
       locator
@@ -168,7 +171,7 @@ export function interactor<Elem extends Element, UserActions extends IUserAction
           return (...args: any[]) => {
             // Swallowing the return value to keep actions effectual only
             const previousAction = prop(...args).then(() => {});
-            return interactor(selector, createUserActions)(locator, within, { waitFor: previousAction });
+            return interactor(selector, createUserActions)(locator, container, { waitFor: previousAction });
           };
         }
 
