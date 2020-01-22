@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { useFixture } from './helpers/useFixture';
 import { interactor } from '~';
 import { button, css, inputByType, input } from './helpers/selectors';
+import { partial } from '~/selector';
 
 describe('interactor()', () => {
   useFixture('form-fixture');
@@ -74,6 +75,29 @@ describe('interactor()', () => {
           .fill('foo')
           .upcase().value
       ).to.eq('FOO');
+    });
+  });
+
+  describe('complex interactor', () => {
+    const Element = interactor(css);
+    const Button = interactor(button, ({ subject }) => ({
+      async press() {
+        await subject.first().click();
+      }
+    }));
+    const SomeForm = interactor(partial(css, 'form'), ({ subject }) => ({
+      async submit() {
+        await Button('Submit', subject).press();
+      },
+      get result() {
+        return Element('#result', subject).text;
+      }
+    }));
+
+    it('works', async () => {
+      expect(await Element('#result').text).to.eq('not ok');
+      await Button('Submit').click();
+      expect(await Element('#result').text).to.eq('ok');
     });
   });
 });

@@ -1,6 +1,5 @@
 import { Selector } from '~/selector';
 import { isHTMLElement, isHTMLInputElement } from '~/util';
-import { when } from './when';
 
 export interface ISubject<Elem extends Element> {
   $(): Promise<Elem>;
@@ -44,12 +43,22 @@ type Chainable<Interface extends IDict<AnyFunction | Promise<any>>> = {
 
 export type Interactor<UserActions extends IUserActions> = (
   locator: string,
+  within?: ISubject<Element> | Element,
   options?: IInteractorOptions
 ) => Chainable<IBuiltIns & UserActions>;
 
 export interface IInteractorOptions {
-  within?: Element;
   waitFor?: Promise<void>;
+}
+
+function isSubject(obj: any): obj is ISubject<Element> {
+  return (
+    obj &&
+    typeof obj.$ === 'function' &&
+    typeof obj.$$ === 'function' &&
+    typeof obj.first === 'function' &&
+    typeof obj.all === 'function'
+  );
 }
 
 export function interactor<Elem extends Element, UserActions extends IUserActions>(
@@ -131,12 +140,21 @@ export function interactor<Elem extends Element, UserActions extends IUserAction
     };
   }
 
-  return (locator, options) => {
-    const { within = document.body, waitFor = Promise.resolve() } = options || {
-      within: document.body,
+  return (locator, within, options) => {
+    const { waitFor = Promise.resolve() } = options || {
       waitFor: Promise.resolve()
     };
-    const actions = createActions(createSubject(waitFor.then(() => selector(locator, within))), locator);
+    const actions = createActions(
+      createSubject(
+        waitFor.then(async () => {
+          if (isSubject(within)) {
+            return selector(locator, await within.$());
+          }
+          return selector(locator, within || document.body);
+        })
+      ),
+      locator
+    );
 
     return new Proxy(actions, {
       get(target, key, receiver) {
@@ -148,7 +166,7 @@ export function interactor<Elem extends Element, UserActions extends IUserAction
             const previousAction = prop(...args).then(() => {});
 
             return {
-              ...interactor(selector, createUserActions)(locator, { within, waitFor: previousAction }),
+              ...interactor(selector, createUserActions)(locator, within, { waitFor: previousAction }),
               ...previousAction
             };
           };

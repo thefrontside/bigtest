@@ -14,3 +14,7 @@ export function selector<R extends Element>(query: Query<R>): Selector<R> {
       )
     );
 }
+
+export function partial<T extends Element>(selector: Selector<T>, locator: string): Selector<T> {
+  return (_, container) => selector(locator, container);
+}
