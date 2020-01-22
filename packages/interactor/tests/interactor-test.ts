@@ -2,26 +2,27 @@ import { expect } from 'chai';
 import { useFixture } from './helpers/useFixture';
 import { interactor } from '~';
 import { button, css, inputByType, input } from './helpers/selectors';
-import { partial } from '~/selector';
 import { when } from '~/when';
 
 describe('interactor()', () => {
+  const Element = interactor(css);
+  const Button = interactor(button, ({ subject }) => ({
+    async press() {
+      await subject.first().click();
+    }
+  }));
+
   useFixture('form-fixture');
 
   describe('basics', () => {
-    const Element = interactor(css);
-    const Button = interactor(button, ({ subject }) => ({
-      async press() {
-        await subject.first().click();
-      }
-    }));
-
     it('works', async () => {
       expect(await Element('#result').text).to.eq('not ok');
       await Button('Submit').click();
       expect(await Element('#result').text).to.eq('ok');
     });
+  });
 
+  describe('custom actions', () => {
     it('has custom actions', async () => {
       expect(await Element('#result').text).to.eq('not ok');
       await Button('Submit').press();
@@ -80,12 +81,6 @@ describe('interactor()', () => {
   });
 
   describe('complex interactor', () => {
-    const Element = interactor(css);
-    const Button = interactor(button, ({ subject }) => ({
-      async press() {
-        await subject.first().click();
-      }
-    }));
     const SomeForm = interactor(css, ({ subject }) => ({
       async submit() {
         await Button('Submit', subject).press();
