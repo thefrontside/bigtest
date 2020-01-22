@@ -42,14 +42,18 @@ describe('test-file-watcher', () => {
       files: [TEST_DIR + "/*.t.{js,ts}"],
       manifestPath: MANIFEST_PATH,
     }));
+
+    await awaitReceive(orchestrator, { ready: "manifest" });
   });
 
   describe('starting', () => {
-    it('writes the manifest', async () => {
-      await awaitReceive(orchestrator, { ready: "manifest" });
+    let manifest;
 
-      let manifest = await loadManifest();
+    beforeEach(async () => {
+      manifest = await loadManifest();
+    });
 
+    it('writes the manifest', () => {
       expect(manifest.length).toEqual(2)
 
       expect(manifest[0].path).toEqual('./tmp/test-file-watcher/test1.t.js');
@@ -61,16 +65,15 @@ describe('test-file-watcher', () => {
   });
 
   describe('adding a test file', () => {
-    it('rewrites the manifest', async () => {
-      await awaitReceive(orchestrator, { ready: "manifest" });
+    let manifest;
 
-      await Promise.all([
-        awaitReceive(orchestrator, { change: "manifest" }),
-        writeFile(TEST_DIR + "/test3.t.js", "module.exports = { third: 'test' };"),
-      ]);
+    beforeEach(async () => {
+      await writeFile(TEST_DIR + "/test3.t.js", "module.exports = { third: 'test' };");
+      await awaitReceive(orchestrator, { change: "manifest" });
+      manifest = await loadManifest();
+    });
 
-      let manifest = await loadManifest();
-
+    it('rewrites the manifest', () => {
       expect(manifest.length).toEqual(3)
 
       expect(manifest[0].path).toEqual('./tmp/test-file-watcher/test1.t.js');
@@ -84,16 +87,15 @@ describe('test-file-watcher', () => {
   });
 
   describe('removing a test file', () => {
-    it('rewrites the manifest', async () => {
-      await awaitReceive(orchestrator, { ready: "manifest" });
+    let manifest;
 
-      await Promise.all([
-        awaitReceive(orchestrator, { change: "manifest" }),
-        unlink(TEST_DIR + "/test2.t.js"),
-      ]);
+    beforeEach(async () => {
+      await unlink(TEST_DIR + "/test2.t.js");
+      await awaitReceive(orchestrator, { change: "manifest" });
+      manifest = await loadManifest();
+    });
 
-      let manifest = await loadManifest();
-
+    it('rewrites the manifest', () => {
       expect(manifest.length).toEqual(1)
       expect(manifest[0].path).toEqual('./tmp/test-file-watcher/test1.t.js');
       expect(manifest[0].test.hello).toEqual('world');
