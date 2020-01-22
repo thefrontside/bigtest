@@ -6,9 +6,8 @@ interface AgentServerOptions {
   port: number;
 };
 
-
 export function* createAgentServer(orchestrator: Execution, options: AgentServerOptions): Sequence {
-  // TODO: this should use node rather than ts-node when running as a compiled package
+  // TODO: @precompile we want this to use a precompiled agent server when used as a package
   let child: ChildProcess = yield forkProcess(
     './bin/parcel-server.ts',
     ['-p', `${options.port}`, 'agent/index.html', 'agent/harness.ts'],
