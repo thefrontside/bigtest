@@ -43,7 +43,7 @@ type Chainable<Interface extends IDict<AnyFunction | Promise<any>>> = {
 
 export type Interactor<UserActions extends IUserActions> = (
   locator: string,
-  container?: ISubject<Element> | Element,
+  container?: ISubject<Element> | Element | null | undefined,
   options?: IInteractorOptions
 ) => Chainable<IBuiltIns & UserActions>;
 
@@ -116,7 +116,7 @@ export function interactor<Elem extends Element, UserActions extends IUserAction
           e.value = val;
           return;
         }
-        throw new Error('Element was expected to be an HTMLElement');
+        throw new Error('Element was expected to be an HTMLInputElement');
       },
 
       async keyPress(code: string) {

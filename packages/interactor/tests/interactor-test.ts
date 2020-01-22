@@ -95,14 +95,10 @@ describe('interactor()', () => {
       }
     }));
 
-    it.skip('works', async () => {
+    it('works', async () => {
       expect(await SomeForm('form').result).to.eq('not ok');
       await SomeForm('form').submit();
-      await assertWhen(SomeForm('form').result, val => expect(val).to.eq('ok'));
+      await when(async () => expect(await SomeForm('form').result).to.eq('ok'));
     });
   });
 });
-
-async function assertWhen<T>(val: Promise<T>, assertion: (val: T) => Chai.Assertion) {
-  return when(async () => assertion(await val));
-}
