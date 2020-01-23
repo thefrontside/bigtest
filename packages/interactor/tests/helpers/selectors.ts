@@ -25,5 +25,5 @@ export const input = selector((locator, container) => {
     `An \`<input>\` could not be found for all labels matching "${locator}"`
   );
 
-  return inputs;
+  return inputs as HTMLInputElement[];
 });

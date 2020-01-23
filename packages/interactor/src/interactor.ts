@@ -1,6 +1,6 @@
 import { Selector } from '~/selector';
 
-interface ISubject<Elem extends Element> {
+interface ISubject<Elem> {
   first: Promise<Elem>;
   all: Promise<Elem[]>;
 }
@@ -9,14 +9,12 @@ interface IUserActions {
   [key: string]: ((...args: any[]) => Promise<void>) | Promise<any>;
 }
 
-interface IActionContext<Elem extends Element> {
+interface IActionContext<Elem> {
   subject: ISubject<Elem>;
   locator: string;
 }
 
-type ActionsFactory<Elem extends Element, UserActions extends IUserActions> = (
-  context: IActionContext<Elem>
-) => UserActions;
+type ActionsFactory<Elem, UserActions extends IUserActions> = (context: IActionContext<Elem>) => UserActions;
 
 type AnyFunction = (...args: any[]) => any;
 
@@ -32,7 +30,7 @@ type Chainable<Interface extends IDict<AnyFunction | Promise<any>>> = {
 
 type Interactor<UserActions extends IUserActions> = (
   locator?: string,
-  container?: ISubject<Element> | Element | null | undefined,
+  container?: ISubject<any>,
   options?: IInteractorOptions
 ) => Chainable<UserActions>;
 
@@ -45,7 +43,7 @@ interface IInteractorFactoryOptions {
   container?: Element;
 }
 
-function isSubject(obj: any): obj is ISubject<Element> {
+function isSubject<T>(obj: any): obj is ISubject<T> {
   return obj && obj.hasOwnProperty('first') && obj.hasOwnProperty('all');
 }
 
