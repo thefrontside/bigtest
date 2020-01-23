@@ -37,13 +37,17 @@ describe('interactor()', () => {
   describe('basics', () => {
     beforeEach(() => Button('Submit').press());
 
-    it('works', () => expect(Element('#result').text).resolves.toEqual('ok'));
+    it('works', async () => {
+      await expect(Element('#result').text).resolves.toEqual('ok');
+    });
   });
 
   describe('custom actions', () => {
     beforeEach(() => Button('Submit').press());
 
-    it('has custom actions', () => expect(Element('#result').text).resolves.toEqual('ok'));
+    it('works', async () => {
+      await expect(Element('#result').text).resolves.toEqual('ok');
+    });
   });
 
   describe('multiple matches', () => {
@@ -53,7 +57,9 @@ describe('interactor()', () => {
       }
     }));
 
-    it('works', () => expect(Input('hidden').values).resolves.toEqual(['foo', 'bar']));
+    it('works', async () => {
+      await expect(Input('hidden').values).resolves.toEqual(['foo', 'bar']);
+    });
   });
 
   describe('chaining', () => {
@@ -64,7 +70,9 @@ describe('interactor()', () => {
         .upcase()
     );
 
-    it('works', () => expect(Input('Name').value).resolves.toEqual('BAR'));
+    it('works', async () => {
+      await expect(Input('Name').value).resolves.toEqual('BAR');
+    });
   });
 
   describe('slow action', () => {
@@ -93,7 +101,9 @@ describe('interactor()', () => {
         .upcase()
     );
 
-    it('works', () => expect(SlowInput('Name').value).resolves.toEqual('FOO'));
+    it('works', async () => {
+      await expect(SlowInput('Name').value).resolves.toEqual('FOO');
+    });
   });
 
   describe('complex interactor', () => {
@@ -114,6 +124,8 @@ describe('interactor()', () => {
 
     beforeEach(() => SomeForm().submit());
 
-    it('works', () => expect(SomeForm().result).resolves.toEqual('ok'));
+    it('works', async () => {
+      await expect(SomeForm().result).resolves.toEqual('ok');
+    });
   });
 });
