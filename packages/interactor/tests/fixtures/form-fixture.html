@@ -1,13 +1,14 @@
-<form onsubmit="event.preventDefault(); document.getElementById('result').innerHTML = 'ok';">
-  <label>
-    Name
-    <input type="text" data-test-which-input="first" />
-  </label>
-  <input type="hidden" data-test-which-input="second" value="foo" />
-  <input type="hidden" data-test-which-input="last" value="bar" />
-  <button>
-    Submit
-  </button>
-</form>
-
-<p id="result">not ok</p>
+<section data-test-form-wrapper>
+  <form onsubmit="event.preventDefault(); document.getElementById('result').innerHTML = 'ok';">
+    <label>
+      Name
+      <input type="text" data-test-which-input="first" />
+    </label>
+    <input type="hidden" data-test-which-input="second" value="foo" />
+    <input type="hidden" data-test-which-input="last" value="bar" />
+    <button>
+      Submit
+    </button>
+  </form>
+  <p id="result">not ok</p>
+</section>

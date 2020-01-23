@@ -16,6 +16,21 @@ describe('interactor()', () => {
       elem.click();
     }
   }));
+  const Input = interactor(input, ({ subject }) => {
+    return {
+      get value() {
+        return subject.first.then(elem => elem.value);
+      },
+      async fill(val: string) {
+        const elem = await subject.first;
+        elem.value = val;
+      },
+      async upcase() {
+        const elem = await subject.first;
+        elem.value = elem.value.toUpperCase();
+      }
+    };
+  });
 
   useFixture('form-fixture');
 
@@ -40,22 +55,6 @@ describe('interactor()', () => {
   });
 
   describe('chaining', () => {
-    const Input = interactor(input, ({ subject }) => ({
-      get value() {
-        return subject.first.then(elem => elem.value);
-      },
-
-      async fill(val: string) {
-        const elem = await subject.first;
-        elem.value = val;
-      },
-
-      async upcase() {
-        const elem = await subject.first;
-        elem.value = elem.value.toUpperCase();
-      }
-    }));
-
     beforeEach(() =>
       Input('Name')
         .fill('foo')
@@ -67,47 +66,48 @@ describe('interactor()', () => {
   });
 
   describe('slow action', () => {
-    const Input = interactor(input, ({ subject }) => ({
-      get value() {
-        return subject.first.then(elem => elem.value);
-      },
-
-      async fill(val: string) {
-        const elem = await subject.first;
-        elem.value = val;
-      },
-
-      async upcase() {
-        const elem = await subject.first;
-        await new Promise(resolve => {
-          setTimeout(resolve, 200);
-        });
-        elem.value = elem.value.toUpperCase();
-      }
-    }));
+    const SlowInput = interactor(input, ({ subject }) => {
+      return {
+        get value() {
+          return subject.first.then(elem => elem.value);
+        },
+        async fill(val: string) {
+          const elem = await subject.first;
+          elem.value = val;
+        },
+        async upcase() {
+          const elem = await subject.first;
+          await new Promise(resolve => {
+            setTimeout(resolve, 200);
+          });
+          elem.value = elem.value.toUpperCase();
+        }
+      };
+    });
 
     beforeEach(() =>
-      Input('Name')
+      SlowInput('Name')
         .fill('foo')
         .upcase()
     );
 
-    it('works', async () => expect(await Input('Name').value).to.eq('FOO'));
+    it('works', async () => expect(await SlowInput('Name').value).to.eq('FOO'));
   });
 
   describe('complex interactor', () => {
     const SomeForm = interactor(
       css,
-      ({ subject }) => ({
-        async submit() {
-          await Button('Submit', subject).press();
-        },
-
-        get result() {
-          return Element('#result').text;
-        }
-      }),
-      { locator: 'form' }
+      ({ subject }) => {
+        return {
+          async submit() {
+            await Button('Submit', subject).press();
+          },
+          get result() {
+            return Element('#result', subject).text;
+          }
+        };
+      },
+      { locator: '[data-test-form-wrapper]' }
     );
 
     beforeEach(() => SomeForm().submit());
