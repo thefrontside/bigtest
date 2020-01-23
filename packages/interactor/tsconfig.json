@@ -10,7 +10,8 @@
     "strict": true,
     "declaration": true,
     "declarationDir": "dist/types",
-    "sourceMap": true
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true
   },
   "exclude": ["node_modules", "dist"]
 }

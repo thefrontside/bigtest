@@ -3,29 +3,21 @@ interface IOptions {
   message?: string;
 }
 interface When {
-  <Value>(
-    effect: () => Promise<Value | undefined | null> | Value | undefined | null,
-    options?: IOptions
-  ): Promise<Value>;
+  <Value>(effect: () => Promise<Value> | Value, options?: IOptions): Promise<Value>;
   timeout: number;
 }
 
 export const when: When = async function when<Value>(
-  proc: () => Promise<Value | undefined | null> | Value | undefined | null,
+  proc: () => Promise<Value> | Value,
   options: IOptions = {}
 ): Promise<Value> {
-  let result: Value | undefined | null;
-  let error: Error;
-
   return new Promise((resolve, reject) => {
+    let error: Error;
     const intervalHandle = setInterval(async () => {
+      let result: Value;
+
       try {
         result = await proc();
-
-        if (result == null) {
-          error = new Error(options.message || 'Result of `when()` was nullish at timeout');
-          return;
-        }
       } catch (e) {
         error = e;
         return;

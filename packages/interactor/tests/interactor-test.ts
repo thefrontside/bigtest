@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import expect from 'expect';
 import { it } from './helpers/it';
 import { useFixture } from './helpers/useFixture';
 import { interactor } from '~';
@@ -36,12 +36,14 @@ describe('interactor()', () => {
 
   describe('basics', () => {
     beforeEach(() => Button('Submit').press());
-    it('works', async () => expect(await Element('#result').text).to.eq('ok'));
+
+    it('works', () => expect(Element('#result').text).resolves.toEqual('ok'));
   });
 
   describe('custom actions', () => {
     beforeEach(() => Button('Submit').press());
-    it('has custom actions', async () => expect(await Element('#result').text).to.eq('ok'));
+
+    it('has custom actions', () => expect(Element('#result').text).resolves.toEqual('ok'));
   });
 
   describe('multiple matches', () => {
@@ -51,7 +53,7 @@ describe('interactor()', () => {
       }
     }));
 
-    it('works', async () => expect(await Input('hidden').values).to.deep.eq(['foo', 'bar']));
+    it('works', () => expect(Input('hidden').values).resolves.toEqual(['foo', 'bar']));
   });
 
   describe('chaining', () => {
@@ -62,7 +64,7 @@ describe('interactor()', () => {
         .upcase()
     );
 
-    it('works', async () => expect(await Input('Name').value).to.eq('BAR'));
+    it('works', () => expect(Input('Name').value).resolves.toEqual('BAR'));
   });
 
   describe('slow action', () => {
@@ -91,7 +93,7 @@ describe('interactor()', () => {
         .upcase()
     );
 
-    it('works', async () => expect(await SlowInput('Name').value).to.eq('FOO'));
+    it('works', () => expect(SlowInput('Name').value).resolves.toEqual('FOO'));
   });
 
   describe('complex interactor', () => {
@@ -112,6 +114,6 @@ describe('interactor()', () => {
 
     beforeEach(() => SomeForm().submit());
 
-    it('works', async () => expect(await SomeForm().result).to.eq('ok'));
+    it('works', () => expect(SomeForm().result).resolves.toEqual('ok'));
   });
 });
