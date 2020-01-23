@@ -21,7 +21,7 @@ export const input = selector((locator, container) => {
     `Did not find any labels with text "${locator}"`
   );
   const inputs = throwIfEmpty(
-    compact(matchedLabels.map(label => label.querySelector('input'))),
+    compact(matchedLabels.map(label => label.control)),
     `An \`<input>\` could not be found for all labels matching "${locator}"`
   );
 
