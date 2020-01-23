@@ -1,8 +1,8 @@
 import { expect } from 'chai';
+import { it } from './helpers/it';
 import { useFixture } from './helpers/useFixture';
 import { interactor } from '~';
 import { button, css, inputByType, input } from './helpers/selectors';
-import { when } from '~/when';
 
 describe('interactor()', () => {
   const Element = interactor(css);
@@ -15,19 +15,13 @@ describe('interactor()', () => {
   useFixture('form-fixture');
 
   describe('basics', () => {
-    it('works', async () => {
-      expect(await Element('#result').text).to.eq('not ok');
-      await Button('Submit').click();
-      expect(await Element('#result').text).to.eq('ok');
-    });
+    beforeEach(() => Button('Submit').press());
+    it('works', async () => expect(await Element('#result').text).to.eq('ok'));
   });
 
   describe('custom actions', () => {
-    it('has custom actions', async () => {
-      expect(await Element('#result').text).to.eq('not ok');
-      await Button('Submit').press();
-      expect(await Element('#result').text).to.eq('ok');
-    });
+    beforeEach(() => Button('Submit').press());
+    it('has custom actions', async () => expect(await Element('#result').text).to.eq('ok'));
   });
 
   describe('multiple matches', () => {
@@ -37,9 +31,7 @@ describe('interactor()', () => {
       }
     }));
 
-    it('works', async () => {
-      expect(await Input('hidden').values).to.deep.eq(['foo', 'bar']);
-    });
+    it('works', async () => expect(await Input('hidden').values).to.deep.eq(['foo', 'bar']));
   });
 
   describe('chaining', () => {
@@ -50,14 +42,14 @@ describe('interactor()', () => {
       }
     }));
 
-    it('works', async () => {
-      expect(
-        await Input('Name')
-          .fill('foo')
-          .fill('bar')
-          .upcase().value
-      ).to.eq('BAR');
-    });
+    beforeEach(() =>
+      Input('Name')
+        .fill('foo')
+        .fill('bar')
+        .upcase()
+    );
+
+    it('works', async () => expect(await Input('Name').value).to.eq('BAR'));
   });
 
   describe('slow action', () => {
@@ -71,29 +63,31 @@ describe('interactor()', () => {
       }
     }));
 
-    it('works', async () => {
-      expect(
-        await Input('Name')
-          .fill('foo')
-          .upcase().value
-      ).to.eq('FOO');
-    });
+    beforeEach(() =>
+      Input('Name')
+        .fill('foo')
+        .upcase()
+    );
+
+    it('works', async () => expect(await Input('Name').value).to.eq('FOO'));
   });
 
   describe('complex interactor', () => {
-    const SomeForm = interactor(css, ({ subject }) => ({
-      async submit() {
-        await Button('Submit', subject).press();
-      },
-      get result() {
-        return Element('#result').text;
-      }
-    }));
+    const SomeForm = interactor(
+      css,
+      ({ subject }) => ({
+        async submit() {
+          await Button('Submit', subject).press();
+        },
+        get result() {
+          return Element('#result').text;
+        }
+      }),
+      { locator: 'form' }
+    );
 
-    it('works', async () => {
-      expect(await SomeForm('form').result).to.eq('not ok');
-      await SomeForm('form').submit();
-      await when(async () => expect(await SomeForm('form').result).to.eq('ok'));
-    });
+    beforeEach(() => SomeForm().submit());
+
+    it('works', async () => expect(await SomeForm().result).to.eq('ok'));
   });
 });

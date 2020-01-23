@@ -7,10 +7,10 @@ export type Selector<R extends Element> = (locator: string, container: Element) 
 
 export function selector<R extends Element>(query: Query<R>): Selector<R> {
   return (locator, container) =>
-    when(async () =>
-      throwIfEmpty(
+    when(async () => {
+      return throwIfEmpty(
         Array.from(await query(locator, container)),
         `Did not find any matches with locator "${locator}"`
-      )
-    );
+      );
+    });
 }

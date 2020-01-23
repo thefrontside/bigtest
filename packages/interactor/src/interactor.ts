@@ -42,13 +42,18 @@ type Chainable<Interface extends IDict<AnyFunction | Promise<any>>> = {
 };
 
 export type Interactor<UserActions extends IUserActions> = (
-  locator: string,
+  locator?: string,
   container?: ISubject<Element> | Element | null | undefined,
   options?: IInteractorOptions
 ) => Chainable<IBuiltIns & UserActions>;
 
 export interface IInteractorOptions {
   waitFor?: Promise<void>;
+}
+
+export interface IInteractorFactoryOptions {
+  locator?: string;
+  container?: Element;
 }
 
 function isSubject(obj: any): obj is ISubject<Element> {
@@ -63,7 +68,11 @@ function isSubject(obj: any): obj is ISubject<Element> {
 
 export function interactor<Elem extends Element, UserActions extends IUserActions>(
   selector: Selector<Elem>,
-  createUserActions: ActionsFactory<Elem, UserActions> = () => Object.create({})
+  createUserActions: ActionsFactory<Elem, UserActions> = () => Object.create({}),
+  { locator: defaultLocator = '', container: defaultContainer = document.body }: IInteractorFactoryOptions = {
+    locator: '',
+    container: document.body
+  }
 ): Interactor<UserActions> {
   function createSubject(matches: Promise<Array<Elem>>): ISubject<Elem> {
     return {
@@ -148,6 +157,7 @@ export function interactor<Elem extends Element, UserActions extends IUserAction
   }
 
   return (locator, container, options) => {
+    const realLocator = locator || defaultLocator;
     const { waitFor = Promise.resolve() } = options || {
       waitFor: Promise.resolve()
     };
@@ -155,12 +165,12 @@ export function interactor<Elem extends Element, UserActions extends IUserAction
       createSubject(
         waitFor.then(async () => {
           if (isSubject(container)) {
-            return selector(locator, await container.$());
+            return selector(realLocator, await container.$());
           }
-          return selector(locator, container || document.body);
+          return selector(realLocator, container || defaultContainer);
         })
       ),
-      locator
+      realLocator
     );
 
     return new Proxy(actions, {
@@ -171,7 +181,10 @@ export function interactor<Elem extends Element, UserActions extends IUserAction
           return (...args: any[]) => {
             // Swallowing the return value to keep actions effectual only
             const previousAction = prop(...args).then(() => {});
-            return interactor(selector, createUserActions)(locator, container, { waitFor: previousAction });
+            return interactor(selector, createUserActions, {
+              container: defaultContainer,
+              locator: defaultLocator
+            })(locator, container, { waitFor: previousAction });
           };
         }
 
