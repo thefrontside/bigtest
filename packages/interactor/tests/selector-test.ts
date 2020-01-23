@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import expect from 'expect';
 import { useFixture } from './helpers/useFixture';
 import { selector } from '~';
 import { throwIfEmpty } from '~/util';
@@ -26,20 +26,20 @@ describe('selector()', () => {
     it('gets elements', async () => {
       const matches = await input('hidden', document.body);
 
-      expect(matches).to.have.lengthOf(2);
-      expect(matches[0].getAttribute('data-test-which-input')).to.eq('second');
+      expect(matches).toHaveLength(2);
+      expect(matches[0].getAttribute('data-test-which-input')).toEqual('second');
     });
 
     it('has a default error', async () => {
       try {
         await input('phone', document.body);
       } catch (err) {
-        expect(err.name).to.eq('SelectorError');
-        expect(err.message).to.eq('Did not find any matches with locator "phone"');
+        expect(err.name).toEqual('SelectorError');
+        expect(err.message).toEqual('Did not find any matches with locator "phone"');
         return;
       }
 
-      expect(false, 'Should not get here').to.be.true;
+      expect(false).toEqual(true);
     });
   });
 
@@ -49,20 +49,20 @@ describe('selector()', () => {
     it('gets elements', async () => {
       const matches = await input('Name', document.body);
 
-      expect(matches).to.have.lengthOf(1);
-      expect(matches[0].getAttribute('data-test-which-input')).to.eq('first');
+      expect(matches).toHaveLength(1);
+      expect(matches[0].getAttribute('data-test-which-input')).toEqual('first');
     });
 
     it('errors nicely', async () => {
       try {
         await input('Phone', document.body);
       } catch (err) {
-        expect(err.name).to.eq('SelectorError');
-        expect(err.message).to.eq('Did not find any labels with text "Phone"');
+        expect(err.name).toEqual('SelectorError');
+        expect(err.message).toEqual('Did not find any labels with text "Phone"');
         return;
       }
 
-      expect(false, 'Should not get here').to.be.true;
+      expect(false).toEqual(true);
     });
   });
 
@@ -80,12 +80,12 @@ describe('selector()', () => {
       try {
         await input('phone', document.body);
       } catch (err) {
-        expect(err.name).to.eq('SelectorError');
-        expect(err.message).to.eq('Did not find input of type "phone"');
+        expect(err.name).toEqual('SelectorError');
+        expect(err.message).toEqual('Did not find input of type "phone"');
         return;
       }
 
-      expect(false, 'Should not get here').to.be.true;
+      expect(false).toEqual(true);
     });
   });
 });
