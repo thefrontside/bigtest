@@ -5,10 +5,15 @@ import { interactor } from '~';
 import { button, css, inputByType, input } from './helpers/selectors';
 
 describe('interactor()', () => {
-  const Element = interactor(css);
+  const Element = interactor(css, ({ subject }) => ({
+    get text() {
+      return subject.first.then(elem => elem.innerText);
+    }
+  }));
   const Button = interactor(button, ({ subject }) => ({
     async press() {
-      await subject.first().click();
+      const elem = await subject.first;
+      elem.click();
     }
   }));
 
@@ -27,7 +32,7 @@ describe('interactor()', () => {
   describe('multiple matches', () => {
     const Input = interactor(inputByType, ({ subject }) => ({
       get values() {
-        return subject.all().then(elems => Promise.all(elems.map(el => el.value)));
+        return subject.all.then(elems => Promise.all(elems.map(el => el.value)));
       }
     }));
 
@@ -36,9 +41,18 @@ describe('interactor()', () => {
 
   describe('chaining', () => {
     const Input = interactor(input, ({ subject }) => ({
+      get value() {
+        return subject.first.then(elem => elem.value);
+      },
+
+      async fill(val: string) {
+        const elem = await subject.first;
+        elem.value = val;
+      },
+
       async upcase() {
-        const og = await subject.first().value;
-        await subject.first().fill(og.toUpperCase());
+        const elem = await subject.first;
+        elem.value = elem.value.toUpperCase();
       }
     }));
 
@@ -54,12 +68,21 @@ describe('interactor()', () => {
 
   describe('slow action', () => {
     const Input = interactor(input, ({ subject }) => ({
+      get value() {
+        return subject.first.then(elem => elem.value);
+      },
+
+      async fill(val: string) {
+        const elem = await subject.first;
+        elem.value = val;
+      },
+
       async upcase() {
-        const og = await subject.first().value;
+        const elem = await subject.first;
         await new Promise(resolve => {
           setTimeout(resolve, 200);
         });
-        await subject.first().fill(og.toUpperCase());
+        elem.value = elem.value.toUpperCase();
       }
     }));
 
@@ -79,6 +102,7 @@ describe('interactor()', () => {
         async submit() {
           await Button('Submit', subject).press();
         },
+
         get result() {
           return Element('#result').text;
         }

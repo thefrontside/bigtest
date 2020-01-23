@@ -5,10 +5,10 @@ export const button = selector((locator, container) =>
   Array.from(container.querySelectorAll('button')).filter(btn => btn.innerText === locator)
 );
 
-export const css = selector((locator, container) => container.querySelectorAll(locator));
+export const css = selector((locator, container) => container.querySelectorAll<HTMLElement>(locator));
 
 export const inputByType = selector((locator, container) =>
-  container.querySelectorAll(`input[type="${locator}"]`)
+  container.querySelectorAll<HTMLInputElement>(`input[type="${locator}"]`)
 );
 
 export const input = selector((locator, container) => {
