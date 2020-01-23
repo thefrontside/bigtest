@@ -46,13 +46,7 @@ interface IInteractorFactoryOptions {
 }
 
 function isSubject(obj: any): obj is ISubject<Element> {
-  return (
-    obj &&
-    typeof obj.$ === 'function' &&
-    typeof obj.$$ === 'function' &&
-    typeof obj.first === 'function' &&
-    typeof obj.all === 'function'
-  );
+  return obj && obj.hasOwnProperty('first') && obj.hasOwnProperty('all');
 }
 
 function createSubject<Elem extends Element>(matches: Promise<Array<Elem>>): ISubject<Elem> {
