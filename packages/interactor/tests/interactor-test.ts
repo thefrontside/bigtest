@@ -145,7 +145,7 @@ describe('interactor()', () => {
     describe('action errors', () => {
       const Input = interactor(input, () => {
         return {
-          async boom() {
+          boom() {
             throw new Error('💥');
           }
         };

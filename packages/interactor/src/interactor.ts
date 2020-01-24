@@ -86,11 +86,15 @@ export function interactor<Elem extends Element, Actions extends IActions>(
 
     return new Proxy(Object.create({}), {
       get(_, key, receiver) {
-        const prop = Reflect.get(actions, key, receiver);
+        const actionOrGetter = Reflect.get(actions, key, receiver);
 
-        if (typeof prop === 'function') {
+        if (typeof actionOrGetter === 'function') {
           return (...args: any[]) => {
-            const previousAction: Promise<void> = prop(...args).then(() => {});
+            const previousAction = Promise.resolve()
+              .then(() => actionOrGetter(...args))
+              .then(() => {
+                // Swallow any return value from the action
+              });
             const actions = interactor(selector, actionsFactory, {
               container: defaultContainer,
               locator: defaultLocator
@@ -107,8 +111,8 @@ export function interactor<Elem extends Element, Actions extends IActions>(
           };
         }
 
-        return prop;
+        return actionOrGetter;
       }
-    }) as Chainable<Actions>;
+    });
   };
 }
