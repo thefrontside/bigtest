@@ -5,7 +5,7 @@ interface ISubject<Elem> {
   all: Promise<Elem[]>;
 }
 
-interface IUserActions {
+interface IActions {
   [key: string]: ((...args: any[]) => Promise<void>) | Promise<any>;
 }
 
@@ -14,7 +14,7 @@ interface IActionContext<Elem> {
   locator: string;
 }
 
-type ActionsFactory<Elem, UserActions extends IUserActions> = (context: IActionContext<Elem>) => UserActions;
+type ActionsFactory<Elem, Actions extends IActions> = (context: IActionContext<Elem>) => Actions;
 
 type AnyFunction = (...args: any[]) => any;
 
@@ -28,11 +28,11 @@ type Chainable<Interface extends IDict<AnyFunction | Promise<any>>> = {
     : Interface[Key];
 };
 
-type Interactor<UserActions extends IUserActions> = (
+type Interactor<Actions extends IActions> = (
   locator?: string,
   container?: ISubject<any>,
   options?: IInteractorOptions
-) => Chainable<UserActions>;
+) => Chainable<Actions>;
 
 interface IInteractorOptions {
   waitFor?: Promise<void>;
@@ -59,20 +59,20 @@ function createSubject<Elem extends Element>(matches: Promise<Array<Elem>>): ISu
   };
 }
 
-export function interactor<Elem extends Element, UserActions extends IUserActions>(
+export function interactor<Elem extends Element, Actions extends IActions>(
   selector: Selector<Elem>,
-  createActions: ActionsFactory<Elem, UserActions> = () => Object.create({}),
+  actionsFactory: ActionsFactory<Elem, Actions> = () => Object.create({}),
   { locator: defaultLocator = '', container: defaultContainer = document.body }: IInteractorFactoryOptions = {
     locator: '',
     container: document.body
   }
-): Interactor<UserActions> {
+): Interactor<Actions> {
   return (locator, container, options) => {
     const getLocator = () => locator || defaultLocator;
     const { waitFor = Promise.resolve() } = options || {
       waitFor: Promise.resolve()
     };
-    const actions = createActions({
+    const actions = actionsFactory({
       subject: createSubject(
         waitFor.then(async () => {
           if (isSubject(container)) {
@@ -84,22 +84,31 @@ export function interactor<Elem extends Element, UserActions extends IUserAction
       locator: getLocator()
     });
 
-    return new Proxy(actions, {
-      get(target, key, receiver) {
-        const prop = Reflect.get(target, key, receiver);
+    return new Proxy(Object.create({}), {
+      get(_, key, receiver) {
+        const prop = Reflect.get(actions, key, receiver);
 
         if (typeof prop === 'function') {
           return (...args: any[]) => {
-            const previousAction = prop(...args);
-            return interactor(selector, createActions, {
+            const previousAction: Promise<void> = prop(...args).then(() => {});
+            const actions = interactor(selector, actionsFactory, {
               container: defaultContainer,
               locator: defaultLocator
             })(locator, container, { waitFor: previousAction });
+
+            return new Proxy(Object.create({}), {
+              get(_, key, receiver) {
+                if (key === 'then') {
+                  return previousAction.then.bind(previousAction);
+                }
+                return Reflect.get(actions, key, receiver);
+              }
+            });
           };
         }
 
         return prop;
       }
-    }) as Chainable<UserActions>;
+    }) as Chainable<Actions>;
   };
 }

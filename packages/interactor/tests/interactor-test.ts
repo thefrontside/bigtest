@@ -85,26 +85,18 @@ describe('interactor()', () => {
         },
         async fill(val: string) {
           const elem = await subject.first;
-          elem.value = val;
-        },
-        async upcase() {
-          const elem = await subject.first;
           await new Promise(resolve => {
             setTimeout(resolve, 200);
           });
-          elem.value = elem.value.toUpperCase();
+          elem.value = val;
         }
       };
     });
 
-    beforeEach(() =>
-      SlowInput('Name')
-        .fill('foo')
-        .upcase()
-    );
+    beforeEach(() => SlowInput('Name').fill('foo'));
 
     it('works', async () => {
-      await expect(SlowInput('Name').value).resolves.toEqual('FOO');
+      await expect(SlowInput('Name').value).resolves.toEqual('foo');
     });
   });
 
@@ -151,26 +143,17 @@ describe('interactor()', () => {
     });
 
     describe('action errors', () => {
-      const Input = interactor(input, ({ subject }) => {
+      const Input = interactor(input, () => {
         return {
           async boom() {
-            await subject.first;
             throw new Error('💥');
           }
         };
       });
 
-      beforeEach(async () => {
-        try {
-          await Input('Name').boom();
-          return;
-        } catch (e) {
-          expect(e).toEqual(new Error('💥'));
-          return;
-        }
-      });
+      beforeEach(() => expect(Input('Name').boom()).rejects.toEqual(new Error('💥')));
 
-      it('surfaces action errors', async () => {});
+      it('surfaces action errors');
     });
   });
 });
