@@ -7,32 +7,45 @@ interface When {
   timeout: number;
 }
 
+function elapsedSince(start: number) {
+  return Date.now() - start;
+}
+
 export const when: When = async function when<Value>(
   proc: () => Promise<Value> | Value,
-  options: IOptions = {}
+  { timeout = when.timeout }: IOptions = { timeout: when.timeout }
 ): Promise<Value> {
-  return new Promise((resolve, reject) => {
-    let error: Error;
-    const intervalHandle = setInterval(async () => {
-      let result: Value;
+  let start = Date.now();
+  let success = false;
+  let result: Value;
+  let error: Error;
 
-      try {
-        result = await proc();
-      } catch (e) {
-        error = e;
-        return;
-      }
+  async function attempt() {
+    if (elapsedSince(start) >= timeout) {
+      return;
+    }
 
-      clearTimeout(timeoutHandle);
-      clearInterval(intervalHandle);
-      resolve(result);
-    }, 10);
+    try {
+      result = await proc();
+      success = true;
+    } catch (e) {
+      error = e;
+      await new Promise(resolve => {
+        setTimeout(async () => {
+          await attempt();
+          resolve();
+        }, 10);
+      });
+    }
+  }
 
-    const timeoutHandle = setTimeout(() => {
-      clearInterval(intervalHandle);
-      reject(error);
-    }, options.timeout || when['timeout']);
-  });
+  await attempt();
+
+  if (success) {
+    return result!;
+  }
+
+  throw error!;
 };
 
 when.timeout = 1000;

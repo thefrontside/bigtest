@@ -3,6 +3,8 @@ import { it } from './helpers/it';
 import { useFixture } from './helpers/useFixture';
 import { interactor } from '~';
 import { button, css, inputByType, input } from './helpers/selectors';
+import { SelectorError } from '~/util';
+import { when } from '~/when';
 
 describe('interactor()', () => {
   const Element = interactor(css, ({ subject }) => ({
@@ -126,6 +128,49 @@ describe('interactor()', () => {
 
     it('works', async () => {
       await expect(SomeForm().result).resolves.toEqual('ok');
+    });
+  });
+
+  describe('errors', () => {
+    let timeoutOG = when.timeout;
+
+    before(() => {
+      when.timeout = 50;
+    });
+
+    after(() => {
+      when.timeout = timeoutOG;
+    });
+
+    describe('selector errors', () => {
+      it('surfaces selector errors', async () => {
+        await expect(Element('foo').text).rejects.toEqual(
+          new SelectorError('Did not find any matches with locator "foo"')
+        );
+      });
+    });
+
+    describe('action errors', () => {
+      const Input = interactor(input, ({ subject }) => {
+        return {
+          async boom() {
+            await subject.first;
+            throw new Error('💥');
+          }
+        };
+      });
+
+      beforeEach(async () => {
+        try {
+          await Input('Name').boom();
+          return;
+        } catch (e) {
+          expect(e).toEqual(new Error('💥'));
+          return;
+        }
+      });
+
+      it('surfaces action errors', async () => {});
     });
   });
 });
