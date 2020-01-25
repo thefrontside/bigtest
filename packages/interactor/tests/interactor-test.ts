@@ -157,7 +157,9 @@ describe('interactor()', () => {
 
       beforeEach(() => expect(Input('Name').boom()).rejects.toEqual(new Error('💥')));
 
-      it('surfaces action errors');
+      it('surfaces action errors', async () => {
+        // We're testing an action, not a resultant state, so nothing needs to go here
+      });
     });
   });
 });
