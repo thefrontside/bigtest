@@ -5,7 +5,7 @@ interface ISubject<Elem> {
   all: Promise<Elem[]>;
 }
 
-type Action = (...args: any[]) => Promise<void>;
+type Action = (...args: any[]) => Promise<void> | void;
 
 interface IActions {
   [key: string]: Action | Promise<any>;
@@ -109,20 +109,24 @@ export function interactor<Container, Elem, Actions extends IActions>(
             get(_, key, receiver) {
               const previousAction = Promise.resolve()
                 .then(() => actionOrGetter(...args))
-                .then(() => {
-                  // Swallow any return value from the action
+                .then(returnValue => {
+                  if (returnValue != null) {
+                    throw new TypeError(
+                      'Your action returned a value; please use a computed property instead'
+                    );
+                  }
                 });
 
               if (key === 'then') {
                 return (...args: any[]) => previousAction.then(...args);
               }
 
-              const actions = interactor(selector, actionsFactory, {
+              const chainableActions = interactor(selector, actionsFactory, {
                 container: defaultContainer,
                 locator: defaultLocator
               })(locator, container, { waitFor: previousAction });
 
-              return Reflect.get(actions, key, receiver);
+              return Reflect.get(chainableActions, key, receiver);
             }
           });
         };

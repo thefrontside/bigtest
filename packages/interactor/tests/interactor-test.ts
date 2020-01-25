@@ -156,7 +156,27 @@ describe('interactor()', () => {
 
       beforeEach(() => expect(Input('Name').boom()).rejects.toEqual(new Error('💥')));
 
-      it('surfaces action errors', async () => {
+      it('surfaces action errors', () => {
+        // We're testing an action, not a resultant state, so nothing needs to go here
+      });
+    });
+
+    describe('action return values', () => {
+      const Input = interactor(input, () => {
+        return {
+          bam() {
+            return 'henlo' as any;
+          }
+        };
+      });
+
+      beforeEach(() =>
+        expect(Input('Name').bam()).rejects.toEqual(
+          new TypeError('Your action returned a value; please use a computed property instead')
+        )
+      );
+
+      it('throws an error', () => {
         // We're testing an action, not a resultant state, so nothing needs to go here
       });
     });
