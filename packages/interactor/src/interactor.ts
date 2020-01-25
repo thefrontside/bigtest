@@ -70,10 +70,14 @@ export function interactor<Container, Elem, Actions extends IActions>(
     container: document.body as any
   }
 ): Interactor<Container, Actions> {
-  return (locator = defaultLocator, container = defaultContainer, options) => {
-    const { waitFor = Promise.resolve() } = options || {
+  return (
+    locator = defaultLocator,
+    container = defaultContainer,
+    options = {
       waitFor: Promise.resolve()
-    };
+    }
+  ) => {
+    const { waitFor = Promise.resolve() } = options;
     const actions = actionsFactory({
       subject: createSubject(
         waitFor.then(async () => {
