@@ -67,8 +67,7 @@ export function interactor<Elem extends Element, Actions extends IActions>(
     container: document.body
   }
 ): Interactor<Actions> {
-  return (locator, container, options) => {
-    const getLocator = () => locator || defaultLocator;
+  return (locator = defaultLocator, container, options) => {
     const { waitFor = Promise.resolve() } = options || {
       waitFor: Promise.resolve()
     };
@@ -76,42 +75,42 @@ export function interactor<Elem extends Element, Actions extends IActions>(
       subject: createSubject(
         waitFor.then(async () => {
           if (isSubject(container)) {
-            return selector(getLocator(), await container.first);
+            return selector(locator, await container.first);
           }
-          return selector(getLocator(), container || defaultContainer);
+          return selector(locator, container || defaultContainer);
         })
       ),
-      locator: getLocator()
+      locator
     });
 
     return new Proxy(Object.create({}), {
       get(_, key, receiver) {
         const actionOrGetter = Reflect.get(actions, key, receiver);
 
-        if (typeof actionOrGetter === 'function') {
-          return (...args: any[]) => {
-            const previousAction = Promise.resolve()
-              .then(() => actionOrGetter(...args))
-              .then(() => {
-                // Swallow any return value from the action
-              });
-            const actions = interactor(selector, actionsFactory, {
-              container: defaultContainer,
-              locator: defaultLocator
-            })(locator, container, { waitFor: previousAction });
-
-            return new Proxy(Object.create({}), {
-              get(_, key, receiver) {
-                if (key === 'then') {
-                  return previousAction.then.bind(previousAction);
-                }
-                return Reflect.get(actions, key, receiver);
-              }
-            });
-          };
+        if (typeof actionOrGetter !== 'function') {
+          return actionOrGetter;
         }
 
-        return actionOrGetter;
+        return (...args: any[]) => {
+          const previousAction = Promise.resolve()
+            .then(() => actionOrGetter(...args))
+            .then(() => {
+              // Swallow any return value from the action
+            });
+          const actions = interactor(selector, actionsFactory, {
+            container: defaultContainer,
+            locator: defaultLocator
+          })(locator, container, { waitFor: previousAction });
+
+          return new Proxy(Object.create({}), {
+            get(_, key, receiver) {
+              if (key === 'then') {
+                return (...args: any[]) => previousAction.then(...args);
+              }
+              return Reflect.get(actions, key, receiver);
+            }
+          });
+        };
       }
     });
   };
