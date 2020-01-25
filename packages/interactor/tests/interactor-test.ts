@@ -7,17 +7,21 @@ import { SelectorError } from '~/util';
 import { when } from '~/when';
 
 describe('interactor()', () => {
-  const Element = interactor(css, ({ subject }) => ({
-    get text() {
-      return subject.first.then(elem => elem.innerText);
-    }
-  }));
-  const Button = interactor(button, ({ subject }) => ({
-    async press() {
-      const elem = await subject.first;
-      elem.click();
-    }
-  }));
+  const Element = interactor(css, ({ subject }) => {
+    return {
+      get text() {
+        return subject.first.then(elem => elem.innerText);
+      }
+    };
+  });
+  const Button = interactor(button, ({ subject }) => {
+    return {
+      async press() {
+        const elem = await subject.first;
+        elem.click();
+      }
+    };
+  });
   const Input = interactor(input, ({ subject }) => {
     return {
       get value() {

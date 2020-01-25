@@ -17,7 +17,7 @@ describe('selector()', () => {
   });
 
   describe('basics', () => {
-    const input = selector((locator, container) => {
+    const input = selector<Element, HTMLInputElement>((locator, container) => {
       return container.querySelectorAll(`input[type="${locator}"]`);
     });
 
@@ -67,7 +67,7 @@ describe('selector()', () => {
   });
 
   describe('custom errors', () => {
-    const input = selector((locator, container) => {
+    const input = selector<Element, HTMLInputElement>((locator, container) => {
       return throwIfEmpty(
         container.querySelectorAll(`input[type="${locator}"]`),
         `Did not find input of type "${locator}"`
