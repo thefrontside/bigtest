@@ -105,21 +105,23 @@ export function interactor<Container, Elem, Actions extends IActions>(
         }
 
         return (...args: any[]) => {
-          const previousAction = Promise.resolve()
-            .then(() => actionOrGetter(...args))
-            .then(() => {
-              // Swallow any return value from the action
-            });
-          const actions = interactor(selector, actionsFactory, {
-            container: defaultContainer,
-            locator: defaultLocator
-          })(locator, container, { waitFor: previousAction });
-
           return new Proxy(Object.create({}), {
             get(_, key, receiver) {
+              const previousAction = Promise.resolve()
+                .then(() => actionOrGetter(...args))
+                .then(() => {
+                  // Swallow any return value from the action
+                });
+
               if (key === 'then') {
                 return (...args: any[]) => previousAction.then(...args);
               }
+
+              const actions = interactor(selector, actionsFactory, {
+                container: defaultContainer,
+                locator: defaultLocator
+              })(locator, container, { waitFor: previousAction });
+
               return Reflect.get(actions, key, receiver);
             }
           });
