@@ -127,17 +127,17 @@ describe('interactor()', () => {
   });
 
   describe('errors', () => {
-    let timeoutOG = when.timeout;
-
-    before(() => {
-      when.timeout = 50;
-    });
-
-    after(() => {
-      when.timeout = timeoutOG;
-    });
-
     describe('selector errors', () => {
+      let timeoutOG = when.timeout;
+
+      before(() => {
+        when.timeout = 50;
+      });
+
+      after(() => {
+        when.timeout = timeoutOG;
+      });
+
       it('surfaces selector errors', async () => {
         await expect(Element('foo').text).rejects.toEqual(
           new SelectorError('Did not find any matches with locator "foo"')
