@@ -28,9 +28,9 @@ type Chainable<Interface extends IDict<AnyFunction | Promise<any>>> = {
     : Interface[Key];
 };
 
-type Interactor<Actions extends IActions> = (
+type Interactor<Container, Actions extends IActions> = (
   locator?: string,
-  container?: ISubject<any>,
+  container?: ISubject<Container> | Container,
   options?: IInteractorOptions
 ) => Chainable<Actions>;
 
@@ -69,8 +69,8 @@ export function interactor<Container, Elem, Actions extends IActions>(
     locator: '',
     container: document.body as any
   }
-): Interactor<Actions> {
-  return (locator = defaultLocator, container, options) => {
+): Interactor<Container, Actions> {
+  return (locator = defaultLocator, container = defaultContainer, options) => {
     const { waitFor = Promise.resolve() } = options || {
       waitFor: Promise.resolve()
     };
@@ -80,7 +80,7 @@ export function interactor<Container, Elem, Actions extends IActions>(
           if (isSubject(container)) {
             return selector(locator, await container.first);
           }
-          return selector(locator, container || defaultContainer);
+          return selector(locator, container);
         })
       ),
       locator
