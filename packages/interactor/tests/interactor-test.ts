@@ -5,6 +5,7 @@ import { interactor } from '~';
 import { button, css, inputByType, input } from './helpers/selectors';
 import { SelectorError } from '~/util';
 import { when } from '~/when';
+import { sleep } from './helpers/sleep';
 
 describe('interactor()', () => {
   const Element = interactor(css, ({ subject }) => {
@@ -89,9 +90,7 @@ describe('interactor()', () => {
         },
         async fill(val: string) {
           const elem = await subject.first;
-          await new Promise(resolve => {
-            setTimeout(resolve, 200);
-          });
+          await sleep(200);
           elem.value = val;
         }
       };
