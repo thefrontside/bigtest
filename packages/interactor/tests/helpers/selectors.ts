@@ -1,17 +1,19 @@
 import { selector } from '~';
 import { throwIfEmpty, compact } from '~/util';
 
-export const button = selector((locator, container) =>
+export const button = selector<Element, HTMLButtonElement>((locator, container) =>
   Array.from(container.querySelectorAll('button')).filter(btn => btn.innerText === locator)
 );
 
-export const css = selector((locator, container) => container.querySelectorAll<HTMLElement>(locator));
-
-export const inputByType = selector((locator, container) =>
-  container.querySelectorAll<HTMLInputElement>(`input[type="${locator}"]`)
+export const css = selector<Element, HTMLElement>((locator, container) =>
+  container.querySelectorAll(locator)
 );
 
-export const input = selector((locator, container) => {
+export const inputByType = selector<Element, HTMLInputElement>((locator, container) =>
+  container.querySelectorAll(`input[type="${locator}"]`)
+);
+
+export const input = selector<Element, HTMLInputElement>((locator, container) => {
   const labels = throwIfEmpty(
     Array.from(container.querySelectorAll('label')),
     'Did not find any `<label>` elements'

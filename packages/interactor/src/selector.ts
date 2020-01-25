@@ -1,11 +1,14 @@
 import { when } from '~/when';
 import { throwIfEmpty } from '~/util';
 
-type Query<R> = (locator: string, container: Element) => Iterable<R> | Promise<Iterable<R>>;
+type Query<Container, Result> = (
+  locator: string,
+  container: Container
+) => Iterable<Result> | Promise<Iterable<Result>>;
 
-export type Selector<R> = (locator: string, container: Element) => Promise<R[]>;
+export type Selector<Container, Result> = (locator: string, container: Container) => Promise<Result[]>;
 
-export function selector<R>(query: Query<R>): Selector<R> {
+export function selector<Container, Result>(query: Query<Container, Result>): Selector<Container, Result> {
   return (locator, container) =>
     when(async () =>
       throwIfEmpty(

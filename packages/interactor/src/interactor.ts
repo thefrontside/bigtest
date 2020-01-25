@@ -38,16 +38,16 @@ interface IInteractorOptions {
   waitFor?: Promise<void>;
 }
 
-interface IInteractorFactoryOptions {
+interface IInteractorFactoryOptions<Container> {
   locator?: string;
-  container?: Element;
+  container?: Container;
 }
 
 function isSubject<T>(obj: any): obj is ISubject<T> {
   return obj && obj.hasOwnProperty('first') && obj.hasOwnProperty('all');
 }
 
-function createSubject<Elem extends Element>(matches: Promise<Array<Elem>>): ISubject<Elem> {
+function createSubject<Elem>(matches: Promise<Array<Elem>>): ISubject<Elem> {
   return {
     get first() {
       return matches.then(matches => matches[0]);
@@ -59,12 +59,15 @@ function createSubject<Elem extends Element>(matches: Promise<Array<Elem>>): ISu
   };
 }
 
-export function interactor<Elem extends Element, Actions extends IActions>(
-  selector: Selector<Elem>,
+export function interactor<Container, Elem, Actions extends IActions>(
+  selector: Selector<Container, Elem>,
   actionsFactory: ActionsFactory<Elem, Actions> = () => Object.create({}),
-  { locator: defaultLocator = '', container: defaultContainer = document.body }: IInteractorFactoryOptions = {
+  {
+    locator: defaultLocator = '',
+    container: defaultContainer = document.body as any
+  }: IInteractorFactoryOptions<Container> = {
     locator: '',
-    container: document.body
+    container: document.body as any
   }
 ): Interactor<Actions> {
   return (locator = defaultLocator, container, options) => {
