@@ -5,8 +5,10 @@ interface ISubject<Elem> {
   all: Promise<Elem[]>;
 }
 
+type Action = (...args: any[]) => Promise<void>;
+
 interface IActions {
-  [key: string]: ((...args: any[]) => Promise<void>) | Promise<any>;
+  [key: string]: Action | Promise<any>;
 }
 
 interface IActionContext<Elem> {
@@ -59,6 +61,10 @@ function createSubject<Elem>(matches: Promise<Array<Elem>>): ISubject<Elem> {
   };
 }
 
+function isAction(actionOrGetter: any): actionOrGetter is Action {
+  return typeof actionOrGetter === 'function';
+}
+
 export function interactor<Container, Elem, Actions extends IActions>(
   selector: Selector<Container, Elem>,
   actionsFactory: ActionsFactory<Elem, Actions> = () => Object.create({}),
@@ -81,7 +87,7 @@ export function interactor<Container, Elem, Actions extends IActions>(
     const actions = actionsFactory({
       subject: createSubject(
         waitFor.then(async () => {
-          if (isSubject(container)) {
+          if (isSubject<Container>(container)) {
             return selector(locator, await container.first);
           }
           return selector(locator, container);
@@ -94,7 +100,7 @@ export function interactor<Container, Elem, Actions extends IActions>(
       get(_, key, receiver) {
         const actionOrGetter = Reflect.get(actions, key, receiver);
 
-        if (typeof actionOrGetter !== 'function') {
+        if (!isAction(actionOrGetter)) {
           return actionOrGetter;
         }
 
