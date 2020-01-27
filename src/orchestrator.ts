@@ -26,93 +26,92 @@ type OrchestratorOptions = {
   testFilePort: number;
 }
 
-export function createOrchestrator(options: OrchestratorOptions): Operation {
-  return function *orchestrator(): Operation {
-    let orchestrator = yield ({ resume, context: { parent }}) => resume(parent);
-    let state = new State();
-    console.log('[orchestrator] starting');
+export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
-    yield fork(createProxyServer(orchestrator, {
-      port: options.proxyPort,
-      targetPort: options.appPort,
-      inject: `<script src="http://localhost:${options.agentPort}/harness.js"></script>`,
-    }));
+  let orchestrator = yield ({ resume, context: { parent }}) => resume(parent);
+  let state = new State();
+  console.log('[orchestrator] starting');
 
-    yield fork(createCommandServer(orchestrator, {
-      port: options.commandPort,
-    }));
+  yield fork(createProxyServer(orchestrator, {
+    port: options.proxyPort,
+    targetPort: options.appPort,
+    inject: `<script src="http://localhost:${options.agentPort}/harness.js"></script>`,
+  }));
 
-    yield fork(createConnectionServer(orchestrator, {
-      state: state,
-      port: options.connectionPort,
-      proxyPort: options.proxyPort,
-      testFilePort: options.testFilePort,
-    }));
+  yield fork(createCommandServer(orchestrator, {
+    port: options.commandPort,
+  }));
 
-    yield fork(createAgentServer(orchestrator, {
-      port: options.agentPort,
-    }));
+  yield fork(createConnectionServer(orchestrator, {
+    state: state,
+    port: options.connectionPort,
+    proxyPort: options.proxyPort,
+    testFilePort: options.testFilePort,
+  }));
 
-    yield fork(createAppServer(orchestrator, {
-      dir: options.appDir,
-      command: options.appCommand,
-      args: options.appArgs,
-      env: options.appEnv,
-      port: options.appPort,
-    }));
+  yield fork(createAgentServer(orchestrator, {
+    port: options.agentPort,
+  }));
 
-    yield fork(createTestFileWatcher(orchestrator, {
-      files: options.testFiles,
-      manifestPath: options.testManifestPath,
-    }));
+  yield fork(createAppServer(orchestrator, {
+    dir: options.appDir,
+    command: options.appCommand,
+    args: options.appArgs,
+    env: options.appEnv,
+    port: options.appPort,
+  }));
 
-    // wait for manifest before starting test file server
-    yield receive({ ready: "manifest" }, orchestrator);
+  yield fork(createTestFileWatcher(orchestrator, {
+    files: options.testFiles,
+    manifestPath: options.testManifestPath,
+  }));
 
-    yield fork(createTestFileServer(orchestrator, {
-      files: options.testFiles,
-      manifestPath: options.testManifestPath,
-      port: options.testFilePort,
-    }));
+  // wait for manifest before starting test file server
+  yield receive({ ready: "manifest" }, orchestrator);
 
-    yield function*() {
-      yield fork(function*() {
-        yield receive({ ready: "proxy" }, orchestrator);
-      });
-      yield fork(function*() {
-        yield receive({ ready: "command" }, orchestrator);
-      });
-      yield fork(function*() {
-        yield receive({ ready: "connection" }, orchestrator);
-      });
-      yield fork(function*() {
-        yield receive({ ready: "agent" }, orchestrator);
-      });
-      yield fork(function*() {
-        yield receive({ ready: "app" }, orchestrator);
-      });
-      yield fork(function*() {
-        yield receive({ ready: "test-files" }, orchestrator);
-      });
+  yield fork(createTestFileServer(orchestrator, {
+    files: options.testFiles,
+    manifestPath: options.testManifestPath,
+    port: options.testFilePort,
+  }));
+
+  yield function*() {
+    yield fork(function*() {
+      yield receive({ ready: "proxy" }, orchestrator);
+    });
+    yield fork(function*() {
+      yield receive({ ready: "command" }, orchestrator);
+    });
+    yield fork(function*() {
+      yield receive({ ready: "connection" }, orchestrator);
+    });
+    yield fork(function*() {
+      yield receive({ ready: "agent" }, orchestrator);
+    });
+    yield fork(function*() {
+      yield receive({ ready: "app" }, orchestrator);
+    });
+    yield fork(function*() {
+      yield receive({ ready: "test-files" }, orchestrator);
+    });
+  }
+
+  console.log("[orchestrator] running!");
+
+
+  let connectionUrl = `ws://localhost:${options.connectionPort}`;
+  let agentUrl = `http://localhost:${options.agentPort}/index.html?orchestrator=${encodeURIComponent(connectionUrl)}`
+  console.log(`[orchestrator] launch agents via: ${agentUrl}`);
+
+  if(options.delegate) {
+    yield send({ ready: "orchestrator" }, options.delegate);
+  }
+
+  try {
+    while(true) {
+      yield receive(orchestrator);
     }
-
-    console.log("[orchestrator] running!");
-
-
-    let connectionUrl = `ws://localhost:${options.connectionPort}`;
-    let agentUrl = `http://localhost:${options.agentPort}/index.html?orchestrator=${encodeURIComponent(connectionUrl)}`
-    console.log(`[orchestrator] launch agents via: ${agentUrl}`);
-
-    if(options.delegate) {
-      yield send({ ready: "orchestrator" }, options.delegate);
-    }
-
-    try {
-      while(true) {
-        yield receive(orchestrator);
-      }
-    } finally {
-      console.log("[orchestrator] shutting down!");
-    }
+  } finally {
+    console.log("[orchestrator] shutting down!");
   }
 }

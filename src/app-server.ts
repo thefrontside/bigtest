@@ -34,27 +34,25 @@ function isReachable(port: number, options: { timeout: number } = { timeout: 100
   }
 };
 
-export function createAppServer(orchestrator: Context, options: AppServerOptions): Operation {
-  return function *agentServer(): Operation {
-    let child = yield spawn(options.command, options.args || [], {
-      cwd: options.dir,
-      detached: true,
-      env: Object.assign({}, process.env, options.env),
-    });
+export function* createAppServer(orchestrator: Context, options: AppServerOptions): Operation {
+  let child = yield spawn(options.command, options.args || [], {
+    cwd: options.dir,
+    detached: true,
+    env: Object.assign({}, process.env, options.env),
+  });
 
-    let errorMonitor = yield fork(function*() {
-      let [error]: [Error] = yield on(child, "error");
-      throw error;
-    });
+  let errorMonitor = yield fork(function*() {
+    let [error]: [Error] = yield on(child, "error");
+    throw error;
+  });
 
-    while(!(yield isReachable(options.port))) {
-      yield timeout(100);
-    }
-
-    yield send({ ready: "app" }, orchestrator);
-
-    yield on(child, "exit");
-
-    errorMonitor.halt();
+  while(!(yield isReachable(options.port))) {
+    yield timeout(100);
   }
+
+  yield send({ ready: "app" }, orchestrator);
+
+  yield on(child, "exit");
+
+  errorMonitor.halt();
 }

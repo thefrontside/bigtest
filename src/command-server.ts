@@ -9,25 +9,23 @@ interface CommandServerOptions {
   port: number;
 };
 
-export function createCommandServer(orchestrator: Context, options: CommandServerOptions): Operation {
-  return function *commandServer(): Operation {
-    let app = createApp();
-    let server = app.listen(options.port);
+export function* createCommandServer(orchestrator: Context, options: CommandServerOptions): Operation {
+  let app = createApp();
+  let server = app.listen(options.port);
 
-    yield fork(function*() {
-      let [error]: [Error] = yield on(server, 'error');
-      throw error;
-    });
+  yield fork(function*() {
+    let [error]: [Error] = yield on(server, 'error');
+    throw error;
+  });
 
-    try {
-      yield on(server, 'listening');
+  try {
+    yield on(server, 'listening');
 
-      yield send({ ready: "command" }, orchestrator);
+    yield send({ ready: "command" }, orchestrator);
 
-      yield
-    } finally {
-      server.close();
-    }
+    yield
+  } finally {
+    server.close();
   }
 }
 
