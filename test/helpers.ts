@@ -7,7 +7,8 @@ import { beforeEach, afterEach } from 'mocha';
 import { createOrchestrator } from '../src/index';
 
 interface Actions {
-  fork<T>(operation: Operation): PromiseLike<T>;
+  fork<T>(operation: Operation): Context;
+  receive(execution: Context, pattern: any): PromiseLike<any>;
   get(url: string): PromiseLike<Response>;
   startOrchestrator(): PromiseLike<Context>;
 }
@@ -17,6 +18,12 @@ let orchestratorPromise;
 export const actions: Actions = {
   fork(operation: Operation): Context {
     return currentWorld.fork(operation);
+  },
+
+  receive(execution: Context, pattern): PromiseLike<any> {
+    return actions.fork(function*() {
+      return yield receive(execution, pattern);
+    });
   },
 
   get(url: string): Promise<Response> {

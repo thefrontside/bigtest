@@ -2,15 +2,18 @@ import { Operation, Context, fork, send } from 'effection';
 import { on } from '@effection/events';
 import * as express from 'express';
 import * as graphqlHTTP from 'express-graphql';
+import { lensPath } from 'ramda';
 
 import { schema } from './schema';
+import { State } from './orchestrator/state';
 
 interface CommandServerOptions {
   port: number;
+  state: State;
 };
 
 export function* createCommandServer(orchestrator: Context, options: CommandServerOptions): Operation {
-  let app = createApp();
+  let app = createApp(options.state);
   let server = app.listen(options.port);
 
   yield fork(function*() {
@@ -29,12 +32,16 @@ export function* createCommandServer(orchestrator: Context, options: CommandServ
   }
 }
 
-function createApp() {
+function createApp(state: State) {
   return express()
     .use('/', graphqlHTTP({
       schema,
       rootValue: {
-        echo: ({text}) => text
+        echo: ({text}) => text,
+        agents: () => {
+          let agents = state.view(lensPath(['agents']));
+          return Object.values(agents);
+        }
       },
       graphiql: true,
     }));
