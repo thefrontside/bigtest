@@ -1,11 +1,14 @@
-import { fork } from 'effection';
+import { main, Operation } from 'effection';
 import { createParcelServer } from '../src/parcel-server';
 import * as yargs from 'yargs';
 
+const self: Operation = ({ resume, context: { parent }}) => resume(parent);
+
 yargs
   .command('$0 [files..]', 'run the parcel server', () => {}, (argv) => {
-    fork(function*() {
-      let interrupt = () => { this.halt() };
+    main(function*(): Operation {
+      let context = yield self;
+      let interrupt = () => { context.halt() };
       process.on('SIGINT', interrupt);
 
       try {

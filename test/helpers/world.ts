@@ -1,21 +1,21 @@
-import { fork, Execution, Operation } from 'effection';
+import { main, Context, Operation } from 'effection';
 import fetch, { Response } from 'node-fetch';
 import { AbortController } from 'abort-controller';
 
 type RequestMethod = 'post' | 'get';
 
 export class World {
-  execution: Execution;
+  execution: any;
   constructor() {
-    this.execution = fork(function*() { yield; });
+    this.execution = main(function*() { yield; });
   }
 
   destroy() {
     this.execution.halt();
   }
 
-  fork(operation: Operation): Execution {
-    return (this.execution as any).fork(operation);
+  fork(operation: Operation): Context {
+    return this.execution.spawn(operation);
   }
 
   get(url: string): Promise<Response>{
@@ -27,7 +27,7 @@ export class World {
     let { signal } = controller;
     let result = fetch(url, { method, signal });
 
-    this.execution.atExit(() => controller.abort());
+    this.execution.ensure(() => controller.abort());
 
     return result;
   }

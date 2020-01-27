@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as rmrf from 'rimraf';
 
-import { fork, receive, Execution, PatternMatchOptions } from 'effection';
+import { receive, Context, Pattern } from 'effection';
 
 import { actions } from './helpers';
 
@@ -15,9 +15,9 @@ const { mkdir, readFile, writeFile, unlink } = fs.promises;
 const TEST_DIR = "./tmp/test-file-watcher"
 const MANIFEST_PATH = "./tmp/test-file-watcher/manifest.js"
 
-async function awaitReceive(task: Execution, match?: PatternMatchOptions) {
+async function awaitReceive(task: Context, match?: Pattern) {
   await actions.fork(function*() {
-    return yield receive(task, match);
+    return yield receive(match, task);
   });
 }
 

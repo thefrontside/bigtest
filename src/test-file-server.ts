@@ -1,4 +1,4 @@
-import { Sequence, Execution } from 'effection';
+import { send, Operation, Context } from 'effection';
 import { on } from '@effection/events';
 import { ChildProcess, fork as forkProcess } from '@effection/child_process';
 
@@ -8,7 +8,7 @@ interface TestFileServerOptions {
   port: number;
 };
 
-export function* createTestFileServer(orchestrator: Execution, options: TestFileServerOptions): Sequence {
+export function* createTestFileServer(orchestrator: Context, options: TestFileServerOptions): Operation {
   // TODO: @precompile this should use node rather than ts-node when running as a compiled package
   let child: ChildProcess = yield forkProcess(
     './bin/parcel-server.ts',
@@ -25,7 +25,7 @@ export function* createTestFileServer(orchestrator: Execution, options: TestFile
     [message] = yield on(child, "message");
   } while(message.type !== "ready");
 
-  orchestrator.send({ ready: "test-files" });
+  yield send({ ready: "test-files" }, orchestrator);
 
   yield on(child, "exit");
 }

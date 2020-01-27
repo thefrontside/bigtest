@@ -41,7 +41,7 @@
     "@types/node": "^12.7.11",
     "@types/websocket": "^1.0.0",
     "chokidar": "^3.3.1",
-    "effection": "^0.4.0-a3f2e20",
+    "effection": "^0.4.0-4eaab4d",
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
     "graphql": "^14.5.8",

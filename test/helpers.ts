@@ -1,5 +1,5 @@
 import { Response } from 'node-fetch';
-import { receive, Execution, Operation } from 'effection';
+import { receive, Context, Operation } from 'effection';
 import { World } from './helpers/world';
 
 import { beforeEach, afterEach } from 'mocha';
@@ -7,15 +7,15 @@ import { beforeEach, afterEach } from 'mocha';
 import { createOrchestrator } from '../src/index';
 
 interface Actions {
-  fork(operation: Operation): Execution;
-  get(url: string): Promise<Response>;
-  startOrchestrator(): Promise<Execution>;
+  fork<T>(operation: Operation): PromiseLike<T>;
+  get(url: string): PromiseLike<Response>;
+  startOrchestrator(): PromiseLike<Context>;
 }
 
 let orchestratorPromise;
 
 export const actions: Actions = {
-  fork(operation: Operation): Execution {
+  fork(operation: Operation): Context {
     return currentWorld.fork(operation);
   },
 

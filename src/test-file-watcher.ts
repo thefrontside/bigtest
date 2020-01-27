@@ -1,5 +1,5 @@
 import * as chokidar from 'chokidar';
-import { receive, Sequence, Execution } from 'effection';
+import { send, receive, Operation, Context } from 'effection';
 import { watch, watchError } from '@effection/events';
 import * as fs from 'fs';
 import * as glob from 'glob';
@@ -28,7 +28,7 @@ function* writeManifest(options: TestFileWatcherOptions) {
   yield writeFile(options.manifestPath, manifest);
 }
 
-export function* createTestFileWatcher(orchestrator: Execution, options: TestFileWatcherOptions): Sequence {
+export function* createTestFileWatcher(orchestrator: Context, options: TestFileWatcherOptions): Operation {
   let watcher = chokidar.watch(options.files, { ignoreInitial: true });
 
   try {
@@ -38,13 +38,13 @@ export function* createTestFileWatcher(orchestrator: Execution, options: TestFil
     yield receive({ event: 'ready' });
     yield writeManifest(options);
 
-    orchestrator.send({ ready: "manifest" });
+    yield send({ ready: "manifest" }, orchestrator);
 
     while(true) {
       yield receive();
       yield writeManifest(options);
 
-      orchestrator.send({ change: "manifest" });
+      yield send({ change: "manifest" }, orchestrator);
     }
   } finally {
     watcher.close();

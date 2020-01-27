@@ -1,4 +1,4 @@
-import { fork, receive, any, Sequence, Execution, Operation } from 'effection';
+import { fork, send, receive, any, Context, Operation } from 'effection';
 import { on, watch, watchError } from '@effection/events';
 
 import * as proxy from 'http-proxy';
@@ -14,8 +14,8 @@ interface ProxyOptions {
   inject?: string;
 };
 
-export function createProxyServer(orchestrator: Execution, options: ProxyOptions): Operation {
-  function* handleRequest(proxyRes, req, res): Sequence {
+export function createProxyServer(orchestrator: Context, options: ProxyOptions): Operation {
+  function* handleRequest(proxyRes, req, res): Operation {
     console.debug('[proxy]', 'start', req.method, req.url);
     for(let [key, value] of Object.entries(proxyRes.headers)) {
       res.setHeader(key, value);
@@ -70,46 +70,52 @@ export function createProxyServer(orchestrator: Execution, options: ProxyOptions
     console.debug('[proxy]', 'finish', req.method, req.url);
   };
 
-  return function *proxyServer(): Sequence {
+  return function *proxyServer(): Operation {
     let proxyServer = proxy.createProxyServer({
       target: `http://localhost:${options.targetPort}`,
       selfHandleResponse: true
     });
-    this.atExit(() => proxyServer.close());
 
     yield watch(proxyServer, ['proxyRes', 'error', 'open', 'close']);
 
     let server = http.createServer();
-    this.atExit(() => server.close());
+
     server.on('request', (req, res) => proxyServer.web(req, res));
     server.on('upgrade', (req, socket, head) => proxyServer.ws(req, socket, head));
 
-    yield listen(server, options.port);
-    orchestrator.send({ ready: 'proxy' });
 
-    while(true) {
-      let { event, args } = yield receive({ event: any("string") });
+    try {
 
-      if(event == "error") {
-        let [err,, res] = args;
-        res.writeHead(502, { 'Content-Type': 'text/plain' });
-        res.end(`Proxy error: ${err}`);
+      yield listen(server, options.port);
+      yield send({ ready: 'proxy' }, orchestrator);
+
+      while(true) {
+        let { event, args } = yield receive({ event: any("string") });
+
+        if(event == "error") {
+          let [err,, res] = args;
+          res.writeHead(502, { 'Content-Type': 'text/plain' });
+          res.end(`Proxy error: ${err}`);
+        }
+
+        if(event == "open") {
+          console.debug('[proxy] socket connection opened');
+        }
+
+        if(event == "close") {
+          console.debug('[proxy] socket connection closed');
+        }
+
+        if(event == "proxyRes") {
+          let [proxyRes, req, res] = args;
+          yield fork(function*() {
+            yield handleRequest(proxyRes, req, res);
+          });
+        }
       }
-
-      if(event == "open") {
-        console.debug('[proxy] socket connection opened');
-      }
-
-      if(event == "close") {
-        console.debug('[proxy] socket connection closed');
-      }
-
-      if(event == "proxyRes") {
-        let [proxyRes, req, res] = args;
-        fork(function*() {
-          yield handleRequest.call(this, proxyRes, req, res);
-        });
-      }
+    } finally {
+      proxyServer.close();
+      server.close();
     }
   }
 };
