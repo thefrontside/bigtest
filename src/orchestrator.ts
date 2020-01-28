@@ -8,6 +8,8 @@ import { createAppServer } from './app-server';
 import { createTestFileWatcher } from './test-file-watcher';
 import { createTestFileServer } from './test-file-server';
 
+import { State } from './orchestrator/state';
+
 type OrchestratorOptions = {
   appPort: number;
   appCommand: string;
@@ -27,7 +29,7 @@ type OrchestratorOptions = {
 export function createOrchestrator(options: OrchestratorOptions): Operation {
   return function *orchestrator(): Operation {
     let orchestrator = yield ({ resume, context: { parent }}) => resume(parent);
-
+    let state = new State();
     console.log('[orchestrator] starting');
 
     yield fork(createProxyServer(orchestrator, {
@@ -41,6 +43,7 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
     }));
 
     yield fork(createConnectionServer(orchestrator, {
+      state: state,
       port: options.connectionPort,
       proxyPort: options.proxyPort,
       testFilePort: options.testFilePort,
@@ -94,6 +97,11 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
     }
 
     console.log("[orchestrator] running!");
+
+
+    let connectionUrl = `ws://localhost:${options.connectionPort}`;
+    let agentUrl = `http://localhost:${options.agentPort}/index.html?orchestrator=${encodeURIComponent(connectionUrl)}`
+    console.log(`[orchestrator] launch agents via: ${agentUrl}`);
 
     if(options.delegate) {
       yield send({ ready: "orchestrator" }, options.delegate);

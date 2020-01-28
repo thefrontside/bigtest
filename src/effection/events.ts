@@ -15,14 +15,22 @@ export function on(emitter: EventEmitter, eventName: EventName): Operation {
   }
 }
 
-export function watch(emitter: EventEmitter, names: EventName | EventName[]): Operation {
+function defaultPrepareMessage(...args) {
+  return { event: this.event, args: args };
+}
+
+export function watch(
+  emitter: EventEmitter,
+  names: EventName | EventName[],
+  prepare: (...args: any[]) => any = defaultPrepareMessage // eslint-disable-line @typescript-eslint/no-explicit-any
+): Operation {
   return ({ resume, context: { parent }}) => {
     for(let name of [].concat(names)) {
       let context = parent as any; // eslint-disable-line @typescript-eslint/no-explicit-any
       context.spawn(monitor(function*() {
         while (true) {
           let args = yield on(emitter, name);
-          yield send({ event: name, args }, parent);
+          yield send(prepare.apply({ event: name}, args), parent);
         }
       }));
       resume(emitter);

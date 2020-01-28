@@ -19,6 +19,7 @@
   "devDependencies": {
     "@types/mocha": "^5.2.7",
     "@types/node-fetch": "^2.5.3",
+    "@types/ramda": "types/npm-ramda#dist",
     "@typescript-eslint/eslint-plugin": "^2.3.2",
     "@typescript-eslint/parser": "^2.3.2",
     "abort-controller": "^3.0.0",
@@ -40,6 +41,7 @@
     "@types/http-proxy": "^1.17.0",
     "@types/node": "^12.7.11",
     "@types/websocket": "^1.0.0",
+    "bowser": "^2.8.1",
     "chokidar": "^3.3.1",
     "effection": "^0.4.0-4eaab4d",
     "express": "^4.17.1",
@@ -50,6 +52,7 @@
     "module-alias": "^2.2.2",
     "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.4",
+    "ramda": "^0.26.1",
     "rimraf": "^3.0.0",
     "tempy": "^0.3.0",
     "trumpet": "^1.7.2",

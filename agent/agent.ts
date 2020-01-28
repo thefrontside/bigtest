@@ -1,3 +1,5 @@
+import * as Bowser from 'bowser';
+
 function parseQueryParams(params) {
   return params
     .replace(/^\?/, "")
@@ -23,7 +25,10 @@ if(orchestrator) {
   let socket = new WebSocket(orchestrator);
 
   socket.addEventListener('open', () => {
-    socket.send('websocket message from agent');
+    socket.send(JSON.stringify({
+      type: 'connected',
+      data: Bowser.parse(navigator.userAgent)
+    }));
     console.log('[agent] socket connection established');
   });
 

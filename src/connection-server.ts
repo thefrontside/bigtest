@@ -1,18 +1,28 @@
-import { Context, Operation, fork, send, timeout } from 'effection';
-import { on } from '@effection/events';
+import { Context, Operation, fork, send, receive, any, timeout } from 'effection';
+import { watch } from '@effection/events';
 
-import { createSocketServer, Connection, Message, sendData } from './ws';
+import { createSocketServer, Connection, sendData } from './ws';
+import { State } from './orchestrator/state';
+
+import { lensPath, assoc, dissoc } from 'ramda';
 
 interface ConnectionServerOptions {
+  state: State;
   port: number;
   proxyPort: number;
   testFilePort: number;
 };
 
+const agentsLens = lensPath(['agents']);
+
 export function createConnectionServer(orchestrator: Context, options: ConnectionServerOptions): Operation {
   return function *connectionServer(): Operation {
     function* handleConnection(connection: Connection): Operation {
-      console.log('connection established');
+      console.debug('[connection] connected');
+      yield watch(connection, "message", (message) => {
+        return { message: JSON.parse(message.utf8Data) };
+      });
+
       yield fork(function* heartbeat() {
         while (true) {
           yield timeout(10000);
@@ -28,13 +38,21 @@ export function createConnectionServer(orchestrator: Context, options: Connectio
         }));
       });
 
+      let { message: { data } } = yield receive({ message: { type: 'connected' } });
+
+      let identifier = data.browser.name;
+
       try {
+        console.debug('[connection] received connection message', data);
+        options.state.over(agentsLens, assoc(identifier, data));
+
         while (true) {
-          let [message]: [Message] = yield on(connection, "message");
-          console.log(`mesage = `, message);
+          let message = yield receive({ message: any });
+          console.debug("[connection] got message", message);
         }
       } finally {
-        console.log('connection closed');
+        options.state.over(agentsLens, dissoc(identifier));
+        console.debug('[connection] disconnected');
       }
     }
     yield createSocketServer(options.port, handleConnection, function*() {
