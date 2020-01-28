@@ -14,6 +14,7 @@ interface ConnectionServerOptions {
 };
 
 const agentsLens = lensPath(['agents']);
+let counter = 1;
 
 export function* createConnectionServer(orchestrator: Context, options: ConnectionServerOptions): Operation {
   function* handleConnection(connection: Connection): Operation {
@@ -39,11 +40,11 @@ export function* createConnectionServer(orchestrator: Context, options: Connecti
 
     let { message: { data } } = yield receive({ message: { type: 'connected' } });
 
-    let identifier = data.browser.name;
+    let identifier = `agent.${counter++}`;
 
     try {
       console.debug('[connection] received connection message', data);
-      options.state.over(agentsLens, assoc(identifier, data));
+      options.state.over(agentsLens, assoc(identifier, assoc("identifier", identifier, data)));
 
       while (true) {
         let message = yield receive({ message: any });

@@ -1,6 +1,7 @@
 import { view, set, over } from 'ramda';
 
 export type AgentState = {
+  identifier: string;
   browser: {
     name: string;
     version: string;

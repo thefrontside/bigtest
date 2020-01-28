@@ -42,6 +42,7 @@ describe('command server', () => {
       state.update(() => ({
         agents: {
           safari: {
+            "identifier": "agent.1",
             "browser": {
               "name": "Safari",
               "version": "13.0.4"
