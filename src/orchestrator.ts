@@ -8,6 +8,8 @@ import { createAppServer } from './app-server';
 import { createTestFileWatcher } from './test-file-watcher';
 import { createTestFileServer } from './test-file-server';
 
+import { State } from './orchestrator/state';
+
 type OrchestratorOptions = {
   appPort: number;
   appCommand: string;
@@ -27,6 +29,7 @@ type OrchestratorOptions = {
 export function createOrchestrator(options: OrchestratorOptions): Operation {
   return function *orchestrator(): Sequence {
     let orchestrator = this; // eslint-disable-line @typescript-eslint/no-this-alias
+    let state = new State();
 
     console.log('[orchestrator] starting');
 
@@ -41,6 +44,7 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
     }));
 
     fork(createConnectionServer(orchestrator, {
+      state: state,
       port: options.connectionPort,
       proxyPort: options.proxyPort,
       testFilePort: options.testFilePort,

@@ -15,11 +15,19 @@ export function on(emitter: EventEmitter, eventName: EventName): Controller {
   }
 }
 
-export function watch(emitter: EventEmitter, names: EventName | EventName[]): Controller {
+function defaultPrepareMessage(...args) {
+  return { event: this.event, args: args };
+}
+
+export function watch(
+  emitter: EventEmitter,
+  names: EventName | EventName[],
+  prepare: (...args: any[]) => any = defaultPrepareMessage // eslint-disable-line @typescript-eslint/no-explicit-any
+): Controller {
   return (execution) => {
     for(let name of [].concat(names)) {
       let listener = (...args) => {
-        execution.send({ event: name, args: args });
+        execution.send(prepare.apply({ event: name }, args));
       }
 
       emitter.on(name, listener);
