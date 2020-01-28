@@ -99,6 +99,11 @@ export function createOrchestrator(options: OrchestratorOptions): Operation {
 
     console.log("[orchestrator] running!");
 
+
+    let connectionUrl = `ws://localhost:${options.connectionPort}`;
+    let agentUrl = `http://localhost:${options.agentPort}/index.html?orchestrator=${encodeURIComponent(connectionUrl)}`
+    console.log(`[orchestrator] launch agents via: ${agentUrl}`);
+
     if(options.delegate) {
       options.delegate.send({ ready: "orchestrator" });
     }
