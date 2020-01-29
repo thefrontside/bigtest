@@ -4,21 +4,20 @@ import { ChildProcess, fork as forkProcess } from '@effection/child_process';
 import * as path from 'path';
 import { assoc } from 'ramda';
 
-import { State } from './orchestrator/state';
+import { atom } from './orchestrator/state';
 
 interface TestFileServerOptions {
   manifestPath: string;
   port: number;
-  state: State;
 };
 
-function* loadManifest(outDir: string, state: State) {
+function* loadManifest(outDir: string) {
   let fullPath = path.resolve(outDir, 'manifest.js');
 
   delete require.cache[fullPath];
   let manifest = yield import(fullPath);
 
-  state.update(assoc('manifest', manifest));
+  return yield atom.update(assoc('manifest', manifest));
 }
 
 export function* createTestFileServer(orchestrator: Context, options: TestFileServerOptions): Operation {
@@ -39,7 +38,7 @@ export function* createTestFileServer(orchestrator: Context, options: TestFileSe
 
   console.debug("[test files] test files initialized");
 
-  yield fork(loadManifest(outDir, options.state));
+  yield fork(loadManifest(outDir));
   yield send({ ready: "test-files" }, orchestrator);
 
   while(true) {
@@ -47,7 +46,7 @@ export function* createTestFileServer(orchestrator: Context, options: TestFileSe
 
     console.debug("[test files] test files updated");
 
-    yield fork(loadManifest(outDir, options.state));
+    yield fork(loadManifest(outDir));
     yield send({ update: "test-files" }, orchestrator);
   }
 }

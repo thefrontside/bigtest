@@ -8,7 +8,7 @@ import { Context } from 'effection';
 
 import { actions } from './helpers';
 import { createTestFileServer } from '../src/test-file-server';
-import { State } from '../src/orchestrator/state';
+import { atom, OrchestratorState } from '../src/orchestrator/state';
 
 const TEST_DIR = "./tmp/test-file-server"
 const MANIFEST_PATH = "./tmp/test-file-server/manifest.js"
@@ -19,7 +19,6 @@ let TEST_FILE_PORT = 24200;
 
 describe('test file server', () => {
   let orchestrator: Context;
-  let state: State;
 
   beforeEach((done) => rmrf(TEST_DIR, done));
   beforeEach(async () => {
@@ -27,13 +26,13 @@ describe('test file server', () => {
     await writeFile(MANIFEST_PATH, "module.exports = [{ path: 'someworld', test: 123 }];");
 
     orchestrator = actions.fork(function*() { yield });
-    state = new State();
 
-    actions.fork(createTestFileServer(orchestrator, {
-      manifestPath: MANIFEST_PATH,
-      port: TEST_FILE_PORT,
-      state
-    }));
+    actions.fork(function*() {
+      yield createTestFileServer(orchestrator, {
+        manifestPath: MANIFEST_PATH,
+        port: TEST_FILE_PORT
+      });
+    });
 
     await actions.receive(orchestrator, { ready: "test-files" });
   });
@@ -56,19 +55,27 @@ describe('test file server', () => {
   });
 
   describe('reading manifest from state on start', () => {
+    let state: OrchestratorState;
+    beforeEach(async () => {
+      state = await actions.fork(atom.get());
+    });
+
     it('returns the manifest from the state', () => {
-      expect(state.get().manifest[0]).toEqual({ path: 'someworld', test: 123 });
+      let { manifest: [ first ] } = state;
+      expect(first).toEqual({ path: 'someworld', test: 123 });
     });
   });
 
   describe('updating the manifest and then reading it', () => {
+    let state: OrchestratorState;
     beforeEach(async () => {
       await writeFile(MANIFEST_PATH, "module.exports = [{ path: 'boo', test: 432 }];");
       await actions.receive(orchestrator, { update: "test-files" });
+      state = await actions.fork(atom.get());
     });
 
     it('returns the updated manifest from the state', () => {
-      expect(state.get().manifest[0]).toEqual({ path: 'boo', test: 432 });
+      expect(state.manifest[0]).toEqual({ path: 'boo', test: 432 });
     });
   });
 });

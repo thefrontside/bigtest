@@ -5,7 +5,7 @@ import { Context } from 'effection';
 
 import { actions } from './helpers';
 import { createCommandServer } from '../src/command-server';
-import { State } from '../src/orchestrator/state';
+import { atom } from '../src/orchestrator/state';
 import { assoc } from 'ramda';
 
 import { Test, SerializableTest } from '../src/test';
@@ -14,16 +14,15 @@ let COMMAND_PORT = 24200;
 
 describe('command server', () => {
   let orchestrator: Context;
-  let state: State;
 
   beforeEach(async () => {
     orchestrator = actions.fork(function*() { yield });
-    state = new State();
 
-    actions.fork(createCommandServer(orchestrator, {
-      port: COMMAND_PORT,
-      state
-    }));
+    actions.fork(function* top() {
+      yield createCommandServer(orchestrator, {
+        port: COMMAND_PORT,
+      })
+    });
 
     await actions.receive(orchestrator, { ready: "command" });
   });
@@ -42,7 +41,7 @@ describe('command server', () => {
   describe('querying connected agents', () => {
     let result: Array<any>;
     beforeEach(async () => {
-      state.update(assoc('agents', {
+      await actions.fork(atom.update(assoc('agents', {
         safari: {
           "identifier": "agent.1",
           "browser": {
@@ -63,7 +62,7 @@ describe('command server', () => {
             "version": "5.0"
           }
         }
-      }));
+      })));
       result = await query('agents { browser { name } os { name } platform { type }}');
     });
     it('contains the agents', () => {
@@ -112,10 +111,10 @@ describe('command server', () => {
         assertions: []
       };
 
-      state.update(assoc('manifest', [
+      actions.fork(atom.update(assoc('manifest', [
         { path: "foo.js", test: test1 },
         { path: "bar.js", test: test2 },
-      ]));
+      ])));
       result = await query('manifest { path, test }');
     });
     it('contains the paths of the tests', () => {

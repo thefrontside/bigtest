@@ -1,23 +1,21 @@
-import { Operation, Context, fork, send } from 'effection';
+import { Operation, Context, fork, send, Controls } from 'effection';
 import { on } from '@effection/events';
 import * as express from 'express';
 import * as graphqlHTTP from 'express-graphql';
-import { lensPath } from 'ramda';
 
 import { schema } from './schema';
-import { State } from './orchestrator/state';
+import { atom, OrchestratorState } from './orchestrator/state';
 import { Test, SerializableTest } from './test';
 
 interface CommandServerOptions {
   port: number;
-  state: State;
 };
 
 export function* createCommandServer(orchestrator: Context, options: CommandServerOptions): Operation {
-  let app = createApp(options.state);
+  let app = yield createApp;
   let server = app.listen(options.port);
 
-  yield fork(function*() {
+  yield fork(function* commandServerErrorListener() {
     let [error]: [Error] = yield on(server, 'error');
     throw error;
   });
@@ -33,24 +31,30 @@ export function* createCommandServer(orchestrator: Context, options: CommandServ
   }
 }
 
-function createApp(state: State) {
-  return express()
+function createApp(controls: Controls): void {
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let context = controls.context.parent as any;
+
+  let app = express()
     .use('/', graphqlHTTP({
       schema,
       rootValue: {
         echo: ({text}) => text,
-        agents: () => {
-          let agents = state.view(lensPath(['agents']));
-          return Object.values(agents);
-        },
-        manifest: () => {
-          let manifest = state.get().manifest;
+        agents: () => context.spawn(function* () {
+          let state: OrchestratorState = yield atom.get();
+          return Object.values(state.agents);
+        }),
+        manifest: () => context.spawn(function*() {
+          let state: OrchestratorState = yield atom.get();
+          let manifest = state.manifest;
           let serialize = (test: Test) => JSON.stringify(serializeTest(test));
           return map(({ path, test }) => ({ path, test: serialize(test) }), manifest);
-        }
+        })
       },
       graphiql: true,
     }));
+  controls.resume(app);
 }
 
 function serializeTest(test: Test): SerializableTest {
