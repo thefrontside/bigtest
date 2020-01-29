@@ -8,6 +8,8 @@ import { createCommandServer } from '../src/command-server';
 import { State } from '../src/orchestrator/state';
 import { assoc } from 'ramda';
 
+import { Test, SerializableTest } from '../src/test';
+
 let COMMAND_PORT = 24200;
 
 describe('command server', () => {
@@ -80,16 +82,44 @@ describe('command server', () => {
   });
 
   describe('querying the manifest', () => {
-    let result: Array<any>;
+    let result: { data: { manifest: Array<{ path: string; test: string }> } };
+
+    async function nothing() {}
+    let test1: Test, test2: Test;
     beforeEach(async () => {
+      test1 = {
+        description: "First Test",
+        steps: [{
+          description: "Do the thing",
+          action: nothing
+        }],
+        children: [{
+          description: "Son of First Test",
+          steps: [],
+          children: [],
+          assertions: []
+        }],
+        assertions: [{
+          description: "It did the thing",
+          check: nothing
+        }]
+      };
+
+      test2 = {
+        description: "Second Test",
+        steps: [],
+        children: [],
+        assertions: []
+      };
+
       state.update(assoc('manifest', [
-        { path: "foo.js", test: 123 },
-        { path: "bar.js", test: 423 },
+        { path: "foo.js", test: test1 },
+        { path: "bar.js", test: test2 },
       ]));
-      result = await query('manifest { path }');
+      result = await query('manifest { path, test }');
     });
-    it('contains the agents', () => {
-      expect(result).toEqual({
+    it('contains the paths of the tests', () => {
+      expect(result).toMatchObject({
         data: {
           manifest: [
             { path: "foo.js" },
@@ -97,6 +127,16 @@ describe('command server', () => {
           ]
         }
       })
+    });
+    it('contains the JSON encoding of the test tree', () => {
+      let [first, second]: Array<SerializableTest> = result.data.manifest.map(m => JSON.parse(m.test));
+
+      expect(first.description).toEqual('First Test');
+      expect(first.steps).toEqual([ { description: "Do the thing" }]);
+      expect(first.children).toMatchObject([ { description: "Son of First Test" }]);
+      expect(first.assertions).toMatchObject([ { description: "It did the thing" }]);
+
+      expect(second.description).toEqual('Second Test');
     });
   });
 });

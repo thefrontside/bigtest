@@ -1,3 +1,4 @@
+import { Test } from '../test';
 import { view, set, over } from 'ramda';
 
 export type AgentState = {
@@ -23,7 +24,7 @@ export type AgentState = {
 
 export type ManifestEntry = {
   path: string;
-  test: any;
+  test: Test;
 }
 
 export type OrchestratorState = {

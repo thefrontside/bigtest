@@ -114,7 +114,7 @@ describe('orchestrator', () => {
     });
 
     it('serves the application', () => {
-      expect(body).toContain('hellofromexample');
+      expect(body).toContain('Signing In');
     });
   });
 });
