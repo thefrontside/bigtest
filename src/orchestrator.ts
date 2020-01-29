@@ -27,7 +27,6 @@ type OrchestratorOptions = {
 }
 
 export function* createOrchestrator(options: OrchestratorOptions): Operation {
-
   let orchestrator = yield ({ resume, context: { parent }}) => resume(parent);
   let state = new State();
   console.log('[orchestrator] starting');
@@ -40,6 +39,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield fork(createCommandServer(orchestrator, {
     port: options.commandPort,
+    state: state,
   }));
 
   yield fork(createConnectionServer(orchestrator, {
@@ -98,10 +98,11 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   console.log("[orchestrator] running!");
 
-
   let connectionUrl = `ws://localhost:${options.connectionPort}`;
   let agentUrl = `http://localhost:${options.agentPort}/index.html?orchestrator=${encodeURIComponent(connectionUrl)}`
+  let commandUrl = `http://localhost:${options.commandPort}`;
   console.log(`[orchestrator] launch agents via: ${agentUrl}`);
+  console.log(`[orchestrator] show GraphQL dashboard via: ${commandUrl}`);
 
   if(options.delegate) {
     yield send({ ready: "orchestrator" }, options.delegate);

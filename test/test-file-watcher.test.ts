@@ -4,22 +4,14 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as rmrf from 'rimraf';
 
-import { receive, Context, Pattern } from 'effection';
-
 import { actions } from './helpers';
 
 import { createTestFileWatcher } from '../src/test-file-watcher';
 
-const { mkdir, readFile, writeFile, unlink } = fs.promises;
+const { mkdir, writeFile, unlink } = fs.promises;
 
 const TEST_DIR = "./tmp/test-file-watcher"
 const MANIFEST_PATH = "./tmp/test-file-watcher/manifest.js"
-
-async function awaitReceive(task: Context, match?: Pattern) {
-  await actions.fork(function*() {
-    return yield receive(match, task);
-  });
-}
 
 async function loadManifest() {
   let fullPath = path.resolve(MANIFEST_PATH);
@@ -43,7 +35,7 @@ describe('test-file-watcher', () => {
       manifestPath: MANIFEST_PATH,
     }));
 
-    await awaitReceive(orchestrator, { ready: "manifest" });
+    await actions.receive(orchestrator, { ready: "manifest" });
   });
 
   describe('starting', () => {
@@ -69,7 +61,7 @@ describe('test-file-watcher', () => {
 
     beforeEach(async () => {
       await writeFile(TEST_DIR + "/test3.t.js", "module.exports = { third: 'test' };");
-      await awaitReceive(orchestrator, { change: "manifest" });
+      await actions.receive(orchestrator, { change: "manifest" });
       manifest = await loadManifest();
     });
 
@@ -91,7 +83,7 @@ describe('test-file-watcher', () => {
 
     beforeEach(async () => {
       await unlink(TEST_DIR + "/test2.t.js");
-      await awaitReceive(orchestrator, { change: "manifest" });
+      await actions.receive(orchestrator, { change: "manifest" });
       manifest = await loadManifest();
     });
 
