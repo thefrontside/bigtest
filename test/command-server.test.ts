@@ -6,6 +6,7 @@ import { Context } from 'effection';
 import { actions } from './helpers';
 import { createCommandServer } from '../src/command-server';
 import { State } from '../src/orchestrator/state';
+import { assoc } from 'ramda';
 
 let COMMAND_PORT = 24200;
 
@@ -39,27 +40,25 @@ describe('command server', () => {
   describe('querying connected agents', () => {
     let result: Array<any>;
     beforeEach(async () => {
-      state.update(() => ({
-        agents: {
-          safari: {
-            "identifier": "agent.1",
-            "browser": {
-              "name": "Safari",
-              "version": "13.0.4"
-            },
-            "os": {
-              "name": "macOS",
-              "version": "10.15.2",
-              "versionName": "Catalina"
-            },
-            "platform": {
-              "type": "desktop",
-              "vendor": "Apple"
-            },
-            "engine": {
-              "name": "Gecko",
-              "version": "5.0"
-            }
+      state.update(assoc('agents', {
+        safari: {
+          "identifier": "agent.1",
+          "browser": {
+            "name": "Safari",
+            "version": "13.0.4"
+          },
+          "os": {
+            "name": "macOS",
+            "version": "10.15.2",
+            "versionName": "Catalina"
+          },
+          "platform": {
+            "type": "desktop",
+            "vendor": "Apple"
+          },
+          "engine": {
+            "name": "Gecko",
+            "version": "5.0"
           }
         }
       }));
@@ -80,6 +79,26 @@ describe('command server', () => {
     });
   });
 
+  describe('querying the manifest', () => {
+    let result: Array<any>;
+    beforeEach(async () => {
+      state.update(assoc('manifest', [
+        { path: "foo.js", test: 123 },
+        { path: "bar.js", test: 423 },
+      ]));
+      result = await query('manifest { path }');
+    });
+    it('contains the agents', () => {
+      expect(result).toEqual({
+        data: {
+          manifest: [
+            { path: "foo.js" },
+            { path: "bar.js" },
+          ]
+        }
+      })
+    });
+  });
 });
 
 async function query(text: string) {

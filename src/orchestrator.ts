@@ -70,9 +70,9 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   yield receive({ ready: "manifest" }, orchestrator);
 
   yield fork(createTestFileServer(orchestrator, {
-    files: options.testFiles,
     manifestPath: options.testManifestPath,
     port: options.testFilePort,
+    state: state,
   }));
 
   yield function*() {

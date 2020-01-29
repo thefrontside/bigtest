@@ -2,6 +2,9 @@ import 'module-alias/register';
 import { main, Operation } from 'effection';
 import { createParcelServer } from '../src/parcel-server';
 import * as yargs from 'yargs';
+import * as tempy from 'tempy';
+
+const DIST_PATH = tempy.directory();
 
 const self: Operation = ({ resume, context: { parent }}) => resume(parent);
 
@@ -14,6 +17,7 @@ yargs
 
       try {
         yield createParcelServer(argv.files as string[], { port: argv.port as number }, {
+          outDir: DIST_PATH,
           outFile: argv.outFile,
           global: argv.global,
         });

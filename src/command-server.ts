@@ -41,6 +41,9 @@ function createApp(state: State) {
         agents: () => {
           let agents = state.view(lensPath(['agents']));
           return Object.values(agents);
+        },
+        manifest: () => {
+          return state.view(lensPath(['manifest']));
         }
       },
       graphiql: true,

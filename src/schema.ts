@@ -4,6 +4,7 @@ export const schema =  buildSchema(`
 type Query {
   echo(text: String!): String
   agents: [Agent]
+  manifest: [ManifestEntry]
 }
 
 type Agent {
@@ -33,5 +34,9 @@ type Platform {
 type Engine {
   name: String!
   version: String!
+}
+
+type ManifestEntry {
+  path: String!
 }
 `);
