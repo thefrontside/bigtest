@@ -1,9 +1,10 @@
 import { Operation, receive } from 'effection';
 import * as Bundler from 'parcel-bundler';
 import { ParcelOptions } from 'parcel-bundler';
-import { Server } from 'http';
+import { createServer, RequestListener } from 'http';
 import { watch } from '@effection/events';
 import { EventEmitter } from 'events';
+import { listen } from './http';
 
 interface ParcelServerOptions {
   port: number;
@@ -14,13 +15,18 @@ export function* createParcelServer(entryPoints: string[], options: ParcelServer
 
   yield watch(bundler, "buildEnd");
 
-  let server = yield bundler.serve(options.port);
-
-  if (process.send) {
-    process.send({ type: "ready" });
-  }
+  let middleware = bundler.middleware();
+  let server = createServer(middleware)
 
   try {
+    yield listen(server, options.port);
+
+    yield receive({ event: "buildEnd" });
+
+    if (process.send) {
+      process.send({ type: "ready" });
+    }
+
     while(true) {
       yield receive({ event: "buildEnd" });
 
@@ -34,6 +40,6 @@ export function* createParcelServer(entryPoints: string[], options: ParcelServer
 }
 
 interface ParcelBundler extends EventEmitter {
-  serve(port: number): Promise<Server>;
+  middleware(): RequestListener;
   stop(): void;
 }
