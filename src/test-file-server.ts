@@ -1,5 +1,5 @@
-import { send, Operation, Context } from 'effection';
-import { on } from '@effection/events';
+import { send, receive, Operation, Context } from 'effection';
+import { watch } from '@effection/events';
 import { ChildProcess, fork as forkProcess } from '@effection/child_process';
 
 interface TestFileServerOptions {
@@ -20,12 +20,13 @@ export function* createTestFileServer(orchestrator: Context, options: TestFileSe
     }
   );
 
-  let message: {type: string};
-  do {
-    [message] = yield on(child, "message");
-  } while(message.type !== "ready");
+  yield watch(child, "message", (message) => message)
 
+  yield receive({ type: "ready" });
   yield send({ ready: "test-files" }, orchestrator);
 
-  yield on(child, "exit");
+  while(true) {
+    yield receive({ type: "update" });
+    console.debug("[test files] test files updated");
+  }
 }
