@@ -1,3 +1,4 @@
+import 'module-alias/register';
 import { main, Operation } from 'effection';
 import { createParcelServer } from '../src/parcel-server';
 import * as yargs from 'yargs';
