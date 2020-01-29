@@ -1,14 +1,16 @@
-import { fork, receive } from 'effection';
+import { main, fork, receive, Operation } from 'effection';
 import * as tempy from 'tempy';
 
 import { createOrchestrator } from '../src/index';
 
-fork(function*() {
-  let interrupt = () => { this.halt()};
-  process.on('SIGINT', interrupt);
+const self: Operation = ({ resume, context: { parent }}) => resume(parent);
 
+main(function*() {
+  let context = yield self;
+  let interrupt = () => { context.halt()};
+  process.on('SIGINT', interrupt);
   try {
-    fork(createOrchestrator({
+    let orchestrator = yield fork(createOrchestrator({
       delegate: this,
       appCommand: "yarn",
       appArgs: ["test:app:start"],
@@ -26,7 +28,7 @@ fork(function*() {
       testManifestPath: tempy.file({ name: 'manifest.js' }),
     }));
 
-    yield receive({ ready: "orchestrator" });
+    yield receive({ ready: "orchestrator" }, orchestrator);
 
     console.log("[cli] orchestrator ready!");
 
@@ -37,4 +39,4 @@ fork(function*() {
   } finally {
     process.off('SIGINT', interrupt);
   }
-});
+})

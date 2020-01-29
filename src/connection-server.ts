@@ -1,7 +1,7 @@
-import { Sequence, Execution, Operation, fork, receive, timeout, any } from 'effection';
+import { Context, Operation, fork, send, receive, any, timeout } from 'effection';
 import { watch } from '@effection/events';
 
-import { createSocketServer, Connection, send } from './ws';
+import { createSocketServer, Connection, sendData } from './ws';
 import { State } from './orchestrator/state';
 
 import { lensPath, assoc, dissoc } from 'ramda';
@@ -15,23 +15,23 @@ interface ConnectionServerOptions {
 
 const agentsLens = lensPath(['agents']);
 
-export function createConnectionServer(orchestrator: Execution, options: ConnectionServerOptions): Operation {
-  return function *connectionServer(): Sequence {
-    function* handleConnection(connection: Connection): Sequence {
+export function createConnectionServer(orchestrator: Context, options: ConnectionServerOptions): Operation {
+  return function *connectionServer(): Operation {
+    function* handleConnection(connection: Connection): Operation {
       console.debug('[connection] connected');
       yield watch(connection, "message", (message) => {
         return { message: JSON.parse(message.utf8Data) };
       });
 
-      fork(function* heartbeat() {
+      yield fork(function* heartbeat() {
         while (true) {
           yield timeout(10000);
-          yield send(connection, JSON.stringify({type: "heartbeat"}));
+          yield sendData(connection, JSON.stringify({type: "heartbeat"}));
         }
       })
 
-      fork(function* sendRun() {
-        yield send(connection, JSON.stringify({
+      yield fork(function* sendRun() {
+        yield sendData(connection, JSON.stringify({
           type: "open",
           url: `http://localhost:${options.proxyPort}`,
           manifest: `http://localhost:${options.testFilePort}/manifest.js`
@@ -55,8 +55,8 @@ export function createConnectionServer(orchestrator: Execution, options: Connect
         console.debug('[connection] disconnected');
       }
     }
-    yield createSocketServer(options.port, handleConnection, () => {
-      orchestrator.send({ ready: "connection" });
+    yield createSocketServer(options.port, handleConnection, function*() {
+      yield send({ ready: "connection" }, orchestrator);
     });
   }
 }

@@ -1,4 +1,4 @@
-import { createServer } from 'http';
+import { createServer, Server } from 'http';
 import {
   server as WebSocketServer,
   connection as Connection,
@@ -6,19 +6,21 @@ import {
   IMessage as Message
 } from 'websocket';
 
-import { fork, Sequence, Operation } from 'effection';
+import { fork, Operation } from 'effection';
 import { resumeOnCb } from './util';
 
 import { on } from '@effection/events';
 
-import { listen, ReadyCallback } from './http';
+import { listen } from './http';
 
-export function* createSocketServer(port: number, handler: ConnectionHandler, ready: ReadyCallback = x=>x): Sequence {
+interface UseServer { (server: Server): Operation }
+
+export function* createSocketServer(port: number, handler: ConnectionHandler, ready: UseServer): Operation {
   let server = createServer();
 
   yield listen(server, port);
 
-  ready(server);
+  yield ready(server);
 
   let socket = new WebSocketServer({
     httpServer: server
@@ -29,7 +31,7 @@ export function* createSocketServer(port: number, handler: ConnectionHandler, re
       let [request]: [Request] = yield on(socket, "request");
       let connection = request.accept(null, request.origin);
 
-      let handle = fork(function* setupConnection() {
+      let handle = yield fork(function* setupConnection() {
         let halt = () => handle.halt();
         let fail = (error: Error) => handle.throw(error);
         connection.on("error", fail);
@@ -49,7 +51,7 @@ export function* createSocketServer(port: number, handler: ConnectionHandler, re
   }
 }
 
-export function send(connection: Connection, data: string): Operation {
+export function sendData(connection: Connection, data: string): Operation {
   return resumeOnCb(cb => connection.send(data, cb));
 }
 

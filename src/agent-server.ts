@@ -1,4 +1,4 @@
-import { Sequence, Execution } from 'effection';
+import { send, Operation, Context } from 'effection';
 import { on } from '@effection/events';
 import { ChildProcess, fork as forkProcess } from '@effection/child_process';
 
@@ -6,7 +6,7 @@ interface AgentServerOptions {
   port: number;
 };
 
-export function* createAgentServer(orchestrator: Execution, options: AgentServerOptions): Sequence {
+export function* createAgentServer(orchestrator: Context, options: AgentServerOptions): Operation {
   // TODO: @precompile we want this to use a precompiled agent server when used as a package
   let child: ChildProcess = yield forkProcess(
     './bin/parcel-server.ts',
@@ -23,7 +23,7 @@ export function* createAgentServer(orchestrator: Execution, options: AgentServer
     [message] = yield on(child, "message");
   } while(message.type !== "ready");
 
-  orchestrator.send({ ready: "agent" });
+  yield send({ ready: "agent" }, orchestrator);
 
   yield on(child, "exit");
 }

@@ -1,12 +1,14 @@
 import { watch } from 'fs';
 import { spawn } from 'child_process';
-import { fork, Sequence } from 'effection';
+import { main, fork, Operation, Context } from 'effection';
 import { on } from '@effection/events';
 
-function* start(): Sequence {
+const self: Operation = ({ resume, context: { parent }}) => resume(parent);
+
+function* start(): Operation {
   let [ cmd, ...args ] = process.argv.slice(2);
 
-  let listener = fork(function* changes() {
+  let listener = yield fork(function* changes() {
     let watcher = watch('src', { recursive: true });
     try {
       while (true) {
@@ -20,26 +22,27 @@ function* start(): Sequence {
   });
 
   let current = { halt: (x = undefined) => x };
+  let context = yield self;
   let restart = () => {
     current.halt();
-    current = this.fork(function*() {
+    current = context.spawn(fork(function*() {
       try {
         yield launch(cmd, args);
         listener.halt();
       } catch (error) {
         console.log(error);
       }
-    })
+    }));
   };
 
   restart();
 }
 
-function* launch(cmd: string, args: string[]): Sequence {
+function* launch(cmd: string, args: string[]): Operation {
   let child = spawn(cmd, args, { stdio: 'inherit'});
 
-  fork(function*() {
-    let errors = fork(function*() {
+  yield fork(function*() {
+    let errors = yield fork(function*() {
       let [ error ] = yield on(child, "error");
       throw error;
     });
@@ -59,8 +62,9 @@ function* launch(cmd: string, args: string[]): Sequence {
 
 }
 
-fork(function* main() {
-  let interrupt = () => { console.log('');  this.halt()};
+main(function* main() {
+  let context: Context = yield self;
+  let interrupt = () => { console.log('');  context.halt()};
   process.on('SIGINT', interrupt);
   try {
     yield start;

@@ -8,7 +8,7 @@ export type ReadyCallback = (server: http.Server) => void;
 
 export function* listen(server: http.Server, port: number): Operation {
 
-  let errors = fork(function* errorListener() {
+  let errors = yield fork(function* errorListener() {
     let [error]: [Error] = yield on(server, "error");
     throw error;
   })

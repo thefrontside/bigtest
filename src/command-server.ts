@@ -1,4 +1,4 @@
-import { Sequence, Operation, Execution, fork } from 'effection';
+import { Operation, Context, fork, send } from 'effection';
 import { on } from '@effection/events';
 import * as express from 'express';
 import * as graphqlHTTP from 'express-graphql';
@@ -9,12 +9,12 @@ interface CommandServerOptions {
   port: number;
 };
 
-export function createCommandServer(orchestrator: Execution, options: CommandServerOptions): Operation {
-  return function *commandServer(): Sequence {
+export function createCommandServer(orchestrator: Context, options: CommandServerOptions): Operation {
+  return function *commandServer(): Operation {
     let app = createApp();
     let server = app.listen(options.port);
 
-    fork(function*() {
+    yield fork(function*() {
       let [error]: [Error] = yield on(server, 'error');
       throw error;
     });
@@ -22,7 +22,7 @@ export function createCommandServer(orchestrator: Execution, options: CommandSer
     try {
       yield on(server, 'listening');
 
-      orchestrator.send({ ready: "command" });
+      yield send({ ready: "command" }, orchestrator);
 
       yield
     } finally {
