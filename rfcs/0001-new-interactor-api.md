@@ -127,7 +127,7 @@ const MyButton = interactor(buttonSelector, ({ subject }) => {
 
 Using the `subject` directly should be considered a tool for low-level base
 `Interactor`s, or otherwise an escape hatch. If there is no existing lower level
-base `Interactor` to take care of your needs, you should consider making one
+base `Interactor` to take care of our needs, we should consider making one
 rather than risking coupling a higher level `Interactor` to the element
 structure.
 
@@ -135,43 +135,79 @@ structure.
 
 `Selector`s are functions which return a collection of elements (optionally
 wrapped in a `Promise`). The elements can be anything, not just DOM nodes. For
-example, if you are using Puppeteer, `Interactor`s can be used in the Node
+example, if we are using Puppeteer, `Interactor`s can be used in the Node
 environment and use `ElementHandle`s instead of `HTMLElement`s.
+
+The `selector()` function is a light wrapper around our `Query` function which
+queries the given container for elements. `selector()` returns a `Selector`
+function which, when called, will retry the `Query` until until it returns a
+non-empty collection of elements or it times out. If nothing is found it will
+throw an error.
+
+The first parameter of the `Query` function is the `Locator` that was passed to
+the `Interactor`, the second argument is the `Container` element. The
+`Container` may come from the `Interactor` declaration as a default, or it may
+be passed into the `Interactor` as a second argument after the `Locator`. When
+done the latter way, it will override the former default `Container`. The
+details of where the `Container` is coming from are unimportant to a `Selector`
+author.
+
+As a simple example, here is a `Selector` which selects `HTMLButtonElement`s by
+`innerText` that contains the `Locator`.
 
 ```ts
 const buttonSelector = selector<Element, HTMLButtonElement>(
   (locator, container) =>
     Array.from(container.querySelectorAll("button")).filter(
-      btn => btn.innerText === locator
+      btn => btn.innerText.indexOf(locator) >= 0
     )
 );
 ```
 
+With something like Playwright it could look like this:
+
+```ts
+const buttonSelector = selector<ElementHandle, ElementHandle>(
+  (locator, container) => container.$$(`//button[contains(., '${locator}')]`)
+);
+```
+
+The `Selector` dictates what it expects the type of the `Container` to be by
+using type annotations. The first type parameter in `selector()` is the
+`Container`'s type, while the second parameter is the return type.
+
+These types bubble up into the `Interactor`, meaning that if one tries to
+provide a `Container` to the `Interactor` which does not match the type required
+by the `Selector`, there will be a type error.
+
+We can also make higher-order `Selector`s if we need to "configure" the
+`Selector`:
+
 ```ts
 const buttonSelector = (type = "submit") =>
   selector<Element, HTMLButtonElement>((locator, container) =>
-    Array.from(container.querySelectorAll(`button[type=${submit}]`)).filter(
-      btn => btn.innerText === locator
+    Array.from(container.querySelectorAll(`button[type=${type}]`)).filter(
+      btn => btn.innerText.indexOf(locator) >= 0
     )
   );
 ```
+
+Or we can compose `Selector`s together to create more complex `Selector`s:
 
 ```ts
 const labelSelector = selector<Element, HTMLLabelElement>(
   (locator, container) => {
     return Array.from(container.querySelectorAll("label")).filter(
-      lbl => lbl.innerText.trim() === locator
+      label => label.innerText.indexOf(locator) >= 0
     );
   }
 );
 
-const datepickerSelector = selector<Element, HTMLDivElement>(
-  (locator, container) => {
+const containerWithLabelSelector = (containerSelector: string) =>
+  selector<Element, HTMLDivElement>((locator, container) => {
     const labels = await labelSelector(locator, container);
-
-    return labels.map(label => label.closest("[data-test-datepicker]"));
-  }
-);
+    return compact(labels.map(label => label.closest(containerSelector)));
+  });
 ```
 
 ### 🤏 Natural element selection
@@ -179,17 +215,21 @@ const datepickerSelector = selector<Element, HTMLDivElement>(
 ### 🕹 Actions & computed properties
 
 ```ts
-const Datepicker = interactor(datepickerSelector, ({ locator, subject }) => {
-  const input = Input(locator, subject);
-  return {
-    async choose(yyyy: number, mm: number, dd: number) {
-      await input.click();
-    },
-    get value() {
-      return input.value;
-    }
-  };
-});
+const Datepicker = interactor(
+  containerWithLabelSelector("[data-test-datepicker]"),
+  ({ locator, subject }) => {
+    const input = Input(locator, subject);
+
+    return {
+      async choose(yyyy: number, mm: number, dd: number) {
+        await input.click();
+      },
+      get value() {
+        return input.value;
+      }
+    };
+  }
+);
 ```
 
 ### ⛓ Chaining
