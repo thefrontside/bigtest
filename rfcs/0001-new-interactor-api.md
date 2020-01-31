@@ -7,20 +7,20 @@ GitHub Issue: (leave this empty)
 - [Summary](#summary)
 - [Basic example](#basic-example)
 - [Motivation](#motivation)
+  - [Beyond CSS selectors](#beyond-css-selectors)
+  - [High-fidelity typing](#high-fidelity-typing)
   - [Decorators](#decorators)
 - [Detailed design](#detailed-design)
   - [🧅 Layered abstraction](#-layered-abstraction)
     - [Using an Interactor](#using-an-interactor)
     - [Creating an Interactor](#creating-an-interactor)
     - [Selecting elements for an Interactor](#selecting-elements-for-an-interactor)
-  - [🕹 Actions & computed properties](#-actions--computed-properties)
   - [⛓ Chaining](#-chaining)
   - [💥 Detailed failure handling](#-detailed-failure-handling)
     - [Selector failures](#selector-failures)
     - [Action errors](#action-errors)
     - [Developer error](#developer-error)
   - [🧐 High-fidelity typing](#-high-fidelity-typing)
-  - [🌲 Compound interactors](#-compound-interactors)
 - [Drawbacks](#drawbacks)
 - [Alternatives](#alternatives)
 - [Adoption strategy](#adoption-strategy)
@@ -45,6 +45,10 @@ Please focus on explaining the motivation so that if this RFC is not accepted,
 the motivation could be used to develop alternative solutions. In other words,
 enumerate the constraints you are trying to solve without coupling them too
 closely to the solution you have in mind.
+
+### Beyond CSS selectors
+
+### High-fidelity typing
 
 ### Decorators
 
@@ -93,6 +97,12 @@ await expect(MyButton("Submit").isDisabled).resolves.toBe(true);
 Component libraries shipping specialized components may want to also ship
 alongside them specialized `Interactor`s.
 
+To create an `Interactor` we use the `interactor()` function. This function
+takes a `Selector` function as its first argument. The `Selector` is responsible
+for selecting elements using the `Locator` given at the time of invocation. The
+second argument is a function which receives a `Context` object and
+synchronously returns an interface containing `Action`s and computed properties.
+
 At this level we have access to the objects the `Selector` finds, however we
 still do not necessarily need to touch them directly. To avoid coupling the
 `Interactor` tightly to the UI's structure, other more granular `Interactor`s
@@ -110,25 +120,64 @@ const MyButton = interactor(buttonSelector, context => {
 });
 ```
 
-However, it would be possible to touch the elements directly and do the same
-thing:
+The above wraps the subject with a different `Interactor` called `Button`. In
+this case `MyButton` is some custom `Interactor` for our custom button component
+that likes to be pressed instead of clicked. This API allows us to selectively
+"extend" more primitive `Interactor`s.
+
+We can also compose `Interactor`s:
 
 ```ts
-const MyButton = interactor(buttonSelector, ({ subject }) => {
+const Datepicker = interactor(
+  containerWithLabelSelector("[data-test-datepicker]"),
+  ({ locator, subject }) => {
+    return {
+      async fill(yyyy: number, mm: number, dd: number) {
+        await Input(locator, subject).fill([yyyy, mm, dd].join("-"));
+      },
+      async nextMonth() {
+        await Button("Next month", subject).click();
+      },
+      async previousMonth() {
+        await Button("Previous month", subject).click();
+      },
+      async selectDay(day: number) {
+        await Button(day.toString(), subject).click();
+      },
+      get currentMonth() {
+        return Element("[data-test-month]", subject).text;
+      },
+      get currentYear() {
+        return Element("[data-test-year]", subject).text;
+      },
+      get selectedDay() {
+        return Element("[data-test-selected-day]", subject).text;
+      },
+      get value() {
+        return Input(locator, subject).value;
+      }
+    };
+  }
+);
+
+await Datepicker("Start Date").currentMonth; // => "January"
+await Datepicker("Start Date").nextMonth(); // => undefined
+await Datepicker("Start Date").currentMonth; // => "February"
+```
+
+If we need to we can use the `subject` directly. This API should be left for
+primitive `Interactor`s:
+
+```ts
+const Button = interactor(buttonSelector, ({ subject }) => {
   return {
-    press() {
+    click() {
       const element = await subject.first;
       element.click();
     }
   };
 });
 ```
-
-Using the `subject` directly should be considered a tool for low-level base
-`Interactor`s, or otherwise an escape hatch. If there is no existing lower level
-base `Interactor` to take care of our needs, we should consider making one
-rather than risking coupling a higher level `Interactor` to the element
-structure.
 
 #### Selecting elements for an Interactor
 
@@ -213,46 +262,6 @@ const containerWithLabelSelector = (containerSelector: string) =>
   });
 ```
 
-### 🕹 Actions & computed properties
-
-```ts
-const Datepicker = interactor(
-  containerWithLabelSelector("[data-test-datepicker]"),
-  ({ locator, subject }) => {
-    return {
-      async fill(yyyy: number, mm: number, dd: number) {
-        await Input(locator, subject).fill([yyyy, mm, dd].join("-"));
-      },
-      async nextMonth() {
-        await Button("Next month", subject).click();
-      },
-      async previousMonth() {
-        await Button("Previous month", subject).click();
-      },
-      async selectDay(day: number) {
-        await Button(day.toString(), subject).click();
-      },
-      get currentMonth() {
-        return Element("[data-test-month]", subject).text;
-      },
-      get currentYear() {
-        return Element("[data-test-year]", subject).text;
-      },
-      get selectedDay() {
-        return Element("[data-test-selected-day]", subject).text;
-      },
-      get value() {
-        return Input(locator, subject).value;
-      }
-    };
-  }
-);
-
-await Datepicker("Start Date").currentMonth; // => "January"
-await Datepicker("Start Date").nextMonth(); // => undefined
-await Datepicker("Start Date").currentMonth; // => "February"
-```
-
 ### ⛓ Chaining
 
 ```ts
@@ -305,7 +314,7 @@ to occur is the one that is surfaced.
 
 #### Action errors
 
-Unlike `Selector`s, which are pure and run repeatedly until success or timeout,
+Unlike `Selector`s, which are pure and run repeatedly until success or time-out,
 `Action`s can only be run once since they are effectual. This means that the
 first time an `Action` errors, the error will surface and fail the test. It will
 not be retried.
@@ -345,8 +354,6 @@ We will need to see if any other common mistakes arise which produce unhelpful
 errors. It could mean an API adjustment or just a better error message.
 
 ### 🧐 High-fidelity typing
-
-### 🌲 Compound interactors
 
 ## Drawbacks
 
