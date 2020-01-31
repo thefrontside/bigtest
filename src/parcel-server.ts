@@ -24,7 +24,7 @@ export function* createParcelServer(entryPoints: string[], options: ParcelServer
     yield receive({ event: "buildEnd" });
 
     if (process.send) {
-      process.send({ type: "ready" });
+      process.send({ type: "ready", options: bundler.options });
     }
 
     while(true) {
@@ -42,4 +42,5 @@ export function* createParcelServer(entryPoints: string[], options: ParcelServer
 interface ParcelBundler extends EventEmitter {
   middleware(): RequestListener;
   stop(): void;
+  options: ParcelOptions;
 }

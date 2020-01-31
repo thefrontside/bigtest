@@ -21,13 +21,20 @@ export type AgentState = {
   };
 }
 
+export type ManifestEntry = {
+  path: string;
+  test: any;
+}
+
 export type OrchestratorState = {
   agents: Record<string, AgentState>;
+  manifest: ManifestEntry[];
 }
 
 export class State {
   state: OrchestratorState = {
-    agents: {}
+    agents: {},
+    manifest: [],
   }
 
   get(): OrchestratorState {
