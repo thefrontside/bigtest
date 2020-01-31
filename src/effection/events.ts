@@ -29,9 +29,8 @@ export function watch(
 
     for(let name of [].concat(names)) {
       let listener = (...args) => {
-        parentContext.spawn(fork(function*() {
-          yield send(prepare.apply({ event: name}, args), parentContext);
-        }));
+        let message = prepare.apply({ event: name}, args);
+        parentContext.spawn(fork(send(message, parentContext)));
       }
 
       emitter.on(name, listener);
