@@ -1,6 +1,6 @@
 ---
 Start Date: 2020-01-28
-RFC PR: (leave this empty)
+RFC PR: https://github.com/bigtestjs/bigtest/pull/40
 GitHub Issue: (leave this empty)
 ---
 
@@ -13,7 +13,6 @@ GitHub Issue: (leave this empty)
     - [Using an Interactor](#using-an-interactor)
     - [Creating an Interactor](#creating-an-interactor)
     - [Selecting elements for an Interactor](#selecting-elements-for-an-interactor)
-  - [🤏 Natural element selection](#-natural-element-selection)
   - [🕹 Actions & computed properties](#-actions--computed-properties)
   - [⛓ Chaining](#-chaining)
   - [💥 Detailed failure handling](#-detailed-failure-handling)
@@ -133,6 +132,10 @@ structure.
 
 #### Selecting elements for an Interactor
 
+This layer is the lowest level of the public API. It involves dealing with the
+details of navigating the DOM and so forth in order to supply elements for the
+`Interactor`s to operate upon.
+
 `Selector`s are functions which return a collection of elements (optionally
 wrapped in a `Promise`). The elements can be anything, not just DOM nodes. For
 example, if we are using Puppeteer, `Interactor`s can be used in the Node
@@ -210,26 +213,44 @@ const containerWithLabelSelector = (containerSelector: string) =>
   });
 ```
 
-### 🤏 Natural element selection
-
 ### 🕹 Actions & computed properties
 
 ```ts
 const Datepicker = interactor(
   containerWithLabelSelector("[data-test-datepicker]"),
   ({ locator, subject }) => {
-    const input = Input(locator, subject);
-
     return {
-      async choose(yyyy: number, mm: number, dd: number) {
-        await input.click();
+      async fill(yyyy: number, mm: number, dd: number) {
+        await Input(locator, subject).fill([yyyy, mm, dd].join("-"));
+      },
+      async nextMonth() {
+        await Button("Next month", subject).click();
+      },
+      async previousMonth() {
+        await Button("Previous month", subject).click();
+      },
+      async selectDay(day: number) {
+        await Button(day.toString(), subject).click();
+      },
+      get currentMonth() {
+        return Element("[data-test-month]", subject).text;
+      },
+      get currentYear() {
+        return Element("[data-test-year]", subject).text;
+      },
+      get selectedDay() {
+        return Element("[data-test-selected-day]", subject).text;
       },
       get value() {
-        return input.value;
+        return Input(locator, subject).value;
       }
     };
   }
 );
+
+await Datepicker("Start Date").currentMonth; // => "January"
+await Datepicker("Start Date").nextMonth(); // => undefined
+await Datepicker("Start Date").currentMonth; // => "February"
 ```
 
 ### ⛓ Chaining
@@ -247,7 +268,7 @@ await Input("Email").tab();
 
 ### 💥 Detailed failure handling
 
-There are three ways an `Interactor` can fail. An `Interactor` may fail to find
+There are three ways an `Interactor` may fail. An `Interactor` may fail to find
 the desired element(s) within the timeout, an `Action` may error while acting
 upon the resolved `Subject`, or the API may be used incorrectly.
 
