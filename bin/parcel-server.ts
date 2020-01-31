@@ -9,13 +9,11 @@ const DIST_PATH = tempy.directory();
 
 yargs
   .command('$0 [files..]', 'run the parcel server', () => {}, (argv) => {
-    main(function*(): Operation {
-      yield createParcelServer(argv.files as string[], { port: argv.port as number }, {
-        outDir: DIST_PATH,
-        outFile: argv.outFile,
-        global: argv.global,
-      });
-    });
+    main(createParcelServer(argv.files as string[], { port: argv.port as number }, {
+      outDir: DIST_PATH,
+      outFile: argv.outFile,
+      global: argv.global,
+    }));
   })
   .option('port', {
     alias: 'p',
