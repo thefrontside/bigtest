@@ -120,10 +120,10 @@ const MyButton = interactor(buttonSelector, context => {
 });
 ```
 
-The above wraps the subject with a different `Interactor` called `Button`. In
+The above wraps the `Subject` with a different `Interactor` called `Button`. In
 this case `MyButton` is some custom `Interactor` for our custom button component
-that likes to be pressed instead of clicked. This API allows us to selectively
-"extend" more primitive `Interactor`s.
+that likes to be pressed instead of clicked. This API allows us to extend, as it
+were, more primitive `Interactor`s.
 
 We can also compose `Interactor`s:
 
@@ -165,18 +165,38 @@ await Datepicker("Start Date").nextMonth(); // => undefined
 await Datepicker("Start Date").currentMonth; // => "February"
 ```
 
-If we need to we can use the `subject` directly. This API should be left for
+If we need to we can use the `Subject` directly. This API should be left for
 primitive `Interactor`s:
 
 ```ts
 const Button = interactor(buttonSelector, ({ subject }) => {
   return {
-    click() {
+    async click() {
       const element = await subject.first;
       element.click();
     }
   };
 });
+```
+
+The `Subject` interface has two computed properties: `first` and `all`. They
+both return `Promise`s. When a `Selector` selects and returns a collection of
+elements, that collection is wrapped in the `Subject` interface. In most cases
+we will just want the first element of the collection (as there will be but a
+single match), but sometimes we may want to do something with all matches. We
+may access these elements with the `all` property, which returns a
+`Promise`-wrapped array of elements.
+
+```ts
+const Element = interactor(css, ({ subject }) => {
+  return {
+    get count() {
+      return subject.all.then(elems => elems.length);
+    }
+  };
+});
+
+await Element("div").count; // => 26742069856
 ```
 
 #### Selecting elements for an Interactor
