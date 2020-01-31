@@ -1,36 +1,38 @@
 {
   "name": "@bigtest/convergence",
   "description": "Convergence helpers for testing big",
-  "version": "0.7.0",
+  "version": "1.1.2",
   "license": "MIT",
-  "repository": "https://github.com/thefrontside/bigtest/tree/master/packages/convergence",
-  "main": "dist/index.js",
-  "module": "src/index.js",
+  "repository": "https://github.com/bigtestjs/convergence",
+  "main": "dist/umd/index.js",
+  "module": "dist/esm/index.js",
+  "files": [
+    "dist",
+    "docs",
+    "src"
+  ],
   "scripts": {
     "build": "rollup --config",
+    "docs": "bigtest-docs",
+    "lint": "eslint --ignore-path .gitignore ./",
     "test": "mocha --opts ./tests/mocha.opts ./tests",
-    "postpublish": "../../bin/tag-pkg",
-    "docs": "../../bin/docs",
-    "lint": "eslint ./"
+    "prepack": "npm run docs && npm run build"
   },
-  "eslintIgnore": [
-    "/dist/"
-  ],
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.35",
-    "@babel/polyfill": "^7.0.0-beta.35",
-    "@babel/preset-env": "^7.0.0-beta.35",
-    "@babel/register": "^7.0.0-beta.35",
+    "@babel/core": "^7.0.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/register": "7.8.3",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^4.16.0",
-    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.0.0",
     "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-node": "^5.2.1",
-    "eslint-plugin-promise": "^3.6.0",
-    "eslint-plugin-standard": "^3.0.1",
-    "mocha": "^4.0.1",
-    "rollup": "^0.53.0",
-    "rollup-plugin-babel": "^4.0.0-beta.0"
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "mocha": "~6.2.2",
+    "rollup": "^1.27.14",
+    "rollup-plugin-babel": "^4.0.0"
   }
 }

@@ -1,8 +1,0 @@
-#! /usr/bin/env bash
-
-tagname=$(node -p << END_SCRIPT
-  const pkg = require('./package.json');
-  \`\${pkg.name}-\${pkg.version}\`;
-END_SCRIPT);
-
-git tag $tagname

@@ -1,6 +1,2 @@
-.DS_Store
-/node_modules
-/packages/*/node_modules
-/packages/*/dist
-/packages/*/docs
-*.log
+node_modules
+yarn-error.log

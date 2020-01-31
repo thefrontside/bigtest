@@ -1,20 +1,20 @@
 {
   "name": "bigtest",
-  "private": true,
+  "version": "0.0.0-monorepo",
+  "description": "Tests that speed up development ",
+  "repository": "git@github.com:bigtestjs/bigtest.git",
+  "author": "Taras Mankovski <taras@frontside.io>",
   "license": "MIT",
-  "repository": "https://github.com/thefrontside/bigtest",
-  "scripts": {
-    "build": "bin/each-pkg yarn build",
-    "test": "bin/each-pkg yarn test",
-    "lint": "bin/each-pkg yarn lint",
-    "docs": "bin/each-pkg yarn docs"
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
   },
-  "workspaces": [
-    "packages/*"
-  ],
-  "devDependencies": {
-    "chalk": "^2.3.0",
-    "commander": "^2.12.2",
-    "jsdoc-api": "^4.0.3"
+  "scripts": {
+    "clean": "find . \\( -name node_modules -o -name dist \\) -exec rm -rf {} +",
+    "build": "yarn workspaces run build",
+    "test": "yarn workspaces run test",
+    "develop": "cd packages/website && gatsby develop"
   }
 }

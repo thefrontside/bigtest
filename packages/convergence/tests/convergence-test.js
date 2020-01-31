@@ -121,17 +121,17 @@ describe('BigTest Convergence', () => {
         expect(assertion).to.not.equal(converge);
       });
 
-      it('creates a new stack', () => {
-        expect(assertion._stack).to.not.equal(converge._stack);
-        expect(assertion._stack).to.have.lengthOf(1);
-        expect(converge._stack).to.have.lengthOf(0);
+      it('creates a new queue', () => {
+        expect(assertion._queue).to.not.equal(converge._queue);
+        expect(assertion._queue).to.have.lengthOf(1);
+        expect(converge._queue).to.have.lengthOf(0);
       });
 
-      it('adds the assertion to the new stack', () => {
+      it('adds the assertion to the new queue', () => {
         let assert = () => {};
 
         assertion = assertion.when(assert);
-        expect(assertion._stack[1]).to.have.property('assertion', assert);
+        expect(assertion._queue[1]).to.have.property('assertion', assert);
       });
     });
 
@@ -147,19 +147,19 @@ describe('BigTest Convergence', () => {
         expect(assertion).to.not.equal(converge);
       });
 
-      it('creates a new stack', () => {
-        expect(assertion._stack).to.not.equal(converge._stack);
-        expect(assertion._stack).to.have.lengthOf(1);
-        expect(converge._stack).to.have.lengthOf(0);
+      it('creates a new queue', () => {
+        expect(assertion._queue).to.not.equal(converge._queue);
+        expect(assertion._queue).to.have.lengthOf(1);
+        expect(converge._queue).to.have.lengthOf(0);
       });
 
-      it('adds to a new stack with an `always` flag and own timeout', () => {
+      it('adds to a new queue with an `always` flag and own timeout', () => {
         let assert = () => {};
 
         assertion = assertion.always(assert, 200);
-        expect(assertion._stack[1]).to.have.property('assertion', assert);
-        expect(assertion._stack[1]).to.have.property('always', true);
-        expect(assertion._stack[1]).to.have.property('timeout', 200);
+        expect(assertion._queue[1]).to.have.property('assertion', assert);
+        expect(assertion._queue[1]).to.have.property('always', true);
+        expect(assertion._queue[1]).to.have.property('timeout', 200);
       });
     });
 
@@ -175,17 +175,17 @@ describe('BigTest Convergence', () => {
         expect(callback).to.not.equal(converge);
       });
 
-      it('creates a new stack', () => {
-        expect(callback._stack).to.not.equal(converge._stack);
-        expect(callback._stack).to.have.lengthOf(1);
-        expect(converge._stack).to.have.lengthOf(0);
+      it('creates a new queue', () => {
+        expect(callback._queue).to.not.equal(converge._queue);
+        expect(callback._queue).to.have.lengthOf(1);
+        expect(converge._queue).to.have.lengthOf(0);
       });
 
-      it('adds to a new stack with an `exec` property', () => {
+      it('adds to a new queue with a `callback` property', () => {
         let fn = () => {};
 
         callback = callback.do(fn);
-        expect(callback._stack[1]).to.have.property('callback', fn);
+        expect(callback._queue[1]).to.have.property('callback', fn);
       });
     });
 
@@ -203,20 +203,20 @@ describe('BigTest Convergence', () => {
         expect(combined).to.not.equal(converge);
       });
 
-      it('creates a new stack', () => {
-        expect(combined._stack).to.not.equal(converge._stack);
-        expect(combined._stack).to.have.lengthOf(1);
-        expect(converge._stack).to.have.lengthOf(0);
+      it('creates a new queue', () => {
+        expect(combined._queue).to.not.equal(converge._queue);
+        expect(combined._queue).to.have.lengthOf(1);
+        expect(converge._queue).to.have.lengthOf(0);
       });
 
-      it('combines the two stacks', () => {
+      it('combines the two queues', () => {
         let fn = () => {};
 
         combined = combined.append(
           new Convergence().do(fn)
         );
 
-        expect(combined._stack[1]).to.have.property('callback', fn);
+        expect(combined._queue[1]).to.have.property('callback', fn);
       });
     });
   });
@@ -274,6 +274,14 @@ describe('BigTest Convergence', () => {
         return expect(assertion.run()).to.be.fulfilled;
       });
 
+      it('rejects with an error when using an async function', () => {
+        expect(converge.when(async () => {}).run()).to.be.rejectedWith(/async/);
+      });
+
+      it('rejects with an error when returning a promise', () => {
+        expect(converge.when(() => Promise.resolve()).run()).to.be.rejectedWith(/promise/);
+      });
+
       describe('with additional chaining', () => {
         beforeEach(() => {
           assertion = assertion.when(() => expect(total).to.equal(10));
@@ -303,7 +311,7 @@ describe('BigTest Convergence', () => {
         total = 5;
         assertion = converge.always(() => {
           expect(total).to.equal(5);
-        }, 50);
+        });
       });
 
       it('retains the instance context', () => {
@@ -328,14 +336,22 @@ describe('BigTest Convergence', () => {
         expect(Date.now() - start).to.be.within(50, 70);
       });
 
-      describe('with additional chaining', () => {
+      it('rejects with an error when using an async function', () => {
+        expect(converge.always(async () => {}).run()).to.be.rejectedWith(/async/);
+      });
+
+      it('rejects with an error when returning a promise', () => {
+        expect(converge.always(() => Promise.resolve()).run()).to.be.rejectedWith(/promise/);
+      });
+
+      describe('with a timeout', () => {
         beforeEach(() => {
-          assertion = assertion
-            .do(() => total = 10)
-            .when(() => expect(total).to.equal(10));
+          assertion = converge.always(() => {
+            expect(total).to.equal(5);
+          }, 50);
         });
 
-        it('resolves after at least 50ms', async () => {
+        it('resolves after the 50ms timeout', async () => {
           let start = Date.now();
           await expect(assertion.run()).to.be.fulfilled;
           expect(Date.now() - start).to.be.within(50, 70);
@@ -347,6 +363,24 @@ describe('BigTest Convergence', () => {
           let start = Date.now();
           await expect(assertion.run()).to.be.rejected;
           expect(Date.now() - start).to.be.within(30, 50);
+        });
+      });
+
+      describe('with additional chaining', () => {
+        beforeEach(() => {
+          assertion = assertion.do(() => {});
+        });
+
+        it('resolves after one-tenth the total timeout', async () => {
+          let start = Date.now();
+          await expect(assertion.timeout(1000).run()).to.be.fulfilled;
+          expect(Date.now() - start).to.be.within(100, 120);
+        });
+
+        it('resolves after at minumum 20ms', async () => {
+          let start = Date.now();
+          await expect(assertion.run()).to.be.fulfilled;
+          expect(Date.now() - start).to.be.within(20, 40);
         });
       });
     });
@@ -439,7 +473,7 @@ describe('BigTest Convergence', () => {
 
           converge = converge.do(() => 1);
           return expect(assertion.run()).to.be.fulfilled
-            .and.eventually.have.nested.property('stack[0].value', 1);
+            .and.eventually.have.nested.property('queue[0].value', 1);
         });
 
         it('rejects after the exceeding the timeout', () => {
@@ -488,7 +522,7 @@ describe('BigTest Convergence', () => {
 
           createTimeout(() => resolve(1), 10);
           return expect(assertion.run()).to.be.fulfilled
-            .and.eventually.have.nested.property('stack[0].value', 1);
+            .and.eventually.have.nested.property('queue[0].value', 1);
         });
 
         it('rejects after the exceeding the timeout', () => {
@@ -532,7 +566,41 @@ describe('BigTest Convergence', () => {
         expect(stats.runs).to.be.within(8, 12);
         expect(stats.timeout).to.equal(100);
         expect(stats.value).to.equal(50);
-        expect(stats.stack).to.have.lengthOf(4);
+        expect(stats.queue).to.have.lengthOf(4);
+      });
+
+      it('stores and calls the callbacks first-in-first-out', async () => {
+        let arr = [];
+
+        let assertion = converge
+          .do(() => arr.push('first'))
+          .do(() => arr.push('second'));
+
+        await expect(assertion.run()).to.be.fulfilled;
+        expect(arr).to.deep.equal(['first', 'second']);
+      });
+
+      it('curries previous return values through the stack', async () => {
+        await expect(
+          converge
+            .when(() => true)
+            .do(foo => !foo)
+            .always(foo => foo.toString())
+            // undefined returns curry the value
+            .when(foo => {
+              expect(foo).to.equal('false');
+            })
+            .do(foo => {
+              expect(foo).to.equal('false');
+            })
+            .always(foo => {
+              expect(foo).to.equal('false');
+              return null;
+            })
+            .do(foo => {
+              expect(foo).to.be.null;
+            })
+        ).to.be.fulfilled;
       });
     });
   });
