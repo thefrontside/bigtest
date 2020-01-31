@@ -3,9 +3,12 @@ import { on } from '@effection/events';
 import * as express from 'express';
 import * as graphqlHTTP from 'express-graphql';
 
+import { listenWS } from './ws';
 import { schema } from './schema';
 import { atom, OrchestratorState } from './orchestrator/state';
 import { Test, SerializableTest } from './test';
+
+import { handleMessage } from './command-server/websocket';
 
 interface CommandServerOptions {
   port: number;
@@ -25,7 +28,7 @@ export function* createCommandServer(orchestrator: Context, options: CommandServ
 
     yield send({ ready: "command" }, orchestrator);
 
-    yield
+    yield listenWS(server, handleMessage);
   } finally {
     server.close();
   }

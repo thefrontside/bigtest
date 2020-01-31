@@ -22,6 +22,14 @@ export function* createSocketServer(port: number, handler: ConnectionHandler, re
 
   yield ready(server);
 
+  try {
+    yield listenWS(server, handler);
+  } finally {
+    server.close();
+  }
+}
+
+export function* listenWS(server: Server, handler: ConnectionHandler): Operation {
   let socket = new WebSocketServer({
     httpServer: server
   });
@@ -47,7 +55,7 @@ export function* createSocketServer(port: number, handler: ConnectionHandler, re
 
     }
   } finally {
-    server.close();
+    socket.unmount();
   }
 }
 
