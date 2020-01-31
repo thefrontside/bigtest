@@ -1,3 +1,3 @@
 export { isConvergence } from './utils';
-export { default as convergeOn } from './converge-on';
+export { when, always } from './converge';
 export { default } from './convergence';

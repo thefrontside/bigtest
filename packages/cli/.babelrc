@@ -1,0 +1,25 @@
+{
+  "presets": [
+    ["@babel/env", {
+      "targets": {
+        "node": "current"
+      }
+    }]
+  ],
+  "plugins": [
+    "@babel/proposal-class-properties",
+    "@babel/proposal-throw-expressions",
+    ["module-resolver", {
+      "alias": {
+        "@init": "./lib/init",
+        "@run": "./lib/run",
+        "@util": "./lib/util",
+        "@tests": "./tests"
+      }
+    }]
+  ],
+  "ignore": [
+    "lib/run/client",
+    "lib/run/adapters"
+  ]
+}

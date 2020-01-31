@@ -1,0 +1,58 @@
+{
+  "name": "@bigtest/interactor",
+  "description": "Interaction library for testing big",
+  "version": "0.9.3",
+  "license": "MIT",
+  "repository": "https://github.com/bigtestjs/interactor",
+  "main": "dist/umd/index.js",
+  "module": "dist/esm/index.js",
+  "files": [
+    "dist",
+    "docs",
+    "src"
+  ],
+  "scripts": {
+    "build": "rollup --config",
+    "docs": "bigtest-docs",
+    "lint": "eslint --ignore-path .gitignore ./",
+    "start": "karma start",
+    "test": "yarn start --single-run",
+    "prepack": "npm run docs && npm run build"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/plugin-proposal-decorators": "^7.0.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/register": "7.8.3",
+    "@rollup/plugin-node-resolve": "^6.0.0",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.4",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.0.0",
+    "eslint-plugin-standard": "^4.0.0",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.2.0",
+    "karma": "4.4.1",
+    "karma-chrome-launcher": "3.1.0",
+    "karma-mocha": "1.3.0",
+    "karma-mocha-reporter": "2.2.5",
+    "karma-webpack": "4.0.2",
+    "mocha": "~6.2.2",
+    "regenerator-runtime": "0.13.3",
+    "rollup": "^1.27.14",
+    "rollup-plugin-babel": "^4.0.0",
+    "webpack": "^4.20.0",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.9"
+  },
+  "dependencies": {
+    "@bigtest/convergence": "1.1.2"
+  }
+}

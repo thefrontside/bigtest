@@ -1,0 +1,2 @@
+--serve "yarn webpack-dev-server"
+--adapter mocha

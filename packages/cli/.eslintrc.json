@@ -1,0 +1,15 @@
+{
+  "extends": "standard",
+  "parser": "babel-eslint",
+  "rules": {
+    "semi": ["error", "always"],
+    "space-before-function-paren": ["error", {
+      "anonymous": "never",
+      "named": "never",
+      "asyncArrow": "always"
+    }],
+    "indent": ["error", 2, {
+      "SwitchCase": 1
+    }]
+  }
+}
