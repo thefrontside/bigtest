@@ -129,12 +129,9 @@ We can also compose `Interactor`s:
 
 ```ts
 const Datepicker = interactor(
-  containerWithLabelSelector("[data-test-datepicker]"),
+  css,
   ({ locator, subject }) => {
     return {
-      async fill(yyyy: number, mm: number, dd: number) {
-        await Input(locator, subject).fill([yyyy, mm, dd].join("-"));
-      },
       async nextMonth() {
         await Button("Next month", subject).click();
       },
@@ -153,16 +150,13 @@ const Datepicker = interactor(
       get selectedDay() {
         return Element("[data-test-selected-day]", subject).text;
       },
-      get value() {
-        return Input(locator, subject).value;
+      get today() {
+        return Element("[data-test-today]", subject).text;
       }
     };
-  }
+  },
+  { locator: "[data-test-datepicker]" }
 );
-
-await Datepicker("Start Date").currentMonth; // => "January"
-await Datepicker("Start Date").nextMonth(); // => undefined
-await Datepicker("Start Date").currentMonth; // => "February"
 ```
 
 If we need to we can use the `Subject` directly. This API should be left for
