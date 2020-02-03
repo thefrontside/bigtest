@@ -2,8 +2,7 @@ import { Link } from 'gatsby';
 import React from 'react';
 import styled from 'styled-components';
 
-import logo from '../images/frontside/frontside-logo.svg';
-
+const logo = require('../images/frontside/frontside-logo.svg');
 const logo_height = 'var(--space-double)';
 
 const FooterContainer = styled.footer`

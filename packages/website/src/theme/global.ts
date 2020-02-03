@@ -1,14 +1,35 @@
 import { createGlobalStyle } from 'styled-components';
+import * as CSS from 'csstype';
 import reset from 'styled-reset-advanced';
-import base from './base';
+import base, { Base } from './base';
 
-const brand = {
+interface BrandColors {
+  pink: CSS.ColorProperty;
+  skyBlue: CSS.ColorProperty;
+  darkBlue: CSS.ColorProperty;
+}
+
+const brand: BrandColors = {
   pink: '#f74d7b',
   skyBlue: '#26abe8',
   darkBlue: '#14315d',
 }
 
-const LightTheme = {
+interface ColorTheme {
+  brand: BrandColors;
+  background: CSS.ColorProperty;
+  bodyCopy: CSS.ColorProperty;
+  primary: CSS.ColorProperty;
+  secondary: CSS.ColorProperty;
+  contrast: CSS.ColorProperty;
+}
+
+interface Theme extends Base {
+  name: string;
+  colors: ColorTheme;
+}
+
+const LightTheme: Theme = {
   ...base,
   name: 'light',
   colors: {
@@ -21,7 +42,7 @@ const LightTheme = {
   },
 }
 
-const DarkTheme = {
+const DarkTheme: Theme = {
   ...base,
   name: 'dark',
   colors: {
@@ -34,7 +55,7 @@ const DarkTheme = {
   },
 };
 
-const GlobalTheme = createGlobalStyle`
+const GlobalTheme = createGlobalStyle<{ theme: Theme }>`
   ${reset};
 
   body {

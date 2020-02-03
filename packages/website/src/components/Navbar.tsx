@@ -2,9 +2,9 @@ import { Link } from 'gatsby';
 import React from 'react';
 import styled from 'styled-components';
 
-import bigtest_logo from '../images/frontside/bigtest-logo.svg';
-import discord_icon from '../images/icons/discord.svg';
-import github_icon from '../images/icons/github.svg';
+const bigtest_logo = require('../images/frontside/bigtest-logo.svg');
+const discord_icon = require('../images/icons/discord.svg');
+const github_icon = require('../images/icons/github.svg');
 
 const logo_height = "calc(var(--size-base)*2)";
 

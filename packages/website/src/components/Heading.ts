@@ -10,7 +10,8 @@ const H1 = styled.h1`
 `;
 
 const H2 = styled.h2`
-  color: ${({ color, theme }) => ((color) ? theme.colors[color] : theme.colors.primary)};
+  color: ${({ color, theme }) =>
+    color ? theme.colors[color] : theme.colors.primary};
   font-family: ${({ theme }) => theme.fonts.heading};
   font-weight: ${({ theme }) => theme.fontWeights.body};
   font-size: ${({ theme }) => theme.fontSizes.xLarge};
@@ -19,7 +20,8 @@ const H2 = styled.h2`
 `;
 
 const H3 = styled.h3`
-  color: ${({ color, theme }) => (color) ? theme.colors[color] : theme.colors.primary};
+  color: ${({ color, theme }) =>
+    color ? theme.colors[color] : theme.colors.primary};
   font-family: ${({ theme }) => theme.fonts.heading};
   font-weight: ${({ theme }) => theme.fontWeights.bold};
   font-size: ${({ theme }) => theme.fontSizes.medium};
@@ -28,7 +30,8 @@ const H3 = styled.h3`
 `;
 
 const H4 = styled.h4`
-  color: ${({ color, theme }) => (color) ? theme.colors[color] : theme.colors.primary};
+  color: ${({ color, theme }) =>
+    color ? theme.colors[color] : theme.colors.primary};
   font-family: ${({ theme }) => theme.fonts.heading};
   font-weight: ${({ theme }) => theme.fontWeights.bold};
   font-size: ${({ theme }) => theme.fontSizes.small};
