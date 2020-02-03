@@ -4,7 +4,7 @@ import Section from './Section';
 import { H2, H4 } from './Heading';
 
 interface ItemProp {
-  largeOrder: number;
+  largeOrder: string;
 }
 
 const List = styled.ul`
@@ -32,7 +32,7 @@ const Item = styled.li<ItemProp>`
   }
 `;
 
-const WhyBigTest: React.FC<ItemProp> = () => (
+const WhyBigTest: React.FC = () => (
   <Section>
     <H2 color="secondary">Why BigTest?</H2>
     <List>

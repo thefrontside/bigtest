@@ -49,9 +49,7 @@ const IndexPage = () => (
             on your app rapidly, in every browser and device, regardless of your
             JS framework of choice.
           </Text>
-          <Subscribe
-            text="Get notified about BigTest progress and know when it's ready:"
-          />
+          <Subscribe text="Get notified about BigTest progress and know when it's ready:" />
         </Box>
         <Image
           width={[1, 1 / 2, 1 / 3]}

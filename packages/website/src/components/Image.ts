@@ -1,16 +1,14 @@
 import styled from 'styled-components';
 import StyledSystem, { compose, space, layout } from 'styled-system';
 
-export interface PictureProps
+export interface ImageProps
   extends StyledSystem.SpaceProps,
-  StyledSystem.LayoutProps {
-  as?: React.ElementType;
-}
+    StyledSystem.LayoutProps {}
 
-const Picture = styled.img<PictureProps>`
+const Image = styled.img<ImageProps>`
   display: block;
   width: 100%;
   ${compose(space, layout)}
 `;
 
-export default Picture;
+export default Image;

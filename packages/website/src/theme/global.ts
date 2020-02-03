@@ -13,7 +13,7 @@ const brand: BrandColors = {
   pink: '#f74d7b',
   skyBlue: '#26abe8',
   darkBlue: '#14315d',
-}
+};
 
 interface ColorTheme {
   brand: BrandColors;
@@ -40,7 +40,7 @@ const LightTheme: Theme = {
     secondary: brand.skyBlue,
     contrast: brand.pink,
   },
-}
+};
 
 const DarkTheme: Theme = {
   ...base,

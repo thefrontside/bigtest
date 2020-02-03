@@ -47,7 +47,8 @@
     "start": "npm run develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
-    "test": "echo test not setup for website"
+    "test": "echo test not setup for website",
+    "problems": "tsc --noEmit -p ./tsconfig.json"
   },
   "repository": {
     "type": "git",
