@@ -159,11 +159,11 @@ const IndexPage = () => (
     </Section>
     <Hero>
       <Flex align="initial">
-        <div flex={2}>
+        <Box width={[1, 1 / 2, 2 / 3]} paddingRight="large">
           <H2 color="dark-blue">Want to know more about BigTest?</H2>
-          {/* <Subscribe text="Join our mailing list! Receive updates and be an expert by the time BigTest is officially released." /> */}
-        </div>
-        <div flex={1}>
+          <Subscribe text="Join our mailing list! Receive updates and be an expert by the time BigTest is officially released." />
+        </Box>
+        <Box width={[1, 1 / 2, 1 / 3]}>
           <H4>Reach out!</H4>
           <ul>
             <li>
@@ -185,7 +185,7 @@ const IndexPage = () => (
               </ContactItem>
             </li>
           </ul>
-        </div>
+        </Box>
       </Flex>
     </Hero>
   </Layout>

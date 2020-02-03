@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const Button = styled.button`
@@ -40,21 +40,19 @@ interface SubscribeText {
   text: string;
 }
 
-export default class Subscribe extends React.Component<SubscribeText> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
-      input: false,
-    };
-  }
+const Subscribe: React.FC<SubscribeText> = (props) => {
+  const [email, setEmail] = useState('');
+  const [sent, setSent] = useState(false);
+  const [botfield, preventSpam] = useState('');
 
-  handleChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
+  const reset = () => {
+    setSent(true),
+      setEmail('')
   };
 
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
+
     const form = e.target;
     fetch('/', {
       method: 'POST',
@@ -63,99 +61,53 @@ export default class Subscribe extends React.Component<SubscribeText> {
       },
       body: encode({
         'form-name': form.getAttribute('name'),
-        email: this.state.email,
+        email,
       }),
     })
       .then(() =>
-        this.setState({
-          input: true,
-          email: '',
-        }),
+        reset(),
       )
       .catch(error => alert(error));
-  };
-
-  render() {
-    return (
-      <div>
-        <P1>{this.props.text}</P1>
-        <form
-          name="newsletter"
-          method="post"
-          style={{ display: 'flex' }}
-          data-netlify="true"
-          data-netlify-honeypot="bot-field"
-          onSubmit={this.handleSubmit}
-        >
-          <input type="hidden" name="form-name" value="newsletter" />
-          <div hidden>
-            <label>
-              Don’t fill this out:{' '}
-              <input name="bot-field" onChange={this.handleChange} />
-            </label>
-          </div>
-          <Input
-            id="email"
-            name="email"
-            onChange={this.handleChange}
-            required={true}
-            type="email"
-            value={this.state.email}
-            placeholder={
-              this.state.input
-                ? 'Your email has been successfully submitted!'
-                : "Your email (we'll send max 1 email per month, no spam)"
-            }
-            disabled={this.state.input}
-          />
-          <Button type="submit" disabled={this.state.input}>
-            Subscribe
-          </Button>
-        </form>
-      </div>
-    );
   }
+
+  return (
+    <div>
+      <P1>{props.text}</P1>
+      <form
+        name="newsletter"
+        method="post"
+        style={{ display: 'flex' }}
+        data-netlify="true"
+        data-netlify-honeypot="bot-field"
+        onSubmit={handleSubmit}
+      >
+        <input type="hidden" name="form-name" value="newsletter" />
+        <div hidden>
+          <label>
+            Don’t fill this out:
+            <input name="bot-field" onChange={e => preventSpam(e.target.value)} value={botfield} />
+          </label>
+        </div>
+        <Input
+          id="email"
+          name="email"
+          onChange={e => setEmail(e.target.value)}
+          required={true}
+          type="email"
+          value={email}
+          placeholder={
+            sent
+              ? 'Your email has been successfully submitted!'
+              : "Your email (we'll send max 1 email per month, no spam)"
+          }
+          disabled={sent}
+        />
+        <Button type="submit" disabled={sent}>
+          Subscribe
+        </Button>
+      </form>
+    </div>
+  )
 }
 
-// const SubscribeNew: React.FC<SubscribeText> = () => {
-//   return (
-//     <div>
-//       <P1>{this.props.text}</P1>
-//       <form
-//         name="newsletter"
-//         method="post"
-//         style={{ display: 'flex' }}
-//         data-netlify="true"
-//         data-netlify-honeypot="bot-field"
-//         onSubmit={this.handleSubmit}
-//       >
-//         <input type="hidden" name="form-name" value="newsletter" />
-//         <div hidden>
-//           <label>
-//             Don’t fill this out:{' '}
-//             <input name="bot-field" onChange={this.handleChange} />
-//           </label>
-//         </div>
-//         <Input
-//           id="email"
-//           name="email"
-//           onChange={this.handleChange}
-//           required={true}
-//           type="email"
-//           value={this.state.email}
-//           placeholder={
-//             this.state.input
-//               ? 'Your email has been successfully submitted!'
-//               : "Your email (we'll send max 1 email per month, no spam)"
-//           }
-//           disabled={this.state.input}
-//         />
-//         <Button type="submit" disabled={this.state.input}>
-//           Subscribe
-//       </Button>
-//       </form>
-//     </div>
-//   )
-// }
-
-// export default SubscribeNew
+export default Subscribe;
