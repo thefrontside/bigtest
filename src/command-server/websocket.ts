@@ -1,12 +1,10 @@
 import { Operation, fork, receive } from 'effection';
 import { watch } from '@effection/events';
 
-import { graphql as executeGraphql } from 'graphql';
-
-import { schema } from '../schema';
 import { atom, OrchestratorState } from '../orchestrator/state';
-
 import { Connection, sendData } from '../ws';
+
+import { graphql } from '../command-server';
 
 interface Message {
   responseId?: string;
@@ -43,7 +41,6 @@ export function* handleMessage(connection: Connection): Operation {
   }
 }
 
-
 function* handleQuery(message: QueryMessage, connection: Connection): Operation {
   yield publishQueryResult(message, yield atom.get(), connection);
 
@@ -68,16 +65,4 @@ function* subscribe(message: QueryMessage, connection: Connection) {
 
 function* handleMutation(message: MutationMessage, connection: Connection): Operation {
   console.log(message, connection);
-}
-
-export function graphql(source: string, state: OrchestratorState): Operation {
-  return executeGraphql({
-    schema,
-    source,
-    rootValue: {
-      echo: ({text}) => text,
-      agents: () => Object.values(state.agents),
-      manifest: () => state.manifest
-    }
-  });
 }

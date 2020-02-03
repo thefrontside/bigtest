@@ -2,11 +2,12 @@ import { Operation, Context, fork, send, Controls } from 'effection';
 import { on } from '@effection/events';
 import * as express from 'express';
 import * as graphqlHTTP from 'express-graphql';
+import { graphql as executeGraphql } from 'graphql';
 
 import { listenWS } from './ws';
 import { schema } from './schema';
-import { atom, OrchestratorState } from './orchestrator/state';
 import { Test, SerializableTest } from './test';
+import { atom, OrchestratorState } from './orchestrator/state';
 
 import { handleMessage } from './command-server/websocket';
 
@@ -15,7 +16,7 @@ interface CommandServerOptions {
 };
 
 export function* createCommandServer(orchestrator: Context, options: CommandServerOptions): Operation {
-  let app = yield createApp;
+  let app = yield createApp();
   let server = app.listen(options.port);
 
   yield fork(function* commandServerErrorListener() {
@@ -34,30 +35,43 @@ export function* createCommandServer(orchestrator: Context, options: CommandServ
   }
 }
 
-function createApp(controls: Controls): void {
+function createApp(): Operation {
+  return ({ resume, context: { parent }}) => {
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let context = controls.context.parent as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let context = parent as any;
 
-  let app = express()
-    .use('/', graphqlHTTP({
-      schema,
-      rootValue: {
-        echo: ({text}) => text,
-        agents: () => context.spawn(function* () {
-          let state: OrchestratorState = yield atom.get();
-          return Object.values(state.agents);
-        }),
-        manifest: () => context.spawn(function*() {
-          let state: OrchestratorState = yield atom.get();
-          let manifest = state.manifest;
-          let serialize = (test: Test) => JSON.stringify(serializeTest(test));
-          return map(({ path, test }) => ({ path, test: serialize(test) }), manifest);
-        })
-      },
-      graphiql: true,
-    }));
-  controls.resume(app);
+    let app = express()
+      .use(graphqlHTTP(() => context.spawn(function* getOptionsData() {
+        let state = yield atom.get();
+        return { ...graphqlOptions(state), graphiql: true};
+      })));
+    resume(app);
+  }
+}
+
+/**
+ * Run the query or mutation in `source` against the orchestrator
+ * state contained in `state`
+ */
+export function graphql(source: string, state: OrchestratorState): Operation {
+  return executeGraphql({...graphqlOptions(state), source });
+}
+
+/**
+ * Get the graphql options for running a query against `state`. Needed
+ * because the express graphql server calls the `graphql` function for
+ * you based on the .
+ */
+export function graphqlOptions(state: OrchestratorState) {
+  return {
+    schema,
+    rootValue: {
+      echo: ({text}) => text,
+      agents: () => Object.values(state.agents),
+      manifest: () => map(({ path, test}) => ({ path, test: JSON.stringify(serializeTest(test))}), state.manifest)
+    }
+  }
 }
 
 function serializeTest(test: Test): SerializableTest {
