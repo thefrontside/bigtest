@@ -1,31 +1,12 @@
 import { Operation, fork, receive } from 'effection';
 import { watch } from '@effection/events';
 
+import { Message, QueryMessage, MutationMessage, isQuery, isMutation } from '../protocol';
+
 import { atom, OrchestratorState } from '../orchestrator/state';
 import { Connection, sendData } from '../ws';
 
 import { graphql } from '../command-server';
-
-interface Message {
-  responseId?: string;
-}
-
-interface QueryMessage extends Message {
-  query: string;
-  live?: boolean;
-}
-
-interface MutationMessage extends Message {
-  mutation: string;
-}
-
-function isQuery(message: Message): message is QueryMessage {
-  return !!message['query'];
-}
-
-function isMutation(message: Message): message is MutationMessage {
-  return !!message['mutation'];
-}
 
 export function* handleMessage(connection: Connection): Operation {
   yield watch(connection, "message", message => JSON.parse(message.utf8Data));
