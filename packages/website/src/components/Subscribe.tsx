@@ -5,7 +5,7 @@ import { Strong } from './Text';
 
 interface DisableForm {
   disabled: boolean;
-};
+}
 
 const SubscribeContainer = styled.div`
   margin-top: ${({ theme }) => theme.space.large};
@@ -15,7 +15,7 @@ const Button = styled.button<DisableForm>`
   border-radius: ${({ theme }) => theme.space.small};
   padding: ${({ theme }) => theme.space.medium} ${({ theme }) => theme.space.large};
   margin-left: ${({ theme }) => theme.space.small};
-  background: ${({ disabled, theme }) => disabled ? theme.colors.disabled : theme.colors.primary};
+  background: ${({ disabled, theme }) => (disabled ? theme.colors.disabled : theme.colors.primary)};
   color: ${({ theme }) => theme.colors.background};
   font-weight: ${({ theme }) => theme.fontWeights.bold};
 `;
@@ -26,27 +26,26 @@ const Input = styled.input<DisableForm>`
   padding: ${({ theme }) => theme.space.small} ${({ theme }) => theme.space.medium};
   width: 100%;
   font-size: ${({ theme }) => theme.fontSizes.medium};
-  border: 2px solid ${({ disabled, theme }) => disabled ? theme.colors.disabled : theme.fontSizes.primary};
+  border: 2px solid ${({ disabled, theme }) => (disabled ? theme.colors.disabled : theme.fontSizes.primary)};
 `;
 
 function encode(data) {
   return Object.keys(data)
     .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
     .join('&');
-};
+}
 
 interface SubscribeText {
   text: string;
-};
+}
 
-const Subscribe: React.FC<SubscribeText> = (props) => {
+const Subscribe: React.FC<SubscribeText> = props => {
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const [botfield, preventSpam] = useState('');
 
   const reset = () => {
-    setSent(true),
-      setEmail('')
+    setSent(true), setEmail('');
   };
 
   const handleSubmit = e => {
@@ -63,9 +62,7 @@ const Subscribe: React.FC<SubscribeText> = (props) => {
         email,
       }),
     })
-      .then(() =>
-        reset(),
-      )
+      .then(() => reset())
       .catch(error => alert(error));
   };
 

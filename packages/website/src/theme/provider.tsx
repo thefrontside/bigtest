@@ -14,7 +14,7 @@ const ThemeProvider: React.FC = ({ children }) => {
       <GlobalTheme />
       {children}
     </StyledThemeProvider>
-  )
+  );
 };
 
 export default ThemeProvider;

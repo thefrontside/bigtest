@@ -1,10 +1,7 @@
 import styled from 'styled-components';
 import StyledSystem, { compose, space, layout, flexbox } from 'styled-system';
 
-export interface BoxProps
-  extends StyledSystem.SpaceProps,
-    StyledSystem.LayoutProps,
-    StyledSystem.FlexboxProps {
+export interface BoxProps extends StyledSystem.SpaceProps, StyledSystem.LayoutProps, StyledSystem.FlexboxProps {
   as?: React.ElementType;
 }
 

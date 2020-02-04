@@ -1,24 +1,19 @@
-import { Link } from 'gatsby';
 import React from 'react';
+import { Link } from 'gatsby';
 import styled from 'styled-components';
+
+import Flex from './Flex';
+import Image from './Image';
 
 import { bigtest_logo_svg, discord_icon, github_icon } from '../images';
 
-const logo_height = "calc(var(--size-base)*2)";
-
-const NavbarContainer = styled.nav`
-  display: flex;
+const NavbarContainer = styled(Flex)`
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-half-vw) var(--space-single-vw);
 `;
 
 const NavbarLogoLink = styled(Link)`
-  height: ${logo_height};
-`;
-
-const NavbarLogo = styled.img`
-  height: 100%;
+  height: ${({ theme }) => theme.space.large};
 `;
 
 const NavbarMenu = styled.ul`
@@ -28,37 +23,34 @@ const NavbarMenu = styled.ul`
 `;
 
 const NavbarItem = styled.li`
-  margin-left: calc(var(--space-half-vw)/2);
-  height: 100%;
+  margin-left: ${({ theme }) => theme.space.large};
 `;
 
 const NavbarA = styled.a`
-  color: var(--color-dark-blue);
-  font-weight: 600;
-  font-size: var(--size-med-sm);
+  color: ${({ theme }) => theme.colors.primary};
+  font-weight: ${({ theme }) => theme.fontWeights.bold};
 `;
 
-// const NavbarLink = styled(Link)`
-//   color: var(--color-dark-blue);
-//   font-weight: 600;
-//   font-size: var(--size-med-sm);
-// `;
+const NavbarLink = styled(Link)`
+  color: ${({ theme }) => theme.colors.primary};
+  font-weight: ${({ theme }) => theme.fontWeights.bold};
+  font-size: ${({ theme }) => theme.fontSizes.large};
+  font-family: ${({ theme }) => theme.fonts.heading};
+`;
 
-const NavbarIcon = styled.img`
-  height: calc(${logo_height}/1.75);
+const NavbarIcon = styled(Image)`
+  height: ${({ theme }) => theme.fontSizes.large};
 `;
 
 const Navbar = () => (
-  <NavbarContainer>
+  <NavbarContainer paddingX={['medium', 'medium', 'xxLarge']} paddingY={['medium', 'medium', 'large']}>
     <NavbarLogoLink to="/">
-      <NavbarLogo src={bigtest_logo_svg} alt="BigTestJS" />
+      <Image src={bigtest_logo_svg} alt="BigTestJS" height="100%" />
     </NavbarLogoLink>
     <NavbarMenu>
-      {/* <NavbarItem>
-        <NavbarLink to="">
-          API
-        </NavbarLink>
-      </NavbarItem> */}
+      <NavbarItem>
+        <NavbarLink to="">API</NavbarLink>
+      </NavbarItem>
       <NavbarItem>
         <NavbarA href="https://github.com">
           <NavbarIcon src={github_icon} alt="Github" />

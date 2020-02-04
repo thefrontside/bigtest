@@ -2,41 +2,42 @@ import { Link } from 'gatsby';
 import React from 'react';
 import styled from 'styled-components';
 
-const logo = require('../images/frontside/frontside-logo.svg');
-const logo_height = 'var(--space-double)';
+import Image from './Image';
+import Box from './Box';
 
-const FooterContainer = styled.footer`
-  background-color: var(--footer-bg);
+import { frontside_logo } from '../images';
+
+const FooterBox = styled(Box)`
+  background-color: ${({ theme }) => theme.colors.footer};
   display: flex;
-  align-items: center;
   text-align: center;
   justify-content: center;
-  height: var(--space-single-vw);
-  margin-top: var(--space-triple);
+  align-items: center;
+  height: ${({ theme }) => theme.space.xxLarge};
+  margin-top: ${({ theme }) => theme.space.large};
 `;
 
 const FooterLink = styled(Link)`
-  height: ${logo_height};
+  height: ${({ theme }) => theme.space.large};
 `;
 
-const FooterLogo = styled.img`
-  padding-left: var(--space-half);
+const FooterLogo = styled(Image)`
+  padding-left: ${({ theme }) => theme.space.small};
   height: 100%;
 `;
 
-const FooterText = styled.div`
-  color: var(--color-dark-blue);
+const FooterText = styled.p`
+  color: ${({ theme }) => theme.colors.primary};
+  font-family: ${({ theme }) => theme.fonts.heading};
 `;
 
 const Footer = () => (
-  <FooterContainer>
-    <FooterText>
-      Brought to you by
-    </FooterText>
-    <FooterLink to="/" >
-      <FooterLogo src={logo} alt="BigTestJS" />
+  <FooterBox>
+    <FooterText>Brought to you by</FooterText>
+    <FooterLink to="/">
+      <FooterLogo src={frontside_logo} alt="BigTestJS" />
     </FooterLink>
-  </FooterContainer>
+  </FooterBox>
 );
 
 export default Footer;

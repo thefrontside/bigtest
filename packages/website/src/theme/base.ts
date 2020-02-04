@@ -3,19 +3,19 @@ import * as CSS from 'csstype';
 export interface LineHeights {
   body: CSS.LineHeightProperty<number>;
   heading: CSS.LineHeightProperty<number>;
-};
+}
 
 export interface FontWeights {
   light: CSS.FontWeightAbsolute;
   body: CSS.FontWeightAbsolute;
   bold: CSS.FontWeightAbsolute;
-};
+}
 
 export interface Fonts {
   body: string;
   heading: string;
   monospace: string;
-};
+}
 
 export interface Base {
   breakpoints: string[];
@@ -24,7 +24,7 @@ export interface Base {
   fontWeights: FontWeights;
   lineHeights: LineHeights;
   space: string[];
-};
+}
 
 const base: Base = {
   breakpoints: [36, 48, 64, 75].map(n => n + 'rem'),
@@ -47,16 +47,8 @@ const base: Base = {
 };
 
 const breakpointAliases: string[] = ['small', 'medium', 'large', 'xLarge'];
-const sizeAliases: string[] = [
-  'xxSmall',
-  'xSmall',
-  'small',
-  'medium',
-  'large',
-  'xLarge',
-  'xxLarge',
-  'xxxLarge',
-];
+
+const sizeAliases: string[] = ['xxSmall', 'xSmall', 'small', 'medium', 'large', 'xLarge', 'xxLarge', 'xxxLarge'];
 
 base.fontSizes.forEach((_: any, index: number): void => {
   base.fontSizes[sizeAliases[index]] = base.fontSizes[index];

@@ -13,8 +13,8 @@ const Layout: React.FC = ({ children }) => {
         query HeadingQuery {
           site {
             siteMetadata {
-              title,
-              description,
+              title
+              description
             }
           }
         }

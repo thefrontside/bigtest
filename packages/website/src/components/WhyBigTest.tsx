@@ -42,9 +42,7 @@ const WhyBigTest: React.FC = () => (
       </Item>
       <Item largeOrder="3">
         <H4>Experienced-centered</H4>
-        <p>
-          Test what matters to users through a refined developer experience.
-        </p>
+        <p>Test what matters to users through a refined developer experience.</p>
       </Item>
       <Item largeOrder="1">
         <H4>Cross-Browser</H4>
