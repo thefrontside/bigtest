@@ -1,44 +1,43 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-const Button = styled.button`
-  border-radius: var(--space-half);
-  padding: var(--space-half) var(--space-one-half);
-  margin-left: calc(var(--space-single) * 0.75);
-  font-size: var(--size-med-sm);
-  background: ${props => (props.disabled ? 'grey' : 'var(--button-color)')};
-  color: white;
-  font-weight: bold;
+import { Strong } from './Text';
+
+interface DisableForm {
+  disabled: boolean;
+};
+
+const SubscribeContainer = styled.div`
+  margin-top: ${({ theme }) => theme.space.large};
 `;
 
-const Input = styled.input`
-  border-radius: var(--space-half);
-  background: var(--body-bg);
-  padding: var(--space-single) var(--space-half);
+const Button = styled.button<DisableForm>`
+  border-radius: ${({ theme }) => theme.space.small};
+  padding: ${({ theme }) => theme.space.medium} ${({ theme }) => theme.space.large};
+  margin-left: ${({ theme }) => theme.space.small};
+  background: ${({ disabled, theme }) => disabled ? theme.colors.disabled : theme.colors.primary};
+  color: ${({ theme }) => theme.colors.background};
+  font-weight: ${({ theme }) => theme.fontWeights.bold};
+`;
+
+const Input = styled.input<DisableForm>`
+  border-radius: ${({ theme }) => theme.space.small};
+  background: ${({ theme }) => theme.colors.background};
+  padding: ${({ theme }) => theme.space.small} ${({ theme }) => theme.space.medium};
   width: 100%;
-  color: var(--input-color);
-  font-size: var(--size-med-sm);
-  border: 2px solid;
-  border-color: ${props =>
-    props.disabled ? 'silver' : 'var(--input-border-color)'};
-`;
-
-const P1 = styled.p`
-  font-weight: 700;
-  color: var(--color-dark-blue);
-  margin-top: var(--space-triple);
-  font-size: var(--size-med-sm);
+  font-size: ${({ theme }) => theme.fontSizes.medium};
+  border: 2px solid ${({ disabled, theme }) => disabled ? theme.colors.disabled : theme.fontSizes.primary};
 `;
 
 function encode(data) {
   return Object.keys(data)
     .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
     .join('&');
-}
+};
 
 interface SubscribeText {
   text: string;
-}
+};
 
 const Subscribe: React.FC<SubscribeText> = (props) => {
   const [email, setEmail] = useState('');
@@ -68,11 +67,11 @@ const Subscribe: React.FC<SubscribeText> = (props) => {
         reset(),
       )
       .catch(error => alert(error));
-  }
+  };
 
   return (
-    <div>
-      <P1>{props.text}</P1>
+    <SubscribeContainer>
+      <Strong>{props.text}</Strong>
       <form
         name="newsletter"
         method="post"
@@ -106,8 +105,8 @@ const Subscribe: React.FC<SubscribeText> = (props) => {
           Subscribe
         </Button>
       </form>
-    </div>
-  )
-}
+    </SubscribeContainer>
+  );
+};
 
 export default Subscribe;

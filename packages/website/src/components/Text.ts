@@ -6,6 +6,7 @@ const Text = styled.p`
 
 export const Strong = styled.strong`
   font-weight: ${({ theme }) => theme.fontWeights.bold};
+  color: ${({ color, theme }) => color ? theme.colors[color] : theme.colors.primary};
 `;
 
 export default Text;

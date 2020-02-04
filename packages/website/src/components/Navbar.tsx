@@ -2,9 +2,7 @@ import { Link } from 'gatsby';
 import React from 'react';
 import styled from 'styled-components';
 
-const bigtest_logo = require('../images/frontside/bigtest-logo.svg');
-const discord_icon = require('../images/icons/discord.svg');
-const github_icon = require('../images/icons/github.svg');
+import { bigtest_logo_svg, discord_icon, github_icon } from '../images';
 
 const logo_height = "calc(var(--size-base)*2)";
 
@@ -53,7 +51,7 @@ const NavbarIcon = styled.img`
 const Navbar = () => (
   <NavbarContainer>
     <NavbarLogoLink to="/">
-      <NavbarLogo src={bigtest_logo} alt="BigTestJS" />
+      <NavbarLogo src={bigtest_logo_svg} alt="BigTestJS" />
     </NavbarLogoLink>
     <NavbarMenu>
       {/* <NavbarItem>

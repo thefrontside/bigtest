@@ -12,11 +12,13 @@ import Text, { Strong } from '../components/Text';
 import Subscribe from '../components/Subscribe';
 import WhyBigTest from '../components/WhyBigTest';
 
-const discord_icon = require('../images/icons/discord.svg');
-const placeholder = require('../images/frontside/bigtest-icon.svg');
-const tests_intro = require('../images/landing/tests-intro.svg');
-const reusable = require('../images/landing/reusable.svg');
-const user_experience = require('../images/landing/user-experience.svg');
+import {
+  reusable,
+  tests_intro,
+  user_experience,
+  discord_icon,
+  bigtest_icon_svg as placeholder
+} from '../images';
 
 const SideBox = styled.div`
   background-color: var(--color-light-light-blue);

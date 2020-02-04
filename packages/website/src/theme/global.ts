@@ -22,6 +22,7 @@ interface ColorTheme {
   primary: CSS.ColorProperty;
   secondary: CSS.ColorProperty;
   contrast: CSS.ColorProperty;
+  disabled: CSS.ColorProperty;
 }
 
 interface Theme extends Base {
@@ -39,6 +40,7 @@ const LightTheme: Theme = {
     primary: brand.darkBlue,
     secondary: brand.skyBlue,
     contrast: brand.pink,
+    disabled: '#C0C0C0',
   },
 };
 
@@ -52,6 +54,7 @@ const DarkTheme: Theme = {
     primary: '#ffffff',
     secondary: brand.skyBlue,
     contrast: brand.pink,
+    disabled: '#C0C0C0',
   },
 };
 
