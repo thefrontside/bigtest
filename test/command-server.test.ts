@@ -1,8 +1,9 @@
 import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 
-import { Context } from 'effection';
+import { Operation, Context } from 'effection';
 
+import { Client } from '../src/client';
 import { actions } from './helpers';
 import { createCommandServer } from '../src/command-server';
 import { atom } from '../src/orchestrator/state';
@@ -37,7 +38,7 @@ describe('command server', () => {
   });
 
   describe('querying connected agents', () => {
-    let result: Array<any>;
+    let result: unknown;
     beforeEach(async () => {
       await actions.fork(atom.update(assoc('agents', {
         safari: {
@@ -76,6 +77,18 @@ describe('command server', () => {
         }
       })
     });
+
+    describe('over websockets', () => {
+      let wsResult: unknown;
+      beforeEach(async () => {
+        wsResult = await websocketQuery('{agents { browser { name } os { name } platform { type }}}');
+      });
+
+      it('gets the same results as over http', () => {
+        expect(wsResult).toEqual(result['data']);
+      });
+    });
+
   });
 
   describe('querying the manifest', () => {
@@ -136,9 +149,79 @@ describe('command server', () => {
       expect(second.description).toEqual('Second Test');
     });
   });
+
+  describe('subscribing to a query', () => {
+    let results: unknown[];
+    let sync: Mocha.Done;
+
+    beforeEach((done) => {
+      sync = done;
+      actions.fork(function*() {
+        results = [];
+        let client: Client = yield createTestClient();
+        yield client.subscribe('{ agents { browser { name } } }', function*(data) {
+          results.push(data);
+          sync();
+        });
+      })
+    });
+
+    it('contains the initial result of the query', () => {
+      expect(results).toEqual([{ agents: [] }]);
+    });
+
+    describe('when another agent is added', () => {
+      beforeEach((done) => {
+        sync = done;
+        actions.fork(atom.update(assoc('agents', {
+          safari: {
+            "identifier": "agent.1",
+            "browser": {
+              "name": "Safari",
+              "version": "13.0.4"
+            },
+            "os": {
+              "name": "macOS",
+              "version": "10.15.2",
+              "versionName": "Catalina"
+            },
+            "platform": {
+              "type": "desktop",
+              "vendor": "Apple"
+            },
+            "engine": {
+              "name": "Gecko",
+              "version": "5.0"
+            }
+          }
+        })));
+      });
+
+      it('publishes the new state', () => {
+        let [, second] = results;
+        expect(second).toBeDefined();
+        expect(second).toEqual({
+          agents: [{
+            browser: {
+              name: "Safari"
+            }
+          }]
+        });
+      });
+    });
+  });
 });
 
 async function query(text: string) {
   let response = await actions.get(`http://localhost:${COMMAND_PORT}?query={${encodeURIComponent(text)}}`);
   return await response.json();
+}
+
+const createTestClient: () => Operation = () => Client.create(`ws://localhost:${COMMAND_PORT}`);
+
+async function websocketQuery(text: string) {
+  return await actions.fork(function*() {
+    let client = yield createTestClient();
+    return yield client.query(text);
+  });
 }
