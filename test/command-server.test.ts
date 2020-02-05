@@ -18,11 +18,9 @@ describe('command server', () => {
   beforeEach(async () => {
     orchestrator = actions.fork(function*() { yield });
 
-    actions.fork(function* top() {
-      yield createCommandServer(orchestrator, {
-        port: COMMAND_PORT,
-      })
-    });
+    actions.fork(createCommandServer(orchestrator, {
+      port: COMMAND_PORT,
+    }));
 
     await actions.receive(orchestrator, { ready: "command" });
   });
