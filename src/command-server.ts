@@ -6,6 +6,7 @@ import { lensPath } from 'ramda';
 
 import { schema } from './schema';
 import { State } from './orchestrator/state';
+import { Test, SerializableTest } from './test';
 
 interface CommandServerOptions {
   port: number;
@@ -43,10 +44,27 @@ function createApp(state: State) {
           return Object.values(agents);
         },
         manifest: () => {
-          return state.view(lensPath(['manifest']));
+          let manifest = state.get().manifest;
+          let serialize = (test: Test) => JSON.stringify(serializeTest(test));
+          return map(({ path, test }) => ({ path, test: serialize(test) }), manifest);
         }
       },
       graphiql: true,
     }));
+}
 
+function serializeTest(test: Test): SerializableTest {
+  let { description, children, steps, assertions } = test;
+  return {
+    description,
+    steps: [...map(({ description }) => ({ description}), steps)],
+    assertions: [...map(({ description }) => ({ description }), assertions)],
+    children: [...map(serializeTest, children)]
+  };
+}
+
+function* map<Input, Output>(fn: ((input: Input) => Output), inputs: Iterable<Input>): Iterable<Output> {
+  for (let input of inputs) {
+    yield fn(input);
+  }
 }

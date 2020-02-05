@@ -25,8 +25,8 @@ describe('test-file-watcher', () => {
   beforeEach((done) => rmrf(TEST_DIR, done));
   beforeEach(async () => {
     await mkdir(TEST_DIR, { recursive: true });
-    await writeFile(TEST_DIR + "/test1.t.js", "module.exports = { hello: 'world' };");
-    await writeFile(TEST_DIR + "/test2.t.js", "module.exports = { monkey: 'foo' };");
+    await writeFile(TEST_DIR + "/test1.t.js", "module.exports = { default: { hello: 'world' }};");
+    await writeFile(TEST_DIR + "/test2.t.js", "module.exports = { default: { monkey: 'foo' }};");
 
     orchestrator = actions.fork(function*() { yield });
 
@@ -60,7 +60,7 @@ describe('test-file-watcher', () => {
     let manifest;
 
     beforeEach(async () => {
-      await writeFile(TEST_DIR + "/test3.t.js", "module.exports = { third: 'test' };");
+      await writeFile(TEST_DIR + "/test3.t.js", "module.exports = { default: { third: 'test' } };");
       await actions.receive(orchestrator, { change: "manifest" });
       manifest = await loadManifest();
     });

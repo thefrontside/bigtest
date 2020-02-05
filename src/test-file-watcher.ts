@@ -20,7 +20,7 @@ function* writeManifest(options: TestFileWatcherOptions) {
 
   for(let file of files) {
     let filePath = "./" + path.relative(path.dirname(options.manifestPath), file);
-    manifest += `  { path: ${JSON.stringify(file)}, test: require(${JSON.stringify(filePath)}) },\n`;
+    manifest += `  { path: ${JSON.stringify(file)}, test: require(${JSON.stringify(filePath)}).default },\n`;
   }
 
   manifest += "];\n";
