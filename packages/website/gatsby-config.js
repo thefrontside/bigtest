@@ -13,6 +13,12 @@ module.exports = {
       },
     },
     {
+      resolve: `gatsby-plugin-mailchimp`,
+      options: {
+        endpoint: 'https://gmail.us4.list-manage.com/subscribe/post?u=3f3a3fac17b54df0675d50ef7&amp;id=528f956cda',
+      }
+    },
+    {
       resolve: `gatsby-plugin-manifest`,
       options: {
         name: `bigtest`,

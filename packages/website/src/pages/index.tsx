@@ -30,7 +30,7 @@ const IndexPage = () => (
             BigTest is a toolkit that enables you to test real-world experiences on your app rapidly, in every
             browser and device, regardless of your JS framework of choice.
           </Text>
-          <Subscribe text="Get notified about BigTest progress and know when it's ready:" />
+          <Subscribe text="Get notified about BigTest progress and know when it's ready:" id={1} />
         </Box>
         <Image
           width={[1, 1 / 2, 1 / 3]}
@@ -118,7 +118,7 @@ const IndexPage = () => (
       <Flex alignItems="initial">
         <Box width={[1, 1 / 2, 2 / 3]} paddingRight="large">
           <H2 color="dark-blue">Want to know more about BigTest?</H2>
-          <Subscribe text="Join our mailing list! Receive updates and be an expert by the time BigTest is officially released." />
+          <Subscribe text="Join our mailing list! Receive updates and be an expert by the time BigTest is officially released." id={2} />
         </Box>
         <Box width={[1, 1 / 2, 1 / 3]}>
           <ReachOut />
