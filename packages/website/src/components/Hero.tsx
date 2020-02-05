@@ -7,14 +7,10 @@ const HeroLine = styled.section`
   padding: ${({ theme }) => theme.space.medium} 0;
 `;
 
-const Hero = ({ children }) => (
-  (
-    <HeroLine>
-      <Section as='div'>
-        {children}
-      </Section>
-    </HeroLine>
-  )
+const Hero: React.FC = ({ children }) => (
+  <HeroLine>
+    <Section as="div">{children}</Section>
+  </HeroLine>
 );
 
 export default Hero;
