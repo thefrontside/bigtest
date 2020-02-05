@@ -3,21 +3,19 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Image from './Image';
-import Box from './Box';
 
 import { frontside_logo } from '../images';
 
-const FooterBox = styled(Box)`
+const FooterBox = styled.footer`
   background-color: ${({ theme }) => theme.colors.footer};
   display: flex;
-  text-align: center;
   justify-content: center;
   align-items: center;
   height: ${({ theme }) => theme.space.xxLarge};
   margin-top: ${({ theme }) => theme.space.large};
 `;
 
-const FooterLink = styled(Link)`
+const FooterLink = styled.a`
   height: ${({ theme }) => theme.space.large};
 `;
 
@@ -34,8 +32,8 @@ const FooterText = styled.p`
 const Footer = () => (
   <FooterBox>
     <FooterText>Brought to you by</FooterText>
-    <FooterLink to="/">
-      <FooterLogo src={frontside_logo} alt="BigTestJS" />
+    <FooterLink href="https://frontside.io/" target='_blank'>
+      <FooterLogo src={frontside_logo} alt='Frontside' />
     </FooterLink>
   </FooterBox>
 );

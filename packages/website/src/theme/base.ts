@@ -18,6 +18,7 @@ export interface Fonts {
 }
 
 export interface Base {
+  absoluteSize: string;
   breakpoints: string[];
   fonts: Fonts;
   fontSizes: string[];
@@ -27,13 +28,14 @@ export interface Base {
 }
 
 const base: Base = {
-  breakpoints: [36, 48, 64, 75].map(n => n + 'rem'),
+  absoluteSize: '20px',
+  breakpoints: [600, 768, 1280, 1500].map(n => n + 'px'),
   fonts: {
     body: '"Fright Text Pro", freight-text-pro, serif',
     heading: '"Proxima Nova", proxima-nova, sans-serif',
     monospace: 'monospace',
   },
-  fontSizes: [0.625, 0.75, 0.875, 1, 1.38, 1.65, 2, 2.25].map(n => n + 'rem'),
+  fontSizes: [0.625, 0.75, 0.875, 1, 1.21, 1.63, 2.06, 2.62].map(n => n + 'rem'),
   fontWeights: {
     light: 300,
     body: 400,
@@ -43,7 +45,7 @@ const base: Base = {
     body: 1.5,
     heading: 1.25,
   },
-  space: [0, 0.25, 0.5, 1, 2, 4, 8, 16].map(n => n + 'rem'),
+  space: [0, 0.3819, 0.6118, 1, 1.6103, 2.6180, 4.2360, 6.8541].map(n => n + 'rem'),
 };
 
 const breakpointAliases: string[] = ['small', 'medium', 'large', 'xLarge'];

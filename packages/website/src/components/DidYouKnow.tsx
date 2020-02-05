@@ -7,6 +7,10 @@ import { H3 } from './Heading';
 const SideBox = styled.div`
   background-color: ${({ theme }) => theme.colors.didyouknow};
   padding: ${({ theme }) => theme.space.large};
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.large}) {
+    padding: ${({ theme }) => theme.space.xLarge};
+  }
 `;
 
 const DidYouKnow: React.FC = () => {

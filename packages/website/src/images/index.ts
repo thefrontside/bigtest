@@ -9,6 +9,8 @@ const frontside_logo = require('./frontside/frontside-logo.svg');
 // icons
 const discord_icon = require('./icons/discord.svg');
 const github_icon = require('./icons/github.svg');
+const twitter_icon = require('./icons/twitter.svg');
+const email_icon = require('./icons/email.svg');
 
 // landing page
 const reusable = require('./landing/reusable.svg');
@@ -22,6 +24,8 @@ export {
   frontside_logo,
   discord_icon,
   github_icon,
+  twitter_icon,
+  email_icon,
   reusable,
   tests_intro,
   user_experience,

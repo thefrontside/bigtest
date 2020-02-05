@@ -3,7 +3,7 @@ import Helmet from 'react-helmet';
 import { StaticQuery, graphql } from 'gatsby';
 
 import ThemeProvider from '../theme';
-import Navbar from './Navbar';
+import Header from './Header';
 import Footer from './Footer';
 
 const Layout: React.FC = ({ children }) => {
@@ -27,7 +27,7 @@ const Layout: React.FC = ({ children }) => {
             <meta name="description" content={data.site.siteMetadata.description} />
           </Helmet>
           <ThemeProvider>
-            <Navbar />
+            <Header />
             {children}
             <Footer />
           </ThemeProvider>
