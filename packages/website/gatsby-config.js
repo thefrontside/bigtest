@@ -5,6 +5,7 @@ module.exports = {
     author: `Frontside Inc.`,
   },
   plugins: [
+    `gatsby-plugin-react-helmet`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -12,12 +13,8 @@ module.exports = {
         path: `${__dirname}/src/images`,
       },
     },
-    {
-      resolve: `gatsby-plugin-mailchimp`,
-      options: {
-        endpoint: 'https://gmail.us4.list-manage.com/subscribe/post?u=3f3a3fac17b54df0675d50ef7&amp;id=528f956cda',
-      }
-    },
+    `gatsby-transformer-sharp`,
+    `gatsby-plugin-sharp`,
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
@@ -30,16 +27,14 @@ module.exports = {
         icon: `src/images/frontside/bigtest-icon.png`, // This path is relative to the root of the site.
       },
     },
-    {
-      resolve: 'gatsby-plugin-postcss',
-      options: {
-        postCssPlugins: [require('precss')],
-      },
-    },
-    `gatsby-plugin-react-helmet`,
-    `gatsby-plugin-sharp`,
     `gatsby-plugin-styled-components`,
-    `gatsby-plugin-typescript`,
-    `gatsby-transformer-sharp`,
+    {
+      resolve: "gatsby-plugin-postcss",
+      options: {
+        postCssPlugins: [
+          require("precss")
+        ]
+      }
+    },
   ],
-};
+}
