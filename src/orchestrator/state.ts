@@ -1,4 +1,10 @@
-import { view, set, over } from 'ramda';
+import { EventEmitter } from 'events';
+import { Operation, Context } from 'effection';
+import { on } from '@effection/events';
+
+import * as R from 'ramda';
+
+import { Test } from '../test';
 
 export type AgentState = {
   identifier: string;
@@ -23,7 +29,7 @@ export type AgentState = {
 
 export type ManifestEntry = {
   path: string;
-  test: any;
+  test: Test;
 }
 
 export type OrchestratorState = {
@@ -31,29 +37,69 @@ export type OrchestratorState = {
   manifest: ManifestEntry[];
 }
 
-export class State {
-  state: OrchestratorState = {
-    agents: {},
-    manifest: [],
-  }
+class Atom {
+  allocate: () => Operation;
+  update: (value) => Operation;
+  view: (lens) => Operation;
+  over: (lens, fn) => Operation;
+  get: () => Operation;
+  set: (lens, value) => Operation;
+  next: () => Operation;
 
-  get(): OrchestratorState {
-    return this.state;
-  }
+  constructor() {
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let id: string = Symbol('Atom<State>') as any;
+    let subscriptions = new EventEmitter();
 
-  update(fn: (OrchestratorState) => OrchestratorState): void {
-    this.state = fn(this.state);
-  }
+    let parent: Operation = ({ resume, context: { parent }}) => resume(parent.parent);
 
-  view(lens) {
-    return view(lens, this.get());
-  }
+    function* find(key: string): Operation {
+      for (let current: Context = yield parent; current; current = current.parent) {
+        if (current[key]) {
+          return current;
+        }
+      }
+      throw new Error('Atom not found. It must be allocated on the tree with the atom.allocate() operation');
+    }
 
-  set(lens, value) {
-    this.update((state) => set(lens, value, state) as unknown as OrchestratorState);
-  }
+    function* get(key: string) {
+      let context = yield find(key);
+      return context[key];
+    }
 
-  over(lens, fn) {
-    this.update((state) => over(lens, fn, state) as unknown as OrchestratorState);
+    function* set<T>(key: string, value: T) {
+      let context = yield find(key);
+      context[key] = value;
+      subscriptions.emit('state', value);
+      return value;
+    }
+
+    this.allocate = function* allocate(): Operation {
+      let context = yield parent;
+      context[id] = { agents: {} }
+      return get(id);
+    };
+
+    this.view = function* view(lens): Operation {
+      let current = yield get(id);
+      return R.view(lens, current);
+    }
+
+    this.over = function* over(lens, fn) {
+      let current = yield get(id);
+      let next = R.over(lens, fn, current);
+      return yield set(id, next);
+    }
+
+    this.get = () => this.view(R.lensPath([]));
+    this.set = (lens, value) => this.over(lens, () => value);
+    this.update = (value) => this.over(R.lensPath([]), value);
+
+    this.next = function* next() {
+      let [state]: [OrchestratorState] = yield on(subscriptions, 'state');
+      return state;
+    }
   }
 }
+
+export const atom = new Atom();

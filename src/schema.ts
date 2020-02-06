@@ -3,8 +3,8 @@ import { buildSchema } from 'graphql';
 export const schema =  buildSchema(`
 type Query {
   echo(text: String!): String
-  agents: [Agent]
-  manifest: [ManifestEntry]
+  agents: [Agent!]!
+  manifest: [ManifestEntry!]!
 }
 
 type Agent {
@@ -38,5 +38,8 @@ type Engine {
 
 type ManifestEntry {
   path: String!
+  test: Test!
 }
+
+scalar Test
 `);

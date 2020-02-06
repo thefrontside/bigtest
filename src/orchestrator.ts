@@ -8,7 +8,7 @@ import { createAppServer } from './app-server';
 import { createTestFileWatcher } from './test-file-watcher';
 import { createTestFileServer } from './test-file-server';
 
-import { State } from './orchestrator/state';
+import { atom } from './orchestrator/state';
 
 type OrchestratorOptions = {
   appPort: number;
@@ -28,8 +28,9 @@ type OrchestratorOptions = {
 
 export function* createOrchestrator(options: OrchestratorOptions): Operation {
   let orchestrator = yield ({ resume, context: { parent }}) => resume(parent);
-  let state = new State();
   console.log('[orchestrator] starting');
+
+  yield atom.allocate();
 
   yield fork(createProxyServer(orchestrator, {
     port: options.proxyPort,
@@ -39,11 +40,9 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield fork(createCommandServer(orchestrator, {
     port: options.commandPort,
-    state: state,
   }));
 
   yield fork(createConnectionServer(orchestrator, {
-    state: state,
     port: options.connectionPort,
     proxyPort: options.proxyPort,
     testFilePort: options.testFilePort,
@@ -72,7 +71,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   yield fork(createTestFileServer(orchestrator, {
     manifestPath: options.testManifestPath,
     port: options.testFilePort,
-    state: state,
   }));
 
   yield function*() {
