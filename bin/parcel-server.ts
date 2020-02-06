@@ -1,30 +1,19 @@
 import 'module-alias/register';
-import { main, Operation } from 'effection';
+import { Operation } from 'effection';
+import { main } from '@effection/node';
 import { createParcelServer } from '../src/parcel-server';
 import * as yargs from 'yargs';
 import * as tempy from 'tempy';
 
 const DIST_PATH = tempy.directory();
 
-const self: Operation = ({ resume, context: { parent }}) => resume(parent);
-
 yargs
   .command('$0 [files..]', 'run the parcel server', () => {}, (argv) => {
-    main(function*(): Operation {
-      let context = yield self;
-      let interrupt = () => { context.halt() };
-      process.on('SIGINT', interrupt);
-
-      try {
-        yield createParcelServer(argv.files as string[], { port: argv.port as number }, {
-          outDir: DIST_PATH,
-          outFile: argv.outFile,
-          global: argv.global,
-        });
-      } finally {
-        process.off('SIGINT', interrupt);
-      }
-    });
+    main(createParcelServer(argv.files as string[], { port: argv.port as number }, {
+      outDir: DIST_PATH,
+      outFile: argv.outFile,
+      global: argv.global,
+    }));
   })
   .option('port', {
     alias: 'p',
