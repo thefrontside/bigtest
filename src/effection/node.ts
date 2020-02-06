@@ -9,7 +9,7 @@ export function main(operation: Operation): Context {
         yield operation;
       } catch(e) {
         console.error(e);
-        throw(e);
+        process.exit(-1);
       }
     });
 
