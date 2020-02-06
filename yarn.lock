@@ -4660,10 +4660,10 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-effection@^0.4.0-4eaab4d:
-  version "0.4.0-4eaab4d"
-  resolved "https://registry.yarnpkg.com/effection/-/effection-0.4.0-4eaab4d.tgz#0b894bc091617b72d95799710b2e93829ae06aea"
-  integrity sha512-A5NQwwis3TJtVUs2Y3pkSkWFU9pw7R6y2hYEUpKmmw9CAc/+Bs8H6Qz5IwtXgXjrYGAKbNvmVEXgub/ro8kGJQ==
+effection@^0.4.0-2f073e9:
+  version "0.4.0-2f073e9"
+  resolved "https://registry.yarnpkg.com/effection/-/effection-0.4.0-2f073e9.tgz#1fe66c9bd5f5213493da646f73e15450363b6289"
+  integrity sha512-QnH+3Rei+fRfQeFMrQT+l9ZD46uHuaiTbp4Flz3cVsG+ayfS4A1YeGZFAMj2lALpqHZ9dO3PF9IuIwNv2mBTtg==
 
 electron-to-chromium@^1.3.295:
   version "1.3.306"
