@@ -2,6 +2,7 @@ import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 
 import { Operation, Context } from 'effection';
+import { Mailbox } from '@effection/events';
 
 import { Client } from '../src/client';
 import { actions } from './helpers';
@@ -14,19 +15,19 @@ import { Test, SerializableTest } from '../src/test';
 let COMMAND_PORT = 24200;
 
 describe('command server', () => {
-  let orchestrator: Context;
+  let mail: Mailbox;
   let atom: Atom;
 
   beforeEach(async () => {
+    mail = new Mailbox();
     atom = new Atom();
-    orchestrator = actions.fork(function*() { yield });
 
-    actions.fork(createCommandServer(orchestrator, {
+    actions.fork(createCommandServer(mail, {
       atom,
       port: COMMAND_PORT,
     }));
 
-    await actions.receive(orchestrator, { ready: "command" });
+    await actions.receive(mail, { ready: "command" });
   });
 
   describe('fetching the agents at the start', () => {

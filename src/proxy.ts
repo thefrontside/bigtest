@@ -1,5 +1,5 @@
-import { fork, send, receive, any, Context, Operation } from 'effection';
-import { on, watch, watchError } from '@effection/events';
+import { fork, any, Operation } from 'effection';
+import { on, watchError, Mailbox } from '@effection/events';
 
 import * as proxy from 'http-proxy';
 import * as http from 'http';
@@ -14,7 +14,7 @@ interface ProxyOptions {
   inject?: string;
 };
 
-export function* createProxyServer(orchestrator: Context, options: ProxyOptions): Operation {
+export function* createProxyServer(mail: Mailbox, options: ProxyOptions): Operation {
   function* handleRequest(proxyRes, req, res): Operation {
     console.debug('[proxy]', 'start', req.method, req.url);
     for(let [key, value] of Object.entries(proxyRes.headers)) {
@@ -75,7 +75,7 @@ export function* createProxyServer(orchestrator: Context, options: ProxyOptions)
     selfHandleResponse: true
   });
 
-  yield watch(proxyServer, ['proxyRes', 'error', 'open', 'close']);
+  let events = yield Mailbox.watch(proxyServer, ['proxyRes', 'error', 'open', 'close']);
 
   let server = http.createServer();
 
@@ -86,10 +86,10 @@ export function* createProxyServer(orchestrator: Context, options: ProxyOptions)
   try {
 
     yield listen(server, options.port);
-    yield send({ ready: 'proxy' }, orchestrator);
+    yield mail.send({ ready: 'proxy' });
 
     while(true) {
-      let { event, args } = yield receive({ event: any("string") });
+      let { event, args } = yield events.receive({ event: any("string") });
 
       if(event == "error") {
         let [err,, res] = args;

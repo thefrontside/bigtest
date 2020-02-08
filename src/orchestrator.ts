@@ -1,4 +1,5 @@
-import { fork, send, receive, Operation, Context } from 'effection';
+import { fork, Operation } from 'effection';
+import { Mailbox } from '@effection/events';
 
 import { createProxyServer } from './proxy';
 import { createCommandServer } from './command-server';
@@ -20,7 +21,7 @@ type OrchestratorOptions = {
   commandPort: number;
   connectionPort: number;
   agentPort: number;
-  delegate?: Context;
+  delegate?: Mailbox;
   testFiles: [string];
   testManifestPath: string;
   testFilePort: number;
@@ -28,32 +29,33 @@ type OrchestratorOptions = {
 
 export function* createOrchestrator(options: OrchestratorOptions): Operation {
   let atom = new Atom();
-  let orchestrator = yield ({ resume, context: { parent }}) => resume(parent);
   console.log('[orchestrator] starting');
 
-  yield fork(createProxyServer(orchestrator, {
+  let mail = options.delegate || new Mailbox();
+
+  yield fork(createProxyServer(mail, {
     port: options.proxyPort,
     targetPort: options.appPort,
     inject: `<script src="http://localhost:${options.agentPort}/harness.js"></script>`,
   }));
 
-  yield fork(createCommandServer(orchestrator, {
+  yield fork(createCommandServer(mail, {
     atom,
     port: options.commandPort,
   }));
 
-  yield fork(createConnectionServer(orchestrator, {
+  yield fork(createConnectionServer(mail, {
     atom,
     port: options.connectionPort,
     proxyPort: options.proxyPort,
     testFilePort: options.testFilePort,
   }));
 
-  yield fork(createAgentServer(orchestrator, {
+  yield fork(createAgentServer(mail, {
     port: options.agentPort,
   }));
 
-  yield fork(createAppServer(orchestrator, {
+  yield fork(createAppServer(mail, {
     dir: options.appDir,
     command: options.appCommand,
     args: options.appArgs,
@@ -61,15 +63,13 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     port: options.appPort,
   }));
 
-  yield fork(createTestFileWatcher(orchestrator, {
+  yield fork(createTestFileWatcher(mail, {
     files: options.testFiles,
     manifestPath: options.testManifestPath,
   }));
 
-  // wait for manifest before starting test file server
-  yield receive({ ready: "manifest" }, orchestrator);
 
-  yield fork(createTestFileServer(orchestrator, {
+  yield fork(createTestFileServer(mail, {
     atom,
     manifestPath: options.testManifestPath,
     port: options.testFilePort,
@@ -77,22 +77,22 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield function*() {
     yield fork(function*() {
-      yield receive({ ready: "proxy" }, orchestrator);
+      yield mail.receive({ ready: "proxy" });
     });
     yield fork(function*() {
-      yield receive({ ready: "command" }, orchestrator);
+      yield mail.receive({ ready: "command" });
     });
     yield fork(function*() {
-      yield receive({ ready: "connection" }, orchestrator);
+      yield mail.receive({ ready: "connection" });
     });
     yield fork(function*() {
-      yield receive({ ready: "agent" }, orchestrator);
+      yield mail.receive({ ready: "agent" });
     });
     yield fork(function*() {
-      yield receive({ ready: "app" }, orchestrator);
+      yield mail.receive({ ready: "app" });
     });
     yield fork(function*() {
-      yield receive({ ready: "test-files" }, orchestrator);
+      yield mail.receive({ ready: "test-files" });
     });
   }
 
@@ -104,15 +104,11 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   console.log(`[orchestrator] launch agents via: ${agentUrl}`);
   console.log(`[orchestrator] show GraphQL dashboard via: ${commandUrl}`);
 
-  if(options.delegate) {
-    yield send({ ready: "orchestrator" }, options.delegate);
-  } else {
-    yield send({ ready: "orchestrator" });
-  }
+  yield mail.send({ ready: "orchestrator" });
 
   try {
     while(true) {
-      yield receive(orchestrator);
+      yield mail.receive();
     }
   } finally {
     console.log("[orchestrator] shutting down!");

@@ -7,6 +7,7 @@ import * as rmrf from 'rimraf';
 import { actions } from './helpers';
 
 import { createTestFileWatcher } from '../src/test-file-watcher';
+import { Mailbox } from '../src/effection/events';
 
 const { mkdir, writeFile, unlink } = fs.promises;
 
@@ -20,7 +21,7 @@ async function loadManifest() {
 }
 
 describe('test-file-watcher', () => {
-  let watcher, orchestrator;
+  let watcher, mail;
 
   beforeEach((done) => rmrf(TEST_DIR, done));
   beforeEach(async () => {
@@ -28,14 +29,14 @@ describe('test-file-watcher', () => {
     await writeFile(TEST_DIR + "/test1.t.js", "module.exports = { default: { hello: 'world' }};");
     await writeFile(TEST_DIR + "/test2.t.js", "module.exports = { default: { monkey: 'foo' }};");
 
-    orchestrator = actions.fork(function*() { yield });
+    mail = new Mailbox();
 
-    watcher = actions.fork(createTestFileWatcher(orchestrator, {
+    watcher = actions.fork(createTestFileWatcher(mail, {
       files: [TEST_DIR + "/*.t.{js,ts}"],
       manifestPath: MANIFEST_PATH,
     }));
 
-    await actions.receive(orchestrator, { ready: "manifest" });
+    await actions.receive(mail, { ready: "manifest" });
   });
 
   describe('starting', () => {
@@ -61,7 +62,7 @@ describe('test-file-watcher', () => {
 
     beforeEach(async () => {
       await writeFile(TEST_DIR + "/test3.t.js", "module.exports = { default: { third: 'test' } };");
-      await actions.receive(orchestrator, { change: "manifest" });
+      await actions.receive(mail, { change: "manifest" });
       manifest = await loadManifest();
     });
 
@@ -83,7 +84,7 @@ describe('test-file-watcher', () => {
 
     beforeEach(async () => {
       await unlink(TEST_DIR + "/test2.t.js");
-      await actions.receive(orchestrator, { change: "manifest" });
+      await actions.receive(mail, { change: "manifest" });
       manifest = await loadManifest();
     });
 

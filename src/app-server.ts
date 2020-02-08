@@ -1,5 +1,5 @@
-import { send, fork, timeout, Operation, Context } from 'effection';
-import { on } from '@effection/events';
+import { fork, timeout, Operation } from 'effection';
+import { on, Mailbox } from '@effection/events';
 import { spawn } from '@effection/child_process';
 import { Socket } from 'net';
 import * as process from 'process';
@@ -34,7 +34,7 @@ function isReachable(port: number, options: { timeout: number } = { timeout: 100
   }
 };
 
-export function* createAppServer(orchestrator: Context, options: AppServerOptions): Operation {
+export function* createAppServer(mail: Mailbox, options: AppServerOptions): Operation {
   let child = yield spawn(options.command, options.args || [], {
     cwd: options.dir,
     detached: true,
@@ -50,7 +50,7 @@ export function* createAppServer(orchestrator: Context, options: AppServerOption
     yield timeout(100);
   }
 
-  yield send({ ready: "app" }, orchestrator);
+  yield mail.send({ ready: "app" });
 
   yield on(child, "exit");
 
