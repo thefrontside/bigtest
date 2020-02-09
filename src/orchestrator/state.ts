@@ -37,68 +37,77 @@ export type OrchestratorState = {
   manifest: ManifestEntry[];
 }
 
+const parent: Operation = ({ resume, context: { parent }}) => resume(parent.parent);
+
 class Atom {
-  allocate: () => Operation;
-  update: (value) => Operation;
-  view: (lens) => Operation;
-  over: (lens, fn) => Operation;
-  get: () => Operation;
-  set: (lens, value) => Operation;
-  next: () => Operation;
+  // we have to trick TS into thinking this symbol is a string, that
+  // way [] access will work. the id is a symbol that is used to uniquely
+  // identify the atom on the stack
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private id: string = Symbol('Atom<State>') as any;
 
-  constructor() {
-    //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let id: string = Symbol('Atom<State>') as any;
-    let subscriptions = new EventEmitter();
-
-    let parent: Operation = ({ resume, context: { parent }}) => resume(parent.parent);
-
-    function* find(key: string): Operation {
-      for (let current: Context = yield parent; current; current = current.parent) {
-        if (current[key]) {
-          return current;
-        }
+  private *find(): Operation {
+    for (let current: Context = yield parent; current; current = current.parent) {
+      if (current[this.id]) {
+        return current[this.id];
       }
-      throw new Error('Atom not found. It must be allocated on the tree with the atom.allocate() operation');
     }
+    throw new Error('Atom not found. It must be allocated on the tree with the atom.allocate() operation');
+  }
 
-    function* get(key: string) {
-      let context = yield find(key);
-      return context[key];
+  private *getState() {
+    let { state } = yield this.find();
+    return state;
+  }
+
+  private *setState(state: unknown) {
+    let instance = yield this.find();
+    Object.assign(instance, { state });
+    instance.subscriptions.emit('state', state);
+    return state;
+  }
+
+  *allocate(): Operation {
+    let context = yield parent;
+    return context[this.id] = {
+      state: { agents: {} },
+      subscriptions: new EventEmitter()
     }
+  }
 
-    function* set<T>(key: string, value: T) {
-      let context = yield find(key);
-      context[key] = value;
-      subscriptions.emit('state', value);
-      return value;
-    }
+  // Ramda Lens types. How do they work?
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  *view(lens: any): Operation {
+    let current = yield this.getState();
+    return R.view(lens, current);
+  }
 
-    this.allocate = function* allocate(): Operation {
-      let context = yield parent;
-      context[id] = { agents: {} }
-      return get(id);
-    };
+  // Ramda Lens types. How do they work?
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  *over(lens: any, fn: any): Operation {
+    let current = yield this.getState();
+    let next = R.over(lens, fn, current);
+    return yield this.setState(next);
+  }
 
-    this.view = function* view(lens): Operation {
-      let current = yield get(id);
-      return R.view(lens, current);
-    }
+  get(): Operation {
+    return this.view(R.lensPath([]));
+  }
 
-    this.over = function* over(lens, fn) {
-      let current = yield get(id);
-      let next = R.over(lens, fn, current);
-      return yield set(id, next);
-    }
+  // Ramda Lens types. How do they work?
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  set(lens: any, value: unknown): Operation {
+    return this.over(lens, () => value);
+  }
 
-    this.get = () => this.view(R.lensPath([]));
-    this.set = (lens, value) => this.over(lens, () => value);
-    this.update = (value) => this.over(R.lensPath([]), value);
+  update(state: unknown): Operation {
+    return this.over(R.lensPath([]), state);
+  }
 
-    this.next = function* next() {
-      let [state]: [OrchestratorState] = yield on(subscriptions, 'state');
-      return state;
-    }
+  *next(): Operation {
+    let { subscriptions } = yield this.find();
+    let [state]: [OrchestratorState] = yield on(subscriptions, 'state');
+    return state;
   }
 }
 
