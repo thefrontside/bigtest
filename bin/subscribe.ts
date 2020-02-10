@@ -1,25 +1,14 @@
-import { main, Operation } from 'effection';
+import { Operation } from 'effection';
+import { main } from '@effection/node';
 import { Client } from '../src/client';
 
-const self: Operation = ({ resume, context: { parent }}) => resume(parent);
-
 main(function* main() {
-  let context = yield self;
-  let interrupt = () => { context.halt()};
-  process.on('SIGINT', interrupt);
-  try {
-    let client: Client = yield Client.create('ws://localhost:24002');
+  let client: Client = yield Client.create('ws://localhost:24002');
 
-    let [ source ]  = process.argv.slice(2);
+  let [ source ]  = process.argv.slice(2);
 
-    yield client.subscribe(source, function*(data) {
-      console.log('==== new subscription result ==== ');
-      console.log(JSON.stringify(data, null, 2));
-    });
-
-  } catch (e) {
-    console.error(e);
-  } finally {
-    process.off('SIGINT', interrupt);
-  }
+  yield client.subscribe(source, function*(data) {
+    console.log('==== new subscription result ==== ');
+    console.log(JSON.stringify(data, null, 2));
+  });
 })
