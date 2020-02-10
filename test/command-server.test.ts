@@ -6,7 +6,7 @@ import { Operation, Context } from 'effection';
 import { Client } from '../src/client';
 import { actions } from './helpers';
 import { createCommandServer } from '../src/command-server';
-import { atom } from '../src/orchestrator/atom';
+import { Atom } from '../src/orchestrator/atom';
 import { assoc } from 'ramda';
 
 import { Test, SerializableTest } from '../src/test';
@@ -15,11 +15,14 @@ let COMMAND_PORT = 24200;
 
 describe('command server', () => {
   let orchestrator: Context;
+  let atom: Atom;
 
   beforeEach(async () => {
+    atom = new Atom();
     orchestrator = actions.fork(function*() { yield });
 
     actions.fork(createCommandServer(orchestrator, {
+      atom,
       port: COMMAND_PORT,
     }));
 

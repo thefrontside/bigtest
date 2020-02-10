@@ -7,17 +7,18 @@ import { graphql as executeGraphql } from 'graphql';
 import { listenWS } from './ws';
 import { schema } from './schema';
 import { Test, SerializableTest } from './test';
-import { atom } from './orchestrator/atom';
+import { Atom } from './orchestrator/atom';
 import { OrchestratorState } from './orchestrator/state';
 
 import { handleMessage } from './command-server/websocket';
 
 interface CommandServerOptions {
+  atom: Atom;
   port: number;
 };
 
 export function* createCommandServer(orchestrator: Context, options: CommandServerOptions): Operation {
-  let app = yield createApp();
+  let app = yield createApp(options.atom);
   let server = app.listen(options.port);
 
   yield fork(function* commandServerErrorListener() {
@@ -30,13 +31,13 @@ export function* createCommandServer(orchestrator: Context, options: CommandServ
 
     yield send({ ready: "command" }, orchestrator);
 
-    yield listenWS(server, handleMessage);
+    yield listenWS(server, handleMessage(options.atom));
   } finally {
     server.close();
   }
 }
 
-function createApp(): Operation {
+function createApp(atom: Atom): Operation {
   return ({ resume, context: { parent }}) => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

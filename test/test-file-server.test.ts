@@ -9,7 +9,7 @@ import { Context } from 'effection';
 import { actions } from './helpers';
 import { createTestFileServer } from '../src/test-file-server';
 import { OrchestratorState } from '../src/orchestrator/state';
-import { atom } from '../src/orchestrator/atom';
+import { Atom } from '../src/orchestrator/atom';
 
 const TEST_DIR = "./tmp/test-file-server"
 const MANIFEST_PATH = "./tmp/test-file-server/manifest.js"
@@ -19,6 +19,7 @@ const { mkdir, writeFile } = fs.promises;
 let TEST_FILE_PORT = 24200;
 
 describe('test file server', () => {
+  let atom: Atom;
   let orchestrator: Context;
 
   beforeEach((done) => rmrf(TEST_DIR, done));
@@ -26,10 +27,12 @@ describe('test file server', () => {
     await mkdir(TEST_DIR, { recursive: true });
     await writeFile(MANIFEST_PATH, "module.exports = [{ path: 'someworld', test: 123 }];");
 
+    atom = new Atom();
     orchestrator = actions.fork(function*() { yield });
 
     actions.fork(function*() {
       yield createTestFileServer(orchestrator, {
+        atom: atom,
         manifestPath: MANIFEST_PATH,
         port: TEST_FILE_PORT
       });

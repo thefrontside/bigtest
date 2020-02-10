@@ -6,42 +6,21 @@ import { on } from '@effection/events';
 
 import { OrchestratorState } from './state';
 
-const parent: Operation = ({ resume, context: { parent }}) => resume(parent.parent);
+export class Atom {
+  private state: OrchestratorState = {
+    manifest: [],
+    agents: {}
+  };
 
-class Atom {
-  // we have to trick TS into thinking this symbol is a string, that
-  // way [] access will work. the id is a symbol that is used to uniquely
-  // identify the atom on the stack
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private id: string = Symbol('Atom<State>') as any;
-
-  private *find(): Operation {
-    for (let current: Context = yield parent; current; current = current.parent) {
-      if (current[this.id]) {
-        return current[this.id];
-      }
-    }
-    throw new Error('Atom not found. It must be allocated on the tree with the atom.allocate() operation');
-  }
+  private subscriptions = new EventEmitter();
 
   private *getState() {
-    let { state } = yield this.find();
-    return state;
+    return this.state;
   }
 
-  private *setState(state: unknown) {
-    let instance = yield this.find();
-    Object.assign(instance, { state });
-    instance.subscriptions.emit('state', state);
-    return state;
-  }
-
-  *allocate(): Operation {
-    let context = yield parent;
-    return context[this.id] = {
-      state: { agents: {} },
-      subscriptions: new EventEmitter()
-    }
+  private *setState(state: OrchestratorState) {
+    this.state = state;
+    this.subscriptions.emit('state', state);
   }
 
   // Ramda Lens types. How do they work?
@@ -56,7 +35,8 @@ class Atom {
   *over(lens: any, fn: any): Operation {
     let current = yield this.getState();
     let next = R.over(lens, fn, current);
-    return yield this.setState(next);
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return yield this.setState(next as any as OrchestratorState);
   }
 
   get(): Operation {
@@ -74,8 +54,7 @@ class Atom {
   }
 
   *next(): Operation {
-    let { subscriptions } = yield this.find();
-    let [state]: [OrchestratorState] = yield on(subscriptions, 'state');
+    let [state]: [OrchestratorState] = yield on(this.subscriptions, 'state');
     return state;
   }
 }

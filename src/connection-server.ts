@@ -2,11 +2,12 @@ import { Context, Operation, fork, send, receive, any, timeout } from 'effection
 import { watch } from '@effection/events';
 
 import { createSocketServer, Connection, sendData } from './ws';
-import { atom } from './orchestrator/atom';
+import { Atom } from './orchestrator/atom';
 
 import { lensPath, assoc, dissoc } from 'ramda';
 
 interface ConnectionServerOptions {
+  atom: Atom;
   port: number;
   proxyPort: number;
   testFilePort: number;
@@ -43,14 +44,14 @@ export function* createConnectionServer(orchestrator: Context, options: Connecti
 
     try {
       console.debug('[connection] received connection message', data);
-      yield atom.over(agentsLens, assoc(identifier, assoc("identifier", identifier, data)));
+      yield options.atom.over(agentsLens, assoc(identifier, assoc("identifier", identifier, data)));
 
       while (true) {
         let message = yield receive({ message: any });
         console.debug("[connection] got message", message);
       }
     } finally {
-      yield atom.over(agentsLens, dissoc(identifier));
+      yield options.atom.over(agentsLens, dissoc(identifier));
       console.debug('[connection] disconnected');
     }
   }
