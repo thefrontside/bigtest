@@ -2,44 +2,46 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { H4 } from '../components/Heading';
+import { LinkWithIcon } from './IconLink';
 
-import { discord_icon, bigtest_icon_svg as placeholder } from '../images';
+import { discord_icon, twitter_icon, email_icon } from '../images';
 
-const ContactItem = styled.a`
-  display: flex;
-  align-items: center;
-  color: ${({ theme }) => theme.colors.primary};
+const ReachTitle = styled(H4)`
+  margin-bottom: ${({ theme }) => theme.space.large};
 `;
 
-const ContactIcon = styled.img`
-  height: ${({ theme }) => theme.space.medium};
-  padding-right: ${({ theme }) => theme.space.medium};
+const ReachLink = styled(LinkWithIcon)`
+  margin-top: ${({ theme }) => theme.space.medium};
 `;
 
 const ReachOut: React.FC = () => {
   return (
     <>
-      <H4>Reach out!</H4>
-      <ul>
-        <li>
-          <ContactItem href="https://twitter.com/thefrontside">
-            <ContactIcon src={placeholder} alt="placeholder" />
-            @thefrontside #bigTest
-          </ContactItem>
-        </li>
-        <li>
-          <ContactItem href="mailto:bigtest@frontside.io">
-            <ContactIcon src={placeholder} alt="placeholder" />
-            bigtest@frontside.io
-          </ContactItem>
-        </li>
-        <li>
-          <ContactItem href="https://discord.com">
-            <ContactIcon src={discord_icon} alt="discord" />
-            Join our Discord!
-          </ContactItem>
-        </li>
-      </ul>
+      <ReachTitle>Reach out!</ReachTitle>
+      <ReachLink
+        icon={twitter_icon}
+        href='https://twitter.com/thefrontside'
+        title='Follow Twitter'
+        target='_blank'
+      >
+          @thefrontside #bigTest
+      </ReachLink>
+      <ReachLink
+        icon={email_icon}
+        href='mailto:bigtest@frontside.io'
+        title='Email Us'
+        target='_blank'
+      >
+          bigtest@frontside.io
+      </ReachLink>
+      <ReachLink
+        icon={discord_icon}
+        href='https://discord.gg/W7r24Aa'
+        title='Discord community'
+        target='_blank'
+      >
+          Join our Discord!
+      </ReachLink>
     </>
   );
 };

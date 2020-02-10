@@ -67,10 +67,10 @@ const DarkTheme: Theme = {
 const GlobalTheme = createGlobalStyle<{ theme: Theme }>`
   ${reset};
 
-  body {
+  html, body {
+    font-size: ${({ theme }) => theme.absoluteSize};
     background: ${({ theme }) => theme.colors.background};
     font-family: ${({ theme }) => theme.fonts.body};
-    font-size: 20px;
     line-height: ${({ theme }) => theme.lineHeights.body};
   }
 `;
