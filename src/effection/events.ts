@@ -8,10 +8,10 @@ type EventName = string | symbol;
  * operation which resumes when the event occurrs.
  */
 export function on(emitter: EventEmitter, eventName: EventName): Operation {
-  return (control) => {
-    let resume = (...args: unknown[]) => control.resume(args);
-    emitter.on(eventName, resume);
-    return () => emitter.off(eventName, resume);
+  return ({ resume, ensure }) => {
+    let handle = (...args: unknown[]) => resume(args);
+    emitter.on(eventName, handle);
+    ensure(() => emitter.off(eventName, handle));
   }
 }
 
