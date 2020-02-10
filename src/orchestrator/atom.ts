@@ -14,43 +14,31 @@ export class Atom {
 
   private subscriptions = new EventEmitter();
 
-  private *getState() {
+  get(): OrchestratorState {
     return this.state;
   }
 
-  private *setState(state: OrchestratorState) {
-    this.state = state;
-    this.subscriptions.emit('state', state);
+  update(fn: (OrchestratorState) => OrchestratorState) {
+    this.state = fn(this.get());
+    this.subscriptions.emit('state', this.state);
   }
 
   // Ramda Lens types. How do they work?
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
-  *view(lens: any): Operation {
-    let current = yield this.getState();
-    return R.view(lens, current);
+  view(lens: any): unknown {
+    return R.view(lens, this.get());
   }
 
   // Ramda Lens types. How do they work?
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
-  *over(lens: any, fn: any): Operation {
-    let current = yield this.getState();
-    let next = R.over(lens, fn, current);
-    //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return yield this.setState(next as any as OrchestratorState);
-  }
-
-  get(): Operation {
-    return this.view(R.lensPath([]));
+  over(lens: any, fn: any) {
+    this.update(R.over(lens, fn) as any as (OrchestratorState) => OrchestratorState);
   }
 
   // Ramda Lens types. How do they work?
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
-  set(lens: any, value: unknown): Operation {
-    return this.over(lens, () => value);
-  }
-
-  update(state: unknown): Operation {
-    return this.over(R.lensPath([]), state);
+  set(lens: any, value: unknown) {
+    this.update(R.set(lens, value) as any as (OrchestratorState) => OrchestratorState);
   }
 
   *next(): Operation {

@@ -26,7 +26,7 @@ export function handleMessage(atom: Atom): (connection: Connection) => Operation
 }
 
 function* handleQuery(atom: Atom, message: QueryMessage, connection: Connection): Operation {
-  yield publishQueryResult(message, yield atom.get(), connection);
+  yield publishQueryResult(message, atom.get(), connection);
 
   if (message.live) {
     yield fork(subscribe(atom, message, connection));

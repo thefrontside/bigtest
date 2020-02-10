@@ -44,14 +44,14 @@ export function* createConnectionServer(orchestrator: Context, options: Connecti
 
     try {
       console.debug('[connection] received connection message', data);
-      yield options.atom.over(agentsLens, assoc(identifier, assoc("identifier", identifier, data)));
+      options.atom.over(agentsLens, assoc(identifier, assoc("identifier", identifier, data)));
 
       while (true) {
         let message = yield receive({ message: any });
         console.debug("[connection] got message", message);
       }
     } finally {
-      yield options.atom.over(agentsLens, dissoc(identifier));
+      options.atom.over(agentsLens, dissoc(identifier));
       console.debug('[connection] disconnected');
     }
   }

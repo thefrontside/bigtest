@@ -45,8 +45,7 @@ function createApp(atom: Atom): Operation {
 
     let app = express()
       .use(graphqlHTTP(() => context.spawn(function* getOptionsData() {
-        let state = yield atom.get();
-        return { ...graphqlOptions(state), graphiql: true};
+        return { ...graphqlOptions(atom.get()), graphiql: true};
       })));
     resume(app);
   }

@@ -59,27 +59,20 @@ describe('test file server', () => {
   });
 
   describe('reading manifest from state on start', () => {
-    let state: OrchestratorState;
-    beforeEach(async () => {
-      state = await actions.fork(atom.get());
-    });
-
     it('returns the manifest from the state', () => {
-      let { manifest: [ first ] } = state;
+      let { manifest: [ first ] } = atom.get();
       expect(first).toEqual({ path: 'someworld', test: 123 });
     });
   });
 
   describe('updating the manifest and then reading it', () => {
-    let state: OrchestratorState;
     beforeEach(async () => {
       await writeFile(MANIFEST_PATH, "module.exports = [{ path: 'boo', test: 432 }];");
       await actions.receive(orchestrator, { update: "test-files" });
-      state = await actions.fork(atom.get());
     });
 
     it('returns the updated manifest from the state', () => {
-      expect(state.manifest[0]).toEqual({ path: 'boo', test: 432 });
+      expect(atom.get().manifest[0]).toEqual({ path: 'boo', test: 432 });
     });
   });
 });

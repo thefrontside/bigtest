@@ -43,7 +43,7 @@ describe('command server', () => {
   describe('querying connected agents', () => {
     let result: unknown;
     beforeEach(async () => {
-      await actions.fork(atom.update(assoc('agents', {
+      atom.update(assoc('agents', {
         safari: {
           "identifier": "agent.1",
           "browser": {
@@ -64,7 +64,7 @@ describe('command server', () => {
             "version": "5.0"
           }
         }
-      })));
+      }));
       result = await query('agents { browser { name } os { name } platform { type }}');
     });
     it('contains the agents', () => {
@@ -125,10 +125,10 @@ describe('command server', () => {
         assertions: []
       };
 
-      actions.fork(atom.update(assoc('manifest', [
+      atom.update(assoc('manifest', [
         { path: "foo.js", test: test1 },
         { path: "bar.js", test: test2 },
-      ])));
+      ]));
       result = await query('manifest { path, test }');
     });
     it('contains the paths of the tests', () => {
@@ -176,7 +176,7 @@ describe('command server', () => {
     describe('when another agent is added', () => {
       beforeEach((done) => {
         sync = done;
-        actions.fork(atom.update(assoc('agents', {
+        atom.update(assoc('agents', {
           safari: {
             "identifier": "agent.1",
             "browser": {
@@ -197,7 +197,7 @@ describe('command server', () => {
               "version": "5.0"
             }
           }
-        })));
+        }));
       });
 
       it('publishes the new state', () => {

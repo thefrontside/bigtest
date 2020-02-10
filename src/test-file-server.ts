@@ -18,7 +18,7 @@ function* loadManifest(atom: Atom, outDir: string) {
   delete require.cache[fullPath];
   let manifest = yield import(fullPath);
 
-  return yield atom.update(assoc('manifest', manifest));
+  atom.update(assoc('manifest', manifest));
 }
 
 export function* createTestFileServer(orchestrator: Context, options: TestFileServerOptions): Operation {
