@@ -6,7 +6,7 @@ import { Operation, Context } from 'effection';
 import { Client } from '../src/client';
 import { actions } from './helpers';
 import { createCommandServer } from '../src/command-server';
-import { atom } from '../src/orchestrator/state';
+import { Atom } from '../src/orchestrator/atom';
 import { assoc } from 'ramda';
 
 import { Test, SerializableTest } from '../src/test';
@@ -15,11 +15,14 @@ let COMMAND_PORT = 24200;
 
 describe('command server', () => {
   let orchestrator: Context;
+  let atom: Atom;
 
   beforeEach(async () => {
+    atom = new Atom();
     orchestrator = actions.fork(function*() { yield });
 
     actions.fork(createCommandServer(orchestrator, {
+      atom,
       port: COMMAND_PORT,
     }));
 
@@ -40,7 +43,7 @@ describe('command server', () => {
   describe('querying connected agents', () => {
     let result: unknown;
     beforeEach(async () => {
-      await actions.fork(atom.update(assoc('agents', {
+      atom.update(assoc('agents', {
         safari: {
           "identifier": "agent.1",
           "browser": {
@@ -61,7 +64,7 @@ describe('command server', () => {
             "version": "5.0"
           }
         }
-      })));
+      }));
       result = await query('agents { browser { name } os { name } platform { type }}');
     });
     it('contains the agents', () => {
@@ -122,10 +125,10 @@ describe('command server', () => {
         assertions: []
       };
 
-      actions.fork(atom.update(assoc('manifest', [
+      atom.update(assoc('manifest', [
         { path: "foo.js", test: test1 },
         { path: "bar.js", test: test2 },
-      ])));
+      ]));
       result = await query('manifest { path, test }');
     });
     it('contains the paths of the tests', () => {
@@ -173,7 +176,7 @@ describe('command server', () => {
     describe('when another agent is added', () => {
       beforeEach((done) => {
         sync = done;
-        actions.fork(atom.update(assoc('agents', {
+        atom.update(assoc('agents', {
           safari: {
             "identifier": "agent.1",
             "browser": {
@@ -194,7 +197,7 @@ describe('command server', () => {
               "version": "5.0"
             }
           }
-        })));
+        }));
       });
 
       it('publishes the new state', () => {

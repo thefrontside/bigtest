@@ -1,17 +1,13 @@
 import { main, Context, Operation } from 'effection';
 import fetch, { Response } from 'node-fetch';
 import { AbortController } from 'abort-controller';
-import { atom } from '../../src/orchestrator/state';
 
 type RequestMethod = 'post' | 'get';
 
 export class World {
   execution: any;
   constructor() {
-    this.execution = main(function*() {
-      yield atom.allocate();
-      yield;
-    });
+    this.execution = main(function*() { yield; });
   }
 
   destroy() {

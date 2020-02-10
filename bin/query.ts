@@ -1,4 +1,3 @@
-import { Operation } from 'effection';
 import { main } from '@effection/node';
 import { Client } from '../src/client';
 
