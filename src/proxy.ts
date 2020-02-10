@@ -1,5 +1,5 @@
-import { fork, any, Operation } from 'effection';
-import { on, watchError, Mailbox } from '@effection/events';
+import { fork, Operation } from 'effection';
+import { on, watchError, Mailbox, any } from '@effection/events';
 
 import * as proxy from 'http-proxy';
 import * as http from 'http';
