@@ -1,12 +1,15 @@
-import { fork, receive } from 'effection';
+import { fork } from 'effection';
 import { main } from '@effection/node';
 import * as tempy from 'tempy';
 
 import { createOrchestrator } from '../src/index';
+import { Mailbox } from '@effection/events';
 
 main(function*() {
-  let orchestrator = yield fork(createOrchestrator({
-    delegate: this,
+  let mailbox = new Mailbox();
+
+  yield fork(createOrchestrator({
+    delegate: mailbox,
     appCommand: "yarn",
     appArgs: ["test:app:start"],
     appEnv: {
@@ -23,7 +26,7 @@ main(function*() {
     testManifestPath: tempy.file({ name: 'manifest.js' }),
   }));
 
-  yield receive({ ready: "orchestrator" }, orchestrator);
+  yield mailbox.receive({ ready: "orchestrator" });
 
   console.log("[cli] orchestrator ready!");
 

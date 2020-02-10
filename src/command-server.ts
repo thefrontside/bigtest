@@ -1,5 +1,5 @@
-import { Operation, Context, fork, send } from 'effection';
-import { on } from '@effection/events';
+import { Operation, fork } from 'effection';
+import { on, Mailbox } from '@effection/events';
 import * as express from 'express';
 import * as graphqlHTTP from 'express-graphql';
 import { graphql as executeGraphql } from 'graphql';
@@ -17,7 +17,7 @@ interface CommandServerOptions {
   port: number;
 };
 
-export function* createCommandServer(orchestrator: Context, options: CommandServerOptions): Operation {
+export function* createCommandServer(mail: Mailbox, options: CommandServerOptions): Operation {
   let app = yield createApp(options.atom);
   let server = app.listen(options.port);
 
@@ -29,7 +29,7 @@ export function* createCommandServer(orchestrator: Context, options: CommandServ
   try {
     yield on(server, 'listening');
 
-    yield send({ ready: "command" }, orchestrator);
+    yield mail.send({ ready: "command" });
 
     yield listenWS(server, handleMessage(options.atom));
   } finally {

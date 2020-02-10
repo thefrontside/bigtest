@@ -1,6 +1,6 @@
 import * as chokidar from 'chokidar';
-import { send, receive, Operation, Context } from 'effection';
-import { watch, watchError } from '@effection/events';
+import { Operation } from 'effection';
+import { watchError, Mailbox } from '@effection/events';
 import * as fs from 'fs';
 import * as glob from 'glob';
 import * as path from 'path';
@@ -28,23 +28,25 @@ function* writeManifest(options: TestFileWatcherOptions) {
   yield writeFile(options.manifestPath, manifest);
 }
 
-export function* createTestFileWatcher(orchestrator: Context, options: TestFileWatcherOptions): Operation {
+export function* createTestFileWatcher(mail: Mailbox, options: TestFileWatcherOptions): Operation {
   let watcher = chokidar.watch(options.files, { ignoreInitial: true });
 
   try {
-    yield watch(watcher, ['ready', 'add', 'unlink']);
+    let events: Mailbox = yield Mailbox.watch(watcher, ['ready', 'add', 'unlink']);
+
     yield watchError(watcher);
 
-    yield receive({ event: 'ready' });
+
+    yield events.receive({ event: 'ready' });
     yield writeManifest(options);
 
-    yield send({ ready: "manifest" }, orchestrator);
+    yield mail.send({ ready: "manifest" });
 
     while(true) {
-      yield receive();
+      yield events.receive();
       yield writeManifest(options);
 
-      yield send({ change: "manifest" }, orchestrator);
+      yield mail.send({ change: "manifest" });
     }
   } finally {
     watcher.close();

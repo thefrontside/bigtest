@@ -1,7 +1,8 @@
 import { EventEmitter } from 'events';
-import { Operation, send, fork, monitor } from 'effection';
+import { Operation, monitor } from 'effection';
+export { Mailbox, any } from './events/mailbox';
 
-type EventName = string | symbol;
+export type EventName = string | symbol;
 
 /**
  * Takes an event emitter and event name and returns a yieldable
@@ -15,32 +16,17 @@ export function on(emitter: EventEmitter, eventName: EventName): Operation {
   }
 }
 
-function defaultPrepareMessage(...args) {
-  return { event: this.event, args: args };
-}
+/**
+ * Takes an event emmitter and an event name, and runs the operation
+ * returned by the `each` function every time an event with
+ * `eventName` is received.
+ */
+export function onEach(source: EventEmitter, event: EventName, each: (...args: unknown[]) => Operation): Operation {
+  return ({ spawn, ensure }) => {
+    let dispatch = (...args: unknown[]) => spawn(monitor(each(...args)))
 
-export function watch(
-  emitter: EventEmitter,
-  names: EventName | EventName[],
-  prepare: (...args: any[]) => any = defaultPrepareMessage // eslint-disable-line @typescript-eslint/no-explicit-any
-): Operation {
-  return ({ resume, context: { parent }}) => {
-    let parentContext = parent as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-    for(let name of [].concat(names)) {
-      let listener = (...args) => {
-        let message = prepare.apply({ event: name}, args);
-        parentContext.spawn(fork(send(message, parentContext)));
-      }
-
-      emitter.on(name, listener);
-
-      parentContext.ensure(() => {
-        emitter.off(name, listener);
-      });
-
-      resume(emitter);
-    }
+    source.on(event, dispatch);
+    ensure(() => source.off(event, dispatch));
   }
 }
 

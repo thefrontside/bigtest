@@ -5,25 +5,24 @@ import { World } from './helpers/world';
 import { beforeEach, afterEach } from 'mocha';
 
 import { createOrchestrator } from '../src/index';
+import { Mailbox } from '../src/effection/events';
 
 interface Actions {
   fork<T>(operation: Operation): Context;
-  receive(execution: Context, pattern: any): PromiseLike<any>;
+  receive(mailbox: Mailbox, pattern: any): PromiseLike<any>;
   get(url: string): PromiseLike<Response>;
   startOrchestrator(): PromiseLike<Context>;
 }
 
-let orchestratorPromise;
+let orchestratorPromise: Context;
 
 export const actions: Actions = {
   fork(operation: Operation): Context {
     return currentWorld.fork(operation);
   },
 
-  receive(execution: Context, pattern): PromiseLike<any> {
-    return actions.fork(function*() {
-      return yield receive(execution, pattern);
-    });
+  receive(mailbox: Mailbox, pattern): PromiseLike<any> {
+    return actions.fork(mailbox.receive(pattern));
   },
 
   get(url: string): Promise<Response> {
@@ -32,12 +31,13 @@ export const actions: Actions = {
 
   startOrchestrator() {
     if(!orchestratorPromise) {
+      let mail = new Mailbox();
       orchestratorPromise = globalWorld.fork(function*() {
-        yield receive({ ready: "orchestrator" });
+        yield mail.receive({ ready: "orchestrator" });
       });
 
       globalWorld.fork(createOrchestrator({
-        delegate: orchestratorPromise,
+        delegate: mail,
         appCommand: "react-scripts start",
         appEnv: { "PORT": "24100", "BROWSER": "none" },
         appDir: "test/app",

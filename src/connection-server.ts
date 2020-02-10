@@ -1,10 +1,11 @@
-import { Context, Operation, fork, send, receive, any, timeout } from 'effection';
-import { watch } from '@effection/events';
+import { Operation, fork, any, timeout } from 'effection';
+import { Mailbox } from '@effection/events';
+import { IMessage } from 'websocket';
+import { assoc, dissoc, lensPath } from 'ramda';
 
 import { createSocketServer, Connection, sendData } from './ws';
 import { Atom } from './orchestrator/atom';
 
-import { lensPath, assoc, dissoc } from 'ramda';
 
 interface ConnectionServerOptions {
   atom: Atom;
@@ -16,12 +17,14 @@ interface ConnectionServerOptions {
 const agentsLens = lensPath(['agents']);
 let counter = 1;
 
-export function* createConnectionServer(orchestrator: Context, options: ConnectionServerOptions): Operation {
+export function* createConnectionServer(mail: Mailbox, options: ConnectionServerOptions): Operation {
   function* handleConnection(connection: Connection): Operation {
     console.debug('[connection] connected');
-    yield watch(connection, "message", (message) => {
+
+    let messages = yield Mailbox.watch(connection, "message", ({ args }) => {
+      let [message] = args as IMessage[];
       return { message: JSON.parse(message.utf8Data) };
-    });
+    })
 
     yield fork(function* heartbeat() {
       while (true) {
@@ -38,7 +41,7 @@ export function* createConnectionServer(orchestrator: Context, options: Connecti
       }));
     });
 
-    let { message: { data } } = yield receive({ message: { type: 'connected' } });
+    let { message: { data } } = yield mail.receive({ message: { type: 'connected' } });
 
     let identifier = `agent.${counter++}`;
 
@@ -47,7 +50,7 @@ export function* createConnectionServer(orchestrator: Context, options: Connecti
       options.atom.over(agentsLens, assoc(identifier, assoc("identifier", identifier, data)));
 
       while (true) {
-        let message = yield receive({ message: any });
+        let message = yield messages.receive({ message: any });
         console.debug("[connection] got message", message);
       }
     } finally {
@@ -56,6 +59,6 @@ export function* createConnectionServer(orchestrator: Context, options: Connecti
     }
   }
   yield createSocketServer(options.port, handleConnection, function*() {
-    yield send({ ready: "connection" }, orchestrator);
+    yield mail.send({ ready: "connection" });
   });
 }

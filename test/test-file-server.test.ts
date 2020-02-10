@@ -5,6 +5,7 @@ import * as fs from 'fs';
 
 import { Response } from 'node-fetch';
 import { Context } from 'effection';
+import { Mailbox } from '@effection/events';
 
 import { actions } from './helpers';
 import { createTestFileServer } from '../src/test-file-server';
@@ -20,7 +21,7 @@ let TEST_FILE_PORT = 24200;
 
 describe('test file server', () => {
   let atom: Atom;
-  let orchestrator: Context;
+  let orchestrator: Mailbox;
 
   beforeEach((done) => rmrf(TEST_DIR, done));
   beforeEach(async () => {
@@ -28,7 +29,7 @@ describe('test file server', () => {
     await writeFile(MANIFEST_PATH, "module.exports = [{ path: 'someworld', test: 123 }];");
 
     atom = new Atom();
-    orchestrator = actions.fork(function*() { yield });
+    orchestrator = new Mailbox();
 
     actions.fork(function*() {
       yield createTestFileServer(orchestrator, {

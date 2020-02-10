@@ -1,5 +1,5 @@
-import { send, receive, fork, Operation, Context } from 'effection';
-import { watch } from '@effection/events';
+import { fork, Operation } from 'effection';
+import { Mailbox } from '@effection/events';
 import { ChildProcess, fork as forkProcess } from '@effection/child_process';
 import * as path from 'path';
 import { assoc } from 'ramda';
@@ -21,7 +21,7 @@ function* loadManifest(atom: Atom, outDir: string) {
   atom.update(assoc('manifest', manifest));
 }
 
-export function* createTestFileServer(orchestrator: Context, options: TestFileServerOptions): Operation {
+export function* createTestFileServer(mail: Mailbox, options: TestFileServerOptions): Operation {
   // TODO: @precompile this should use node rather than ts-node when running as a compiled package
   let child: ChildProcess = yield forkProcess(
     './bin/parcel-server.ts',
@@ -33,21 +33,21 @@ export function* createTestFileServer(orchestrator: Context, options: TestFileSe
     }
   );
 
-  yield watch(child, "message", (message) => message)
+  let messages = yield Mailbox.watch(child, "message", ({ args: [message] }) => message);
 
-  let { options: { outDir } } = yield receive({ type: "ready" });
+  let { options: { outDir } } = yield messages.receive({ type: "ready" });
 
   console.debug("[test files] test files initialized");
 
   yield fork(loadManifest(options.atom, outDir));
-  yield send({ ready: "test-files" }, orchestrator);
+  yield mail.send({ ready: "test-files" });
 
   while(true) {
-    yield receive({ type: "update" });
+    yield messages.receive({ type: "update" });
 
     console.debug("[test files] test files updated");
 
     yield fork(loadManifest(options.atom, outDir));
-    yield send({ update: "test-files" }, orchestrator);
+    yield mail.send({ update: "test-files" });
   }
 }

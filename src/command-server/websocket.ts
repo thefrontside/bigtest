@@ -1,5 +1,6 @@
-import { Operation, fork, receive } from 'effection';
-import { watch } from '@effection/events';
+import { Operation, fork } from 'effection';
+import { Mailbox } from '@effection/events';
+import { IMessage } from 'websocket';
 
 import { Message, QueryMessage, MutationMessage, isQuery, isMutation } from '../protocol';
 
@@ -11,10 +12,14 @@ import { graphql } from '../command-server';
 
 export function handleMessage(atom: Atom): (connection: Connection) => Operation {
   return function*(connection) {
-    yield watch(connection, "message", message => JSON.parse(message.utf8Data));
+
+    let messages: Mailbox =  yield Mailbox.watch(connection, "message", ({args}) => {
+      let [message] = args as IMessage[];
+      return JSON.parse(message.utf8Data);
+    })
 
     while (true) {
-      let message: Message = yield receive();
+      let message: Message = yield messages.receive();
       if (isQuery(message)) {
         yield fork(handleQuery(atom, message, connection));
       }
