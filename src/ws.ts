@@ -22,6 +22,14 @@ export function* createSocketServer(port: number, handler: ConnectionHandler, re
 
   yield ready(server);
 
+  try {
+    yield listenWS(server, handler);
+  } finally {
+    server.close();
+  }
+}
+
+export function* listenWS(server: Server, handler: ConnectionHandler): Operation {
   let socket = new WebSocketServer({
     httpServer: server
   });
@@ -33,7 +41,13 @@ export function* createSocketServer(port: number, handler: ConnectionHandler, re
 
       let handle = yield fork(function* setupConnection() {
         let halt = () => handle.halt();
-        let fail = (error: Error) => handle.throw(error);
+        let fail = (error: Error) => {
+          if(error["code"] === 'ECONNRESET') {
+            handle.halt();
+          } else {
+            handle.fail(error);
+          }
+        }
         connection.on("error", fail);
         connection.on("close", halt);
         try {
@@ -47,7 +61,7 @@ export function* createSocketServer(port: number, handler: ConnectionHandler, re
 
     }
   } finally {
-    server.close();
+    socket.unmount();
   }
 }
 

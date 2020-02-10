@@ -10,6 +10,8 @@
   "scripts": {
     "start": "ts-node -r module-alias/register bin/start.ts",
     "watch": "ts-node -r module-alias/register bin/watch.ts",
+    "query": "ts-node -r module-alias/register bin/query.ts",
+    "subscribe": "ts-node -r module-alias/register bin/subscribe.ts",
     "lint": "eslint 'src/**/*.ts' 'bin/**/*.ts' 'agent/**/*.ts'",
     "test": "mocha -r ./test/setup test/**/*.test.ts",
     "mocha": "mocha -r ./test/setup",

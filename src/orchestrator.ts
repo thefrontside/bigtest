@@ -104,6 +104,8 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   if(options.delegate) {
     yield send({ ready: "orchestrator" }, options.delegate);
+  } else {
+    yield send({ ready: "orchestrator" });
   }
 
   try {
