@@ -8,7 +8,7 @@ import { createAppServer } from './app-server';
 import { createTestFileWatcher } from './test-file-watcher';
 import { createTestFileServer } from './test-file-server';
 
-import { atom } from './orchestrator/state';
+import { atom } from './orchestrator/atom';
 
 type OrchestratorOptions = {
   appPort: number;

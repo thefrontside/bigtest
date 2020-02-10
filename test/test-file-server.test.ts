@@ -8,7 +8,8 @@ import { Context } from 'effection';
 
 import { actions } from './helpers';
 import { createTestFileServer } from '../src/test-file-server';
-import { atom, OrchestratorState } from '../src/orchestrator/state';
+import { OrchestratorState } from '../src/orchestrator/state';
+import { atom } from '../src/orchestrator/atom';
 
 const TEST_DIR = "./tmp/test-file-server"
 const MANIFEST_PATH = "./tmp/test-file-server/manifest.js"

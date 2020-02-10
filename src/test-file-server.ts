@@ -4,7 +4,7 @@ import { ChildProcess, fork as forkProcess } from '@effection/child_process';
 import * as path from 'path';
 import { assoc } from 'ramda';
 
-import { atom } from './orchestrator/state';
+import { atom } from './orchestrator/atom';
 
 interface TestFileServerOptions {
   manifestPath: string;

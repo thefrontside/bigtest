@@ -2,7 +2,7 @@ import { Context, Operation, fork, send, receive, any, timeout } from 'effection
 import { watch } from '@effection/events';
 
 import { createSocketServer, Connection, sendData } from './ws';
-import { atom } from './orchestrator/state';
+import { atom } from './orchestrator/atom';
 
 import { lensPath, assoc, dissoc } from 'ramda';
 

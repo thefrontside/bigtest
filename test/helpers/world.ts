@@ -1,7 +1,7 @@
 import { main, Context, Operation } from 'effection';
 import fetch, { Response } from 'node-fetch';
 import { AbortController } from 'abort-controller';
-import { atom } from '../../src/orchestrator/state';
+import { atom } from '../../src/orchestrator/atom';
 
 type RequestMethod = 'post' | 'get';
 

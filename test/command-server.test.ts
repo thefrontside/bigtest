@@ -6,7 +6,7 @@ import { Operation, Context } from 'effection';
 import { Client } from '../src/client';
 import { actions } from './helpers';
 import { createCommandServer } from '../src/command-server';
-import { atom } from '../src/orchestrator/state';
+import { atom } from '../src/orchestrator/atom';
 import { assoc } from 'ramda';
 
 import { Test, SerializableTest } from '../src/test';

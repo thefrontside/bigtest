@@ -7,7 +7,8 @@ import { graphql as executeGraphql } from 'graphql';
 import { listenWS } from './ws';
 import { schema } from './schema';
 import { Test, SerializableTest } from './test';
-import { atom, OrchestratorState } from './orchestrator/state';
+import { atom } from './orchestrator/atom';
+import { OrchestratorState } from './orchestrator/state';
 
 import { handleMessage } from './command-server/websocket';
 
