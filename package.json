@@ -42,7 +42,7 @@
     "@types/websocket": "^1.0.0",
     "bowser": "^2.8.1",
     "chokidar": "^3.3.1",
-    "effection": "^0.4.0-2f073e9",
+    "effection": "^0.5.0",
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
     "glob": "^7.1.6",
