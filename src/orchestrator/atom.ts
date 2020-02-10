@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 
 import { EventEmitter } from 'events';
-import { Operation, Context } from 'effection';
+import { Operation } from 'effection';
 import { on } from '@effection/events';
 
 import { OrchestratorState } from './state';
@@ -32,12 +32,14 @@ export class Atom {
   // Ramda Lens types. How do they work?
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
   over(lens: any, fn: any) {
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.update(R.over(lens, fn) as any as (OrchestratorState) => OrchestratorState);
   }
 
   // Ramda Lens types. How do they work?
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
   set(lens: any, value: unknown) {
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.update(R.set(lens, value) as any as (OrchestratorState) => OrchestratorState);
   }
 

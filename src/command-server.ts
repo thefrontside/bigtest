@@ -1,4 +1,4 @@
-import { Operation, Context, fork, send, Controls } from 'effection';
+import { Operation, Context, fork, send } from 'effection';
 import { on } from '@effection/events';
 import * as express from 'express';
 import * as graphqlHTTP from 'express-graphql';
