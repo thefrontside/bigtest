@@ -1,9 +1,9 @@
 import { fork } from 'effection';
 import { main } from '@effection/node';
+import { Mailbox } from '@effection/events';
 import * as tempy from 'tempy';
 
 import { createOrchestrator } from '../src/index';
-import { Mailbox } from '@effection/events';
 
 main(function*() {
   let mailbox = new Mailbox();
