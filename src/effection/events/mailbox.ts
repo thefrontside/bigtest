@@ -1,7 +1,7 @@
 import { fork, monitor, Operation } from 'effection';
 import { EventEmitter } from 'events';
 
-import { on, onEach, EventName } from '../events';
+import { onEach, EventName } from '../events';
 import { compile } from './pattern';
 export { any } from './pattern';
 
@@ -11,21 +11,30 @@ export class Mailbox {
 
   *send(message: unknown): Operation {
     this.messages.add(message);
-    this.subscriptions.emit('message');
+    this.subscriptions.emit('message', message);
   }
 
-  *receive(pattern: unknown = undefined): Operation {
+  receive(pattern: unknown = undefined): Operation {
     let match = compile(pattern);
-    let { messages, subscriptions } = this;
-    while (true) {
-      for (let message of messages) {
-        if (match(message)) {
-          messages.delete(message);
-          return message;
+
+    return ({ resume, ensure }) => {
+      let dispatch = (message: unknown) => {
+        if (this.messages.has(message) && match(message)) {
+          this.messages.delete(message);
+          resume(message);
+          return true;
         }
       }
-      yield on(subscriptions, 'message');
-    }
+
+      for (let message of this.messages) {
+        if (dispatch(message)) {
+          return;
+        };
+      }
+
+      this.subscriptions.on('message', dispatch);
+      ensure(() => this.subscriptions.off('message', dispatch));
+    };
   }
 
   static *watch(
