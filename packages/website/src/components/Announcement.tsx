@@ -24,15 +24,16 @@ const redirected = (props): boolean => {
   return from_old_website == 'true' ? true : false;
 };
 
-const from_where = (props) => {
+const from_where = props => {
   const params = new URLSearchParams(props.search);
   const from_which_page: string = params.get('archived-page')!;
   return (
     <Text>
-      You can still find the page you were trying to visit in our archive: <a href={from_which_page}>{from_which_page}</a>
+      You can still find the page you were trying to visit in our archive:{' '}
+      <a href={from_which_page}>{from_which_page}</a>
     </Text>
-  )
-}
+  );
+};
 
 const Announcement: React.FC<AnnouncementProps> = props => {
   if (redirected(props.location)) {
