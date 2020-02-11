@@ -104,7 +104,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   console.log(`[orchestrator] launch agents via: ${agentUrl}`);
   console.log(`[orchestrator] show GraphQL dashboard via: ${commandUrl}`);
 
-  yield mail.send({ ready: "orchestrator" });
+  mail.send({ ready: "orchestrator" });
 
   try {
     while(true) {

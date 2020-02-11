@@ -29,7 +29,7 @@ export function* createCommandServer(mail: Mailbox, options: CommandServerOption
   try {
     yield on(server, 'listening');
 
-    yield mail.send({ ready: "command" });
+    mail.send({ ready: "command" });
 
     yield listenWS(server, handleMessage(options.atom));
   } finally {

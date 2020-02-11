@@ -23,7 +23,7 @@ export function* createAgentServer(mail: Mailbox, options: AgentServerOptions): 
     [message] = yield on(child, "message");
   } while(message.type !== "ready");
 
-  yield mail.send({ ready: "agent" });
+  mail.send({ ready: "agent" });
 
   yield on(child, "exit");
 }

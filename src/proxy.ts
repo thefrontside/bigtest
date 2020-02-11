@@ -86,7 +86,7 @@ export function* createProxyServer(mail: Mailbox, options: ProxyOptions): Operat
   try {
 
     yield listen(server, options.port);
-    yield mail.send({ ready: 'proxy' });
+    mail.send({ ready: 'proxy' });
 
     while(true) {
       let { event, args } = yield events.receive({ event: any("string") });

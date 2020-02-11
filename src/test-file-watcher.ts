@@ -40,13 +40,13 @@ export function* createTestFileWatcher(mail: Mailbox, options: TestFileWatcherOp
     yield events.receive({ event: 'ready' });
     yield writeManifest(options);
 
-    yield mail.send({ ready: "manifest" });
+    mail.send({ ready: "manifest" });
 
     while(true) {
       yield events.receive();
       yield writeManifest(options);
 
-      yield mail.send({ change: "manifest" });
+      mail.send({ change: "manifest" });
     }
   } finally {
     watcher.close();

@@ -40,7 +40,7 @@ export function* createTestFileServer(mail: Mailbox, options: TestFileServerOpti
   console.debug("[test files] test files initialized");
 
   yield fork(loadManifest(options.atom, outDir));
-  yield mail.send({ ready: "test-files" });
+  mail.send({ ready: "test-files" });
 
   while(true) {
     yield messages.receive({ type: "update" });
@@ -48,6 +48,6 @@ export function* createTestFileServer(mail: Mailbox, options: TestFileServerOpti
     console.debug("[test files] test files updated");
 
     yield fork(loadManifest(options.atom, outDir));
-    yield mail.send({ update: "test-files" });
+    mail.send({ update: "test-files" });
   }
 }
