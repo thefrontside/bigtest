@@ -41,7 +41,7 @@ export function* createConnectionServer(mail: Mailbox, options: ConnectionServer
       }));
     });
 
-    let { message: { data } } = yield mail.receive({ message: { type: 'connected' } });
+    let { message: { data } } = yield messages.receive({ message: { type: 'connected' } });
 
     let identifier = `agent.${counter++}`;
 
