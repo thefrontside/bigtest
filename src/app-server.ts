@@ -50,7 +50,7 @@ export function* createAppServer(mail: Mailbox, options: AppServerOptions): Oper
     yield timeout(100);
   }
 
-  yield mail.send({ ready: "app" });
+  mail.send({ ready: "app" });
 
   yield on(child, "exit");
 

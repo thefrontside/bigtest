@@ -59,6 +59,6 @@ export function* createConnectionServer(mail: Mailbox, options: ConnectionServer
     }
   }
   yield createSocketServer(options.port, handleConnection, function*() {
-    yield mail.send({ ready: "connection" });
+    mail.send({ ready: "connection" });
   });
 }

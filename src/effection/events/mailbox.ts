@@ -9,7 +9,7 @@ export class Mailbox {
   private subscriptions = new EventEmitter();
   private messages = new Set();
 
-  *send(message: unknown): Operation {
+  send(message: unknown) {
     this.messages.add(message);
     this.subscriptions.emit('message', message);
   }
@@ -45,9 +45,14 @@ export class Mailbox {
     let mailbox = new Mailbox();
     let parent = yield ({ resume, context: { parent }}) => resume(parent.parent);
 
-    parent.spawn(monitor(function* () {
+    parent.spawn(monitor(({ ensure }) => {
       for (let name of [].concat(events)) {
-        yield fork(onEach(emitter, name, (...args) => mailbox.send(prepare({ event: name, args }))));
+        let listener = (...args) => {
+          mailbox.send(prepare({ event: name, args }));
+        }
+
+        emitter.on(name, listener);
+        ensure(() => emitter.off(name, listener));
       }
     }));
     return mailbox;
