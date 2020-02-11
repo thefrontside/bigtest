@@ -20,10 +20,19 @@ const AnnouncementBox = styled(Box)`
 
 const redirected = (props): boolean => {
   const params = new URLSearchParams(props.search);
-  const fow = params.get('from-old-website');
-  console.log(props);
-  return fow == 'true' ? true : false;
+  const from_old_website: string = params.get('from-old-website')!;
+  return from_old_website == 'true' ? true : false;
 };
+
+const from_where = (props) => {
+  const params = new URLSearchParams(props.search);
+  const from_which_page: string = params.get('archived-page')!;
+  return (
+    <Text>
+      You can still find the page you were trying to visit in our archive: <a href={from_which_page}>{from_which_page}</a>
+    </Text>
+  )
+}
 
 const Announcement: React.FC<AnnouncementProps> = props => {
   if (redirected(props.location)) {
@@ -36,6 +45,7 @@ const Announcement: React.FC<AnnouncementProps> = props => {
             testing framework. Take a look around, and reach out to us if you have any questions{' '}
             <a href="mailto:bigtest@frontside.io">bigtest@frontside.io</a>.
           </Text>
+          {from_where(props.location)}
         </AnnouncementBox>
       </Section>
     );
