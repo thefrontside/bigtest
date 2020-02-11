@@ -40,27 +40,22 @@ const APILink = styled(Link)`
 `;
 
 const Header = () => (
-  <HeadWrapper as='header'>
-    <LogoLink to='/'>
-      BigTest
-    </LogoLink>
+  <HeadWrapper as="header">
+    <LogoLink to="/">BigTest</LogoLink>
     <Nav>
-      <APILink to='' title='API Documentation'>API</APILink>
+      <APILink to="" title="API Documentation">
+        API
+      </APILink>
       <IconLink
         icon={github_icon}
-        href='https://github.com/thefrontside/bigtest.git'
-        title='Project Github'
-        target='_blank'
+        href="https://github.com/thefrontside/bigtest.git"
+        title="Project Github"
+        target="_blank"
       >
         Github
       </IconLink>
-      <IconLink
-        icon={discord_icon}
-        href='https://discord.gg/W7r24Aa'
-        title='Discord community'
-        target='_blank'
-      >
-          Discord
+      <IconLink icon={discord_icon} href="https://discord.gg/W7r24Aa" title="Discord community" target="_blank">
+        Discord
       </IconLink>
     </Nav>
   </HeadWrapper>

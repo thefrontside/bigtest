@@ -32,8 +32,8 @@ const FooterText = styled.p`
 const Footer = () => (
   <FooterBox>
     <FooterText>Brought to you by</FooterText>
-    <FooterLink href="https://frontside.io/" target='_blank'>
-      <FooterLogo src={frontside_logo} alt='Frontside' />
+    <FooterLink href="https://frontside.io/" target="_blank">
+      <FooterLogo src={frontside_logo} alt="Frontside" />
     </FooterLink>
   </FooterBox>
 );
