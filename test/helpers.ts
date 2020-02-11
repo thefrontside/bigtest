@@ -1,5 +1,5 @@
 import { Response } from 'node-fetch';
-import { receive, Context, Operation } from 'effection';
+import { Context, Operation } from 'effection';
 import { World } from './helpers/world';
 
 import { beforeEach, afterEach } from 'mocha';

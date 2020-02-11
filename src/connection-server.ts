@@ -1,5 +1,5 @@
-import { Operation, fork, any, timeout } from 'effection';
-import { Mailbox } from '@effection/events';
+import { Operation, fork, timeout } from 'effection';
+import { Mailbox, any } from '@effection/events';
 import { IMessage } from 'websocket';
 import { assoc, dissoc, lensPath } from 'ramda';
 
