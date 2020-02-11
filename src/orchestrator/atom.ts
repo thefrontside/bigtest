@@ -48,5 +48,3 @@ export class Atom {
     return state;
   }
 }
-
-export const atom = new Atom();
