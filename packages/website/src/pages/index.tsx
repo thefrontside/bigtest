@@ -9,14 +9,15 @@ import Image from '../components/Image';
 import Layout from '../components/Layout';
 import Text, { Strong } from '../components/Text';
 
-import SubscribeForm from '../components/SubscribeForm';
-import WhyBigTest from '../components/WhyBigTest';
+import Announcement from '../components/Announcement';
 import DidYouKnow from '../components/DidYouKnow';
 import ReachOut from '../components/ReachOut';
+import SubscribeForm from '../components/SubscribeForm';
+import WhyBigTest from '../components/WhyBigTest';
 
 import { reusable, tests_intro, user_experience } from '../images';
 
-const IndexPage = () => (
+const IndexPage = (props) => (
   <Layout>
     <Hero>
       <Flex alignItems='center' flexWrap='wrap'>
@@ -46,6 +47,7 @@ const IndexPage = () => (
         />
       </Flex>
     </Hero>
+    <Announcement location={props.location} />
     <WhyBigTest />
     <Section>
       <Flex flexWrap='wrap'>
