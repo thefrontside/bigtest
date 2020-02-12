@@ -38,27 +38,27 @@ const WhyBigTest: React.FC = () => (
     <List>
       <Item largeOrder="0">
         <H4>Seriously fast</H4>
-        <p>Designed and implemented for speed.</p>
+        <p>Designed and implemented to speed up test writing, execution, and maintenance.</p>
       </Item>
       <Item largeOrder="3">
         <H4>Experienced-centered</H4>
         <p>Test what matters to users through a refined developer experience.</p>
       </Item>
       <Item largeOrder="1">
-        <H4>Cross-Browser</H4>
-        <p>Chrome, Safari, Firefox, Opera, etc.</p>
+        <H4>Revolutionary architecture</H4>
+        <p>Built from the ground up with new technologies for modern apps.</p>
       </Item>
       <Item largeOrder="4">
-        <H4>Cross-Device</H4>
-        <p>Windows, macOS, iOS, Android, etc.</p>
+        <H4>Cross-Browser/Device</H4>
+        <p>If your user can see it, you can test it. Mix and match any browser and device or OS.</p>
       </Item>
       <Item largeOrder="2">
         <H4>Cross-Framework</H4>
-        <p>React, Vue, Ember, Angular, etc.</p>
+        <p>Test no matter what you build your UI with: React, Vue, Ember, Angular, bring it on!</p>
       </Item>
       <Item largeOrder="5">
-        <H4>Cross-Test Framework</H4>
-        <p>Mocha, Jasmine, Jest, etc.</p>
+        <H4>Extensible</H4>
+        <p>We provide powerful APIs to bring testing to the new decade.</p>
       </Item>
     </List>
   </Section>

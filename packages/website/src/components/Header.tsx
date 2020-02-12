@@ -29,23 +29,21 @@ const Nav = styled.nav`
   align-items: center;
 `;
 
-const APILink = styled(Link)`
-  color: ${({ theme }) => theme.colors.primary};
-  font-weight: ${({ theme }) => theme.fontWeights.bold};
-  font-size: ${({ theme }) => theme.fontSizes.medium};
-  font-family: ${({ theme }) => theme.fonts.heading};
-  letter-spacing: 1px;
-  align-content: center;
-  margin: 0 ${({ theme }) => theme.space.medium};
-`;
+// const APILink = styled(Link)`
+//   color: ${({ theme }) => theme.colors.primary};
+//   font-weight: ${({ theme }) => theme.fontWeights.bold};
+//   font-size: ${({ theme }) => theme.fontSizes.medium};
+//   font-family: ${({ theme }) => theme.fonts.heading};
+//   letter-spacing: 1px;
+//   align-content: center;
+//   margin: 0 ${({ theme }) => theme.space.medium};
+// `;
 
 const Header = () => (
   <HeadWrapper as="header">
     <LogoLink to="/">BigTest</LogoLink>
     <Nav>
-      <APILink to="" title="API Documentation">
-        API
-      </APILink>
+      {/* <APILink to='' title='API Documentation'>API</APILink> */}
       <IconLink
         icon={github_icon}
         href="https://github.com/thefrontside/bigtest.git"

@@ -15,7 +15,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-mailchimp`,
       options: {
-        endpoint: 'https://gmail.us4.list-manage.com/subscribe/post?u=3f3a3fac17b54df0675d50ef7&amp;id=528f956cda',
+        endpoint: 'https://bigtestjs.us4.list-manage.com/subscribe/post?u=dbd3b1801544458c2dc306723&amp;id=10a2fa1562',
       }
     },
     {
@@ -41,5 +41,13 @@ module.exports = {
     `gatsby-plugin-styled-components`,
     `gatsby-plugin-typescript`,
     `gatsby-transformer-sharp`,
+    {
+      resolve: 'gatsby-plugin-web-font-loader',
+      options: {
+        typekit: {
+          id: 'gyc5wys'
+        }
+      }
+    },
   ],
 };
