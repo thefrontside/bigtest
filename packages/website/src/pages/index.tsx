@@ -9,7 +9,7 @@ import Image from '../components/Image';
 import Layout from '../components/Layout';
 import Text, { Strong } from '../components/Text';
 
-import Announcement from '../components/Announcement';
+import GreetLegacyUsers from '../components/GreetLegacyUsers';
 import DidYouKnow from '../components/DidYouKnow';
 import ReachOut from '../components/ReachOut';
 import SubscribeForm from '../components/SubscribeForm';
@@ -45,7 +45,7 @@ const IndexPage = props => (
         />
       </Flex>
     </Hero>
-    <Announcement location={props.location} />
+    <GreetLegacyUsers location={props.location} />
     <WhyBigTest />
     <Section>
       <Flex flexWrap="wrap">
