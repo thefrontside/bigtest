@@ -45,7 +45,7 @@ const IndexPage = props => (
         />
       </Flex>
     </Hero>
-    <GreetLegacyUsers location={props.location} />
+
     <WhyBigTest />
     <Section>
       <Flex flexWrap="wrap">
@@ -133,6 +133,7 @@ const IndexPage = props => (
         </Box>
       </Flex>
     </Hero>
+    <GreetLegacyUsers location={props.location} />
   </Layout>
 );
 
