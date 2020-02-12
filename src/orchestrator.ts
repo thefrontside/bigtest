@@ -68,6 +68,8 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     manifestPath: options.testManifestPath,
   }));
 
+  // wait for manifest before starting test file server
+  yield mail.receive({ ready: "manifest" });
 
   yield fork(createTestFileServer(mail, {
     atom,
