@@ -1,4 +1,4 @@
-import { Response } from 'node-fetch';
+import { Response, RequestInfo, RequestInit } from 'node-fetch';
 import { Context, Operation } from 'effection';
 import { World } from './helpers/world';
 
@@ -10,7 +10,7 @@ import { Mailbox } from '../src/effection/events';
 interface Actions {
   fork<T>(operation: Operation): Context;
   receive(mailbox: Mailbox, pattern: any): PromiseLike<any>;
-  get(url: string): PromiseLike<Response>;
+  fetch(resource: RequestInfo, init?: RequestInit): PromiseLike<Response>;
   startOrchestrator(): PromiseLike<Context>;
 }
 
@@ -25,8 +25,9 @@ export const actions: Actions = {
     return actions.fork(mailbox.receive(pattern));
   },
 
-  get(url: string): Promise<Response> {
-    return currentWorld.get(url);
+  fetch(resource: RequestInfo, init?: RequestInit): PromiseLike<Response> {
+    return actions.fork(currentWorld.fetch(resource, init));
+
   },
 
   startOrchestrator() {

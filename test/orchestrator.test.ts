@@ -15,7 +15,7 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
-      response = await actions.get('http://localhost:24102?query={echo(text:"Hello World")}');
+      response = await actions.fetch('http://localhost:24102?query={echo(text:"Hello World")}');
       body = await response.json();
     });
 
@@ -32,7 +32,7 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
-      response = await actions.get('http://localhost:24104/index.html');
+      response = await actions.fetch('http://localhost:24104/index.html');
       body = await response.text();
     });
 
@@ -49,7 +49,7 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
-      response = await actions.get('http://localhost:24104/harness.js');
+      response = await actions.fetch('http://localhost:24104/harness.js');
       body = await response.text();
     });
 
@@ -67,7 +67,7 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
-      response = await actions.get('http://localhost:24100/');
+      response = await actions.fetch('http://localhost:24100/');
       body = await response.text();
     });
 
@@ -84,7 +84,7 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
-      response = await actions.get('http://localhost:24101/');
+      response = await actions.fetch('http://localhost:24101/');
       body = await response.text();
     });
 
@@ -105,7 +105,7 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
-      response = await actions.get('http://localhost:24105/manifest.js');
+      response = await actions.fetch('http://localhost:24105/manifest.js');
       body = await response.text();
     });
 
