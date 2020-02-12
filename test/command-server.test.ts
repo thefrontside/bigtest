@@ -41,6 +41,23 @@ describe('command server', () => {
     });
   });
 
+  describe('running the entire suite', () => {
+    let result: any;
+    beforeEach(async () => {
+      result = await mutation('run');
+    });
+
+    it('returns a test run id', () => {
+      expect(result.data.run).toMatch('test-run');
+    });
+
+    it('sends a message to the orchestrator telling it to start the test run', async () => {
+      let message = await actions.receive(mail, { type: "run" });
+      expect(message.type).toEqual("run")
+      expect(message.id).toEqual(result.data.run)
+    });
+  });
+
   describe('querying connected agents', () => {
     let result: unknown;
     beforeEach(async () => {
@@ -216,8 +233,23 @@ describe('command server', () => {
   });
 });
 
-async function query(text: string) {
+// eslint-disable-next-line @typescript/no-explicit-any
+async function query(text: string): Promise<any> {
   let response = await actions.fetch(`http://localhost:${COMMAND_PORT}?query={${encodeURIComponent(text)}}`);
+  return await response.json();
+}
+
+// eslint-disable-next-line @typescript/no-explicit-any
+async function mutation(text: string): Promise<any> {
+  let body = `mutation { ${text} }`
+  let response = await actions.fetch(`http://localhost:${COMMAND_PORT}`, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({ query: body })
+  });
   return await response.json();
 }
 

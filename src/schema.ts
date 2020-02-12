@@ -1,10 +1,16 @@
 import { buildSchema } from 'graphql';
 
-export const schema =  buildSchema(`
+export const schema = buildSchema(`
+scalar TestRunId
+
 type Query {
   echo(text: String!): String
   agents: [Agent!]!
   manifest: [ManifestEntry!]!
+}
+
+type Mutation {
+  run: TestRunId
 }
 
 type Agent {
