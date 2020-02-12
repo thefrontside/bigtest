@@ -18,7 +18,7 @@ interface CommandServerOptions {
 };
 
 export function* createCommandServer(mail: Mailbox, options: CommandServerOptions): Operation {
-  let app = yield createApp(options.atom);
+  let app = yield createApp(mail, options.atom);
   let server = app.listen(options.port);
 
   yield fork(function* commandServerErrorListener() {
@@ -31,13 +31,13 @@ export function* createCommandServer(mail: Mailbox, options: CommandServerOption
 
     mail.send({ ready: "command" });
 
-    yield listenWS(server, handleMessage(options.atom));
+    yield listenWS(server, handleMessage(mail, options.atom));
   } finally {
     server.close();
   }
 }
 
-function createApp(atom: Atom): Operation {
+function createApp(mail: Mailbox, atom: Atom): Operation {
   return ({ resume, context: { parent }}) => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,7 +45,7 @@ function createApp(atom: Atom): Operation {
 
     let app = express()
       .use(graphqlHTTP(() => context.spawn(function* getOptionsData() {
-        return { ...graphqlOptions(atom.get()), graphiql: true};
+        return { ...graphqlOptions(mail, atom.get()), graphiql: true};
       })));
     resume(app);
   }
@@ -55,22 +55,29 @@ function createApp(atom: Atom): Operation {
  * Run the query or mutation in `source` against the orchestrator
  * state contained in `state`
  */
-export function graphql(source: string, state: OrchestratorState): Operation {
-  return executeGraphql({...graphqlOptions(state), source });
+export function graphql(source: string, mail: Mailbox, state: OrchestratorState): Operation {
+  return executeGraphql({...graphqlOptions(mail, state), source });
 }
+
+let testIdCounter = 1;
 
 /**
  * Get the graphql options for running a query against `state`. Needed
  * because the express graphql server calls the `graphql` function for
  * you based on the .
  */
-export function graphqlOptions(state: OrchestratorState) {
+export function graphqlOptions(mail: Mailbox, state: OrchestratorState) {
   return {
     schema,
     rootValue: {
       echo: ({text}) => text,
       agents: () => Object.values(state.agents),
-      manifest: () => map(({ path, test}) => ({ path, test: JSON.stringify(serializeTest(test))}), state.manifest)
+      manifest: () => map(({ path, test}) => ({ path, test: JSON.stringify(serializeTest(test))}), state.manifest),
+      run: () => {
+        let id = `test-run-${testIdCounter++}`;
+        mail.send({ type: "run", id });
+        return id;
+      }
     }
   }
 }

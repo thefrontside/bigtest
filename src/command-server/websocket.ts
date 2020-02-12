@@ -10,7 +10,35 @@ import { Connection, sendData } from '../ws';
 
 import { graphql } from '../command-server';
 
-export function handleMessage(atom: Atom): (connection: Connection) => Operation {
+export function handleMessage(mail: Mailbox, atom: Atom): (connection: Connection) => Operation {
+  function* handleQuery(message: QueryMessage, connection: Connection): Operation {
+    yield publishQueryResult(message, atom.get(), connection);
+
+    if (message.live) {
+      yield fork(subscribe(message, connection));
+    }
+  }
+
+  function* handleMutation(message: MutationMessage, connection: Connection): Operation {
+    let result = yield graphql(message.mutation, mail, atom.get());
+    result.responseId = message.responseId;
+    yield sendData(connection, JSON.stringify(result));
+  }
+
+  function* publishQueryResult(message: QueryMessage, state: OrchestratorState, connection: Connection): Operation {
+    let result = yield graphql(message.query, mail, state);
+    result.responseId = message.responseId;
+    yield sendData(connection, JSON.stringify(result));
+  }
+
+  function* subscribe(message: QueryMessage, connection: Connection) {
+    while (true) {
+      let state: OrchestratorState = yield atom.next();
+
+      yield publishQueryResult(message, state, connection);
+    }
+  }
+
   return function*(connection) {
 
     let messages: Mailbox =  yield Mailbox.watch(connection, "message", ({args}) => {
@@ -21,7 +49,7 @@ export function handleMessage(atom: Atom): (connection: Connection) => Operation
     while (true) {
       let message: Message = yield messages.receive();
       if (isQuery(message)) {
-        yield fork(handleQuery(atom, message, connection));
+        yield fork(handleQuery(message, connection));
       }
       if (isMutation(message)) {
         yield fork(handleMutation(message, connection));
@@ -30,28 +58,3 @@ export function handleMessage(atom: Atom): (connection: Connection) => Operation
   }
 }
 
-function* handleQuery(atom: Atom, message: QueryMessage, connection: Connection): Operation {
-  yield publishQueryResult(message, atom.get(), connection);
-
-  if (message.live) {
-    yield fork(subscribe(atom, message, connection));
-  }
-}
-
-function* publishQueryResult(message: QueryMessage, state: OrchestratorState, connection: Connection): Operation {
-  let result = yield graphql(message.query, state);
-  result.responseId = message.responseId;
-  yield sendData(connection, JSON.stringify(result));
-}
-
-function* subscribe(atom: Atom, message: QueryMessage, connection: Connection) {
-  while (true) {
-    let state: OrchestratorState = yield atom.next();
-
-    yield publishQueryResult(message, state, connection);
-  }
-}
-
-function* handleMutation(message: MutationMessage, connection: Connection): Operation {
-  console.log(message, connection);
-}

@@ -27,7 +27,6 @@ export const actions: Actions = {
 
   fetch(resource: RequestInfo, init?: RequestInit): PromiseLike<Response> {
     return actions.fork(currentWorld.fetch(resource, init));
-
   },
 
   startOrchestrator() {
