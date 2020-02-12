@@ -11,7 +11,7 @@
   "scripts": {
     "lint": "eslint 'src/**/*.ts' 'bin/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "build": "microbundle --output dist --format modern,es,umd",
+    "build": "echo 'to build, run script `prepack` instead'",
     "prepack": "microbundle --output dist --format modern,es,umd"
   },
   "devDependencies": {
