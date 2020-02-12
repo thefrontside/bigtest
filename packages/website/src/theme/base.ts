@@ -45,7 +45,7 @@ const base: Base = {
     body: 1.5,
     heading: 1.25,
   },
-  space: [0, 0.3819, 0.6118, 1, 1.6103, 2.6180, 4.2360, 6.8541].map(n => n + 'rem'),
+  space: [0, 0.3819, 0.6118, 1, 1.6103, 2.618, 4.236, 6.8541].map(n => n + 'rem'),
 };
 
 const breakpointAliases: string[] = ['small', 'medium', 'large', 'xLarge'];
