@@ -1,7 +1,7 @@
-import { fork, monitor, Operation } from 'effection';
+import { monitor, Operation } from 'effection';
 import { EventEmitter } from 'events';
 
-import { onEach, EventName } from '../events';
+import { EventName } from '../events';
 import { compile } from './pattern';
 export { any } from './pattern';
 
