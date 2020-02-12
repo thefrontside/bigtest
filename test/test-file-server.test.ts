@@ -46,7 +46,7 @@ describe('test file server', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
-      response = await actions.get(`http://localhost:${TEST_FILE_PORT}/manifest.js`);
+      response = await actions.fetch(`http://localhost:${TEST_FILE_PORT}/manifest.js`);
       body = await response.text();
     });
 

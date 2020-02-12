@@ -217,7 +217,7 @@ describe('command server', () => {
 });
 
 async function query(text: string) {
-  let response = await actions.get(`http://localhost:${COMMAND_PORT}?query={${encodeURIComponent(text)}}`);
+  let response = await actions.fetch(`http://localhost:${COMMAND_PORT}?query={${encodeURIComponent(text)}}`);
   return await response.json();
 }
 

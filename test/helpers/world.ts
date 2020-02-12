@@ -1,8 +1,6 @@
 import { main, Context, Operation } from 'effection';
-import fetch, { Response } from 'node-fetch';
+import fetch, { Response, RequestInfo, RequestInit } from 'node-fetch';
 import { AbortController } from 'abort-controller';
-
-type RequestMethod = 'post' | 'get';
 
 export class World {
   execution: any;
@@ -18,14 +16,11 @@ export class World {
     return this.execution.spawn(operation);
   }
 
-  get(url: string): Promise<Response>{
-    return this.request('get', url);
-  }
-
-  request(method: RequestMethod, url: string): Promise<Response> {
+  fetch(resource: RequestInfo, init: RequestInit = {}): Promise<Response> {
     let controller = new AbortController();
-    let { signal } = controller;
-    let result = fetch(url, { method, signal });
+    init.signal = controller.signal;
+
+    let result = fetch(resource, init);
 
     this.execution.ensure(() => controller.abort());
 
