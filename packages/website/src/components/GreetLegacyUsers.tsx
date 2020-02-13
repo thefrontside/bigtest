@@ -23,14 +23,12 @@ const GreetLegacyLink = styled.a`
 `;
 
 const GreetLegacyUsers: React.FC<GreetLegacyProps> = () => {
-  // const archived_param = new URLSearchParams(window.location.search);
-  // const from_legacy = archived_param.get('archived-page');
-
   const [legacy, setLegacy] = useState(false);
 
   useEffect(() => {
     if (typeof window !== `undefined`) {
-      setLegacy(true);
+      const from_legacy = new URLSearchParams(window.location.search).get('archived-page');
+      from_legacy ? setLegacy(true) : setLegacy(false);
     }
   })
 
