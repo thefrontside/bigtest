@@ -1,7 +1,7 @@
 {
   "name": "bigtest",
   "version": "0.0.0-monorepo",
-  "description": "Tests that speed up development ",
+  "description": "Tests that speed up development",
   "repository": "git@github.com:bigtestjs/bigtest.git",
   "author": "Taras Mankovski <taras@frontside.io>",
   "license": "MIT",
