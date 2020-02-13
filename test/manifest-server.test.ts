@@ -21,7 +21,7 @@ let TEST_FILE_PORT = 24200;
 
 describe('manifest server', () => {
   let atom: Atom;
-  let orchestrator: Mailbox;
+  let delegate: Mailbox;
 
   beforeEach((done) => rmrf(TEST_DIR, done));
   beforeEach(async () => {
@@ -29,17 +29,18 @@ describe('manifest server', () => {
     await writeFile(MANIFEST_PATH, "module.exports = [{ path: 'someworld', test: 123 }];");
 
     atom = new Atom();
-    orchestrator = new Mailbox();
+    delegate = new Mailbox();
 
     actions.fork(function*() {
-      yield createManifestServer(orchestrator, {
-        atom: atom,
+      yield createManifestServer({
+        delegate,
+        atom,
         manifestPath: MANIFEST_PATH,
         port: TEST_FILE_PORT
       });
     });
 
-    await actions.receive(orchestrator, { ready: "manifest-server" });
+    await actions.receive(delegate, { status: 'ready' });
   });
 
   describe('retrieving test file manifest', () => {
@@ -69,7 +70,7 @@ describe('manifest server', () => {
   describe('updating the manifest and then reading it', () => {
     beforeEach(async () => {
       await writeFile(MANIFEST_PATH, "module.exports = [{ path: 'boo', test: 432 }];");
-      await actions.receive(orchestrator, { update: "manifest-server" });
+      await actions.receive(delegate, { event: "update" });
     });
 
     it('returns the updated manifest from the state', () => {

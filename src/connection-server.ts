@@ -6,8 +6,8 @@ import { assoc, dissoc, lensPath } from 'ramda';
 import { createSocketServer, Connection, sendData } from './ws';
 import { Atom } from './orchestrator/atom';
 
-
 interface ConnectionServerOptions {
+  delegate: Mailbox;
   atom: Atom;
   port: number;
   proxyPort: number;
@@ -17,7 +17,7 @@ interface ConnectionServerOptions {
 const agentsLens = lensPath(['agents']);
 let counter = 1;
 
-export function* createConnectionServer(mail: Mailbox, options: ConnectionServerOptions): Operation {
+export function* createConnectionServer(options: ConnectionServerOptions): Operation {
   function* handleConnection(connection: Connection): Operation {
     console.debug('[connection] connected');
 
@@ -59,6 +59,6 @@ export function* createConnectionServer(mail: Mailbox, options: ConnectionServer
     }
   }
   yield createSocketServer(options.port, handleConnection, function*() {
-    mail.send({ ready: "connection" });
+    options.delegate.send({ status: "ready" });
   });
 }

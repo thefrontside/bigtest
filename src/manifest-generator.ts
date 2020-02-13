@@ -9,6 +9,7 @@ import { promisify } from 'util';
 const { writeFile } = fs.promises;
 
 interface ManifestGeneratorOptions {
+  delegate: Mailbox;
   files: [string];
   manifestPath: string;
 };
@@ -28,7 +29,7 @@ function* writeManifest(options: ManifestGeneratorOptions) {
   yield writeFile(options.manifestPath, manifest);
 }
 
-export function* createManifestGenerator(mail: Mailbox, options: ManifestGeneratorOptions): Operation {
+export function* createManifestGenerator(options: ManifestGeneratorOptions): Operation {
   let watcher = chokidar.watch(options.files, { ignoreInitial: true });
 
   try {
@@ -40,13 +41,13 @@ export function* createManifestGenerator(mail: Mailbox, options: ManifestGenerat
     yield events.receive({ event: 'ready' });
     yield writeManifest(options);
 
-    mail.send({ ready: "manifest-generator" });
+    options.delegate.send({ status: 'ready' });
 
     while(true) {
       yield events.receive();
       yield writeManifest(options);
 
-      mail.send({ update: "manifest-generator" });
+      options.delegate.send({ event: 'update' });
     }
   } finally {
     watcher.close();

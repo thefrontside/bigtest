@@ -12,6 +12,7 @@ import { createManifestServer } from './manifest-server';
 import { Atom } from './orchestrator/atom';
 
 type OrchestratorOptions = {
+  delegate: Mailbox;
   appPort: number;
   appCommand: string;
   appArgs?: string[];
@@ -21,41 +22,52 @@ type OrchestratorOptions = {
   commandPort: number;
   connectionPort: number;
   agentPort: number;
-  delegate?: Mailbox;
   testFiles: [string];
   testManifestPath: string;
   testFilePort: number;
 }
 
 export function* createOrchestrator(options: OrchestratorOptions): Operation {
-  let atom = new Atom();
   console.log('[orchestrator] starting');
 
-  let mail = options.delegate || new Mailbox();
+  let atom = new Atom();
 
-  yield fork(createProxyServer(mail, {
+  let proxyServerDelegate = new Mailbox();
+  let commandServerDelegate = new Mailbox();
+  let connectionServerDelegate = new Mailbox();
+  let agentServerDelegate = new Mailbox();
+  let appServerDelegate = new Mailbox();
+  let manifestGeneratorDelegate = new Mailbox();
+  let manifestServerDelegate = new Mailbox();
+
+  yield fork(createProxyServer({
+    delegate: proxyServerDelegate,
     port: options.proxyPort,
     targetPort: options.appPort,
     inject: `<script src="http://localhost:${options.agentPort}/harness.js"></script>`,
   }));
 
-  yield fork(createCommandServer(mail, {
+  yield fork(createCommandServer({
+    delegate: commandServerDelegate,
     atom,
     port: options.commandPort,
   }));
 
-  yield fork(createConnectionServer(mail, {
+  yield fork(createConnectionServer({
+    delegate: connectionServerDelegate,
     atom,
     port: options.connectionPort,
     proxyPort: options.proxyPort,
     testFilePort: options.testFilePort,
   }));
 
-  yield fork(createAgentServer(mail, {
+  yield fork(createAgentServer({
+    delegate: agentServerDelegate,
     port: options.agentPort,
   }));
 
-  yield fork(createAppServer(mail, {
+  yield fork(createAppServer({
+    delegate: appServerDelegate,
     dir: options.appDir,
     command: options.appCommand,
     args: options.appArgs,
@@ -63,15 +75,18 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     port: options.appPort,
   }));
 
-  yield fork(createManifestGenerator(mail, {
+  yield fork(createManifestGenerator({
+    delegate: manifestGeneratorDelegate,
     files: options.testFiles,
     manifestPath: options.testManifestPath,
   }));
 
   // wait for manifest before starting test file server
-  yield mail.receive({ ready: "manifest-generator" });
+  yield manifestGeneratorDelegate.receive({ status: 'ready' });
+  console.debug('[orchestrator] manifest generator ready');
 
-  yield fork(createManifestServer(mail, {
+  yield fork(createManifestServer({
+    delegate: manifestServerDelegate,
     atom,
     manifestPath: options.testManifestPath,
     port: options.testFilePort,
@@ -79,22 +94,28 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield function*() {
     yield fork(function*() {
-      yield mail.receive({ ready: "proxy" });
+      yield proxyServerDelegate.receive({ status: 'ready' });
+      console.debug('[orchestrator] proxy server ready');
     });
     yield fork(function*() {
-      yield mail.receive({ ready: "command" });
+      yield commandServerDelegate.receive({ status: 'ready' });
+      console.debug('[orchestrator] command server ready');
     });
     yield fork(function*() {
-      yield mail.receive({ ready: "connection" });
+      yield connectionServerDelegate.receive({ status: 'ready' });
+      console.debug('[orchestrator] connection server ready');
     });
     yield fork(function*() {
-      yield mail.receive({ ready: "agent" });
+      yield agentServerDelegate.receive({ status: 'ready' });
+      console.debug('[orchestrator] agent server ready');
     });
     yield fork(function*() {
-      yield mail.receive({ ready: "app" });
+      yield appServerDelegate.receive({ status: 'ready' });
+      console.debug('[orchestrator] app server ready');
     });
     yield fork(function*() {
-      yield mail.receive({ ready: "manifest-server" });
+      yield manifestServerDelegate.receive({ status: 'ready' });
+      console.debug('[orchestrator] manifest server ready');
     });
   }
 
@@ -106,12 +127,10 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   console.log(`[orchestrator] launch agents via: ${agentUrl}`);
   console.log(`[orchestrator] show GraphQL dashboard via: ${commandUrl}`);
 
-  mail.send({ ready: "orchestrator" });
+  options.delegate.send({ status: 'ready' });
 
   try {
-    while(true) {
-      yield mail.receive();
-    }
+    yield;
   } finally {
     console.log("[orchestrator] shutting down!");
   }

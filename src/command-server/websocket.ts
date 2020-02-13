@@ -10,7 +10,7 @@ import { Connection, sendData } from '../ws';
 
 import { graphql } from '../command-server';
 
-export function handleMessage(mail: Mailbox, atom: Atom): (connection: Connection) => Operation {
+export function handleMessage(delegate: Mailbox, atom: Atom): (connection: Connection) => Operation {
   function* handleQuery(message: QueryMessage, connection: Connection): Operation {
     yield publishQueryResult(message, atom.get(), connection);
 
@@ -20,13 +20,13 @@ export function handleMessage(mail: Mailbox, atom: Atom): (connection: Connectio
   }
 
   function* handleMutation(message: MutationMessage, connection: Connection): Operation {
-    let result = yield graphql(message.mutation, mail, atom.get());
+    let result = yield graphql(message.mutation, delegate, atom.get());
     result.responseId = message.responseId;
     yield sendData(connection, JSON.stringify(result));
   }
 
   function* publishQueryResult(message: QueryMessage, state: OrchestratorState, connection: Connection): Operation {
-    let result = yield graphql(message.query, mail, state);
+    let result = yield graphql(message.query, delegate, state);
     result.responseId = message.responseId;
     yield sendData(connection, JSON.stringify(result));
   }

@@ -13,12 +13,13 @@ import { OrchestratorState } from './orchestrator/state';
 import { handleMessage } from './command-server/websocket';
 
 interface CommandServerOptions {
+  delegate: Mailbox;
   atom: Atom;
   port: number;
 };
 
-export function* createCommandServer(mail: Mailbox, options: CommandServerOptions): Operation {
-  let app = yield createApp(mail, options.atom);
+export function* createCommandServer(options: CommandServerOptions): Operation {
+  let app = yield createApp(options.delegate, options.atom);
   let server = app.listen(options.port);
 
   yield fork(function* commandServerErrorListener() {
@@ -29,15 +30,15 @@ export function* createCommandServer(mail: Mailbox, options: CommandServerOption
   try {
     yield on(server, 'listening');
 
-    mail.send({ ready: "command" });
+    options.delegate.send({ status: "ready" });
 
-    yield listenWS(server, handleMessage(mail, options.atom));
+    yield listenWS(server, handleMessage(options.delegate, options.atom));
   } finally {
     server.close();
   }
 }
 
-function createApp(mail: Mailbox, atom: Atom): Operation {
+function createApp(delegate: Mailbox, atom: Atom): Operation {
   return ({ resume, context: { parent }}) => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,7 +46,7 @@ function createApp(mail: Mailbox, atom: Atom): Operation {
 
     let app = express()
       .use(graphqlHTTP(() => context.spawn(function* getOptionsData() {
-        return { ...graphqlOptions(mail, atom.get()), graphiql: true};
+        return { ...graphqlOptions(delegate, atom.get()), graphiql: true};
       })));
     resume(app);
   }
@@ -55,8 +56,8 @@ function createApp(mail: Mailbox, atom: Atom): Operation {
  * Run the query or mutation in `source` against the orchestrator
  * state contained in `state`
  */
-export function graphql(source: string, mail: Mailbox, state: OrchestratorState): Operation {
-  return executeGraphql({...graphqlOptions(mail, state), source });
+export function graphql(source: string, delegate: Mailbox, state: OrchestratorState): Operation {
+  return executeGraphql({...graphqlOptions(delegate, state), source });
 }
 
 let testIdCounter = 1;
@@ -66,7 +67,7 @@ let testIdCounter = 1;
  * because the express graphql server calls the `graphql` function for
  * you based on the .
  */
-export function graphqlOptions(mail: Mailbox, state: OrchestratorState) {
+export function graphqlOptions(delegate: Mailbox, state: OrchestratorState) {
   return {
     schema,
     rootValue: {
@@ -75,7 +76,7 @@ export function graphqlOptions(mail: Mailbox, state: OrchestratorState) {
       manifest: () => map(({ path, test}) => ({ path, test: JSON.stringify(serializeTest(test))}), state.manifest),
       run: () => {
         let id = `test-run-${testIdCounter++}`;
-        mail.send({ type: "run", id });
+        delegate.send({ type: "run", id });
         return id;
       }
     }
