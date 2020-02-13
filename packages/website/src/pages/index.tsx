@@ -28,8 +28,8 @@ const IndexPage = (props) => (
             not the other way around
           </H1>
           <Text>
-            BigTest is a toolkit that enables you to test real-world experiences on your app rapidly, in every
-            browser and device, regardless of your JS framework of choice.
+            BigTest is a framework that enables you to test real-world experiences on your app rapidly, in every
+            browser and device, regardless of which framework you use.
           </Text>
           <Box marginTop={['small', 'small', 'small', 'xxLarge']}>
             <H3>Get notified about BigTest progress and know when it's ready:</H3>
@@ -84,11 +84,7 @@ const IndexPage = (props) => (
             time-intensive in both setup and run time.
           </Text>
           <Text>
-            BigTest cuts through the noise with a process we call <i>convergences</i>. Convergences are immutable,
-            reusable, and composable assertions that allow you to know immediately when the desired state is
-            achieved. In other words, BigTest checks the DOM every 10ms to verify that an assertion is true, so
-            tests pass at the soonest possible point. This adds up to a test suite that outperforms all
-            alternatives.
+          BigTest brings a new stateful architecture, along with several paradigm shifts that allow tests to be faster to write, execute, and maintain. 
           </Text>
         </Box>
         <Box width={[1, 1 / 2, 1 / 3]}>
@@ -97,7 +93,7 @@ const IndexPage = (props) => (
       </Flex>
     </Section>
     <Section>
-      <Flex>
+      <Flex flexWrap='wrap'>
         <Box width={[1, 1 / 2, 2 / 3]} paddingRight={[0, 'medium', 'xxLarge']}>
           <H2 color="secondary">BigTest makes your tests reusable</H2>
           <Text>

@@ -18,9 +18,7 @@ const DidYouKnow: React.FC = () => {
     <SideBox>
       <H3>Flexible &amp; framework agnostic</H3>
       <Text>
-        BigTest is a toolkit of several packages that can be used separately or together. The result is open source
-        software that's flexible to fit your application, regardless of framework (React, Vue, Ember, Angular,
-        etc.), test framework (Mocha, Jasmine, etc.), browser, or device.
+        BigTest is a powerful framework planned and architectured to be extensible. We provide APIs that allow teams to build on top of BigTest and integrate tests more deeply into their development processes.
       </Text>
     </SideBox>
   );
