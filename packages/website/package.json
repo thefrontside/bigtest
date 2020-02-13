@@ -26,7 +26,11 @@
     "react-helmet": "^5.2.1",
     "styled-components": "^5.0.0",
     "styled-reset-advanced": "^1.0.3",
-    "styled-system": "^5.1.4"
+    "styled-system": "^5.1.4",
+    "stylelint": "^13.1.0",
+    "stylelint-config-recommended": "^3.0.0",
+    "stylelint-config-styled-components": "^0.1.1",
+    "stylelint-processor-styled-components": "^1.9.0"
   },
   "devDependencies": {
     "@types/node": "^13.5.2",
@@ -44,7 +48,10 @@
   "scripts": {
     "build": "gatsby build",
     "develop": "gatsby develop",
-    "format": "prettier --write \"**/*.{json,ts,tsx}\"",
+    "format:ts": "prettier --write '**/*.{json,ts,tsx}'",
+    "lint:ts": "prettier --check '**/*.{json,ts,tsx}'",
+    "lint:styles": "stylelint './src/**/*.{ts,tsx}'",
+    "lint": "yarn lint:ts; yarn lint:styles",
     "start": "npm run develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",

@@ -57,12 +57,7 @@ const Subscribe: React.FC<SubscribeForm> = props => {
   const email_ID = `email${props.id}`;
 
   return (
-    <form
-      name="newsletter"
-      method="post"
-      style={{ display: 'flex' }}
-      onSubmit={handleSubmit}
-    >
+    <form name="newsletter" method="post" style={{ display: 'flex' }} onSubmit={handleSubmit}>
       <input type="hidden" name="form-name" value="newsletter" />
       <div hidden>
         <label>

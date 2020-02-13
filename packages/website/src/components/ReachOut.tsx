@@ -20,27 +20,17 @@ const ReachOut: React.FC = () => {
       <ReachTitle>Reach out!</ReachTitle>
       <ReachLink
         icon={twitter_icon}
-        href='https://twitter.com/thefrontside'
-        title='Follow Twitter'
-        target='_blank'
+        href="https://twitter.com/thefrontside"
+        title="Follow Twitter"
+        target="_blank"
       >
-          @thefrontside #bigTest
+        @thefrontside #bigTest
       </ReachLink>
-      <ReachLink
-        icon={email_icon}
-        href='mailto:bigtest@frontside.io'
-        title='Email Us'
-        target='_blank'
-      >
-          bigtest@frontside.io
+      <ReachLink icon={email_icon} href="mailto:bigtest@frontside.io" title="Email Us" target="_blank">
+        bigtest@frontside.io
       </ReachLink>
-      <ReachLink
-        icon={discord_icon}
-        href='https://discord.gg/W7r24Aa'
-        title='Discord community'
-        target='_blank'
-      >
-          Join our Discord!
+      <ReachLink icon={discord_icon} href="https://discord.gg/W7r24Aa" title="Discord community" target="_blank">
+        Join our Discord!
       </ReachLink>
     </>
   );

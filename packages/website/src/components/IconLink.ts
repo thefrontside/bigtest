@@ -34,7 +34,6 @@ export const LinkWithIcon = styled.a<IconLinkProps>`
     margin-right: ${({ theme }) => theme.space.small};
     margin-top: 6px;
   }
-  
 `;
 
 export default IconLink;
