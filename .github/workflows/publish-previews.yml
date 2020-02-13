@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Publish PR Preview
-      uses: thefrontside/actions/publish-pr-preview@mk/te
+      uses: minkimcello/actions/publish-pr-preview@mk/te
       with:
         ignore: packages/website
       env:
