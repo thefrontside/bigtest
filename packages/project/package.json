@@ -7,12 +7,15 @@
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.io>",
   "license": "MIT",
-  "files": ["dist/*", "README.md"],
+  "files": [
+    "dist/*",
+    "README.md"
+  ],
   "scripts": {
     "lint": "eslint 'src/**/*.ts' 'bin/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "build": "echo 'to build, run script `prepack` instead'",
-    "prepack": "npm_config_unsafe_perm=true microbundle --output dist --format modern,es,umd"
+    "prepublishOnly": "npm_config_unsafe_perm=true microbundle --output dist --format modern,es,umd"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.1",

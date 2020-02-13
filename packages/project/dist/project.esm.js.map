@@ -1,0 +1,1 @@
+{"version":3,"file":"project.esm.js","sources":["../src/index.ts"],"sourcesContent":["import { Operation } from 'effection';\n\nexport class Project {\n  static *find(): Operation {\n    return new Project();\n  }\n}\n"],"names":["Project","[object Object]"],"mappings":"MAEaA,EACXC,cACE,WAAWD"}
