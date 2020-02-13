@@ -6,7 +6,6 @@ import { H4 } from './Heading';
 import Box from './Box';
 import Section from './Section';
 
-
 interface GreetLegacyProps {
   location: { search: string };
 }
@@ -23,10 +22,10 @@ const GreetLegacyLink = styled.a`
   border-bottom: 1px dotted ${({ theme }) => theme.colors.bodyCopy};
 `;
 
-
 const GreetLegacyUsers: React.FC<GreetLegacyProps> = () => {
-  const archived_param = new URLSearchParams(window.location.search);
-  const from_legacy = archived_param.get('archived-page');
+  // const archived_param = new URLSearchParams(window.location.search);
+  // const from_legacy = archived_param.get('archived-page');
+  const from_legacy = true;
   if (from_legacy) {
     return (
       <Section>
