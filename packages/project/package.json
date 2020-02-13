@@ -15,7 +15,7 @@
     "lint": "eslint 'src/**/*.ts' 'bin/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "build": "echo 'to build, run script `prepack` instead'",
-    "prepublishOnly": "npm_config_unsafe_perm=true microbundle --output dist --format modern,es,umd"
+    "prepare": "microbundle --output dist --format modern,es,umd"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.1",
