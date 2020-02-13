@@ -10,9 +10,10 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Publish PR Preview
-      uses: minkimcello/actions/publish-pr-preview@mk/te
+      uses: thefrontside/actions/publish-pr-preview@v1.2
       with:
         ignore: packages/website
+        npm_publish: yarn publish
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.FRONTSIDEJACK_NPM_TOKEN }}
