@@ -16,3 +16,9 @@ jobs:
       - run: yarn
       - run: yarn build
       - run: yarn test --browsers=ChromeHeadless
+  tmate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v1
