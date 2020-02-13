@@ -17,7 +17,7 @@ import WhyBigTest from '../components/WhyBigTest';
 
 import { reusable, tests_intro, user_experience } from '../images';
 
-const IndexPage = () => (
+const IndexPage = (props) => (
   <Layout>
     <Hero>
       <Flex alignItems="center" flexWrap="wrap">
@@ -45,8 +45,8 @@ const IndexPage = () => (
         />
       </Flex>
     </Hero>
-    <GreetLegacyUsers />
-    {/* <GreetLegacyUsers location={props.location} /> */}
+    {/* <GreetLegacyUsers /> */}
+    <GreetLegacyUsers location={props.location} />
     <WhyBigTest />
     <Section>
       <Flex flexWrap="wrap">
