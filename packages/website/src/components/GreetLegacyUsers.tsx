@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import Text from './Text';
@@ -25,8 +25,16 @@ const GreetLegacyLink = styled.a`
 const GreetLegacyUsers: React.FC<GreetLegacyProps> = () => {
   // const archived_param = new URLSearchParams(window.location.search);
   // const from_legacy = archived_param.get('archived-page');
-  const from_legacy = true;
-  if (from_legacy) {
+
+  const [legacy, setLegacy] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== `undefined`) {
+      setLegacy(true);
+    }
+  })
+
+  if (legacy) {
     return (
       <Section>
         <GreetLegacyBox>
