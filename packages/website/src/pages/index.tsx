@@ -46,7 +46,7 @@ const IndexPage = (props) => (
       </Flex>
     </Hero>
     {/* <GreetLegacyUsers /> */}
-    <GreetLegacyUsers location={props.location} />
+    <GreetLegacyUsers />
     <WhyBigTest />
     <Section>
       <Flex flexWrap="wrap">
