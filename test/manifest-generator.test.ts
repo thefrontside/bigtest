@@ -6,13 +6,13 @@ import * as rmrf from 'rimraf';
 
 import { actions } from './helpers';
 
-import { createTestFileWatcher } from '../src/test-file-watcher';
+import { createManifestGenerator } from '../src/manifest-generator';
 import { Mailbox } from '../src/effection/events';
 
 const { mkdir, writeFile, unlink } = fs.promises;
 
-const TEST_DIR = "./tmp/test-file-watcher"
-const MANIFEST_PATH = "./tmp/test-file-watcher/manifest.js"
+const TEST_DIR = "./tmp/manifest-generator"
+const MANIFEST_PATH = "./tmp/manifest-generator/manifest.js"
 
 async function loadManifest() {
   let fullPath = path.resolve(MANIFEST_PATH);
@@ -20,7 +20,7 @@ async function loadManifest() {
   return await import(fullPath);
 }
 
-describe('test-file-watcher', () => {
+describe('manifest-generator', () => {
   let watcher, mail;
 
   beforeEach((done) => rmrf(TEST_DIR, done));
@@ -31,12 +31,12 @@ describe('test-file-watcher', () => {
 
     mail = new Mailbox();
 
-    watcher = actions.fork(createTestFileWatcher(mail, {
+    watcher = actions.fork(createManifestGenerator(mail, {
       files: [TEST_DIR + "/*.t.{js,ts}"],
       manifestPath: MANIFEST_PATH,
     }));
 
-    await actions.receive(mail, { ready: "manifest" });
+    await actions.receive(mail, { ready: "manifest-generator" });
   });
 
   describe('starting', () => {
@@ -49,8 +49,8 @@ describe('test-file-watcher', () => {
     it('writes the manifest', () => {
       expect(manifest.length).toEqual(2)
 
-      expect(manifest[0].path).toEqual('./tmp/test-file-watcher/test1.t.js');
-      expect(manifest[1].path).toEqual('./tmp/test-file-watcher/test2.t.js');
+      expect(manifest[0].path).toEqual('./tmp/manifest-generator/test1.t.js');
+      expect(manifest[1].path).toEqual('./tmp/manifest-generator/test2.t.js');
 
       expect(manifest[0].test.hello).toEqual('world');
       expect(manifest[1].test.monkey).toEqual('foo');
@@ -62,16 +62,16 @@ describe('test-file-watcher', () => {
 
     beforeEach(async () => {
       await writeFile(TEST_DIR + "/test3.t.js", "module.exports = { default: { third: 'test' } };");
-      await actions.receive(mail, { change: "manifest" });
+      await actions.receive(mail, { update: "manifest-generator" });
       manifest = await loadManifest();
     });
 
     it('rewrites the manifest', () => {
       expect(manifest.length).toEqual(3)
 
-      expect(manifest[0].path).toEqual('./tmp/test-file-watcher/test1.t.js');
-      expect(manifest[1].path).toEqual('./tmp/test-file-watcher/test2.t.js');
-      expect(manifest[2].path).toEqual('./tmp/test-file-watcher/test3.t.js');
+      expect(manifest[0].path).toEqual('./tmp/manifest-generator/test1.t.js');
+      expect(manifest[1].path).toEqual('./tmp/manifest-generator/test2.t.js');
+      expect(manifest[2].path).toEqual('./tmp/manifest-generator/test3.t.js');
 
       expect(manifest[0].test.hello).toEqual('world');
       expect(manifest[1].test.monkey).toEqual('foo');
@@ -84,13 +84,13 @@ describe('test-file-watcher', () => {
 
     beforeEach(async () => {
       await unlink(TEST_DIR + "/test2.t.js");
-      await actions.receive(mail, { change: "manifest" });
+      await actions.receive(mail, { update: "manifest-generator" });
       manifest = await loadManifest();
     });
 
     it('rewrites the manifest', () => {
       expect(manifest.length).toEqual(1)
-      expect(manifest[0].path).toEqual('./tmp/test-file-watcher/test1.t.js');
+      expect(manifest[0].path).toEqual('./tmp/manifest-generator/test1.t.js');
       expect(manifest[0].test.hello).toEqual('world');
     });
   });

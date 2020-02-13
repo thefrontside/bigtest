@@ -6,7 +6,7 @@ import { assoc } from 'ramda';
 
 import { Atom } from './orchestrator/atom';
 
-interface TestFileServerOptions {
+interface ManifestServerOptions {
   atom: Atom;
   manifestPath: string;
   port: number;
@@ -21,7 +21,7 @@ function* loadManifest(atom: Atom, outDir: string) {
   atom.update(assoc('manifest', manifest));
 }
 
-export function* createTestFileServer(mail: Mailbox, options: TestFileServerOptions): Operation {
+export function* createManifestServer(mail: Mailbox, options: ManifestServerOptions): Operation {
   // TODO: @precompile this should use node rather than ts-node when running as a compiled package
   let child: ChildProcess = yield forkProcess(
     './bin/parcel-server.ts',
@@ -40,7 +40,7 @@ export function* createTestFileServer(mail: Mailbox, options: TestFileServerOpti
   console.debug("[test files] test files initialized");
 
   yield fork(loadManifest(options.atom, outDir));
-  mail.send({ ready: "test-files" });
+  mail.send({ ready: "manifest-server" });
 
   while(true) {
     yield messages.receive({ type: "update" });
@@ -48,6 +48,6 @@ export function* createTestFileServer(mail: Mailbox, options: TestFileServerOpti
     console.debug("[test files] test files updated");
 
     yield fork(loadManifest(options.atom, outDir));
-    mail.send({ update: "test-files" });
+    mail.send({ update: "manifest-server" });
   }
 }

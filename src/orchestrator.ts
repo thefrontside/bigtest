@@ -6,8 +6,8 @@ import { createCommandServer } from './command-server';
 import { createConnectionServer } from './connection-server';
 import { createAgentServer } from './agent-server';
 import { createAppServer } from './app-server';
-import { createTestFileWatcher } from './test-file-watcher';
-import { createTestFileServer } from './test-file-server';
+import { createManifestGenerator } from './manifest-generator';
+import { createManifestServer } from './manifest-server';
 
 import { Atom } from './orchestrator/atom';
 
@@ -63,15 +63,15 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     port: options.appPort,
   }));
 
-  yield fork(createTestFileWatcher(mail, {
+  yield fork(createManifestGenerator(mail, {
     files: options.testFiles,
     manifestPath: options.testManifestPath,
   }));
 
   // wait for manifest before starting test file server
-  yield mail.receive({ ready: "manifest" });
+  yield mail.receive({ ready: "manifest-generator" });
 
-  yield fork(createTestFileServer(mail, {
+  yield fork(createManifestServer(mail, {
     atom,
     manifestPath: options.testManifestPath,
     port: options.testFilePort,
@@ -94,7 +94,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       yield mail.receive({ ready: "app" });
     });
     yield fork(function*() {
-      yield mail.receive({ ready: "test-files" });
+      yield mail.receive({ ready: "manifest-server" });
     });
   }
 
