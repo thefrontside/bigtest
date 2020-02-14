@@ -45,7 +45,6 @@ const IndexPage = (props) => (
         />
       </Flex>
     </Hero>
-    {/* <GreetLegacyUsers /> */}
     <GreetLegacyUsers />
     <WhyBigTest />
     <Section>
@@ -84,7 +83,7 @@ const IndexPage = (props) => (
             time-intensive in both setup and run time.
           </Text>
           <Text>
-          BigTest brings a new stateful architecture, along with several paradigm shifts that allow tests to be faster to write, execute, and maintain. 
+            BigTest brings a new stateful architecture, along with several paradigm shifts that allow tests to be faster to write, execute, and maintain.
           </Text>
         </Box>
         <Box width={[1, 1 / 2, 1 / 3]}>

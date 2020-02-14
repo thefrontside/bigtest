@@ -43,7 +43,7 @@ const GreetLegacyUsers: React.FC<GreetLegacyProps> = () => {
             <GreetLegacyLink href="mailto:bigtest@frontside.io">bigtest@frontside.io</GreetLegacyLink>.
             </Text>
           <Text>
-            You can still access the old website here: <GreetLegacyLink href="https://hello.com">https://v1.bigtestjs.io</GreetLegacyLink>
+            You can still access the old website here: <GreetLegacyLink href="https://v1.bigtestjs.io">https://v1.bigtestjs.io</GreetLegacyLink>
           </Text>
         </GreetLegacyBox>
       </Section>
