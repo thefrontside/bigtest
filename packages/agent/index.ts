@@ -5,7 +5,11 @@ import { Server } from 'http';
 import { AddressInfo } from 'net';
 
 export class AgentServer {
-  private constructor(public agentAppURL: string, private http?: Server) {}
+  private constructor(public agentAppURL: string, private connectBackURL?: string, private http?: Server) {}
+
+  get connectURL() {
+    return `${this.agentAppURL}/?connectTo=${this.connectBackURL}`;
+  }
 
   get harnessScriptURL() {
     return `${this.agentAppURL}/harness.js`;
@@ -31,13 +35,15 @@ export class AgentServer {
     let context: Context = yield parent;
     context['ensure'](() => server.close());
 
-    return new AgentServer(`http://localhost:${address.port}`, server);
+    return new AgentServer(`http://localhost:${address.port}`, connectBackURL, server);
   }
 
 
 
   static *external(agentServerURL: string, connectBackURL: string): Operation {
-    return new AgentServer(`${agentServerURL}/?connectTo=${connectBackURL}`);
+    let url = new URL(agentServerURL);
+
+    return new AgentServer(agentServerURL, connectBackURL);
   }
 
   join(): Operation {

@@ -18,7 +18,7 @@
     "start": "ts-node bin/start.ts",
     "build": "echo 'build'",
     "bundle": "parcel watch --out-dir dist/app app/index.html",
-    "prepack": "microbundle --entry index.ts --output dist --format modern,es,umd && parcel build --out-dir dist/app app/index.html"
+    "prepack": "microbundle --entry index.ts --output dist --format modern,es,umd && parcel build --out-dir dist/app app/index.html app/harness.ts"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.1",

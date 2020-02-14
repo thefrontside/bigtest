@@ -78,7 +78,7 @@ describe("@bigtest/agent", () => {
     });
 
     it('appends the pre-configured connect back url', () => {
-      expect(server.agentAppURL).toEqual('http://host.com/?connectTo=ws://localhost:5000');
+      expect(server.connectURL).toEqual('http://host.com/?connectTo=ws://localhost:5000');
     });
   });
 
