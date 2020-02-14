@@ -4,6 +4,7 @@
   "description": "Agent for connecting test environments (browsers) to BigTest",
   "main": "dist/agent.umd.js",
   "module": "dist/agent.esm.js",
+  "typings": "dist/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.io>",
   "license": "MIT",
