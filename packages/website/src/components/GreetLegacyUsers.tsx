@@ -38,8 +38,7 @@ const GreetLegacyUsers: React.FC<GreetLegacyProps> = () => {
         <GreetLegacyBox>
           <H4 color={'bodyCopy'}>Coming from the old BigTest Site?</H4>
           <Text>
-            Welcome to the new BigTest! We have made major changes in the project to make BigTest the ultimate
-              testing framework. Take a look around, and reach out to us if you have any questions{' '}
+            Welcome to the new BigTest! We are making major changes to the project to make BigTest the ultimate testing framework. Take a look around, and reach out to us if you have any questions{' '}
             <GreetLegacyLink href="mailto:bigtest@frontside.io">bigtest@frontside.io</GreetLegacyLink>.
             </Text>
           <Text>
