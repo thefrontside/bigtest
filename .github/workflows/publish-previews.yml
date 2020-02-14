@@ -12,6 +12,7 @@ jobs:
     - name: Publish PR Preview
       uses: thefrontside/actions/publish-pr-preview@v1.2
       with:
+        npm_publish: yarn publish
         ignore: packages/website
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
