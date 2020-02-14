@@ -25,6 +25,7 @@ const Layout: React.FC = ({ children }) => {
             <html lang="en" />
             <title>{data.site.siteMetadata.title}</title>
             <meta name="description" content={data.site.siteMetadata.description} />
+            <link rel="stylesheet" href="https://use.typekit.net/gyc5wys.css"></link>
           </Helmet>
           <ThemeProvider>
             <Header />
