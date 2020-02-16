@@ -8,12 +8,12 @@ import { promisify } from 'util';
 
 const { writeFile } = fs.promises;
 
-interface TestFileWatcherOptions {
+interface ManifestGeneratorOptions {
   files: [string];
   manifestPath: string;
 };
 
-function* writeManifest(options: TestFileWatcherOptions) {
+function* writeManifest(options: ManifestGeneratorOptions) {
   let files = yield Promise.all(options.files.map((pattern) => promisify(glob)(pattern))).then((l) => l.flat());
 
   let manifest = "module.exports = [\n";
@@ -28,7 +28,7 @@ function* writeManifest(options: TestFileWatcherOptions) {
   yield writeFile(options.manifestPath, manifest);
 }
 
-export function* createTestFileWatcher(mail: Mailbox, options: TestFileWatcherOptions): Operation {
+export function* createManifestGenerator(mail: Mailbox, options: ManifestGeneratorOptions): Operation {
   let watcher = chokidar.watch(options.files, { ignoreInitial: true });
 
   try {
@@ -40,13 +40,13 @@ export function* createTestFileWatcher(mail: Mailbox, options: TestFileWatcherOp
     yield events.receive({ event: 'ready' });
     yield writeManifest(options);
 
-    mail.send({ ready: "manifest" });
+    mail.send({ ready: "manifest-generator" });
 
     while(true) {
       yield events.receive();
       yield writeManifest(options);
 
-      mail.send({ change: "manifest" });
+      mail.send({ update: "manifest-generator" });
     }
   } finally {
     watcher.close();

@@ -8,18 +8,18 @@ import { Context } from 'effection';
 import { Mailbox } from '@effection/events';
 
 import { actions } from './helpers';
-import { createTestFileServer } from '../src/test-file-server';
+import { createManifestServer } from '../src/manifest-server';
 import { OrchestratorState } from '../src/orchestrator/state';
 import { Atom } from '../src/orchestrator/atom';
 
-const TEST_DIR = "./tmp/test-file-server"
-const MANIFEST_PATH = "./tmp/test-file-server/manifest.js"
+const TEST_DIR = "./tmp/manifest-server"
+const MANIFEST_PATH = "./tmp/manifest-server/manifest.js"
 
 const { mkdir, writeFile } = fs.promises;
 
 let TEST_FILE_PORT = 24200;
 
-describe('test file server', () => {
+describe('manifest server', () => {
   let atom: Atom;
   let orchestrator: Mailbox;
 
@@ -32,14 +32,14 @@ describe('test file server', () => {
     orchestrator = new Mailbox();
 
     actions.fork(function*() {
-      yield createTestFileServer(orchestrator, {
+      yield createManifestServer(orchestrator, {
         atom: atom,
         manifestPath: MANIFEST_PATH,
         port: TEST_FILE_PORT
       });
     });
 
-    await actions.receive(orchestrator, { ready: "test-files" });
+    await actions.receive(orchestrator, { ready: "manifest-server" });
   });
 
   describe('retrieving test file manifest', () => {
@@ -69,7 +69,7 @@ describe('test file server', () => {
   describe('updating the manifest and then reading it', () => {
     beforeEach(async () => {
       await writeFile(MANIFEST_PATH, "module.exports = [{ path: 'boo', test: 432 }];");
-      await actions.receive(orchestrator, { update: "test-files" });
+      await actions.receive(orchestrator, { update: "manifest-server" });
     });
 
     it('returns the updated manifest from the state', () => {
