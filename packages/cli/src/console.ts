@@ -2,7 +2,9 @@ import { Operation, Controller, Context } from 'effection';
 
 export const $console = {
   log(message: string): Operation {
-    return ctl => findHandler(ctl.context).log(message)(ctl);
+    return ctl => {
+      findHandler(ctl.context).log(message)(ctl);
+    }
   },
 
   use(handler: ConsoleHandler): Operation {

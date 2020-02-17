@@ -4,5 +4,5 @@ import { main } from './main';
 
 main(function* boot() {
   yield $console.useStdio();
-  yield CLI(process.argv)
+  yield CLI(process.argv.slice(2));
 });
