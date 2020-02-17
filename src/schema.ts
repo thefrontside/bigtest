@@ -6,7 +6,7 @@ scalar TestRunId
 type Query {
   echo(text: String!): String
   agents: [Agent!]!
-  manifest: [ManifestEntry!]!
+  manifest: Manifest!
 }
 
 type Mutation {
@@ -42,10 +42,28 @@ type Engine {
   version: String!
 }
 
-type ManifestEntry {
-  path: String!
-  test: Test!
+type Manifest {
+  url: String!
+  sources: [String!]!
+  suite: Test!
 }
 
-scalar Test
+type Test {
+  id: String!
+  path: [String!]!
+  description: String!
+  steps: [Step!]!
+  assertions: [Assertion!]!
+  children: [Test!]!
+}
+
+type Step {
+  path: [String!]!
+  description: String!
+}
+
+type Assertion {
+  path: [String!]!
+  description: String!
+}
 `);

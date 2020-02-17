@@ -6,7 +6,7 @@ import { graphql as executeGraphql } from 'graphql';
 
 import { listenWS } from './ws';
 import { schema } from './schema';
-import { Test, SerializableTest } from './test';
+import { TestIndex  } from './test';
 import { Atom } from './orchestrator/atom';
 import { OrchestratorState } from './orchestrator/state';
 
@@ -73,7 +73,11 @@ export function graphqlOptions(delegate: Mailbox, state: OrchestratorState) {
     rootValue: {
       echo: ({text}) => text,
       agents: () => Object.values(state.agents),
-      manifest: () => map(({ path, test}) => ({ path, test: JSON.stringify(serializeTest(test))}), state.manifest),
+      manifest: {
+        url: state.manifest.url,
+        sources: map(({ path }) => path, state.manifest.entries),
+        suite: TestIndex.fromManifest(state.manifest)
+      },
       run: () => {
         let id = `test-run-${testIdCounter++}`;
         delegate.send({ type: "run", id });
@@ -81,16 +85,6 @@ export function graphqlOptions(delegate: Mailbox, state: OrchestratorState) {
       }
     }
   }
-}
-
-function serializeTest(test: Test): SerializableTest {
-  let { description, children, steps, assertions } = test;
-  return {
-    description,
-    steps: [...map(({ description }) => ({ description}), steps)],
-    assertions: [...map(({ description }) => ({ description }), assertions)],
-    children: [...map(serializeTest, children)]
-  };
 }
 
 function* map<Input, Output>(fn: ((input: Input) => Output), inputs: Iterable<Input>): Iterable<Output> {

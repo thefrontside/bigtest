@@ -17,9 +17,12 @@ function* loadManifest(atom: Atom, outDir: string) {
   let fullPath = path.resolve(outDir, 'manifest.js');
 
   delete require.cache[fullPath];
-  let manifest = yield import(fullPath);
+  let entries = yield import(fullPath);
 
-  atom.update(assoc('manifest', manifest));
+  atom.update(assoc('manifest', {
+    url: 'http://bigtestmanifest.com', //change me (obvs)
+    entries: entries
+  }));
 }
 
 export function* createManifestServer(options: ManifestServerOptions): Operation {

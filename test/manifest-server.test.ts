@@ -62,7 +62,7 @@ describe('manifest server', () => {
 
   describe('reading manifest from state on start', () => {
     it('returns the manifest from the state', () => {
-      let { manifest: [ first ] } = atom.get();
+      let { manifest: { entries: [ first ] } }= atom.get();
       expect(first).toEqual({ path: 'someworld', test: 123 });
     });
   });
@@ -74,7 +74,7 @@ describe('manifest server', () => {
     });
 
     it('returns the updated manifest from the state', () => {
-      expect(atom.get().manifest[0]).toEqual({ path: 'boo', test: 432 });
+      expect(atom.get().manifest.entries).toEqual([{ path: 'boo', test: 432 }]);
     });
   });
 });
