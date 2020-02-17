@@ -32,9 +32,9 @@ const Item = styled.li<ItemProp>`
   }
 `;
 
-const WhyBigTest: React.FC = () => (
+const WhyBigTest: React.FC<{ title?: string }> = ({ title }) => (
   <Section>
-    <H2 color="secondary">Why BigTest?</H2>
+    <H2 color="secondary">{title ? title : 'Why BigTest?'}</H2>
     <List>
       <Item largeOrder="0">
         <H4>Seriously fast</H4>

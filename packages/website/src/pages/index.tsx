@@ -17,7 +17,7 @@ import WhyBigTest from '../components/WhyBigTest';
 
 import { reusable, tests_intro, user_experience } from '../images';
 
-const IndexPage = (props) => (
+const IndexPage = props => (
   <Layout>
     <Hero>
       <Flex alignItems="center" flexWrap="wrap">
@@ -83,7 +83,8 @@ const IndexPage = (props) => (
             time-intensive in both setup and run time.
           </Text>
           <Text>
-            BigTest brings a new stateful architecture, along with several paradigm shifts that allow tests to be faster to write, execute, and maintain.
+            BigTest brings a new stateful architecture, along with several paradigm shifts that allow tests to be
+            faster to write, execute, and maintain.
           </Text>
         </Box>
         <Box width={[1, 1 / 2, 1 / 3]}>
@@ -92,7 +93,7 @@ const IndexPage = (props) => (
       </Flex>
     </Section>
     <Section>
-      <Flex flexWrap='wrap'>
+      <Flex flexWrap="wrap">
         <Box width={[1, 1 / 2, 2 / 3]} paddingRight={[0, 'medium', 'xxLarge']}>
           <H2 color="secondary">BigTest makes your tests reusable</H2>
           <Text>
@@ -129,7 +130,6 @@ const IndexPage = (props) => (
         </Box>
       </Flex>
     </Hero>
-
   </Layout>
 );
 
