@@ -1,3 +1,0 @@
---serve "yarn start"
---serve-url "http://localhost:1234"
---adapter mocha
