@@ -12,9 +12,9 @@
     "README.md"
   ],
   "scripts": {
-    "lint": "eslint 'cli.ts' 'test/**/*.ts'",
+    "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "start": "ts-node cli.ts",
+    "start": "ts-node index.ts",
     "build": "echo 'build'",
     "prepack": "tsc --project tsconfig.dist.json --outdir dist --module commonjs"
   },
