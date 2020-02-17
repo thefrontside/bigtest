@@ -39,6 +39,7 @@
     "@types/styled-components": "^4.4.2",
     "@types/styled-system": "^5.1.5",
     "prettier": "^1.19.1",
+    "typedoc": "^0.16.9",
     "typescript": "^3.7.5"
   },
   "keywords": [

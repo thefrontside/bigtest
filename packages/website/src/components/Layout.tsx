@@ -6,7 +6,7 @@ import ThemeProvider from '../theme';
 import Header from './Header';
 import Footer from './Footer';
 
-const Layout: React.FC = ({ children }) => {
+const Layout = ({ children }) => {
   return (
     <StaticQuery
       query={graphql`
