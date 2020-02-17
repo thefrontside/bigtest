@@ -18,6 +18,9 @@
     "build": "echo 'build'",
     "prepack": "tsc --project tsconfig.dist.json --outdir dist --module commonjs"
   },
+  "bin": {
+    "bigtest": "./bin/bigtest"
+  },
   "devDependencies": {
     "@types/mocha": "^7.0.1",
     "@types/yargs": "^15.0.3",
