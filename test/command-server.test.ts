@@ -204,14 +204,6 @@ manifest {
           }
         }
       })
-      // let [first, second]: Array<> = result.data.manifest.map(m => JSON.parse(m.test));
-
-      // expect(first.description).toEqual('First Test');
-      // expect(first.steps).toEqual([ { description: "Do the thing" }]);
-      // expect(first.children).toMatchObject([ { description: "Son of First Test" }]);
-      // expect(first.assertions).toMatchObject([ { description: "It did the thing" }]);
-
-      // expect(second.description).toEqual('Second Test');
     });
   });
 
