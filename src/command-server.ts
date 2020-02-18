@@ -1,6 +1,6 @@
 import { Operation, fork } from 'effection';
 import { on, Mailbox } from '@effection/events';
-import * as express from 'express';
+import { express, Express } from '@effection/express';
 import * as graphqlHTTP from 'express-graphql';
 import { graphql as executeGraphql } from 'graphql';
 
@@ -18,35 +18,26 @@ interface CommandServerOptions {
 };
 
 export function* createCommandServer(options: CommandServerOptions): Operation {
-  let app = yield createApp(options.delegate, options.atom);
-  let server = app.listen(options.port);
+  let app = express();
 
-  yield fork(function* commandServerErrorListener() {
-    let [error]: [Error] = yield on(server, 'error');
-    throw error;
-  });
+  yield useGraphqlMiddleware(app, options);
 
-  try {
-    yield on(server, 'listening');
+  let server = yield app.listen(options.port);
 
-    options.delegate.send({ status: "ready" });
+  options.delegate.send({ status: "ready" });
 
-    yield listenWS(server, handleMessage(options.delegate, options.atom));
-  } finally {
-    server.close();
-  }
+  yield listenWS(server, handleMessage(options.delegate, options.atom));
 }
 
-function createApp(delegate: Mailbox, atom: Atom): Operation {
+function useGraphqlMiddleware(app: Express, options: CommandServerOptions): Operation {
   return ({ resume, context: { parent }}) => {
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let context = parent as any;
 
-    let app = express()
-      .use(graphqlHTTP(() => context.spawn(function* getOptionsData() {
-        return { ...graphqlOptions(delegate, atom.get()), graphiql: true};
-      })));
+    app.use(graphqlHTTP(() => context.spawn(function* getOptionsData() {
+      return { ...graphqlOptions(options.delegate, options.atom.get()), graphiql: true};
+    })));
+
     resume(app);
   }
 }
