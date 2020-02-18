@@ -1,0 +1,54 @@
+{
+  "name": "@bigtest/todomvc",
+  "version": "0.1.0",
+  "description": "Quickly run Todo MVC apps from different frameworks",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "repository": "https://github.com/thefrontside/bigtest.git",
+  "author": "Frontside Engineering <engineering@frontside.io>",
+  "license": "MIT",
+  "files": [
+    "dist/*",
+    "README.md"
+  ],
+  "scripts": {
+    "start": "yarn prepack && ts-node dist/start.js",
+    "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
+    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "build": "yarn prepack",
+    "prepack": "rm -rf dist && mkdir -p dist && pushd app && react-scripts build && popd && mv app/build dist/app && tsc --project tsconfig.dist.json --outdir dist --module commonjs --declaration"
+  },
+  "bin": {
+    "bigtest-todomvc": "dist/start.js"
+  },
+  "devDependencies": {
+    "@types/mocha": "^7.0.1",
+    "@types/node-fetch": "^2.5.4",
+    "@typescript-eslint/eslint-plugin": "^2.3.2",
+    "@typescript-eslint/parser": "^2.3.2",
+    "classnames": "^2.2.5",
+    "eslint": "^6.6.0",
+    "eslint-plugin-prefer-let": "^1.0.1",
+    "expect": "^24.9.0",
+    "mocha": "^6.2.2",
+    "node-fetch": "^2.6.0",
+    "ts-node": "*",
+    "typescript": "^3.7.0",
+    "react-scripts": "3.3.0",
+    "react": "^15.3.0",
+    "react-dom": "^15.3.0",
+    "react-scripts": "^3.4.0",
+    "todomvc-app-css": "^2.0.6",
+    "webpack": "4.41.2"
+  },
+  "dependencies": {
+    "@types/express": "^4.17.2",
+    "@types/node": "^12.7.11",
+    "effection": "^0.5.0",
+    "express": "^4.17.1"
+  },
+  "volta": {
+    "node": "12.16.0",
+    "yarn": "1.19.1"
+  }
+}
