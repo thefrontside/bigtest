@@ -8,6 +8,7 @@ import { createConnectionServer } from './connection-server';
 import { createAgentServer } from './agent-server';
 import { createAppServer } from './app-server';
 import { createManifestGenerator } from './manifest-generator';
+import { createManifestBuilder } from './manifest-builder';
 import { createManifestServer } from './manifest-server';
 
 import { Atom } from './orchestrator/atom';
@@ -25,8 +26,9 @@ type OrchestratorOptions = {
   commandPort: number;
   connectionPort: number;
   testFiles: [string];
-  testManifestPath: string;
-  testFilePort: number;
+  manifestPort: number;
+  manifestPath: string;
+  manifestDistPath: string;
 }
 
 export function* createOrchestrator(options: OrchestratorOptions): Operation {
@@ -40,6 +42,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   let agentServerDelegate = new Mailbox();
   let appServerDelegate = new Mailbox();
   let manifestGeneratorDelegate = new Mailbox();
+  let manifestBuilderDelegate = new Mailbox();
   let manifestServerDelegate = new Mailbox();
 
   let agentServer = AgentServer.create({ port: options.agentPort, externalURL: options.externalAgentServerURL });
@@ -68,7 +71,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     atom,
     port: options.connectionPort,
     proxyPort: options.proxyPort,
-    testFilePort: options.testFilePort,
+    manifestPort: options.manifestPort,
   }));
 
   yield fork(createAppServer({
@@ -80,21 +83,28 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     port: options.appPort,
   }));
 
+  yield fork(createManifestServer({
+    delegate: manifestServerDelegate,
+    path: options.manifestDistPath,
+    port: options.manifestPort,
+  }));
+
   yield fork(createManifestGenerator({
     delegate: manifestGeneratorDelegate,
     files: options.testFiles,
-    manifestPath: options.testManifestPath,
+    manifestPath: options.manifestPath,
   }));
 
-  // wait for manifest before starting test file server
+  console.debug('[orchestrator] wait for manifest generator');
+  // wait for manifest generator before starting manifest builder
   yield manifestGeneratorDelegate.receive({ status: 'ready' });
   console.debug('[orchestrator] manifest generator ready');
 
-  yield fork(createManifestServer({
-    delegate: manifestServerDelegate,
+  yield fork(createManifestBuilder({
+    delegate: manifestBuilderDelegate,
     atom,
-    manifestPath: options.testManifestPath,
-    port: options.testFilePort,
+    manifestPath: options.manifestPath,
+    distPath: options.manifestDistPath,
   }));
 
   yield function*() {
@@ -113,6 +123,10 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     yield fork(function*() {
       yield appServerDelegate.receive({ status: 'ready' });
       console.debug('[orchestrator] app server ready');
+    });
+    yield fork(function*() {
+      yield manifestBuilderDelegate.receive({ status: 'ready' });
+      console.debug('[orchestrator] manifest builder ready');
     });
     yield fork(function*() {
       yield manifestServerDelegate.receive({ status: 'ready' });

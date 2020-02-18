@@ -11,7 +11,7 @@ interface ConnectionServerOptions {
   atom: Atom;
   port: number;
   proxyPort: number;
-  testFilePort: number;
+  manifestPort: number;
 };
 
 const agentsLens = lensPath(['agents']);
@@ -37,7 +37,7 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
       yield sendData(connection, JSON.stringify({
         type: "open",
         url: `http://localhost:${options.proxyPort}`,
-        manifest: `http://localhost:${options.testFilePort}/manifest.js`
+        manifest: `http://localhost:${options.manifestPort}/manifest.js`
       }));
     });
 

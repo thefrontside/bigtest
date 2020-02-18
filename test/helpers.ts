@@ -43,12 +43,13 @@ export const actions: Actions = {
         appDir: "test/app",
         appPort: 24100,
         testFiles: ["test/fixtures/*.t.js"],
-        testManifestPath: "test/manifest.js",
+        manifestPath: "./tmp/orchestrator/src/manifest.js",
+        manifestDistPath: "./tmp/orchestrator/dist",
+        manifestPort: 24105,
         proxyPort: 24101,
         commandPort: 24102,
         connectionPort: 24103,
         agentPort: 24104,
-        testFilePort: 24105,
       }));
     }
     return orchestratorPromise;
