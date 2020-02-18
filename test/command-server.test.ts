@@ -15,19 +15,20 @@ import { Test, SerializableTest } from '../src/test';
 let COMMAND_PORT = 24200;
 
 describe('command server', () => {
-  let mail: Mailbox;
+  let delegate: Mailbox
   let atom: Atom;
 
   beforeEach(async () => {
-    mail = new Mailbox();
+    delegate = new Mailbox();
     atom = new Atom();
 
-    actions.fork(createCommandServer(mail, {
+    actions.fork(createCommandServer({
+      delegate,
       atom,
       port: COMMAND_PORT,
     }));
 
-    await actions.receive(mail, { ready: "command" });
+    await actions.receive(delegate, { status: 'ready' });
   });
 
   describe('fetching the agents at the start', () => {
@@ -52,7 +53,7 @@ describe('command server', () => {
     });
 
     it('sends a message to the orchestrator telling it to start the test run', async () => {
-      let message = await actions.receive(mail, { type: "run" });
+      let message = await actions.receive(delegate, { type: "run" });
       expect(message.type).toEqual("run")
       expect(message.id).toEqual(result.data.run)
     });

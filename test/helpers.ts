@@ -33,7 +33,7 @@ export const actions: Actions = {
     if(!orchestratorPromise) {
       let mail = new Mailbox();
       orchestratorPromise = globalWorld.fork(function*() {
-        yield mail.receive({ ready: "orchestrator" });
+        yield mail.receive({ status: 'ready' });
       });
 
       globalWorld.fork(createOrchestrator({

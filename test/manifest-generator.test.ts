@@ -21,7 +21,7 @@ async function loadManifest() {
 }
 
 describe('manifest-generator', () => {
-  let watcher, mail;
+  let delegate;
 
   beforeEach((done) => rmrf(TEST_DIR, done));
   beforeEach(async () => {
@@ -29,14 +29,15 @@ describe('manifest-generator', () => {
     await writeFile(TEST_DIR + "/test1.t.js", "module.exports = { default: { hello: 'world' }};");
     await writeFile(TEST_DIR + "/test2.t.js", "module.exports = { default: { monkey: 'foo' }};");
 
-    mail = new Mailbox();
+    delegate = new Mailbox();
 
-    watcher = actions.fork(createManifestGenerator(mail, {
+    actions.fork(createManifestGenerator({
+      delegate,
       files: [TEST_DIR + "/*.t.{js,ts}"],
       manifestPath: MANIFEST_PATH,
     }));
 
-    await actions.receive(mail, { ready: "manifest-generator" });
+    await actions.receive(delegate, { status: 'ready' });
   });
 
   describe('starting', () => {
@@ -62,7 +63,7 @@ describe('manifest-generator', () => {
 
     beforeEach(async () => {
       await writeFile(TEST_DIR + "/test3.t.js", "module.exports = { default: { third: 'test' } };");
-      await actions.receive(mail, { update: "manifest-generator" });
+      await actions.receive(delegate, { event: 'update' });
       manifest = await loadManifest();
     });
 
@@ -84,7 +85,7 @@ describe('manifest-generator', () => {
 
     beforeEach(async () => {
       await unlink(TEST_DIR + "/test2.t.js");
-      await actions.receive(mail, { update: "manifest-generator" });
+      await actions.receive(delegate, { event: 'update' });
       manifest = await loadManifest();
     });
 

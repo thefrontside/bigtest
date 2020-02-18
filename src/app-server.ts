@@ -5,6 +5,7 @@ import { Socket } from 'net';
 import * as process from 'process';
 
 interface AppServerOptions {
+  delegate: Mailbox;
   dir?: string;
   command: string;
   args?: string[];
@@ -34,7 +35,7 @@ function isReachable(port: number, options: { timeout: number } = { timeout: 100
   }
 };
 
-export function* createAppServer(mail: Mailbox, options: AppServerOptions): Operation {
+export function* createAppServer(options: AppServerOptions): Operation {
   let child = yield spawn(options.command, options.args || [], {
     cwd: options.dir,
     detached: true,
@@ -50,7 +51,7 @@ export function* createAppServer(mail: Mailbox, options: AppServerOptions): Oper
     yield timeout(100);
   }
 
-  mail.send({ ready: "app" });
+  options.delegate.send({ status: 'ready' });
 
   yield on(child, "exit");
 

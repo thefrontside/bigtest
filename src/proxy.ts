@@ -9,12 +9,13 @@ import * as zlib from 'zlib';
 import { listen } from './http';
 
 interface ProxyOptions {
+  delegate: Mailbox;
   port: number;
   targetPort: number;
   inject?: string;
 };
 
-export function* createProxyServer(mail: Mailbox, options: ProxyOptions): Operation {
+export function* createProxyServer(options: ProxyOptions): Operation {
   function* handleRequest(proxyRes, req, res): Operation {
     console.debug('[proxy]', 'start', req.method, req.url);
     for(let [key, value] of Object.entries(proxyRes.headers)) {
@@ -86,7 +87,7 @@ export function* createProxyServer(mail: Mailbox, options: ProxyOptions): Operat
   try {
 
     yield listen(server, options.port);
-    mail.send({ ready: 'proxy' });
+    options.delegate.send({ status: "ready" });
 
     while(true) {
       let { event, args } = yield events.receive({ event: any("string") });

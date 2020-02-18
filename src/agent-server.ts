@@ -3,10 +3,11 @@ import { on, Mailbox } from '@effection/events';
 import { ChildProcess, fork as forkProcess } from '@effection/child_process';
 
 interface AgentServerOptions {
+  delegate: Mailbox;
   port: number;
 };
 
-export function* createAgentServer(mail: Mailbox, options: AgentServerOptions): Operation {
+export function* createAgentServer(options: AgentServerOptions): Operation {
   // TODO: @precompile we want this to use a precompiled agent server when used as a package
   let child: ChildProcess = yield forkProcess(
     './bin/parcel-server.ts',
@@ -23,7 +24,7 @@ export function* createAgentServer(mail: Mailbox, options: AgentServerOptions): 
     [message] = yield on(child, "message");
   } while(message.type !== "ready");
 
-  mail.send({ ready: "agent" });
+  options.delegate.send({ status: 'ready' });
 
   yield on(child, "exit");
 }
