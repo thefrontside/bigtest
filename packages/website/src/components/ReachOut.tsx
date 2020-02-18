@@ -26,8 +26,8 @@ const ReachOut: React.FC = () => {
       >
         @thefrontside #bigTest
       </ReachLink>
-      <ReachLink icon={emailIconSVG} href="mailto:bigtest@frontside.io" title="Email Us" target="_blank">
-        bigtest@frontside.io
+      <ReachLink icon={emailIconSVG} href="mailto:bigtest@frontside.com" title="Email Us" target="_blank">
+        bigtest@frontside.com
       </ReachLink>
       <ReachLink icon={discordIconSVG} href="https://discord.gg/W7r24Aa" title="Discord community" target="_blank">
         Join our Discord!

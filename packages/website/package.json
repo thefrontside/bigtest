@@ -3,7 +3,7 @@
   "private": true,
   "description": "Website for BigtestJS",
   "version": "0.1.0",
-  "author": "Frontside Inc. <contact@frontside.io>",
+  "author": "Frontside Inc. <contact@frontside.com>",
   "dependencies": {
     "babel-plugin-styled-components": "^1.10.6",
     "gatsby": "^2.18.18",
