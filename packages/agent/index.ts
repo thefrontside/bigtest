@@ -10,16 +10,16 @@ interface Options {
 
 export class AgentServer {
 
-  protected constructor(public url: string) {}
+  protected constructor(public url: string, protected appDir: string) {}
 
-  static create(options: Options) {
+  static create(options: Options, appDir = Path.join(__dirname, 'app')) {
     if (options.externalURL) {
-      return new AgentServer(options.externalURL);
+      return new AgentServer(options.externalURL, appDir);
     } else {
       if (!options.port) {
         throw new Error('An agent server must be created with either an external url or a port number');
       }
-      return new HttpAgentServer(options.port);
+      return new HttpAgentServer(options.port, appDir);
     }
   }
 
@@ -38,15 +38,14 @@ export class AgentServer {
 
 class HttpAgentServer extends AgentServer {
   http?: Server;
-  constructor(private port: number) {
-    super(`http://localhost:${port}`);
+  constructor(private port: number, appDir: string) {
+    super(`http://localhost:${port}`, appDir);
   }
 
   *listen() {
-    let appDir = Path.join(__dirname, 'app');
     let express = xp;
     let app = express()
-      .use(express.static(appDir));
+      .use(express.static(this.appDir));
 
     let server: Server = yield listen(app, this.port);
     this.http = server;
