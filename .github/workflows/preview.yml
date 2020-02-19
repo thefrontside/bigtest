@@ -1,0 +1,19 @@
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  publish-previews:
+    name: Publish Preview Packages
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Publish PR Preview
+      uses: thefrontside/actions/publish-pr-preview@v1.2
+      with:
+        npm_publish: yarn publish
+        ignore: packages/website
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_TOKEN: ${{ secrets.FRONTSIDEJACK_NPM_TOKEN }}
