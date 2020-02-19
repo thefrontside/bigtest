@@ -7,8 +7,8 @@ import { main, once, self } from './helpers';
 
 
 main(function* start() {
-  let appDir = Path.join(__dirname, '../dist/app');
-  let server: AgentServer = yield AgentServer.create('ws://localhost:24003', port(), appDir);
+  let server: AgentServer = AgentServer.create({ port: port() }, Path.join(__dirname, '../dist/app'));
+
   let context: Context = yield self;
 
   yield function *bundle() {
@@ -27,8 +27,11 @@ main(function* start() {
   }
 
 
+  yield server.listen();
+
+
   console.info(`serving agent application`);
-  console.info(`--> connect agents at ${server.agentAppURL}`);
+  console.info(`--> connect agents at ${server.url}`);
   console.info(`--> harness script at ${server.harnessScriptURL}`);
 
   yield server.join();

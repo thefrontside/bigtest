@@ -13,7 +13,7 @@
     "README.md"
   ],
   "scripts": {
-    "lint": "eslint 'src/**/*.ts' 'bin/**/*.ts'",
+    "lint": "eslint '**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "start": "ts-node bin/start.ts",
     "build": "echo 'build'",

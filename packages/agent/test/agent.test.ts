@@ -1,11 +1,10 @@
 import { main, Operation, Context } from 'effection';
 import { describe, it } from 'mocha';
 import * as expect from 'expect'
-import fetch, { Response } from 'node-fetch';
+import fetch from 'node-fetch';
 import { AgentServer } from '../index';
 
 describe("@bigtest/agent", () => {
-
   let World: Context;
   async function spawn<T>(operation: Operation): Promise<T> {
     return World["spawn"](operation);
@@ -20,66 +19,42 @@ describe("@bigtest/agent", () => {
   });
 
   describe('starting a new server', () => {
-    let server: AgentServer;
-    beforeEach(async () => {
-      server = await spawn(AgentServer.create('ws://localhost:5500'));
-    });
+    let server: AgentServer = AgentServer.create({port: 8000});
 
-    it('has a harness url where it will serve the harness script', () => {
-      expect(server.agentAppURL).toBeDefined();
-    });
     it('has an agent url where it will server the agent application', () => {
       expect(server.harnessScriptURL).toBeDefined();
     });
 
-    describe('reqeusting the agent app without a connect back url', () => {
-      let response: Response;
+    it('can genenrate the full connect URL', () => {
+      expect(server.connectURL('ws://websocket-server.com')).toContain('websocket-server');
+    });
 
+    describe('fetching the harness', () => {
       beforeEach(async () => {
-        response = await fetch(server.agentAppURL);
+        await spawn(server.listen());
       });
 
-
-      it('redirects to itself wit the connect back url', () => {
-        expect(response.redirected).toEqual(true);
-        expect(response.url).toEqual(`${server.agentAppURL}/?connectTo=ws://localhost:5500`);
-      });
-    });
-
-    describe('requesting with a connect back url', () => {
-      let response: Response;
-
+      let harnessBytes: string;
       beforeEach(async () => {
-        response = await fetch(`${server.agentAppURL}/?connectTo=ws://localhost:8000`);
+        let response = await fetch(server.harnessScriptURL);
+        harnessBytes = await response.text();
       });
 
-      it('does not redirect', () => {
-        expect(response.redirected).toEqual(false);
+      it('has the javascripts', () => {
+        expect(harnessBytes).toContain('harness');
       });
     });
-  });
 
-  describe('starting a server on a specific port', () => {
-    let server: AgentServer
-
-    beforeEach(async () => {
-      server = await spawn(AgentServer.create('ws://localhost:5500', 8000));
-    });
-
-    it('starts the server on the correct port', () => {
-      expect(server.agentAppURL).toEqual('http://localhost:8000');
-    });
   });
 
   describe('a proxy development server', () => {
     let server: AgentServer;
     beforeEach(async () => {
-      server = await spawn(AgentServer.external('http://host.com', 'ws://localhost:5000'));
+      server = AgentServer.create({ port: 8000, externalURL: 'http://host.com' });
     });
 
     it('appends the pre-configured connect back url', () => {
-      expect(server.connectURL).toEqual('http://host.com/?connectTo=ws://localhost:5000');
+      expect(server.connectURL('ws://localhost:5000')).toEqual(`http://host.com/?connectTo=${encodeURIComponent('ws://localhost:5000')}`);
     });
   });
-
-})
+});
