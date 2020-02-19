@@ -17,7 +17,7 @@ interface ManifestGeneratorOptions {
 function* writeManifest(options: ManifestGeneratorOptions) {
   let files = yield Promise.all(options.files.map((pattern) => promisify(glob)(pattern))).then((l) => l.flat());
 
-  let manifest = "module.exports = [\n";
+  let manifest = "const entries = [\n";
 
   for(let file of files) {
     let filePath = "./" + path.relative(path.dirname(options.manifestPath), file);
@@ -25,6 +25,18 @@ function* writeManifest(options: ManifestGeneratorOptions) {
   }
 
   manifest += "];\n";
+  manifest +=
+`
+module.exports = {
+  sources: entries.map(({ path }) => path),
+  suite: {
+    description: "All Tests",
+    steps: [],
+    assertions: [],
+    children: entries.map(({ test }) => test),
+  }
+}
+`
 
   yield writeFile(options.manifestPath, manifest);
 }

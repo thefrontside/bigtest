@@ -6,7 +6,6 @@ import { graphql as executeGraphql } from 'graphql';
 
 import { listenWS } from './ws';
 import { schema } from './schema';
-import { TestIndex  } from './test';
 import { Atom } from './orchestrator/atom';
 import { OrchestratorState } from './orchestrator/state';
 
@@ -73,22 +72,12 @@ export function graphqlOptions(delegate: Mailbox, state: OrchestratorState) {
     rootValue: {
       echo: ({text}) => text,
       agents: () => Object.values(state.agents),
-      manifest: {
-        url: state.manifest.url,
-        sources: map(({ path }) => path, state.manifest.entries),
-        suite: TestIndex.fromManifest(state.manifest)
-      },
+      manifest: state.manifest,
       run: () => {
         let id = `test-run-${testIdCounter++}`;
         delegate.send({ type: "run", id });
         return id;
       }
     }
-  }
-}
-
-function* map<Input, Output>(fn: ((input: Input) => Output), inputs: Iterable<Input>): Iterable<Output> {
-  for (let input of inputs) {
-    yield fn(input);
   }
 }

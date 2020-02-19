@@ -43,14 +43,11 @@ type Engine {
 }
 
 type Manifest {
-  url: String!
   sources: [String!]!
   suite: Test!
 }
 
 type Test {
-  id: String!
-  path: [String!]!
   description: String!
   steps: [Step!]!
   assertions: [Assertion!]!

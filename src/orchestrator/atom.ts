@@ -8,7 +8,15 @@ import { OrchestratorState } from './state';
 
 export class Atom {
   private state: OrchestratorState = {
-    manifest: {url: '', entries: []},
+    manifest: {
+      sources: [],
+      suite: {
+        description: "empty",
+        steps: [],
+        assertions: [],
+        children: []
+      },
+    },
     agents: {}
   };
 

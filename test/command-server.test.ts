@@ -145,23 +145,23 @@ describe('command server', () => {
       };
 
       atom.update(assoc('manifest', {
-        url: 'http://bigmanifest.com',
-        entries: [
-          { path: "foo.js", test: test1 },
-          { path: "bar.js", test: test2 }
-        ],
+        sources: ["foo.js", "bar.js"],
+        suite: {
+          description: "All Tests",
+          steps: [],
+          assertions: [],
+          children: [test1, test2]
+        },
       }));
       result = await query(`
 manifest {
-  url
   sources
   suite {
-    id
     description
     children {
-      id description
+      description
       children {
-        id description
+        description
       }
     }
   }
@@ -187,17 +187,13 @@ manifest {
         data: {
           manifest: {
             suite: {
-              id: "",
               description: "All Tests",
               children: [{
-                id: "First Test",
                 description: "First Test",
                 children: [{
-                  id: "First Test > Son of First Test",
                   description: "Son of First Test"
                 }]
               }, {
-                id: "Second Test",
                 description: "Second Test"
               }]
             }
