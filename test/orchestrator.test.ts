@@ -58,8 +58,7 @@ describe('orchestrator', () => {
     });
 
     it('returns the harness script', () => {
-      // TODO: we should probably assert on something more sensible here, but on what?
-      expect(body).toContain('hello from harness');
+      expect(body).toContain('harness');
     });
   });
 
@@ -97,7 +96,7 @@ describe('orchestrator', () => {
     });
 
     it('injects the harness script tag', () => {
-      expect(body).toContain('<script src="http://localhost:24104/harness.js"></script>');
+      expect(body).toMatch(new RegExp(`<script src="http://localhost:\\d+/harness.js"></script>`, 'mg'));
     });
   });
 

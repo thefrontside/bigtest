@@ -1,30 +1,14 @@
 import { Operation } from 'effection';
-import { on, Mailbox } from '@effection/events';
-import { ChildProcess, fork as forkProcess } from '@effection/child_process';
+import { AgentServer } from '@bigtest/agent'
+import { Mailbox } from '@effection/events';
 
-interface AgentServerOptions {
+interface StartAgentServerOptions {
   delegate: Mailbox;
-  port: number;
-};
+  agentServer: AgentServer;
+}
 
-export function* createAgentServer(options: AgentServerOptions): Operation {
-  // TODO: @precompile we want this to use a precompiled agent server when used as a package
-  let child: ChildProcess = yield forkProcess(
-    './bin/parcel-server.ts',
-    ['-p', `${options.port}`, 'agent/index.html', 'agent/harness.ts'],
-    {
-      execPath: 'ts-node',
-      execArgv: [],
-      stdio: ['pipe', 'pipe', 'pipe', 'ipc']
-    }
-  );
-
-  let message: {type: string};
-  do {
-    [message] = yield on(child, "message");
-  } while(message.type !== "ready");
-
-  options.delegate.send({ status: 'ready' });
-
-  yield on(child, "exit");
+export function *createAgentServer({ delegate, agentServer }: StartAgentServerOptions): Operation {
+  yield agentServer.listen();
+  delegate.send({ status: 'ready' });
+  yield agentServer.join();
 }

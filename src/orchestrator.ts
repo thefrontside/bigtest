@@ -1,5 +1,6 @@
 import { fork, Operation } from 'effection';
 import { Mailbox } from '@effection/events';
+import { AgentServer } from '@bigtest/agent';
 
 import { createProxyServer } from './proxy';
 import { createCommandServer } from './command-server';
@@ -13,6 +14,8 @@ import { Atom } from './orchestrator/atom';
 
 type OrchestratorOptions = {
   delegate: Mailbox;
+  agentPort: number;
+  externalAgentServerURL?: string;
   appPort: number;
   appCommand: string;
   appArgs?: string[];
@@ -21,7 +24,6 @@ type OrchestratorOptions = {
   proxyPort: number;
   commandPort: number;
   connectionPort: number;
-  agentPort: number;
   testFiles: [string];
   testManifestPath: string;
   testFilePort: number;
@@ -40,12 +42,20 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   let manifestGeneratorDelegate = new Mailbox();
   let manifestServerDelegate = new Mailbox();
 
+  let agentServer = AgentServer.create({ port: options.agentPort, externalURL: options.externalAgentServerURL });
+
+  yield fork(createAgentServer({
+    delegate: agentServerDelegate,
+    agentServer
+  }));
+
   yield fork(createProxyServer({
     delegate: proxyServerDelegate,
     port: options.proxyPort,
     targetPort: options.appPort,
-    inject: `<script src="http://localhost:${options.agentPort}/harness.js"></script>`,
+    inject: `<script src="${agentServer.harnessScriptURL}"></script>`,
   }));
+
 
   yield fork(createCommandServer({
     delegate: commandServerDelegate,
@@ -59,11 +69,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     port: options.connectionPort,
     proxyPort: options.proxyPort,
     testFilePort: options.testFilePort,
-  }));
-
-  yield fork(createAgentServer({
-    delegate: agentServerDelegate,
-    port: options.agentPort,
   }));
 
   yield fork(createAppServer({
@@ -106,10 +111,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       console.debug('[orchestrator] connection server ready');
     });
     yield fork(function*() {
-      yield agentServerDelegate.receive({ status: 'ready' });
-      console.debug('[orchestrator] agent server ready');
-    });
-    yield fork(function*() {
       yield appServerDelegate.receive({ status: 'ready' });
       console.debug('[orchestrator] app server ready');
     });
@@ -121,10 +122,9 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   console.log("[orchestrator] running!");
 
-  let connectionUrl = `ws://localhost:${options.connectionPort}`;
-  let agentUrl = `http://localhost:${options.agentPort}/index.html?orchestrator=${encodeURIComponent(connectionUrl)}`
   let commandUrl = `http://localhost:${options.commandPort}`;
-  console.log(`[orchestrator] launch agents via: ${agentUrl}`);
+  let connectUrl = agentServer.connectURL(`ws://localhost:${options.connectionPort}`);
+  console.log(`[orchestrator] launch agents via: ${connectUrl}`);
   console.log(`[orchestrator] show GraphQL dashboard via: ${commandUrl}`);
 
   options.delegate.send({ status: 'ready' });

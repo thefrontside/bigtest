@@ -12,7 +12,7 @@
     "watch": "ts-node -r module-alias/register bin/watch.ts",
     "query": "ts-node -r module-alias/register bin/query.ts",
     "subscribe": "ts-node -r module-alias/register bin/subscribe.ts",
-    "lint": "eslint 'src/**/*.ts' 'bin/**/*.ts' 'agent/**/*.ts'",
+    "lint": "eslint 'src/**/*.ts' 'bin/**/*.ts'",
     "test": "mocha -r ./test/setup test/**/*.test.ts",
     "mocha": "mocha -r ./test/setup",
     "test:app:start": "cd test/app && react-scripts start",
@@ -37,6 +37,7 @@
     "todomvc-app-css": "^2.0.6"
   },
   "dependencies": {
+    "@bigtest/agent": "^0.1.0-b37aeec",
     "@types/express": "^4.17.1",
     "@types/graphql": "^14.5.0",
     "@types/http-proxy": "^1.17.0",
