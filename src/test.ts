@@ -29,8 +29,3 @@ export interface Manifest {
   sources: string[];
   suite: Test;
 }
-
-export interface ManifestEntry {
-  path: string;
-  test: Test;
-}
