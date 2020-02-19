@@ -5,7 +5,6 @@ import fetch from 'node-fetch';
 import { AgentServer } from '../index';
 
 describe("@bigtest/agent", () => {
-
   let World: Context;
   async function spawn<T>(operation: Operation): Promise<T> {
     return World["spawn"](operation);
@@ -20,10 +19,7 @@ describe("@bigtest/agent", () => {
   });
 
   describe('starting a new server', () => {
-    let server: AgentServer;
-    beforeEach(async () => {
-      server = await spawn(AgentServer.create());
-    });
+    let server: AgentServer = AgentServer.create({port: 8000});
 
     it('has an agent url where it will server the agent application', () => {
       expect(server.harnessScriptURL).toBeDefined();
@@ -34,6 +30,10 @@ describe("@bigtest/agent", () => {
     });
 
     describe('fetching the harness', () => {
+      beforeEach(async () => {
+        await spawn(server.listen());
+      });
+
       let harnessBytes: string;
       beforeEach(async () => {
         let response = await fetch(server.harnessScriptURL);
@@ -47,22 +47,10 @@ describe("@bigtest/agent", () => {
 
   });
 
-  describe('starting a server on a specific port', () => {
-    let server: AgentServer
-
-    beforeEach(async () => {
-      server = await spawn(AgentServer.create(8000));
-    });
-
-    it('starts the server on the correct port', () => {
-      expect(server.connectURL('')).toContain('http://localhost:8000');
-    });
-  });
-
   describe('a proxy development server', () => {
     let server: AgentServer;
     beforeEach(async () => {
-      server = await spawn(AgentServer.external('http://host.com'));
+      server = AgentServer.create({ port: 8000, externalURL: 'http://host.com' });
     });
 
     it('appends the pre-configured connect back url', () => {
