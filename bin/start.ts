@@ -24,6 +24,7 @@ main(function*() {
     commandPort: 24002,
     connectionPort: 24003,
     agentPort: 24004,
+    externalAgentServerURL: process.env['BIGTEST_AGENT_SERVER_URL'],
     testFilePort: 24005,
     testFiles: ["./test/fixtures/*.t.ts"],
     testManifestPath: tempy.file({ name: 'manifest.js' }),
