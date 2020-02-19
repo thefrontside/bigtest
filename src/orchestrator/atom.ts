@@ -8,7 +8,15 @@ import { OrchestratorState } from './state';
 
 export class Atom {
   private state: OrchestratorState = {
-    manifest: [],
+    manifest: {
+      sources: [],
+      suite: {
+        description: "empty",
+        steps: [],
+        assertions: [],
+        children: []
+      },
+    },
     agents: {}
   };
 
@@ -18,7 +26,7 @@ export class Atom {
     return this.state;
   }
 
-  update(fn: (OrchestratorState) => OrchestratorState) {
+  update(fn: (state: OrchestratorState) => OrchestratorState) {
     this.state = fn(this.get());
     this.subscriptions.emit('state', this.state);
   }
@@ -33,14 +41,14 @@ export class Atom {
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
   over(lens: any, fn: any) {
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.update(R.over(lens, fn) as any as (OrchestratorState) => OrchestratorState);
+    this.update(R.over(lens, fn) as any as (state: OrchestratorState) => OrchestratorState);
   }
 
   // Ramda Lens types. How do they work?
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
   set(lens: any, value: unknown) {
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.update(R.set(lens, value) as any as (OrchestratorState) => OrchestratorState);
+    this.update(R.set(lens, value) as any as (state: OrchestratorState) => OrchestratorState);
   }
 
   *next(): Operation {

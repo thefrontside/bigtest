@@ -1,7 +1,7 @@
 import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 
-import { Operation, Context } from 'effection';
+import { Operation } from 'effection';
 import { Mailbox } from '@effection/events';
 
 import { Client } from '../src/client';
@@ -10,7 +10,7 @@ import { createCommandServer } from '../src/command-server';
 import { Atom } from '../src/orchestrator/atom';
 import { assoc } from 'ramda';
 
-import { Test, SerializableTest } from '../src/test';
+import { Test } from '../src/test';
 
 let COMMAND_PORT = 24200;
 
@@ -144,31 +144,62 @@ describe('command server', () => {
         assertions: []
       };
 
-      atom.update(assoc('manifest', [
-        { path: "foo.js", test: test1 },
-        { path: "bar.js", test: test2 },
-      ]));
-      result = await query('manifest { path, test }');
+      atom.update(assoc('manifest', {
+        sources: ["foo.js", "bar.js"],
+        suite: {
+          description: "All Tests",
+          steps: [],
+          assertions: [],
+          children: [test1, test2]
+        },
+      }));
+      result = await query(`
+manifest {
+  sources
+  suite {
+    description
+    children {
+      description
+      children {
+        description
+      }
+    }
+  }
+}
+`);
     });
+
     it('contains the paths of the tests', () => {
       expect(result).toMatchObject({
         data: {
-          manifest: [
-            { path: "foo.js" },
-            { path: "bar.js" },
-          ]
+          manifest: {
+            sources: [
+              "foo.js",
+              "bar.js"
+            ]
+          }
         }
       })
     });
-    it('contains the JSON encoding of the test tree', () => {
-      let [first, second]: Array<SerializableTest> = result.data.manifest.map(m => JSON.parse(m.test));
 
-      expect(first.description).toEqual('First Test');
-      expect(first.steps).toEqual([ { description: "Do the thing" }]);
-      expect(first.children).toMatchObject([ { description: "Son of First Test" }]);
-      expect(first.assertions).toMatchObject([ { description: "It did the thing" }]);
-
-      expect(second.description).toEqual('Second Test');
+    it('contains the test tree', () => {
+      expect(result).toMatchObject({
+        data: {
+          manifest: {
+            suite: {
+              description: "All Tests",
+              children: [{
+                description: "First Test",
+                children: [{
+                  description: "Son of First Test"
+                }]
+              }, {
+                description: "Second Test"
+              }]
+            }
+          }
+        }
+      })
     });
   });
 

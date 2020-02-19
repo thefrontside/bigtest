@@ -26,7 +26,7 @@ describe('manifest server', () => {
   beforeEach((done) => rmrf(TEST_DIR, done));
   beforeEach(async () => {
     await mkdir(TEST_DIR, { recursive: true });
-    await writeFile(MANIFEST_PATH, "module.exports = [{ path: 'someworld', test: 123 }];");
+    await writeFile(MANIFEST_PATH, "module.exports = { sources: [ 'boo' ] };");
 
     atom = new Atom();
     delegate = new Mailbox();
@@ -56,25 +56,25 @@ describe('manifest server', () => {
     });
 
     it('serves the manifest', () => {
-      expect(body).toContain('someworld');
+      expect(body).toContain('boo');
     });
   });
 
   describe('reading manifest from state on start', () => {
     it('returns the manifest from the state', () => {
-      let { manifest: [ first ] } = atom.get();
-      expect(first).toEqual({ path: 'someworld', test: 123 });
+      let { manifest: { sources: [ first ] } } = atom.get() ;
+      expect(first).toEqual('boo');
     });
   });
 
   describe('updating the manifest and then reading it', () => {
     beforeEach(async () => {
-      await writeFile(MANIFEST_PATH, "module.exports = [{ path: 'boo', test: 432 }];");
+      await writeFile(MANIFEST_PATH, "module.exports = { sources: ['foo' ] };");
       await actions.receive(delegate, { event: "update" });
     });
 
     it('returns the updated manifest from the state', () => {
-      expect(atom.get().manifest[0]).toEqual({ path: 'boo', test: 432 });
+      expect(atom.get().manifest.sources).toEqual(['foo']);
     });
   });
 });

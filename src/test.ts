@@ -25,11 +25,7 @@ export interface Check {
 
 export type Context = Record<string, unknown>;
 
-export interface SerializableTest {
-  description: string;
-  steps: Array<{ description: string }>;
-  assertions: Array<{ description: string }>;
-  children: Array<SerializableTest>;
+export interface Manifest {
+  sources: string[];
+  suite: Test;
 }
-
-export type Manifest = Iterable<{ path: string; test: SerializableTest }>;
