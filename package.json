@@ -13,7 +13,7 @@
   },
   "scripts": {
     "clean": "find . \\( -name node_modules -o -name dist \\) -exec rm -rf {} +",
-    "build": "yarn workspaces run build",
+    "prepack": "yarn workspaces run prepack",
     "test": "yarn workspaces run test",
     "develop": "cd packages/website && gatsby develop"
   }

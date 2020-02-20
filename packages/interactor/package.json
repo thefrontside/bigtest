@@ -17,7 +17,7 @@
     "lint": "eslint --ignore-path .gitignore ./",
     "start": "karma start",
     "test": "yarn start --single-run",
-    "prepack": "npm run docs && npm run build"
+    "prepack": "echo 'prepack'"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
