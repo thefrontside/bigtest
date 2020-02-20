@@ -16,5 +16,12 @@
     "prepack": "yarn workspaces run prepack",
     "test": "yarn workspaces run test",
     "develop": "cd packages/website && gatsby develop"
+  },
+  "volta": {
+    "node": "12.11.1",
+    "yarn": "1.19.1"
+  },
+  "_moduleAliases": {
+    "@effection": "packages/server/src/effection"
   }
 }
