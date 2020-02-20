@@ -15,26 +15,21 @@
     "lint": "eslint 'src/**/*.ts' 'bin/**/*.ts'",
     "test": "mocha -r ./test/setup test/**/*.test.ts",
     "mocha": "mocha -r ./test/setup",
-    "test:app:start": "cd test/app && react-scripts start",
-    "test:app:build": "cd test/app && react-scripts build"
+    "test:app:start": "bigtest-todomvc 24000"
   },
   "devDependencies": {
+    "@bigtest/todomvc": "^0.1.0-31b9020",
     "@types/mocha": "^5.2.7",
     "@types/node-fetch": "^2.5.3",
     "@types/ramda": "types/npm-ramda#dist",
     "@typescript-eslint/eslint-plugin": "^2.3.2",
     "@typescript-eslint/parser": "^2.3.2",
     "abort-controller": "^3.0.0",
-    "classnames": "^2.2.5",
     "eslint": "^6.6.0",
     "eslint-plugin-prefer-let": "^1.0.1",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
-    "node-fetch": "^2.6.0",
-    "react": "^15.3.0",
-    "react-dom": "^15.3.0",
-    "react-scripts": "^3.3.0",
-    "todomvc-app-css": "^2.0.6"
+    "node-fetch": "^2.6.0"
   },
   "dependencies": {
     "@bigtest/agent": "^0.1.0-b37aeec",
