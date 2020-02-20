@@ -38,8 +38,8 @@ export const actions: Actions = {
 
       globalWorld.fork(createOrchestrator({
         delegate: mail,
-        appCommand: "react-scripts start",
-        appEnv: { "PORT": "24100", "BROWSER": "none" },
+        appCommand: "bigtest-todomvc 24100",
+        appEnv: {  },
         appDir: "test/app",
         appPort: 24100,
         testFiles: ["test/fixtures/*.t.ts"],
