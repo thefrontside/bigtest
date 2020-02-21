@@ -1,7 +1,0 @@
-/node_modules
-/yarn-error.log
-.node-version
-.cache
-dist
-tmp
-test/manifest.js
