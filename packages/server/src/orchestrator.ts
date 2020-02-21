@@ -1,3 +1,4 @@
+import * as path from 'path';
 import { fork, Operation } from 'effection';
 import { Mailbox } from '@effection/events';
 import { AgentServer } from '@bigtest/agent';
@@ -14,6 +15,7 @@ import { createManifestServer } from './manifest-server';
 import { Atom } from './orchestrator/atom';
 
 type OrchestratorOptions = {
+  atom: Atom;
   delegate: Mailbox;
   agentPort: number;
   externalAgentServerURL?: string;
@@ -27,14 +29,11 @@ type OrchestratorOptions = {
   connectionPort: number;
   testFiles: [string];
   manifestPort: number;
-  manifestPath: string;
-  manifestDistPath: string;
+  cacheDir: string;
 }
 
 export function* createOrchestrator(options: OrchestratorOptions): Operation {
   console.log('[orchestrator] starting');
-
-  let atom = new Atom();
 
   let proxyServerDelegate = new Mailbox();
   let commandServerDelegate = new Mailbox();
@@ -46,6 +45,12 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   let manifestServerDelegate = new Mailbox();
 
   let agentServer = AgentServer.create({ port: options.agentPort, externalURL: options.externalAgentServerURL });
+
+  let manifestSrcDir = path.resolve(options.cacheDir, 'manifest/src');
+  let manifestBuildDir = path.resolve(options.cacheDir, 'manifest/build');
+  let manifestDistDir = path.resolve(options.cacheDir, 'manifest/dist');
+
+  let manifestSrcPath = path.resolve(manifestSrcDir, 'manifest.js');
 
   yield fork(createAgentServer({
     delegate: agentServerDelegate,
@@ -62,13 +67,13 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield fork(createCommandServer({
     delegate: commandServerDelegate,
-    atom,
+    atom: options.atom,
     port: options.commandPort,
   }));
 
   yield fork(createConnectionServer({
     delegate: connectionServerDelegate,
-    atom,
+    atom: options.atom,
     port: options.connectionPort,
     proxyPort: options.proxyPort,
     manifestPort: options.manifestPort,
@@ -85,14 +90,14 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield fork(createManifestServer({
     delegate: manifestServerDelegate,
-    path: options.manifestDistPath,
+    dir: manifestDistDir,
     port: options.manifestPort,
   }));
 
   yield fork(createManifestGenerator({
     delegate: manifestGeneratorDelegate,
     files: options.testFiles,
-    manifestPath: options.manifestPath,
+    destinationPath: manifestSrcPath,
   }));
 
   console.debug('[orchestrator] wait for manifest generator');
@@ -102,9 +107,10 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield fork(createManifestBuilder({
     delegate: manifestBuilderDelegate,
-    atom,
-    manifestPath: options.manifestPath,
-    distPath: options.manifestDistPath,
+    atom: options.atom,
+    srcPath: manifestSrcPath,
+    distDir: manifestDistDir,
+    buildDir: manifestBuildDir,
   }));
 
   yield function*() {

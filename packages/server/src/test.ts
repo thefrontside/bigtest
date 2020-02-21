@@ -26,6 +26,7 @@ export interface Check {
 export type Context = Record<string, unknown>;
 
 export interface Manifest {
+  name: string;
   sources: string[];
   suite: Test;
 }
