@@ -6,7 +6,7 @@ import * as glob from 'glob';
 import * as path from 'path';
 import { promisify } from 'util';
 
-const { writeFile } = fs.promises;
+const { writeFile, mkdir } = fs.promises;
 
 interface ManifestGeneratorOptions {
   delegate: Mailbox;
@@ -38,6 +38,7 @@ module.exports = {
 }
 `
 
+  yield mkdir(path.dirname(options.manifestPath), { recursive: true });
   yield writeFile(options.manifestPath, manifest);
 }
 
@@ -49,16 +50,17 @@ export function* createManifestGenerator(options: ManifestGeneratorOptions): Ope
 
     yield watchError(watcher);
 
-
     yield events.receive({ event: 'ready' });
     yield writeManifest(options);
 
+    console.debug("[manifest generator] manifest ready");
     options.delegate.send({ status: 'ready' });
 
     while(true) {
       yield events.receive();
       yield writeManifest(options);
 
+      console.debug("[manifest generator] manifest updated");
       options.delegate.send({ event: 'update' });
     }
   } finally {

@@ -7,7 +7,7 @@ import { EventEmitter } from 'events';
 import { listen } from './http';
 
 interface ParcelServerOptions {
-  port: number;
+  port?: number;
 };
 
 export function* createParcelServer(entryPoints: string[], options: ParcelServerOptions, parcelOptions?: ParcelOptions): Operation {
@@ -19,7 +19,9 @@ export function* createParcelServer(entryPoints: string[], options: ParcelServer
   let server = createServer(middleware)
 
   try {
-    yield listen(server, options.port);
+    if(options.port) {
+      yield listen(server, options.port);
+    }
 
     yield events.receive({ event: "buildEnd" });
 
