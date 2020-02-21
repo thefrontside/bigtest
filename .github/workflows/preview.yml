@@ -13,7 +13,7 @@ jobs:
       uses: thefrontside/actions/publish-pr-preview@v1.2
       with:
         npm_publish: yarn publish
-        ignore: packages/website
+        ignore: packages/website packages/server
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.FRONTSIDEJACK_NPM_TOKEN }}

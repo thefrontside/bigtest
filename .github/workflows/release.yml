@@ -13,7 +13,7 @@ jobs:
       uses: thefrontside/actions/synchronize-with-npm@v1.3
       with:
         npm_publish: yarn publish
-        ignore: packages/website packages/convergence packages/interactor packages/cli
+        ignore: packages/website packages/convergence packages/interactor packages/cli packages/server
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.FRONTSIDEJACK_NPM_TOKEN }}
