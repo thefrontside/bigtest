@@ -29,9 +29,7 @@ main(function*() {
     externalAgentServerURL: process.env['BIGTEST_AGENT_SERVER_URL'],
     manifestPort: 24005,
     testFiles: ["./test/fixtures/*.t.ts"],
-    manifestPath: tempy.file({ name: 'manifest.js' }),
-    manifestDistPath: tempy.directory(),
-    manifestBuildPath: tempy.directory(),
+    cacheDir: tempy.directory(),
   }));
 
   yield delegate.receive({ status: 'ready' });

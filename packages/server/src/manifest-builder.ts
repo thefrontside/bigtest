@@ -13,22 +13,22 @@ const { copyFile, mkdir } = fs.promises;
 interface ManifestBuilderOptions {
   delegate: Mailbox;
   atom: Atom;
-  manifestPath: string;
-  buildPath: string;
-  distPath: string;
+  srcPath: string;
+  buildDir: string;
+  distDir: string;
 };
 
 function* processManifest(options: ManifestBuilderOptions): Operation {
-  let buildPath = path.resolve(options.buildPath, 'manifest.js');
-  let fingerprint = yield fprint(buildPath, 'sha256');
-  let filename = `manifest-${fingerprint}.js`;
-  let distPath = path.resolve(options.distPath, filename);
+  let buildDir = path.resolve(options.buildDir, 'manifest.js');
+  let fingerprint = yield fprint(buildDir, 'sha256');
+  let name = `manifest-${fingerprint}.js`;
+  let distPath = path.resolve(options.distDir, name);
 
   yield mkdir(path.dirname(distPath), { recursive: true });
-  yield copyFile(buildPath, distPath);
+  yield copyFile(buildDir, distPath);
 
   let manifest = yield import(distPath);
-  manifest.name = filename;
+  manifest.name = name;
   options.atom.update(assoc('manifest', manifest));
 
   return distPath;
@@ -38,7 +38,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
   // TODO: @precompile this should use node rather than ts-node when running as a compiled package
   let child: ChildProcess = yield forkProcess(
     './bin/parcel-server.ts',
-    ['--out-dir', options.buildPath, '--out-file', 'manifest.js', '--global', '__bigtestManifest', options.manifestPath],
+    ['--out-dir', options.buildDir, '--out-file', 'manifest.js', '--global', '__bigtestManifest', options.srcPath],
     {
       execPath: 'ts-node',
       execArgv: [],

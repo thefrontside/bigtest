@@ -1,3 +1,4 @@
+import * as path from 'path';
 import { fork, Operation } from 'effection';
 import { Mailbox } from '@effection/events';
 import { AgentServer } from '@bigtest/agent';
@@ -28,9 +29,7 @@ type OrchestratorOptions = {
   connectionPort: number;
   testFiles: [string];
   manifestPort: number;
-  manifestPath: string;
-  manifestDistPath: string;
-  manifestBuildPath: string;
+  cacheDir: string;
 }
 
 export function* createOrchestrator(options: OrchestratorOptions): Operation {
@@ -46,6 +45,12 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   let manifestServerDelegate = new Mailbox();
 
   let agentServer = AgentServer.create({ port: options.agentPort, externalURL: options.externalAgentServerURL });
+
+  let manifestSrcDir = path.resolve(options.cacheDir, 'manifest/src');
+  let manifestBuildDir = path.resolve(options.cacheDir, 'manifest/build');
+  let manifestDistDir = path.resolve(options.cacheDir, 'manifest/dist');
+
+  let manifestSrcPath = path.resolve(manifestSrcDir, 'manifest.js');
 
   yield fork(createAgentServer({
     delegate: agentServerDelegate,
@@ -85,14 +90,14 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield fork(createManifestServer({
     delegate: manifestServerDelegate,
-    path: options.manifestDistPath,
+    dir: manifestDistDir,
     port: options.manifestPort,
   }));
 
   yield fork(createManifestGenerator({
     delegate: manifestGeneratorDelegate,
     files: options.testFiles,
-    manifestPath: options.manifestPath,
+    destinationPath: manifestSrcPath,
   }));
 
   console.debug('[orchestrator] wait for manifest generator');
@@ -103,9 +108,9 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   yield fork(createManifestBuilder({
     delegate: manifestBuilderDelegate,
     atom: options.atom,
-    manifestPath: options.manifestPath,
-    distPath: options.manifestDistPath,
-    buildPath: options.manifestBuildPath,
+    srcPath: manifestSrcPath,
+    distDir: manifestDistDir,
+    buildDir: manifestBuildDir,
   }));
 
   yield function*() {

@@ -11,7 +11,7 @@ const { writeFile, mkdir } = fs.promises;
 interface ManifestGeneratorOptions {
   delegate: Mailbox;
   files: [string];
-  manifestPath: string;
+  destinationPath: string;
 };
 
 function* writeManifest(options: ManifestGeneratorOptions) {
@@ -20,7 +20,7 @@ function* writeManifest(options: ManifestGeneratorOptions) {
   let manifest = "const entries = [\n";
 
   for(let file of files) {
-    let filePath = "./" + path.relative(path.dirname(options.manifestPath), file);
+    let filePath = "./" + path.relative(path.dirname(options.destinationPath), file);
     manifest += `  { path: ${JSON.stringify(file)}, test: require(${JSON.stringify(filePath)}).default },\n`;
   }
 
@@ -38,8 +38,8 @@ module.exports = {
 }
 `
 
-  yield mkdir(path.dirname(options.manifestPath), { recursive: true });
-  yield writeFile(options.manifestPath, manifest);
+  yield mkdir(path.dirname(options.destinationPath), { recursive: true });
+  yield writeFile(options.destinationPath, manifest);
 }
 
 export function* createManifestGenerator(options: ManifestGeneratorOptions): Operation {

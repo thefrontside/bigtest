@@ -35,9 +35,9 @@ describe('manifest builder', () => {
       yield createManifestBuilder({
         delegate,
         atom,
-        manifestPath: MANIFEST_PATH,
-        buildPath: BUILD_DIR,
-        distPath: DIST_DIR,
+        srcPath: MANIFEST_PATH,
+        buildDir: BUILD_DIR,
+        distDir: DIST_DIR,
       });
     });
 
