@@ -18,7 +18,8 @@ const DidYouKnow: React.FC = () => {
     <SideBox>
       <H3>Flexible &amp; framework agnostic</H3>
       <Text>
-        BigTest is a powerful framework planned and architectured to be extensible. We provide APIs that allow teams to build on top of BigTest and integrate tests more deeply into their development processes.
+        BigTest is a powerful framework planned and architectured to be extensible. We provide APIs that allow
+        teams to build on top of BigTest and integrate tests more deeply into their development processes.
       </Text>
     </SideBox>
   );

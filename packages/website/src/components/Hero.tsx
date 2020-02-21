@@ -7,6 +7,13 @@ const HeroLine = styled.section`
   padding: ${({ theme }) => theme.space.medium} 0;
 `;
 
+export const HeroLink = styled.a`
+  display: inline-block;
+  font-family: ${({ theme }) => theme.fonts.heading};
+  font-weight: ${({ theme }) => theme.fontWeights.bold};
+  color: ${({ theme }) => theme.colors.secondary};
+`;
+
 const Hero: React.FC = ({ children }) => (
   <HeroLine>
     <Section as="div">{children}</Section>

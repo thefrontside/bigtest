@@ -10,4 +10,9 @@ export const Strong = styled.strong`
   color: ${({ color, theme }) => (color ? theme.colors[color] : theme.colors.primary)};
 `;
 
+export const Emphasis = styled.em`
+  font-style: italic;
+  color: ${({ color, theme }) => (color ? theme.colors[color] : theme.colors.primary)};
+`;
+
 export default Text;
