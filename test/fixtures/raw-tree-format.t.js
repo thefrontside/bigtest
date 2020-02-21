@@ -1,11 +1,9 @@
-import { Context } from '../../src/test';
-
 export default {
   description: "Signing In",
   steps: [
     {
       description: "given a user",
-      action: async (context: Context) => ({ ...context, user: { username: "cowboyd" } })
+      action: async (context) => ({ ...context, user: { username: "cowboyd" } })
     },
     {
       description: "when I fill in the login form",

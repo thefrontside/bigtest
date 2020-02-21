@@ -42,7 +42,7 @@ export const actions: Actions = {
         appEnv: {  },
         appDir: "test/app",
         appPort: 24100,
-        testFiles: ["test/fixtures/*.t.ts"],
+        testFiles: ["test/fixtures/*.t.js"],
         testManifestPath: "test/manifest.js",
         proxyPort: 24101,
         commandPort: 24102,
