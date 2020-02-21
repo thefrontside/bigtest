@@ -12,12 +12,11 @@
     "src"
   ],
   "scripts": {
-    "build": "rollup --config",
     "docs": "bigtest-docs",
     "lint": "eslint --ignore-path .gitignore ./",
     "start": "karma start",
     "test": "yarn start --single-run",
-    "prepack": "npm run docs && npm run build"
+    "prepack": "rollup --config"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

@@ -15,7 +15,6 @@
     "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "start": "ts-node src/index.ts",
-    "build": "echo 'build'",
     "prepack": "tsc --project tsconfig.dist.json --outdir dist --module commonjs"
   },
   "bin": {

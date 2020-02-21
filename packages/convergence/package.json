@@ -16,7 +16,7 @@
     "docs": "bigtest-docs",
     "lint": "eslint --ignore-path .gitignore ./",
     "test": "mocha --opts ./tests/mocha.opts ./tests",
-    "prepack": "npm run docs && npm run build"
+    "prepack": "rollup --config"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

@@ -47,7 +47,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "gatsby build",
+    "prepack": "gatsby build",
     "develop": "gatsby develop",
     "format:ts": "prettier --write '**/*.{json,ts,tsx}'",
     "lint:ts": "prettier --check '**/*.{json,ts,tsx}'",
