@@ -4,7 +4,6 @@ import * as path from 'path';
 import * as rmrf from 'rimraf';
 import * as fs from 'fs';
 
-import { Response } from 'node-fetch';
 import { Mailbox } from '@effection/events';
 
 import { actions } from './helpers';
@@ -13,6 +12,7 @@ import { Atom } from '../src/orchestrator/atom';
 
 const TEST_DIR = "./tmp/manifest-builder"
 const SRC_DIR = `${TEST_DIR}/src`
+const BUILD_DIR = `${TEST_DIR}/build`
 const DIST_DIR = `${TEST_DIR}/dist`
 const MANIFEST_PATH = `${SRC_DIR}/manifest.js`
 
@@ -36,6 +36,7 @@ describe('manifest builder', () => {
         delegate,
         atom,
         manifestPath: MANIFEST_PATH,
+        buildPath: BUILD_DIR,
         distPath: DIST_DIR,
       });
     });

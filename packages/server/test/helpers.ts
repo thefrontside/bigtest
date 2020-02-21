@@ -6,8 +6,10 @@ import { beforeEach, afterEach } from 'mocha';
 
 import { createOrchestrator } from '../src/index';
 import { Mailbox } from '../src/effection/events';
+import { Atom } from '../src/orchestrator/atom';
 
 interface Actions {
+  atom: Atom;
   fork<T>(operation: Operation): Context;
   receive(mailbox: Mailbox, pattern: any): PromiseLike<any>;
   fetch(resource: RequestInfo, init?: RequestInit): PromiseLike<Response>;
@@ -17,6 +19,8 @@ interface Actions {
 let orchestratorPromise: Context;
 
 export const actions: Actions = {
+  atom: new Atom(),
+
   fork(operation: Operation): Context {
     return currentWorld.fork(operation);
   },
@@ -31,26 +35,26 @@ export const actions: Actions = {
 
   startOrchestrator() {
     if(!orchestratorPromise) {
-      let mail = new Mailbox();
-      orchestratorPromise = globalWorld.fork(function*() {
-        yield mail.receive({ status: 'ready' });
-      });
+      let delegate = new Mailbox();
 
       globalWorld.fork(createOrchestrator({
-        delegate: mail,
+        delegate,
+        atom: this.atom,
         appCommand: "bigtest-todomvc 24100",
-        appEnv: {  },
         appDir: "test/app",
         appPort: 24100,
         testFiles: ["test/fixtures/*.t.js"],
         manifestPath: "./tmp/orchestrator/src/manifest.js",
         manifestDistPath: "./tmp/orchestrator/dist",
+        manifestBuildPath: "./tmp/orchestrator/build",
         manifestPort: 24105,
         proxyPort: 24101,
         commandPort: 24102,
         connectionPort: 24103,
         agentPort: 24104,
       }));
+
+      orchestratorPromise = this.receive(delegate, { status: 'ready' });
     }
     return orchestratorPromise;
   }

@@ -14,6 +14,7 @@ import { createManifestServer } from './manifest-server';
 import { Atom } from './orchestrator/atom';
 
 type OrchestratorOptions = {
+  atom: Atom;
   delegate: Mailbox;
   agentPort: number;
   externalAgentServerURL?: string;
@@ -29,12 +30,11 @@ type OrchestratorOptions = {
   manifestPort: number;
   manifestPath: string;
   manifestDistPath: string;
+  manifestBuildPath: string;
 }
 
 export function* createOrchestrator(options: OrchestratorOptions): Operation {
   console.log('[orchestrator] starting');
-
-  let atom = new Atom();
 
   let proxyServerDelegate = new Mailbox();
   let commandServerDelegate = new Mailbox();
@@ -62,13 +62,13 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield fork(createCommandServer({
     delegate: commandServerDelegate,
-    atom,
+    atom: options.atom,
     port: options.commandPort,
   }));
 
   yield fork(createConnectionServer({
     delegate: connectionServerDelegate,
-    atom,
+    atom: options.atom,
     port: options.connectionPort,
     proxyPort: options.proxyPort,
     manifestPort: options.manifestPort,
@@ -102,9 +102,10 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield fork(createManifestBuilder({
     delegate: manifestBuilderDelegate,
-    atom,
+    atom: options.atom,
     manifestPath: options.manifestPath,
     distPath: options.manifestDistPath,
+    buildPath: options.manifestBuildPath,
   }));
 
   yield function*() {

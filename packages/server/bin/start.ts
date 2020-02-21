@@ -4,15 +4,17 @@ import { Mailbox } from '@effection/events';
 import * as tempy from 'tempy';
 import { setLogLevel } from '../src/log-level';
 
-import { createOrchestrator } from '../src/index';
+import { createOrchestrator, Atom } from '../src/index';
 
 setLogLevel('info');
 
 main(function*() {
   let delegate = new Mailbox();
+  let atom = new Atom();
 
   yield fork(createOrchestrator({
     delegate,
+    atom,
     appCommand: "yarn",
     appArgs: ["test:app:start"],
     appEnv: {
@@ -29,6 +31,7 @@ main(function*() {
     testFiles: ["./test/fixtures/*.t.ts"],
     manifestPath: tempy.file({ name: 'manifest.js' }),
     manifestDistPath: tempy.directory(),
+    manifestBuildPath: tempy.directory(),
   }));
 
   yield delegate.receive({ status: 'ready' });
