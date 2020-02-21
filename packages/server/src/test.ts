@@ -1,8 +1,8 @@
 export interface Test {
   description: string;
-  steps: Iterable<Step>;
-  assertions: Iterable<Assertion>;
-  children: Iterable<Test>;
+  steps: Step[];
+  assertions: Assertion[];
+  children: Test[];
 }
 
 export interface Step {
