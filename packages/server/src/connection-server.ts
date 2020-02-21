@@ -34,11 +34,11 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
     })
 
     yield fork(function* sendRun() {
-      let name = options.atom.get().manifest.name;
+      let fileName = options.atom.get().manifest.fileName;
       yield sendData(connection, JSON.stringify({
         type: "open",
         url: `http://localhost:${options.proxyPort}`,
-        manifest: `http://localhost:${options.manifestPort}/${name}`
+        manifest: `http://localhost:${options.manifestPort}/${fileName}`
       }));
     });
 

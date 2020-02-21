@@ -21,14 +21,18 @@ interface ManifestBuilderOptions {
 function* processManifest(options: ManifestBuilderOptions): Operation {
   let buildDir = path.resolve(options.buildDir, 'manifest.js');
   let fingerprint = yield fprint(buildDir, 'sha256');
-  let name = `manifest-${fingerprint}.js`;
-  let distPath = path.resolve(options.distDir, name);
+  let fileName = `manifest-${fingerprint}.js`;
+  let distPath = path.resolve(options.distDir, fileName);
 
   yield mkdir(path.dirname(distPath), { recursive: true });
   yield copyFile(buildDir, distPath);
 
   let manifest = yield import(distPath);
-  manifest.name = name;
+
+  manifest = manifest.default || manifest;
+
+  manifest.fileName = fileName;
+
   options.atom.update(assoc('manifest', manifest));
 
   return distPath;
