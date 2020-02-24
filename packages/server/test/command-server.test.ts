@@ -121,6 +121,7 @@ describe('command server', () => {
     beforeEach(async () => {
       test1 = {
         description: "First Test",
+        path: 'foo.js',
         steps: [{
           description: "Do the thing",
           action: nothing
@@ -139,64 +140,50 @@ describe('command server', () => {
 
       test2 = {
         description: "Second Test",
+        path: 'bar.js',
         steps: [],
         children: [],
         assertions: []
       };
 
       atom.update(assoc('manifest', {
-        sources: ["foo.js", "bar.js"],
-        suite: {
-          description: "All Tests",
-          steps: [],
-          assertions: [],
-          children: [test1, test2]
-        },
+        description: "All Tests",
+        steps: [],
+        assertions: [],
+        children: [test1, test2]
       }));
-      result = await query(`
-manifest {
-  sources
-  suite {
-    description
-    children {
-      description
-      children {
-        description
-      }
-    }
-  }
-}
-`);
     });
 
-    it('contains the paths of the tests', () => {
-      expect(result).toMatchObject({
-        data: {
-          manifest: {
-            sources: [
-              "foo.js",
-              "bar.js"
-            ]
+    beforeEach(async () => {
+      result = await query(`
+        manifest {
+          description
+          children {
+            path
+            description
+            children {
+              description
+            }
           }
         }
-      })
+      `);
     });
 
     it('contains the test tree', () => {
       expect(result).toMatchObject({
         data: {
           manifest: {
-            suite: {
-              description: "All Tests",
+            description: "All Tests",
+            children: [{
+              path: 'foo.js',
+              description: "First Test",
               children: [{
-                description: "First Test",
-                children: [{
-                  description: "Son of First Test"
-                }]
-              }, {
-                description: "Second Test"
+                description: "Son of First Test"
               }]
-            }
+            }, {
+              path: 'bar.js',
+              description: "Second Test"
+            }]
           }
         }
       })
