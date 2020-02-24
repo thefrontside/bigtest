@@ -56,9 +56,11 @@ describe('manifest builder', () => {
   });
 
   describe('reading manifest from state on start', () => {
-    it('returns the manifest from the state', () => {
+    it('returns the manifest from the state, stripping out any code', () => {
       expect(atom.get().manifest.fileName).toMatch(/manifest-[0-9a-f]+\.js/);
       expect(atom.get().manifest.description).toEqual('Signing In');
+
+      expect(atom.get().manifest.steps[0].action).toEqual(undefined)
     });
   });
 

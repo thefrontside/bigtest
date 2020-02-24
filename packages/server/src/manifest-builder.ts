@@ -7,6 +7,9 @@ import * as fprint from 'fprint';
 import { assoc } from 'ramda';
 
 import { Atom } from './orchestrator/atom';
+import { Test } from './test';
+
+import { over, lensProp, dissoc, map, compose } from 'ramda';
 
 const { copyFile, mkdir } = fs.promises;
 
@@ -17,6 +20,12 @@ interface ManifestBuilderOptions {
   buildDir: string;
   distDir: string;
 };
+
+const stripCode = compose(
+  over(lensProp('steps'), map(dissoc('action'))),
+  over(lensProp('assertions'), map(dissoc('check'))),
+  over(lensProp('children'), map((test) => stripCode(test))),
+)
 
 function* processManifest(options: ManifestBuilderOptions): Operation {
   let buildDir = path.resolve(options.buildDir, 'manifest.js');
