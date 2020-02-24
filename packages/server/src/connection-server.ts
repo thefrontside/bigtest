@@ -47,16 +47,7 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
           console.debug('[connection] waiting for message', identifier);
           let message = yield options.inbox.receive({ agentId: identifier });
 
-          console.debug('[connection] got message from orchestrator', message);
-
-          if(message.type === 'run') {
-            yield sendData(connection, JSON.stringify({
-              type: 'run',
-              appUrl: `http://localhost:${options.proxyPort}`,
-              manifestUrl: `http://localhost:${options.manifestPort}/${message.manifestFileName}`,
-              testRunId: message.testRunId
-            }));
-          }
+          yield sendData(connection, JSON.stringify(message));
         }
       });
 

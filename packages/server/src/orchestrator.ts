@@ -154,6 +154,8 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   try {
     yield createCommandProcessor({
+      proxyPort: options.proxyPort,
+      manifestPort: options.manifestPort,
       atom: options.atom,
       inbox: commandServerDelegate, // note that this is intentionally inverted
       delegate: connectionServerInbox,

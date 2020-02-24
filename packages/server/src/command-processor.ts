@@ -7,6 +7,8 @@ interface CommandProcessorOptions {
   atom: Atom;
   inbox: Mailbox;
   delegate: Mailbox;
+  proxyPort: number;
+  manifestPort: number;
 };
 
 function* run(id: string, options: CommandProcessorOptions): Operation {
@@ -16,12 +18,15 @@ function* run(id: string, options: CommandProcessorOptions): Operation {
   let [agent] = Object.values(options.atom.get().agents);
   let manifest = options.atom.get().manifest;
 
+  let appUrl = `http://localhost:${options.proxyPort}`;
+  let manifestUrl = `http://localhost:${options.manifestPort}/${manifest.fileName}`;
+
   if(agent) {
     // todo: we should perform filtering of the manifest here
-    options.atom.set(lens, { manifest, agent });
+    options.atom.set(lens, { tree: manifest, agent });
 
     console.debug(`[command processor] starting test run ${id} on agent ${agent.identifier}`);
-    options.delegate.send({ type: 'run', manifestFileName: manifest.fileName, agentId: agent.identifier, testRunId: id });
+    options.delegate.send({ type: 'run', agentId: agent.identifier, appUrl, manifestUrl, testRunId: id, tree: manifest });
   }
 }
 
