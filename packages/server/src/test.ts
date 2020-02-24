@@ -1,8 +1,10 @@
 export interface Test {
-  description: string;
-  steps: Iterable<Step>;
-  assertions: Iterable<Assertion>;
-  children: Iterable<Test>;
+  steps: Step[];
+  assertions: Assertion[];
+  children: Test[];
+  description?: string;
+  fileName?: string;
+  path?: string;
 }
 
 export interface Step {
@@ -24,9 +26,3 @@ export interface Check {
 }
 
 export type Context = Record<string, unknown>;
-
-export interface Manifest {
-  name: string;
-  sources: string[];
-  suite: Test;
-}

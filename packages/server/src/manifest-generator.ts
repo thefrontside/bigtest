@@ -17,24 +17,21 @@ interface ManifestGeneratorOptions {
 function* writeManifest(options: ManifestGeneratorOptions) {
   let files = yield Promise.all(options.files.map((pattern) => promisify(glob)(pattern))).then((l) => l.flat());
 
-  let manifest = "const entries = [\n";
+  let manifest = 'let load = (res) => res.default || res;\n';
+  manifest += 'const children = [\n';
 
   for(let file of files) {
     let filePath = "./" + path.relative(path.dirname(options.destinationPath), file);
-    manifest += `  { path: ${JSON.stringify(file)}, test: require(${JSON.stringify(filePath)}).default },\n`;
+    manifest += `  Object.assign({}, load(require(${JSON.stringify(filePath)})), { path: ${JSON.stringify(file)} }),\n`;
   }
 
   manifest += "];\n";
   manifest +=
 `
 module.exports = {
-  sources: entries.map(({ path }) => path),
-  suite: {
-    description: "All Tests",
-    steps: [],
-    assertions: [],
-    children: entries.map(({ test }) => test),
-  }
+  steps: [],
+  assertions: [],
+  children: children,
 }
 `
 

@@ -1,4 +1,4 @@
-import { Manifest } from '../test';
+import { Test } from '../test';
 
 export type AgentState = {
   identifier: string;
@@ -23,5 +23,5 @@ export type AgentState = {
 
 export type OrchestratorState = {
   agents: Record<string, AgentState>;
-  manifest: Manifest;
+  manifest: Test;
 }

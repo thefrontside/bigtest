@@ -16,7 +16,7 @@ const BUILD_DIR = `${TEST_DIR}/build`
 const DIST_DIR = `${TEST_DIR}/dist`
 const MANIFEST_PATH = `${SRC_DIR}/manifest.js`
 
-const { mkdir, writeFile, readFile } = fs.promises;
+const { mkdir, copyFile, readFile } = fs.promises;
 
 describe('manifest builder', () => {
   let atom: Atom;
@@ -26,7 +26,7 @@ describe('manifest builder', () => {
   beforeEach((done) => rmrf(TEST_DIR, done));
   beforeEach(async () => {
     await mkdir(SRC_DIR, { recursive: true });
-    await writeFile(MANIFEST_PATH, "module.exports = { sources: [ 'boo' ] };");
+    await copyFile('./test/fixtures/raw-tree-format.t.js', MANIFEST_PATH);
 
     atom = new Atom();
     delegate = new Mailbox();
@@ -51,25 +51,26 @@ describe('manifest builder', () => {
     });
 
     it('contains the built manifest', () => {
-      expect(body).toContain('boo');
+      expect(body).toContain('Signing In');
     });
   });
 
   describe('reading manifest from state on start', () => {
     it('returns the manifest from the state', () => {
-      let { manifest: { sources: [ first ] } } = atom.get() ;
-      expect(first).toEqual('boo');
+      expect(atom.get().manifest.fileName).toMatch(/manifest-[0-9a-f]+\.js/);
+      expect(atom.get().manifest.description).toEqual('Signing In');
     });
   });
 
   describe('updating the manifest and then reading it', () => {
     beforeEach(async () => {
-      await writeFile(MANIFEST_PATH, "module.exports = { sources: ['foo' ] };");
+      await copyFile('./test/fixtures/empty.t.js', MANIFEST_PATH);
       await actions.receive(delegate, { event: "update" });
     });
 
     it('returns the updated manifest from the state', () => {
-      expect(atom.get().manifest.sources).toEqual(['foo']);
+      expect(atom.get().manifest.fileName).toMatch(/manifest-[0-9a-f]+\.js/);
+      expect(atom.get().manifest.description).toEqual('An empty test with no steps and no children');
     });
   });
 });

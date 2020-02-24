@@ -28,7 +28,7 @@ main(function*() {
     agentPort: 24004,
     externalAgentServerURL: process.env['BIGTEST_AGENT_SERVER_URL'],
     manifestPort: 24005,
-    testFiles: ["./test/fixtures/*.t.ts"],
+    testFiles: ["./test/fixtures/*.t.js"],
     cacheDir: tempy.directory(),
   }));
 

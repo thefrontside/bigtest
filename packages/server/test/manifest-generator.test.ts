@@ -6,7 +6,7 @@ import * as rmrf from 'rimraf';
 
 import { actions } from './helpers';
 
-import { Manifest } from '../src/test';
+import { Test } from '../src/test';
 import { createManifestGenerator } from '../src/manifest-generator';
 import { Mailbox } from '../src/effection/events';
 
@@ -42,28 +42,21 @@ describe('manifest-generator', () => {
   });
 
   describe('starting', () => {
-    let manifest: Manifest;
+    let manifest: Test;
 
     beforeEach(async () => {
       manifest = await loadManifest();
     });
 
     it('writes the manifest', () => {
-      expect(manifest.sources.length).toEqual(2)
-
-      expect(manifest.sources).toEqual([
-        './tmp/manifest-generator/test1.t.js',
-        './tmp/manifest-generator/test2.t.js'
-      ]);
-
-      let [one, two] = manifest.suite.children;
-      expect(one.description).toEqual('hello');
-      expect(two.description).toEqual('monkey');
+      expect(manifest.children.length).toEqual(2)
+      expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
+      expect(manifest.children[1]).toEqual({ path: './tmp/manifest-generator/test2.t.js', description: 'monkey' });
     });
   });
 
   describe('adding a test file', () => {
-    let manifest: Manifest;
+    let manifest: Test;
 
     beforeEach(async () => {
       await writeFile(TEST_DIR + "/test3.t.js", "module.exports = { default: { description: 'test' } };");
@@ -72,23 +65,15 @@ describe('manifest-generator', () => {
     });
 
     it('rewrites the manifest', () => {
-      expect(manifest.sources.length).toEqual(3)
-
-      let [first, second, third] = manifest.sources;
-      expect(first).toEqual('./tmp/manifest-generator/test1.t.js');
-      expect(second).toEqual('./tmp/manifest-generator/test2.t.js');
-      expect(third).toEqual('./tmp/manifest-generator/test3.t.js');
-
-      expect([...manifest.suite.children]).toMatchObject([
-        { description: 'hello' },
-        { description: 'monkey' },
-        { description: 'test' }
-      ]);
+      expect(manifest.children.length).toEqual(3)
+      expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
+      expect(manifest.children[1]).toEqual({ path: './tmp/manifest-generator/test2.t.js', description: 'monkey' });
+      expect(manifest.children[2]).toEqual({ path: './tmp/manifest-generator/test3.t.js', description: 'test' });
     });
   });
 
   describe('removing a test file', () => {
-    let manifest: Manifest;
+    let manifest: Test;
 
     beforeEach(async () => {
       await unlink(TEST_DIR + "/test2.t.js");
@@ -97,11 +82,8 @@ describe('manifest-generator', () => {
     });
 
     it('rewrites the manifest', () => {
-      let [file1, file2] = manifest.sources;
-      expect(file2).toBeUndefined();
-      expect(file1).toEqual('./tmp/manifest-generator/test1.t.js');
-      let [test] = manifest.suite.children;
-      expect(test.description).toEqual('hello');
+      expect(manifest.children.length).toEqual(1)
+      expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
     });
   });
 });
