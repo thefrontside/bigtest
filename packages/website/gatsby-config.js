@@ -1,7 +1,7 @@
 module.exports = {
   siteMetadata: {
     title: `BigTest`,
-    description: `Bigtest Description Beep`,
+    description: `Test at the same scale as your application`,
     author: `Frontside Inc.`,
   },
   plugins: [
