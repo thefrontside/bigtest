@@ -7,6 +7,7 @@ import { createSocketServer, Connection, sendData } from './ws';
 import { Atom } from './orchestrator/atom';
 
 interface ConnectionServerOptions {
+  inbox: Mailbox;
   delegate: Mailbox;
   atom: Atom;
   port: number;
@@ -33,15 +34,6 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
       }
     })
 
-    yield fork(function* sendRun() {
-      let fileName = options.atom.get().manifest.fileName;
-      yield sendData(connection, JSON.stringify({
-        type: "open",
-        url: `http://localhost:${options.proxyPort}`,
-        manifest: `http://localhost:${options.manifestPort}/${fileName}`
-      }));
-    });
-
     let { message: { data } } = yield messages.receive({ message: { type: 'connected' } });
 
     let identifier = `agent.${counter++}`;
@@ -50,10 +42,32 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
       console.debug('[connection] received connection message', data);
       options.atom.over(agentsLens, assoc(identifier, assoc("identifier", identifier, data)));
 
-      while (true) {
-        let message = yield messages.receive({ message: any });
-        console.debug("[connection] got message", message);
-      }
+      yield fork(function*() {
+        while (true) {
+          console.debug('[connection] waiting for message', identifier);
+          let message = yield options.inbox.receive({ agentId: identifier });
+
+          console.debug('[connection] got message from orchestrator', message);
+
+          if(message.type === 'run') {
+            yield sendData(connection, JSON.stringify({
+              type: 'run',
+              appUrl: `http://localhost:${options.proxyPort}`,
+              manifestUrl: `http://localhost:${options.manifestPort}/${message.manifestFileName}`,
+              testRunId: message.testRunId
+            }));
+          }
+        }
+      });
+
+      yield fork(function*() {
+        while (true) {
+          let message = yield messages.receive();
+          console.debug("[connection] got message from client", message);
+        }
+      });
+
+      yield;
     } finally {
       options.atom.over(agentsLens, dissoc(identifier));
       console.debug('[connection] disconnected');

@@ -5,6 +5,7 @@ import { AgentServer } from '@bigtest/agent';
 
 import { createProxyServer } from './proxy';
 import { createCommandServer } from './command-server';
+import { createCommandProcessor } from './command-processor';
 import { createConnectionServer } from './connection-server';
 import { createAgentServer } from './agent-server';
 import { createAppServer } from './app-server';
@@ -35,6 +36,8 @@ type OrchestratorOptions = {
 export function* createOrchestrator(options: OrchestratorOptions): Operation {
   console.log('[orchestrator] starting');
 
+  let connectionServerInbox = new Mailbox();
+
   let proxyServerDelegate = new Mailbox();
   let commandServerDelegate = new Mailbox();
   let connectionServerDelegate = new Mailbox();
@@ -64,7 +67,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     inject: `<script src="${agentServer.harnessScriptURL}"></script>`,
   }));
 
-
   yield fork(createCommandServer({
     delegate: commandServerDelegate,
     atom: options.atom,
@@ -72,6 +74,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   }));
 
   yield fork(createConnectionServer({
+    inbox: connectionServerInbox,
     delegate: connectionServerDelegate,
     atom: options.atom,
     port: options.connectionPort,
@@ -150,7 +153,11 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   options.delegate.send({ status: 'ready' });
 
   try {
-    yield;
+    yield createCommandProcessor({
+      atom: options.atom,
+      inbox: commandServerDelegate, // note that this is intentionally inverted
+      delegate: connectionServerInbox,
+    });
   } finally {
     console.log("[orchestrator] shutting down!");
   }

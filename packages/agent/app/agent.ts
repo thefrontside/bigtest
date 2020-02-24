@@ -37,16 +37,15 @@ if(connectTo) {
 
     console.log('[agent] got message:', message);
 
-    if(message.type === "open") {
-      console.log('[agent] loading test app via', message.url);
-      testElement.src = message.url;
+    if(message.type === "run") {
+      console.log('[agent] loading test app via', message.appUrl);
+      testElement.src = message.appUrl;
       let scriptElement = document.createElement('script') as HTMLScriptElement;
-      scriptElement.src = message.manifest;
+      scriptElement.src = message.manifestUrl;
       scriptElement.addEventListener('load', () => {
         console.log('[agent] loaded test manifest', __bigtestManifest);
       });
       document.body.appendChild(scriptElement);
-
     }
   });
 
