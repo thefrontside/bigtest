@@ -6,7 +6,7 @@ import { setLogLevel } from '../src/log-level';
 
 import { createOrchestrator, Atom } from '../src/index';
 
-setLogLevel('info');
+setLogLevel(process.env.LOG_LEVEL || 'info');
 
 main(function*() {
   let delegate = new Mailbox();
