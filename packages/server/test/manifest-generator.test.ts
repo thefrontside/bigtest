@@ -35,7 +35,7 @@ describe('manifest-generator', () => {
     actions.fork(createManifestGenerator({
       delegate,
       files: [TEST_DIR + "/*.t.{js,ts}"],
-      manifestPath: MANIFEST_PATH,
+      destinationPath: MANIFEST_PATH,
     }));
 
     await actions.receive(delegate, { status: 'ready' });

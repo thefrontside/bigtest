@@ -104,7 +104,8 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
-      response = await actions.fetch('http://localhost:24105/manifest.js');
+      let name = actions.atom.get().manifest.name;
+      response = await actions.fetch(`http://localhost:24105/${name}`);
       body = await response.text();
     });
 

@@ -9,6 +9,7 @@ import { OrchestratorState } from './state';
 export class Atom {
   private state: OrchestratorState = {
     manifest: {
+      name: "-none-",
       sources: [],
       suite: {
         description: "empty",

@@ -5,14 +5,14 @@ import { express } from '@effection/express';
 
 interface ManifestServerOptions {
   delegate: Mailbox;
-  path: string;
+  dir: string;
   port: number;
 };
 
 export function* createManifestServer(options: ManifestServerOptions): Operation {
   let app = express();
 
-  app.use(staticMiddleware(options.path));
+  app.use(staticMiddleware(options.dir));
 
   yield app.listen(options.port);
 
