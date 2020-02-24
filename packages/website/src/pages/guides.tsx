@@ -32,8 +32,8 @@ const GuidesPage = () => (
       <WarningBox>
         <H4 color="bodyCopy">BigTest is going through a major renovation</H4>
         <Text>
-          The core values behind the BigTest remain. But the egonomics, APIs, performance, and scope of the
-          framework have changed to be more ambicious.
+          The core values behind BigTest remain. But the ergonomics, APIs, performance, and scope of the framework
+          have changed to be more ambitious.
         </Text>
         <Text>
           We'll be working on the new Guides shortly. If you need access to v1.x Guides, they're available at:{' '}
