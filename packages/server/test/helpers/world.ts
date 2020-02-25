@@ -3,7 +3,7 @@ import fetch, { Response, RequestInfo, RequestInit } from 'node-fetch';
 import { AbortController } from 'abort-controller';
 
 export class World {
-  execution: any;
+  execution: Context;
   constructor() {
     this.execution = main(function*() { yield; });
   }
@@ -13,7 +13,7 @@ export class World {
   }
 
   fork(operation: Operation): Context {
-    return this.execution.spawn(operation);
+    return this.execution['spawn'](operation);
   }
 
   fetch(resource: RequestInfo, init: RequestInit = {}): Promise<Response> {
@@ -22,7 +22,7 @@ export class World {
 
     let result = fetch(resource, init);
 
-    this.execution.ensure(() => controller.abort());
+    this.execution['ensure'](() => controller.abort());
 
     return result;
   }

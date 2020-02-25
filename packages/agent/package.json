@@ -13,7 +13,7 @@
     "README.md"
   ],
   "scripts": {
-    "lint": "eslint '**/*.ts'",
+    "lint": "eslint index.ts '{app,bin,test}/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "start": "ts-node bin/start.ts",
     "bundle": "parcel watch --out-dir dist/app app/index.html",
