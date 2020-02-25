@@ -4,9 +4,9 @@ import { ChildProcess, fork as forkProcess } from '@effection/child_process';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as fprint from 'fprint';
-import { assoc } from 'ramda';
 
 import { Atom } from './orchestrator/atom';
+import { Test } from './test';
 
 const { copyFile, mkdir } = fs.promises;
 
@@ -33,7 +33,9 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
 
   manifest.fileName = fileName;
 
-  options.atom.update(assoc('manifest', manifest));
+
+  let slice = options.atom.slice<Test>(['manifest']);
+  slice.set(manifest as Test);
 
   return distPath;
 }

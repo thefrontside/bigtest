@@ -7,21 +7,23 @@ import { Mailbox } from '@effection/events';
 import { Client } from '../src/client';
 import { actions } from './helpers';
 import { createCommandServer } from '../src/command-server';
-import { Atom } from '../src/orchestrator/atom';
-import { assoc } from 'ramda';
+import { Atom, Slice } from '../src/orchestrator/atom';
 
 import { Test } from '../src/test';
+import { AgentState } from 'src/orchestrator/state';
 
 let COMMAND_PORT = 24200;
 
 describe('command server', () => {
   let delegate: Mailbox
-  let atom: Atom;
+  let agents: Slice<Record<string, AgentState>>;
+  let manifest: Slice<Test>;
 
   beforeEach(async () => {
     delegate = new Mailbox();
-    atom = new Atom();
-
+    let atom = new Atom();
+    agents = atom.slice<Record<string, AgentState>>(['agents']);
+    manifest = atom.slice<Test>(['manifest']);
     actions.fork(createCommandServer({
       delegate,
       atom,
@@ -62,7 +64,7 @@ describe('command server', () => {
   describe('querying connected agents', () => {
     let result: unknown;
     beforeEach(async () => {
-      atom.update(assoc('agents', {
+      agents.set({
         safari: {
           "identifier": "agent.1",
           "browser": {
@@ -83,7 +85,7 @@ describe('command server', () => {
             "version": "5.0"
           }
         }
-      }));
+      });
       result = await query('agents { browser { name } os { name } platform { type }}');
     });
     it('contains the agents', () => {
@@ -146,12 +148,12 @@ describe('command server', () => {
         assertions: []
       };
 
-      atom.update(assoc('manifest', {
+      manifest.set({
         description: "All Tests",
         steps: [],
         assertions: [],
         children: [test1, test2]
-      }));
+      });
     });
 
     beforeEach(async () => {
@@ -213,7 +215,7 @@ describe('command server', () => {
     describe('when another agent is added', () => {
       beforeEach((done) => {
         sync = done;
-        atom.update(assoc('agents', {
+        agents.set({
           safari: {
             "identifier": "agent.1",
             "browser": {
@@ -234,7 +236,7 @@ describe('command server', () => {
               "version": "5.0"
             }
           }
-        }));
+        });
       });
 
       it('publishes the new state', () => {
