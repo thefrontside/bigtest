@@ -22,7 +22,7 @@ const GreetLegacyUsers: React.FC<GreetLegacyProps> = () => {
   if (legacy) {
     return (
       <Section>
-        <WarningBox>
+        <WarningBox width={[1, 1, 2 / 3]}>
           <H4 color="bodyCopy">Coming from the old BigTest Site?</H4>
           <Text>
             Welcome to the new BigTest! We are making major changes to the project to make BigTest the ultimate

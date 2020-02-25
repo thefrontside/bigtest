@@ -29,7 +29,7 @@ const GuidesPage = () => (
       </HeroLink>
     </Hero>
     <Section>
-      <WarningBox>
+      <WarningBox width={[1, 1, 2 / 3]}>
         <H4>BigTest is going through a major renovation</H4>
         <Text>
           The core values behind BigTest remain. But the ergonomics, APIs, performance, and scope of the framework

@@ -117,15 +117,15 @@ const IndexPage = props => (
       </Flex>
     </Section>
     <Hero>
-      <Flex alignItems="center">
-        <Box width={[1, 1 / 2, 2 / 3]} paddingRight={[0, 'medium', 'xxLarge']}>
+      <Flex flexWrap="wrap" alignItems="center">
+        <Box width={[1, 1, 2 / 3]} paddingRight={[0, 'medium', 'xxLarge']}>
           <H2 color="dark-blue">Want to know more about BigTest?</H2>
           <Text>
             Join our mailing list! Receive updates and be an expert by the time BigTest is officially released.
           </Text>
           <SubscribeForm id={2} />
         </Box>
-        <Box width={[1, 1 / 2, 1 / 3]}>
+        <Box width={[1, 1, 1 / 3]} marginTop={['large', 'large', 0]}>
           <ReachOut />
         </Box>
       </Flex>
