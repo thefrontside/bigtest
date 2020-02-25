@@ -1,4 +1,5 @@
 import { monitor, Operation } from 'effection';
+import { EventEmitter } from 'events';
 
 import { compile } from './pattern';
 export { any } from './pattern';

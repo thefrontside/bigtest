@@ -2,8 +2,6 @@ import { Operation } from 'effection';
 import { Mailbox } from './effection/mailbox';
 
 export class SocketConnection {
-  private connection: WebSocket;
-
   static *start(connectTo: string) {
     let socket = new WebSocket(connectTo);
     let mailbox = yield Mailbox.watch(socket, ['open', 'message', 'close']);
@@ -13,8 +11,8 @@ export class SocketConnection {
 
   constructor(private connection: WebSocket, private mailbox: Mailbox) {}
 
-  send(message) {
-    this.socket.send(JSON.stringify(message));
+  send(message: unknown) {
+    this.connection.send(JSON.stringify(message));
   }
 
   *receive(): Operation {
