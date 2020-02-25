@@ -1,58 +1,44 @@
+import 'regenerator-runtime/runtime';
+import { main, fork } from 'effection';
 import * as Bowser from 'bowser';
+import { TestFrame } from './test-frame';
+import { SocketConnection } from './socket-connection';
+import { queryParams } from './query-params';
 
-function parseQueryParams(params) {
-  return params
-    .replace(/^\?/, "")
-    .split("&")
-    .map((line) => line.split("=", 2).map(decodeURIComponent))
-    .reduce((agg, [key, value]) => {
-      agg[key] = value
-      return agg
-    }, {});
-}
-
-let testElement = document.getElementById('test-frame') as HTMLIFrameElement;
-
-let { connectTo } = parseQueryParams(location.search);
-
-window.addEventListener("message", (message) => {
-  console.log('[agent] received message:', message.data);
-  testElement.contentWindow.postMessage('message from agent', '*');
-});
-
-if(connectTo) {
-  console.log('[agent] connecting to orchestrator at', connectTo);
-  let socket = new WebSocket(connectTo);
-
-  socket.addEventListener('open', () => {
-    socket.send(JSON.stringify({
-      type: 'connected',
-      data: Bowser.parse(navigator.userAgent)
-    }));
-    console.log('[agent] socket connection established');
-  });
-
-  socket.addEventListener('message', function (event) {
-    let message = JSON.parse(event.data)
-
-    console.log('[agent] got message:', message);
-
-    if(message.type === "run") {
-      console.log('[agent] loading test app via', message.appUrl);
-      testElement.src = message.appUrl;
-      let scriptElement = document.createElement('script') as HTMLScriptElement;
-      scriptElement.src = message.manifestUrl;
-      scriptElement.addEventListener('load', () => {
-        console.log('[agent] loaded test manifest', __bigtestManifest);
-      });
-      document.body.appendChild(scriptElement);
-    }
-  });
-
-  socket.addEventListener('close', () => {
-    socket.send('websocket message from agent');
-    console.log('[agent] socket connection closed');
-  });
+if(queryParams.connectTo) {
+  main(createAgent(queryParams.connectTo));
 } else {
   throw new Error("no orchestrator URL given, please specify the URL of the orchestrator by setting the `orchestrator` query param");
 }
+
+function* createAgent(connectTo: string) {
+  let testFrame = yield TestFrame.start();
+  let connection = yield SocketConnection.start(connectTo);
+
+  fork(function*() {
+    while(true) {
+      let message = yield testFrame.receive();
+      console.log('[agent] received message from harness:', message);
+    }
+  });
+
+  connection.send({
+    type: 'connected',
+    data: Bowser.parse(navigator.userAgent)
+  });
+
+  while(true) {
+    let message = yield connection.receive();
+
+    if(message.type === "run") {
+      fork(run(testFrame, message));
+    }
+  }
+}
+
+function* run(testFrame: TestFrame, { appUrl, manifestUrl, testRunId, tree }) {
+  console.log('[agent] loading test app via', appUrl);
+
+  yield testFrame.load(appUrl);
+}
+
