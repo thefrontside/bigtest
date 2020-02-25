@@ -33,6 +33,7 @@
     "node-fetch": "^2.6.0",
     "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.4",
+    "regenerator-runtime": "^0.13.3",
     "ts-node": "*",
     "typescript": "^3.7.0"
   },
