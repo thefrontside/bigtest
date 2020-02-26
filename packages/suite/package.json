@@ -1,0 +1,30 @@
+{
+  "name": "@bigtest/suite",
+  "version": "0.1.0",
+  "description": "Test data structures ",
+  "module": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "repository": "https://github.com/thefrontside/bigtest.git",
+  "author": "Frontside Engineering <engineering@frontside.io>",
+  "license": "MIT",
+  "files": [
+    "dist/*",
+    "README.md"
+  ],
+  "scripts": {
+    "lint": "eslint 'index.ts'",
+    "test": "echo success",
+    "prepack": "tsc --outDir dist --declaration"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.3.2",
+    "@typescript-eslint/parser": "^2.3.2",
+    "eslint": "^6.6.0",
+    "eslint-plugin-prefer-let": "^1.0.1",
+    "typescript": "^3.7.0"
+  },
+  "volta": {
+    "node": "12.16.0",
+    "yarn": "1.19.1"
+  }
+}

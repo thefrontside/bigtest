@@ -1,0 +1,10 @@
+{
+  "extends": "plugin:@typescript-eslint/recommended",
+  "plugins": ["prefer-let"],
+  "rules": {
+    "prefer-const": 0,
+    "prefer-let/prefer-let": 2,
+    "@typescript-eslint/no-use-before-define": 0,
+    "@typescript-eslint/explicit-function-return-type": 0
+  }
+}
