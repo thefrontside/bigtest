@@ -39,6 +39,16 @@ const Nav = styled.nav`
 //   margin: 0 ${({ theme }) => theme.space.medium};
 // `;
 
+const LegacyLink = styled.a`
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: ${({ theme }) => theme.fontSizes.medium};
+  font-family: ${({ theme }) => theme.fonts.heading};
+  align-content: center;
+  margin-left: ${({ theme }) => theme.space.medium};
+  padding-left: ${({ theme }) => theme.space.medium};
+  border-left: 1px solid ${({ theme }) => theme.colors.primary};
+`;
+
 const Header = () => (
   <HeadWrapper as="header">
     <LogoLink to="/">BigTest</LogoLink>
@@ -55,6 +65,9 @@ const Header = () => (
       <IconLink icon={discord_icon} href="https://discord.gg/W7r24Aa" title="Discord community" target="_blank">
         Discord
       </IconLink>
+      <LegacyLink href="http://v1.bigtestjs.io/">
+        v1.x Docs &#8594;
+      </LegacyLink>
     </Nav>
   </HeadWrapper>
 );
