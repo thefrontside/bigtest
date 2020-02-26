@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-18.04
-    name: Node 12
+    name: Tests
     steps:
       - uses: actions/checkout@v1
       - name: Setup node
