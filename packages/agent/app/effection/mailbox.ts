@@ -36,24 +36,22 @@ export class Mailbox {
     };
   }
 
-  static *watch(
+  *watch(
     emitter: EventTarget,
     events: string | string[],
     prepare: (event: { event: string; args: unknown[] }) => unknown = x => x
   ): Operation {
-    let mailbox = new Mailbox();
     let parent = yield ({ resume, context: { parent }}) => resume(parent.parent);
 
     parent.spawn(monitor(({ ensure }) => {
       for (let name of [].concat(events)) {
         let listener = (...args) => {
-          mailbox.send(prepare({ event: name, args }));
+          this.send(prepare({ event: name, args }));
         }
 
         emitter.addEventListener(name, listener);
         ensure(() => emitter.removeEventListener(name, listener));
       }
     }));
-    return mailbox;
   }
 }

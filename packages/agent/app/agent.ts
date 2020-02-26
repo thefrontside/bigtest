@@ -1,6 +1,7 @@
 import { fork } from 'effection';
 
 import * as Bowser from 'bowser';
+import { Test } from './test';
 import { TestFrame } from './test-frame';
 import { SocketConnection } from './socket-connection';
 
@@ -9,15 +10,10 @@ export function* createAgent(connectTo: string) {
     throw new Error("no orchestrator URL given, please specify the URL of the orchestrator by setting the `orchestrator` query param");
   }
 
+  console.log('[agent] connecting to', connectTo);
+
   let testFrame = yield TestFrame.start();
   let connection = yield SocketConnection.start(connectTo);
-
-  yield fork(function*() {
-    while(true) {
-      let message = yield testFrame.receive();
-      console.log('[agent] received message from harness:', message);
-    }
-  });
 
   connection.send({
     type: 'connected',
@@ -25,16 +21,45 @@ export function* createAgent(connectTo: string) {
   });
 
   while(true) {
+    console.log('[agent] waiting for message');
     let message = yield connection.receive();
+    console.log('[agent] receive message', message);
 
     if(message.type === "run") {
-      yield fork(run(testFrame, message));
+      yield run(connection, testFrame, message);
     }
   }
 }
 
-function* run(testFrame: TestFrame, { appUrl, manifestUrl, testRunId, tree }) {
+function* leafPaths(tree: Test, prefix: string[] = []): Generator<string[]> {
+  let path = prefix.concat(tree.description);
+  if(tree.children.length === 0) {
+    yield path;
+  } else {
+    for(let child of tree.children) {
+      yield* leafPaths(child, path);
+    }
+  }
+}
+
+function* run(connection: SocketConnection, testFrame: TestFrame, { appUrl, manifestUrl, testRunId, tree }) {
   console.log('[agent] loading test app via', appUrl);
 
-  yield testFrame.load(appUrl);
+  try {
+    for(let leafPath of leafPaths(tree)) {
+      console.log('[agent] running test', leafPath);
+      yield testFrame.load(appUrl);
+      testFrame.send({ type: 'run', testRunId, manifestUrl, path: leafPath });
+      while(true) {
+        let message = yield testFrame.receive();
+        if(message.type === 'done') {
+          break;
+        } else {
+          connection.send(message);
+        }
+      }
+    }
+  } catch(e) {
+    console.error(e);
+  }
 }

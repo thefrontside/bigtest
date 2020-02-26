@@ -27,13 +27,6 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
       return { message: JSON.parse(message.utf8Data) };
     })
 
-    yield fork(function* heartbeat() {
-      while (true) {
-        yield timeout(10000);
-        yield sendData(connection, JSON.stringify({type: "heartbeat"}));
-      }
-    })
-
     let { message: { data } } = yield messages.receive({ message: { type: 'connected' } });
 
     let identifier = `agent.${counter++}`;
