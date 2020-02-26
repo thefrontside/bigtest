@@ -41,7 +41,7 @@ describe('manifest builder', () => {
       });
     });
 
-    resultPath = (await actions.receive(delegate, { status: 'ready' })).path;
+    resultPath = (await actions.receive(delegate, { status: 'ready' }))['path'];
   });
 
   describe('retrieving test file manifest from disk', () => {

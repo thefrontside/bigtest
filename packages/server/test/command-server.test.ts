@@ -32,7 +32,7 @@ describe('command server', () => {
   });
 
   describe('fetching the agents at the start', () => {
-    let result: Array<any>;
+    let result: unknown;
     beforeEach(async () => {
       result = await query('agents { browser { name } }');
     });
@@ -43,19 +43,19 @@ describe('command server', () => {
   });
 
   describe('running the entire suite', () => {
-    let result: any;
+    let result: unknown;
     beforeEach(async () => {
       result = await mutation('run');
     });
 
     it('returns a test run id', () => {
-      expect(result.data.run).toMatch('test-run');
+      expect(result['data'].run).toMatch('test-run');
     });
 
     it('sends a message to the orchestrator telling it to start the test run', async () => {
       let message = await actions.receive(delegate, { type: "run" });
-      expect(message.type).toEqual("run")
-      expect(message.id).toEqual(result.data.run)
+      expect(message['type']).toEqual("run")
+      expect(message['id']).toEqual(result['data'].run)
     });
   });
 
@@ -114,9 +114,9 @@ describe('command server', () => {
   });
 
   describe('querying the manifest', () => {
-    let result: { data: { manifest: Array<{ path: string; test: string }> } };
+    let result: unknown;
 
-    async function nothing() {}
+    let nothing = async x => x;
     let test1: Test, test2: Test;
     beforeEach(async () => {
       test1 = {
@@ -252,14 +252,12 @@ describe('command server', () => {
   });
 });
 
-// eslint-disable-next-line @typescript/no-explicit-any
-async function query(text: string): Promise<any> {
+async function query(text: string): Promise<unknown> {
   let response = await actions.fetch(`http://localhost:${COMMAND_PORT}?query={${encodeURIComponent(text)}}`);
   return await response.json();
 }
 
-// eslint-disable-next-line @typescript/no-explicit-any
-async function mutation(text: string): Promise<any> {
+async function mutation(text: string): Promise<unknown> {
   let body = `mutation { ${text} }`
   let response = await actions.fetch(`http://localhost:${COMMAND_PORT}`, {
     method: "POST",

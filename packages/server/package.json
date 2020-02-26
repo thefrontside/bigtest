@@ -12,7 +12,7 @@
     "watch": "ts-node -r module-alias/register bin/watch.ts",
     "query": "ts-node -r module-alias/register bin/query.ts",
     "subscribe": "ts-node -r module-alias/register bin/subscribe.ts",
-    "lint": "eslint 'src/**/*.ts' 'bin/**/*.ts'",
+    "lint": "eslint '{src,bin,test}/**/*.ts'",
     "test": "mocha -r ./test/setup test/**/*.test.ts",
     "mocha": "mocha -r ./test/setup",
     "test:app:start": "bigtest-todomvc 24000",

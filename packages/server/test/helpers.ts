@@ -10,8 +10,8 @@ import { Atom } from '../src/orchestrator/atom';
 
 interface Actions {
   atom: Atom;
-  fork<T>(operation: Operation): Context;
-  receive(mailbox: Mailbox, pattern: any): PromiseLike<any>;
+  fork(operation: Operation): Context;
+  receive(mailbox: Mailbox, pattern: unknown): PromiseLike<unknown>;
   fetch(resource: RequestInfo, init?: RequestInit): PromiseLike<Response>;
   startOrchestrator(): PromiseLike<Context>;
 }
@@ -25,7 +25,7 @@ export const actions: Actions = {
     return currentWorld.fork(operation);
   },
 
-  receive(mailbox: Mailbox, pattern): PromiseLike<any> {
+  receive(mailbox: Mailbox, pattern): PromiseLike<unknown> {
     return actions.fork(mailbox.receive(pattern));
   },
 

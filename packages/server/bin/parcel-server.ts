@@ -4,7 +4,7 @@ import { createParcelServer } from '../src/parcel-server';
 import * as yargs from 'yargs';
 
 yargs
-  .command('$0 [files..]', 'run the parcel server', () => {}, (argv) => {
+  .command('$0 [files..]', 'run the parcel server', x => x, (argv) => {
     main(createParcelServer(argv.files as string[], { port: argv.port as number }, {
       outDir: argv.outDir,
       outFile: argv.outFile,

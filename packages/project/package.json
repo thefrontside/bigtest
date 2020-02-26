@@ -9,7 +9,7 @@
   "license": "MIT",
   "files": ["dist/*", "README.md"],
   "scripts": {
-    "lint": "eslint 'src/**/*.ts' 'bin/**/*.ts'",
+    "lint": "eslint '{src,test}/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "prepack": "microbundle --output dist --format modern,es,umd"
   },
