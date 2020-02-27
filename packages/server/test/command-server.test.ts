@@ -4,12 +4,13 @@ import * as expect from 'expect';
 import { Operation } from 'effection';
 import { Mailbox } from '@effection/events';
 
+import { Test } from '@bigtest/suite';
+
 import { Client } from '../src/client';
 import { actions } from './helpers';
 import { createCommandServer } from '../src/command-server';
 import { Atom, Slice } from '../src/orchestrator/atom';
 
-import { Test } from '../src/test';
 import { AgentState } from 'src/orchestrator/state';
 
 let COMMAND_PORT = 24200;
@@ -123,10 +124,8 @@ describe('command server', () => {
     beforeEach(async () => {
       test1 = {
         description: "First Test",
-        path: 'foo.js',
         steps: [{
           description: "Do the thing",
-          action: nothing
         }],
         children: [{
           description: "Son of First Test",
@@ -136,13 +135,11 @@ describe('command server', () => {
         }],
         assertions: [{
           description: "It did the thing",
-          check: nothing
         }]
       };
 
       test2 = {
         description: "Second Test",
-        path: 'bar.js',
         steps: [],
         children: [],
         assertions: []
@@ -161,7 +158,6 @@ describe('command server', () => {
         manifest {
           description
           children {
-            path
             description
             children {
               description
@@ -177,13 +173,11 @@ describe('command server', () => {
           manifest: {
             description: "All Tests",
             children: [{
-              path: 'foo.js',
               description: "First Test",
               children: [{
                 description: "Son of First Test"
               }]
             }, {
-              path: 'bar.js',
               description: "Second Test"
             }]
           }

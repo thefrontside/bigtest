@@ -43,8 +43,7 @@ type Engine {
 }
 
 type Test {
-  description: String
-  path: String
+  description: String!
   fileName: String
   steps: [Step!]!
   assertions: [Assertion!]!
@@ -52,12 +51,10 @@ type Test {
 }
 
 type Step {
-  path: [String!]!
   description: String!
 }
 
 type Assertion {
-  path: [String!]!
   description: String!
 }
 `);

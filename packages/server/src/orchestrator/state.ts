@@ -1,4 +1,4 @@
-import { Test } from '../test';
+import { Test } from '@bigtest/suite';
 
 export type AgentState = {
   identifier: string;
@@ -23,5 +23,9 @@ export type AgentState = {
 
 export type OrchestratorState = {
   agents: Record<string, AgentState>;
-  manifest: Test;
+  manifest: Manifest;
+}
+
+export interface Manifest extends Test {
+  fileName: string;
 }
