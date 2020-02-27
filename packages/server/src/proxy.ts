@@ -30,7 +30,7 @@ export function* createProxyServer(options: ProxyOptions): Operation {
     if(contentType && contentType.split(';')[0] === 'text/html') {
       res.removeHeader('content-length');
       res.removeHeader('content-encoding');
-      res.removeHeader('cache-control');
+      res.removeHeader('last-modified');
       res.removeHeader('etag');
 
       res.writeHead(proxyRes.statusCode, proxyRes.statusMessage);
