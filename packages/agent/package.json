@@ -2,8 +2,7 @@
   "name": "@bigtest/agent",
   "version": "0.1.0",
   "description": "Agent for connecting test environments (browsers) to BigTest",
-  "main": "dist/agent.umd.js",
-  "module": "dist/agent.esm.js",
+  "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.io>",
@@ -13,11 +12,11 @@
     "README.md"
   ],
   "scripts": {
-    "lint": "eslint index.ts '{app,bin,test}/**/*.ts'",
+    "lint": "eslint '{app,bin,src,test}/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "start": "ts-node bin/start.ts",
     "bundle": "parcel watch --out-dir dist/app app/index.html",
-    "prepack": "microbundle --entry index.ts --output dist --format modern,es,umd && parcel build --out-dir dist/app app/index.html app/harness.ts"
+    "prepack": "tsc --outdir dist --project tsconfig.dist.json --declaration --sourcemap && parcel build --out-dir dist/app app/index.html app/harness.ts"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.1",
@@ -28,7 +27,6 @@
     "eslint": "^6.6.0",
     "eslint-plugin-prefer-let": "^1.0.1",
     "expect": "^24.9.0",
-    "microbundle": "^0.12.0-next.8",
     "mocha": "^6.2.2",
     "node-fetch": "^2.6.0",
     "parcel": "^1.12.4",

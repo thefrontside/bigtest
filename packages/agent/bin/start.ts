@@ -2,7 +2,7 @@ import { spawn } from 'child_process';
 import { Context, monitor } from 'effection';
 import * as Path from 'path';
 
-import { AgentServer } from '../index';
+import { AgentServer } from '../src/index';
 import { main, once, self } from './helpers';
 
 

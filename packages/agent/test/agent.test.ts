@@ -2,7 +2,7 @@ import { main, Operation, Context } from 'effection';
 import { describe, it } from 'mocha';
 import * as expect from 'expect'
 import fetch from 'node-fetch';
-import { AgentServer } from '../index';
+import { AgentServer } from '../src/index';
 
 describe("@bigtest/agent", () => {
   let World: Context;
