@@ -2,7 +2,7 @@
   "name": "@bigtest/agent",
   "version": "0.1.0",
   "description": "Agent for connecting test environments (browsers) to BigTest",
-  "module": "dist/index.js",
+  "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.io>",
