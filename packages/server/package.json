@@ -15,11 +15,11 @@
     "lint": "eslint '{src,bin,test}/**/*.ts'",
     "test": "mocha -r ./test/setup test/**/*.test.ts",
     "mocha": "mocha -r ./test/setup",
-    "test:app:start": "bigtest-todomvc 24000",
+    "test:app:start": "ts-node -r module-alias/register ./bin/todomvc.ts",
     "prepack": "echo 'prepack'"
   },
   "devDependencies": {
-    "@bigtest/todomvc": "^0.1.0-31b9020",
+    "@bigtest/todomvc": "^0.1.0",
     "@types/mocha": "^5.2.7",
     "@types/node-fetch": "^2.5.3",
     "@types/ramda": "types/npm-ramda#dist",
