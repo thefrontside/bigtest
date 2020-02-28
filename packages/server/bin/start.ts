@@ -16,11 +16,8 @@ main(function*() {
     delegate,
     atom,
     appCommand: "yarn",
-    appArgs: ["test:app:start"],
-    appEnv: {
-      "PORT": "24000",
-      "BROWSER": "none",
-    },
+    appArgs: ["test:app:start", "24000"],
+    appEnv: {},
     appPort: 24000,
     proxyPort: 24001,
     commandPort: 24002,

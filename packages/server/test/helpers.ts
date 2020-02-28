@@ -40,8 +40,8 @@ export const actions: Actions = {
       globalWorld.fork(createOrchestrator({
         delegate,
         atom: this.atom,
-        appCommand: "bigtest-todomvc 24100",
-        appDir: "test/app",
+        appCommand: "yarn",
+        appArgs: ['test:app:start', '24100'],
         appPort: 24100,
         testFiles: ["test/fixtures/*.t.js"],
         cacheDir: "./tmp/test/orchestrator",
