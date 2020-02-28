@@ -15,7 +15,7 @@
     "lint": "eslint '{src,bin,test}/**/*.ts'",
     "test": "mocha -r ./test/setup test/**/*.test.ts",
     "mocha": "mocha -r ./test/setup",
-    "test:app:start": "bigtest-todomvc 24000",
+    "test:app:start": "ts-node -r module-alias/register ./bin/todomvc.ts",
     "prepack": "echo 'prepack'"
   },
   "devDependencies": {
