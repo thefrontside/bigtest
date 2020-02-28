@@ -14,7 +14,7 @@
   "scripts": {
     "lint": "eslint '{app,bin,src,test}/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "start": "ts-node bin/start.ts",
+    "start": "parcel serve --out-dir dist/app app/index.html",
     "bundle": "parcel watch --out-dir dist/app app/index.html",
     "prepack": "tsc --outdir dist --project tsconfig.dist.json --declaration --sourcemap && parcel build --out-dir dist/app app/index.html app/harness.ts"
   },
