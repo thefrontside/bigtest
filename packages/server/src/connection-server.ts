@@ -1,10 +1,9 @@
 import { Operation, fork, timeout } from 'effection';
 import { Mailbox, any } from '@effection/events';
 import { IMessage } from 'websocket';
-import { assoc, dissoc, lensPath } from 'ramda';
-
 import { createSocketServer, Connection, sendData } from './ws';
 import { Atom } from './orchestrator/atom';
+import { AgentState } from './orchestrator/state';
 
 interface ConnectionServerOptions {
   delegate: Mailbox;
@@ -14,7 +13,6 @@ interface ConnectionServerOptions {
   manifestPort: number;
 };
 
-const agentsLens = lensPath(['agents']);
 let counter = 1;
 
 export function* createConnectionServer(options: ConnectionServerOptions): Operation {
@@ -46,16 +44,19 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
 
     let identifier = `agent.${counter++}`;
 
+    let agent = options.atom.slice<AgentState>(['agents', identifier]);
+
     try {
       console.debug('[connection] received connection message', data);
-      options.atom.over(agentsLens, assoc(identifier, assoc("identifier", identifier, data)));
+
+      agent.set({ ...data, identifier });
 
       while (true) {
         let message = yield messages.receive({ message: any });
         console.debug("[connection] got message", message);
       }
     } finally {
-      options.atom.over(agentsLens, dissoc(identifier));
+      agent.remove();
       console.debug('[connection] disconnected');
     }
   }
