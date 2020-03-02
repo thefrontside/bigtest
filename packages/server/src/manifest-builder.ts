@@ -5,8 +5,9 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as fprint from 'fprint';
 
+import { Test } from '@bigtest/suite';
+
 import { Atom } from './orchestrator/atom';
-import { Test } from './test';
 
 const { copyFile, mkdir } = fs.promises;
 
