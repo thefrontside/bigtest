@@ -4,9 +4,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as rmrf from 'rimraf';
 
+import { Test } from '@bigtest/suite';
+
 import { actions } from './helpers';
 
-import { Test } from '../src/test';
 import { createManifestGenerator } from '../src/manifest-generator';
 import { Mailbox } from '../src/effection/events';
 
