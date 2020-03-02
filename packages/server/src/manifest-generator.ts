@@ -29,6 +29,7 @@ function* writeManifest(options: ManifestGeneratorOptions) {
   manifest +=
 `
 module.exports = {
+  description: "All tests",
   steps: [],
   assertions: [],
   children: children,

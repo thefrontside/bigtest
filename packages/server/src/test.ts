@@ -2,7 +2,7 @@ export interface Test {
   steps: Step[];
   assertions: Assertion[];
   children: Test[];
-  description?: string;
+  description: string;
   fileName?: string;
   path?: string;
 }
