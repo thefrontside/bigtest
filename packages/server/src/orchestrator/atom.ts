@@ -2,7 +2,7 @@ import * as R from 'ramda';
 
 import { EventEmitter } from 'events';
 import { Operation } from 'effection';
-import { on } from '@effection/events';
+import { once } from '@bigtest/effection';
 
 import { OrchestratorState } from './state';
 
@@ -34,7 +34,7 @@ export class Atom {
   }
 
   *next(): Operation {
-    let [state]: [OrchestratorState] = yield on(this.subscriptions, 'state');
+    let [state]: [OrchestratorState] = yield once(this.subscriptions, 'state');
     return state;
   }
 }

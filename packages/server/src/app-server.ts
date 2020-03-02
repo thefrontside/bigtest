@@ -1,5 +1,6 @@
 import { fork, timeout, Operation } from 'effection';
-import { on, Mailbox } from '@effection/events';
+import { Mailbox } from '@effection/events';
+import { once } from '@bigtest/effection';
 import { spawn } from '@effection/child_process';
 import { Socket } from 'net';
 import * as process from 'process';
@@ -43,7 +44,7 @@ export function* createAppServer(options: AppServerOptions): Operation {
   });
 
   let errorMonitor = yield fork(function*() {
-    let [error]: [Error] = yield on(child, "error");
+    let [error]: [Error] = yield once(child, "error");
     throw error;
   });
 
@@ -53,7 +54,7 @@ export function* createAppServer(options: AppServerOptions): Operation {
 
   options.delegate.send({ status: 'ready' });
 
-  yield on(child, "exit");
+  yield once(child, "exit");
 
   errorMonitor.halt();
 }

@@ -9,7 +9,7 @@ import {
 import { fork, Operation } from 'effection';
 import { resumeOnCb } from './util';
 
-import { on } from '@effection/events';
+import { once } from '@bigtest/effection';
 
 import { listen } from './http';
 
@@ -36,7 +36,7 @@ export function* listenWS(server: Server, handler: ConnectionHandler): Operation
 
   try {
     while (true) {
-      let [request]: [Request] = yield on(socket, "request");
+      let [request]: [Request] = yield once(socket, "request");
       let connection = request.accept(null, request.origin);
 
       let handle = yield fork(function* setupConnection() {
