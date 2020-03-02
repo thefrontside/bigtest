@@ -44,6 +44,22 @@ export default {
         }
       ],
       children: []
+    },
+    {
+      description: "when I go to the main navigation page",
+      steps: [
+        {
+          description: "I click the hamburger button",
+          action: async () => {}
+        }
+      ],
+      assertions: [
+        {
+          description: "I see my username",
+          check: () => {}
+        }
+      ],
+      children: []
     }
   ]
 }
