@@ -2,8 +2,8 @@
   "name": "@bigtest/project",
   "version": "0.1.0",
   "description": "Utilities for with BigTest projects",
-  "main": "dist/project.umd.js",
-  "module": "dist/project.esm.js",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.js",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.io>",
   "license": "MIT",
@@ -11,17 +11,15 @@
   "scripts": {
     "lint": "eslint '{src,test}/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "prepack": "microbundle --output dist --format modern,es,umd"
+    "prepack": "tsc --outdir dist --project tsconfig.dist.json --declaration --sourcemap"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.1",
     "@typescript-eslint/eslint-plugin": "^2.3.2",
     "@typescript-eslint/parser": "^2.3.2",
-    "classnames": "^2.2.5",
     "eslint": "^6.6.0",
     "eslint-plugin-prefer-let": "^1.0.1",
     "expect": "^24.9.0",
-    "microbundle": "^0.12.0-next.8",
     "mocha": "^6.2.2",
     "ts-node": "*",
     "typescript": "^3.7.0"
