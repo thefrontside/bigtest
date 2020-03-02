@@ -2,12 +2,29 @@ import { main, Operation, Context } from 'effection';
 import { describe, it } from 'mocha';
 import * as expect from 'expect'
 import fetch from 'node-fetch';
-import { AgentServer } from '../src/index';
+
+import { firefox, BrowserType, Browser, Page } from 'playwright';
+
+import { AgentConnectionServer, AgentServer } from '../src/index';
+
+import { Mailbox } from '@bigtest/effection';
+import { AgentConnection } from 'src/client';
 
 describe("@bigtest/agent", () => {
   let World: Context;
   async function spawn<T>(operation: Operation): Promise<T> {
     return World["spawn"](operation);
+  }
+
+  function launch(browserType: BrowserType, options = {}): Promise<Browser> {
+    return spawn(({ resume, fail, context: { parent } }) => {
+      browserType.launch(options)
+        .then(browser => {
+          parent['ensure'](() => browser.close());
+          resume(browser);
+        })
+        .catch(error => fail(error));
+    });
   }
 
   beforeEach(() => {
@@ -19,7 +36,31 @@ describe("@bigtest/agent", () => {
   });
 
   describe('starting a new server', () => {
-    let server: AgentServer = AgentServer.create({port: 8000});
+    let server: AgentServer;
+    let client: AgentConnectionServer;
+    let inbox: Mailbox;
+    let delegate: Mailbox;
+    let connection: AgentConnection;
+
+    beforeEach(async () => {
+      server = AgentServer.create({port: 8000}, 'dist/app');
+      client = new AgentConnectionServer({
+        port: 8001,
+        inbox: inbox = new Mailbox(),
+        delegate: delegate = new Mailbox()
+      });
+
+      await spawn(server.listen());
+
+      await spawn(client.listen(function*(conn: AgentConnection) {
+        connection = conn;
+        try {
+          yield
+        } finally {
+          connection = undefined;
+        }
+      }));
+    });
 
     it('has an agent url where it will server the agent application', () => {
       expect(server.harnessScriptURL).toBeDefined();
@@ -30,9 +71,6 @@ describe("@bigtest/agent", () => {
     });
 
     describe('fetching the harness', () => {
-      beforeEach(async () => {
-        await spawn(server.listen());
-      });
 
       let harnessBytes: string;
       beforeEach(async () => {
@@ -45,6 +83,42 @@ describe("@bigtest/agent", () => {
       });
     });
 
+
+    describe('connecting a browser to the agent URL', () => {
+      let browser: Browser;
+      let page: Page;
+
+      beforeEach(async function() {
+        this.timeout(10000);
+        browser = await launch(firefox, { headless: false });
+        page = await browser.newPage();
+        await page.goto(server.connectURL(`ws://localhost:8001`));
+        await spawn(delegate.receive({ connected: true }));
+      });
+
+      afterEach(async () => {
+        if (page) {
+          await page.close();
+        }
+      })
+      it('connects back to the agent connection server ', () => {
+        expect(browser).toBeDefined();
+        expect(connection).toBeDefined();
+        expect(typeof connection.id).toEqual('string');
+      });
+
+      describe('closing browser connection', () => {
+        beforeEach(async () => {
+          await page.close();
+          await spawn(delegate.receive({ connected: false }))
+        });
+
+        it('closes the connection scope', () => {
+          expect(connection).toBeUndefined();
+        });
+      });
+
+    });
   });
 
   describe('a proxy development server', () => {
