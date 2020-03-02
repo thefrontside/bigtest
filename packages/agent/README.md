@@ -35,14 +35,14 @@ serve the agent app from `agent.agentAppURL`;
 Normally, the server will start an agent for you, but in order to
 develop the agent code, you'll want to start a development agent at a
 given port, and then point your bigtest server at it at the known
-location. To do this, run the `start` command.
+location. To do this, run the `start` command. This will start a
+parcel server to continually watch and build the application as you
+develop. Any arguments will be passed on to parcel.
 
 ``` shell
-$ yarn start 5000
-✨  Built in 501ms.
-serving agent application
---> connect agents at http://localhost:56504
---> harness script at http://localhost:56504/harness.js
+$ yarn start --port 5000
+Server running at http://localhost:5000
+✨  Built in 463ms.
 ```
 
 You can now, in your server code, instantiate the AgentServer with the

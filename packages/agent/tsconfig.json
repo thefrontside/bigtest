@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": false,
     "typeRoots": [
@@ -10,7 +11,6 @@
   },
   "include": [
     "src/**/*.ts",
-    "bin/*.ts",
     "test/**/*.ts"
   ]
 }
