@@ -1,7 +1,8 @@
 import { w3cwebsocket as WebSocket } from 'websocket';
 import { EventEmitter } from 'events';
 import { monitor, Operation, Context } from 'effection';
-import { on } from './effection/events'
+
+import { once } from '@bigtest/effection';
 
 import { Message, isErrorResponse, isDataResponse } from './protocol';
 
@@ -21,12 +22,12 @@ export class Client {
     });
 
     context['spawn'](monitor(function* () {
-      let [error]: [Error] = yield on(subscriptions, 'error');
+      let [error]: [Error] = yield once(subscriptions, 'error');
       throw error;
     }));
 
     context['spawn'](monitor(function* () {
-      yield on(subscriptions, 'close');
+      yield once(subscriptions, 'close');
       throw new Error('Socket closed on the remote end');
     }));
   }
@@ -34,7 +35,7 @@ export class Client {
   static *create(url: string): Operation {
     let client = new Client(new WebSocket(url), yield parent);
 
-    yield on(client.subscriptions, 'open');
+    yield once(client.subscriptions, 'open');
 
     return client;
   }
@@ -62,7 +63,7 @@ export class Client {
 
     let next = function* getNextResponse() {
       while (true) {
-        let [event]: [MessageEvent] = yield on(subscriptions, 'message');
+        let [event]: [MessageEvent] = yield once(subscriptions, 'message');
         let message: Message = JSON.parse(event.data);
 
         if (message.responseId === responseId) {

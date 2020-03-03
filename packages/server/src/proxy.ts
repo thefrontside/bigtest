@@ -1,5 +1,6 @@
 import { fork, Operation } from 'effection';
-import { on, watchError, Mailbox, any } from '@effection/events';
+import { once } from '@bigtest/effection';
+import { watchError, Mailbox, any } from '@effection/events';
 
 import * as proxy from 'http-proxy';
 import * as http from 'http';
@@ -58,7 +59,7 @@ export function* createProxyServer(options: ProxyOptions): Operation {
       tr.pipe(res);
 
       try {
-        yield on(tr, 'end');
+        yield once(tr, 'end');
       } finally {
         // tr.close(); there is no close method on Trumpet, how do we not leak it in case of errors?
         unzip.close();
@@ -68,7 +69,7 @@ export function* createProxyServer(options: ProxyOptions): Operation {
 
       proxyRes.pipe(res);
 
-      yield on(proxyRes, 'end');
+      yield once(proxyRes, 'end');
     }
     console.debug('[proxy]', 'finish', req.method, req.url);
   };

@@ -1,5 +1,5 @@
 import { monitor, Operation } from 'effection';
-import { on } from '@effection/events';
+import { once } from '@bigtest/effection';
 
 import * as childProcess from 'child_process';
 import { SpawnOptions, ForkOptions, ChildProcess } from 'child_process';
@@ -26,12 +26,12 @@ function supervise(execution: any, child: ChildProcess) { // eslint-disable-line
   });
 
   execution.spawn(monitor(function*() {
-    let [error]: [Error] = yield on(child, "error");
+    let [error]: [Error] = yield once(child, "error");
     throw error;
   }));
 
   execution.spawn(monitor(function*() {
-    let [code]: [number] = yield on(child, "exit");
+    let [code]: [number] = yield once(child, "exit");
     if(code !== 0) { throw new Error("child exited with non-zero exit code") }
   }));
 }

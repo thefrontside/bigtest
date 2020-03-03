@@ -1,7 +1,7 @@
 import { watch } from 'fs';
 import { spawn } from 'child_process';
 import { main, fork, Operation, Context } from 'effection';
-import { on } from '@effection/events';
+import { once } from '@bigtest/effection';
 
 const self: Operation = ({ resume, context: { parent }}) => resume(parent);
 
@@ -12,7 +12,7 @@ function* start(): Operation {
     let watcher = watch('src', { recursive: true });
     try {
       while (true) {
-        yield on(watcher, "change");
+        yield once(watcher, "change");
         console.log('change detected, restarting....');
         restart();
       }
@@ -43,12 +43,12 @@ function* launch(cmd: string, args: string[]): Operation {
 
   yield fork(function*() {
     let errors = yield fork(function*() {
-      let [ error ] = yield on(child, "error");
+      let [ error ] = yield once(child, "error");
       throw error;
     });
 
     try {
-      let [ code ] = yield on(child, 'exit');
+      let [ code ] = yield once(child, 'exit');
       errors.halt();
 
       if (code > 0) {
