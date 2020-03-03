@@ -2,7 +2,7 @@ import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 
 import { Operation } from 'effection';
-import { Mailbox } from '@effection/events';
+import { Mailbox } from '@bigtest/effection';
 
 import { Test } from '@bigtest/suite';
 

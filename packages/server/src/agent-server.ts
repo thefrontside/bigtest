@@ -1,6 +1,6 @@
 import { Operation } from 'effection';
 import { AgentServer } from '@bigtest/agent'
-import { Mailbox } from '@effection/events';
+import { Mailbox } from '@bigtest/effection';
 
 interface StartAgentServerOptions {
   delegate: Mailbox;

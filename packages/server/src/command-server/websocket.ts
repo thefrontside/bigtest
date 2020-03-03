@@ -1,5 +1,5 @@
 import { Operation, fork } from 'effection';
-import { Mailbox } from '@effection/events';
+import { Mailbox } from '@bigtest/effection';
 import { IMessage } from 'websocket';
 
 import { Message, QueryMessage, MutationMessage, isQuery, isMutation } from '../protocol';
@@ -41,7 +41,7 @@ export function handleMessage(delegate: Mailbox, atom: Atom): (connection: Conne
 
   return function*(connection) {
 
-    let messages: Mailbox =  yield Mailbox.watch(connection, "message", ({args}) => {
+    let messages: Mailbox = yield Mailbox.subscribe(connection, "message", ({args}) => {
       let [message] = args as IMessage[];
       return JSON.parse(message.utf8Data);
     })

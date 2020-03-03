@@ -1,5 +1,5 @@
 import { fork, timeout, Operation } from 'effection';
-import { Mailbox } from '@effection/events';
+import { Mailbox } from '@bigtest/effection';
 import { once } from '@bigtest/effection';
 import { spawn } from '@effection/child_process';
 import { Socket } from 'net';

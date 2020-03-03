@@ -9,7 +9,7 @@ import { Test } from '@bigtest/suite';
 import { actions } from './helpers';
 
 import { createManifestGenerator } from '../src/manifest-generator';
-import { Mailbox } from '../src/effection/events';
+import { Mailbox } from '@bigtest/effection';
 
 const { mkdir, writeFile, unlink } = fs.promises;
 

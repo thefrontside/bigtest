@@ -1,6 +1,7 @@
 import * as chokidar from 'chokidar';
 import { Operation } from 'effection';
-import { watchError, Mailbox } from '@effection/events';
+import { watchError } from '@effection/events';
+import { Mailbox } from '@bigtest/effection';
 import * as fs from 'fs';
 import * as glob from 'glob';
 import * as path from 'path';
@@ -44,7 +45,7 @@ export function* createManifestGenerator(options: ManifestGeneratorOptions): Ope
   let watcher = chokidar.watch(options.files, { ignoreInitial: true });
 
   try {
-    let events: Mailbox = yield Mailbox.watch(watcher, ['ready', 'add', 'unlink']);
+    let events: Mailbox = yield Mailbox.subscribe(watcher, ['ready', 'add', 'unlink']);
 
     yield watchError(watcher);
 

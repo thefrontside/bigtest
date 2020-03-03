@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as rmrf from 'rimraf';
 import * as fs from 'fs';
 
-import { Mailbox } from '@effection/events';
+import { Mailbox } from '@bigtest/effection';
 
 import { actions } from './helpers';
 import { createManifestBuilder } from '../src/manifest-builder';

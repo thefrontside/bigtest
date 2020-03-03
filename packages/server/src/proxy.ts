@@ -1,6 +1,7 @@
 import { fork, Operation } from 'effection';
 import { once } from '@bigtest/effection';
-import { watchError, Mailbox, any } from '@effection/events';
+import { watchError } from '@effection/events';
+import { Mailbox, any } from '@bigtest/effection';
 
 import * as proxy from 'http-proxy';
 import * as http from 'http';
@@ -79,7 +80,7 @@ export function* createProxyServer(options: ProxyOptions): Operation {
     selfHandleResponse: true
   });
 
-  let events = yield Mailbox.watch(proxyServer, ['proxyRes', 'error', 'open', 'close']);
+  let events = yield Mailbox.subscribe(proxyServer, ['proxyRes', 'error', 'open', 'close']);
 
   let server = http.createServer();
 

@@ -1,11 +1,11 @@
 import { Response, RequestInfo, RequestInit } from 'node-fetch';
 import { Context, Operation } from 'effection';
+import { Mailbox } from '@bigtest/effection';
 import { World } from './helpers/world';
 
 import { beforeEach, afterEach } from 'mocha';
 
 import { createOrchestrator } from '../src/index';
-import { Mailbox } from '../src/effection/events';
 import { Atom } from '../src/orchestrator/atom';
 
 interface Actions {
