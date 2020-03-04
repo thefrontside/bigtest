@@ -119,7 +119,6 @@ describe('command server', () => {
   describe('querying the manifest', () => {
     let result: unknown;
 
-    let nothing = async x => x;
     let test1: Test, test2: Test;
     beforeEach(async () => {
       test1 = {
