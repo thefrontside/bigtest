@@ -41,7 +41,7 @@ const WhyBigTest: React.FC<{ title?: string }> = ({ title }) => (
         <p>Designed and implemented to speed up test writing, execution, and maintenance.</p>
       </Item>
       <Item largeOrder="3">
-        <H4>Experienced-centered</H4>
+        <H4>Experience-centered</H4>
         <p>Test what matters to users through a refined developer experience.</p>
       </Item>
       <Item largeOrder="1">
