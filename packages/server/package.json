@@ -39,6 +39,7 @@
     "@bigtest/agent": "^0.1.0",
     "@bigtest/effection": "^0.1.0",
     "@bigtest/suite": "^0.1.0",
+    "@bigtest/logging": "^0.1.0",
     "@types/express": "^4.17.1",
     "@types/graphql": "^14.5.0",
     "@types/http-proxy": "^1.17.0",
