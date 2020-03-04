@@ -1,8 +1,10 @@
-import { monitor, Operation } from 'effection';
+import { Operation } from 'effection';
 import { EventEmitter } from 'events';
 
 import { compile } from './pattern';
 export { any } from './pattern';
+import { suspend } from './suspend';
+import { ensure } from './ensure';
 
 function isEventTarget(target): target is EventTarget { return typeof target.addEventListener === 'function'; }
 
@@ -17,8 +19,7 @@ export class Mailbox {
   ): Operation {
     let mailbox = new Mailbox();
 
-    let parent = yield ({ resume, context: { parent }}) => resume(parent.parent);
-    parent.spawn(monitor(mailbox.subscribe(emitter, events, prepare)));
+    yield suspend(mailbox.subscribe(emitter, events, prepare));
 
     return mailbox;
   }
@@ -56,22 +57,18 @@ export class Mailbox {
     events: string | string[],
     prepare: (event: { event: string; args: unknown[] }) => unknown = x => x
   ): Operation {
-    let parent = yield ({ resume, context: { parent }}) => resume(parent.parent);
-
-    parent.spawn(monitor(({ ensure }) => {
-      for (let name of [].concat(events)) {
-        let listener = (...args) => {
-          this.send(prepare({ event: name, args }));
-        }
-
-        if(isEventTarget(emitter)) {
-          emitter.addEventListener(name, listener);
-          ensure(() => emitter.removeEventListener(name, listener));
-        } else {
-          emitter.on(name, listener);
-          ensure(() => emitter.off(name, listener));
-        }
+    for (let name of [].concat(events)) {
+      let listener = (...args) => {
+        this.send(prepare({ event: name, args }));
       }
-    }));
+
+      if(isEventTarget(emitter)) {
+        emitter.addEventListener(name, listener);
+        yield suspend(ensure(() => emitter.removeEventListener(name, listener)));
+      } else {
+        emitter.on(name, listener);
+        yield suspend(ensure(() => emitter.off(name, listener)));
+      }
+    }
   }
 }
