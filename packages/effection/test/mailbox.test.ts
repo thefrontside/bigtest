@@ -140,7 +140,7 @@ describe("Mailbox", () => {
     });
   });
 
-  describe('listening to an EventTarget', () => {
+  describe('subscribing to an EventTarget', () => {
     let target: FakeEventEmitter;
     let mailbox: Mailbox;
     let thingEvent: FakeEvent;
@@ -148,7 +148,7 @@ describe("Mailbox", () => {
     beforeEach(() => {
       target = new FakeEventEmitter();
       mailbox = new Mailbox();
-      spawn(mailbox.listen(target, "thing"));
+      spawn(mailbox.subscribe(target, "thing"));
     });
 
     describe('emitting an event', () => {
