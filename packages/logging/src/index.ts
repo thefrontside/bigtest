@@ -7,7 +7,7 @@ const HIDDEN_LOGS = {
 
 const { debug, log, warn, error } = console;
 
-export function reset() {
+export function resetLogLevel() {
   console.debug = debug
   console.log = log
   console.warn = warn
@@ -15,7 +15,7 @@ export function reset() {
 }
 
 export function setLogLevel(level) {
-  reset();
+  resetLogLevel();
   HIDDEN_LOGS[level].forEach((level) => {
     console[level] = function() {
       // do nothing

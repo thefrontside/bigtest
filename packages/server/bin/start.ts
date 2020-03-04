@@ -2,7 +2,7 @@ import { fork } from 'effection';
 import { main } from '@effection/node';
 import { Mailbox } from '@bigtest/effection';
 import * as tempy from 'tempy';
-import { setLogLevel } from '../src/log-level';
+import { setLogLevel } from '@bigtest/logging';
 
 import { createOrchestrator, Atom } from '../src/index';
 
