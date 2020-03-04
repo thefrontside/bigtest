@@ -16,10 +16,14 @@ const SideBox = styled.div`
 const DidYouKnow: React.FC = () => {
   return (
     <SideBox>
-      <H3>Flexible &amp; framework agnostic</H3>
+      <H3>Framework agnostic</H3>
       <Text>
-        BigTest is a powerful framework planned and architectured to be extensible. We provide APIs that allow
-        teams to build on top of BigTest and integrate tests more deeply into their development processes.
+        BigTest is ready to test your modern web application, no matter if you use React, Vue, Angular, Ember, or
+        anything else.
+      </Text>
+      <Text>
+        BigTest uses your build process to serve the application that will be tested, with the environment
+        variables that you desire. This setup also enables you to test your application under different conditions.
       </Text>
     </SideBox>
   );
