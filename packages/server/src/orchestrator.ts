@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { fork, Operation } from 'effection';
-import { Mailbox } from '@effection/events';
+import { Mailbox } from '@bigtest/effection';
 import { AgentServer } from '@bigtest/agent';
 
 import { createProxyServer } from './proxy';

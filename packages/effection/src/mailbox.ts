@@ -1,13 +1,27 @@
 import { monitor, Operation } from 'effection';
 import { EventEmitter } from 'events';
 
-import { EventName } from '../events';
 import { compile } from './pattern';
 export { any } from './pattern';
+
+function isEventTarget(target): target is EventTarget { return typeof target.addEventListener === 'function'; }
 
 export class Mailbox {
   private subscriptions = new EventEmitter();
   private messages = new Set();
+
+  static *subscribe(
+    emitter: EventEmitter | EventTarget,
+    events: string | string[],
+    prepare: (event: { event: string; args: unknown[] }) => unknown = x => x
+  ): Operation {
+    let mailbox = new Mailbox();
+
+    let parent = yield ({ resume, context: { parent }}) => resume(parent.parent);
+    parent.spawn(monitor(mailbox.subscribe(emitter, events, prepare)));
+
+    return mailbox;
+  }
 
   send(message: unknown) {
     this.messages.add(message);
@@ -37,24 +51,27 @@ export class Mailbox {
     };
   }
 
-  static *watch(
-    emitter: EventEmitter,
-    events: EventName | EventName[],
+  *subscribe(
+    emitter: EventEmitter | EventTarget,
+    events: string | string[],
     prepare: (event: { event: string; args: unknown[] }) => unknown = x => x
   ): Operation {
-    let mailbox = new Mailbox();
     let parent = yield ({ resume, context: { parent }}) => resume(parent.parent);
 
     parent.spawn(monitor(({ ensure }) => {
       for (let name of [].concat(events)) {
         let listener = (...args) => {
-          mailbox.send(prepare({ event: name, args }));
+          this.send(prepare({ event: name, args }));
         }
 
-        emitter.on(name, listener);
-        ensure(() => emitter.off(name, listener));
+        if(isEventTarget(emitter)) {
+          emitter.addEventListener(name, listener);
+          ensure(() => emitter.removeEventListener(name, listener));
+        } else {
+          emitter.on(name, listener);
+          ensure(() => emitter.off(name, listener));
+        }
       }
     }));
-    return mailbox;
   }
 }

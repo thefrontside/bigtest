@@ -1,6 +1,6 @@
 import { fork } from 'effection';
 import { main } from '@effection/node';
-import { Mailbox } from '@effection/events';
+import { Mailbox } from '@bigtest/effection';
 import * as tempy from 'tempy';
 import { setLogLevel } from '../src/log-level';
 

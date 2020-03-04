@@ -1,5 +1,5 @@
 import { Operation } from 'effection';
-import { Mailbox } from '@effection/events';
+import { Mailbox } from '@bigtest/effection';
 import { static as staticMiddleware } from 'express';
 import { express } from '@effection/express';
 

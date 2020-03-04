@@ -1,5 +1,5 @@
 import { Operation, fork, timeout } from 'effection';
-import { Mailbox, any } from '@effection/events';
+import { Mailbox, any } from '@bigtest/effection';
 import { IMessage } from 'websocket';
 import { createSocketServer, Connection, sendData } from './ws';
 import { Atom } from './orchestrator/atom';
@@ -19,7 +19,7 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
   function* handleConnection(connection: Connection): Operation {
     console.debug('[connection] connected');
 
-    let messages = yield Mailbox.watch(connection, "message", ({ args }) => {
+    let messages = yield Mailbox.subscribe(connection, "message", ({ args }) => {
       let [message] = args as IMessage[];
       return { message: JSON.parse(message.utf8Data) };
     })

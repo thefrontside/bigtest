@@ -1,5 +1,5 @@
 import { Operation } from 'effection';
-import { Mailbox } from '@effection/events';
+import { Mailbox } from '@bigtest/effection';
 import { ChildProcess, fork as forkProcess } from '@effection/child_process';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -53,7 +53,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
     }
   );
 
-  let messages = yield Mailbox.watch(child, "message", ({ args: [message] }) => message);
+  let messages = yield Mailbox.subscribe(child, "message", ({ args: [message] }) => message);
 
   yield messages.receive({ type: "ready" });
   let distPath = yield processManifest(options);

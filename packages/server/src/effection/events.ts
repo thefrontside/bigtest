@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
 import { Operation, monitor } from 'effection';
 import { once } from '@bigtest/effection';
-export { Mailbox, any } from './events/mailbox';
 
 export type EventName = string | symbol;
 

@@ -2,7 +2,7 @@ import { Operation } from 'effection';
 import * as Bundler from 'parcel-bundler';
 import { ParcelOptions } from 'parcel-bundler';
 import { createServer, RequestListener } from 'http';
-import { Mailbox } from '@effection/events';
+import { Mailbox } from '@bigtest/effection';
 import { EventEmitter } from 'events';
 import { listen } from './http';
 
@@ -13,7 +13,7 @@ interface ParcelServerOptions {
 export function* createParcelServer(entryPoints: string[], options: ParcelServerOptions, parcelOptions?: ParcelOptions): Operation {
   let bundler: ParcelBundler = new Bundler(entryPoints, parcelOptions || {});
 
-  let events = yield Mailbox.watch(bundler, "buildEnd");
+  let events = yield Mailbox.subscribe(bundler, "buildEnd");
 
   let middleware = bundler.middleware();
   let server = createServer(middleware)

@@ -2,7 +2,7 @@ import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 
 import { Operation } from 'effection';
-import { Mailbox } from '@effection/events';
+import { Mailbox } from '@bigtest/effection';
 
 import { Test } from '@bigtest/suite';
 
@@ -119,7 +119,6 @@ describe('command server', () => {
   describe('querying the manifest', () => {
     let result: unknown;
 
-    let nothing = async x => x;
     let test1: Test, test2: Test;
     beforeEach(async () => {
       test1 = {
