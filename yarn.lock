@@ -8722,6 +8722,14 @@ ink-box@^1.0.0:
     boxen "^3.0.0"
     prop-types "^15.7.2"
 
+ink-divider@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/ink-divider/-/ink-divider-2.0.1.tgz#6042afc3f4a5dfb89dea0e59e1db1458cfd75c7c"
+  integrity sha512-OnlvAcAM5bLt9sz6CgYhdNDHzRzr9WzY65g1nMCbADnoOqXiQXw2S1H6FisXG9lwBrYs/HZ9jy44SKcVlP1rdQ==
+  dependencies:
+    prop-types "^15.7.2"
+    string-width "^4.0.0"
+
 ink-spinner@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/ink-spinner/-/ink-spinner-3.0.1.tgz#7b4b206d2b18538701fd92593f9acabbfe308dce"

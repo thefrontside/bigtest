@@ -19,6 +19,7 @@
   "dependencies": {
     "ink": "2.7.1",
     "ink-box": "^1.0.0",
+    "ink-divider": "^2.0.1",
     "ink-use-stdout-dimensions": "^1.0.5",
     "react": "16.13.0"
   },

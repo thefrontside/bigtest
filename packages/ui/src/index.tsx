@@ -1,28 +1,19 @@
 import React from "react";
-import { Text, Color, Box, useStdout } from "ink";
-import { default as StyledBox } from "ink-box";
+import { Box, useStdout } from "ink";
+import Divider from "ink-divider";
 
-const App = ({ name }) => {
+const App = () => {
   const {
     stdout: { columns, rows }
   } = useStdout();
 
   return (
-    <Box>
-      <StyledBox>
-        <Box height={rows} width={columns / 2}>
-          <Text>
-            Hello, <Color green>{name}</Color>
-          </Text>
-        </Box>
-      </StyledBox>
-      <StyledBox>
-        <Box height={rows} width={columns / 2}>
-          <Text>
-            Hello, <Color green>{name}</Color>
-          </Text>
-        </Box>
-      </StyledBox>
+    <Box height={rows} width={columns}>
+      <Box flexDirection="column" padding={5} width="50%">
+        <Divider title={"Tests"} />
+      </Box>
+
+      <Box padding={5} width="50%"></Box>
     </Box>
   );
 };
