@@ -9,9 +9,50 @@ import React, {
 } from "react";
 import { FocusParentContext, FocusNode } from "./FocusParent";
 import { lensPath, view, set, over } from "ramda";
+import { useOperation } from "./EffectionContext";
+import { KeyEventLoop, KeyEvent } from "../key-events";
+import { useStdin } from "ink";
+
+function* traverse(node: FocusNode) {
+  yield node;
+
+  for (let index in node.children) {
+    let child = node.children[index];
+
+    yield child;
+  }
+}
 
 export const FocusManager = ({ children }) => {
   let [root] = useState<FocusNode>(() => new FocusNode([]));
+  let { stdin } = useStdin();
+
+  let [currentFocus, setCurrentFocus] = useState<FocusNode>(root);
+
+  useOperation(function*() {
+    let events: KeyEventLoop = yield KeyEventLoop.create(stdin);
+    let traversal = traverse(root);
+
+    while (true) {
+      let { key, input }: KeyEvent = yield events.next();
+
+      if (key.ctrl && input === "c") {
+        //TODO: Why is this necessary?!?
+        process.exit(0);
+        return;
+      }
+
+      if (input === "i" && key.ctrl) {
+        let { value: node, done } = traversal.next();
+
+        if (done) {
+          traversal = traverse(root);
+          node = traversal.next().value;
+        }
+        console.log("tabbed to", node && node.path);
+      }
+    }
+  });
 
   return (
     <FocusParentContext.Provider value={root}>
@@ -62,6 +103,6 @@ export const useFocus = () => {
   } else {
     return {
       isFocused: false
-    }
+    };
   }
 };

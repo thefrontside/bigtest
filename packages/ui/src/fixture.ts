@@ -1,7 +1,7 @@
 export default [
   {
     id: "test-1",
-    test: "Loggin into the app",
+    test: "Logging into the app",
     steps: [
       {
         "click button": "Sign In"
@@ -61,5 +61,7 @@ export default [
         }
       ]
     ]
-  }
+  },
+  { id: 'test-2', test: "Let's see if this works"},
+  { id: 'test-3', test: "Very nice"}
 ];
