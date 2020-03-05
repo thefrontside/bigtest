@@ -4,18 +4,17 @@ import App from "./index";
 import { main } from "@bigtest/effection";
 import { Operation, Controls, timeout } from "effection";
 import { EffectionContext } from "./components/EffectionContext";
-import { KeyEventLoop, KeyEvent } from './key-events';
+import { KeyEventLoop, KeyEvent } from "./key-events";
 
 export function* UI(stdin: NodeJS.ReadStream): Operation {
-
-  /* yield render(<App />);*/
+  yield render(<App />);
 
   yield function*() {
     let events: KeyEventLoop = yield KeyEventLoop.create(stdin);
 
     while (true) {
       let { key, input }: KeyEvent = yield events.next();
-      if (key.ctrl && input === 'c') {
+      if (key.ctrl && input === "c") {
         //TODO: Why is this necessary?!?
         process.exit(0);
         return;
@@ -23,8 +22,8 @@ export function* UI(stdin: NodeJS.ReadStream): Operation {
       if (input === "\t") {
         console.log("TAB");
       }
-      console.log('input', `'${input}'`);
-      console.log('key', key);
+      console.log("input", `'${input}'`);
+      console.log("key", key);
     }
   };
 }
@@ -37,8 +36,9 @@ function render(Component: ReactNode): Operation {
     let inkApp = inkRender(
       <EffectionContext.Provider value={effectionContext}>
         {Component}
-      </EffectionContext.Provider>
-    , { exitOnCtrlC: false });
+      </EffectionContext.Provider>,
+      { exitOnCtrlC: false }
+    );
 
     // @ts-ignore
     effectionContext.ensure(inkApp.unmount);

@@ -18,6 +18,7 @@
   ],
   "dependencies": {
     "@babel/core": "7.8.7",
+    "@types/ramda": "0.26.43",
     "@types/react-router": "5",
     "@types/react-router-dom": "5",
     "history": "5.0.0-beta.5",
@@ -25,6 +26,7 @@
     "ink-box": "^1.0.0",
     "ink-divider": "^2.0.1",
     "ink-select-input": "3.1.2",
+    "ramda": "0.27.0",
     "react": "16.13.0",
     "react-dom": "16.13.0",
     "react-router": "6.0.0-alpha.2",

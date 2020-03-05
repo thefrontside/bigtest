@@ -1,4 +1,4 @@
-import React, { FC, useState, useContext, useEffect } from "react";
+import React, { FC } from "react";
 import { Box, Text, useStdout } from "ink";
 import Divider from "ink-divider";
 import {
@@ -11,31 +11,7 @@ import {
   useParams
 } from "react-router-dom";
 import fixture from "./fixture";
-/* import { FocusParent } from "./components/FocusParent";
- *
- * const Focusable = () => {
- *   let { children, setChildren } = useState([]);
- *   let parent = useContext(FocusParent);
- *   useEffect(() => {
- *     parent.addChild();
- *     return () => {
- *       parent.removeChild();
- *     };
- *   }, []);
- *
- *   return (
- *     <FocusParent.Provider
- *         value={{
- *           addChild(node) {
- *             setChildren([...children, node]);
- *           },
- *           removeChild(node) {
- *             setChildren(children.filter(child => child != node));
- *           }
- *         }}
- *     ></FocusParent.Provider>
- *   );
- * };*/
+import { FocusManager, Focusable, useFocus } from "./components/FocusManager";
 
 const List: FC<{ width: number }> = ({ width }) => {
   const padding = 5;
@@ -44,10 +20,18 @@ const List: FC<{ width: number }> = ({ width }) => {
     <Box flexDirection="column" padding={padding} width="50%">
       <Divider title={"Tests"} width={width - padding * 2} />
       {fixture.map(test => (
-        <Text key={test.id}>{test.test}</Text>
+        <Focusable key={test.id}>
+          <ListItem test={test} />
+        </Focusable>
       ))}
     </Box>
   );
+};
+
+const ListItem = ({ test }) => {
+  const { isFocused } = useFocus();
+
+  return <Text key={test.id}>{test.test}</Text>;
 };
 
 const Detail: FC<{ width: number }> = ({ width }) => {
@@ -83,11 +67,13 @@ const Index = () => {
 
 const App = () => {
   return (
-    <MemoryRouter>
-      <Routes>
-        <Route path="/*" element={<Index />} />
-      </Routes>
-    </MemoryRouter>
+    <FocusManager>
+      <MemoryRouter>
+        <Routes>
+          <Route path="/*" element={<Index />} />
+        </Routes>
+      </MemoryRouter>
+    </FocusManager>
   );
 };
 
