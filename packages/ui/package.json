@@ -17,6 +17,7 @@
     "ui.js"
   ],
   "dependencies": {
+    "@babel/core": "7.8.7",
     "@types/react-router": "5",
     "@types/react-router-dom": "5",
     "history": "5.0.0-beta.5",
@@ -25,6 +26,7 @@
     "ink-divider": "^2.0.1",
     "ink-select-input": "3.1.2",
     "react": "16.13.0",
+    "react-dom": "16.13.0",
     "react-router": "6.0.0-alpha.2",
     "react-router-dom": "6.0.0-alpha.2"
   },
