@@ -1,5 +1,5 @@
 import { TodoMVC } from '@bigtest/todomvc';
-import { main } from '@effection/node';
+import { main } from '@bigtest/effection';
 
 main(function* start() {
   let server: TodoMVC = yield TodoMVC.react(port());

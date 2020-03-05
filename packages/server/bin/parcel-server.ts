@@ -1,5 +1,5 @@
 import 'module-alias/register';
-import { main } from '@effection/node';
+import { main } from '@bigtest/effection';
 import { createParcelServer } from '../src/parcel-server';
 import * as yargs from 'yargs';
 
