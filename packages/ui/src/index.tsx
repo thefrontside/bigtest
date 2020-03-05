@@ -11,31 +11,31 @@ import {
   useParams
 } from "react-router-dom";
 import fixture from "./fixture";
-import { FocusParent } from "./components/FocusParent";
-
-const Focusable = () => {
-  let { children, setChildren } = useState([]);
-  let parent = useContext(FocusParent);
-  useEffect(() => {
-    parent.addChild();
-    return () => {
-      parent.removeChild();
-    };
-  }, []);
-
-  return (
-    <FocusParent.Provider
-      value={{
-        addChild(node) {
-          setChildren([...children, node]);
-        },
-        removeChild(node) {
-          setChildren(children.filter(child => child != node));
-        }
-      }}
-    ></FocusParent.Provider>
-  );
-};
+/* import { FocusParent } from "./components/FocusParent";
+ *
+ * const Focusable = () => {
+ *   let { children, setChildren } = useState([]);
+ *   let parent = useContext(FocusParent);
+ *   useEffect(() => {
+ *     parent.addChild();
+ *     return () => {
+ *       parent.removeChild();
+ *     };
+ *   }, []);
+ *
+ *   return (
+ *     <FocusParent.Provider
+ *         value={{
+ *           addChild(node) {
+ *             setChildren([...children, node]);
+ *           },
+ *           removeChild(node) {
+ *             setChildren(children.filter(child => child != node));
+ *           }
+ *         }}
+ *     ></FocusParent.Provider>
+ *   );
+ * };*/
 
 const List: FC<{ width: number }> = ({ width }) => {
   const padding = 5;
