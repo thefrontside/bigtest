@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState, useContext, useEffect } from "react";
 import { Box, Text, useStdout } from "ink";
 import Divider from "ink-divider";
 import {
@@ -11,27 +11,41 @@ import {
   useParams
 } from "react-router-dom";
 import fixture from "./fixture";
-import SelectInput from "ink-select-input";
+import { FocusParent } from "./components/FocusParent";
 
-const testsToSelectItems = tests =>
-  tests.map(({ id, test }) => ({
-    label: test,
-    value: id,
-    key: id
-  }));
+const Focusable = () => {
+  let { children, setChildren } = useState([]);
+  let parent = useContext(FocusParent);
+  useEffect(() => {
+    parent.addChild();
+    return () => {
+      parent.removeChild();
+    };
+  }, []);
+
+  return (
+    <FocusParent.Provider
+      value={{
+        addChild(node) {
+          setChildren([...children, node]);
+        },
+        removeChild(node) {
+          setChildren(children.filter(child => child != node));
+        }
+      }}
+    ></FocusParent.Provider>
+  );
+};
 
 const List: FC<{ width: number }> = ({ width }) => {
-  let navigate = useNavigate();
-
   const padding = 5;
 
   return (
     <Box flexDirection="column" padding={padding} width="50%">
       <Divider title={"Tests"} width={width - padding * 2} />
-      <SelectInput
-        items={testsToSelectItems(fixture)}
-        onSelect={({ value }) => navigate(value)}
-      />
+      {fixture.map(test => (
+        <Text key={test.id}>{test.test}</Text>
+      ))}
     </Box>
   );
 };
