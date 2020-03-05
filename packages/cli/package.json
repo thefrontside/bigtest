@@ -33,8 +33,8 @@
     "typescript": "^3.7.0"
   },
   "dependencies": {
-    "@types/node": "^12.7.11",
-    "effection": "^0.5.0"
+    "@bigtest/effection": "^0.1.0",
+    "@types/node": "^12.7.11"
   },
   "volta": {
     "node": "12.16.0",

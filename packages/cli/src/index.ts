@@ -1,6 +1,6 @@
 import { $console } from './console';
 import { CLI } from './cli';
-import { main } from './main';
+import { main } from '@bigtest/effection';
 
 main(function* boot() {
   yield $console.useStdio();
