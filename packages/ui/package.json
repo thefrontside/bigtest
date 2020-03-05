@@ -1,40 +1,46 @@
 {
-	"name": "ui",
-	"version": "0.0.0",
-	"license": "MIT",
-	"bin": "cli.js",
-	"engines": {
-		"node": ">=8"
-	},
-	"scripts": {
-		"lint": "eslint '{src,test,bin}/**/*.ts'",
-		"test": "mocha -r ts-node/register test/**/*.test.tsx",
-		"prepack": "tsc --project tsconfig.dist.json --outdir dist --module commonjs"
-	},
-	"files": [
-		"cli.js",
-		"ui.js"
-	],
-	"dependencies": {
-		"ink": "2.7.1",
-		"react": "16.13.0"
-	},
-	"devDependencies": {
-		"@types/node": "^12.7.11",
-		"@babel/preset-react": "7.8.3",
-		"@babel/register": "7.8.6",
-		"chalk": "3.0.0",
-		"eslint-plugin-react": "7.18.3",
-		"eslint-plugin-react-hooks": "2.5.0",
-		"ink-testing-library": "1.0.3",
-		"@types/mocha": "^7.0.1",
-		"@typescript-eslint/eslint-plugin": "^2.3.2",
-		"@typescript-eslint/parser": "^2.3.2",
-		"eslint": "^6.6.0",
-		"eslint-plugin-prefer-let": "^1.0.1",
-		"expect": "^24.9.0",
-		"mocha": "^6.2.2",
-		"ts-node": "*",
-		"typescript": "^3.7.0"
-	}
+  "name": "ui",
+  "version": "0.0.0",
+  "license": "MIT",
+  "bin": "cli.js",
+  "engines": {
+    "node": ">=8"
+  },
+  "scripts": {
+    "start": "ts-node src/start.tsx",
+    "lint": "eslint '{src,test,bin}/**/*.ts'",
+    "test": "mocha -r ts-node/register test/**/*.test.tsx",
+    "prepack": "tsc --project tsconfig.dist.json --outdir dist --module commonjs"
+  },
+  "files": [
+    "cli.js",
+    "ui.js"
+  ],
+  "dependencies": {
+    "ink": "2.7.1",
+    "ink-box": "^1.0.0",
+    "ink-use-stdout-dimensions": "^1.0.5",
+    "react": "16.13.0"
+  },
+  "devDependencies": {
+    "@babel/preset-react": "7.8.3",
+    "@babel/register": "7.8.6",
+    "@types/mocha": "^7.0.1",
+    "@types/node": "^12.7.11",
+    "@typescript-eslint/eslint-plugin": "^2.3.2",
+    "@typescript-eslint/parser": "^2.3.2",
+    "chalk": "3.0.0",
+    "eslint": "^6.6.0",
+    "eslint-plugin-prefer-let": "^1.0.1",
+    "eslint-plugin-react": "7.18.3",
+    "eslint-plugin-react-hooks": "2.5.0",
+    "expect": "^24.9.0",
+    "ink-testing-library": "1.0.3",
+    "mocha": "^6.2.2",
+    "ts-node": "*",
+    "typescript": "^3.7.0"
+  },
+  "resolutions": {
+    "react": "16.13.0"
+  }
 }

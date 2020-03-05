@@ -1,12 +1,13 @@
 {
-	"compilerOptions": {
-		"target": "esnext",
-		"moduleResolution": "node",
-		"noImplicitAny": false,
-		"allowSyntheticDefaultImports": true,
-		"jsx": "react",
-		"typeRoots": ["./node_modules/@types"],
-		"baseUrl": "."
-	},
-	"include": ["src/*.tsx", "test/**/*.tsx"]
+  "compilerOptions": {
+    "target": "esnext",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "typeRoots": ["./node_modules/@types"],
+    "baseUrl": "."
+  },
+  "include": ["src/*.tsx", "test/**/*.tsx"]
 }
