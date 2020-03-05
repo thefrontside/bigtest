@@ -1,7 +1,13 @@
 import React from "react";
 import { render } from "ink";
 import App from "./index";
+import { main } from "@bigtest/effection";
 
-const { unmount } = render(<App />);
-
-setTimeout(unmount, 30_000);
+main(function*() {
+  let { unmount } = render(<App />);
+  try {
+    yield;
+  } finally {
+    unmount();
+  }
+});
