@@ -10,8 +10,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Publish PR Preview
-      uses: thefrontside/actions/publish-pr-preview@v1.2
+      uses: thefrontside/actions/publish-pr-preview@v1.4
       with:
+        before_all: yarn prepack
         npm_publish: yarn publish
         ignore: packages/website packages/server
       env:

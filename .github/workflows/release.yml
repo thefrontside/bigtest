@@ -10,8 +10,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Publish Releases
-      uses: thefrontside/actions/synchronize-with-npm@v1.3
+      uses: thefrontside/actions/synchronize-with-npm@v1.4
       with:
+        before_all: yarn prepack
         npm_publish: yarn publish
         ignore: packages/website packages/convergence packages/interactor packages/cli packages/server
       env:
