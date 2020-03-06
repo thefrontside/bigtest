@@ -14,8 +14,9 @@
   "scripts": {
     "build": "rollup --config",
     "docs": "bigtest-docs",
-    "lint": "echo '[skip] convergence'",
-    "test": "mocha --opts ./tests/mocha.opts ./tests",
+    "lint": "echo '[skip] convergence lint'",
+    "test": "echo '[skip] convergence tests'",
+    "mocha": "mocha --opts ./tests/mocha.opts ./tests",
     "prepack": "rollup --config"
   },
   "devDependencies": {
