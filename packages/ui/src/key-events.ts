@@ -2,6 +2,18 @@ import { EventEmitter } from 'events';
 import { Operation } from 'effection'
 import { ensure, suspend, once } from '@bigtest/effection';
 
+import { Variable } from './variable';
+
+export const CtrlC: KeyStroke = ({ input, key }) => input === 'c' && key.ctrl;
+export const TAB: KeyStroke = ({ input, key }) => input === 'i' && key.ctrl;
+export const ShiftTAB: KeyStroke = ({ input, key }) => input === '[Z' && key.meta;
+
+export const KeyEvents = new Variable<KeyEventLoop>('KeyEvents');
+
+export interface KeyStroke {
+  (event: KeyEvent): boolean;
+}
+
 export interface KeyEvent {
   key: {
     upArrow: boolean;
@@ -63,11 +75,21 @@ export class KeyEventLoop {
 
     yield suspend(ensure(() => {
       stdin.off('data', handleData);
+      stdin.unref();
       stdin.setRawMode(rawMode);
-
     }));
 
+
     return events;
+  }
+
+  *on(match: KeyStroke): Operation {
+    while (true) {
+      let event = yield this.next();
+      if (match(event)) {
+        return event;
+      }
+    }
   }
 
   *next(): Operation {

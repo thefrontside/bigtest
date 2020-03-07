@@ -1,13 +1,18 @@
 import React from "react";
 import App from "./index";
-import { main } from "@bigtest/effection";
-import { Operation } from "effection";
+import { main, Operation } from "effection";
 import { render } from "./render";
+import { KeyEventLoop, KeyEvents, CtrlC, KeyEvent } from './key-events';
 
-export function* UI(stdin: NodeJS.ReadStream): Operation {
-  yield render(<App />, { stdin, exitOnCtrlC: false });
-}
+main(function* start() {
+  let stdin = process.stdin;
 
-main(UI(process.stdin));
+  let events = yield KeyEventLoop.create(stdin);
 
+  yield KeyEvents.set(events);
 
+  yield render(<App />, { stdin });
+
+  yield events.on(CtrlC);
+
+}).catch(e => console.error(e));

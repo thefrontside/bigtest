@@ -7,20 +7,100 @@ import React, {
   ReactNode,
   useEffect
 } from "react";
+
+import { fork } from 'effection';
 import { FocusParentContext, FocusNode } from "./FocusParent";
 import { lensPath, view, set, over } from "ramda";
 import { useOperation } from "./EffectionContext";
-import { KeyEventLoop, KeyEvent } from "../key-events";
+import { KeyEventLoop, KeyEvents, KeyEvent, TAB, ShiftTAB } from "../key-events";
 import { useStdin } from "ink";
 
-function* traverse(node: FocusNode) {
+function* forward(node: FocusNode) {
   yield node;
 
   for (let index in node.children) {
     let child = node.children[index];
 
-    yield child;
+    yield* forward(child);
   }
+}
+
+function* reverse(node: FocusNode) {
+  for (let index of Object.getOwnPropertyNames(node.children).reverse()) {
+    let child = node.children[index];
+    yield* reverse(child);
+  }
+  yield node;
+}
+
+class Forward {
+  static create(root: FocusNode): Traversal {
+    let iterator = forward(root);
+    iterator.next();
+    return new Forward(root, root, iterator);
+  };
+
+  constructor(
+    private root: FocusNode,
+    public current: FocusNode,
+    private iterator: Iterator<FocusNode>
+  ) {}
+
+  next(): Traversal {
+    let next = this.iterator.next();
+    if (next.done) {
+      return Forward.create(this.root);
+    } else {
+      return new Forward(this.root, next.value, this.iterator);
+    }
+  }
+
+  previous(): Traversal {
+    let iterator = reverse(this.root);
+    for (let node of iterator) {
+      if (node === this.current) {
+        let current = iterator.next();
+        return new Backward(this.root, current.value, iterator);
+      }
+    }
+    throw new Error(`BUG: Could not find node for backwards focus traversal`);
+  }
+}
+
+class Backward {
+  constructor(
+    private root: FocusNode,
+    public current: FocusNode,
+    private iterator: Iterator<FocusNode>
+  ) {}
+
+  next(): Traversal {
+    let iterator = forward(this.root);
+    for (let node of iterator) {
+      if (node == this.current) {
+        let current = iterator.next();
+        return new Forward(this.root, current.value, iterator);
+      }
+    }
+    throw new Error(`BUG: Could not find node for backwards focus traversal`);
+  }
+
+  previous(): Traversal {
+    let next = this.iterator.next();
+    if (next.done) {
+      let iterator = reverse(this.root);
+      let current = iterator.next();
+      return new Backward(this.root, current.value, iterator);
+    } else {
+      return new Backward(this.root, next.value, this.iterator);
+    }
+  }
+}
+
+interface Traversal {
+  current: FocusNode;
+  next(): Traversal;
+  previous(): Traversal;
 }
 
 export const FocusManager = ({ children }) => {
@@ -30,28 +110,28 @@ export const FocusManager = ({ children }) => {
   let [currentFocus, setCurrentFocus] = useState<FocusNode>(root);
 
   useOperation(function*() {
-    let events: KeyEventLoop = yield KeyEventLoop.create(stdin);
-    let traversal = traverse(root);
+    let events: KeyEventLoop = yield KeyEvents.get();
 
-    while (true) {
-      let { key, input }: KeyEvent = yield events.next();
+    let traversal: Traversal = Forward.create(root);
 
-      if (key.ctrl && input === "c") {
-        //TODO: Why is this necessary?!?
-        process.exit(0);
-        return;
+    yield fork(function* advance() {
+      while (true) {
+        yield events.on(TAB);
+
+        traversal = traversal.next();
+
+        console.log("tabbed to ", traversal.current && traversal.current.path)
       }
+    });
 
-      if (input === "i" && key.ctrl) {
-        let { value: node, done } = traversal.next();
+    yield fork(function* retreat() {
+      while (true) {
+        yield events.on(ShiftTAB);
 
-        if (done) {
-          traversal = traverse(root);
-          node = traversal.next().value;
-        }
-        console.log("tabbed to", node && node.path);
+        traversal = traversal.previous();
+        console.log('reverse tabbed to ', traversal.current && traversal.current.path);
       }
-    }
+    });
   });
 
   return (
