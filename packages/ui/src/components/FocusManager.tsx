@@ -33,7 +33,7 @@ function* reverse(node: FocusNode) {
   yield node;
 }
 
-class Forward {
+class Forward implements Traversal {
   static create(root: FocusNode): Traversal {
     let iterator = forward(root);
     iterator.next();
@@ -42,7 +42,7 @@ class Forward {
 
   constructor(
     private root: FocusNode,
-    public current: FocusNode,
+    public node: FocusNode,
     private iterator: Iterator<FocusNode>
   ) {}
 
@@ -58,7 +58,7 @@ class Forward {
   previous(): Traversal {
     let iterator = reverse(this.root);
     for (let node of iterator) {
-      if (node === this.current) {
+      if (node === this.node) {
         let current = iterator.next();
         return new Backward(this.root, current.value, iterator);
       }
@@ -67,17 +67,17 @@ class Forward {
   }
 }
 
-class Backward {
+class Backward implements Traversal {
   constructor(
     private root: FocusNode,
-    public current: FocusNode,
+    public node: FocusNode,
     private iterator: Iterator<FocusNode>
   ) {}
 
   next(): Traversal {
     let iterator = forward(this.root);
     for (let node of iterator) {
-      if (node == this.current) {
+      if (node == this.node) {
         let current = iterator.next();
         return new Forward(this.root, current.value, iterator);
       }
@@ -98,7 +98,7 @@ class Backward {
 }
 
 interface Traversal {
-  current: FocusNode;
+  node: FocusNode;
   next(): Traversal;
   previous(): Traversal;
 }
@@ -120,7 +120,7 @@ export const FocusManager = ({ children }) => {
 
         traversal = traversal.next();
 
-        console.log("tabbed to ", traversal.current && traversal.current.path)
+        console.log("tabbed to ", traversal.node && traversal.node.path)
       }
     });
 
@@ -129,7 +129,7 @@ export const FocusManager = ({ children }) => {
         yield events.on(ShiftTAB);
 
         traversal = traversal.previous();
-        console.log('reverse tabbed to ', traversal.current && traversal.current.path);
+        console.log('reverse tabbed to ', traversal.node && traversal.node.path);
       }
     });
   });
