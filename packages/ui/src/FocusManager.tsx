@@ -12,7 +12,7 @@ import { fork } from 'effection';
 import { FocusParentContext, FocusNode } from "./FocusParent";
 import { lensPath, view, set, over } from "ramda";
 import { useOperation } from "./EffectionContext";
-import { KeyEventLoop, KeyEvents, KeyEvent, TAB, ShiftTAB } from "../key-events";
+import { KeyEventLoop, KeyEvents, KeyEvent, TAB, ShiftTAB } from "./key-events";
 import { useStdin } from "ink";
 
 function* forward(node: FocusNode) {

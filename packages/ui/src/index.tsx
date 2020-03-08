@@ -11,7 +11,7 @@ import {
   useParams
 } from "react-router-dom";
 import fixture from "./fixture";
-import { FocusManager, Focusable, useFocus } from "./components/FocusManager";
+import { FocusManager, Focusable, useFocus } from "./FocusManager";
 
 const List: FC<{ width: number }> = ({ width }) => {
   const padding = 5;

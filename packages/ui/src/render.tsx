@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import { render as inkRender, RenderOptions } from "ink";
 import { Operation, Controls } from "effection";
 import { suspend, ensure } from '@bigtest/effection';
-import { EffectionContext } from "./components/EffectionContext";
+import { EffectionContext } from "./EffectionContext";
 
 export function* render(Component: ReactNode, options: RenderOptions): Operation {
   let effectionContext = yield ({ resume, context }) => resume(context.parent);
