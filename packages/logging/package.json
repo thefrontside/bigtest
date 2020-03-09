@@ -14,12 +14,7 @@
   },
   "devDependencies": {
     "@types/node": "^12.7.11",
-    "@typescript-eslint/eslint-plugin": "^2.3.2",
-    "@typescript-eslint/parser": "^2.3.2",
-    "eslint": "^6.6.0",
-    "eslint-plugin-prefer-let": "^1.0.1",
-    "ts-node": "*",
-    "typescript": "^3.7.0"
+    "ts-node": "*"
   },
   "volta": {
     "node": "12.16.0",

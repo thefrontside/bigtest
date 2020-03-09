@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect'
 
-import { Context, fork, monitor } from 'effection';
+import { Context, fork } from 'effection';
 
 import { spawn } from './helpers';
 

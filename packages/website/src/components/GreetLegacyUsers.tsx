@@ -10,12 +10,12 @@ interface GreetLegacyProps {
 }
 
 const GreetLegacyUsers: React.FC<GreetLegacyProps> = () => {
-  const [legacy, setLegacy] = useState(false);
+  let [legacy, setLegacy] = useState(false);
 
   useEffect(() => {
     if (typeof window !== `undefined`) {
-      const from_legacy = new URLSearchParams(window.location.search).get('archived-page');
-      from_legacy ? setLegacy(true) : setLegacy(false);
+      let fromLegacy = new URLSearchParams(window.location.search).get('archived-page');
+      fromLegacy ? setLegacy(true) : setLegacy(false);
     }
   });
 

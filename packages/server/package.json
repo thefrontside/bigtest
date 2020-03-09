@@ -23,11 +23,7 @@
     "@types/mocha": "^5.2.7",
     "@types/node-fetch": "^2.5.3",
     "@types/ramda": "types/npm-ramda#dist",
-    "@typescript-eslint/eslint-plugin": "^2.3.2",
-    "@typescript-eslint/parser": "^2.3.2",
     "abort-controller": "^3.0.0",
-    "eslint": "^6.6.0",
-    "eslint-plugin-prefer-let": "^1.0.1",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
     "node-fetch": "^2.6.0"
