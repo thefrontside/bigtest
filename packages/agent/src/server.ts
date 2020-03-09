@@ -1,4 +1,4 @@
-import { Operation, Context } from 'effection';
+import { Operation } from 'effection';
 import * as xp from 'express';
 import * as Path from 'path';
 import { Server } from 'http';

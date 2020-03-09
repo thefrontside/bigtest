@@ -38,7 +38,6 @@ describe("@bigtest/agent", () => {
   describe('starting a new server', () => {
     let server: AgentServer;
     let client: AgentConnectionServer;
-    let inbox: Mailbox;
     let delegate: Mailbox;
     let connection: AgentConnection;
 
@@ -46,7 +45,7 @@ describe("@bigtest/agent", () => {
       server = AgentServer.create({port: 8000}, 'dist/app');
       client = new AgentConnectionServer({
         port: 8001,
-        inbox: inbox = new Mailbox(),
+        inbox: new Mailbox(),
         delegate: delegate = new Mailbox()
       });
 
