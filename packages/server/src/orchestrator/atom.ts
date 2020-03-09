@@ -15,7 +15,8 @@ export class Atom {
       assertions: [],
       children: []
     },
-    agents: {}
+    agents: {},
+    testRuns: {},
   };
 
   private subscriptions = new EventEmitter();

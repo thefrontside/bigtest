@@ -21,9 +21,16 @@ export type AgentState = {
   };
 }
 
+export type TestRunState = {
+  status: "pending";
+  tree: Test;
+  agent: AgentState;
+}
+
 export type OrchestratorState = {
   agents: Record<string, AgentState>;
   manifest: Manifest;
+  testRuns: Record<string, TestRunState>;
 }
 
 export interface Manifest extends Test {
