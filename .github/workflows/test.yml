@@ -13,6 +13,13 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '12.x'
-      - run: yarn
-      - run: yarn prepack
-      - run: yarn test --browsers=ChromeHeadless
+      - name: Install XVFB
+        run: |
+          sudo apt-get update
+          sudo apt-get install xvfb
+      - name: Install dependencies
+        run: yarn
+      - name: Prepackage
+        run: yarn prepack
+      - name: Run tests
+        run: xvfb-run --auto-servernum -- yarn test --browsers=ChromeHeadless
