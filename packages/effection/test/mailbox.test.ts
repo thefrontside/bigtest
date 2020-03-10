@@ -6,7 +6,7 @@ import { EventEmitter } from 'events';
 
 import { spawn } from './helpers';
 
-import { Mailbox } from '../src/mailbox';
+import { Mailbox, SubscriptionMessage, subscribe } from '../src/mailbox';
 import { FakeEventEmitter, FakeEvent } from './fake-event-target';
 
 describe("Mailbox", () => {
@@ -119,12 +119,12 @@ describe("Mailbox", () => {
 
   describe('subscribe to an EventEmitter', () => {
     let emitter: EventEmitter;
-    let mailbox: Mailbox;
+    let mailbox: Mailbox<SubscriptionMessage>;
 
     beforeEach(() => {
       emitter = new EventEmitter();
       mailbox = new Mailbox();
-      spawn(mailbox.subscribe(emitter, "thing"));
+      spawn(subscribe(mailbox, emitter, "thing"));
     });
 
     describe('emitting an event', () => {
@@ -142,13 +142,13 @@ describe("Mailbox", () => {
 
   describe('subscribing to an EventTarget', () => {
     let target: FakeEventEmitter;
-    let mailbox: Mailbox;
+    let mailbox: Mailbox<SubscriptionMessage>;
     let thingEvent: FakeEvent;
 
     beforeEach(() => {
       target = new FakeEventEmitter();
       mailbox = new Mailbox();
-      spawn(mailbox.subscribe(target, "thing"));
+      spawn(subscribe(mailbox, target, "thing"));
     });
 
     describe('emitting an event', () => {

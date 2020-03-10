@@ -8,32 +8,36 @@ import { ensure } from './ensure';
 
 function isEventTarget(target): target is EventTarget { return typeof target.addEventListener === 'function'; }
 
-export class Mailbox {
+export interface SubscriptionMessage {
+  event: string,
+  args: unknown[],
+}
+
+export class Mailbox<T = any> {
   private subscriptions = new EventEmitter();
-  private messages = new Set();
+  private messages = new Set<T>();
 
   static *subscribe(
     emitter: EventEmitter | EventTarget,
     events: string | string[],
-    prepare: (event: { event: string; args: unknown[] }) => unknown = x => x
-  ): Operation {
-    let mailbox = new Mailbox();
+  ): Operation<Mailbox<SubscriptionMessage>> {
+    let mailbox: Mailbox<SubscriptionMessage> = new Mailbox();
 
-    yield suspend(mailbox.subscribe(emitter, events, prepare));
+    yield suspend(subscribe(mailbox, emitter, events));
 
     return mailbox;
   }
 
-  send(message: unknown) {
+  send(message: T) {
     this.messages.add(message);
     this.subscriptions.emit('message', message);
   }
 
-  receive(pattern: unknown = undefined): Operation {
+  receive(pattern: unknown = undefined): Operation<T> {
     let match = compile(pattern);
 
     return ({ resume, ensure }) => {
-      let dispatch = (message: unknown) => {
+      let dispatch = (message: T) => {
         if (this.messages.has(message) && match(message)) {
           this.messages.delete(message);
           resume(message);
@@ -51,24 +55,24 @@ export class Mailbox {
       ensure(() => this.subscriptions.off('message', dispatch));
     };
   }
+}
 
-  *subscribe(
-    emitter: EventEmitter | EventTarget,
-    events: string | string[],
-    prepare: (event: { event: string; args: unknown[] }) => unknown = x => x
-  ): Operation {
-    for (let name of [].concat(events)) {
-      let listener = (...args) => {
-        this.send(prepare({ event: name, args }));
-      }
+export function *subscribe(
+  mailbox: Mailbox<SubscriptionMessage>,
+  emitter: EventEmitter | EventTarget,
+  events: string | string[],
+): Operation {
+  for (let name of [].concat(events)) {
+    let listener = (...args) => {
+      mailbox.send({ event: name, args });
+    }
 
-      if(isEventTarget(emitter)) {
-        emitter.addEventListener(name, listener);
-        yield suspend(ensure(() => emitter.removeEventListener(name, listener)));
-      } else {
-        emitter.on(name, listener);
-        yield suspend(ensure(() => emitter.off(name, listener)));
-      }
+    if(isEventTarget(emitter)) {
+      emitter.addEventListener(name, listener);
+      yield suspend(ensure(() => emitter.removeEventListener(name, listener)));
+    } else {
+      emitter.on(name, listener);
+      yield suspend(ensure(() => emitter.off(name, listener)));
     }
   }
 }
