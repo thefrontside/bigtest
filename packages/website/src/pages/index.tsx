@@ -15,9 +15,9 @@ import ReachOut from '../components/ReachOut';
 import SubscribeForm from '../components/SubscribeForm';
 import WhyBigTest from '../components/WhyBigTest';
 
-import { reusable, tests_intro, user_experience } from '../images';
+import { reusableSVG, testsIntroSVG, userExperienceSVG } from '../images';
 
-const IndexPage = props => (
+const IndexPage = () => (
   <Layout>
     <Hero>
       <Flex alignItems="center" flexWrap="wrap">
@@ -40,7 +40,7 @@ const IndexPage = props => (
           width={[1, 1 / 2, 1 / 3]}
           paddingX={['xLarge', 'small', 'large']}
           marginTop={['large', 0, 0]}
-          src={tests_intro}
+          src={testsIntroSVG}
           alt="BigTest: automated, fast, reliable, and cross-browser tests."
         />
       </Flex>
@@ -67,7 +67,7 @@ const IndexPage = props => (
           width={[1, 1 / 2, 1 / 3]}
           paddingX={['xLarge', 'large', 'xLarge']}
           marginTop={['large', 0, 0]}
-          src={user_experience}
+          src={userExperienceSVG}
           alt="BigTest checks experiences as your user would"
         />
       </Flex>
@@ -111,7 +111,7 @@ const IndexPage = props => (
           width={[1, 1 / 2, 1 / 3]}
           paddingX={['xLarge', 'large', 'xLarge']}
           marginTop={['large', 0, 0]}
-          src={reusable}
+          src={reusableSVG}
           alt="Reuse code across tests with BigTest"
         />
       </Flex>

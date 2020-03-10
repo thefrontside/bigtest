@@ -1,10 +1,9 @@
-import { Link } from 'gatsby';
 import React from 'react';
 import styled from 'styled-components';
 
 import Image from './Image';
 
-import { frontside_logo } from '../images';
+import { frontsideLogoSVG } from '../images';
 
 const FooterBox = styled.footer`
   background-color: ${({ theme }) => theme.colors.footer};
@@ -33,7 +32,7 @@ const Footer = () => (
   <FooterBox>
     <FooterText>Brought to you by</FooterText>
     <FooterLink href="https://frontside.io/" target="_blank">
-      <FooterLogo src={frontside_logo} alt="Frontside" />
+      <FooterLogo src={frontsideLogoSVG} alt="Frontside" />
     </FooterLink>
   </FooterBox>
 );

@@ -16,13 +16,6 @@
     "test": "echo success",
     "prepack": "tsc --outDir dist --declaration"
   },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.3.2",
-    "@typescript-eslint/parser": "^2.3.2",
-    "eslint": "^6.6.0",
-    "eslint-plugin-prefer-let": "^1.0.1",
-    "typescript": "^3.7.0"
-  },
   "volta": {
     "node": "12.16.0",
     "yarn": "1.19.1"

@@ -38,15 +38,15 @@ interface SubscribeForm {
 }
 
 const Subscribe: React.FC<SubscribeForm> = props => {
-  const [email, setEmail] = useState('');
-  const [sent, setSent] = useState(false);
-  const [botfield, preventSpam] = useState('');
+  let [email, setEmail] = useState('');
+  let [sent, setSent] = useState(false);
+  let [botfield, preventSpam] = useState('');
 
-  const reset = () => {
+  let reset = () => {
     setSent(true), setEmail('');
   };
 
-  const handleSubmit = e => {
+  let handleSubmit = e => {
     e.preventDefault();
 
     addToMailChimp(e.target.email.value)
@@ -54,7 +54,7 @@ const Subscribe: React.FC<SubscribeForm> = props => {
       .catch(error => alert(error));
   };
 
-  const email_ID = `email${props.id}`;
+  let emailID = `email${props.id}`;
 
   return (
     <form name="newsletter" method="post" style={{ display: 'flex' }} onSubmit={handleSubmit}>
@@ -66,7 +66,7 @@ const Subscribe: React.FC<SubscribeForm> = props => {
         </label>
       </div>
       <Input
-        id={email_ID}
+        id={emailID}
         name="email"
         onChange={e => setEmail(e.target.value)}
         required={true}

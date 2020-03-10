@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import Section from './Section';
 import IconLink, { FauxImageLink } from './IconLink';
 
-import { bigtest_logo_svg, discord_icon, github_icon } from '../images';
+import { bigtestLogoSVG, discordIconSVG, githubIconSVG } from '../images';
 
 const HeadWrapper = styled(Section)`
   display: flex;
@@ -18,7 +18,7 @@ const HeadWrapper = styled(Section)`
 
 const LogoLink = styled(Link)`
   ${FauxImageLink}
-  background-image: url(${bigtest_logo_svg});
+  background-image: url(${bigtestLogoSVG});
   height: ${({ theme }) => theme.fontSizes.xxxLarge};
   width: 300px;
 `;
@@ -55,14 +55,14 @@ const Header = () => (
     <Nav>
       {/* <APILink to='' title='API Documentation'>API</APILink> */}
       <IconLink
-        icon={github_icon}
+        icon={githubIconSVG}
         href="https://github.com/thefrontside/bigtest.git"
         title="Project Github"
         target="_blank"
       >
         Github
       </IconLink>
-      <IconLink icon={discord_icon} href="https://discord.gg/W7r24Aa" title="Discord community" target="_blank">
+      <IconLink icon={discordIconSVG} href="https://discord.gg/W7r24Aa" title="Discord community" target="_blank">
         Discord
       </IconLink>
       <LegacyLink href="http://v1.bigtestjs.io/">

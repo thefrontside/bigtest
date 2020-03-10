@@ -52,11 +52,11 @@ const breakpointAliases: string[] = ['small', 'medium', 'large', 'xLarge'];
 
 const sizeAliases: string[] = ['xxSmall', 'xSmall', 'small', 'medium', 'large', 'xLarge', 'xxLarge', 'xxxLarge'];
 
-base.fontSizes.forEach((_: any, index: number): void => {
+base.fontSizes.forEach((_, index: number): void => {
   base.fontSizes[sizeAliases[index]] = base.fontSizes[index];
 });
 
-base.space.forEach((_: any, index: number): void => {
+base.space.forEach((_, index: number): void => {
   base.space[sizeAliases[index]] = base.space[index];
 });
 
