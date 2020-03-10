@@ -1,10 +1,8 @@
 import { monitor, Operation } from 'effection';
 import { Mailbox, suspend, once } from '@bigtest/effection';
 
-// @ts-ignore
 import * as Bundler from 'parcel-bundler';
-// @ts-ignore
-import { ParcelOptions } from 'parcel-bundler';
+import { ParcelOptions } from  'parcel-bundler';
 import { createServer, RequestListener } from 'http';
 import { EventEmitter } from 'events';
 import * as http from 'http';
@@ -14,7 +12,7 @@ interface ParcelServerOptions {
 };
 
 export function* createParcelServer(entryPoints: string[], options: ParcelServerOptions, parcelOptions?: ParcelOptions): Operation {
-  let bundler: ParcelBundler = new Bundler(entryPoints, parcelOptions || {});
+  let bundler = new Bundler(entryPoints, parcelOptions || {}) as unknown as ParcelBundler;
 
   let events = yield Mailbox.subscribe(bundler, "buildEnd");
 
