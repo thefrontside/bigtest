@@ -19,7 +19,9 @@
     "prepack": "tsc --outdir dist --project tsconfig.dist.json --declaration --sourcemap && parcel build --out-dir dist/app app/index.html app/harness.ts"
   },
   "devDependencies": {
+    "@types/express": "^4.17.2",
     "@types/mocha": "^7.0.1",
+    "@types/node": "^12.7.11",
     "@types/node-fetch": "^2.5.4",
     "@types/websocket": "^1.0.0",
     "classnames": "^2.2.5",
@@ -32,8 +34,6 @@
     "ts-node": "*"
   },
   "dependencies": {
-    "@types/express": "^4.17.2",
-    "@types/node": "^12.7.11",
     "bowser": "^2.9.0",
     "effection": "^0.5.2",
     "express": "^4.17.1",
