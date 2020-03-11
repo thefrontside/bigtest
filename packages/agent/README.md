@@ -60,3 +60,11 @@ To run the tests:
 ``` sh
 $ yarn test
 ```
+
+The tests use a faked manifest, which is editable in
+`test/fixtures/manifest.src.js`.  If you make any changes to this file, you
+must rebuild the compiled manifest like this:
+
+``` sh
+$ yarn manifest:build
+```
