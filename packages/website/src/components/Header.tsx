@@ -65,9 +65,7 @@ const Header = () => (
       <IconLink icon={discordIconSVG} href="https://discord.gg/W7r24Aa" title="Discord community" target="_blank">
         Discord
       </IconLink>
-      <LegacyLink href="http://v1.bigtestjs.io/">
-        v1.x Docs &#8594;
-      </LegacyLink>
+      <LegacyLink href="http://v1.bigtestjs.io/">v1.x Docs &#8594;</LegacyLink>
     </Nav>
   </HeadWrapper>
 );
