@@ -19,7 +19,7 @@ interface AgentConnectionServerOptions {
 export class AgentConnectionServer {
   constructor(public options: AgentConnectionServerOptions) {}
 
-  *listen(forEach: (connection: AgentConnection) => Operation): Operation {
+  *listen(): Operation {
     let { port, inbox, delegate } = this.options;
 
     let httpServer = createServer();
@@ -33,7 +33,7 @@ export class AgentConnectionServer {
       });
 
       try {
-        yield acceptConnections(socketServer, inbox, delegate, forEach);
+        yield acceptConnections(socketServer, inbox, delegate);
       } finally {
         socketServer.unmount();
       }
@@ -44,12 +44,15 @@ export class AgentConnectionServer {
   }
 }
 
-function* acceptConnections(server: WebSocketServer, inbox: Mailbox, delegate: Mailbox, each: (connection: AgentConnection) => Operation): Operation {
+let ids = 1;
+
+function* acceptConnections(server: WebSocketServer, inbox: Mailbox, delegate: Mailbox): Operation {
   while (true) {
     let [request]: [Request] = yield once(server, "request");
     let connection = request.accept(null, request.origin);
+    let sendData = promisify<string, void>(connection.send.bind(connection));
+    let agentId = `agent.${ids++}`;
 
-    let ids = 1;
     let handler = yield fork(function* setupConnection() {
       let halt = () => handler.halt();
       let fail = (error: Error) => {
@@ -60,18 +63,14 @@ function* acceptConnections(server: WebSocketServer, inbox: Mailbox, delegate: M
         }
       }
 
-      let agent = new AgentConnection(`agent.${ids++}`);
-
       let messages = yield Mailbox.subscribe(connection, "message", ({ args }) => {
         let [message] = args as Message[];
-        return { message: JSON.parse(message.utf8Data) };
+        return JSON.parse(message.utf8Data);
       })
 
       yield fork(function*() {
         while (true) {
-          let message = yield inbox.receive({ agentId: agent.id });
-
-          let sendData = promisify<string, void>(connection.send.bind(connection));
+          let message = yield inbox.receive({ agentId });
           yield sendData(JSON.stringify(message));
         }
       });
@@ -79,6 +78,7 @@ function* acceptConnections(server: WebSocketServer, inbox: Mailbox, delegate: M
       yield fork(function*() {
         while (true) {
           let message = yield messages.receive();
+          message.agentId = agentId;
           delegate.send(message);
         }
       });
@@ -86,18 +86,14 @@ function* acceptConnections(server: WebSocketServer, inbox: Mailbox, delegate: M
       try {
         connection.on("error", fail);
         connection.on("close", halt);
-        delegate.send({ connected: true });
+        delegate.send({ status: 'connected', agentId });
 
-        yield each(agent);
+        yield;
       } finally {
-        delegate.send({ connected: false });
+        delegate.send({ status: 'disconnected', agentId });
         connection.off("error", fail);
         connection.off("close", halt);
       }
     });
   }
-}
-
-export class AgentConnection {
-  constructor(public readonly id: string) {}
 }
