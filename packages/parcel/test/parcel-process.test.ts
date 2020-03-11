@@ -5,12 +5,11 @@ import * as expect from 'expect';
 import { spawn } from './world';
 import { ParcelProcess } from '../src/index';
 
-describe("Parcel Process", () => {
+describe("Parcel Process", function() {
+  this.timeout(20000);
   let parcel: ParcelProcess;
 
-  beforeEach(async function() {
-    this.timeout(10000);
-
+  beforeEach(async () => {
     await fs.mkdir("./build/test/sources", { recursive: true });
     await fs.mkdir("./build/test/output", { recursive: true });
     await fs.writeFile("./build/test/sources/input.ts", "export default {}\n");
@@ -26,10 +25,10 @@ describe("Parcel Process", () => {
     expect(existsSync("./build/test/output/manifest.js")).toEqual(true);
   });
 
-  describe('editting the  sources', () => {
+  describe('editing the sources', () => {
     let message: { type: string };
 
-    beforeEach(async () => {
+    beforeEach(async function() {
       await fs.writeFile("./build/test/sources/input.ts", "export default {hello: 'world'}\n");
       message = await spawn(parcel.receive());
     });
