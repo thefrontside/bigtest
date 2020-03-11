@@ -5,7 +5,9 @@ import { ParcelProcess } from '../src/index';
 main(function* start() {
   let parcel: ParcelProcess = yield ParcelProcess.create({
     buildDir: "./build",
-    srcPath: "./examples/*.ts",
+    sourceEntries: "./examples/*.ts",
+    global: "__IamGlobal",
+    outFile: "manifest.js",
     stdio: "inherit"
   });
 

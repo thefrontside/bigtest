@@ -6,7 +6,10 @@ import { Mailbox, once, suspend } from '@bigtest/effection';
 
 interface ParcelOptions  {
   buildDir: string;
-  srcPath: string;
+  sourceEntries: string | string[];
+  global: string;
+  outFile: string;
+
   stdio?: 'pipe' | 'inherit';
   execPath?: 'ts-node' | undefined;
 }
@@ -18,10 +21,12 @@ export class ParcelProcess {
     let stdioMode = options.stdio || 'pipe';
     let parcelProcess = new ParcelProcess();
 
+
+    let entries = [].concat(options.sourceEntries);
     let runParcel = Path.join(__dirname, 'parcel-run');
     let child: ChildProcess = forkProcess(
       runParcel,
-      ['--out-dir', options.buildDir, '--out-file', 'manifest.js', '--global', '__bigtestManifest', options.srcPath],
+      ['--out-dir', options.buildDir, '--out-file', options.outFile, '--global', options.global, ...entries],
       {
         execPath: options.execPath || undefined,
         stdio: [stdioMode, stdioMode, stdioMode, 'ipc'],

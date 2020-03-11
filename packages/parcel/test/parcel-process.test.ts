@@ -16,7 +16,9 @@ describe("Parcel Process", function() {
 
     parcel = await spawn(ParcelProcess.create({
       buildDir: "./build/test/output",
-      srcPath: "./build/test/sources/*.ts",
+      sourceEntries: "./build/test/sources/*.ts",
+      outFile: "manifest.js",
+      global: "__bigtestManifest",
       execPath: 'ts-node'
     }))
   });
