@@ -67,7 +67,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     inject: `<script src="${agentServer.harnessScriptURL}"></script>`,
   }));
 
-
   yield fork(createCommandServer({
     delegate: commandServerDelegate,
     atom: options.atom,
@@ -75,6 +74,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   }));
 
   yield fork(createConnectionServer({
+    inbox: connectionServerInbox,
     delegate: connectionServerDelegate,
     atom: options.atom,
     port: options.connectionPort,

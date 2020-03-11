@@ -1,6 +1,6 @@
-console.log("[harness] hello from harness");
+import 'regenerator-runtime/runtime';
+import { main } from 'effection';
+import { createHarness } from './create-harness';
 
-window.parent.postMessage("message from harness", "*");
-window.addEventListener("message", (message) => {
-  console.log('[harness] received message:', message.data);
-});
+main(createHarness())
+  .catch(error => console.error(error));

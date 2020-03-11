@@ -1,11 +1,12 @@
-import { Operation, fork, timeout } from 'effection';
-import { Mailbox, any } from '@bigtest/effection';
+import { Operation, fork } from 'effection';
+import { Mailbox } from '@bigtest/effection';
 import { IMessage } from 'websocket';
 import { createSocketServer, Connection, sendData } from './ws';
 import { Atom } from './orchestrator/atom';
 import { AgentState } from './orchestrator/state';
 
 interface ConnectionServerOptions {
+  inbox: Mailbox;
   delegate: Mailbox;
   atom: Atom;
   port: number;
@@ -24,22 +25,6 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
       return { message: JSON.parse(message.utf8Data) };
     })
 
-    yield fork(function* heartbeat() {
-      while (true) {
-        yield timeout(10000);
-        yield sendData(connection, JSON.stringify({type: "heartbeat"}));
-      }
-    })
-
-    yield fork(function* sendRun() {
-      let fileName = options.atom.get().manifest.fileName;
-      yield sendData(connection, JSON.stringify({
-        type: "open",
-        url: `http://localhost:${options.proxyPort}`,
-        manifest: `http://localhost:${options.manifestPort}/${fileName}`
-      }));
-    });
-
     let { message: { data } } = yield messages.receive({ message: { type: 'connected' } });
 
     let identifier = `agent.${counter++}`;
@@ -51,10 +36,23 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
 
       agent.set({ ...data, identifier });
 
-      while (true) {
-        let message = yield messages.receive({ message: any });
-        console.debug("[connection] got message", message);
-      }
+      yield fork(function*() {
+        while (true) {
+          console.debug('[connection] waiting for message', identifier);
+          let message = yield options.inbox.receive({ agentId: identifier });
+
+          yield sendData(connection, JSON.stringify(message));
+        }
+      });
+
+      yield fork(function*() {
+        while (true) {
+          let message = yield messages.receive();
+          console.debug("[connection] got message from client", message);
+        }
+      });
+
+      yield;
     } finally {
       agent.remove();
       console.debug('[connection] disconnected');
