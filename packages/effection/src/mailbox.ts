@@ -1,4 +1,4 @@
-import { Operation } from 'effection';
+import { Operation, monitor } from 'effection';
 import { EventEmitter } from 'events';
 
 import { compile } from './pattern';
@@ -23,7 +23,7 @@ export class Mailbox<T = any> {
   ): Operation<Mailbox<SubscriptionMessage>> {
     let mailbox: Mailbox<SubscriptionMessage> = new Mailbox();
 
-    yield suspend(subscribe(mailbox, emitter, events));
+    yield suspend(monitor(subscribe(mailbox, emitter, events)));
 
     return mailbox;
   }
@@ -54,6 +54,28 @@ export class Mailbox<T = any> {
       this.subscriptions.on('message', dispatch);
       ensure(() => this.subscriptions.off('message', dispatch));
     };
+  }
+
+  *pipe(other: Mailbox<T>) {
+    let that = this;
+    yield suspend(monitor(function*() {
+      while(true) {
+        let message = yield that.receive();
+        other.send(message);
+      }
+    }));
+  }
+
+  *map<R>(fn: (from: T) => R): Operation<Mailbox<R>> {
+    let that = this;
+    let other: Mailbox<R> = new Mailbox();
+    yield suspend(monitor(function*() {
+      while(true) {
+        let message: T = yield that.receive();
+        other.send(fn(message));
+      }
+    }));
+    return other;
   }
 }
 

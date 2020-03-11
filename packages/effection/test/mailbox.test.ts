@@ -164,4 +164,57 @@ describe("Mailbox", () => {
       });
     });
   });
+
+  describe('piping a mailbox into another mailbox', () => {
+    let source: Mailbox;
+    let destination: Mailbox;
+
+    beforeEach(() => {
+      source = new Mailbox();
+      destination = new Mailbox();
+      spawn(function*() {
+        yield source.pipe(destination);
+        yield;
+      });
+    });
+
+    describe('forwards messages from the source mailbox to the destination', () => {
+      let message;
+
+      beforeEach(async () => {
+        source.send("hello");
+        message = await spawn(destination.receive());
+      });
+
+      it('receives message on destination', async () => {
+        expect(message).toEqual("hello");
+      });
+    });
+  });
+
+  describe('mapping over a mailbox', () => {
+    let source: Mailbox;
+    let destination: Mailbox;
+
+    beforeEach(() => {
+      source = new Mailbox();
+      spawn(function*() {
+        destination = yield source.map((message) => message.toUpperCase());
+        yield;
+      });
+    });
+
+    describe('applies mapping function to source mailbox', () => {
+      let message;
+
+      beforeEach(async () => {
+        source.send("hello");
+        message = await spawn(destination.receive());
+      });
+
+      it('receives message on destination', async () => {
+        expect(message).toEqual("HELLO");
+      });
+    });
+  });
 });
