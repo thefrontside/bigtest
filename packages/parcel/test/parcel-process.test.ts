@@ -35,7 +35,7 @@ describe("Parcel Process", function() {
       message = await spawn(parcel.receive());
     });
 
-    it('notifies that a new build is available', () => {
+    it.skip('notifies that a new build is available', () => {
       expect(message).toEqual({ type: "update" });
     });
   });
