@@ -1,12 +1,12 @@
 import { Operation } from 'effection';
-import { Mailbox, suspend } from '@bigtest/effection';
+import { Mailbox, suspend, subscribe } from '@bigtest/effection';
 
 export class SocketConnection {
   static *start(connectTo: string) {
     let socket = new WebSocket(connectTo);
     let mailbox = new Mailbox();
 
-    yield suspend(mailbox.subscribe(socket, ['open', 'message', 'close']));
+    yield suspend(subscribe(mailbox, socket, ['open', 'message', 'close']));
     yield mailbox.receive({ event: 'open' });
 
     return new SocketConnection(socket, mailbox);

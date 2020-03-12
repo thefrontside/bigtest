@@ -20,10 +20,12 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
   function* handleConnection(connection: Connection): Operation {
     console.debug('[connection] connected');
 
-    let messages = yield Mailbox.subscribe(connection, "message", ({ args }) => {
+    let messages = yield Mailbox.subscribe(connection, "message")
+
+    messages = messages.map(({ args }) => {
       let [message] = args as IMessage[];
       return { message: JSON.parse(message.utf8Data) };
-    })
+    });
 
     let { message: { data } } = yield messages.receive({ message: { type: 'connected' } });
 

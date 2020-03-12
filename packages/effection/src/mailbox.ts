@@ -9,10 +9,11 @@ import { ensure } from './ensure';
 function isEventTarget(target): target is EventTarget { return typeof target.addEventListener === 'function'; }
 
 export interface SubscriptionMessage {
-  event: string,
-  args: unknown[],
+  event: string;
+  args: unknown[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class Mailbox<T = any> {
   private subscriptions = new EventEmitter();
   private messages = new Set<T>();
@@ -57,7 +58,7 @@ export class Mailbox<T = any> {
   }
 
   *pipe(other: Mailbox<T>) {
-    let that = this;
+    let that = this; // eslint-disable-line @typescript-eslint/no-this-alias
     yield suspend(monitor(function*() {
       while(true) {
         let message = yield that.receive();
@@ -67,7 +68,7 @@ export class Mailbox<T = any> {
   }
 
   *map<R>(fn: (from: T) => R): Operation<Mailbox<R>> {
-    let that = this;
+    let that = this; // eslint-disable-line @typescript-eslint/no-this-alias
     let other: Mailbox<R> = new Mailbox();
     yield suspend(monitor(function*() {
       while(true) {

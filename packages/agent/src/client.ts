@@ -5,7 +5,6 @@ import { promisify } from 'util';
 import {
   server as WebSocketServer,
   request as Request,
-  IMessage as Message
 } from 'websocket';
 
 import { Mailbox, once, suspend, ensure } from '@bigtest/effection';
@@ -63,10 +62,7 @@ function* acceptConnections(server: WebSocketServer, inbox: Mailbox, delegate: M
         }
       }
 
-      let messages = yield Mailbox.subscribe(connection, "message", ({ args }) => {
-        let [message] = args as Message[];
-        return JSON.parse(message.utf8Data);
-      })
+      let messages = yield Mailbox.subscribe(connection, "message");
 
       yield fork(function*() {
         while (true) {
@@ -77,7 +73,8 @@ function* acceptConnections(server: WebSocketServer, inbox: Mailbox, delegate: M
 
       yield fork(function*() {
         while (true) {
-          let message = yield messages.receive();
+          let { args } = yield messages.receive();
+          let message = JSON.parse(args[0].utf8Data);
           message.agentId = agentId;
           delegate.send(message);
         }
