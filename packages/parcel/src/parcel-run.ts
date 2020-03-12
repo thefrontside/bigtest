@@ -1,4 +1,4 @@
-import { main } from './main';
+import { main } from '@effection/node';
 import { createParcelServer } from './parcel-server';
 import * as yargs from 'yargs';
 

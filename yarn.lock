@@ -962,6 +962,11 @@
   resolved "https://registry.yarnpkg.com/@csstools/sass-import-resolve/-/sass-import-resolve-1.0.0.tgz#32c3cdb2f7af3cd8f0dca357b592e7271f3831b5"
   integrity sha512-pH4KCsbtBLLe7eqUrw8brcuFO8IZlN36JjdKlOublibVdAIPHCzEnpBWOVUXK5sCf+DpBi8ZtuWtjF0srybdeA==
 
+"@effection/node@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@effection/node/-/node-0.5.2.tgz#16837885a15379d10b2bd0fe95e6f1cbb2f0eadc"
+  integrity sha512-aku7hld9m8AIVSb9D39qjmwChTxiSsYZ7JyXzekbMx71FQAQt9KOepuucdnM6NZvarf4oe+7JO+e2doQN66ekw==
+
 "@emotion/is-prop-valid@^0.8.3":
   version "0.8.6"
   resolved "https://registry.yarnpkg.com/@emotion/is-prop-valid/-/is-prop-valid-0.8.6.tgz#4757646f0a58e9dec614c47c838e7147d88c263c"

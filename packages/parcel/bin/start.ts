@@ -1,4 +1,4 @@
-import { main } from '../src/main';
+import { main } from '@effection/node';
 
 import { ParcelProcess } from '../src/index';
 
