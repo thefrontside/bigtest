@@ -1,6 +1,6 @@
 import { monitor, Operation } from 'effection';
 import { once, suspend } from '@bigtest/effection';
-import { watchError } from '@effection/events';
+import { watchError } from './events'; //TODO: use monitorErrors from @bigtest/effection
 
 import * as childProcess from 'child_process';
 import { SpawnOptions, ForkOptions, ChildProcess } from 'child_process';

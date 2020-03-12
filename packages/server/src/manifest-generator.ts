@@ -1,6 +1,6 @@
 import * as chokidar from 'chokidar';
 import { Operation } from 'effection';
-import { watchError } from '@effection/events';
+import { watchError } from './effection/events'; //TODO: use monitorErrors from @bigtest/effection
 import { Mailbox } from '@bigtest/effection';
 import * as fs from 'fs';
 import * as glob from 'glob';

@@ -1,6 +1,6 @@
 import { fork, Operation } from 'effection';
 import { once } from '@bigtest/effection';
-import { watchError } from '@effection/events';
+import { watchError } from './effection/events'; //TODO: use monitorErrors from @bigtest/effection
 import { Mailbox, any } from '@bigtest/effection';
 
 import * as proxy from 'http-proxy';

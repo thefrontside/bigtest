@@ -1,7 +1,7 @@
 import { Operation } from 'effection';
 import * as actualExpress from 'express';
 import { Express as ActualExpress } from 'express';
-import { watchError } from '@effection/events';
+import { watchError } from './events'; //TODO: use monitorErrors from @bigtest/effection
 import { once, suspend, ensure } from '@bigtest/effection';
 
 export class Express {
