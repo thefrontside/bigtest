@@ -6,7 +6,6 @@
   "repository": "https://github.com/bigtestjs/server.git",
   "author": "Frontside Engineering <engineering@frontside.io>",
   "license": "MIT",
-  "private": true,
   "scripts": {
     "start": "ts-node bin/start.ts",
     "watch": "ts-node bin/watch.ts",
