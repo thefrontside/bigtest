@@ -1,17 +1,18 @@
-import { Operation } from 'effection';
+import { monitor, Operation } from 'effection';
+import { Mailbox, suspend, once } from '@bigtest/effection';
+
 import * as Bundler from 'parcel-bundler';
-import { ParcelOptions } from 'parcel-bundler';
+import { ParcelOptions } from  'parcel-bundler';
 import { createServer, RequestListener } from 'http';
-import { Mailbox } from '@bigtest/effection';
 import { EventEmitter } from 'events';
-import { listen } from './http';
+import * as http from 'http';
 
 interface ParcelServerOptions {
   port?: number;
 };
 
 export function* createParcelServer(entryPoints: string[], options: ParcelServerOptions, parcelOptions?: ParcelOptions): Operation {
-  let bundler: ParcelBundler = new Bundler(entryPoints, parcelOptions || {});
+  let bundler = new Bundler(entryPoints, parcelOptions || {}) as unknown as ParcelBundler;
 
   let events = yield Mailbox.subscribe(bundler, "buildEnd");
 
@@ -44,4 +45,16 @@ interface ParcelBundler extends EventEmitter {
   middleware(): RequestListener;
   stop(): void;
   options: ParcelOptions;
+}
+
+
+function* listen(server: http.Server, port: number): Operation {
+  yield suspend(monitor(function* errorListener() {
+    let [error]: [Error] = yield once(server, "error");
+    throw error;
+  }));
+
+  server.listen(port);
+  yield once(server, "listening");
+  return server;
 }

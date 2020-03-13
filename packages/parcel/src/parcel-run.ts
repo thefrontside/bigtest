@@ -1,14 +1,13 @@
-import 'module-alias/register';
 import { main } from '@effection/node';
-import { createParcelServer } from '../src/parcel-server';
+import { createParcelServer } from './parcel-server';
 import * as yargs from 'yargs';
 
 yargs
   .command('$0 [files..]', 'run the parcel server', x => x, (argv) => {
     main(createParcelServer(argv.files as string[], { port: argv.port as number }, {
-      outDir: argv.outDir,
-      outFile: argv.outFile,
-      global: argv.global,
+      outDir: argv.outDir as string,
+      outFile: argv.outFile as string,
+      global: argv.global as string,
     }));
   })
   .option('port', {

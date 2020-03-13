@@ -1,0 +1,37 @@
+{
+  "name": "@bigtest/parcel",
+  "version": "0.1.0",
+  "description": "Effection wrappers for working with parcel",
+  "main": "dist/src/index.js",
+  "typings": "dist/src/index.d.ts",
+  "repository": "https://github.com/thefrontside/bigtest.git",
+  "author": "Frontside Engineering <engineering@frontside.io>",
+  "license": "MIT",
+  "files": [
+    "dist/*",
+    "README.md"
+  ],
+  "scripts": {
+    "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
+    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "start": "ts-node bin/start.ts",
+    "prepack": "tsc --outDir dist --declaration --sourcemap --module commonjs"
+  },
+  "dependencies": {
+    "@bigtest/effection": "0.1.0",
+    "@effection/node": "^0.5.2",
+    "effection": "^0.5.2",
+    "parcel": "^1.12.4",
+    "parcel-bundler": "^1.12.4"
+  },
+  "volta": {
+    "node": "12.16.0",
+    "yarn": "1.19.1"
+  },
+  "devDependencies": {
+    "@types/node": "^13.9.0",
+    "@types/parcel-bundler": "^1.12.1",
+    "expect": "^25.1.0",
+    "yargs": "^15.3.0"
+  }
+}
