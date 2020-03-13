@@ -14,7 +14,7 @@ jobs:
       with:
         before_all: yarn prepack
         npm_publish: yarn publish
-        ignore: packages/website packages/convergence packages/interactor packages/cli packages/server
+        ignore: packages/website packages/convergence packages/interactor packages/cli
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.FRONTSIDEJACK_NPM_TOKEN }}
