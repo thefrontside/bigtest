@@ -7,10 +7,7 @@
       "./node_modules/@types",
       "./typings"
     ],
-    "baseUrl": ".",
-    "paths": {
-      "@effection*": ["src/effection*"]
-    }
+    "baseUrl": "."
   },
   "include": [
     "test/**/*.ts",

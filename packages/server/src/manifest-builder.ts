@@ -1,6 +1,7 @@
 import { Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { ParcelProcess } from '@bigtest/parcel';
+
 import * as path from 'path';
 import * as fs from 'fs';
 import * as fprint from 'fprint';
@@ -42,7 +43,6 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
 }
 
 export function* createManifestBuilder(options: ManifestBuilderOptions): Operation {
-
   let parcel: ParcelProcess = yield ParcelProcess.create({
     buildDir: options.buildDir,
     sourceEntries: options.srcPath,

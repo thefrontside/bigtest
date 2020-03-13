@@ -1,7 +1,7 @@
 import { fork, timeout, Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { once } from '@bigtest/effection';
-import { spawn } from '@effection/child_process';
+import { spawn } from './effection/child_process';
 import { Socket } from 'net';
 import * as process from 'process';
 
