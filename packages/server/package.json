@@ -2,11 +2,10 @@
   "name": "@bigtest/server",
   "version": "0.1.0",
   "description": "BigTest Server",
-  "main": "index.js",
+  "main": "dist/src/index.js",
   "repository": "https://github.com/bigtestjs/server.git",
   "author": "Frontside Engineering <engineering@frontside.io>",
   "license": "MIT",
-  "private": true,
   "scripts": {
     "start": "ts-node bin/start.ts",
     "watch": "ts-node bin/watch.ts",
@@ -16,7 +15,7 @@
     "test": "mocha ./test/setup test/**/*.test.ts",
     "mocha": "mocha ./test/setup",
     "test:app:start": "ts-node ./bin/todomvc.ts",
-    "prepack": "echo 'prepack'"
+    "prepack": "tsc --project tsconfig.dist.json --outdir dist --module commonjs --sourcemap"
   },
   "devDependencies": {
     "@bigtest/todomvc": "^0.1.0",

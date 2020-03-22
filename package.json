@@ -10,6 +10,7 @@
     "packages": [
       "packages/effection",
       "packages/parcel",
+      "packages/todomvc",
       "packages/*"
     ]
   },
