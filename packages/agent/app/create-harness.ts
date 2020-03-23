@@ -1,5 +1,7 @@
 import { ParentFrame } from './parent-frame';
-import { Test } from './test';
+import { TestImplementation } from '@bigtest/suite';
+
+declare const __bigtestManifest: TestImplementation;
 
 export function* createHarness() {
   console.log('[harness] starting');
@@ -12,7 +14,7 @@ export function* createHarness() {
     console.info('[harness] got message', message);
 
     if(message.type === 'run') {
-      let manifest = yield loadManifest(message.manifestUrl) as Test;
+      let manifest: TestImplementation = yield loadManifest(message.manifestUrl);
 
       yield runTest(parentFrame, manifest, message.path.slice(1))
     }
@@ -23,7 +25,7 @@ function serializeError({ message, fileName, lineNumber, columnNumber, stack }) 
   return { message, fileName, lineNumber, columnNumber, stack };
 }
 
-function *runTest(parentFrame: ParentFrame, test: Test, path: string[], prefix: string[] = []) {
+function *runTest(parentFrame: ParentFrame, test: TestImplementation, path: string[], prefix: string[] = []) {
   let currentPath = prefix.concat(test.description);
 
   console.debug('[harness] running test', currentPath);
