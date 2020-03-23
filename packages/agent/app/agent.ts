@@ -1,5 +1,5 @@
 import * as Bowser from 'bowser';
-import { Test } from './test';
+import { Test } from '@bigtest/suite';
 import { TestFrame } from './test-frame';
 import { SocketConnection } from './socket-connection';
 
