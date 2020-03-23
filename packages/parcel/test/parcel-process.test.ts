@@ -27,24 +27,16 @@ describe("Parcel Process", function() {
     expect(existsSync("./build/test/output/manifest.js")).toEqual(true);
   });
 
-  // File watching does not work in parcel on the github docker containers
-  // so it will fail in CI. However, we do want to run it in environments where
-  // it will run. While we won't get the guaranteed protection against breakage,
-  // we can include this test every time it is run on a developer machine
-  if (!process.env['GITHUB_WORKFLOW']) {
+  describe('editing the sources', () => {
+    let message: { type: string };
 
-    describe('editing the sources', () => {
-      let message: { type: string };
-
-      beforeEach(async function() {
-        await fs.writeFile("./build/test/sources/input.ts", "export default {hello: 'world'}\n");
-        message = await spawn(parcel.receive());
-      });
-
-      it('notifies that a new build is available', () => {
-        expect(message).toEqual({ type: "update" });
-      });
+    beforeEach(async function() {
+      await fs.writeFile("./build/test/sources/input.ts", "export default {hello: 'world'}\n");
+      message = await spawn(parcel.receive());
     });
 
-  }
+    it('notifies that a new build is available', () => {
+      expect(message).toEqual({ type: "update" });
+    });
+  });
 })
