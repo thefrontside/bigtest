@@ -30,7 +30,8 @@ export class ParcelProcess {
       {
         execPath: options.execPath || undefined,
         stdio: [stdioMode, stdioMode, stdioMode, 'ipc'],
-        detached: true
+        detached: true,
+        env: { NODE_ENV: 'test', ...process.env }
       }
     );
 
