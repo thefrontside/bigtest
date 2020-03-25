@@ -25,7 +25,7 @@ const IndexPage = () => (
           <H1>
             <Strong>Tests that speed up development,</Strong>
             <br />
-            not the other way around
+            not slow it down
           </H1>
           <Text fontSize="large">
             BigTest lets developers test their applications across browsers and devices and provides them with
