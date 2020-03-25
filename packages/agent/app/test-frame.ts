@@ -1,12 +1,12 @@
 import { Operation } from 'effection';
-import { Mailbox, suspend } from '@bigtest/effection';
+import { Mailbox, suspend, subscribe } from '@bigtest/effection';
 
 export class TestFrame {
   static *start() {
     let element = document.getElementById('test-frame') as HTMLIFrameElement;
 
     let mailbox = new Mailbox();
-    yield suspend(mailbox.subscribe(window, ['message']));
+    yield suspend(subscribe(mailbox, window, ['message']));
     return new TestFrame(element, mailbox);
   }
 

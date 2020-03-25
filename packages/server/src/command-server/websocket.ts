@@ -40,11 +40,12 @@ export function handleMessage(delegate: Mailbox, atom: Atom): (connection: Conne
   }
 
   return function*(connection) {
+    let messages: Mailbox = yield Mailbox.subscribe(connection, "message");
 
-    let messages: Mailbox = yield Mailbox.subscribe(connection, "message", ({args}) => {
+    messages = yield messages.map(({ args }) => {
       let [message] = args as IMessage[];
       return JSON.parse(message.utf8Data);
-    })
+    });
 
     while (true) {
       let message: Message = yield messages.receive();

@@ -2,7 +2,9 @@ import * as Path from 'path';
 import { ChildProcess, fork as forkProcess } from 'child_process';
 
 import { monitor, Operation } from 'effection'
-import { Mailbox, once, suspend } from '@bigtest/effection';
+import { Mailbox, SubscriptionMessage, once, suspend } from '@bigtest/effection';
+
+type ParcelMessage = { type: "ready" } | { type: "update" };
 
 interface ParcelOptions  {
   buildDir: string;
@@ -35,7 +37,7 @@ export class ParcelProcess {
       }
     );
 
-    let messages = new Mailbox();
+    let readiness = new Mailbox();
 
     yield suspend(monitor(function* supervise() {
       // Killing all child processes started by this command is surprisingly
@@ -49,6 +51,8 @@ export class ParcelProcess {
       //
       // More information here: https://unix.stackexchange.com/questions/14815/process-descendants
       try {
+        let events: Mailbox<SubscriptionMessage> = yield Mailbox.subscribe(child, "message");
+        let messages: Mailbox<ParcelMessage> = yield events.map(({ args: [message] }) => message);
 
         // raise errors from the child process
         yield monitor(function*() {
@@ -56,13 +60,13 @@ export class ParcelProcess {
           throw error;
         });
 
-        // any time we receive a "message" event, deliver it to the 'messages' mailbox.
-        yield messages.subscribe(child, "message", ({ args: [message] }) => message);
+        yield messages.receive({ type: "ready" });
+        readiness.send("ready");
 
         // deliver "update" messages to the main parcel process object
         yield monitor(function* () {
           while (true) {
-            let message = yield messages.receive({ type: "update" });
+            let message = yield messages.receive();
             parcelProcess.mailbox.send(message);
           }
         })
@@ -81,7 +85,7 @@ export class ParcelProcess {
       }
     }));
 
-    yield messages.receive({ type: "ready" });
+    yield readiness.receive();
 
     return parcelProcess;
   }

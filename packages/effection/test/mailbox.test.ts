@@ -6,7 +6,7 @@ import { EventEmitter } from 'events';
 
 import { spawn } from './helpers';
 
-import { Mailbox } from '../src/mailbox';
+import { Mailbox, SubscriptionMessage, subscribe } from '../src/mailbox';
 import { FakeEventEmitter, FakeEvent } from './fake-event-target';
 
 describe("Mailbox", () => {
@@ -119,12 +119,12 @@ describe("Mailbox", () => {
 
   describe('subscribe to an EventEmitter', () => {
     let emitter: EventEmitter;
-    let mailbox: Mailbox;
+    let mailbox: Mailbox<SubscriptionMessage>;
 
     beforeEach(() => {
       emitter = new EventEmitter();
       mailbox = new Mailbox();
-      spawn(mailbox.subscribe(emitter, "thing"));
+      spawn(subscribe(mailbox, emitter, "thing"));
     });
 
     describe('emitting an event', () => {
@@ -142,13 +142,13 @@ describe("Mailbox", () => {
 
   describe('subscribing to an EventTarget', () => {
     let target: FakeEventEmitter;
-    let mailbox: Mailbox;
+    let mailbox: Mailbox<SubscriptionMessage>;
     let thingEvent: FakeEvent;
 
     beforeEach(() => {
       target = new FakeEventEmitter();
       mailbox = new Mailbox();
-      spawn(mailbox.subscribe(target, "thing"));
+      spawn(subscribe(mailbox, target, "thing"));
     });
 
     describe('emitting an event', () => {
@@ -161,6 +161,59 @@ describe("Mailbox", () => {
         let { event, args } = await spawn(mailbox.receive());
         expect(event).toEqual("thing");
         expect(args).toEqual([thingEvent]);
+      });
+    });
+  });
+
+  describe('piping a mailbox into another mailbox', () => {
+    let source: Mailbox;
+    let destination: Mailbox;
+
+    beforeEach(() => {
+      source = new Mailbox();
+      destination = new Mailbox();
+      spawn(function*() {
+        yield source.pipe(destination);
+        yield;
+      });
+    });
+
+    describe('forwards messages from the source mailbox to the destination', () => {
+      let message;
+
+      beforeEach(async () => {
+        source.send("hello");
+        message = await spawn(destination.receive());
+      });
+
+      it('receives message on destination', async () => {
+        expect(message).toEqual("hello");
+      });
+    });
+  });
+
+  describe('mapping over a mailbox', () => {
+    let source: Mailbox;
+    let destination: Mailbox;
+
+    beforeEach(() => {
+      source = new Mailbox();
+      spawn(function*() {
+        destination = yield source.map((message) => message.toUpperCase());
+        yield;
+      });
+    });
+
+    describe('applies mapping function to source mailbox', () => {
+      let message;
+
+      beforeEach(async () => {
+        source.send("hello");
+        message = await spawn(destination.receive());
+      });
+
+      it('receives message on destination', async () => {
+        expect(message).toEqual("HELLO");
       });
     });
   });
