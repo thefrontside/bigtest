@@ -37,7 +37,6 @@ export interface TestImplementation extends Test {
  * merged into the current context, otherwise, the context will be
  * left alone.
  */
-
 export interface Step extends Node {
   description: string;
   action: (context: Context) => Promise<Context | void>;
@@ -62,4 +61,42 @@ export type Context = Record<string, unknown>;
 
 interface Node {
   description: string;
+}
+
+/**
+ * State indicator for various results.
+ * - pending: not yet evaluating
+ * - running: is evaluating right now
+ * - ok: was evaluated successfully
+ * - failed: was evaluated unsuccessfully
+ * - disregarded: this result can never be evaluated because of failed prerequisites
+ */
+export type ResultStatus = 'pending' | 'running' | 'failed' | 'ok' | 'disregarded';
+
+/**
+ * Represents the result for a single test in the tree. A TestResult is ok even if
+ * one of its children is not, as long as all of its own steps and assertions pass.
+ */
+export interface TestResult extends Test {
+  description: string;
+  steps: StepResult[];
+  assertions: AssertionResult[];
+  children: TestResult[];
+  status: ResultStatus;
+}
+
+/**
+ * The result of a single step
+ */
+export interface StepResult extends Node {
+  description: string;
+  status: ResultStatus;
+}
+
+/**
+ * The result of a single assertion
+ */
+export interface AssertionResult extends Node {
+  description: string;
+  status: ResultStatus;
 }
