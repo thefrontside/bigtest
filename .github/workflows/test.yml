@@ -43,7 +43,6 @@ jobs:
         with:
           name: bigtest.dist.tgz
       - run: tar -xvf bigtest.dist.tgz/bigtest.dist.tgz
-      - run: pwd && cd packages/agent && ls
       - name: Install XVFB
         run: |
           sudo apt-get update
@@ -51,4 +50,4 @@ jobs:
       - name: Install dependencies
         run: yarn
       - name: Run tests
-        run: cd packages/${{ matrix.package }} && xvfb-run --auto-servernum -- yarn test --browsers=ChromeHeadless
+        run: xvfb-run --auto-servernum -- yarn workspace @bigtest/${{ matrix.package }} test --browsers=ChromeHeadless
