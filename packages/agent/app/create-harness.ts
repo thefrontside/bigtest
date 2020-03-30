@@ -16,7 +16,12 @@ export function* createHarness() {
     if(message.type === 'run') {
       let manifest: TestImplementation = yield loadManifest(message.manifestUrl);
 
-      yield runTest(parentFrame, manifest, message.path.slice(1))
+      try {
+        parentFrame.send({ type: 'lane:begin' });
+        yield runTest(parentFrame, manifest, message.path.slice(1))
+      } finally {
+        parentFrame.send({ type: 'lane:end' });
+      }
     }
   }
 }
@@ -29,6 +34,7 @@ function *runTest(parentFrame: ParentFrame, test: TestImplementation, path: stri
   let currentPath = prefix.concat(test.description);
 
   console.debug('[harness] running test', currentPath);
+  parentFrame.send({ type: 'test:running', path: currentPath })
 
   for(let step of test.steps) {
     let stepPath = currentPath.concat(step.description);
@@ -40,8 +46,7 @@ function *runTest(parentFrame: ParentFrame, test: TestImplementation, path: stri
       parentFrame.send({ type: 'step:result', status: 'ok', path: stepPath });
     } catch(error) {
       console.error('[harness] step failed', step, error);
-      parentFrame.send({ type: 'step:result', status: 'failure', error: serializeError(error), path: stepPath });
-      parentFrame.send({ type: 'test:done' });
+      parentFrame.send({ type: 'step:result', status: 'failed', error: serializeError(error), path: stepPath });
       return;
     }
   }
@@ -57,23 +62,20 @@ function *runTest(parentFrame: ParentFrame, test: TestImplementation, path: stri
       parentFrame.send({ type: 'assertion:result', status: 'ok', path: assertionPath });
     } catch(error) {
       console.error('[harness] assertion failed', assertion, error);
-      parentFrame.send({ type: 'assertion:result', status: 'failure', error: serializeError(error), path: assertionPath });
+      parentFrame.send({ type: 'assertion:result', status: 'failed', error: serializeError(error), path: assertionPath });
     }
   }
 
-  if(path.length === 0) {
-    console.info('[harness] test done');
-    parentFrame.send({ type: 'test:done' });
-  } else {
-    for(let child of test.children) {
-      if(child.description === path[0]) {
+  if (path.length > 0) {
+    for (let child of test.children) {
+      if (child.description === path[0]) {
         yield runTest(parentFrame, child, path.slice(1), currentPath);
       }
     }
   }
 }
 
-function loadManifest(manifestUrl) {
+function loadManifest(manifestUrl: string) {
   return ({ resume, ensure }) => {
     let scriptElement = document.createElement('script') as HTMLScriptElement;
     let listener = () => {

@@ -43,19 +43,24 @@ function* leafPaths(tree: Test, prefix: string[] = []): Generator<string[]> {
 function* run(connection: SocketConnection, testFrame: TestFrame, { appUrl, manifestUrl, testRunId, tree }) {
   console.log('[agent] loading test app via', appUrl);
 
-  for(let leafPath of leafPaths(tree)) {
-    console.log('[agent] running test', leafPath);
-    yield testFrame.load(appUrl);
-    testFrame.send({ type: 'run', manifestUrl, path: leafPath });
-    while(true) {
-      let message = yield testFrame.receive();
-      if(message.type === 'test:done') {
-        break;
-      } else {
-        message.testRunId = testRunId;
-        connection.send(message);
+  connection.send({ type: 'run:begin', testRunId });
+
+  try {
+    for (let leafPath of leafPaths(tree)) {
+      console.log('[agent] running test', leafPath);
+      yield testFrame.load(appUrl);
+      testFrame.send({ type: 'run', manifestUrl, path: leafPath });
+      while(true) {
+        let message = yield testFrame.receive();
+        console.log('[lane] ->', message);
+        connection.send({ ...message, testRunId });
+
+        if(message.type === 'lane:end') {
+          break;
+        }
       }
     }
+  } finally {
+    connection.send({ type: 'run:end', testRunId });
   }
-  connection.send({ type: 'testRun:done', testRunId });
 }

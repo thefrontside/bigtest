@@ -125,7 +125,7 @@ describe("@bigtest/agent", function() {
           let appUrl = 'http://localhost:8002/app.html';
           inbox.send({ type: 'run', testRunId, agentId, manifestUrl, appUrl, tree: fixtureManifest });
 
-          await spawn(delegate.receive({ type: 'testRun:done', agentId, testRunId }));
+          await spawn(delegate.receive({ type: 'run:end', agentId, testRunId }));
 
           // we're receiving many more of these, but just checking some of them
           success = await spawn(delegate.receive({
@@ -145,7 +145,7 @@ describe("@bigtest/agent", function() {
 
         it('reports success and failure results', () => {
           expect(success.status).toEqual('ok');
-          expect(failure.status).toEqual('failure');
+          expect(failure.status).toEqual('failed');
           expect(failure.error.message).toEqual('boom');
         });
       });
