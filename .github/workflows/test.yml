@@ -6,9 +6,9 @@ on:
       - master
 
 jobs:
-  prepack-upload:
+  prepack:
     runs-on: ubuntu-18.04
-    name: Prepack and Upload
+    name: Prepack
     steps:
       - uses: actions/checkout@v1
       - uses: actions/cache@v1
@@ -26,10 +26,10 @@ jobs:
           name: bigtest.dist.tgz
           path: bigtest.dist.tgz
 
-  download-test:
+  test:
     runs-on: ubuntu-18.04
     name: ${{ matrix.package }}
-    needs: prepack-upload
+    needs: prepack
     strategy:
       matrix:
         package: [agent, cli, convergence, effection, interactor, logging, parcel, project, server, suite, todomvc]
