@@ -13,7 +13,7 @@
     "src"
   ],
   "scripts": {
-    "types": "tsc --emitDeclarationOnly",
+    "types": "tsc --emitDeclarationOnly -p tsconfig.dist.json",
     "compile": "rollup --config",
     "build": "yarn types && yarn compile",
     "docs": "bigtest-docs",
@@ -21,7 +21,7 @@
     "start": "karma start",
     "test": "yarn start --single-run",
     "problems": "tsc --noEmit ",
-    "prepack": "npm run docs && npm run build"
+    "prepack": "npm run build"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

@@ -5,6 +5,7 @@
       "~": ["src/index.ts"],
       "~/*": ["src/*"]
     },
+    "types": [],
     "target": "esnext",
     "moduleResolution": "node",
     "strict": true,
