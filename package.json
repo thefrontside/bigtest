@@ -9,6 +9,7 @@
   "workspaces": {
     "packages": [
       "packages/effection",
+      "packages/effection-express",
       "packages/parcel",
       "packages/todomvc",
       "packages/suite",

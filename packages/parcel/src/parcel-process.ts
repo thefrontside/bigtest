@@ -1,8 +1,8 @@
 import * as Path from 'path';
 import { ChildProcess, fork as forkProcess } from 'child_process';
 
-import { monitor, Operation } from 'effection'
-import { Mailbox, SubscriptionMessage, once, suspend } from '@bigtest/effection';
+import { monitor, resource, Operation } from 'effection'
+import { Mailbox, SubscriptionMessage, once, monitorErrors } from '@bigtest/effection';
 
 type ParcelMessage = { type: "ready" } | { type: "update" };
 
@@ -23,7 +23,6 @@ export class ParcelProcess {
     let stdioMode = options.stdio || 'pipe';
     let parcelProcess = new ParcelProcess();
 
-
     let entries = [].concat(options.sourceEntries);
     let runParcel = Path.join(__dirname, 'parcel-run');
     let child: ChildProcess = forkProcess(
@@ -39,7 +38,7 @@ export class ParcelProcess {
 
     let readiness = new Mailbox();
 
-    yield suspend(monitor(function* supervise() {
+    let res = yield resource(parcelProcess, function* supervise() {
       // Killing all child processes started by this command is surprisingly
       // tricky. If a process spawns another processes and we kill the parent,
       // then the child process is NOT automatically killed. Instead we're using
@@ -54,11 +53,7 @@ export class ParcelProcess {
         let events: Mailbox<SubscriptionMessage> = yield Mailbox.subscribe(child, "message");
         let messages: Mailbox<ParcelMessage> = yield events.map(({ args: [message] }) => message);
 
-        // raise errors from the child process
-        yield monitor(function*() {
-          let [error]: [Error] = yield once(child, 'error');
-          throw error;
-        });
+        yield monitorErrors(child);
 
         yield messages.receive({ type: "ready" });
         readiness.send("ready");
@@ -83,11 +78,11 @@ export class ParcelProcess {
           // do nothing, process is probably already dead
         }
       }
-    }));
+    });
 
     yield readiness.receive();
 
-    return parcelProcess;
+    return res;
   }
 
   receive(pattern: unknown = undefined): Operation {

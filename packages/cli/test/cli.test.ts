@@ -1,26 +1,29 @@
 import { main, Context, Operation } from 'effection';
 import { describe, it } from 'mocha';
 import * as expect from 'expect'
+import * as process from 'process'
+import * as capcon from 'capture-console'
 
-import { $console } from '../src/console';
 import { CLI } from '../src/cli';
 
 describe("@bigtest/cli", () => {
-  let stdout = '';
+  let stdout: string;
   let World: Context;
-  async function spawn<T>(operation: Operation): Promise<T> {
+  async function spawn<T>(operation: Operation<T>): Promise<T> {
     return World["spawn"](operation);
   }
 
+  async function capture(operation: Operation): Promise<string> {
+    let result = "";
+    capcon.startIntercept(process.stdout, (output) => result += output);
+    await spawn(operation);
+    capcon.stopIntercept(process.stdout);
+    return result;
+  }
+
+
   beforeEach(async () => {
     World = main(undefined);
-    await spawn($console.use({
-      log: message => ({ resume }) => {
-        stdout += message;
-        stdout += "\n";
-        resume();
-      }
-    }));
   });
 
   afterEach(() => {
@@ -29,8 +32,9 @@ describe("@bigtest/cli", () => {
 
   describe('invoking a command', () => {
     beforeEach(async () => {
-      await spawn(CLI(['server']));
+      stdout = await capture(CLI(['server']));
     });
+
     it('prints the output', () => {
       expect(stdout).toMatch('BIGTEST SERVER SHOULD RUN HERE');
     });

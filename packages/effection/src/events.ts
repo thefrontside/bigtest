@@ -1,15 +1,15 @@
 import { Operation } from 'effection';
-import { EventEmitter } from 'events';
+import { EventSource, addListener, removeListener } from './event-source';
 
 /**
  * Takes an event emitter and event name and returns a yieldable
  * operation which resumes when the event occurs.
  */
-export function once(emitter: EventEmitter, eventName: string): Operation {
+export function once(source: EventSource, eventName: string): Operation {
   return ({ resume, ensure }) => {
     let listener = (...args: unknown[]) => resume(args);
-    ensure(() => emitter.off(eventName, listener));
+    ensure(() => removeListener(source, eventName, listener));
 
-    emitter.on(eventName, listener);
+    addListener(source, eventName, listener);
   };
 }

@@ -1,5 +1,5 @@
-import { monitor, Operation } from 'effection';
-import { once, suspend, monitorErrors } from '@bigtest/effection';
+import { Operation, resource } from 'effection';
+import { once, monitorErrors } from '@bigtest/effection';
 
 import * as childProcess from 'child_process';
 import { SpawnOptions, ForkOptions, ChildProcess } from 'child_process';
@@ -38,14 +38,12 @@ export function *spawn(command: string, args?: ReadonlyArray<string>, options?: 
     shell: true,
     detached: true,
   }));
-  yield suspend(monitor(supervise(child)));
-  return child;
+  return yield resource(child, supervise(child));
 }
 
 export function *fork(module: string, args?: ReadonlyArray<string>, options?: ForkOptions): Operation {
   let child = childProcess.fork(module, args, Object.assign({}, options, {
     detached: true,
   }));
-  yield suspend(monitor(supervise(child)));
-  return child;
+  return yield resource(child, supervise(child));
 }

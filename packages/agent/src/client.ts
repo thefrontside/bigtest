@@ -1,13 +1,14 @@
-import { fork, monitor, Operation } from 'effection';
-import { createServer } from 'http';
+import { fork, resource, Operation } from 'effection';
+import { createServer, Server } from 'http';
 import { promisify } from 'util';
+import { monitorErrors } from '@bigtest/effection';
 
 import {
   server as WebSocketServer,
   request as Request,
 } from 'websocket';
 
-import { Mailbox, once, suspend, ensure } from '@bigtest/effection';
+import { Mailbox, once, ensure } from '@bigtest/effection';
 
 interface AgentConnectionServerOptions {
   port: number;
@@ -18,28 +19,23 @@ interface AgentConnectionServerOptions {
 export class AgentConnectionServer {
   constructor(public options: AgentConnectionServerOptions) {}
 
-  *listen(): Operation {
+  *listen(): Operation<Server> {
     let { port, inbox, delegate } = this.options;
 
     let httpServer = createServer();
     let socketServer = new WebSocketServer({ httpServer });
 
-    yield suspend(monitor(function*() {
-      yield ensure(() => httpServer.close());
-      yield monitor(function* raiseServerErrors() {
-        let [error]: [Error] = yield once(httpServer, "error");
-        throw error;
-      });
-
-      try {
-        yield acceptConnections(socketServer, inbox, delegate);
-      } finally {
-        socketServer.unmount();
-      }
-    }));
-
     httpServer.listen(port);
     yield once(httpServer, "listening");
+
+    return yield resource(httpServer, function*() {
+      yield ensure(() => {
+        httpServer.close()
+        socketServer.unmount();
+      });
+      yield monitorErrors(httpServer);
+      yield acceptConnections(socketServer, inbox, delegate);
+    });
   }
 }
 

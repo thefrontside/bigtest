@@ -1,5 +1,5 @@
-import { Operation, monitor } from 'effection';
-import { Mailbox, suspend, subscribe, ensure } from '@bigtest/effection';
+import { Operation, resource } from 'effection';
+import { Mailbox, subscribe, ensure, monitorErrors, once } from '@bigtest/effection';
 import { AgentProtocol, AgentEvent, Command } from './protocol';
 
 export * from './protocol';
@@ -10,15 +10,16 @@ export class Agent implements AgentProtocol {
   static *start(socket: Socket): Operation<Agent> {
     let mailbox = new Mailbox();
 
-    yield suspend(subscribe(mailbox, socket, ['open', 'message', 'close', 'error']));
-    yield suspend(monitor(function*() {
-      let { args: [error] } = yield mailbox.receive({ event: 'error' });
-      throw error as Error;
-    }));
-    yield mailbox.receive({ event: 'open' });
-    yield suspend(ensure(() => socket.close()));
+    let res = yield resource(new Agent(socket, mailbox), function*() {
+      yield subscribe(mailbox, socket, 'message');
+      yield ensure(() => socket.close());
+      yield monitorErrors(socket);
+      yield once(socket, 'close');
+    });
 
-    return new Agent(socket, mailbox);
+    yield once(socket, 'open');
+
+    return res;
   }
 
   send(message: AgentEvent) {
@@ -26,7 +27,7 @@ export class Agent implements AgentProtocol {
   }
 
   *receive(): Operation<Command> {
-    let { args: [event] } = yield this.mailbox.receive({ event: 'message' });
+    let { args: [event] } = yield this.mailbox.receive();
     return JSON.parse(event.data);
   }
 }

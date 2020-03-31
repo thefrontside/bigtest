@@ -14,6 +14,7 @@
   "scripts": {
     "lint": "eslint '{app,bin,src,test}/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "mocha": "mocha -r ts-node/register",
     "start": "parcel serve --out-dir dist/app app/index.html app/harness.ts",
     "bundle": "parcel watch --out-dir dist/app app/index.html app/harness.ts",
     "prepack": "tsc --outdir dist --project tsconfig.dist.json --declaration --sourcemap && tsc --project tsconfig.app.json --noEmit && parcel build --no-minify --out-dir dist/app app/index.html app/harness.ts",
@@ -38,7 +39,7 @@
   },
   "dependencies": {
     "bowser": "^2.9.0",
-    "effection": "^0.5.2",
+    "effection": "^0.5.2-3f5581c",
     "express": "^4.17.1",
     "websocket": "^1.0.31"
   },
