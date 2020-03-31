@@ -1,12 +1,11 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect'
 
-import { Context, fork } from 'effection';
+import { Context, resource } from 'effection';
 
 import { spawn } from './helpers';
 
 import { ensure } from '../src/ensure';
-import { suspend } from '../src/suspend';
 import { Mailbox } from '../src/mailbox';
 
 describe("ensure()", () => {
@@ -74,7 +73,7 @@ describe("ensure()", () => {
     });
   });
 
-  describe("when suspended", () => {
+  describe("when used with resource", () => {
     let outer: Context;
     let inner: Context;
     let mailbox: Mailbox;
@@ -82,16 +81,19 @@ describe("ensure()", () => {
     beforeEach(() => {
       mailbox = new Mailbox();
       outer = spawn(function*() {
-        inner = yield fork(function*() {
-          yield suspend(ensure(() => didRun = true));
-          return "from inner";
-        });
+        inner = yield function*() {
+          let obj = { from: "inner" };
+          let res = yield resource(obj, ensure(() => didRun = true));
+
+
+          return res;
+        };
         return yield mailbox.receive();
       });
     });
 
     it('does not block its parent context from exiting', async () => {
-      expect(await inner).toEqual("from inner");
+      expect(await inner).toEqual({ from: "inner" });
     });
 
     it('does not run when parent context exits', async () => {

@@ -2,7 +2,7 @@ import { main, Operation, Context } from 'effection';
 import { describe, it } from 'mocha';
 import * as expect from 'expect'
 import fetch, { Response } from 'node-fetch';
-import { TodoMVC } from '../dist/index';
+import { todomvc } from '../dist/index';
 
 describe("@bigtest/todomvc", () => {
 
@@ -20,23 +20,16 @@ describe("@bigtest/todomvc", () => {
   });
 
   describe('starting a React based TodoMVC server', () => {
-    let server: TodoMVC;
     beforeEach(async () => {
-      server = await spawn(TodoMVC.react());
+      await spawn(todomvc(25000));
     });
-
-    it('has a harness url where it will serve the harness script', () => {
-      expect(server.port).toBeDefined();
-    });
-
 
     describe('requesting the Todo MVC app', () => {
       let response: Response;
 
       beforeEach(async () => {
-        response = await fetch(server.url);
+        response = await fetch("http://localhost:25000");
       });
-
 
       it('responds successfully', () => {
         expect(response.statusText).toEqual('OK');

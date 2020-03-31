@@ -124,7 +124,10 @@ describe("Mailbox", () => {
     beforeEach(() => {
       emitter = new EventEmitter();
       mailbox = new Mailbox();
-      spawn(subscribe(mailbox, emitter, "thing"));
+      spawn(function*() {
+        yield subscribe(mailbox, emitter, "thing");
+        yield;
+      });
     });
 
     describe('emitting an event', () => {
@@ -148,7 +151,10 @@ describe("Mailbox", () => {
     beforeEach(() => {
       target = new FakeEventEmitter();
       mailbox = new Mailbox();
-      spawn(subscribe(mailbox, target, "thing"));
+      spawn(function*() {
+        yield subscribe(mailbox, target, "thing");
+        yield;
+      });
     });
 
     describe('emitting an event', () => {

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-import { TodoMVC } from './index';
-import { main } from './helpers';
+import { todomvc } from './index';
+import { main } from '@effection/node';
 
 main(function* start() {
-  let server: TodoMVC = yield TodoMVC.react(port());
+  let server = yield todomvc(port());
 
   console.info(`serving TodoMVC application`);
   console.info(`--> http://localhost:${server.port}`);
@@ -17,6 +17,6 @@ function port(): number | undefined {
   if (second) {
     return parseInt(second);
   } else {
-    return undefined;
+    return 25001;
   }
 }

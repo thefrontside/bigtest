@@ -62,6 +62,7 @@ function* run(agent: Agent, testFrame: TestFrame, command: Run) {
       }
     }
   } finally {
+    console.log('[agent] run complete');
     agent.send({ type: 'run:end', testRunId });
   }
 }

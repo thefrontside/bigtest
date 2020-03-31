@@ -1,11 +1,10 @@
-import { monitor, Operation } from 'effection';
-import { Mailbox, suspend, once } from '@bigtest/effection';
+import { Operation } from 'effection';
+import { Mailbox, once, monitorErrors } from '@bigtest/effection';
 
 import * as Bundler from 'parcel-bundler';
 import { ParcelOptions } from  'parcel-bundler';
 import { createServer, RequestListener } from 'http';
 import { EventEmitter } from 'events';
-import * as http from 'http';
 
 interface ParcelServerOptions {
   port?: number;
@@ -20,8 +19,11 @@ export function* createParcelServer(entryPoints: string[], options: ParcelServer
   let server = createServer(middleware)
 
   try {
+    yield monitorErrors(server);
+
     if(options.port) {
-      yield listen(server, options.port);
+      server.listen(options.port);
+      yield once(server, "listening");
     }
 
     yield events.receive({ event: "buildEnd" });
@@ -45,16 +47,4 @@ interface ParcelBundler extends EventEmitter {
   middleware(): RequestListener;
   stop(): void;
   options: ParcelOptions;
-}
-
-
-function* listen(server: http.Server, port: number): Operation {
-  yield suspend(monitor(function* errorListener() {
-    let [error]: [Error] = yield once(server, "error");
-    throw error;
-  }));
-
-  server.listen(port);
-  yield once(server, "listening");
-  return server;
 }

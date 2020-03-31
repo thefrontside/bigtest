@@ -1,11 +1,11 @@
-import { Operation } from 'effection';
-import { Mailbox, suspend, subscribe } from '@bigtest/effection';
+import { Operation, resource } from 'effection';
+import { Mailbox, subscribe } from '@bigtest/effection';
 
 export class ParentFrame {
-  static *start() {
+  static *start(): Operation<ParentFrame> {
     let mailbox = new Mailbox();
-    yield suspend(subscribe(mailbox, window, ['message']));
-    return new ParentFrame(mailbox);
+    let frame = new ParentFrame(mailbox);
+    return yield resource(frame, subscribe(mailbox, window, ['message']));
   }
 
   constructor(private mailbox: Mailbox) {}

@@ -24,7 +24,7 @@
     "ts-node": "*"
   },
   "dependencies": {
-    "effection": "^0.5.2"
+    "effection": "^0.5.2-3f5581c"
   },
   "volta": {
     "node": "12.16.0",

@@ -1,7 +1,6 @@
 import { Operation } from 'effection';
-import { Mailbox } from '@bigtest/effection';
+import { Mailbox, express } from '@bigtest/effection';
 import { static as staticMiddleware } from 'express';
-import { express } from './effection/express';
 
 interface ManifestServerOptions {
   delegate: Mailbox;

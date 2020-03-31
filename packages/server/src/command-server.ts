@@ -1,6 +1,5 @@
 import { Operation } from 'effection';
-import { Mailbox } from '@bigtest/effection';
-import { express, Express } from './effection/express';
+import { Mailbox, express, Express } from '@bigtest/effection';
 import * as graphqlHTTP from 'express-graphql';
 import { graphql as executeGraphql } from 'graphql';
 

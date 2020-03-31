@@ -1,4 +1,4 @@
-import { main, Operation, Context } from 'effection';
+import { main, Operation, Context, resource } from 'effection';
 import { describe, it } from 'mocha';
 import * as expect from 'expect';
 import * as express from 'express';
@@ -9,24 +9,28 @@ import { firefox, BrowserType, Browser, Page } from 'playwright';
 
 import { AgentConnectionServer, AgentServer } from '../src/index';
 
-import { Mailbox, monitorErrors, suspend, ensure, once } from '@bigtest/effection';
+import { Mailbox, monitorErrors, ensure, once } from '@bigtest/effection';
 
 
 function* staticServer(port: number) {
   let app = express().use(express.static("./test/fixtures"));
   let server = app.listen(port);
 
-  yield suspend(monitorErrors(server));
-  yield suspend(ensure(() => server.close()));
+  let res = yield resource(server, function*() {
+    yield monitorErrors(server);
+    yield ensure(() => server.close());
+    yield;
+  });
 
   yield once(server, "listening");
+  return res;
 }
 
 describe("@bigtest/agent", function() {
-  this.timeout(20000);
+  this.timeout(0);
 
   let World: Context;
-  async function spawn<T>(operation: Operation): Promise<T> {
+  function spawn<T>(operation: Operation): Promise<T> {
     return World["spawn"](operation);
   }
 
@@ -64,7 +68,6 @@ describe("@bigtest/agent", function() {
       });
 
       await spawn(server.listen());
-
       await spawn(client.listen());
     });
 
@@ -98,7 +101,7 @@ describe("@bigtest/agent", function() {
 
       beforeEach(async function() {
         await spawn(staticServer(8002));
-        browser = await launch(firefox, { headless: true });
+        browser = await launch(firefox, { headless: false });
         page = await browser.newPage();
         await page.goto(server.connectURL(`ws://localhost:8001`));
         message = await spawn(delegate.receive({ status: 'connected' })) as typeof message;

@@ -1,8 +1,8 @@
-import { Operation } from 'effection';
+import { Operation, resource } from 'effection';
 import * as xp from 'express';
 import * as Path from 'path';
 import { Server } from 'http';
-import { suspend, ensure } from '@bigtest/effection';
+import { ensure } from '@bigtest/effection';
 
 interface Options {
   port: number;
@@ -51,7 +51,7 @@ class HttpAgentServer extends AgentServer {
     let server: Server = yield listen(app, this.port);
     this.http = server;
 
-    yield suspend(ensure(() => server.close()));
+    return yield resource(server, ensure(() => server.close()));
   }
 
   join(): Operation {
