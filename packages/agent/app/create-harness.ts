@@ -15,12 +15,12 @@ export function* createHarness() {
 
     if(message.type === 'run') {
       let manifest: TestImplementation = yield loadManifest(message.manifestUrl);
-
+      let path = message.path.slice(1);
       try {
-        parentFrame.send({ type: 'lane:begin' });
-        yield runTest(parentFrame, manifest, message.path.slice(1))
+        parentFrame.send({ type: 'lane:begin', path });
+        yield runTest(parentFrame, manifest, path);
       } finally {
-        parentFrame.send({ type: 'lane:end' });
+        parentFrame.send({ type: 'lane:end', path });
       }
     }
   }
