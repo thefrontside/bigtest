@@ -1,8 +1,8 @@
 import * as R from 'ramda';
 
 import { EventEmitter } from 'events';
-import { Operation } from 'effection';
-import { once } from '@bigtest/effection';
+import { Operation, timeout } from 'effection';
+import { once, Mailbox } from '@bigtest/effection';
 
 import { OrchestratorState } from './state';
 
@@ -34,9 +34,13 @@ export class Atom {
     return new Slice(this, path);
   }
 
-  *next(): Operation {
-    let [state]: [OrchestratorState] = yield once(this.subscriptions, 'state');
-    return state;
+  *each(fn: (state: OrchestratorState) => Operation) {
+    let mailbox = yield Mailbox.subscribe(this.subscriptions, "state");
+
+    while (true) {
+      let { args: [state] } = yield mailbox.receive();
+      yield fn(state);
+    }
   }
 }
 
@@ -88,10 +92,5 @@ export class Slice<T> {
         return R.set(parentLens, R.dissoc(property, parent), state) as unknown as OrchestratorState;
       })
     }
-  }
-
-  *next(): Operation {
-    let state: OrchestratorState = yield this.atom.next();
-    return R.view(this.lens, state);
   }
 }
