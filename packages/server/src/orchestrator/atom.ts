@@ -1,8 +1,8 @@
 import * as R from 'ramda';
 
 import { EventEmitter } from 'events';
-import { Operation, timeout } from 'effection';
-import { once, Mailbox } from '@bigtest/effection';
+import { Operation } from 'effection';
+import { Mailbox } from '@bigtest/effection';
 
 import { OrchestratorState } from './state';
 
