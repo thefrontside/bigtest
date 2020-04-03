@@ -11,6 +11,7 @@
       "packages/effection",
       "packages/parcel",
       "packages/todomvc",
+      "packages/suite",
       "packages/*"
     ]
   },

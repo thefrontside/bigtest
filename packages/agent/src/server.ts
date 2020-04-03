@@ -13,7 +13,7 @@ export class AgentServer {
 
   protected constructor(public url: string, protected appDir: string) {}
 
-  static create(options: Options, appDir = Path.join(__dirname, 'app')) {
+  static create(options: Options, appDir = Path.join(__dirname, '../app')) {
     if (options.externalURL) {
       return new AgentServer(options.externalURL, appDir);
     } else {
