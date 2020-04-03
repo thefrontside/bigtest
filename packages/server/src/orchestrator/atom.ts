@@ -7,7 +7,7 @@ import { Mailbox } from '@bigtest/effection';
 import { OrchestratorState } from './state';
 
 export class Atom {
-  private state: OrchestratorState = {
+  private initial: OrchestratorState = {
     manifest: {
       description: 'None',
       fileName: '<init>',
@@ -19,10 +19,20 @@ export class Atom {
     testRuns: {},
   };
 
+  private state = this.initial;
+
   private subscriptions = new EventEmitter();
 
   get(): OrchestratorState {
     return this.state;
+  }
+
+  reset(initializer?: (initial: OrchestratorState, current: OrchestratorState) => OrchestratorState) {
+    if (!initializer) {
+      initializer = initial => initial;
+    }
+    this.state = initializer(this.initial, this.state);
+    this.subscriptions.removeAllListeners();
   }
 
   update(fn: (state: OrchestratorState) => OrchestratorState) {
@@ -50,7 +60,7 @@ export class Slice<T> {
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
   lens: any;
 
-  constructor(private atom: Atom, public path: string[]) {
+  constructor(private atom: Atom, public path: Array<string|number>) {
     this.lens = lensPath(path);
   }
 
@@ -70,7 +80,7 @@ export class Slice<T> {
     this.atom.update(state => R.over(this.lens, fn, state) as unknown as OrchestratorState);
   }
 
-  slice<T>(path: string[]): Slice<T> {
+  slice<T>(path: Array<string|number>): Slice<T> {
     return new Slice(this.atom, this.path.concat(path));
   }
 

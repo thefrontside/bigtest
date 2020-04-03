@@ -20,28 +20,28 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
   function* handleConnection(connection: Connection): Operation {
     console.debug('[connection] connected');
 
-    let messages = yield Mailbox.subscribe(connection, "message")
+    let messages: Mailbox = yield Mailbox.subscribe(connection, "message")
 
-    messages = messages.map(({ args }) => {
+    messages = yield messages.map(({ args }) => {
       let [message] = args as IMessage[];
-      return { message: JSON.parse(message.utf8Data) };
+      return JSON.parse(message.utf8Data);
     });
 
-    let { message: { data } } = yield messages.receive({ message: { type: 'connected' } });
+    let { data  } = yield messages.receive({ type: 'connected' });
 
-    let identifier = `agent.${counter++}`;
+    let agentId = `agent.${counter++}`;
 
-    let agent = options.atom.slice<AgentState>(['agents', identifier]);
+    let agent = options.atom.slice<AgentState>(['agents', agentId]);
 
     try {
       console.debug('[connection] received connection message', data);
 
-      agent.set({ ...data, identifier });
+      agent.set({ ...data, agentId });
 
       yield fork(function*() {
         while (true) {
-          console.debug('[connection] waiting for message', identifier);
-          let message = yield options.inbox.receive({ agentId: identifier });
+          console.debug('[connection] waiting for message', agentId);
+          let message = yield options.inbox.receive({ agentId: agentId });
 
           yield sendData(connection, JSON.stringify(message));
         }
@@ -50,6 +50,7 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
       yield fork(function*() {
         while (true) {
           let message = yield messages.receive();
+          options.delegate.send({ ...message, agentId });
           console.debug("[connection] got message from client", message);
         }
       });

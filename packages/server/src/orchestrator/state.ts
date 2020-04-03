@@ -1,7 +1,7 @@
-import { Test } from '@bigtest/suite';
+import { Test, TestResult } from '@bigtest/suite';
 
 export type AgentState = {
-  identifier: string;
+  agentId: string;
   browser: {
     name: string;
     version: string;
@@ -22,8 +22,9 @@ export type AgentState = {
 }
 
 export type TestRunState = {
-  status: "pending";
-  tree: Test;
+  testRunId: string;
+  status: "pending" | "running" | "done";
+  tree: TestResult;
   agent: AgentState;
 }
 
