@@ -7,7 +7,10 @@
     "esModuleInterop": true,
     "jsx": "react",
     "typeRoots": ["./node_modules/@types"],
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "ink": ["../../node_modules/@bigtest/ink/build"]
+    }
   },
   "include": ["src/*.tsx", "test/**/*.tsx"]
 }
