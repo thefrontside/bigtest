@@ -32,11 +32,7 @@ export function handleMessage(delegate: Mailbox, atom: Atom): (connection: Conne
   }
 
   function* subscribe(message: QueryMessage, connection: Connection) {
-    while (true) {
-      let state: OrchestratorState = yield atom.next();
-
-      yield publishQueryResult(message, state, connection);
-    }
+    yield atom.each(state => publishQueryResult(message, state, connection));
   }
 
   return function*(connection) {
@@ -58,4 +54,3 @@ export function handleMessage(delegate: Mailbox, atom: Atom): (connection: Conne
     }
   }
 }
-
