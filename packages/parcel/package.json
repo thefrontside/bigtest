@@ -18,7 +18,7 @@
     "prepack": "tsc --outDir dist --declaration --sourcemap --module commonjs"
   },
   "dependencies": {
-    "@bigtest/effection": "0.1.0",
+    "@bigtest/effection": "^0.1.1",
     "@effection/node": "^0.5.2",
     "effection": "^0.5.2",
     "parcel": "^1.12.4",

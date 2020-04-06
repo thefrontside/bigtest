@@ -43,7 +43,7 @@
     "@babel/plugin-transform-runtime": "7.8.3",
     "@babel/preset-env": "7.8.4",
     "@bigtest/agent": "^0.1.0",
-    "@bigtest/effection": "^0.1.0",
+    "@bigtest/effection": "^0.1.1",
     "@bigtest/logging": "^0.1.0",
     "@bigtest/parcel": "^0.1.0",
     "@bigtest/suite": "^0.1.0",
