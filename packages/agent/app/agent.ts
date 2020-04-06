@@ -1,7 +1,7 @@
 import * as Bowser from 'bowser';
 import { Test } from '@bigtest/suite';
 import { TestFrame } from './test-frame';
-import { SocketConnection } from './socket-connection';
+import { Agent, Command, Run } from '../shared/agent';
 
 export function* createAgent(connectTo: string) {
   if (!connectTo) {
@@ -11,20 +11,20 @@ export function* createAgent(connectTo: string) {
   console.log('[agent] connecting to', connectTo);
 
   let testFrame = yield TestFrame.start();
-  let connection = yield SocketConnection.start(connectTo);
+  let agent: Agent = yield Agent.start(new WebSocket(connectTo));
 
-  connection.send({
+  agent.send({
     type: 'connected',
     data: Bowser.parse(navigator.userAgent)
   });
 
   while(true) {
     console.log('[agent] waiting for message');
-    let message = yield connection.receive();
-    console.log('[agent] receive message', message);
+    let command: Command = yield agent.receive();
+    console.log('[agent] receive message', command);
 
-    if(message.type === "run") {
-      yield run(connection, testFrame, message);
+    if(command.type === "run") {
+      yield run(agent, testFrame, command);
     }
   }
 }
@@ -40,10 +40,11 @@ function* leafPaths(tree: Test, prefix: string[] = []): Generator<string[]> {
   }
 }
 
-function* run(connection: SocketConnection, testFrame: TestFrame, { appUrl, manifestUrl, testRunId, tree }) {
+function* run(agent: Agent, testFrame: TestFrame, command: Run) {
+  let { appUrl, manifestUrl, testRunId, tree } = command;
   console.log('[agent] loading test app via', appUrl);
 
-  connection.send({ type: 'run:begin', testRunId });
+  agent.send({ type: 'run:begin', testRunId });
 
   try {
     for (let leafPath of leafPaths(tree)) {
@@ -53,7 +54,7 @@ function* run(connection: SocketConnection, testFrame: TestFrame, { appUrl, mani
       while(true) {
         let message = yield testFrame.receive();
         console.log('[lane] ->', message);
-        connection.send({ ...message, testRunId });
+        agent.send({ ...message, testRunId });
 
         if(message.type === 'lane:end') {
           break;
@@ -61,6 +62,6 @@ function* run(connection: SocketConnection, testFrame: TestFrame, { appUrl, mani
       }
     }
   } finally {
-    connection.send({ type: 'run:end', testRunId });
+    agent.send({ type: 'run:end', testRunId });
   }
 }

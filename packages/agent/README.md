@@ -15,8 +15,6 @@ To start an agent server in process, you can use the
 `AgentServer.create()` operation, passing it the websocket url where
 the bigtest server will be accepting connections from agents.
 
-
-
 ``` typescript
 import { main } from '@effection/node';
 import { AgentServer } from '@bigtest/agent';
@@ -29,6 +27,39 @@ main(function* run() {
 
 By default, the agent will connect to a random available port and
 serve the agent app from `agent.agentAppURL`;
+
+
+### Writing your own agents
+
+The AgentServer class serves the web agent which is the agent that
+adapts browsers to bigtest, but you can write your own agents that can
+adapt _any_ runtime that supports websockets to be a testbed for
+BigTest. You can do this with the `Agent` class.
+
+``` typescript
+import { main } from '@effection';
+import { Agent, Command } from '@bigtest/agent';
+
+main(funtion*() {
+
+  let socket = WebSocket('http://localhost:1234');
+  let agent = yield Agent.start(socket);
+
+  // let the orchestrator know that you're here!
+  agent.send({
+    type: 'connected',
+    data: 'secret agent'
+  });
+
+  // await for commands from the orchestrator
+  while (true) {
+    let command: Command = yield agent.receive();
+
+    // the orchestrator wants us to do something. let's do it!
+    yield handleCommand(command);
+  }
+});
+```
 
 ## Development
 

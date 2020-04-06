@@ -10,6 +10,7 @@
     "baseUrl": "."
   },
   "include": [
+    "shared/**/*.ts",
     "src/**/*.ts",
     "test/**/*.ts"
   ]

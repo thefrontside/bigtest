@@ -100,3 +100,11 @@ export interface AssertionResult extends Node {
   description: string;
   status: ResultStatus;
 }
+
+export interface ErrorDetails {
+  message: string;
+  fileName: string;
+  lineNumber: number;
+  columnNumber: number;
+  stack: string[];
+}
