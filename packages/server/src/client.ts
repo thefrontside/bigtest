@@ -32,7 +32,7 @@ export class Client {
     }));
   }
 
-  static *create(url: string): Operation {
+  static *create(url: string): Operation<Client> {
     let client = new Client(new WebSocket(url), yield parent);
 
     yield once(client.subscriptions, 'open');

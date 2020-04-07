@@ -64,6 +64,7 @@ export function graphqlOptions(delegate: Mailbox, state: OrchestratorState) {
       echo: ({text}) => text,
       agents: () => Object.values(state.agents),
       manifest: state.manifest,
+      testRuns: Object.values(state.testRuns),
       run: () => {
         let id = `test-run-${testIdCounter++}`;
         delegate.send({ type: "run", id });

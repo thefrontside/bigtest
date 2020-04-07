@@ -12,6 +12,10 @@ export class World {
     this.execution.halt();
   }
 
+  ensure(hook: () => void) {
+    this.execution['ensure'](hook);
+  }
+
   fork(operation: Operation): Context {
     return this.execution['spawn'](operation);
   }

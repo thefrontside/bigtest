@@ -42,7 +42,7 @@ export function* listenWS(server: Server, handler: ConnectionHandler): Operation
       let handle = yield fork(function* setupConnection() {
         let halt = () => handle.halt();
         let fail = (error: Error) => {
-          if(error["code"] === 'ECONNRESET') {
+          if(error["code"] === 'ECONNRESET' || error["code"] === 'ERR_STREAM_WRITE_AFTER_END') {
             handle.halt();
           } else {
             handle.fail(error);

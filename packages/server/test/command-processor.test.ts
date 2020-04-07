@@ -19,7 +19,7 @@ describe('command server', () => {
     inbox = new Mailbox();
     atom = new Atom();
     atom.slice<AgentState>(['agents', 'agent-1']).set({
-      identifier: 'agent-1',
+      agentId: 'agent-1',
       browser: { name: "Safari", version: "13.0.4" },
       os: { name: "macOS", version: "10.15.2", versionName: "Catalina" },
       platform: { type: "desktop", vendor: "Apple" },
@@ -70,7 +70,7 @@ describe('command server', () => {
 
     it('adds agent and test tree to manifest', () => {
       let testRun = atom.slice<TestRunState>(['testRuns', 'test-id-1']).get();
-      expect(testRun.agent.identifier).toEqual('agent-1');
+      expect(testRun.agent.agentId).toEqual('agent-1');
       expect(testRun.tree.description).toEqual('the manifest');
     });
   });

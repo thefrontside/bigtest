@@ -152,12 +152,16 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   options.delegate.send({ status: 'ready' });
 
+  let commandProcessorInbox = new Mailbox();
+  yield connectionServerDelegate.pipe(commandProcessorInbox);
+  yield commandServerDelegate.pipe(commandProcessorInbox);
+
   try {
     yield createCommandProcessor({
       proxyPort: options.proxyPort,
       manifestPort: options.manifestPort,
       atom: options.atom,
-      inbox: commandServerDelegate, // note that this is intentionally inverted
+      inbox: commandProcessorInbox,
       delegate: connectionServerInbox,
     });
   } finally {

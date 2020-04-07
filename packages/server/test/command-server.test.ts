@@ -67,7 +67,7 @@ describe('command server', () => {
     beforeEach(async () => {
       agents.set({
         safari: {
-          "identifier": "agent.1",
+          "agentId": "agent.1",
           "browser": {
             "name": "Safari",
             "version": "13.0.4"
@@ -210,7 +210,7 @@ describe('command server', () => {
         sync = done;
         agents.set({
           safari: {
-            "identifier": "agent.1",
+            "agentId": "agent.1",
             "browser": {
               "name": "Safari",
               "version": "13.0.4"
