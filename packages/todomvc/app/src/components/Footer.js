@@ -1,3 +1,4 @@
+/* eslint jsx-a11y/anchor-is-valid: "off" */
 import React, {PropTypes, Component} from 'react'
 import classnames from 'classnames'
 
