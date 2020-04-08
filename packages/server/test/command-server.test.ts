@@ -193,7 +193,7 @@ describe('command server', () => {
       sync = done;
       actions.fork(function*() {
         results = [];
-        let client: Client = yield createTestClient();
+        let client: Client = yield Client.create(`ws://localhost:${COMMAND_PORT}`);
         yield client.subscribe('{ agents { browser { name } } }', function*(data) {
           results.push(data);
           sync();
@@ -265,11 +265,9 @@ async function mutation(text: string): Promise<unknown> {
   return await response.json();
 }
 
-const createTestClient: () => Operation = () => Client.create(`ws://localhost:${COMMAND_PORT}`);
-
 async function websocketQuery(text: string) {
   return await actions.fork(function*() {
-    let client = yield createTestClient();
+    let client = yield Client.create(`ws://localhost:${COMMAND_PORT}`);
     return yield client.query(text);
   });
 }

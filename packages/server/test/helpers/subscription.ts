@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
-import { monitor, Operation } from 'effection';
-import { suspend, Mailbox, once } from '@bigtest/effection';
+import { resource, Operation } from 'effection';
+import { Mailbox, once } from '@bigtest/effection';
 import { Client } from '../../src/client';
 
 /**
@@ -14,12 +14,11 @@ export class Subscription<Shape = any> {
 
   static *create<Shape>(client: Client, query: string, extract: (result: unknown) => Shape): Operation<Subscription<Shape>> {
     let subscription = new Subscription();
-    yield suspend(monitor(client.subscribe(query, function*(response) {
+    return yield resource(subscription, client.subscribe(query, function*(response) {
       let frame = extract(response)
       subscription.frames.push(frame);
       subscription.listeners.emit("frame", frame);
-    })));
-    return subscription;
+    }));
   }
 
   /**
