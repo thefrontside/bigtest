@@ -76,9 +76,9 @@ export const actions: Actions = {
     // _is_ in fact an EventTarget, but it is not declared as such. So we have
     // to dynamically cast it.
     type W3CWebSocket = w3cwebsocket & EventTarget;
-    let socket = new w3cwebsocket(`http://localhost:24103`) as W3CWebSocket;
+    let createSocket = () => new w3cwebsocket(`http://localhost:24103`) as W3CWebSocket;
 
-    return actions.fork(Agent.start(socket));
+    return actions.fork(Agent.start(createSocket));
   },
 
   async startOrchestrator() {
