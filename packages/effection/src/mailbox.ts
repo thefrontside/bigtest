@@ -31,7 +31,7 @@ export class Mailbox<T = any> {
 
   send(message: T) {
     this.messages.add(message);
-    this.subscriptions.emit('message', message);
+    setTimeout(() => this.subscriptions.emit('message', message), 0);
   }
 
   receive(pattern: unknown = undefined): Operation<T> {
