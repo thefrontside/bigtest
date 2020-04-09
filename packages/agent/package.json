@@ -16,7 +16,7 @@
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "start": "parcel serve --out-dir dist/app app/index.html app/harness.ts",
     "bundle": "parcel watch --out-dir dist/app app/index.html app/harness.ts",
-    "prepack": "tsc --outdir dist --project tsconfig.dist.json --declaration --sourcemap && tsc --project tsconfig.app.json --noEmit && parcel build --out-dir dist/app app/index.html app/harness.ts",
+    "prepack": "tsc --outdir dist --project tsconfig.dist.json --declaration --sourcemap && tsc --project tsconfig.app.json --noEmit && parcel build --no-minify --out-dir dist/app app/index.html app/harness.ts",
     "manifest:build": "parcel build test/fixtures/manifest.src.js --out-dir test/fixtures --out-file manifest.js --global __bigtestManifest"
   },
   "devDependencies": {
