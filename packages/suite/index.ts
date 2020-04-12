@@ -25,6 +25,7 @@ export interface Test extends Node {
  */
 export interface TestImplementation extends Test {
   description: string;
+  guards: Assertion[];
   steps: Step[];
   assertions: Assertion[];
   children: TestImplementation[];
@@ -39,6 +40,7 @@ export interface TestImplementation extends Test {
  */
 export interface Step extends Node {
   description: string;
+  guards: Assertion[];
   action: (context: Context) => Promise<Context | void>;
 }
 
