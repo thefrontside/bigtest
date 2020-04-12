@@ -1,5 +1,7 @@
 import React, { FC } from "react";
 import { Box, Text, useStdout } from "ink";
+import { FocusManager, Focusable, useFocus } from "./FocusManager";
+import fixture from "./fixture";
 import Divider from "ink-divider";
 import {
   MemoryRouter,
@@ -10,8 +12,6 @@ import {
   useNavigate,
   useParams
 } from "react-router-dom";
-import fixture from "./fixture";
-import { FocusManager, Focusable, useFocus } from "./FocusManager";
 
 const List: FC<{ width: number }> = ({ width }) => {
   const padding = 5;
@@ -49,7 +49,7 @@ const Detail: FC<{ width: number }> = ({ width }) => {
   );
 };
 
-const Index = () => {
+export const ListDetail = () => {
   const {
     stdout: { columns, rows }
   } = useStdout();
@@ -62,19 +62,5 @@ const Index = () => {
         <Route path=":test_id" element={<Detail width={columns / 2} />} />
       </Routes>
     </Box>
-  );
+  )
 };
-
-const App = () => {
-  return (
-    <FocusManager>
-      <MemoryRouter>
-        <Routes>
-          <Route path="/*" element={<Index />} />
-        </Routes>
-      </MemoryRouter>
-    </FocusManager>
-  );
-};
-
-export default App;

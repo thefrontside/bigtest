@@ -1,8 +1,9 @@
 import React from "react";
-import App from "./index";
+import { App } from "./app";
 import { main, Operation } from "effection";
 import { render } from "./render";
 import { KeyEventLoop, KeyEvents, CtrlC, KeyEvent } from './key-events';
+import { Instance } from "ink";
 
 main(function* start() {
   let stdin = process.stdin;
@@ -11,7 +12,7 @@ main(function* start() {
 
   yield KeyEvents.set(events);
 
-  yield render(<App />, { stdin });
+  let app: Instance = yield render(<App />, { stdin });
 
   yield events.on(CtrlC);
 

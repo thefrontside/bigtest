@@ -10,9 +10,8 @@ import React, {
 
 import { fork } from 'effection';
 import { FocusParentContext, FocusNode } from "./FocusParent";
-import { lensPath, view, set, over } from "ramda";
 import { useOperation } from "./EffectionContext";
-import { KeyEventLoop, KeyEvents, KeyEvent, TAB, ShiftTAB } from "./key-events";
+import { KeyEventLoop, KeyEvents, TAB, ShiftTAB } from "./key-events";
 import { useStdin } from "ink";
 
 function* forward(node: FocusNode) {
@@ -178,7 +177,7 @@ export const Focusable: FC<{ children: ReactNode }> = ({ children }) => {
 
 export const useFocus = () => {
   let node = useContext(FocusParentContext);
-  if (node) {
+  if (node && node.ref) {
     return node.ref;
   } else {
     return {

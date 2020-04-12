@@ -18,4 +18,6 @@ export function* render(Component: ReactNode, options: RenderOptions): Operation
   yield suspend(ensure(() => {
     inkApp.unmount()
   }));
+
+  return inkApp;
 };

@@ -29,8 +29,8 @@
     "ramda": "0.27.0",
     "react": "16.13.0",
     "react-dom": "16.13.0",
-    "react-router": "6.0.0-alpha.2",
-    "react-router-dom": "6.0.0-alpha.2"
+    "react-router": "6.0.0-alpha.3",
+    "react-router-dom": "6.0.0-alpha.3"
   },
   "devDependencies": {
     "@babel/preset-react": "7.8.3",
