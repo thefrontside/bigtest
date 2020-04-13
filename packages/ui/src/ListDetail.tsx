@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { Box, Text, useStdout } from "ink";
-import { FocusManager, Focusable, useFocus } from "./FocusManager";
+import { Focusable, useFocus } from "./Focusable";
 import fixture from "./fixture";
 import Divider from "ink-divider";
 import {

@@ -1,6 +1,7 @@
-import { Box, Text, useStdout } from "ink";
+import { Box, useStdout } from "ink";
 import React from "react";
-import { Focusable, useFocus } from "./FocusManager";
+import { Focusable } from "./Focusable";
+import { Text } from './Text';
 
 export const Home = () => {
   const {
@@ -11,19 +12,13 @@ export const Home = () => {
     <Box height={rows} width={columns}>
       <Box flexDirection="column">
         <Text>Experiments</Text>
-        <FocusText>ListDetail</FocusText>
-        <FocusText>Running Test</FocusText>
+        <Focusable>
+          <Text>ListDetail</Text>
+        </Focusable>
+        <Focusable>
+          <Text>Running Test</Text>
+        </Focusable>
       </Box>
     </Box>
-  );
-};
-
-const FocusText = ({ children }) => {
-  const { isFocused } = useFocus();
-
-  return (
-    <Focusable>
-      <Text underline={isFocused}>{children}</Text>
-    </Focusable>
   );
 };

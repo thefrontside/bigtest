@@ -1,16 +1,8 @@
 import { createContext } from "react";
-import { FocusNodeRef } from "./FocusManager";
-
-export interface TreeNode {
-  node: any;
-  path: number[];
-  children: {
-    [key: number]: TreeNode;
-  };
-}
+import { FocusNodeRef } from "./Focusable";
 
 export class FocusNode {
-  ref: FocusNodeRef;
+  ref?: FocusNodeRef;
   path: number[];
   currentIndex: number = 0;
   children: {
@@ -32,4 +24,4 @@ export class FocusNode {
   removeChild(ref: FocusNodeRef) {}
 }
 
-export const FocusParentContext = createContext<FocusNode>(null);
+export const FocusParentContext = createContext<FocusNodeRef>(null);
