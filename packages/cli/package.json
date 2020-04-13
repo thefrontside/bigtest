@@ -4,7 +4,7 @@
   "description": "Use BigTest",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.io>",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "license": "MIT",
   "files": [
     "bin/*",
@@ -14,11 +14,11 @@
   "scripts": {
     "lint": "eslint '{src,test,bin}/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "start": "ts-node src/index.ts",
-    "prepack": "tsc --project tsconfig.dist.json --outdir dist --module commonjs"
+    "bigtest": "ts-node src/index.ts",
+    "prepack": "tsc --project tsconfig.dist.json --outdir dist --module commonjs && chmod +x dist/bin/bigtest.js"
   },
   "bin": {
-    "bigtest": "./bin/bigtest"
+    "bigtest": "dist/bin/bigtest.js"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.1",
@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "capture-console": "^1.0.1",
+    "deepmerge": "^4.2.2",
     "effection": "^0.6.0"
   },
   "volta": {

@@ -14,7 +14,7 @@
   "scripts": {
     "lint": "eslint '{src,test}/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "prepack": "tsc --outdir dist --project tsconfig.dist.json --declaration --sourcemap"
+    "prepack": "tsc --outdir dist --project tsconfig.dist.json --declaration --sourcemap --module commonjs"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.1",
