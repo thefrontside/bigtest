@@ -4,7 +4,7 @@ import { fork } from "effection";
 import { Traversal, Forward } from "./FocusTraversal";
 import { FocusParentContext, FocusNode } from "./FocusParentContext";
 import { useOperation } from "./EffectionContext";
-import { KeyEventLoop, KeyEvents, TAB, ShiftTAB } from "./key-events";
+import { KeyEventLoop, KeyEvents, TAB, ShiftTAB, Enter } from "./key-events";
 
 export const FocusManager = ({ children }) => {
   let [node] = useState<FocusNode>(() => new FocusNode([]));
@@ -14,6 +14,16 @@ export const FocusManager = ({ children }) => {
     let events: KeyEventLoop = yield KeyEvents.get();
 
     let traversal: Traversal = Forward.create(node);
+
+    yield fork(function* select() {
+      while (true) {
+        yield events.on(Enter);
+
+        if (traversal.node.ref && traversal.node.ref.onEnter) {
+          traversal.node.ref.onEnter();
+        }
+      }
+    });
 
     yield fork(function* advance() {
       while (true) {

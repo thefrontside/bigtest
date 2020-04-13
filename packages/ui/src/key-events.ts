@@ -7,6 +7,7 @@ import { Variable } from './variable';
 export const CtrlC: KeyStroke = ({ input, key }) => input === 'c' && key.ctrl;
 export const TAB: KeyStroke = ({ input, key }) => input === 'i' && key.ctrl;
 export const ShiftTAB: KeyStroke = ({ input, key }) => input === '[Z' && key.meta;
+export const Enter: KeyStroke = ({ key }) => key.return
 
 export const KeyEvents = new Variable<KeyEventLoop>('KeyEvents');
 

@@ -1,10 +1,14 @@
+import React, { FC } from "react";
 import { Text as InkText } from "ink";
-import React from "react";
 import { useFocus } from "./Focusable";
 
-export const Text = ({ children, ...props }) => {
+interface TextProps {
+  onEnter?: (text: string) => void
+}
+
+export const Text: FC<TextProps> = ({ children, ...props }) => {
   const { isFocused } = useFocus();
-  console.log('isFocused', isFocused)
+
   return (
     <InkText underline={isFocused} {...props}>{children}</InkText>
   );

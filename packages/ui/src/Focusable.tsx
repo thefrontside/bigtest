@@ -9,7 +9,12 @@ import React, {
 } from "react";
 import { FocusParentContext, FocusNode } from "./FocusParentContext";
 
-export const Focusable: FC<{ children: ReactNode }> = ({ children }) => {
+interface FocusableProps {
+  children: ReactNode
+  onEnter?: () => void
+}
+
+export const Focusable: FC<FocusableProps> = ({ children, onEnter }) => {
   let parent = useContext(FocusParentContext);
 
   let [isFocused, setIsFocused] = useState(false);
@@ -17,6 +22,7 @@ export const Focusable: FC<{ children: ReactNode }> = ({ children }) => {
   let ref = useRef<FocusNodeRef>({ isFocused, setIsFocused, node: null });
 
   ref.current.isFocused = isFocused;
+  ref.current.onEnter = onEnter;
 
   useEffect(() => {
     if (parent) {
@@ -52,7 +58,6 @@ export const Focusable: FC<{ children: ReactNode }> = ({ children }) => {
 
 export const useFocus = () => {
   let node = useContext(FocusParentContext);
-  console.log("called useFocus", node);
   if (node) {
     return node;
   } else {
@@ -66,4 +71,5 @@ export interface FocusNodeRef {
   node: FocusNode;
   isFocused: boolean;
   setIsFocused: (value: boolean) => void;
+  onEnter?: () => void;
 }

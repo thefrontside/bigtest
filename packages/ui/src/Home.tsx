@@ -12,10 +12,10 @@ export const Home = () => {
     <Box height={rows} width={columns}>
       <Box flexDirection="column">
         <Text>Experiments</Text>
-        <Focusable>
+        <Focusable onEnter={() => console.log('selected list detail')}>
           <Text>ListDetail</Text>
         </Focusable>
-        <Focusable>
+        <Focusable onEnter={() => console.log('selected running test')}>
           <Text>Running Test</Text>
         </Focusable>
       </Box>

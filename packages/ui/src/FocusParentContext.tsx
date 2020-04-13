@@ -21,7 +21,9 @@ export class FocusNode {
     ));
   }
 
-  removeChild(ref: FocusNodeRef) {}
+  removeChild(ref: FocusNodeRef) {
+
+  }
 }
 
 export const FocusParentContext = createContext<FocusNodeRef>(null);
