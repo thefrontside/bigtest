@@ -10,10 +10,19 @@
     "packages": [
       "packages/effection",
       "packages/effection-express",
+      "packages/atom",
+      "packages/webdriver",
       "packages/parcel",
+      "packages/project",
       "packages/todomvc",
       "packages/suite",
-      "packages/*"
+      "packages/agent",
+      "packages/convergence",
+      "packages/interactor",
+      "packages/logging",
+      "packages/server",
+      "packages/cli",
+      "packages/website"
     ]
   },
   "scripts": {
