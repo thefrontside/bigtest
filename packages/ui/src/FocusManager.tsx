@@ -7,7 +7,7 @@ import { useOperation } from "./EffectionContext";
 import { KeyEventLoop, KeyEvents, TAB, ShiftTAB, Enter } from "./key-events";
 
 export const FocusManager = ({ children }) => {
-  let [node] = useState<FocusNode>(() => new FocusNode([]));
+  let [node] = useState<FocusNode>(() => new FocusNode());
   let [isFocused, setIsFocused] = useState(false);
 
   useOperation(function*() {

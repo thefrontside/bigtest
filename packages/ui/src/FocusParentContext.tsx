@@ -3,26 +3,20 @@ import { FocusNodeRef } from "./Focusable";
 
 export class FocusNode {
   ref?: FocusNodeRef;
-  path: number[];
-  currentIndex: number = 0;
-  children: {
-    [key: number]: FocusNode;
-  } = {};
+  children: FocusNode[] = [];
 
-  constructor(path: number[], ref?: FocusNodeRef) {
-    this.path = path;
+  constructor(ref?: FocusNodeRef) {
     this.ref = ref;
   }
 
   addChild(ref: FocusNodeRef) {
-    return (this.children[this.currentIndex] = new FocusNode(
-      [...this.path, this.currentIndex++],
-      ref
-    ));
+    let node = new FocusNode(ref);
+    this.children.push(node);
+    return node;
   }
 
   removeChild(ref: FocusNodeRef) {
-
+    this.children = this.children.filter(n => n.ref === ref);
   }
 }
 
