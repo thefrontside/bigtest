@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "lint": "eslint '{src,test}/**/*.ts'",
-    "test": "TS_NODE_PROJECT=tsconfig.test.json mocha -r ts-node/register test/**/*.test.ts",
+    "test": "mocha -r ts-node/register test/**/*.test.ts",
     "mocha": "mocha -r ts-node/register",
     "prepack": "tsc --outdir dist --declaration --sourcemap --module commonjs"
   },
