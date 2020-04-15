@@ -1,86 +1,81 @@
-import { w3cwebsocket as WebSocket } from 'websocket';
-import { EventEmitter } from 'events';
-import { monitor, Operation, Context } from 'effection';
+import { w3cwebsocket } from 'websocket';
+import { spawn, resource, Operation } from 'effection';
 
-import { once } from '@bigtest/effection';
+import { once, ensure, monitorErrors, Mailbox } from '@bigtest/effection';
 
 import { Message, isErrorResponse, isDataResponse } from './protocol';
 
+let responseIds = 0;
+
+type WebSocket = w3cwebsocket & EventTarget;
+
 export class Client {
-  responseIds = 0;
-  subscriptions = new EventEmitter();
-
-  private constructor(private socket: WebSocket, context: Context) {
-    let { subscriptions } = this;
-    socket.onopen = () => subscriptions.emit('open');
-    socket.onclose = event => subscriptions.emit('close', event);
-    socket.onmessage = event => subscriptions.emit('message', event);
-    socket.onerror = event => subscriptions.emit('error', event);
-    context['ensure'](() => {
-      socket.onopen = socket.onclose = socket.onmessage = socket.onerror = null;
-      socket.close();
-    });
-
-    context['spawn'](monitor(function* () {
-      let [error]: [Error] = yield once(subscriptions, 'error');
-      throw error;
-    }));
-
-    context['spawn'](monitor(function* () {
-      yield once(subscriptions, 'close');
-      throw new Error('Socket closed on the remote end');
-    }));
-  }
+  private constructor(private socket: WebSocket) {}
 
   static *create(url: string): Operation<Client> {
-    let client = new Client(new WebSocket(url), yield parent);
+    let socket = new w3cwebsocket(url) as WebSocket;
 
-    yield once(client.subscriptions, 'open');
+    let client = new Client(socket);
+    let res = yield resource(client, function*() {
+      yield ensure(() => {
+        socket.close();
+      });
+      yield monitorErrors(socket);
+      yield spawn(function* () {
+        yield once(socket, 'close');
+        throw new Error('Socket closed on the remote end');
+      });
+      yield;
+    });
 
-    return client;
+    yield once(socket, 'open');
+
+    return res;
   }
 
-  query(source: string): Operation {
-    return this.send({ query: source }, next => next());
+  *query(source: string): Operation {
+    let responseId = this.send({ query: source });
+
+    let events = yield Mailbox.subscribe(this.socket, "message");
+    let messages = yield events.map(({ args }) => JSON.parse(args[0].data));
+
+    let message = yield this.receive(messages, responseId);
+    return message.data;
   }
 
-  subscribe(source: string, forEach: (response: unknown) => Operation): Operation {
-    return this.send({ query: source, live: true }, function*(next) {
-      while (true) {
-        let response = yield next();
-        yield forEach(response);
-      }
-    })
+  *subscribe(source: string, forEach: (response: unknown) => Operation): Operation {
+    let responseId = this.send({ query: source, live: true });
+
+    let events = yield Mailbox.subscribe(this.socket, "message");
+    let messages = yield events.map(({ args }) => JSON.parse(args[0].data));
+
+    while (true) {
+      let message = yield this.receive(messages, responseId);
+      yield forEach(message.data);
+    }
   }
 
-  *send(command: Query, handle: HandleResponse): Operation {
-    let responseId = `${this.responseIds++}`; //we'd want a UUID to avoid hijacking?
+  *receive(mailbox: Mailbox, responseId: string) {
+    let message = yield mailbox.receive({ responseId });
+
+    if (isErrorResponse(message)) {
+      let messages = message.errors.map(error => error.message);
+      throw new Error(messages.join("\n"));;
+    }
+    if (isDataResponse(message)) {
+      return message;
+    } else {
+      console.warn('unknown response format: ', message);
+    }
+  }
+
+  send(command: Query): string {
+    let responseId = `${responseIds++}`; //we'd want a UUID to avoid hijacking?
     let request: Message = {...command, responseId};
 
     this.socket.send(JSON.stringify(request));
 
-    let { subscriptions } = this;
-
-    let next = function* getNextResponse() {
-      while (true) {
-        let [event]: [MessageEvent] = yield once(subscriptions, 'message');
-        let message: Message = JSON.parse(event.data);
-
-        if (message.responseId === responseId) {
-          if (isErrorResponse(message)) {
-            let messages = message.errors.map(error => error.message);
-            throw new Error(messages.join("\n"));;
-          }
-          if (isDataResponse(message)) {
-            return message.data;
-          } else {
-            console.warn('unknown response format: ', event.data);
-          }
-        }
-      }
-    }
-
-    return yield handle(next);
+    return responseId;
   }
 }
 
@@ -92,5 +87,3 @@ interface Query {
   query: string;
   live?: boolean;
 }
-
-const parent: Operation = ({ resume, context: { parent }}) => resume(parent.parent);

@@ -1,13 +1,13 @@
-import { Operation } from 'effection';
-import { Mailbox, suspend, subscribe } from '@bigtest/effection';
+import { Operation, resource } from 'effection';
+import { Mailbox, subscribe } from '@bigtest/effection';
 
 export class TestFrame {
-  static *start() {
+  static *start(): Operation<TestFrame> {
     let element = document.getElementById('test-frame') as HTMLIFrameElement;
 
     let mailbox = new Mailbox();
-    yield suspend(subscribe(mailbox, window, ['message']));
-    return new TestFrame(element, mailbox);
+    let frame = new TestFrame(element, mailbox);
+    return yield resource(frame, subscribe(mailbox, window, 'message'));
   }
 
   constructor(private element: HTMLIFrameElement, private mailbox: Mailbox) {}

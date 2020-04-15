@@ -1,12 +1,11 @@
-import { Operation, monitor } from 'effection';
+import { Operation, spawn, resource } from 'effection';
 import { EventEmitter } from 'events';
 
 import { compile } from './pattern';
 export { any } from './pattern';
-import { suspend } from './suspend';
 import { ensure } from './ensure';
 
-function isEventTarget(target): target is EventTarget { return typeof target.addEventListener === 'function'; }
+import { EventSource, addListener, removeListener } from './event-source';
 
 export interface SubscriptionMessage {
   event: string;
@@ -19,19 +18,17 @@ export class Mailbox<T = any> {
   private messages = new Set<T>();
 
   static *subscribe(
-    emitter: EventEmitter | EventTarget,
+    source: EventSource,
     events: string | string[],
   ): Operation<Mailbox<SubscriptionMessage>> {
     let mailbox: Mailbox<SubscriptionMessage> = new Mailbox();
 
-    yield suspend(monitor(subscribe(mailbox, emitter, events)));
-
-    return mailbox;
+    return yield resource(mailbox, subscribe(mailbox, source, events));
   }
 
   send(message: T) {
     this.messages.add(message);
-    this.subscriptions.emit('message', message);
+    setTimeout(() => this.subscriptions.emit('message', message), 0);
   }
 
   receive(pattern: unknown = undefined): Operation<T> {
@@ -59,43 +56,42 @@ export class Mailbox<T = any> {
 
   *pipe(other: Mailbox<T>) {
     let that = this; // eslint-disable-line @typescript-eslint/no-this-alias
-    yield suspend(monitor(function*() {
+    return yield spawn(function*() {
       while(true) {
         let message = yield that.receive();
         other.send(message);
       }
-    }));
+    });
   }
 
   *map<R>(fn: (from: T) => R): Operation<Mailbox<R>> {
     let that = this; // eslint-disable-line @typescript-eslint/no-this-alias
     let other: Mailbox<R> = new Mailbox();
-    yield suspend(monitor(function*() {
+    return yield resource(other, function*() {
       while(true) {
         let message: T = yield that.receive();
         other.send(fn(message));
       }
-    }));
-    return other;
+    });
   }
 }
 
 export function *subscribe(
   mailbox: Mailbox<SubscriptionMessage>,
-  emitter: EventEmitter | EventTarget,
+  source: EventSource,
   events: string | string[],
 ): Operation {
-  for (let name of [].concat(events)) {
-    let listener = (...args) => {
-      mailbox.send({ event: name, args });
-    }
+  return yield spawn(function*() {
+    for (let name of [].concat(events)) {
+      let listener = (...args) => {
+        mailbox.send({ event: name, args });
+      }
 
-    if(isEventTarget(emitter)) {
-      emitter.addEventListener(name, listener);
-      yield suspend(ensure(() => emitter.removeEventListener(name, listener)));
-    } else {
-      emitter.on(name, listener);
-      yield suspend(ensure(() => emitter.off(name, listener)));
+      addListener(source, name, listener);
+      yield ensure(() => {
+        removeListener(source, name, listener)
+      });
     }
-  }
+    yield;
+  });
 }

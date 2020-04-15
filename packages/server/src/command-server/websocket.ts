@@ -1,6 +1,5 @@
 import { Operation, fork } from 'effection';
 import { Mailbox } from '@bigtest/effection';
-import { IMessage } from 'websocket';
 
 import { Message, QueryMessage, MutationMessage, isQuery, isMutation } from '../protocol';
 
@@ -38,13 +37,10 @@ export function handleMessage(delegate: Mailbox, atom: Atom): (connection: Conne
   return function*(connection) {
     let messages: Mailbox = yield Mailbox.subscribe(connection, "message");
 
-    messages = yield messages.map(({ args }) => {
-      let [message] = args as IMessage[];
-      return JSON.parse(message.utf8Data);
-    });
-
     while (true) {
-      let message: Message = yield messages.receive();
+      let { args } = yield messages.receive();
+      let message = JSON.parse(args[0].utf8Data) as Message;
+
       if (isQuery(message)) {
         yield fork(handleQuery(message, connection));
       }
