@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "bowser": "^2.9.0",
-    "effection": "^0.5.2-3f5581c",
+    "effection": "^0.6.0",
     "express": "^4.17.1",
     "websocket": "^1.0.31"
   },

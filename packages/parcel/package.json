@@ -19,8 +19,8 @@
   },
   "dependencies": {
     "@bigtest/effection": "^0.1.1",
-    "@effection/node": "^0.5.2",
-    "effection": "^0.5.2-3f5581c",
+    "@effection/node": "^0.6.0",
+    "effection": "^0.6.0",
     "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.4"
   },

@@ -962,10 +962,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/sass-import-resolve/-/sass-import-resolve-1.0.0.tgz#32c3cdb2f7af3cd8f0dca357b592e7271f3831b5"
   integrity sha512-pH4KCsbtBLLe7eqUrw8brcuFO8IZlN36JjdKlOublibVdAIPHCzEnpBWOVUXK5sCf+DpBi8ZtuWtjF0srybdeA==
 
-"@effection/node@^0.5.2":
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/@effection/node/-/node-0.5.2.tgz#16837885a15379d10b2bd0fe95e6f1cbb2f0eadc"
-  integrity sha512-aku7hld9m8AIVSb9D39qjmwChTxiSsYZ7JyXzekbMx71FQAQt9KOepuucdnM6NZvarf4oe+7JO+e2doQN66ekw==
+"@effection/node@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@effection/node/-/node-0.6.0.tgz#f3c70ada21a2312f43927d39840b705c2e2d911d"
+  integrity sha512-22t6+++0pWQfM4aZo5Q4+kd99Ka4ySaUWmB1LEBzKTO+PWvQhCw3MIkIYGnjkyCGK/R6L0FeFGK5MKHaNhflCA==
 
 "@emotion/is-prop-valid@^0.8.3":
   version "0.8.6"
@@ -5856,10 +5856,10 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-effection@^0.5.2-3f5581c:
-  version "0.5.2-3f5581c"
-  resolved "https://registry.yarnpkg.com/effection/-/effection-0.5.2-3f5581c.tgz#b789b20c4bf5da319330db8ce5ed7914d2e50b27"
-  integrity sha512-R4kXefmmQn0A6T58mFSEnOk3BwEjLigiqY2S4UhwM6vInZ5TErIRLrn4aY9dlo+Q+j0J+2ueaG9si4OIqxXKJA==
+effection@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/effection/-/effection-0.6.0.tgz#c74c4500bbaf3c3ec637a55b16750d39b9908ef7"
+  integrity sha512-osJtyJo5Z9QgO6oPHr2nJqf+InoTOxxBIavajIBvC1SAPZKJg/l5CDJugZgNDXd2A0J49SkCh/Y1jK9j985fwg==
 
 electron-to-chromium@^1.3.341, electron-to-chromium@^1.3.47:
   version "1.3.345"
