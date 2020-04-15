@@ -13,10 +13,10 @@
     "query": "ts-node bin/query.ts",
     "subscribe": "ts-node bin/subscribe.ts",
     "lint": "eslint '{src,bin,test}/**/*.ts'",
-    "test": "mocha ./test/setup test/**/*.test.ts",
+    "test": "TS_NODE_PROJECT=tsconfig.test.json mocha ./test/setup test/**/*.test.ts",
     "mocha": "mocha ./test/setup",
     "test:app:start": "ts-node ./bin/todomvc.ts",
-    "prepack": "tsc --project tsconfig.dist.json --outdir dist --module commonjs --sourcemap --declaration"
+    "prepack": "tsc --outdir dist --module commonjs --sourcemap --declaration"
   },
   "files": [
     "README.md",
