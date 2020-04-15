@@ -1,17 +1,17 @@
 import { buildSchema } from 'graphql';
 
 export const schema = buildSchema(`
-scalar TestRunId
-
 type Query {
   echo(text: String!): String
   agents: [Agent!]!
+  agent(id: String!): Agent
   manifest: Test!
   testRuns: [TestRun!]!
+  testRun(id: String!): TestRun
 }
 
 type Mutation {
-  run: TestRunId
+  run: String
 }
 
 type Agent {
@@ -60,7 +60,7 @@ type Assertion {
 }
 
 type TestRun {
-  testRunId: TestRunId!
+  testRunId: String!
   status: String!
   agent: Agent!
   tree: TestResult!

@@ -185,28 +185,24 @@ describe('command server', () => {
   });
 
   describe('subscribing to a query', () => {
-    let results: unknown[];
-    let sync: Mocha.Done;
+    let client: Client;
+    let subscription: Mailbox;
+    let initial: unknown;
 
-    beforeEach((done) => {
-      sync = done;
-      actions.fork(function*() {
-        results = [];
-        let client: Client = yield Client.create(`ws://localhost:${COMMAND_PORT}`);
-        yield client.subscribe('{ agents { browser { name } } }', function*(data) {
-          results.push(data);
-          sync();
-        });
-      })
+    beforeEach(async () => {
+      client = await actions.fork(Client.create(`ws://localhost:${COMMAND_PORT}`));
+      subscription = await actions.fork(client.subscribe('{ agents { browser { name } } }'));
+      initial = await actions.fork(subscription.receive());
     });
 
     it('contains the initial result of the query', () => {
-      expect(results).toEqual([{ agents: [] }]);
+      expect(initial).toEqual({ agents: [] });
     });
 
     describe('when another agent is added', () => {
-      beforeEach((done) => {
-        sync = done;
+      let second: unknown;
+
+      beforeEach(async () => {
         agents.set({
           safari: {
             "agentId": "agent.1",
@@ -229,10 +225,10 @@ describe('command server', () => {
             }
           }
         });
+        second = await actions.fork(subscription.receive());
       });
 
       it('publishes the new state', () => {
-        let [, second] = results;
         expect(second).toBeDefined();
         expect(second).toEqual({
           agents: [{

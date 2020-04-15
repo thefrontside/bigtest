@@ -1,7 +1,7 @@
 import { w3cwebsocket } from 'websocket';
 import { spawn, resource, Operation } from 'effection';
 
-import { once, ensure, monitorErrors, Mailbox } from '@bigtest/effection';
+import { once, ensure, Mailbox } from '@bigtest/effection';
 
 import { Message, isErrorResponse, isDataResponse } from './protocol';
 
@@ -17,13 +17,12 @@ export class Client {
 
     let client = new Client(socket);
     let res = yield resource(client, function*() {
-      yield ensure(() => {
-        socket.close();
-      });
-      yield monitorErrors(socket);
+      yield ensure(() => socket.close());
       yield spawn(function* () {
-        yield once(socket, 'close');
-        throw new Error('Socket closed on the remote end');
+        let [event] = yield once(socket, 'close');
+        if(event.code !== 1000) {
+          throw new Error(`Socket closed on the remote end: [${event.code}] ${event.reason}`);
+        }
       });
       yield;
     });
@@ -34,39 +33,34 @@ export class Client {
   }
 
   *query(source: string): Operation {
-    let responseId = this.send({ query: source });
-
-    let events = yield Mailbox.subscribe(this.socket, "message");
-    let messages = yield events.map(({ args }) => JSON.parse(args[0].data));
-
-    let message = yield this.receive(messages, responseId);
-    return message.data;
+    let subscription = yield this.subscribe(source, false);
+    return yield subscription.receive();
   }
 
-  *subscribe(source: string, forEach: (response: unknown) => Operation): Operation {
-    let responseId = this.send({ query: source, live: true });
+  *subscribe(source: string, live = true): Operation<Mailbox> {
+    let mailbox = new Mailbox();
+    let responseId = this.send({ query: source, live });
+    let socket = this.socket;
 
-    let events = yield Mailbox.subscribe(this.socket, "message");
-    let messages = yield events.map(({ args }) => JSON.parse(args[0].data));
+    return yield resource(mailbox, function*() {
+      let messages = yield Mailbox.subscribe(socket, "message");
 
-    while (true) {
-      let message = yield this.receive(messages, responseId);
-      yield forEach(message.data);
-    }
-  }
-
-  *receive(mailbox: Mailbox, responseId: string) {
-    let message = yield mailbox.receive({ responseId });
-
-    if (isErrorResponse(message)) {
-      let messages = message.errors.map(error => error.message);
-      throw new Error(messages.join("\n"));;
-    }
-    if (isDataResponse(message)) {
-      return message;
-    } else {
-      console.warn('unknown response format: ', message);
-    }
+      while (true) {
+        let { args } = yield messages.receive();
+        let message: Message = JSON.parse(args[0].data);
+        if(message.responseId === responseId) {
+          if (isErrorResponse(message)) {
+            let messages = message.errors.map(error => error.message);
+            throw new Error(messages.join("\n"));;
+          }
+          if (isDataResponse(message)) {
+            mailbox.send(message.data);
+          } else {
+            throw new Error("unknown response format");;
+          }
+        }
+      }
+    });
   }
 
   send(command: Query): string {
