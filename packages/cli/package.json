@@ -13,9 +13,9 @@
   ],
   "scripts": {
     "lint": "eslint '{src,test,bin}/**/*.ts'",
-    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "test": "TS_NODE_PROJECT=tsconfig.test.json mocha -r ts-node/register test/**/*.test.ts",
     "start": "ts-node src/index.ts",
-    "prepack": "tsc --project tsconfig.dist.json --outdir dist --module commonjs"
+    "prepack": "tsc --outdir dist --module commonjs"
   },
   "bin": {
     "bigtest": "./bin/bigtest"

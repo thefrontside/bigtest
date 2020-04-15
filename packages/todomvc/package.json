@@ -14,9 +14,9 @@
   "scripts": {
     "start": "yarn prepack && ts-node dist/start.js",
     "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
-    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "test": "TS_NODE_PROJECT=tsconfig.test.json mocha -r ts-node/register test/**/*.test.ts",
     "build": "yarn prepack",
-    "prepack": "rm -rf dist && mkdir -p dist && cd app && cp app.package.json package.json && react-scripts build && cd .. && mv app/build dist/app && tsc --project tsconfig.dist.json --outdir dist --module commonjs --declaration --sourcemap && chmod a+x dist/start.js"
+    "prepack": "rm -rf dist && mkdir -p dist && cd app && cp app.package.json package.json && react-scripts build && cd .. && mv app/build dist/app && tsc --outdir dist --module commonjs --declaration --sourcemap && chmod a+x dist/start.js"
   },
   "bin": {
     "bigtest-todomvc": "dist/start.js"
