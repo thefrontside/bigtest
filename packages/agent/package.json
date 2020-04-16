@@ -35,10 +35,10 @@
     "playwright": "^0.11.1",
     "regenerator-runtime": "^0.13.3",
     "ts-node": "*",
-    "typescript": "^3.7.0",
-    "@bigtest/effection": "*"
+    "typescript": "^3.7.0"
   },
   "dependencies": {
+    "@bigtest/effection": "*",
     "bowser": "^2.9.0",
     "effection": "^0.6.0",
     "express": "^4.17.1",
