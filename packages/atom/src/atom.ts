@@ -5,13 +5,16 @@ import { Slice } from "./slice";
 
 export class Atom<S> {
   initial: S;
-
-  state = this.initial;
+  state: S;
 
   subscriptions = new EventEmitter();
 
   get(): S {
     return this.state;
+  }
+
+  constructor(initial: S) {
+    this.initial = this.state = initial;
   }
 
   reset(initializer?: (initial: S, current: S) => S) {
