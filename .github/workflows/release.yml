@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - mk/tags-test
+      - master
 
 jobs:
   publish-releases:
@@ -12,8 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Publish Releases
-      # uses: thefrontside/actions/synchronize-with-npm@v1.4
-      uses: thefrontside/actions/synchronize-with-npm@mk/tags
+      uses: thefrontside/actions/synchronize-with-npm@v1.5
       with:
         before_all: yarn prepack
         npm_publish: yarn publish
