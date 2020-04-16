@@ -1,0 +1,35 @@
+{
+  "name": "@bigtest/atom",
+  "version": "0.1.0",
+  "description": "State atom used by BigTest",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.js",
+  "repository": "https://github.com/thefrontside/bigtest.git",
+  "author": "Frontside Engineering <engineering@frontside.io>",
+  "license": "MIT",
+  "files": [
+    "dist/*",
+    "README.md"
+  ],
+  "scripts": {
+    "lint": "eslint '{src,test}/**/*.ts'",
+    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "prepack": "tsc --outdir dist --declaration --sourcemap"
+  },
+  "devDependencies": {
+    "@types/mocha": "^7.0.1",
+    "@types/node": "^12.7.11",
+    "expect": "^24.9.0",
+    "mocha": "^6.2.2",
+    "ts-node": "*"
+  },
+  "dependencies": {
+    "@types/ramda": "types/npm-ramda#dist",
+    "effection": "^0.6.0",
+    "ramda": "0.27.0"
+  },
+  "volta": {
+    "node": "12.16.0",
+    "yarn": "1.19.1"
+  }
+}

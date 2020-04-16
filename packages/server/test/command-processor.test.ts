@@ -7,7 +7,7 @@ import { actions } from './helpers';
 import { createCommandProcessor } from '../src/command-processor';
 import { Atom } from '../src/orchestrator/atom';
 
-import { AgentState, Manifest, TestRunState } from 'src/orchestrator/state';
+import { AgentState, Manifest, TestRunState } from '../src/orchestrator/state';
 
 describe('command server', () => {
   let delegate: Mailbox;

@@ -1,7 +1,7 @@
 import { fork, monitor, Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { Test, TestResult, StepResult, AssertionResult, ResultStatus } from '@bigtest/suite';
-import { Atom, Slice} from './orchestrator/atom';
+import { Atom, Slice } from './orchestrator/atom';
 import { TestRunState } from './orchestrator/state';
 
 interface CommandProcessorOptions {

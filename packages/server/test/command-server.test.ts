@@ -10,7 +10,7 @@ import { actions } from './helpers';
 import { createCommandServer } from '../src/command-server';
 import { Atom, Slice } from '../src/orchestrator/atom';
 
-import { AgentState } from 'src/orchestrator/state';
+import { AgentState } from '../src/orchestrator/state';
 
 let COMMAND_PORT = 24200;
 
