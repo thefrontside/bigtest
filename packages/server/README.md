@@ -17,20 +17,6 @@ To run the tests:
 $ yarn test
 ```
 
-During development, you can use the `watch` script to watch any
-process and restart it when the source files are changed. To watch and
-restart a running server:
-
-``` sh
-$ yarn watch yarn start
-```
-
-To watch and restart the tests:
-
-``` sh
-$ yarn watch yarn test
-```
-
 ### Connecting to a development agent server
 
 In production, bigtest will start its own agent application server,
