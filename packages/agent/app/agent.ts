@@ -11,7 +11,9 @@ export function* createAgent(connectTo: string) {
   console.log('[agent] connecting to', connectTo);
 
   let testFrame = yield TestFrame.start();
-  let agent: Agent = yield Agent.start(new WebSocket(connectTo));
+
+  let createSocket = () => new WebSocket(connectTo);
+  let agent: Agent = yield Agent.start(createSocket);
 
   agent.send({
     type: 'connected',

@@ -7,9 +7,10 @@ export * from './protocol';
 export class Agent implements AgentProtocol {
   constructor(private socket: Socket, private mailbox: Mailbox) {}
 
-  static *start(socket: Socket): Operation<Agent> {
+  static *start(createSocket: () => Socket): Operation<Agent> {
     let mailbox = new Mailbox();
 
+    let socket = createSocket();
     let res = yield resource(new Agent(socket, mailbox), function*() {
       yield subscribe(mailbox, socket, 'message');
       yield ensure(() => socket.close());
