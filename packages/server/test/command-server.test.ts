@@ -8,7 +8,7 @@ import { Test } from '@bigtest/suite';
 import { Client } from '../src/client';
 import { actions } from './helpers';
 import { createCommandServer } from '../src/command-server';
-import { Atom, Slice } from '../src/orchestrator/atom';
+import { Slice, createOrchestratorAtom } from '../src/orchestrator/atom';
 
 import { AgentState } from '../src/orchestrator/state';
 
@@ -21,7 +21,7 @@ describe('command server', () => {
 
   beforeEach(async () => {
     delegate = new Mailbox();
-    let atom = new Atom();
+    let atom = createOrchestratorAtom();
     agents = atom.slice<Record<string, AgentState>>(['agents']);
     manifest = atom.slice<Test>(['manifest']);
     actions.fork(createCommandServer({

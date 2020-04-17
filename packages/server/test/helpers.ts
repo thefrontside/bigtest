@@ -8,7 +8,7 @@ import { Agent } from '@bigtest/agent';
 import { World } from './helpers/world';
 
 import { createOrchestrator } from '../src/index';
-import { Atom } from '../src/orchestrator/atom';
+import { createOrchestratorAtom, Atom } from '../src/orchestrator/atom';
 import { Manifest } from '../src/orchestrator/state';
 
 interface Actions {
@@ -24,7 +24,7 @@ let orchestratorPromise: Context;
 let manifest: Manifest;
 
 export const actions: Actions = {
-  atom: new Atom(),
+  atom: createOrchestratorAtom(),
 
   fork(operation: Operation): Context {
     return currentWorld.fork(operation);

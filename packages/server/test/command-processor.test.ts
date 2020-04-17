@@ -5,7 +5,7 @@ import { Mailbox } from '@bigtest/effection';
 
 import { actions } from './helpers';
 import { createCommandProcessor } from '../src/command-processor';
-import { Atom } from '../src/orchestrator/atom';
+import { Atom, createOrchestratorAtom } from '../src/orchestrator/atom';
 
 import { AgentState, Manifest, TestRunState } from '../src/orchestrator/state';
 
@@ -17,7 +17,7 @@ describe('command server', () => {
   beforeEach(async () => {
     delegate = new Mailbox();
     inbox = new Mailbox();
-    atom = new Atom();
+    atom = createOrchestratorAtom();
     atom.slice<AgentState>(['agents', 'agent-1']).set({
       agentId: 'agent-1',
       browser: { name: "Safari", version: "13.0.4" },

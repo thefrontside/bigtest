@@ -1,2 +1,2 @@
 export { createOrchestrator } from './orchestrator';
-export { Atom } from './orchestrator/atom';
+export { Atom, createOrchestratorAtom } from './orchestrator/atom';

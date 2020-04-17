@@ -8,7 +8,7 @@ import { Mailbox } from '@bigtest/effection';
 
 import { actions } from './helpers';
 import { createManifestBuilder } from '../src/manifest-builder';
-import { Atom } from '../src/orchestrator/atom';
+import { Atom, createOrchestratorAtom } from '../src/orchestrator/atom';
 
 const TEST_DIR = "./tmp/manifest-builder"
 const SRC_DIR = `${TEST_DIR}/src`
@@ -28,7 +28,7 @@ describe('manifest builder', () => {
     await mkdir(SRC_DIR, { recursive: true });
     await copyFile('./test/fixtures/raw-tree-format.t.js', MANIFEST_PATH);
 
-    atom = new Atom();
+    atom = createOrchestratorAtom();
     delegate = new Mailbox();
 
     actions.fork(function*() {

@@ -4,13 +4,13 @@ import { Mailbox } from '@bigtest/effection';
 import * as tempy from 'tempy';
 import { setLogLevel } from '@bigtest/logging';
 
-import { createOrchestrator, Atom } from '../src/index';
+import { createOrchestrator, createOrchestratorAtom } from '../src/index';
 
 setLogLevel(process.env.LOG_LEVEL || 'info');
 
 main(function*() {
   let delegate = new Mailbox();
-  let atom = new Atom();
+  let atom = createOrchestratorAtom();
 
   yield fork(createOrchestrator({
     delegate,
