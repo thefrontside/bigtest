@@ -1,7 +1,7 @@
-import { Test } from '@bigtest/suite';
+import { Test, TestResult } from '@bigtest/suite';
 
 export type AgentState = {
-  identifier: string;
+  agentId: string;
   browser: {
     name: string;
     version: string;
@@ -21,9 +21,17 @@ export type AgentState = {
   };
 }
 
+export type TestRunState = {
+  testRunId: string;
+  status: "pending" | "running" | "done";
+  tree: TestResult;
+  agent: AgentState;
+}
+
 export type OrchestratorState = {
   agents: Record<string, AgentState>;
   manifest: Manifest;
+  testRuns: Record<string, TestRunState>;
 }
 
 export interface Manifest extends Test {

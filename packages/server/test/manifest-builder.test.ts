@@ -5,10 +5,12 @@ import * as rmrf from 'rimraf';
 import * as fs from 'fs';
 
 import { Mailbox } from '@bigtest/effection';
+import { Atom } from '@bigtest/atom';
 
 import { actions } from './helpers';
 import { createManifestBuilder } from '../src/manifest-builder';
-import { Atom } from '../src/orchestrator/atom';
+import { createOrchestratorAtom } from '../src/orchestrator/atom';
+import { OrchestratorState } from '../src/orchestrator/state';
 
 const TEST_DIR = "./tmp/manifest-builder"
 const SRC_DIR = `${TEST_DIR}/src`
@@ -19,7 +21,7 @@ const MANIFEST_PATH = `${SRC_DIR}/manifest.js`
 const { mkdir, copyFile, readFile } = fs.promises;
 
 describe('manifest builder', () => {
-  let atom: Atom;
+  let atom: Atom<OrchestratorState>;
   let delegate: Mailbox;
   let resultPath: string;
 
@@ -28,7 +30,7 @@ describe('manifest builder', () => {
     await mkdir(SRC_DIR, { recursive: true });
     await copyFile('./test/fixtures/raw-tree-format.t.js', MANIFEST_PATH);
 
-    atom = new Atom();
+    atom = createOrchestratorAtom();
     delegate = new Mailbox();
 
     actions.fork(function*() {

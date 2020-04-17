@@ -1,7 +1,6 @@
 import { fork, Operation } from 'effection';
 import { once } from '@bigtest/effection';
-import { watchError } from '@effection/events';
-import { Mailbox, any } from '@bigtest/effection';
+import { Mailbox, any, monitorErrors } from '@bigtest/effection';
 
 import * as proxy from 'http-proxy';
 import * as http from 'http';
@@ -27,7 +26,7 @@ export function* createProxyServer(options: ProxyOptions): Operation {
     let contentType = proxyRes.headers['content-type'] as string;
     let contentEncoding = proxyRes.headers['content-encoding'] as string;
 
-    yield watchError(proxyRes);
+    yield monitorErrors(proxyRes);
 
     if(contentType && contentType.split(';')[0] === 'text/html') {
       res.removeHeader('content-length');
@@ -40,8 +39,8 @@ export function* createProxyServer(options: ProxyOptions): Operation {
       let tr = trumpet();
       let unzip = zlib.createGunzip();
 
-      yield watchError(tr);
-      yield watchError(unzip);
+      yield monitorErrors(tr);
+      yield monitorErrors(unzip);
 
       tr.select('head', (node) => {
         let rs = node.createReadStream();

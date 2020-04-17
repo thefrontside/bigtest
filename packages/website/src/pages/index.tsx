@@ -15,9 +15,9 @@ import ReachOut from '../components/ReachOut';
 import SubscribeForm from '../components/SubscribeForm';
 import WhyBigTest from '../components/WhyBigTest';
 
-import { reusable, tests_intro, user_experience } from '../images';
+import { reusableSVG, testsIntroSVG, userExperienceSVG } from '../images';
 
-const IndexPage = props => (
+const IndexPage = () => (
   <Layout>
     <Hero>
       <Flex alignItems="center" flexWrap="wrap">
@@ -25,11 +25,11 @@ const IndexPage = props => (
           <H1>
             <Strong>Tests that speed up development,</Strong>
             <br />
-            not the other way around
+            not slow it down
           </H1>
-          <Text>
-            BigTest is a framework that enables you to test real-world experiences on your app rapidly, in every
-            browser and device, regardless of which framework you use.
+          <Text fontSize="large">
+            BigTest lets developers test their applications across browsers and devices and provides them with
+            swift and actionable feedback.
           </Text>
           <Box marginTop={['small', 'small', 'small', 'xxLarge']}>
             <H3>Get notified about BigTest progress and know when it's ready:</H3>
@@ -40,7 +40,7 @@ const IndexPage = props => (
           width={[1, 1 / 2, 1 / 3]}
           paddingX={['xLarge', 'small', 'large']}
           marginTop={['large', 0, 0]}
-          src={tests_intro}
+          src={testsIntroSVG}
           alt="BigTest: automated, fast, reliable, and cross-browser tests."
         />
       </Flex>
@@ -52,22 +52,32 @@ const IndexPage = props => (
         <Box width={[1, 1 / 2, 2 / 3]} paddingRight={[0, 'medium', 'xxxLarge']}>
           <H2 color="contrast">Test experiences, not just code</H2>
           <Text>
-            When building an application for the web, it's not enough to know if the code works at the component
-            level. Instead, it's vital to test from the perspective of a real person who will be using it. Does
-            your app work in a real browser? What about multiple browsers and devices? Where are the wrinkles that
-            need to be ironed out?
+            Web applications generate value when they deliver meaningful experiences to their users, but people use
+            them under different conditions and contexts. While one person might be trying to find the perfect gift
+            for their loved one on their phone using Firefox Focus for privacy, someone else is using Safari on
+            their tablet trying to change a reservation in a café with a poor connection. Tests are an important
+            safeguard to ensure that everyone has the same great experience and gets what they need using your
+            app. 
           </Text>
           <Text>
-            BigTest validates your code from the perspective of your user--what they see and interact with. This
-            makes it possible to not only test individual functionality, but also get visibility on how different
-            components interact and how a release will affect other parts of the code base.
+            Testing tools have traditionally generated a simulated context to assert the application and put it
+            through its paces. Jest runs tests in a JSDOM context while Cypress generates a Chrome environment
+            through Electron. Both offer constructive feedback on how to act on the test results, but both are
+            limited by their respective test context constraints. While these tools are useful, there’s still a
+            large number of scenarios that elude what they can safeguard against.
+          </Text>
+          <Text>
+            BigTest is different. It lets you test your application across browsers and devices, validating your
+            code from the perspective of your user. In order to enable this, BigTest allows your tests to be
+            automatically run through a URL, just as your user would use your app. Additionally, BigTest provides
+            out of the box solutions to execute this context in a CI server.
           </Text>
         </Box>
         <Image
           width={[1, 1 / 2, 1 / 3]}
           paddingX={['xLarge', 'large', 'xLarge']}
           marginTop={['large', 0, 0]}
-          src={user_experience}
+          src={userExperienceSVG}
           alt="BigTest checks experiences as your user would"
         />
       </Flex>
@@ -75,16 +85,22 @@ const IndexPage = props => (
     <Section>
       <Flex flexWrap="wrap">
         <Box width={[1, 1 / 2, 2 / 3]} paddingRight={[0, 'medium', 'xxLarge']}>
-          <H2>Seriously fast testing</H2>
+          <H2>Tests that are quick to write, run, and maintain</H2>
           <Text>
-            When you're trying to test from the perspective of your user, there's a lot of information coming in.
-            All the clicks, streaming updates from the server, and the hundreds (or thousands) of background
-            processes create a highly asynchronous environment. As a result, UI testing has historically been
-            time-intensive in both setup and run time.
+            Tests are tools to help us see what we don’t know; they alert us to what is broken when we thought
+            something was unaffected. The best tests swiftly and precisely diagnose the issue so teams can iterate
+            and problem-solve on the spot.
           </Text>
           <Text>
-            BigTest brings a new stateful architecture, along with several paradigm shifts that allow tests to be
-            faster to write, execute, and maintain.
+            BigTest facilitates the creation and maintenance of tests by employing Interactors. Instead of relying
+            on class-names or HTML-attributes which continuously change, Interactors are easy to use stable
+            interfaces that developers can use (and reuse) throughout their tests.
+          </Text>
+          <Text>
+            And BigTest introduces a smarter way to execute your tests. By design, BigTest has more information and
+            context about your tests than existing alternatives. Thus it can predict that an entire subset of tests
+            will fail based on early results, saving you time that would have been lost waiting for tests that
+            previously could only be run sequentially.
           </Text>
         </Box>
         <Box width={[1, 1 / 2, 1 / 3]}>
@@ -95,23 +111,29 @@ const IndexPage = props => (
     <Section>
       <Flex flexWrap="wrap">
         <Box width={[1, 1 / 2, 2 / 3]} paddingRight={[0, 'medium', 'xxLarge']}>
-          <H2 color="secondary">BigTest makes your tests reusable</H2>
+          <H2 color="secondary">Innovative architecture</H2>
           <Text>
-            Traditional testing has a tendency to become unwieldy. And when it comes to SPAs, most testing tools
-            aren't designed to easily test asynchrony and DOM based interactions. As a result, your team spends
-            more time dealing with asynchrony and figuring out DOM selectors than actually writing tests.
+            BigTest’s architecture represents a departure from traditional test runners. Instead of being a
+            stateless tool, BigTest relies on data storage and sharing to allow users to interact with the test in
+            real-time. This approach enables advanced test analytics of the kind that were previously only
+            available to big players like Facebook and Google. 
           </Text>
           <Text>
-            BigTest solves this with what we call <i>Interactors</i>, which act as a composable abstractions that
-            are easy to reuse, even in large component-based applications. This allows your team to focus on
-            writing tests, rather than looking for DOM selectors or making updates every time a selector changes.
+            Using GraphQL as an interface, BigTest provides unprecedented visibility into the minutiae of each test
+            run as it happens. This capability enables more creative visualizations and completely new interfaces
+            that have yet to be imagined.
+          </Text>
+          <Text>
+            BigTest also provides meaningful APIs so you can build on top of the framework. It permits deeper
+            integrations of tests into the development process that allows developers to consume test results and
+            validate their code without requiring them to leave the editor. 
           </Text>
         </Box>
         <Image
           width={[1, 1 / 2, 1 / 3]}
           paddingX={['xLarge', 'large', 'xLarge']}
           marginTop={['large', 0, 0]}
-          src={reusable}
+          src={reusableSVG}
           alt="Reuse code across tests with BigTest"
         />
       </Flex>

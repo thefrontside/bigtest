@@ -1,3 +1,4 @@
+/* eslint jsx-a11y/anchor-is-valid: "off" */
 import React, {PropTypes, Component} from 'react'
 import classnames from 'classnames'
 
@@ -34,6 +35,7 @@ export default class Footer extends Component {
     const {filter: selectedFilter, onShow} = this.props
 
     return (
+      //eslint-disable-next-line jsx-a11y/anchor-is-valid
       <a
         className={classnames({ selected: filter === selectedFilter })}
         style={{cursor: 'pointer' }}

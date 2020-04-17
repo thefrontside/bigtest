@@ -1,33 +1,32 @@
 {
   "name": "@bigtest/effection",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Collection of handly utilities for working with effection. May find a different home later",
   "main": "dist/index.js",
   "typings": "dist/index.d.js",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.io>",
   "license": "MIT",
-  "files": ["dist/*", "README.md"],
+  "files": [
+    "dist/*",
+    "README.md"
+  ],
   "scripts": {
     "lint": "eslint '{src,test}/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "mocha": "mocha -r ts-node/register",
-    "prepack": "tsc --outdir dist --project tsconfig.dist.json --declaration --sourcemap --module commonjs"
+    "prepack": "tsc --outdir dist --declaration --sourcemap --module commonjs"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.1",
-    "@typescript-eslint/eslint-plugin": "^2.3.2",
-    "@typescript-eslint/parser": "^2.3.2",
-    "eslint": "^6.6.0",
-    "eslint-plugin-prefer-let": "^1.0.1",
+    "@types/node": "^12.7.11",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
-    "ts-node": "*",
-    "typescript": "^3.7.0"
+    "ts-node": "*"
   },
   "dependencies": {
     "@types/node": "^12.7.11",
-    "effection": "^0.5.1"
+    "effection": "^0.6.0"
   },
   "volta": {
     "node": "12.16.0",

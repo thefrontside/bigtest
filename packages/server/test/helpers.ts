@@ -1,25 +1,31 @@
 import { Response, RequestInfo, RequestInit } from 'node-fetch';
 import { Context, Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
+import { beforeEach, afterEach } from 'mocha';
+import { w3cwebsocket } from 'websocket';
+import { Agent } from '@bigtest/agent';
+import { Atom } from '@bigtest/atom';
+
 import { World } from './helpers/world';
 
-import { beforeEach, afterEach } from 'mocha';
-
 import { createOrchestrator } from '../src/index';
-import { Atom } from '../src/orchestrator/atom';
+import { createOrchestratorAtom } from '../src/orchestrator/atom';
+import { Manifest, OrchestratorState } from '../src/orchestrator/state';
 
 interface Actions {
-  atom: Atom;
-  fork(operation: Operation): Context;
+  atom: Atom<OrchestratorState>;
+  fork<Result>(operation: Operation<Result>): Context<Result>;
   receive(mailbox: Mailbox, pattern: unknown): PromiseLike<unknown>;
   fetch(resource: RequestInfo, init?: RequestInit): PromiseLike<Response>;
+  createAgent(): PromiseLike<Agent>;
   startOrchestrator(): PromiseLike<Context>;
 }
 
 let orchestratorPromise: Context;
+let manifest: Manifest;
 
 export const actions: Actions = {
-  atom: new Atom(),
+  atom: createOrchestratorAtom(),
 
   fork(operation: Operation): Context {
     return currentWorld.fork(operation);
@@ -33,7 +39,17 @@ export const actions: Actions = {
     return actions.fork(currentWorld.fetch(resource, init));
   },
 
-  startOrchestrator() {
+  async createAgent() {
+    // the types are broken in the 'websocket' package.... the `w3cwebsocket` class
+    // _is_ in fact an EventTarget, but it is not declared as such. So we have
+    // to dynamically cast it.
+    type W3CWebSocket = w3cwebsocket & EventTarget;
+    let createSocket = () => new w3cwebsocket(`http://localhost:24103`) as W3CWebSocket;
+
+    return actions.fork(Agent.start(createSocket));
+  },
+
+  async startOrchestrator() {
     if(!orchestratorPromise) {
       let delegate = new Mailbox();
 
@@ -54,7 +70,10 @@ export const actions: Actions = {
 
       orchestratorPromise = this.receive(delegate, { status: 'ready' });
     }
-    return orchestratorPromise;
+    return orchestratorPromise.then(cxt => {
+      manifest = actions.atom.get().manifest;
+      return cxt;
+    });
   }
 }
 
@@ -66,6 +85,9 @@ after(async function() {
 });
 
 beforeEach(() => {
+  //reset all the state in the global atom, except for the manifest
+  actions.atom.reset(initial => ({ ...initial, manifest }));
+
   currentWorld = new World();
 });
 

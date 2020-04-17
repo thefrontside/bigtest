@@ -1,4 +1,3 @@
-require('module-alias/register');
 require('ts-node/register');
 process = require('process');
 

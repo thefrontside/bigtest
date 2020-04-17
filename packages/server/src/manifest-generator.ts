@@ -1,7 +1,6 @@
 import * as chokidar from 'chokidar';
 import { Operation } from 'effection';
-import { watchError } from '@effection/events';
-import { Mailbox } from '@bigtest/effection';
+import { Mailbox, monitorErrors, ensure } from '@bigtest/effection';
 import * as fs from 'fs';
 import * as glob from 'glob';
 import * as path from 'path';
@@ -44,25 +43,23 @@ module.exports = {
 export function* createManifestGenerator(options: ManifestGeneratorOptions): Operation {
   let watcher = chokidar.watch(options.files, { ignoreInitial: true });
 
-  try {
-    let events: Mailbox = yield Mailbox.subscribe(watcher, ['ready', 'add', 'unlink']);
+  yield ensure(() => watcher.close());
 
-    yield watchError(watcher);
+  let events: Mailbox = yield Mailbox.subscribe(watcher, ['ready', 'add', 'unlink']);
 
-    yield events.receive({ event: 'ready' });
+  yield monitorErrors(watcher);
+
+  yield events.receive({ event: 'ready' });
+  yield writeManifest(options);
+
+  console.debug("[manifest generator] manifest ready");
+  options.delegate.send({ status: 'ready' });
+
+  while(true) {
+    yield events.receive();
     yield writeManifest(options);
 
-    console.debug("[manifest generator] manifest ready");
-    options.delegate.send({ status: 'ready' });
-
-    while(true) {
-      yield events.receive();
-      yield writeManifest(options);
-
-      console.debug("[manifest generator] manifest updated");
-      options.delegate.send({ event: 'update' });
-    }
-  } finally {
-    watcher.close();
+    console.debug("[manifest generator] manifest updated");
+    options.delegate.send({ event: 'update' });
   }
 }

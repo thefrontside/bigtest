@@ -1,7 +1,8 @@
-import { Operation, Context } from 'effection';
+import { Operation, resource } from 'effection';
 import * as xp from 'express';
 import * as Path from 'path';
 import { Server } from 'http';
+import { ensure } from '@bigtest/effection';
 
 interface Options {
   port: number;
@@ -12,7 +13,7 @@ export class AgentServer {
 
   protected constructor(public url: string, protected appDir: string) {}
 
-  static create(options: Options, appDir = Path.join(__dirname, 'app')) {
+  static create(options: Options, appDir = Path.join(__dirname, '../app')) {
     if (options.externalURL) {
       return new AgentServer(options.externalURL, appDir);
     } else {
@@ -50,8 +51,7 @@ class HttpAgentServer extends AgentServer {
     let server: Server = yield listen(app, this.port);
     this.http = server;
 
-    let context: Context = yield parent;
-    context['ensure'](() => server.close());
+    return yield resource(server, ensure(() => server.close()));
   }
 
   join(): Operation {
@@ -78,6 +78,3 @@ function listen(app: xp.Express, port?: number): Operation {
     })
   };
 };
-
-
-const parent: Operation = ({ resume, context: { parent } }) => resume(parent.parent);

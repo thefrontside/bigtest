@@ -10,12 +10,12 @@ interface GreetLegacyProps {
 }
 
 const GreetLegacyUsers: React.FC<GreetLegacyProps> = () => {
-  const [legacy, setLegacy] = useState(false);
+  let [legacy, setLegacy] = useState(false);
 
   useEffect(() => {
     if (typeof window !== `undefined`) {
-      const from_legacy = new URLSearchParams(window.location.search).get('archived-page');
-      from_legacy ? setLegacy(true) : setLegacy(false);
+      let fromLegacy = new URLSearchParams(window.location.search).get('archived-page');
+      fromLegacy ? setLegacy(true) : setLegacy(false);
     }
   });
 
@@ -27,7 +27,7 @@ const GreetLegacyUsers: React.FC<GreetLegacyProps> = () => {
           <Text>
             Welcome to the new BigTest! We are making major changes to the project to make BigTest the ultimate
             testing framework. Take a look around, and reach out to us if you have any questions{' '}
-            <WarningBoxLink href="mailto:bigtest@frontside.io">bigtest@frontside.io</WarningBoxLink>.
+            <WarningBoxLink href="mailto:bigtest@frontside.com">bigtest@frontside.com</WarningBoxLink>.
           </Text>
           <Text>
             You can still access the old website here:{' '}

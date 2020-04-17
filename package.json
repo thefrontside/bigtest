@@ -9,6 +9,10 @@
   "workspaces": {
     "packages": [
       "packages/effection",
+      "packages/effection-express",
+      "packages/parcel",
+      "packages/todomvc",
+      "packages/suite",
       "packages/*"
     ]
   },
@@ -21,9 +25,14 @@
   },
   "volta": {
     "node": "12.11.1",
-    "yarn": "1.19.1"
+    "yarn": "1.22.4"
   },
-  "_moduleAliases": {
-    "@effection": "packages/server/src/effection"
+  "devDependencies": {
+    "@frontside/eslint-config": "^1.0.0",
+    "@typescript-eslint/eslint-plugin": "^2.3.2",
+    "@typescript-eslint/parser": "^2.3.2",
+    "eslint": "^6.6.0",
+    "eslint-plugin-prefer-let": "^1.0.1",
+    "typescript": "^3.7.0"
   }
 }

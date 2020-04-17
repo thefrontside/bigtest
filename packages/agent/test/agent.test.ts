@@ -1,13 +1,48 @@
-import { main, Operation, Context } from 'effection';
+import { main, Operation, Context, resource } from 'effection';
 import { describe, it } from 'mocha';
-import * as expect from 'expect'
+import * as expect from 'expect';
+import * as express from 'express';
 import fetch from 'node-fetch';
-import { AgentServer } from '../src/index';
+import * as fixtureManifest from './fixtures/manifest.src';
 
-describe("@bigtest/agent", () => {
+import { firefox, BrowserType, Browser, Page } from 'playwright';
+
+import { AgentConnectionServer, AgentServer } from '../src/index';
+
+import { Mailbox, monitorErrors, ensure, once } from '@bigtest/effection';
+
+
+function* staticServer(port: number) {
+  let app = express().use(express.static("./test/fixtures"));
+  let server = app.listen(port);
+
+  let res = yield resource(server, function*() {
+    yield monitorErrors(server);
+    yield ensure(() => server.close());
+    yield;
+  });
+
+  yield once(server, "listening");
+  return res;
+}
+
+describe("@bigtest/agent", function() {
+  this.timeout(20000);
+
   let World: Context;
-  async function spawn<T>(operation: Operation): Promise<T> {
+  function spawn<T>(operation: Operation): Promise<T> {
     return World["spawn"](operation);
+  }
+
+  function launch(browserType: BrowserType, options = {}): Promise<Browser> {
+    return spawn(({ resume, fail, context: { parent } }) => {
+      browserType.launch(options)
+        .then(browser => {
+          parent['ensure'](() => browser.close());
+          resume(browser);
+        })
+        .catch(error => fail(error));
+    });
   }
 
   beforeEach(() => {
@@ -19,7 +54,22 @@ describe("@bigtest/agent", () => {
   });
 
   describe('starting a new server', () => {
-    let server: AgentServer = AgentServer.create({port: 8000});
+    let server: AgentServer;
+    let client: AgentConnectionServer;
+    let delegate: Mailbox;
+    let inbox: Mailbox;
+
+    beforeEach(async () => {
+      server = AgentServer.create({port: 8000}, 'dist/app');
+      client = new AgentConnectionServer({
+        port: 8001,
+        inbox: inbox = new Mailbox(),
+        delegate: delegate = new Mailbox()
+      });
+
+      await spawn(server.listen());
+      await spawn(client.listen());
+    });
 
     it('has an agent url where it will server the agent application', () => {
       expect(server.harnessScriptURL).toBeDefined();
@@ -30,9 +80,6 @@ describe("@bigtest/agent", () => {
     });
 
     describe('fetching the harness', () => {
-      beforeEach(async () => {
-        await spawn(server.listen());
-      });
 
       let harnessBytes: string;
       beforeEach(async () => {
@@ -45,6 +92,79 @@ describe("@bigtest/agent", () => {
       });
     });
 
+
+    describe('connecting a browser to the agent URL', () => {
+      let browser: Browser;
+      let page: Page;
+      let message: { agentId: string };
+      let agentId: string;
+
+      beforeEach(async function() {
+        await spawn(staticServer(8002));
+        browser = await launch(firefox, { headless: true });
+        page = await browser.newPage();
+        await page.goto(server.connectURL(`ws://localhost:8001`));
+        message = await spawn(delegate.receive({ status: 'connected' })) as typeof message;
+        agentId = message.agentId;
+      });
+
+      afterEach(async () => {
+        if (page) {
+          await page.close();
+        }
+      })
+
+      it('sends a connection message with an agent id', () => {
+        expect(typeof message.agentId).toEqual('string');
+      });
+
+      describe('sending a run message', () => {
+        let success;
+        let failure;
+
+        beforeEach(async () => {
+          let testRunId = 'test-run-1';
+          let manifestUrl = 'http://localhost:8002/manifest.js';
+          let appUrl = 'http://localhost:8002/app.html';
+          inbox.send({ type: 'run', testRunId, agentId, manifestUrl, appUrl, tree: fixtureManifest });
+
+          await spawn(delegate.receive({ type: 'run:end', agentId, testRunId }));
+
+          // we're receiving many more of these, but just checking some of them
+          success = await spawn(delegate.receive({
+            agentId,
+            testRunId,
+            type: 'assertion:result',
+            path: ['tests', 'test with failing assertion', 'successful assertion'],
+          }));
+
+          failure = await spawn(delegate.receive({
+            agentId,
+            testRunId,
+            type: 'assertion:result',
+            path: ['tests', 'test with failing assertion', 'failing assertion'],
+          }));
+        });
+
+        it('reports success and failure results', () => {
+          expect(success.status).toEqual('ok');
+          expect(failure.status).toEqual('failed');
+          expect(failure.error.message).toEqual('boom');
+        });
+      });
+
+      describe('closing browser connection', () => {
+        let message;
+        beforeEach(async () => {
+          await page.close();
+          message = await spawn(delegate.receive({ status: 'disconnected', agentId }))
+        });
+
+        it('sends a disconnect message', () => {
+          expect(message).toBeDefined();
+        });
+      });
+    });
   });
 
   describe('a proxy development server', () => {

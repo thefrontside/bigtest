@@ -1,16 +1,15 @@
 import { Operation, fork } from 'effection';
 import { Mailbox } from '@bigtest/effection';
-import { IMessage } from 'websocket';
+import { Atom } from '@bigtest/atom';
 
 import { Message, QueryMessage, MutationMessage, isQuery, isMutation } from '../protocol';
 
-import { Atom } from '../orchestrator/atom';
 import { OrchestratorState } from '../orchestrator/state';
 import { Connection, sendData } from '../ws';
 
 import { graphql } from '../command-server';
 
-export function handleMessage(delegate: Mailbox, atom: Atom): (connection: Connection) => Operation {
+export function handleMessage(delegate: Mailbox, atom: Atom<OrchestratorState>): (connection: Connection) => Operation {
   function* handleQuery(message: QueryMessage, connection: Connection): Operation {
     yield publishQueryResult(message, atom.get(), connection);
 
@@ -32,22 +31,16 @@ export function handleMessage(delegate: Mailbox, atom: Atom): (connection: Conne
   }
 
   function* subscribe(message: QueryMessage, connection: Connection) {
-    while (true) {
-      let state: OrchestratorState = yield atom.next();
-
-      yield publishQueryResult(message, state, connection);
-    }
+    yield atom.each(state => publishQueryResult(message, state, connection));
   }
 
   return function*(connection) {
-
-    let messages: Mailbox = yield Mailbox.subscribe(connection, "message", ({args}) => {
-      let [message] = args as IMessage[];
-      return JSON.parse(message.utf8Data);
-    })
+    let messages: Mailbox = yield Mailbox.subscribe(connection, "message");
 
     while (true) {
-      let message: Message = yield messages.receive();
+      let { args } = yield messages.receive();
+      let message = JSON.parse(args[0].utf8Data) as Message;
+
       if (isQuery(message)) {
         yield fork(handleQuery(message, connection));
       }
@@ -57,4 +50,3 @@ export function handleMessage(delegate: Mailbox, atom: Atom): (connection: Conne
     }
   }
 }
-

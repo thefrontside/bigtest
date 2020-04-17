@@ -1,13 +1,14 @@
-import { Operation, fork, timeout } from 'effection';
-import { Mailbox, any } from '@bigtest/effection';
+import { Operation, fork } from 'effection';
+import { Mailbox } from '@bigtest/effection';
 import { IMessage } from 'websocket';
 import { createSocketServer, Connection, sendData } from './ws';
-import { Atom } from './orchestrator/atom';
-import { AgentState } from './orchestrator/state';
+import { Atom } from '@bigtest/atom';
+import { AgentState, OrchestratorState } from './orchestrator/state';
 
 interface ConnectionServerOptions {
+  inbox: Mailbox;
   delegate: Mailbox;
-  atom: Atom;
+  atom: Atom<OrchestratorState>;
   port: number;
   proxyPort: number;
   manifestPort: number;
@@ -19,42 +20,42 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
   function* handleConnection(connection: Connection): Operation {
     console.debug('[connection] connected');
 
-    let messages = yield Mailbox.subscribe(connection, "message", ({ args }) => {
+    let messages: Mailbox = yield Mailbox.subscribe(connection, "message")
+
+    messages = yield messages.map(({ args }) => {
       let [message] = args as IMessage[];
-      return { message: JSON.parse(message.utf8Data) };
-    })
-
-    yield fork(function* heartbeat() {
-      while (true) {
-        yield timeout(10000);
-        yield sendData(connection, JSON.stringify({type: "heartbeat"}));
-      }
-    })
-
-    yield fork(function* sendRun() {
-      let fileName = options.atom.get().manifest.fileName;
-      yield sendData(connection, JSON.stringify({
-        type: "open",
-        url: `http://localhost:${options.proxyPort}`,
-        manifest: `http://localhost:${options.manifestPort}/${fileName}`
-      }));
+      return JSON.parse(message.utf8Data);
     });
 
-    let { message: { data } } = yield messages.receive({ message: { type: 'connected' } });
+    let { data  } = yield messages.receive({ type: 'connected' });
 
-    let identifier = `agent.${counter++}`;
+    let agentId = `agent.${counter++}`;
 
-    let agent = options.atom.slice<AgentState>(['agents', identifier]);
+    let agent = options.atom.slice<AgentState>(['agents', agentId]);
 
     try {
       console.debug('[connection] received connection message', data);
 
-      agent.set({ ...data, identifier });
+      agent.set({ ...data, agentId });
 
-      while (true) {
-        let message = yield messages.receive({ message: any });
-        console.debug("[connection] got message", message);
-      }
+      yield fork(function*() {
+        while (true) {
+          console.debug('[connection] waiting for message', agentId);
+          let message = yield options.inbox.receive({ agentId: agentId });
+
+          yield sendData(connection, JSON.stringify(message));
+        }
+      });
+
+      yield fork(function*() {
+        while (true) {
+          let message = yield messages.receive();
+          options.delegate.send({ ...message, agentId });
+          console.debug("[connection] got message from client", message);
+        }
+      });
+
+      yield;
     } finally {
       agent.remove();
       console.debug('[connection] disconnected');

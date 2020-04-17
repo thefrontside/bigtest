@@ -2,20 +2,22 @@ import * as path from 'path';
 import { fork, Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { AgentServer } from '@bigtest/agent';
+import { Atom } from '@bigtest/atom';
 
 import { createProxyServer } from './proxy';
 import { createCommandServer } from './command-server';
+import { createCommandProcessor } from './command-processor';
 import { createConnectionServer } from './connection-server';
 import { createAgentServer } from './agent-server';
 import { createAppServer } from './app-server';
 import { createManifestGenerator } from './manifest-generator';
 import { createManifestBuilder } from './manifest-builder';
 import { createManifestServer } from './manifest-server';
+import { OrchestratorState } from './orchestrator/state';
 
-import { Atom } from './orchestrator/atom';
 
 type OrchestratorOptions = {
-  atom: Atom;
+  atom: Atom<OrchestratorState>;
   delegate: Mailbox;
   agentPort: number;
   externalAgentServerURL?: string;
@@ -34,6 +36,8 @@ type OrchestratorOptions = {
 
 export function* createOrchestrator(options: OrchestratorOptions): Operation {
   console.log('[orchestrator] starting');
+
+  let connectionServerInbox = new Mailbox();
 
   let proxyServerDelegate = new Mailbox();
   let commandServerDelegate = new Mailbox();
@@ -64,7 +68,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     inject: `<script src="${agentServer.harnessScriptURL}"></script>`,
   }));
 
-
   yield fork(createCommandServer({
     delegate: commandServerDelegate,
     atom: options.atom,
@@ -72,6 +75,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   }));
 
   yield fork(createConnectionServer({
+    inbox: connectionServerInbox,
     delegate: connectionServerDelegate,
     atom: options.atom,
     port: options.connectionPort,
@@ -149,8 +153,18 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   options.delegate.send({ status: 'ready' });
 
+  let commandProcessorInbox = new Mailbox();
+  yield connectionServerDelegate.pipe(commandProcessorInbox);
+  yield commandServerDelegate.pipe(commandProcessorInbox);
+
   try {
-    yield;
+    yield createCommandProcessor({
+      proxyPort: options.proxyPort,
+      manifestPort: options.manifestPort,
+      atom: options.atom,
+      inbox: commandProcessorInbox,
+      delegate: connectionServerInbox,
+    });
   } finally {
     console.log("[orchestrator] shutting down!");
   }

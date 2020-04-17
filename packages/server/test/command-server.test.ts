@@ -1,28 +1,27 @@
 import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 
-import { Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
-
+import { Slice } from '@bigtest/atom';
 import { Test } from '@bigtest/suite';
 
 import { Client } from '../src/client';
 import { actions } from './helpers';
 import { createCommandServer } from '../src/command-server';
-import { Atom, Slice } from '../src/orchestrator/atom';
+import { createOrchestratorAtom } from '../src/orchestrator/atom';
 
-import { AgentState } from 'src/orchestrator/state';
+import { AgentState, OrchestratorState } from '../src/orchestrator/state';
 
 let COMMAND_PORT = 24200;
 
 describe('command server', () => {
   let delegate: Mailbox
-  let agents: Slice<Record<string, AgentState>>;
-  let manifest: Slice<Test>;
+  let agents: Slice<Record<string, AgentState>, OrchestratorState>;
+  let manifest: Slice<Test, OrchestratorState>;
 
   beforeEach(async () => {
     delegate = new Mailbox();
-    let atom = new Atom();
+    let atom = createOrchestratorAtom();
     agents = atom.slice<Record<string, AgentState>>(['agents']);
     manifest = atom.slice<Test>(['manifest']);
     actions.fork(createCommandServer({
@@ -67,7 +66,7 @@ describe('command server', () => {
     beforeEach(async () => {
       agents.set({
         safari: {
-          "identifier": "agent.1",
+          "agentId": "agent.1",
           "browser": {
             "name": "Safari",
             "version": "13.0.4"
@@ -186,31 +185,27 @@ describe('command server', () => {
   });
 
   describe('subscribing to a query', () => {
-    let results: unknown[];
-    let sync: Mocha.Done;
+    let client: Client;
+    let subscription: Mailbox;
+    let initial: unknown;
 
-    beforeEach((done) => {
-      sync = done;
-      actions.fork(function*() {
-        results = [];
-        let client: Client = yield createTestClient();
-        yield client.subscribe('{ agents { browser { name } } }', function*(data) {
-          results.push(data);
-          sync();
-        });
-      })
+    beforeEach(async () => {
+      client = await actions.fork(Client.create(`ws://localhost:${COMMAND_PORT}`));
+      subscription = await actions.fork(client.subscribe('{ agents { browser { name } } }'));
+      initial = await actions.fork(subscription.receive());
     });
 
     it('contains the initial result of the query', () => {
-      expect(results).toEqual([{ agents: [] }]);
+      expect(initial).toEqual({ agents: [] });
     });
 
     describe('when another agent is added', () => {
-      beforeEach((done) => {
-        sync = done;
+      let second: unknown;
+
+      beforeEach(async () => {
         agents.set({
           safari: {
-            "identifier": "agent.1",
+            "agentId": "agent.1",
             "browser": {
               "name": "Safari",
               "version": "13.0.4"
@@ -230,10 +225,10 @@ describe('command server', () => {
             }
           }
         });
+        second = await actions.fork(subscription.receive());
       });
 
       it('publishes the new state', () => {
-        let [, second] = results;
         expect(second).toBeDefined();
         expect(second).toEqual({
           agents: [{
@@ -265,11 +260,9 @@ async function mutation(text: string): Promise<unknown> {
   return await response.json();
 }
 
-const createTestClient: () => Operation = () => Client.create(`ws://localhost:${COMMAND_PORT}`);
-
 async function websocketQuery(text: string) {
   return await actions.fork(function*() {
-    let client = yield createTestClient();
+    let client = yield Client.create(`ws://localhost:${COMMAND_PORT}`);
     return yield client.query(text);
   });
 }

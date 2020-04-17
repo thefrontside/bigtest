@@ -6,8 +6,11 @@ main(function* main() {
 
   let [ source ]  = process.argv.slice(2);
 
-  yield client.subscribe(source, function*(data) {
+  let subscription = yield client.subscribe(source);
+
+  while (true) {
+    let data = yield subscription.receive();
     console.log('==== new subscription result ==== ');
     console.log(JSON.stringify(data, null, 2));
-  });
-})
+  }
+});

@@ -1,22 +1,25 @@
 #!/usr/bin/env node
 
-import { TodoMVC } from './index';
-import { main } from '@bigtest/effection';
+import { todomvc } from './index';
+import { main } from '@effection/node';
 
 main(function* start() {
-  let server: TodoMVC = yield TodoMVC.react(port());
+  let port = findPort();
+  let app = todomvc();
+
+  yield app.listen(port);
 
   console.info(`serving TodoMVC application`);
-  console.info(`--> http://localhost:${server.port}`);
+  console.info(`--> http://localhost:${port}`);
 
-  yield server.join();
+  yield app.join();
 });
 
-function port(): number | undefined {
+function findPort(): number | undefined {
   let [,, second ] = process.argv;
   if (second) {
     return parseInt(second);
   } else {
-    return undefined;
+    return 25001;
   }
 }

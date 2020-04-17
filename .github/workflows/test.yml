@@ -1,18 +1,53 @@
+name: Test
+
 on:
   pull_request:
     branches:
       - master
 
 jobs:
-  build:
+  prepack:
     runs-on: ubuntu-18.04
-    name: Tests
+    name: Prepack
     steps:
       - uses: actions/checkout@v1
-      - name: Setup node
-        uses: actions/setup-node@v1
+      - uses: actions/cache@v1
         with:
-          node-version: '12.x'
-      - run: yarn
-      - run: yarn prepack
-      - run: yarn test --browsers=ChromeHeadless
+          path: /home/runner/.cache/yarn/v6
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+      - name: Install dependencies
+        run: yarn
+      - name: Run prepack
+        run: yarn prepack
+      - name: Tarball prepacked dist
+        run: tar czvf bigtest.dist.tgz ./packages/*/dist
+      - uses: actions/upload-artifact@v1
+        with:
+          name: bigtest.dist.tgz
+          path: bigtest.dist.tgz
+
+  test:
+    runs-on: ubuntu-18.04
+    name: ${{ matrix.package }}
+    needs: prepack
+    strategy:
+      matrix:
+        package: [agent, cli, convergence, effection, interactor, logging, parcel, project, server, suite, todomvc, atom]
+    steps:
+      - uses: actions/checkout@v1 
+      - uses: actions/cache@v1
+        with:
+          path: /home/runner/.cache/yarn/v6
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+      - uses: actions/download-artifact@v1
+        with:
+          name: bigtest.dist.tgz
+      - run: tar -xvf bigtest.dist.tgz/bigtest.dist.tgz
+      - name: Install XVFB
+        run: |
+          sudo apt-get update
+          sudo apt-get install xvfb
+      - name: Install dependencies
+        run: yarn
+      - name: Run tests
+        run: xvfb-run --auto-servernum -- yarn workspace @bigtest/${{ matrix.package }} test --browsers=ChromeHeadless

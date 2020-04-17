@@ -1,45 +1,36 @@
-import { Operation } from 'effection';
+import { Operation, spawn } from 'effection';
 import { Mailbox } from '@bigtest/effection';
-import { express, Express } from '@effection/express';
+import { express } from '@bigtest/effection-express';
 import * as graphqlHTTP from 'express-graphql';
 import { graphql as executeGraphql } from 'graphql';
 
 import { listenWS } from './ws';
 import { schema } from './schema';
-import { Atom } from './orchestrator/atom';
+import { Atom } from '@bigtest/atom';
 import { OrchestratorState } from './orchestrator/state';
 
 import { handleMessage } from './command-server/websocket';
 
 interface CommandServerOptions {
   delegate: Mailbox;
-  atom: Atom;
+  atom: Atom<OrchestratorState>;
   port: number;
 };
 
 export function* createCommandServer(options: CommandServerOptions): Operation {
   let app = express();
 
-  yield useGraphqlMiddleware(app, options);
+  yield spawn(({ spawn }) => {
+    app.use(graphqlHTTP(async () => await spawn(function* getOptionsData() {
+      return { ...graphqlOptions(options.delegate, options.atom.get()), graphiql: true};
+    })));
+  });
 
   let server = yield app.listen(options.port);
 
   options.delegate.send({ status: "ready" });
 
   yield listenWS(server, handleMessage(options.delegate, options.atom));
-}
-
-function useGraphqlMiddleware(app: Express, options: CommandServerOptions): Operation {
-  return ({ resume, context: { parent }}) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let context = parent as any;
-
-    app.use(graphqlHTTP(() => context.spawn(function* getOptionsData() {
-      return { ...graphqlOptions(options.delegate, options.atom.get()), graphiql: true};
-    })));
-
-    resume(app);
-  }
 }
 
 /**
@@ -57,13 +48,16 @@ let testIdCounter = 1;
  * because the express graphql server calls the `graphql` function for
  * you based on the .
  */
-export function graphqlOptions(delegate: Mailbox, state: OrchestratorState) {
+export function graphqlOptions(delegate: Mailbox, state: OrchestratorState): graphqlHTTP.OptionsData {
   return {
     schema,
     rootValue: {
       echo: ({text}) => text,
       agents: () => Object.values(state.agents),
+      agent: ({ id }) => state.agents[id],
       manifest: state.manifest,
+      testRuns: Object.values(state.testRuns),
+      testRun: ({ id }) => state.testRuns[id],
       run: () => {
         let id = `test-run-${testIdCounter++}`;
         delegate.send({ type: "run", id });

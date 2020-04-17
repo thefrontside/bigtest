@@ -1,6 +1,5 @@
-import { monitor, Operation } from 'effection';
-import { once, suspend } from '@bigtest/effection';
-import { watchError } from '@effection/events';
+import { Operation, resource } from 'effection';
+import { once, monitorErrors } from '@bigtest/effection';
 
 import * as childProcess from 'child_process';
 import { SpawnOptions, ForkOptions, ChildProcess } from 'child_process';
@@ -19,7 +18,7 @@ function *supervise(child: ChildProcess) { // eslint-disable-line @typescript-es
   //
   // More information here: https://unix.stackexchange.com/questions/14815/process-descendants
   try {
-    yield watchError(child);
+    yield monitorErrors(child);
 
     let [code]: [number] = yield once(child, "exit");
     if(code !== 0) {
@@ -39,14 +38,12 @@ export function *spawn(command: string, args?: ReadonlyArray<string>, options?: 
     shell: true,
     detached: true,
   }));
-  yield suspend(monitor(supervise(child)));
-  return child;
+  return yield resource(child, supervise(child));
 }
 
 export function *fork(module: string, args?: ReadonlyArray<string>, options?: ForkOptions): Operation {
   let child = childProcess.fork(module, args, Object.assign({}, options, {
     detached: true,
   }));
-  yield suspend(monitor(supervise(child)));
-  return child;
+  return yield resource(child, supervise(child));
 }

@@ -1,7 +1,6 @@
-import { fork, timeout, Operation } from 'effection';
+import { timeout, Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
-import { once } from '@bigtest/effection';
-import { spawn } from '@effection/child_process';
+import { spawn } from './effection/child_process';
 import { Socket } from 'net';
 import * as process from 'process';
 
@@ -37,15 +36,10 @@ function isReachable(port: number, options: { timeout: number } = { timeout: 100
 };
 
 export function* createAppServer(options: AppServerOptions): Operation {
-  let child = yield spawn(options.command, options.args || [], {
+  yield spawn(options.command, options.args || [], {
     cwd: options.dir,
     detached: true,
     env: Object.assign({}, process.env, options.env),
-  });
-
-  let errorMonitor = yield fork(function*() {
-    let [error]: [Error] = yield once(child, "error");
-    throw error;
   });
 
   while(!(yield isReachable(options.port))) {
@@ -54,7 +48,5 @@ export function* createAppServer(options: AppServerOptions): Operation {
 
   options.delegate.send({ status: 'ready' });
 
-  yield once(child, "exit");
-
-  errorMonitor.halt();
+  yield;
 }
