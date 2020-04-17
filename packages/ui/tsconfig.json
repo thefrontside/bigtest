@@ -12,5 +12,5 @@
       "ink": ["../../node_modules/@bigtest/ink/build"]
     }
   },
-  "include": ["src/*.tsx", "test/**/*.tsx"]
+  "include": ["src/**/*.tsx", "src/**/*.ts"]
 }

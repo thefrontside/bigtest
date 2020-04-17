@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
-import { Operation } from 'effection'
-import { ensure, suspend, once } from '@bigtest/effection';
+import { Operation, resource } from 'effection'
+import { once } from '@bigtest/effection';
 
 import { Variable } from './variable';
 
@@ -74,14 +74,15 @@ export class KeyEventLoop {
 
     stdin.on('data', handleData);
 
-    yield suspend(ensure(() => {
-      stdin.off('data', handleData);
-      stdin.unref();
-      stdin.setRawMode(rawMode);
-    }));
-
-
-    return events;
+    return yield resource(events, function*() {
+      try {
+        yield;
+      } finally {
+        stdin.off('data', handleData);
+        stdin.unref();
+        stdin.setRawMode(rawMode);
+      }
+    });
   }
 
   *on(match: KeyStroke): Operation {

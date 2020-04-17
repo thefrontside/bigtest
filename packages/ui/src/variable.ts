@@ -14,7 +14,7 @@ export class Variable<T> {
 
   set(value: T): Operation {
     return ({ resume, context: { parent } }) => {
-      parent[this.symbol] = value;
+      parent.parent[this.symbol] = value;
       resume(value);
     };
 

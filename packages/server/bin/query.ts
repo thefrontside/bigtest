@@ -1,4 +1,4 @@
-import { main } from '@bigtest/effection';
+import { main } from '@effection/node';
 import { Client } from '../src/client';
 
 main(function* main() {

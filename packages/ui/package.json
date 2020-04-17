@@ -1,5 +1,5 @@
 {
-  "name": "ui",
+  "name": "@bigtest/ui",
   "version": "0.0.0",
   "license": "MIT",
   "bin": "cli.js",
@@ -10,7 +10,7 @@
     "start": "ts-node src/start.tsx",
     "lint": "eslint '{src,test,bin}/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.tsx",
-    "prepack": "tsc --project tsconfig.dist.json --outdir dist --module commonjs"
+    "prepack": "tsc --outdir dist --module commonjs"
   },
   "files": [
     "cli.js",
@@ -18,11 +18,12 @@
   ],
   "dependencies": {
     "@babel/core": "7.8.7",
+    "@bigtest/effection": "0.1.1",
+    "@bigtest/ink": "bigtest",
     "@types/ramda": "0.26.43",
     "@types/react-router": "5",
     "@types/react-router-dom": "5",
     "history": "5.0.0-beta.5",
-    "@bigtest/ink": "bigtest",
     "ink-box": "^1.0.0",
     "ink-divider": "^2.0.1",
     "ink-select-input": "3.1.2",

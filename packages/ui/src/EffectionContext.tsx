@@ -7,6 +7,7 @@ export const useOperation = (operation: Operation) => {
   let effectionContext = useContext(EffectionContext);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
     let childContext = effectionContext.spawn(fork(operation));
 
