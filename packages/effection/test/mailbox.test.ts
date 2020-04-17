@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect'
 
-import { Context } from 'effection';
+import { Context, Operation } from 'effection';
 import { EventEmitter } from 'events';
 
 import { spawn } from './helpers';
@@ -178,14 +178,14 @@ describe("Mailbox", () => {
     beforeEach(() => {
       source = new Mailbox();
       destination = new Mailbox();
-      spawn(function*() {
+      spawn(function*(): Operation<void> {
         yield source.pipe(destination);
         yield;
       });
     });
 
     describe('forwards messages from the source mailbox to the destination', () => {
-      let message;
+      let message: string;
 
       beforeEach(async () => {
         source.send("hello");
@@ -211,7 +211,7 @@ describe("Mailbox", () => {
     });
 
     describe('applies mapping function to source mailbox', () => {
-      let message;
+      let message: string;
 
       beforeEach(async () => {
         source.send("hello");

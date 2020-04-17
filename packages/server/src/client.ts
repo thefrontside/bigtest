@@ -19,7 +19,7 @@ export class Client {
     let client = new Client(socket);
     let res = yield resource(client, function*() {
       yield ensure(() => socket.close());
-      yield spawn(function* () {
+      yield spawn(function* (): Operation<void> {
         let [event] = yield once(socket, 'close');
         if(event.code !== 1000) {
           throw new Error(`Socket closed on the remote end: [${event.code}] ${event.reason}`);
@@ -42,7 +42,7 @@ export class Client {
     let mailbox = new Mailbox();
     let { socket } = this;
 
-    return yield resource(mailbox, function*() {
+    return yield resource(mailbox, function*(): Operation<void> {
       let messages = yield on(socket, "message");
 
       let responseId = `${responseIds++}`; //we'd want a UUID to avoid hijacking?

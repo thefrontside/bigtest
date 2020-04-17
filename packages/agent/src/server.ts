@@ -58,7 +58,7 @@ class HttpAgentServer extends AgentServer {
     return ({ resume, ensure }) => {
       if (this.http) {
         this.http.on('close', resume);
-        ensure(() => this.http.off('close', resume));
+        ensure(() => this.http && this.http.off('close', resume));
       } else {
         throw new Error('cannot join a server that is not already listening');
       }
@@ -69,8 +69,9 @@ class HttpAgentServer extends AgentServer {
 
 function listen(app: xp.Express, port?: number): Operation {
   return ({ resume, fail }) => {
-    let server = app.listen(port, (err) => {
-      if (err) {
+    let server = app.listen(port, (...args: unknown[]) => {
+      let [err] = args;
+      if (err instanceof Error) {
         fail(err);
       } else {
         resume(server);

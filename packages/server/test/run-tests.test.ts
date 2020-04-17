@@ -1,12 +1,12 @@
 import * as expect from 'expect';
 import { Mailbox } from '@bigtest/effection';
 import { Agent, Command } from '@bigtest/agent';
-import { TestResult } from '@bigtest/suite';
+import { TestResult, ResultStatus } from '@bigtest/suite';
 import { actions } from './helpers';
 import { Client } from '../src/client';
 import { generateAgentId } from '../src/connection-server';
 
-function resultsQuery(testRunId, agentId) {
+function resultsQuery(testRunId: string, agentId: string) {
   return `
     fragment results on TestResult {
       description
@@ -45,6 +45,25 @@ function resultsQuery(testRunId, agentId) {
   `;
 }
 
+interface ResultQuery {
+  testRun: {
+    testRunId: string;
+    status: ResultStatus;
+    agent: {
+      agent: {
+        agentId: string;
+      };
+      result: TestResult;
+    };
+  };
+}
+
+interface AgentsQuery {
+  agents: {
+    agentId: string;
+  }[];
+}
+
 describe('running tests on an agent', () => {
   let client: Client;
   let agent: Agent;
@@ -59,7 +78,10 @@ describe('running tests on an agent', () => {
     agent.send({ type: 'connected', agentId, data: {} });
 
     agentsSubscription = await actions.fork(client.subscribe(`{ agents { agentId } }`));
-    await actions.fork(agentsSubscription.receive(({ agents }) => agents && agents.length === 1));
+
+    let match: (params: AgentsQuery) => boolean = ({ agents }) => agents && agents.length === 1; 
+
+    await actions.fork(agentsSubscription.receive(match));
   });
 
   describe('with the fixture tree', () => {
@@ -128,24 +150,29 @@ describe('running tests on an agent', () => {
       });
 
       it('marks that step as failed', async () => {
-        await actions.fork(results.receive(({ testRun }) => {
+        let match: (result: ResultQuery) => boolean = ({ testRun }) => {
           return testRun.agent.result.children
-            .find(child => child.description === "Signing In" ).steps
-            .find(child => child.description === "when I fill in the login form").status === 'failed';
-        }));
+            .find(child => child.description === "Signing In" )?.steps
+            .find(child => child.description === "when I fill in the login form")?.status === 'failed';
+        };
+        await actions.fork(results.receive(match));
       });
 
       it('disregards the remaining steps, and remaining children', async() => {
-        await actions.fork(results.receive(({ testRun }) => {
+        let match: (result: ResultQuery) => boolean = ({ testRun }) => {
           let results = testRun.agent.result.children
-            .find(child => child.description === "Signing In" )
+            .find(child => child.description === "Signing In");
 
-          let { assertions, children } = results;
+          if (results) {
+            let { assertions, children } = results;
 
-          return assertions.every(assertion => assertion.status === 'disregarded')
-            && children.every(child => child.status === 'disregarded');
-
-        }));
+            return assertions.every(assertion => assertion.status === 'disregarded')
+              && children.every(child => child.status === 'disregarded');
+          } else {
+            return false;
+          }
+        };
+        await actions.fork(results.receive(match));
       });
     });
   });
@@ -161,7 +188,9 @@ describe('running tests on an agent', () => {
 
       secondAgent.send({ type: 'connected', agentId: secondAgentId, data: {} });
 
-      await actions.fork(agentsSubscription.receive(({ agents }) => agents && agents.length === 2));
+      let match: (results: AgentsQuery) => boolean = ({ agents }) => agents && agents.length === 2;
+
+      await actions.fork(agentsSubscription.receive(match));
 
       await actions.fork(client.query(`mutation { run }`));
 
@@ -186,16 +215,21 @@ describe('running tests on an agent', () => {
     });
 
     it('tracks results for all agents separately', async () => {
-      await actions.fork(agentResults.receive(({ testRun }) => {
+      let matchFailed: (result: ResultQuery) => boolean = ({ testRun }) => {
         return testRun.agent.result.children
-          .find(child => child.description === "Signing In" ).steps
-          .find(child => child.description === "when I fill in the login form").status === 'failed';
-      }));
-      await actions.fork(secondAgentResults.receive(({ testRun }) => {
+          .find(child => child.description === "Signing In" )?.steps
+          .find(child => child.description === "when I fill in the login form")?.status === 'failed';
+      };
+      
+      await actions.fork(agentResults.receive(matchFailed));
+
+      let matchSucess: (result: ResultQuery) => boolean = ({ testRun }) => {
         return testRun.agent.result.children
-          .find(child => child.description === "Signing In" ).steps
-          .find(child => child.description === "when I fill in the login form").status === 'ok';
-      }));
+          .find(child => child.description === "Signing In" )?.steps
+          .find(child => child.description === "when I fill in the login form")?.status === 'ok';
+      }
+
+      await actions.fork(secondAgentResults.receive(matchSucess));
     });
   });
 });

@@ -1,6 +1,6 @@
 import { Operation, resource } from 'effection';
 import * as actualExpress from 'express';
-import { Express as ActualExpress } from 'express';
+import { Express as ActualExpress, RequestHandler } from 'express';
 import { Server } from 'http';
 
 import { throwOnErrorEvent, once } from '@effection/events';
@@ -8,14 +8,14 @@ import { ensure } from '@bigtest/effection';
 
 export class Express {
   private inner: ActualExpress;
-  private server: Server;
+  private server?: Server;
 
-  constructor(inner) {
+  constructor(inner: ActualExpress) {
     this.inner = inner;
   }
 
-  use(middleware) {
-    this.inner.use(middleware);
+  use(...handlers: RequestHandler[]) {
+    this.inner.use(...handlers);
   }
 
   *listen(port: number): Operation<Server> {

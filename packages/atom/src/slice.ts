@@ -53,11 +53,11 @@ export class Slice<T, S> {
       let [property] = this.path.slice(-1);
       this.atom.update((state) => {
         return (set(
-          parentLens,
-          dissoc(property, parent),
+          parentLens, 
+          dissoc(property, parent as object),
           state
         ) as unknown) as S;
-      });
+      }); 
     }
   }
 }

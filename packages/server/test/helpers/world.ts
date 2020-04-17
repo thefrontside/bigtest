@@ -1,11 +1,11 @@
-import { main, Context, Operation } from 'effection';
+import { main, Context, Operation, Controls } from 'effection';
 import fetch, { Response, RequestInfo, RequestInit } from 'node-fetch';
 import { AbortController } from 'abort-controller';
 
 export class World {
-  execution: Context;
+  execution: Context & Controls;
   constructor() {
-    this.execution = main(function*() { yield; });
+    this.execution = main(function*() { yield; }) as Context & Controls;
   }
 
   destroy() {
@@ -13,11 +13,11 @@ export class World {
   }
 
   ensure(hook: () => void) {
-    this.execution['ensure'](hook);
+    this.execution.ensure(hook);
   }
 
   fork(operation: Operation): Context {
-    return this.execution['spawn'](operation);
+    return this.execution.spawn(operation);
   }
 
   fetch(resource: RequestInfo, init: RequestInit = {}): Promise<Response> {

@@ -43,14 +43,14 @@ let ids = 1;
 function* acceptConnections(server: WebSocketServer, inbox: Mailbox, delegate: Mailbox): Operation {
   while (true) {
     let [request]: [Request] = yield once(server, "request");
-    let connection = request.accept(null, request.origin);
-    let sendData = promisify<string, void>(connection.send.bind(connection));
+    let connection = request.accept(undefined, request.origin);
+    let sendData = promisify<string>(connection.send.bind(connection));
     let agentId = `agent.${ids++}`;
 
     let handler = yield fork(function* setupConnection() {
       let halt = () => handler.halt();
-      let fail = (error: Error) => {
-        if(error["code"] === 'ECONNRESET') {
+      let fail = (error: NodeJS.ErrnoException) => {
+        if(error.code === 'ECONNRESET') {
           handler.halt();
         } else {
           handler.fail(error);

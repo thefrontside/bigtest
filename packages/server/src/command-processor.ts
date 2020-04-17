@@ -59,7 +59,7 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
 
   runStatus.set('ok');
 
-  function* runTest(agentId: string, result: Slice<TestResult, OrchestratorState>, path: string[]) {
+  function* runTest(agentId: string, result: Slice<TestResult, OrchestratorState>, path: string[]): Operation<void> {
     let testStatus = result.slice<ResultStatus>(['status']);
 
     yield monitor(function* () {
@@ -82,7 +82,7 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
     }
   }
 
-  function* collectTestResult(agentId: string, result: Slice<TestResult, OrchestratorState>, path: string[]) {
+  function* collectTestResult(agentId: string, result: Slice<TestResult, OrchestratorState>, path: string[]): Operation<void> {
     for (let [index, child] of result.get().children.entries()) {
       yield fork(runTest(agentId, result.slice<TestResult>(['children', index]), path.concat(child.description)));
     }

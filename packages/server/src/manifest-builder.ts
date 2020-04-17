@@ -2,10 +2,10 @@ import { Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { ParcelProcess } from '@bigtest/parcel';
 import { Atom } from '@bigtest/atom';
+import { createFingerprint } from 'fprint';
 
 import * as path from 'path';
 import * as fs from 'fs';
-import * as fprint from 'fprint';
 
 import { Test } from '@bigtest/suite';
 
@@ -23,7 +23,7 @@ interface ManifestBuilderOptions {
 
 function* processManifest(options: ManifestBuilderOptions): Operation {
   let buildDir = path.resolve(options.buildDir, 'manifest.js');
-  let fingerprint = yield fprint(buildDir, 'sha256');
+  let fingerprint = yield createFingerprint(buildDir, 'sha256');
   let fileName = `manifest-${fingerprint}.js`;
   let distPath = path.resolve(options.distDir, fileName);
 

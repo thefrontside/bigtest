@@ -1136,6 +1136,11 @@
   resolved "https://registry.yarnpkg.com/@frontside/eslint-config/-/eslint-config-1.0.0.tgz#d4db29f1cceafc6ad3735d339964160c96e19b3d"
   integrity sha512-R3Wu9zVb34GaeDB1AKf1MulnkI+HKdejr0dGLPkWhD5dpwo4FJyDESmil1Bc5/uSn1Gq0zBWzM2QzjmvhLydlA==
 
+"@frontside/tsconfig@*":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@frontside/tsconfig/-/tsconfig-0.0.1.tgz#f7481d8681fed3d2274991271e6f36fa5e3ed32f"
+  integrity sha512-BQyLcpBIV9WQsBFQQqK/SIoEeKImWYMmu7kqLYpE3SCbCjY6ZN/yBpY63AMCCrv7V70Z5itATHTWvMAlkzkJPQ==
+
 "@hapi/address@2.x.x":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"
@@ -1563,6 +1568,13 @@
     "@types/connect" "*"
     "@types/node" "*"
 
+"@types/capture-console@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/capture-console/-/capture-console-1.0.0.tgz#8730d90248d862c4ccdaf5a623bfee0272d9a934"
+  integrity sha512-v6XDGk++qgUNmL5oqjmrK/tYIRmekq9FO8vgVv4xAx9frJYTwWUI+iOa+2z48zw+ZHfVVTNxL1qT9wuZZUrDVg==
+  dependencies:
+    "@types/node" "*"
+
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
@@ -1603,7 +1615,7 @@
     "@types/qs" "*"
     "@types/serve-static" "*"
 
-"@types/glob@^7.1.1":
+"@types/glob@*", "@types/glob@^7.1.1":
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/@types/glob/-/glob-7.1.1.tgz#aa59a1c6e3fbc421e07ccd31a944c30eba521575"
   integrity sha512-1Bh06cbWJUHMC97acuD6UMG29nMt0Aqz1vF3guLfG+kHHJhy3AyohZFFxYk2f7Q1SQIrNwvncxAE0N/9s70F2w==
@@ -1714,6 +1726,14 @@
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.3.tgz#7ee330ba7caafb98090bece86a5ee44115904c2c"
   integrity sha512-ewFXqrQHlFsgc09MK5jP5iR7vumV/BYayNC6PgJO2LPe8vrnNFyjQjSppfEngITi0qvfKtzFvgKymGheFM9UOA==
+
+"@types/rimraf@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/rimraf/-/rimraf-3.0.0.tgz#b9d03f090ece263671898d57bb7bb007023ac19f"
+  integrity sha512-7WhJ0MdpFgYQPXlF4Dx+DhgvlPCfz/x5mHaeDQAKhcenvQP1KCpLQ18JklAqeGMYSAT2PxLpzd0g2/HE7fj7hQ==
+  dependencies:
+    "@types/glob" "*"
+    "@types/node" "*"
 
 "@types/serve-static@*":
   version "1.13.3"
@@ -2630,7 +2650,7 @@ bluebird@3.4.6:
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.4.6.tgz#01da8d821d87813d158967e743d5fe6c62cf8c0f"
   integrity sha1-AdqNgh2HgT0ViWfnQ9X+bGLPjA8=
 
-bluebird@^3.0.6, bluebird@^3.5.5:
+bluebird@^3.5.5:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
   integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
@@ -5243,12 +5263,11 @@ forwarded@~0.1.2:
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.2.tgz#98c23dab1175657b8c0573e8ceccd91b0ff18c84"
   integrity sha1-mMI9qxF1ZXuMBXPozszZGw/xjIQ=
 
-fprint@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/fprint/-/fprint-1.0.0.tgz#5751aa98bae3c17c7393791b530ea08c066629ed"
-  integrity sha1-V1GqmLrjwXxzk3kbUw6gjAZmKe0=
+fprint@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/fprint/-/fprint-2.0.1.tgz#1bc89a557a1bb9fc8ab9c84813f6d389b288b8f0"
+  integrity sha512-hYQ/ueyP3aEArTiNivCZnmy91STMetHh9zNujOwpb0c+N1M98dPoRKakuIbOnedZHBVHuHL+Il6sBAHwmqo04w==
   dependencies:
-    bluebird "^3.0.6"
     callsite "^1.0.0"
     isstream "^0.1.2"
 

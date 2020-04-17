@@ -1,14 +1,7 @@
 {
+  "extends": "@frontside/tsconfig",
   "compilerOptions": {
-    "target": "esnext",
-    "moduleResolution": "node",
-    "module": "commonjs",
-    "noImplicitAny": false,
-    "typeRoots": [
-      "./node_modules/@types",
-      "./typings"
-    ],
-    "baseUrl": "."
+    "typeRoots" : ["./node_modules/@types", "./typings"]
   },
   "include": [
     "src/**/*.ts",

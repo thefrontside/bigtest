@@ -8,7 +8,7 @@ import { Operation } from 'effection';
 export function resumeOnCb(fn: (cb: (error?: Error) => void) => void): Operation {
   return (execution) => {
     let iCare = true;
-    fn((error: Error) => {
+    fn((error?: Error) => {
       if (iCare) {
         if (error) {
           execution.fail(error);

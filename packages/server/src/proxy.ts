@@ -4,7 +4,7 @@ import { throwOnErrorEvent, once } from '@effection/events';
 
 import * as proxy from 'http-proxy';
 import * as http from 'http';
-import * as trumpet from 'trumpet';
+import * as Trumpet from 'trumpet';
 import * as zlib from 'zlib';
 
 import { listen } from './http';
@@ -17,9 +17,9 @@ interface ProxyOptions {
 };
 
 export function* createProxyServer(options: ProxyOptions): Operation {
-  function* handleRequest(proxyRes, req, res): Operation {
+  function* handleRequest(proxyRes: http.IncomingMessage, req: http.IncomingMessage, res: http.ServerResponse): Operation {
     console.debug('[proxy]', 'start', req.method, req.url);
-    for(let [key, value] of Object.entries(proxyRes.headers)) {
+    for(let [key, value = ''] of Object.entries(proxyRes.headers)) {
       res.setHeader(key, value);
     }
 
@@ -34,9 +34,11 @@ export function* createProxyServer(options: ProxyOptions): Operation {
       res.removeHeader('last-modified');
       res.removeHeader('etag');
 
-      res.writeHead(proxyRes.statusCode, proxyRes.statusMessage);
+      if (proxyRes.statusCode) {
+        res.writeHead(proxyRes.statusCode, proxyRes.statusMessage);
+      }
 
-      let tr = trumpet();
+      let tr = new Trumpet();
       let unzip = zlib.createGunzip();
 
       yield throwOnErrorEvent(tr);
@@ -65,7 +67,9 @@ export function* createProxyServer(options: ProxyOptions): Operation {
         unzip.close();
       }
     } else {
-      res.writeHead(proxyRes.statusCode, proxyRes.statusMessage);
+      if (proxyRes.statusCode) {
+        res.writeHead(proxyRes.statusCode, proxyRes.statusMessage);
+      }
 
       proxyRes.pipe(res);
 

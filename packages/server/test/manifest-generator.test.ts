@@ -23,7 +23,7 @@ async function loadManifest() {
 }
 
 describe('manifest-generator', () => {
-  let delegate;
+  let delegate: Mailbox;
 
   beforeEach((done) => rmrf(TEST_DIR, done));
   beforeEach(async () => {

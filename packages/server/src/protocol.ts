@@ -1,5 +1,9 @@
 export interface Message {
   responseId?: string;
+  query?: string;
+  mutation?: string;
+  data?: unknown;
+  errors?: Array<{ message: string }>;
 }
 
 export interface QueryMessage extends Message {

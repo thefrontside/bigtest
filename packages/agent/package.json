@@ -16,12 +16,12 @@
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "mocha": "mocha -r ts-node/register",
     "start": "parcel serve --out-dir dist/app app/index.html app/harness.ts",
-    "bundle": "parcel watch --out-dir dist/app app/index.html app/harness.ts",
-    "prepack": "tsc --outdir dist --declaration --sourcemap && tsc --project tsconfig.app.json --noEmit && parcel build --no-minify --out-dir dist/app app/index.html app/harness.ts",
+    "prepack": "tsc --outdir dist --declaration --sourcemap && parcel build --no-minify --out-dir dist/app app/index.html app/harness.ts",
     "manifest:build": "parcel build test/fixtures/manifest.src.js --out-dir test/fixtures --out-file manifest.js --global __bigtestManifest"
   },
   "devDependencies": {
     "@bigtest/webdriver": "^0.1.0",
+    "@frontside/tsconfig": "*",
     "@types/express": "^4.17.2",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
@@ -36,7 +36,8 @@
     "parcel-bundler": "^1.12.4",
     "regenerator-runtime": "^0.13.3",
     "ts-node": "*",
-    "typescript": "^3.7.0"
+    "typescript": "^3.7.0",
+    "@bigtest/suite": "0.1.0"
   },
   "peerDependencies": {
     "effection": "^0.6.2"

@@ -1,5 +1,7 @@
 import { ParentFrame } from './parent-frame';
-import { TestImplementation } from '@bigtest/suite';
+import { TestImplementation, ErrorDetails } from '@bigtest/suite';
+import { Operation } from 'effection';
+import { Deferred } from '@bigtest/effection';
 
 declare const __bigtestManifest: TestImplementation;
 
@@ -26,11 +28,15 @@ export function* createHarness() {
   }
 }
 
-function serializeError({ message, fileName, lineNumber, columnNumber, stack }) {
-  return { message, fileName, lineNumber, columnNumber, stack };
-}
+const serializeError: (error: ErrorDetails) => ErrorDetails = ({ message, fileName, lineNumber, columnNumber, stack }) => ({
+  message,
+  fileName,
+  lineNumber,
+  columnNumber,
+  stack
+});
 
-function *runTest(parentFrame: ParentFrame, test: TestImplementation, path: string[], prefix: string[] = []) {
+function *runTest(parentFrame: ParentFrame, test: TestImplementation, path: string[], prefix: string[] = []): Operation<void> {
   let currentPath = prefix.concat(test.description);
 
   console.debug('[harness] running test', currentPath);
@@ -75,17 +81,19 @@ function *runTest(parentFrame: ParentFrame, test: TestImplementation, path: stri
   }
 }
 
-function loadManifest(manifestUrl: string) {
-  return ({ resume, ensure }) => {
-    let scriptElement = document.createElement('script') as HTMLScriptElement;
-    let listener = () => {
-      resume(__bigtestManifest);
-    }
+function* loadManifest(manifestUrl: string): Operation<TestImplementation> {
+  let { resolve, promise } = Deferred<TestImplementation>();
 
-    scriptElement.addEventListener('load', listener)
-    ensure(() => { scriptElement.removeEventListener('load', listener) });
+  let scriptElement = document.createElement('script') as HTMLScriptElement;
 
+  let listener = () => resolve(__bigtestManifest)
+
+  try {
+    scriptElement.addEventListener('load', listener);
     scriptElement.src = manifestUrl;
     document.head.appendChild(scriptElement);
+    return yield promise;
+  } finally {
+    scriptElement.removeEventListener('load', listener);
   }
 }

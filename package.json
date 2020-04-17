@@ -13,7 +13,8 @@
       "packages/parcel",
       "packages/todomvc",
       "packages/suite",
-      "packages/*"
+      "packages/*",
+      "packages/tsconfig"
     ],
     "nohoist": [
       "@bigtest/server/@types/node"

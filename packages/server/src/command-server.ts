@@ -53,7 +53,7 @@ let testRunIds = (function * () {
  * because the express graphql server calls the `graphql` function for
  * you based on the .
  */
-export function graphqlOptions(delegate: Mailbox, state: OrchestratorState): graphqlHTTP.OptionsData {
+export function graphqlOptions(delegate: Mailbox, state: OrchestratorState) {
   return {
     schema,
     rootValue: state,

@@ -15,7 +15,7 @@ main(function* start() {
   yield app.join();
 });
 
-function findPort(): number | undefined {
+function findPort(): number {
   let [,, second ] = process.argv;
   if (second) {
     return parseInt(second);
