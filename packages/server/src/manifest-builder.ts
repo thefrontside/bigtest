@@ -1,6 +1,7 @@
 import { Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { ParcelProcess } from '@bigtest/parcel';
+import { Atom } from '@bigtest/atom';
 
 import * as path from 'path';
 import * as fs from 'fs';
@@ -8,13 +9,13 @@ import * as fprint from 'fprint';
 
 import { Test } from '@bigtest/suite';
 
-import { Atom } from './orchestrator/atom';
+import { OrchestratorState } from './orchestrator/state';
 
 const { copyFile, mkdir } = fs.promises;
 
 interface ManifestBuilderOptions {
   delegate: Mailbox;
-  atom: Atom;
+  atom: Atom<OrchestratorState>;
   srcPath: string;
   buildDir: string;
   distDir: string;

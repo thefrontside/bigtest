@@ -2,6 +2,7 @@ import * as path from 'path';
 import { fork, Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { AgentServer } from '@bigtest/agent';
+import { Atom } from '@bigtest/atom';
 
 import { createProxyServer } from './proxy';
 import { createCommandServer } from './command-server';
@@ -12,11 +13,11 @@ import { createAppServer } from './app-server';
 import { createManifestGenerator } from './manifest-generator';
 import { createManifestBuilder } from './manifest-builder';
 import { createManifestServer } from './manifest-server';
+import { OrchestratorState } from './orchestrator/state';
 
-import { Atom } from './orchestrator/atom';
 
 type OrchestratorOptions = {
-  atom: Atom;
+  atom: Atom<OrchestratorState>;
   delegate: Mailbox;
   agentPort: number;
   externalAgentServerURL?: string;

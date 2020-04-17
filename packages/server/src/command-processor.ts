@@ -1,11 +1,12 @@
 import { fork, monitor, Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { Test, TestResult, StepResult, AssertionResult, ResultStatus } from '@bigtest/suite';
-import { Atom, Slice } from './orchestrator/atom';
-import { TestRunState } from './orchestrator/state';
+import { Atom } from '@bigtest/atom';
+import { Slice } from './orchestrator/atom';
+import { TestRunState, OrchestratorState } from './orchestrator/state';
 
 interface CommandProcessorOptions {
-  atom: Atom;
+  atom: Atom<OrchestratorState>;
   inbox: Mailbox;
   delegate: Mailbox;
   proxyPort: number;

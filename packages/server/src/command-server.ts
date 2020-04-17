@@ -6,14 +6,14 @@ import { graphql as executeGraphql } from 'graphql';
 
 import { listenWS } from './ws';
 import { schema } from './schema';
-import { Atom } from './orchestrator/atom';
+import { Atom } from '@bigtest/atom';
 import { OrchestratorState } from './orchestrator/state';
 
 import { handleMessage } from './command-server/websocket';
 
 interface CommandServerOptions {
   delegate: Mailbox;
-  atom: Atom;
+  atom: Atom<OrchestratorState>;
   port: number;
 };
 

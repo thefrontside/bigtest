@@ -2,17 +2,18 @@ import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 
 import { Mailbox } from '@bigtest/effection';
+import { Atom } from '@bigtest/atom';
 
 import { actions } from './helpers';
 import { createCommandProcessor } from '../src/command-processor';
-import { Atom, createOrchestratorAtom } from '../src/orchestrator/atom';
+import { createOrchestratorAtom } from '../src/orchestrator/atom';
 
-import { AgentState, Manifest, TestRunState } from '../src/orchestrator/state';
+import { AgentState, Manifest, TestRunState, OrchestratorState } from '../src/orchestrator/state';
 
 describe('command server', () => {
   let delegate: Mailbox;
   let inbox: Mailbox;
-  let atom: Atom;
+  let atom: Atom<OrchestratorState>;
 
   beforeEach(async () => {
     delegate = new Mailbox();

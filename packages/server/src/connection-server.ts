@@ -2,13 +2,13 @@ import { Operation, fork } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { IMessage } from 'websocket';
 import { createSocketServer, Connection, sendData } from './ws';
-import { Atom } from './orchestrator/atom';
-import { AgentState } from './orchestrator/state';
+import { Atom } from '@bigtest/atom';
+import { AgentState, OrchestratorState } from './orchestrator/state';
 
 interface ConnectionServerOptions {
   inbox: Mailbox;
   delegate: Mailbox;
-  atom: Atom;
+  atom: Atom<OrchestratorState>;
   port: number;
   proxyPort: number;
   manifestPort: number;
