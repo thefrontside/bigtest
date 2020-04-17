@@ -2,26 +2,26 @@ import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 
 import { Mailbox } from '@bigtest/effection';
-
+import { Slice } from '@bigtest/atom';
 import { Test } from '@bigtest/suite';
 
 import { Client } from '../src/client';
 import { actions } from './helpers';
 import { createCommandServer } from '../src/command-server';
-import { Atom, Slice } from '../src/orchestrator/atom';
+import { createOrchestratorAtom } from '../src/orchestrator/atom';
 
-import { AgentState } from 'src/orchestrator/state';
+import { AgentState, OrchestratorState } from '../src/orchestrator/state';
 
 let COMMAND_PORT = 24200;
 
 describe('command server', () => {
   let delegate: Mailbox
-  let agents: Slice<Record<string, AgentState>>;
-  let manifest: Slice<Test>;
+  let agents: Slice<Record<string, AgentState>, OrchestratorState>;
+  let manifest: Slice<Test, OrchestratorState>;
 
   beforeEach(async () => {
     delegate = new Mailbox();
-    let atom = new Atom();
+    let atom = createOrchestratorAtom();
     agents = atom.slice<Record<string, AgentState>>(['agents']);
     manifest = atom.slice<Test>(['manifest']);
     actions.fork(createCommandServer({

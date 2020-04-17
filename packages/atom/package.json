@@ -1,7 +1,7 @@
 {
-  "name": "@bigtest/effection-express",
-  "version": "0.1.1",
-  "description": "Makes it easy to use Express from Effection",
+  "name": "@bigtest/atom",
+  "version": "0.1.0",
+  "description": "State atom used by BigTest",
   "main": "dist/index.js",
   "typings": "dist/index.d.js",
   "repository": "https://github.com/thefrontside/bigtest.git",
@@ -14,8 +14,7 @@
   "scripts": {
     "lint": "eslint '{src,test}/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "mocha": "mocha -r ts-node/register",
-    "prepack": "tsc --outdir dist --declaration --sourcemap --module commonjs"
+    "prepack": "tsc --outdir dist --declaration --sourcemap"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.1",
@@ -25,9 +24,9 @@
     "ts-node": "*"
   },
   "dependencies": {
-    "@types/node": "^12.7.11",
+    "@types/ramda": "types/npm-ramda#dist",
     "effection": "^0.6.0",
-    "express": "^4.17.1"
+    "ramda": "0.27.0"
   },
   "volta": {
     "node": "12.16.0",

@@ -1,15 +1,15 @@
 import { Operation, fork } from 'effection';
 import { Mailbox } from '@bigtest/effection';
+import { Atom } from '@bigtest/atom';
 
 import { Message, QueryMessage, MutationMessage, isQuery, isMutation } from '../protocol';
 
-import { Atom } from '../orchestrator/atom';
 import { OrchestratorState } from '../orchestrator/state';
 import { Connection, sendData } from '../ws';
 
 import { graphql } from '../command-server';
 
-export function handleMessage(delegate: Mailbox, atom: Atom): (connection: Connection) => Operation {
+export function handleMessage(delegate: Mailbox, atom: Atom<OrchestratorState>): (connection: Connection) => Operation {
   function* handleQuery(message: QueryMessage, connection: Connection): Operation {
     yield publishQueryResult(message, atom.get(), connection);
 

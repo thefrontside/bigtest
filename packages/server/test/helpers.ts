@@ -4,15 +4,16 @@ import { Mailbox } from '@bigtest/effection';
 import { beforeEach, afterEach } from 'mocha';
 import { w3cwebsocket } from 'websocket';
 import { Agent } from '@bigtest/agent';
+import { Atom } from '@bigtest/atom';
 
 import { World } from './helpers/world';
 
 import { createOrchestrator } from '../src/index';
-import { Atom } from '../src/orchestrator/atom';
-import { Manifest } from '../src/orchestrator/state';
+import { createOrchestratorAtom } from '../src/orchestrator/atom';
+import { Manifest, OrchestratorState } from '../src/orchestrator/state';
 
 interface Actions {
-  atom: Atom;
+  atom: Atom<OrchestratorState>;
   fork<Result>(operation: Operation<Result>): Context<Result>;
   receive(mailbox: Mailbox, pattern: unknown): PromiseLike<unknown>;
   fetch(resource: RequestInfo, init?: RequestInit): PromiseLike<Response>;
@@ -24,7 +25,7 @@ let orchestratorPromise: Context;
 let manifest: Manifest;
 
 export const actions: Actions = {
-  atom: new Atom(),
+  atom: createOrchestratorAtom(),
 
   fork(operation: Operation): Context {
     return currentWorld.fork(operation);
