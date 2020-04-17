@@ -1,8 +1,7 @@
 import { fork, monitor, Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { Test, TestResult, StepResult, AssertionResult, ResultStatus } from '@bigtest/suite';
-import { Atom } from '@bigtest/atom';
-import { Slice } from './orchestrator/atom';
+import { Atom, Slice } from '@bigtest/atom';
 import { TestRunState, OrchestratorState } from './orchestrator/state';
 
 interface CommandProcessorOptions {
@@ -45,7 +44,7 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
     }
   }
 
-  function* runTest(result: Slice<TestResult>, path: string[]) {
+  function* runTest(result: Slice<TestResult, OrchestratorState>, path: string[]) {
     let status = result.slice<ResultStatus>(['status']);
 
     yield monitor(function* () {
@@ -68,7 +67,7 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
     }
   }
 
-  function* collectTestResult(result: Slice<TestResult>, path: string[]) {
+  function* collectTestResult(result: Slice<TestResult, OrchestratorState>, path: string[]) {
 
     for (let [index, child] of result.get().children.entries()) {
       yield fork(runTest(result.slice<TestResult>(['children', index]), path.concat(child.description)));
@@ -83,7 +82,7 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
     }
   }
 
-  function* collectStepResult(result: Slice<StepResult>, path: string[]) {
+  function* collectStepResult(result: Slice<StepResult, OrchestratorState>, path: string[]) {
     let status = result.slice<ResultStatus>(['status']);
 
     yield monitor(function* () {
@@ -108,7 +107,7 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
     }
   }
 
-  function* collectAssertionResult(result: Slice<AssertionResult>, path: string[]) {
+  function* collectAssertionResult(result: Slice<AssertionResult, OrchestratorState>, path: string[]) {
     let status = result.slice<ResultStatus>(['status']);
 
     try {

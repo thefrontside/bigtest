@@ -1,4 +1,4 @@
-import { Atom, Slice as _Slice } from "@bigtest/atom";
+import { Atom } from "@bigtest/atom";
 import { OrchestratorState } from "./state";
 
 export const createOrchestratorAtom = () => new Atom<OrchestratorState>({
@@ -12,6 +12,3 @@ export const createOrchestratorAtom = () => new Atom<OrchestratorState>({
   agents: {},
   testRuns: {},
 });
-
-
-export type Slice<T> = _Slice<T, OrchestratorState>
