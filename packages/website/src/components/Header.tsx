@@ -62,7 +62,7 @@ const Header = () => (
       >
         Github
       </IconLink>
-      <IconLink icon={discordIconSVG} href="https://discord.gg/W7r24Aa" title="Discord community" target="_blank">
+      <IconLink icon={discordIconSVG} href="https://discord.gg/RR6wfCr" title="Discord community" target="_blank">
         Discord
       </IconLink>
       <LegacyLink href="http://v1.bigtestjs.io/">v1.x Docs &#8594;</LegacyLink>
