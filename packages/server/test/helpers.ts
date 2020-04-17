@@ -10,20 +10,13 @@ import { World } from './helpers/world';
 import { createOrchestrator } from '../src/index';
 import { Atom } from '../src/orchestrator/atom';
 import { Manifest } from '../src/orchestrator/state';
-import { Client } from '../src/client';
-
-import { Subscription } from './helpers/subscription';
-export { Subscription } from './helpers/subscription';
 
 interface Actions {
   atom: Atom;
   fork<Result>(operation: Operation<Result>): Context<Result>;
   receive(mailbox: Mailbox, pattern: unknown): PromiseLike<unknown>;
   fetch(resource: RequestInfo, init?: RequestInit): PromiseLike<Response>;
-  query(source: string, until?: (data: any) => boolean): PromiseLike<any>;
-  subscribe<Shape>(source: string, extract: (result: unknown) => Shape): PromiseLike<Subscription<Shape>>;
   createAgent(): PromiseLike<Agent>;
-  createClient(): PromiseLike<Client>;
   startOrchestrator(): PromiseLike<Context>;
 }
 
@@ -43,32 +36,6 @@ export const actions: Actions = {
 
   fetch(resource: RequestInfo, init?: RequestInit): PromiseLike<Response> {
     return actions.fork(currentWorld.fetch(resource, init));
-  },
-
-  async query(source: string, until: (data: any) => boolean = () => true) {
-    let client = await this.createClient();
-
-    return actions.fork(function*() {
-      while (true) {
-        let data = yield client.query(source);
-        if (until(data)) {
-          return data;
-        }
-      }
-    });
-  },
-
-  async subscribe<Shape>(source: string, extract: (result: unknown) => Shape = x => x as Shape) {
-    let client = await this.createClient();
-    return actions.fork(Subscription.create(client, source, extract));
-  },
-
-  async createClient(): Promise<Client> {
-    if (!this.client) {
-      this.client = await actions.fork(Client.create(`http://localhost:24102`));
-      currentWorld.ensure(() => delete this.client);
-    }
-    return this.client;
   },
 
   async createAgent() {

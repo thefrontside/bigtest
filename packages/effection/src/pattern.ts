@@ -3,9 +3,9 @@ export function compile(pattern: unknown): (target: unknown) => boolean {
     if(pattern === undefined) {
       return true;
     } else if(Array.isArray(pattern)) {
-      return pattern.every((value, index) => compile(value)(target[index]));
+      return Array.isArray(target) && pattern.every((value, index) => compile(value)(target[index]));
     } else if(typeof(pattern) === "object") {
-      return Object.entries(pattern).every(([key, value]) => compile(value)(target[key]));
+      return typeof(target) === 'object' && Object.entries(pattern).every(([key, value]) => compile(value)(target[key]));
     } else if(typeof(pattern) === "function") {
       return pattern(target);
     } else {

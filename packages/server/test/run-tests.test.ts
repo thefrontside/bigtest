@@ -1,14 +1,18 @@
 import * as expect from 'expect';
+import { Mailbox } from '@bigtest/effection';
 import { Agent, Command } from '@bigtest/agent';
 import { TestResult } from '@bigtest/suite';
-import { actions, Subscription } from './helpers';
+import { actions } from './helpers';
+import { Client } from '../src/client';
 
 describe('running tests on an agent', () => {
+  let client: Client;
   let agent: Agent;
 
   beforeEach(async () => {
     await actions.startOrchestrator();
     agent = await actions.createAgent();
+    client = await actions.fork(Client.create(`http://localhost:24102`));
 
     agent.send({
       type: 'connected',
@@ -20,22 +24,19 @@ describe('running tests on an agent', () => {
       }
     });
 
-    await actions.query(`{ agents { agentId } }`, ({ agents }: any) => agents.length > 0);
+    let agents = await actions.fork(client.subscribe(`{ agents { agentId } }`));
+    await actions.fork(agents.receive(({ agents }) => agents && agents.length > 0));
   });
 
   describe('with the fixture tree', () => {
-    let subscription: Subscription<TestRun>;
+    let subscription: Mailbox;
     let runCommand: Command;
-    beforeEach(async () => {
-      await actions.query(`mutation { run }`);
-    });
 
     beforeEach(async () => {
+      await actions.fork(client.query(`mutation { run }`));
+
       runCommand = await actions.fork(agent.receive());
-    });
-
-    beforeEach(async () => {
-      subscription = await actions.subscribe(`
+      subscription = await actions.fork(client.subscribe(`
 fragment results on TestResult {
   description
   status
@@ -50,7 +51,7 @@ fragment results on TestResult {
 }
 
 {
-  testRuns {
+  testRun(id: "${runCommand.testRunId}") {
     testRunId
     status
     tree {
@@ -64,7 +65,7 @@ fragment results on TestResult {
     }
   }
 }
-`, data => (data as any).testRuns.find((r: TestRun) => r.testRunId === runCommand.testRunId));
+`));
     });
 
     it('receives a run event on the agent', () => {
@@ -82,7 +83,7 @@ fragment results on TestResult {
       });
 
       it('is marks the run as running', async () => {
-        await actions.fork(subscription.until(run => run.status === 'running'));
+        await actions.fork(subscription.receive({ testRun: { status: 'running' }}));
       });
     });
 
@@ -96,7 +97,7 @@ fragment results on TestResult {
       });
 
       it('marks that particular test as running', async () => {
-        await actions.fork(subscription.until(run => run.tree.status === 'running'));
+        await actions.fork(subscription.receive({ testRun: { tree: { status: 'running' } } }));
       });
     });
 
@@ -118,16 +119,16 @@ fragment results on TestResult {
       });
 
       it('marks that step as failed', async () => {
-        await actions.fork(subscription.until(run => {
-          return run.tree.children
+        await actions.fork(subscription.receive(({ testRun }) => {
+          return testRun.tree.children
             .find(child => child.description === "Signing In" ).steps
             .find(child => child.description === "when I fill in the login form").status === 'failed';
-        }))
+        }));
       });
 
       it('disregards the remaining steps, and remaining children', async() => {
-        await actions.fork(subscription.until(run => {
-          let tree = run.tree.children
+        await actions.fork(subscription.receive(({ testRun }) => {
+          let tree = testRun.tree.children
             .find(child => child.description === "Signing In" )
 
           let { assertions, children } = tree;
