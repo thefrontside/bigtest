@@ -32,7 +32,7 @@ jobs:
     needs: prepack
     strategy:
       matrix:
-        package: [agent, cli, convergence, effection, interactor, logging, parcel, project, server, suite, todomvc, atom]
+        package: [agent, cli, effection, logging, parcel, project, server, suite, todomvc, atom]
     steps:
       - uses: actions/checkout@v1 
       - uses: actions/cache@v1
