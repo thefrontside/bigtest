@@ -2,7 +2,7 @@ import { fork, monitor, Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { Test, TestResult, StepResult, AssertionResult, ResultStatus } from '@bigtest/suite';
 import { Atom, Slice } from '@bigtest/atom';
-import { TestRunState, OrchestratorState } from './orchestrator/state';
+import { AgentState, TestRunState, OrchestratorState, TestRunAgentState } from './orchestrator/state';
 
 interface CommandProcessorOptions {
   atom: Atom<OrchestratorState>;
@@ -16,111 +16,125 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
   console.debug('[command processor] running test', testRunId);
 
   let testRunSlice = options.atom.slice<TestRunState>(['testRuns', testRunId]);
-  let [agent] = Object.values(options.atom.get().agents);
   let manifest = options.atom.get().manifest;
 
   let appUrl = `http://localhost:${options.proxyPort}`;
   let manifestUrl = `http://localhost:${options.manifestPort}/${manifest.fileName}`;
 
-  if(agent) {
-    // todo: we should perform filtering of the manifest here
-    testRunSlice.set({ testRunId: testRunId, status: 'pending', tree: resultsFor(manifest), agent });
+  // todo: we should perform filtering of the agents here
+  let agents: AgentState[] = Object.values(options.atom.get().agents);
 
-    console.debug(`[command processor] starting test run ${testRunId} on agent ${agent.agentId}`);
+  // todo: we should perform filtering of the manifest here
+  let result = resultsFor(manifest);
 
-    options.delegate.send({ type: 'run', status: 'pending', agentId: agent.agentId, appUrl, manifestUrl, testRunId: testRunId, tree: manifest });
+  testRunSlice.set({ testRunId: testRunId, status: 'pending', agents: {} });
 
-    let status = testRunSlice.slice<'running'|'done'>(['status']);
+  let runStatus = testRunSlice.slice<ResultStatus>(['status']);
 
-    status.set('running');
-    try {
+  yield function*() {
+    for(let agent of agents) {
+      yield fork(function*() {
+        runStatus.set('running');
 
-      let result = testRunSlice.slice<TestResult>(['tree']);
+        let testRunAgentSlice = testRunSlice.slice<TestRunAgentState>(['agents', agent.agentId]);
+        testRunAgentSlice.set({ agent, result, status: 'pending' });
 
-      yield runTest(result, [result.get().description]);
+        let runAgentStatus = testRunAgentSlice.slice<ResultStatus>(['status']);
 
-    } finally {
-      status.set('done');
+        console.debug(`[command processor] starting test run ${testRunId} on agent ${agent.agentId}`);
+
+        options.delegate.send({ type: 'run', status: 'pending', agentId: agent.agentId, appUrl, manifestUrl, testRunId: testRunId, tree: manifest });
+
+        runAgentStatus.set('running');
+        try {
+          let resultSlice = testRunAgentSlice.slice<TestResult>(['result']);
+
+          yield runTest(agent.agentId, resultSlice, [resultSlice.get().description]);
+        } finally {
+          runAgentStatus.set('ok');
+        }
+      });
     }
   }
 
-  function* runTest(result: Slice<TestResult, OrchestratorState>, path: string[]) {
-    let status = result.slice<ResultStatus>(['status']);
+  runStatus.set('ok');
+
+  function* runTest(agentId: string, result: Slice<TestResult, OrchestratorState>, path: string[]) {
+    let testStatus = result.slice<ResultStatus>(['status']);
 
     yield monitor(function* () {
-      yield options.inbox.receive({ type: 'test:running', testRunId, path });
-      status.set('running');
+      yield options.inbox.receive({ type: 'test:running', agentId, testRunId, path });
+      testStatus.set('running');
     })
 
     try {
 
-      yield collectTestResult(result, path);
+      yield collectTestResult(agentId, result, path);
 
-      status.set('ok');
+      testStatus.set('ok');
 
     } catch (error) {
-      status.set('failed');
+      testStatus.set('failed');
     } finally {
-      if (status.get() === 'pending' || status.get() === 'running') {
-        status.set('disregarded');
+      if (testStatus.get() === 'pending' || testStatus.get() === 'running') {
+        testStatus.set('disregarded');
       }
     }
   }
 
-  function* collectTestResult(result: Slice<TestResult, OrchestratorState>, path: string[]) {
-
+  function* collectTestResult(agentId: string, result: Slice<TestResult, OrchestratorState>, path: string[]) {
     for (let [index, child] of result.get().children.entries()) {
-      yield fork(runTest(result.slice<TestResult>(['children', index]), path.concat(child.description)));
+      yield fork(runTest(agentId, result.slice<TestResult>(['children', index]), path.concat(child.description)));
     }
 
     for (let [index, assertion] of result.get().assertions.entries()) {
-      yield fork(collectAssertionResult(result.slice<AssertionResult>(['assertions', index]), path.concat(assertion.description)));
+      yield fork(collectAssertionResult(agentId, result.slice<AssertionResult>(['assertions', index]), path.concat(assertion.description)));
     }
 
     for (let [index, step] of result.get().steps.entries()) {
-      yield fork(collectStepResult(result.slice<StepResult>(['steps', index]), path.concat(step.description)));
+      yield fork(collectStepResult(agentId, result.slice<StepResult>(['steps', index]), path.concat(step.description)));
     }
   }
 
-  function* collectStepResult(result: Slice<StepResult, OrchestratorState>, path: string[]) {
-    let status = result.slice<ResultStatus>(['status']);
+  function* collectStepResult(agentId: string, result: Slice<StepResult, OrchestratorState>, path: string[]) {
+    let stepStatus = result.slice<ResultStatus>(['status']);
 
     yield monitor(function* () {
-      yield options.inbox.receive({ type: 'step:running', testRunId, path });
-      status.set('running');
+      yield options.inbox.receive({ type: 'step:running', agentId, testRunId, path });
+      stepStatus.set('running');
     })
 
     try {
 
-      let update: {status: ResultStatus} = yield options.inbox.receive({ type: 'step:result', testRunId, path });
+      let update: {status: ResultStatus} = yield options.inbox.receive({ type: 'step:result', agentId, testRunId, path });
 
       if (update.status === 'failed') {
-        status.set('failed');
+        stepStatus.set('failed');
         throw new Error('Step Failed');
       }
 
-      status.set(update.status);
+      stepStatus.set(update.status);
     } finally {
-      if (status.get() === 'pending' || status.get() === 'running') {
-        status.set('disregarded');
+      if (stepStatus.get() === 'pending' || stepStatus.get() === 'running') {
+        stepStatus.set('disregarded');
       }
     }
   }
 
-  function* collectAssertionResult(result: Slice<AssertionResult, OrchestratorState>, path: string[]) {
-    let status = result.slice<ResultStatus>(['status']);
+  function* collectAssertionResult(agentId: string, result: Slice<AssertionResult, OrchestratorState>, path: string[]) {
+    let assertionStatus = result.slice<ResultStatus>(['status']);
 
     try {
-      yield options.inbox.receive({ type: 'assertion:running', testRunId, path });
+      yield options.inbox.receive({ type: 'assertion:running', agentId, testRunId, path });
 
-      status.set('running');
+      assertionStatus.set('running');
 
-      let update: {status: ResultStatus} = yield options.inbox.receive({ type: 'assertion:result', testRunId, path });
+      let update: {status: ResultStatus} = yield options.inbox.receive({ type: 'assertion:result', agentId, testRunId, path });
 
-      status.set(update.status);
+      assertionStatus.set(update.status);
     } finally {
-      if (status.get() === 'pending' || status.get() === 'running') {
-        status.set('disregarded');
+      if (assertionStatus.get() === 'pending' || assertionStatus.get() === 'running') {
+        assertionStatus.set('disregarded');
       }
     }
   }

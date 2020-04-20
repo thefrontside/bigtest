@@ -8,6 +8,7 @@ export interface AgentProtocol {
 
 interface Connect {
   type: 'connected';
+  agentId?: string;
   data: unknown;
 }
 

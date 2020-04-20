@@ -71,8 +71,9 @@ describe('command server', () => {
 
     it('adds agent and test tree to manifest', () => {
       let testRun = atom.slice<TestRunState>(['testRuns', 'test-id-1']).get();
-      expect(testRun.agent.agentId).toEqual('agent-1');
-      expect(testRun.tree.description).toEqual('the manifest');
+      expect(Object.values(testRun.agents).length).toEqual(1);
+      expect(testRun.agents['agent-1'].agent.agentId).toEqual('agent-1');
+      expect(testRun.agents['agent-1'].result.description).toEqual('the manifest');
     });
   });
 });
