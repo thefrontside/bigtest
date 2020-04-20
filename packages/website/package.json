@@ -1,7 +1,7 @@
 {
   "name": "bigtestjs.io",
   "private": true,
-  "description": "Website for BigtestJS",
+  "description": "Bigtest Website",
   "version": "0.1.0",
   "author": "Frontside Inc. <contact@frontside.com>",
   "dependencies": {
@@ -62,6 +62,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/bigtestjs/bigtest"
+    "url": "https://github.com/thefrontside/bigtest"
   }
 }

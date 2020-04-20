@@ -4,7 +4,7 @@
   "description": "BigTest Server",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "repository": "https://github.com/bigtestjs/server.git",
+  "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.io>",
   "license": "MIT",
   "scripts": {
