@@ -54,7 +54,6 @@ let testRunIds = (function * () {
  * you based on the .
  */
 export function graphqlOptions(delegate: Mailbox, state: OrchestratorState): graphqlHTTP.OptionsData {
-
   return {
     schema,
     rootValue: state,

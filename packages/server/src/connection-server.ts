@@ -16,6 +16,10 @@ interface ConnectionServerOptions {
 
 let counter = 1;
 
+export function generateAgentId(): string {
+  return `agent.${counter++}`;
+}
+
 export function* createConnectionServer(options: ConnectionServerOptions): Operation {
   function* handleConnection(connection: Connection): Operation {
     console.debug('[connection] connected');
@@ -27,9 +31,9 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
       return JSON.parse(message.utf8Data);
     });
 
-    let { data  } = yield messages.receive({ type: 'connected' });
+    let { data, agentId } = yield messages.receive({ type: 'connected' });
 
-    let agentId = `agent.${counter++}`;
+    agentId = agentId || generateAgentId();
 
     let agent = options.atom.slice<AgentState>(['agents', agentId]);
 
