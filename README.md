@@ -1,4 +1,4 @@
-[![Chat on Discord](https://img.shields.io/discord/700803887132704931?Label=Discord)](https://discord.gg/4PyXfb)
+[![Chat on Discord](https://img.shields.io/discord/700803887132704931?Label=Discord)](https://discord.gg/r6AvtnU)
 
 ## Development
 
