@@ -1,96 +1,223 @@
-import { buildSchema } from 'graphql';
+import * as path  from 'path';
+import {
+  objectType,
+  queryType,
+  mutationType,
+  stringArg,
+  makeSchema,
+} from "@nexus/schema";
 
-export const schema = buildSchema(`
-type Query {
-  echo(text: String!): String
-  agents: [Agent!]!
-  agent(id: String!): Agent
-  manifest: Test!
-  testRuns: [TestRun!]!
-  testRun(id: String!): TestRun
-}
+export const schema = makeSchema({
+  typegenAutoConfig: {
+    contextType: "ctx.GraphqlContext",
+    sources: [{
+      alias: "ctx",
+      source: path.join(__dirname, 'schema','context.ts')
+    }],
+  },
+  outputs: {
+    schema: path.join(__dirname, 'schema', 'schema.graphql'),
+    typegen: path.join(__dirname, 'schema', 'schema.types.d.ts')
+  },
+  types: [
+    queryType({
+      rootTyping: {
+        name: "OrchestratorState",
+        path: path.join(__dirname, 'orchestrator', 'state.ts'),
+      },
+      definition(t) {
+        t.field("echo", {
+          type: "String",
+          args: {
+            text: stringArg({ required: true }),
+          },
+          resolve: ((_, { text }) => text)
+        });
 
-type Mutation {
-  run: String
-}
+        t.list.field("agents", {
+          type: "Agent",
+          resolve: (state) => Object.values(state.agents)
+        });
 
-type Agent {
-  agentId: String!
-  browser: Browser!
-  os: OS!
-  platform: Platform!
-  engine: Engine!
-}
+        t.field("agent", {
+          type: "Agent",
+          nullable: true,
+          args: {
+            id: stringArg({ required: true })
+          },
+          resolve: (state, { id }) => state.agents[id]
+        });
 
-type Browser {
-  name: String!
-  version: String!
-}
+        t.field("manifest", {
+          type: "Test",
+        });
 
-type OS {
-  name: String!
-  version: String!
-  versionName: String!
-}
+        t.list.field("testRuns", {
+          type: "TestRun",
+          resolve: state => Object.values(state.testRuns)
+        });
 
-type Platform {
-  type: String!
-  vendor: String!
-}
-
-type Engine {
-  name: String!
-  version: String!
-}
-
-type Test {
-  description: String!
-  fileName: String
-  steps: [Step!]!
-  assertions: [Assertion!]!
-  children: [Test!]!
-}
-
-type Step {
-  description: String!
-}
-
-type Assertion {
-  description: String!
-}
-
-type TestRun {
-  testRunId: String!
-  status: String!
-  agent: Agent!
-  tree: TestResult!
-}
-
-type TestResult {
-  description: String!
-  status: String!
-  steps: [StepResult!]!
-  assertions: [AssertionResult!]!
-  children: [TestResult!]!
-}
-
-type StepResult {
-  description: String!
-  status: String!
-  error: Error
-}
-
-type AssertionResult {
-  description: String!
-  status: String!
-  error: Error
-}
-
-type Error {
-  message: String!
-  fileName: String!
-  lineNumber: Int!
-  columnNumber: Int!
-  stack: String!
-}
-`);
+        t.field("testRun", {
+          type: "TestRun",
+          nullable: true,
+          args: {
+            id: stringArg({ required: true }),
+          },
+          resolve: (state, { id }) => state.testRuns[id]
+        })
+      }
+    }),
+    mutationType({
+      definition(t) {
+        t.string("run", {
+          resolve(_source, _args, cxt) {
+            let { delegate, testRunIds } = cxt;
+            let { value: id } = testRunIds.next();
+            delegate.send({ type: "run", id });
+            return id;
+          }
+        })
+      }
+    }),
+    objectType({
+      name: "Agent",
+      definition(t) {
+        t.id("agentId");
+        t.field("os", {
+          type: "OS"
+        });
+        t.field("platform", {
+          type: "Platform"
+        })
+        t.field("browser", {
+          type: "Browser",
+          nullable: true,
+        });
+        t.field("engine", {
+          type: "Engine",
+          nullable: true
+        })
+      }
+    }),
+    objectType({
+      name: "OS",
+      definition(t) {
+        t.string("name");
+        t.string("version");
+        t.string("versionName");
+      }
+    }),
+    objectType({
+      name: "Platform",
+      definition(t)  {
+        t.string("type");
+        t.string("vendor");
+      }
+    }),
+    objectType({
+      name: "Engine",
+      definition(t) {
+        t.string("name");
+        t.string("version");
+      }
+    }),
+    objectType({
+      name: "Browser",
+      definition(t) {
+        t.string("name");
+        t.string("version");
+      }
+    }),
+    objectType({
+      name: "Test",
+      definition(t) {
+        t.string("description");
+        t.string("fileName", {
+          nullable: true
+        });
+        t.list.field("steps", {
+          type: "Step"
+        });
+        t.list.field("assertions", {
+          type: "Assertion"
+        });
+        t.list.field("children", {
+          type: "Test"
+        })
+      }
+    }),
+    objectType({
+      name: "Step",
+      definition(t) {
+        t.string("description");
+      }
+    }),
+    objectType({
+      name: "Assertion",
+      definition(t) {
+        t.string("description");
+      }
+    }),
+    objectType({
+      name: "TestRun",
+      definition(t) {
+        t.id("testRunId");
+        t.string("status");
+        t.field("agent", {
+          type: "Agent"
+        });
+        t.field("tree", {
+          type: "TestResult"
+        });
+      }
+    }),
+    objectType({
+      name: "TestResult",
+      definition(t) {
+        t.string("description");
+        t.string("status");
+        t.list.field("steps", {
+          type: "StepResult"
+        });
+        t.list.field("assertions", {
+          type: "AssertionResult"
+        });
+        t.list.field("children", {
+          type: "TestResult"
+        })
+      }
+    }),
+    objectType({
+      name: "StepResult",
+      definition(t) {
+        t.string("description");
+        t.string("status");
+        t.field("error", {
+          type: "Error",
+          nullable: true
+        })
+      }
+    }),
+    objectType({
+      name: "AssertionResult",
+      definition(t) {
+        t.string("description");
+        t.string("status");
+        t.field("error", {
+          type: "Error",
+          nullable: true
+        })
+      }
+    }),
+    objectType({
+      name: "Error",
+      definition(t) {
+        t.string("message");
+        t.string("fileName");
+        t.int("lineNumber");
+        t.int("columnNumber");
+        t.string("stack");
+      }
+    })
+  ]
+})

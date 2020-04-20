@@ -38,10 +38,15 @@ export function* createCommandServer(options: CommandServerOptions): Operation {
  * state contained in `state`
  */
 export function graphql(source: string, delegate: Mailbox, state: OrchestratorState): Operation {
-  return executeGraphql({...graphqlOptions(delegate, state), source });
+  let options = graphqlOptions(delegate, state);
+  return executeGraphql({...options, contextValue: options.context, source });
 }
 
-let testIdCounter = 1;
+let testRunIds = (function * () {
+  for (let current = 1; ; current++) {
+    yield `TestRun:${current}`;
+  }
+})()
 
 /**
  * Get the graphql options for running a query against `state`. Needed
@@ -49,20 +54,10 @@ let testIdCounter = 1;
  * you based on the .
  */
 export function graphqlOptions(delegate: Mailbox, state: OrchestratorState): graphqlHTTP.OptionsData {
+
   return {
     schema,
-    rootValue: {
-      echo: ({text}) => text,
-      agents: () => Object.values(state.agents),
-      agent: ({ id }) => state.agents[id],
-      manifest: state.manifest,
-      testRuns: Object.values(state.testRuns),
-      testRun: ({ id }) => state.testRuns[id],
-      run: () => {
-        let id = `test-run-${testIdCounter++}`;
-        delegate.send({ type: "run", id });
-        return id;
-      }
-    }
-  }
+    rootValue: state,
+    context: { delegate, testRunIds }
+  };
 }
