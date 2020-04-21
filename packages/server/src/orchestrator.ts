@@ -154,6 +154,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   options.delegate.send({ status: 'ready' });
 
   let commandProcessorInbox = new Mailbox();
+  commandProcessorInbox.setMaxListeners(100000);
   yield connectionServerDelegate.pipe(commandProcessorInbox);
   yield commandServerDelegate.pipe(commandProcessorInbox);
 
