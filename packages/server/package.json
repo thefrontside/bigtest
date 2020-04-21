@@ -15,7 +15,8 @@
     "test": "mocha ./test/setup test/**/*.test.ts",
     "mocha": "mocha ./test/setup",
     "test:app:start": "ts-node ./bin/todomvc.ts",
-    "prepack": "tsc --outdir dist --module commonjs --sourcemap --declaration"
+    "generate:schema": "ts-node ./src/schema.ts",
+    "prepack": "ts-node ./src/schema.ts && tsc --outdir dist --module commonjs --sourcemap --declaration"
   },
   "files": [
     "README.md",
@@ -40,12 +41,13 @@
     "@babel/core": "^7.0.0-0",
     "@babel/plugin-transform-runtime": "7.8.3",
     "@babel/preset-env": "7.8.4",
-    "@bigtest/atom": "*",
     "@bigtest/agent": "^0.1.0",
+    "@bigtest/atom": "*",
     "@bigtest/effection": "^0.1.1",
     "@bigtest/logging": "^0.1.0",
     "@bigtest/parcel": "^0.1.0",
     "@bigtest/suite": "^0.1.0",
+    "@nexus/schema": "^0.13.1",
     "bowser": "^2.8.1",
     "chokidar": "^3.3.1",
     "effection": "^0.6.0",
@@ -55,6 +57,7 @@
     "glob": "^7.1.6",
     "graphql": "^14.5.8",
     "http-proxy": "^1.18.0",
+    "nexus": "^0.12.0",
     "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.4",
     "rimraf": "^3.0.0",

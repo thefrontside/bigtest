@@ -51,7 +51,7 @@ describe('command server', () => {
     });
 
     it('returns a test run id', () => {
-      expect(result['data'].run).toMatch('test-run');
+      expect(result['data'].run).toMatch('TestRun');
     });
 
     it('sends a message to the orchestrator telling it to start the test run', async () => {
