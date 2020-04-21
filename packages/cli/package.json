@@ -4,7 +4,7 @@
   "description": "Use BigTest",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.io>",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "license": "MIT",
   "files": [
     "bin/*",
@@ -14,11 +14,12 @@
   "scripts": {
     "lint": "eslint '{src,test,bin}/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "start": "ts-node src/index.ts",
-    "prepack": "tsc --outdir dist --module commonjs"
+    "mocha": "mocha -r ts-node/register",
+    "bigtest": "ts-node src/index.ts",
+    "prepack": "tsc --outdir dist --module commonjs && chmod +x dist/bin/bigtest.js"
   },
   "bin": {
-    "bigtest": "./bin/bigtest"
+    "bigtest": "dist/bin/bigtest.js"
   },
   "devDependencies": {
     "@frontside/tsconfig": "*",
@@ -36,8 +37,13 @@
     "typescript": "^3.7.0"
   },
   "dependencies": {
-    "effection": "^0.6.2",
-    "capture-console": "^1.0.1"
+    "@bigtest/effection": "^0.1.1",
+    "@bigtest/todomvc": "^0.1.1",
+    "@effection/events": "^0.6.0",
+    "@effection/node": "^0.6.0-42a94ec",
+    "capture-console": "^1.0.1",
+    "deepmerge": "^4.2.2",
+    "effection": "^0.6.2"
   },
   "volta": {
     "node": "12.16.0",

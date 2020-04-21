@@ -1,0 +1,7 @@
+{
+  "app": {
+    "command": "bigtest-todomvc 36000",
+    "port": 36000
+  },
+  "testFiles": ["./test/fixtures/*.test.{ts,js}"]
+}
