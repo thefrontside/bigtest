@@ -19,6 +19,7 @@ export const schema = makeSchema({
     schema: path.join(__dirname, 'schema', 'schema.graphql'),
     typegen: path.join(__dirname, 'schema', 'schema.types.d.ts')
   },
+  shouldGenerateArtifacts: process.env['BIGTEST_GENERATE_SCHEMA'] === 'true',
   types: [
     queryType({
       rootTyping: {
