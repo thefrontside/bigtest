@@ -26,6 +26,10 @@ export class Mailbox<T = any> {
     return yield resource(mailbox, subscribe(mailbox, source, events));
   }
 
+  setMaxListeners(value: number) {
+    this.subscriptions.setMaxListeners(value);
+  }
+
   send(message: T) {
     this.messages.add(message);
     setTimeout(() => this.subscriptions.emit('message', message), 0);
