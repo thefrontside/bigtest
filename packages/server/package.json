@@ -15,8 +15,8 @@
     "test": "mocha ./test/setup test/**/*.test.ts",
     "mocha": "mocha ./test/setup",
     "test:app:start": "ts-node ./bin/todomvc.ts",
-    "generate:schema": "ts-node ./src/schema.ts",
-    "prepack": "ts-node ./src/schema.ts && tsc --outdir dist --module commonjs --sourcemap --declaration"
+    "generate:schema": "BIGTEST_GENERATE_SCHEMA=true ts-node ./src/schema.ts",
+    "prepack": "yarn generate:schema && tsc --outdir dist --module commonjs --sourcemap --declaration"
   },
   "files": [
     "README.md",
