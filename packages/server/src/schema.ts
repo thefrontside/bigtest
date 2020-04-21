@@ -160,19 +160,28 @@ export const schema = makeSchema({
     }),
     objectType({
       name: "TestRun",
+      rootTyping: {
+        name: "TestRunState",
+        path: path.join(__dirname, 'orchestrator', 'state.ts')
+      },
       definition(t) {
         t.id("testRunId");
         t.string("status");
         t.list.field("agents", {
           type: "TestRunAgent",
-          resolve: (testRun) => Object.values(testRun.agents)
+          resolve: testRun => Object.values(testRun.agents).map(agent => Object.assign({}, agent, {
+            testRunId: testRun.testRunId
+          }))
         });
         t.field("agent", {
           type: "TestRunAgent",
           args: {
             id: stringArg({ required: true }),
           },
-          resolve: (testRun, { id }) => testRun.agents[id]
+          resolve: (testRun, { id }) => ({
+            ...testRun.agents[id],
+            testRunId: testRun.testRunId
+          })
         });
       }
     }),
