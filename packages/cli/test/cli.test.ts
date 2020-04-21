@@ -1,42 +1,64 @@
-import { main, Context, Operation } from 'effection';
-import { describe, it } from 'mocha';
-import * as expect from 'expect'
-import * as process from 'process'
-import * as capcon from 'capture-console'
+import { describe, it, beforeEach, afterEach } from 'mocha';
+import * as expect from 'expect';
+import * as process from 'process';
 
-import { CLI } from '../src/cli';
+import { Process } from './helpers/process';
+import { World } from './helpers/world';
 
-describe("@bigtest/cli", () => {
-  let stdout: string;
-  let World: Context;
-  async function spawn<T>(operation: Operation<T>): Promise<T> {
-    return World["spawn"](operation);
-  }
+import { Local, WebDriver } from '@bigtest/webdriver';
+import { Client } from '@bigtest/server';
 
-  async function capture(operation: Operation): Promise<string> {
-    let result = "";
-    capcon.startIntercept(process.stdout, (output) => result += output);
-    await spawn(operation);
-    capcon.stopIntercept(process.stdout);
-    return result;
-  }
-
-
-  beforeEach(async () => {
-    World = main(undefined);
+function run(...args) {
+  return Process.spawn("yarn ts-node ./src/index.ts", args, {
+    verbose: !!process.env["LOG_CLI"]
   });
+}
 
-  afterEach(() => {
-    World.halt();
-  });
+describe('@bigtest/cli', function() {
+  this.timeout(20000);
 
-  describe('invoking a command', () => {
+  describe('starting the server', () => {
+    let child: Process;
+
     beforeEach(async () => {
-      stdout = await capture(CLI(['server']));
+      child = await World.spawn(run('server'));
     });
 
-    it('prints the output', () => {
-      expect(stdout).toMatch('BIGTEST SERVER SHOULD RUN HERE');
+    afterEach(async () => {
+      await World.spawn(child.close());
+    });
+
+    it('outputs that the server was started successfully', async () => {
+      await World.spawn(child.stdout.waitFor("[orchestrator] running!"));
+    });
+
+    describe('running the suite', () => {
+      let runChild: Process;
+      let browser: WebDriver;
+      let client: Client;
+
+      beforeEach(async () => {
+        await World.spawn(child.stdout.waitFor("[orchestrator] running!"));
+
+        let connectionUrl = "ws://localhost:24003";
+        let agentUrl = `http://localhost:24004?connectTo=${encodeURIComponent(connectionUrl)}`;
+
+        browser = await World.spawn(Local('chromedriver', { headless: true }));
+        await World.spawn(browser.navigateTo(agentUrl));
+
+        client = await World.spawn(Client.create(`http://localhost:24002`));
+
+        let agentsSubscription = await World.spawn(client.subscribe(`{ agents { agentId } }`));
+        await World.spawn(agentsSubscription.receive(({ agents }) => agents && agents.length === 1));
+
+        runChild = await World.spawn(run('test'));
+        await World.spawn(runChild.join());
+      });
+
+      it('exits successfully', async () => {
+        expect(runChild.code).toEqual(0);
+        expect(runChild.stdout.output).toContain("SUCCESS")
+      });
     });
   });
 
