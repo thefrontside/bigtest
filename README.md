@@ -1,8 +1,10 @@
+[![Chat on Discord](https://img.shields.io/discord/700803887132704931?Label=Discord)](https://discord.gg/r6AvtnU)
+
 ## Development
 
 ### Installation
 
-1. Clone this repository `git clone git@github.com:bigtestjs/bigtest.git`
+1. Clone this repository `git clone git@github.com:thefrontside/bigtest.git`
 2. Run `yarn`
 
 ### Building
