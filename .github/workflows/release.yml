@@ -12,11 +12,11 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Publish Releases
-      uses: thefrontside/actions/synchronize-with-npm@v1.5
+      uses: thefrontside/actions/synchronize-with-npm@v1.6
       with:
         before_all: yarn prepack
         npm_publish: yarn publish
-        ignore: packages/website
+        ignore: packages/website packages/interactor packages/convergence
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.FRONTSIDEJACK_NPM_TOKEN }}
