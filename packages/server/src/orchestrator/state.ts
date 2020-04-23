@@ -1,4 +1,4 @@
-import { Test, TestResult } from '@bigtest/suite';
+import { Test, TestResult, ResultStatus } from '@bigtest/suite';
 
 export type AgentState = {
   agentId: string;
@@ -23,9 +23,14 @@ export type AgentState = {
 
 export type TestRunState = {
   testRunId: string;
-  status: "pending" | "running" | "done";
-  tree: TestResult;
+  status: ResultStatus;
+  agents: Record<string, TestRunAgentState>;
+}
+
+export type TestRunAgentState = {
+  status: ResultStatus;
   agent: AgentState;
+  result: TestResult;
 }
 
 export type OrchestratorState = {
