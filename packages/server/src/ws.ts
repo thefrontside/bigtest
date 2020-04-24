@@ -9,7 +9,7 @@ import {
 import { fork, Operation } from 'effection';
 import { resumeOnCb } from './util';
 
-import { once } from '@bigtest/effection';
+import { once } from '@effection/events';
 
 import { listen } from './http';
 

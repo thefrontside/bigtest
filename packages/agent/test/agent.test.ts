@@ -9,15 +9,15 @@ import { firefox, BrowserType, Browser, Page } from 'playwright';
 
 import { AgentConnectionServer, AgentServer } from '../src/index';
 
-import { Mailbox, monitorErrors, ensure, once } from '@bigtest/effection';
-
+import { Mailbox, ensure } from '@bigtest/effection';
+import { throwOnErrorEvent, once } from '@effection/events';
 
 function* staticServer(port: number) {
   let app = express().use(express.static("./test/fixtures"));
   let server = app.listen(port);
 
   let res = yield resource(server, function*() {
-    yield monitorErrors(server);
+    yield throwOnErrorEvent(server);
     yield ensure(() => server.close());
     yield;
   });

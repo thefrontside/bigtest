@@ -2,7 +2,8 @@ import * as Path from 'path';
 import { ChildProcess, fork as forkProcess } from 'child_process';
 
 import { monitor, resource, Operation } from 'effection'
-import { Mailbox, SubscriptionMessage, once, monitorErrors } from '@bigtest/effection';
+import { Mailbox, SubscriptionMessage } from '@bigtest/effection';
+import { once, throwOnErrorEvent } from '@effection/events';
 
 type ParcelMessage = { type: "ready" } | { type: "update" };
 
@@ -53,7 +54,7 @@ export class ParcelProcess {
         let events: Mailbox<SubscriptionMessage> = yield Mailbox.subscribe(child, "message");
         let messages: Mailbox<ParcelMessage> = yield events.map(({ args: [message] }) => message);
 
-        yield monitorErrors(child);
+        yield throwOnErrorEvent(child);
 
         yield messages.receive({ type: "ready" });
         readiness.send("ready");

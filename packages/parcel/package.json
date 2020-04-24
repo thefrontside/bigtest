@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@bigtest/effection": "^0.1.1",
+    "@effection/events": "^0.6.0",
     "@effection/node": "^0.6.0",
     "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.4"

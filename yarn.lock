@@ -1122,6 +1122,11 @@
   resolved "https://registry.yarnpkg.com/@csstools/sass-import-resolve/-/sass-import-resolve-1.0.0.tgz#32c3cdb2f7af3cd8f0dca357b592e7271f3831b5"
   integrity sha512-pH4KCsbtBLLe7eqUrw8brcuFO8IZlN36JjdKlOublibVdAIPHCzEnpBWOVUXK5sCf+DpBi8ZtuWtjF0srybdeA==
 
+"@effection/events@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.6.0.tgz#78a3aadba69d20a58cc67a74c6ad4bc3e3a34e72"
+  integrity sha512-n9PiErMvI4DhlYN1i+u8vbLcyEvcyqUJd4D4Nk97LUWF+aE4wEehHvGmVYAkeb1AWDRl+vSNmGCpT6zIkfDMsA==
+
 "@effection/node@^0.6.0":
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/@effection/node/-/node-0.6.0.tgz#f3c70ada21a2312f43927d39840b705c2e2d911d"

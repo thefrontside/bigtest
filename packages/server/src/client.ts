@@ -1,7 +1,8 @@
 import { w3cwebsocket } from 'websocket';
 import { spawn, resource, Operation } from 'effection';
 
-import { once, ensure, Mailbox } from '@bigtest/effection';
+import { ensure, Mailbox } from '@bigtest/effection';
+import { once } from '@effection/events';
 
 import { Message, isErrorResponse, isDataResponse } from './protocol';
 

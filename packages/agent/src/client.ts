@@ -1,14 +1,13 @@
 import { fork, resource, Operation } from 'effection';
 import { createServer, Server } from 'http';
 import { promisify } from 'util';
-import { monitorErrors } from '@bigtest/effection';
+import { throwOnErrorEvent, once } from '@effection/events';
+import { Mailbox, ensure } from '@bigtest/effection';
 
 import {
   server as WebSocketServer,
   request as Request,
 } from 'websocket';
-
-import { Mailbox, once, ensure } from '@bigtest/effection';
 
 interface AgentConnectionServerOptions {
   port: number;
@@ -33,7 +32,7 @@ export class AgentConnectionServer {
         httpServer.close()
         socketServer.unmount();
       });
-      yield monitorErrors(httpServer);
+      yield throwOnErrorEvent(httpServer);
       yield acceptConnections(socketServer, inbox, delegate);
     });
   }
