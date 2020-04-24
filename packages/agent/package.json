@@ -25,6 +25,7 @@
     "@types/mocha": "^7.0.1",
     "@types/node": "^12.7.11",
     "@types/node-fetch": "^2.5.4",
+    "@types/selenium-webdriver": "^4.0.9",
     "@types/websocket": "^1.0.0",
     "classnames": "^2.2.5",
     "effection": "^0.6.2",
@@ -33,7 +34,6 @@
     "node-fetch": "^2.6.0",
     "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.4",
-    "playwright": "^0.11.1",
     "regenerator-runtime": "^0.13.3",
     "ts-node": "*",
     "typescript": "^3.7.0"
@@ -44,7 +44,10 @@
   "dependencies": {
     "@bigtest/effection": "*",
     "bowser": "^2.9.0",
+    "chromedriver": "^81.0.0",
     "express": "^4.17.1",
+    "geckodriver": "^1.19.1",
+    "selenium-webdriver": "^4.0.0-alpha.7",
     "websocket": "^1.0.31"
   },
   "volta": {

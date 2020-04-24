@@ -4,9 +4,21 @@ import * as Path from 'path';
 import { Server } from 'http';
 import { ensure } from '@bigtest/effection';
 
+import 'chromedriver';
+import 'geckodriver';
+import { WebDriver, Builder } from 'selenium-webdriver';
+import { Options as ChromeOptions } from 'selenium-webdriver/chrome'
+import { Options as FirefoxOptions } from 'selenium-webdriver/firefox'
+
 interface Options {
   port: number;
   externalURL?: string;
+}
+
+interface LaunchOptions {
+  browser: 'chrome' | 'firefox';
+  connectBackURL: string;
+  headless: boolean;
 }
 
 export class AgentServer {
@@ -35,6 +47,14 @@ export class AgentServer {
   *listen(): Operation { return; }
 
   *join(): Operation { yield; }
+
+  *launch(options: LaunchOptions): Operation<WebDriver> {
+    let driver: WebDriver = yield buildDriver(options);
+
+    yield driver.get(this.connectURL(options.connectBackURL));
+
+    return yield resource(driver, ensure(() => driver.quit().catch(e => e)))
+  }
 }
 
 class HttpAgentServer extends AgentServer {
@@ -78,3 +98,17 @@ function listen(app: xp.Express, port?: number): Operation {
     })
   };
 };
+
+function buildDriver({ browser, headless }: LaunchOptions): Promise<WebDriver> {
+  let builder = new Builder().forBrowser(browser);
+  switch (browser) {
+    case 'chrome':
+      let chromeOptions = new ChromeOptions();
+      chromeOptions = headless ? chromeOptions.headless() : chromeOptions;
+      return builder.setChromeOptions(chromeOptions).build();
+    case 'firefox':
+      let firefoxOptions = new FirefoxOptions();
+      firefoxOptions = headless ? firefoxOptions.headless() : firefoxOptions;
+      return builder.setFirefoxOptions(firefoxOptions).build();
+  }
+}
