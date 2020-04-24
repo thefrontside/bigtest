@@ -34,5 +34,8 @@
     "eslint": "^6.6.0",
     "eslint-plugin-prefer-let": "^1.0.1",
     "typescript": "^3.7.0"
+  },
+  "resolutions": {
+    "**/effection": "0.6.2"
   }
 }
