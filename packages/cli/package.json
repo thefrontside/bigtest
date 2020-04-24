@@ -34,8 +34,8 @@
     "typescript": "^3.7.0"
   },
   "dependencies": {
-    "capture-console": "^1.0.1",
-    "effection": "^0.6.0"
+    "effection": "^0.6.2",
+    "capture-console": "^1.0.1"
   },
   "volta": {
     "node": "12.16.0",
