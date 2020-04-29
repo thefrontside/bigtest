@@ -2,7 +2,7 @@ import { w3cwebsocket } from 'websocket';
 import { spawn, resource, Operation } from 'effection';
 
 import { ensure, Mailbox } from '@bigtest/effection';
-import { once } from '@effection/events';
+import { on, once } from '@effection/events';
 
 import { Message, isErrorResponse, isDataResponse } from './protocol';
 
@@ -40,15 +40,19 @@ export class Client {
 
   *subscribe(source: string, live = true): Operation<Mailbox> {
     let mailbox = new Mailbox();
-    let responseId = this.send({ query: source, live });
-    let socket = this.socket;
+    let { socket } = this;
 
     return yield resource(mailbox, function*() {
-      let messages = yield Mailbox.subscribe(socket, "message");
+      let messages = yield on(socket, "message");
+
+      let responseId = `${responseIds++}`; //we'd want a UUID to avoid hijacking?
+
+      socket.send(JSON.stringify({ query: source, live, responseId}));
 
       while (true) {
-        let { args } = yield messages.receive();
-        let message: Message = JSON.parse(args[0].data);
+        let [event] = yield messages.next();
+        let message: Message = JSON.parse(event.data);
+
         if(message.responseId === responseId) {
           if (isErrorResponse(message)) {
             let messages = message.errors.map(error => error.message);
@@ -62,15 +66,6 @@ export class Client {
         }
       }
     });
-  }
-
-  send(command: Query): string {
-    let responseId = `${responseIds++}`; //we'd want a UUID to avoid hijacking?
-    let request: Message = {...command, responseId};
-
-    this.socket.send(JSON.stringify(request));
-
-    return responseId;
   }
 }
 
