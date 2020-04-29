@@ -1,5 +1,6 @@
 import { Operation } from 'effection';
-import { Mailbox, once, monitorErrors } from '@bigtest/effection';
+import { Mailbox } from '@bigtest/effection';
+import { once, throwOnErrorEvent } from '@effection/events';
 
 import * as Bundler from 'parcel-bundler';
 import { ParcelOptions } from  'parcel-bundler';
@@ -19,7 +20,7 @@ export function* createParcelServer(entryPoints: string[], options: ParcelServer
   let server = createServer(middleware)
 
   try {
-    yield monitorErrors(server);
+    yield throwOnErrorEvent(server);
 
     if(options.port) {
       server.listen(options.port);

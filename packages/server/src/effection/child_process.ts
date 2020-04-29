@@ -1,5 +1,5 @@
 import { Operation, resource } from 'effection';
-import { once, monitorErrors } from '@bigtest/effection';
+import { once, throwOnErrorEvent } from '@effection/events';
 
 import * as childProcess from 'child_process';
 import { SpawnOptions, ForkOptions, ChildProcess } from 'child_process';
@@ -18,7 +18,7 @@ function *supervise(child: ChildProcess) { // eslint-disable-line @typescript-es
   //
   // More information here: https://unix.stackexchange.com/questions/14815/process-descendants
   try {
-    yield monitorErrors(child);
+    yield throwOnErrorEvent(child);
 
     let [code]: [number] = yield once(child, "exit");
     if(code !== 0) {

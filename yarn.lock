@@ -1122,10 +1122,22 @@
   resolved "https://registry.yarnpkg.com/@csstools/sass-import-resolve/-/sass-import-resolve-1.0.0.tgz#32c3cdb2f7af3cd8f0dca357b592e7271f3831b5"
   integrity sha512-pH4KCsbtBLLe7eqUrw8brcuFO8IZlN36JjdKlOublibVdAIPHCzEnpBWOVUXK5sCf+DpBi8ZtuWtjF0srybdeA==
 
-"@effection/node@^0.6.0":
+"@effection/events@^0.6.0":
   version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@effection/node/-/node-0.6.0.tgz#f3c70ada21a2312f43927d39840b705c2e2d911d"
-  integrity sha512-22t6+++0pWQfM4aZo5Q4+kd99Ka4ySaUWmB1LEBzKTO+PWvQhCw3MIkIYGnjkyCGK/R6L0FeFGK5MKHaNhflCA==
+  resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.6.0.tgz#78a3aadba69d20a58cc67a74c6ad4bc3e3a34e72"
+  integrity sha512-n9PiErMvI4DhlYN1i+u8vbLcyEvcyqUJd4D4Nk97LUWF+aE4wEehHvGmVYAkeb1AWDRl+vSNmGCpT6zIkfDMsA==
+
+"@effection/events@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.6.1.tgz#839aad2303f4c95cf70092bbc62d5992f72e1a26"
+  integrity sha512-IdJO10dxoPYtZHAAefEsQ4sXT5jF4gZ+CI/HBPHPVFih2+OJZaNbTg2s5uwufkSk2Kma1jsXl1JaXZ0ruDLIFQ==
+
+"@effection/node@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@effection/node/-/node-0.6.1.tgz#ee64cdd91923a182c77f4f55f3f5a6754a1b2fc1"
+  integrity sha512-K8IqscuoMoJ7Zrwn/npbSeHgvQ2ldmQRTyYLXQ0C+M8yevJ8xFkjlK7egBqHLIvpaHN8cZl0ogRygHRd54yylw==
+  dependencies:
+    "@effection/events" "^0.6.0"
 
 "@emotion/is-prop-valid@^0.8.8":
   version "0.8.8"

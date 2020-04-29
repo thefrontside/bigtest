@@ -1,11 +1,10 @@
-import { Operation, spawn, resource } from 'effection';
+import { Operation, spawn, fork, resource } from 'effection';
 import { EventEmitter } from 'events';
 
 import { compile } from './pattern';
 export { any } from './pattern';
-import { ensure } from './ensure';
 
-import { EventSource, addListener, removeListener } from './event-source';
+import { on } from '@effection/events';
 
 export interface SubscriptionMessage {
   event: string;
@@ -18,7 +17,7 @@ export class Mailbox<T = any> {
   private messages = new Set<T>();
 
   static *subscribe(
-    source: EventSource,
+    source: EventEmitter | EventTarget,
     events: string | string[],
   ): Operation<Mailbox<SubscriptionMessage>> {
     let mailbox: Mailbox<SubscriptionMessage> = new Mailbox();
@@ -82,20 +81,18 @@ export class Mailbox<T = any> {
 
 export function *subscribe(
   mailbox: Mailbox<SubscriptionMessage>,
-  source: EventSource,
+  source: EventEmitter | EventTarget,
   events: string | string[],
 ): Operation {
   return yield spawn(function*() {
     for (let name of [].concat(events)) {
-      let listener = (...args) => {
-        mailbox.send({ event: name, args });
-      }
-
-      addListener(source, name, listener);
-      yield ensure(() => {
-        removeListener(source, name, listener)
+      yield fork(function*() {
+        let events = yield on(source, name);
+        while(true) {
+          let args = yield events.next();
+          mailbox.send({ event: name, args });
+        }
       });
     }
-    yield;
   });
 }

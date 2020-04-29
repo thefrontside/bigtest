@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "@bigtest/effection": "*",
+    "@effection/events": "^0.6.1",
     "bowser": "^2.9.0",
     "express": "^4.17.1",
     "websocket": "^1.0.31"

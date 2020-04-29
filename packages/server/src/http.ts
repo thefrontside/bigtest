@@ -1,6 +1,6 @@
 import * as http from 'http';
 import { Operation, fork } from 'effection';
-import { once } from '@bigtest/effection';
+import { once } from '@effection/events';
 
 export { IncomingMessage } from 'http';
 

@@ -1,5 +1,6 @@
 import { Operation, resource } from 'effection';
-import { Mailbox, subscribe, ensure, monitorErrors, once } from '@bigtest/effection';
+import { Mailbox, subscribe, ensure } from '@bigtest/effection';
+import { throwOnErrorEvent, once } from '@effection/events';
 import { AgentProtocol, AgentEvent, Command } from './protocol';
 
 export * from './protocol';
@@ -14,7 +15,7 @@ export class Agent implements AgentProtocol {
     let res = yield resource(new Agent(socket, mailbox), function*() {
       yield subscribe(mailbox, socket, 'message');
       yield ensure(() => socket.close());
-      yield monitorErrors(socket);
+      yield throwOnErrorEvent(socket);
       yield once(socket, 'close');
     });
 
