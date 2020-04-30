@@ -14,6 +14,9 @@
       "packages/todomvc",
       "packages/suite",
       "packages/*"
+    ],
+    "nohoist": [
+      "@bigtest/server/@types/node"
     ]
   },
   "scripts": {
