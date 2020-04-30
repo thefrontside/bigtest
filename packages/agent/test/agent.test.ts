@@ -1,11 +1,11 @@
+import { Local, WebDriver } from '@bigtest/webdriver';
+
 import { main, Operation, Context, resource } from 'effection';
 import { describe, it } from 'mocha';
 import * as expect from 'expect';
 import * as express from 'express';
 import fetch from 'node-fetch';
 import * as fixtureManifest from './fixtures/manifest.src';
-
-import { firefox, BrowserType, Browser, Page } from 'playwright';
 
 import { AgentConnectionServer, AgentServer } from '../src/index';
 
@@ -32,17 +32,6 @@ describe("@bigtest/agent", function() {
   let World: Context;
   function spawn<T>(operation: Operation): Promise<T> {
     return World["spawn"](operation);
-  }
-
-  function launch(browserType: BrowserType, options = {}): Promise<Browser> {
-    return spawn(({ resume, fail, context: { parent } }) => {
-      browserType.launch(options)
-        .then(browser => {
-          parent['ensure'](() => browser.close());
-          resume(browser);
-        })
-        .catch(error => fail(error));
-    });
   }
 
   beforeEach(() => {
@@ -94,25 +83,17 @@ describe("@bigtest/agent", function() {
 
 
     describe('connecting a browser to the agent URL', () => {
-      let browser: Browser;
-      let page: Page;
+      let browser: WebDriver;
       let message: { agentId: string };
       let agentId: string;
 
       beforeEach(async function() {
         await spawn(staticServer(8002));
-        browser = await launch(firefox, { headless: true });
-        page = await browser.newPage();
-        await page.goto(server.connectURL(`ws://localhost:8001`));
+        browser = await spawn(Local('chromedriver', { headless: true }));
+        await spawn(browser.navigateTo(server.connectURL(`ws://localhost:8001`)));
         message = await spawn(delegate.receive({ status: 'connected' })) as typeof message;
         agentId = message.agentId;
       });
-
-      afterEach(async () => {
-        if (page) {
-          await page.close();
-        }
-      })
 
       it('sends a connection message with an agent id', () => {
         expect(typeof message.agentId).toEqual('string');
@@ -156,7 +137,7 @@ describe("@bigtest/agent", function() {
       describe('closing browser connection', () => {
         let message;
         beforeEach(async () => {
-          await page.close();
+          await spawn(browser.navigateTo('about:blank'));
           message = await spawn(delegate.receive({ status: 'disconnected', agentId }))
         });
 
