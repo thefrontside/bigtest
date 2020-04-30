@@ -24,7 +24,7 @@
     "@bigtest/webdriver": "^0.1.0",
     "@types/express": "^4.17.2",
     "@types/mocha": "^7.0.1",
-    "@types/node": "^12.7.11",
+    "@types/node": "^13.13.4",
     "@types/node-fetch": "^2.5.4",
     "@types/websocket": "^1.0.0",
     "classnames": "^2.2.5",
