@@ -49,7 +49,6 @@
   ],
   "license": "MIT",
   "scripts": {
-    "prepack": "echo Skipping prepack for packages/website...",
     "develop": "gatsby develop",
     "format:ts": "prettier --write '**/*.{json,ts,tsx}'",
     "lint:ts": "eslint '**/*.{ts,tsx}'",

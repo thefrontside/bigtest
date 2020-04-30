@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@types/mocha": "^7.0.1",
-    "@types/node": "^12.7.11",
+    "@types/node": "^13.13.4",
     "effection": "^0.6.2",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@effection/events": "^0.6.1",
-    "@types/node": "^12.7.11",
+    "@types/node": "^13.13.4",
     "express": "^4.17.1"
   },
   "volta": {

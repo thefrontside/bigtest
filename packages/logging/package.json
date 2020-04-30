@@ -6,14 +6,17 @@
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.io>",
   "license": "MIT",
-  "files": ["dist/*", "README.md"],
+  "files": [
+    "dist/*",
+    "README.md"
+  ],
   "scripts": {
     "lint": "eslint '{src,test}/**/*.ts'",
     "test": "true",
     "prepack": "tsc --outdir dist --declaration --sourcemap --module commonjs"
   },
   "devDependencies": {
-    "@types/node": "^12.7.11",
+    "@types/node": "^13.13.4",
     "ts-node": "*"
   },
   "volta": {
