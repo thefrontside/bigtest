@@ -1,5 +1,5 @@
 import { resource, spawn, timeout, Operation } from 'effection';
-import { ensure } from '@bigtest/effection';
+import { ensure, Deferred } from '@bigtest/effection';
 import { spawn as spawnProcess, ChildProcess } from 'child_process';
 import { once } from '@effection/events';
 
@@ -13,9 +13,11 @@ export class Process {
   public stdout?: Stream;
   public stderr?: Stream;
   private child?: ChildProcess;
+  private exited = Deferred<[number,number]>();
 
   public code?: number;
   public signal?: string;
+
 
   static spawn(command: string, args: string[] = [], options: ProcessOptions) {
     let process = new Process(command, args, options);
@@ -24,10 +26,8 @@ export class Process {
 
   constructor(private command: string, private args: string[] = [], private options: ProcessOptions = {}) {}
 
-  *join() {
-    if(this.child && !this.child.killed) {
-      yield once(this.child, 'exit');
-    }
+  *join(): Operation<[number, number]> {
+    return yield this.exited.promise;
   }
 
   term() {
@@ -88,7 +88,10 @@ export class Process {
     }
 
     let [code, signal] = yield once(this.child, 'exit');
+
     this.code = code;
     this.signal = signal;
+
+    this.exited.resolve([code, signal]);
   }
 }
