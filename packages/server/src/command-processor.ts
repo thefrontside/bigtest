@@ -1,4 +1,4 @@
-import { fork, monitor, Operation } from 'effection';
+import { fork, spawn, Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { Test, TestResult, StepResult, AssertionResult, ResultStatus } from '@bigtest/suite';
 import { Atom, Slice } from '@bigtest/atom';
@@ -62,7 +62,7 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
   function* runTest(agentId: string, result: Slice<TestResult, OrchestratorState>, path: string[]): Operation<void> {
     let testStatus = result.slice<ResultStatus>(['status']);
 
-    yield monitor(function* () {
+    yield spawn(function* () {
       yield options.inbox.receive({ type: 'test:running', agentId, testRunId, path });
       testStatus.set('running');
     })
@@ -99,14 +99,15 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
   function* collectStepResult(agentId: string, result: Slice<StepResult, OrchestratorState>, path: string[]) {
     let stepStatus = result.slice<ResultStatus>(['status']);
 
-    yield monitor(function* () {
-      yield options.inbox.receive({ type: 'step:running', agentId, testRunId, path });
-      stepStatus.set('running');
-    })
 
     try {
-
-      let update: {status: ResultStatus} = yield options.inbox.receive({ type: 'step:result', agentId, testRunId, path });
+      let update: {status: ResultStatus} = yield function*() {
+        yield spawn(function* () {
+          yield options.inbox.receive({ type: 'step:running', agentId, testRunId, path });
+          stepStatus.set('running');
+        });
+        return yield options.inbox.receive({ type: 'step:result', agentId, testRunId, path });
+      }
 
       if (update.status === 'failed') {
         stepStatus.set('failed');
@@ -125,11 +126,13 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
     let assertionStatus = result.slice<ResultStatus>(['status']);
 
     try {
-      yield options.inbox.receive({ type: 'assertion:running', agentId, testRunId, path });
-
-      assertionStatus.set('running');
-
-      let update: {status: ResultStatus} = yield options.inbox.receive({ type: 'assertion:result', agentId, testRunId, path });
+      let update: {status: ResultStatus} = yield function*() {
+        yield spawn(function*() {
+          yield options.inbox.receive({ type: 'assertion:running', agentId, testRunId, path });
+          assertionStatus.set('running');
+        });
+        return yield options.inbox.receive({ type: 'assertion:result', agentId, testRunId, path });
+      }
 
       assertionStatus.set(update.status);
     } finally {
@@ -140,8 +143,6 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
   }
 
 }
-
-
 
 export function* createCommandProcessor(options: CommandProcessorOptions): Operation {
   while(true) {

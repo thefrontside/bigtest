@@ -132,6 +132,25 @@ describe('running tests on an agent', () => {
       });
     });
 
+    describe('when a step succeeeds', () => {
+      beforeEach(() => {
+        agent.send({
+          type: 'step:result',
+          status: 'ok',
+          testRunId: runCommand.testRunId,
+          path: ['All tests', "Signing In", "when I fill in the login form"]
+        })
+      });
+
+      it('marks that step as ok', async () => {
+        await actions.fork(results.receive(({ testRun }) => {
+          return testRun.agent.result.children
+            .find(child => child.description === "Signing In" ).steps
+            .find(child => child.description === "when I fill in the login form").status === 'ok';
+        }));
+      });
+    });
+
     describe('when a step fails', () => {
       beforeEach(() => {
         agent.send({
@@ -173,6 +192,51 @@ describe('running tests on an agent', () => {
           }
         };
         await actions.fork(results.receive(match));
+      });
+    });
+
+    describe('when a assertion succeeeds', () => {
+      beforeEach(() => {
+        agent.send({
+          type: 'assertion:result',
+          status: 'ok',
+          testRunId: runCommand.testRunId,
+          path: ['All tests', 'Signing In', 'then I am logged in']
+        })
+      });
+
+      it('marks that assertion as ok', async () => {
+        await actions.fork(results.receive(({ testRun }) => {
+          return testRun.agent.result.children
+            .find(child => child.description === 'Signing In' ).assertions
+            .find(child => child.description === 'then I am logged in').status === 'ok';
+        }));
+      });
+    });
+
+    describe('when a assertion fails', () => {
+      beforeEach(() => {
+        agent.send({
+          type: 'assertion:result',
+          status: 'failed',
+          testRunId: runCommand.testRunId,
+          path: ['All tests', 'Signing In', 'then I am logged in'],
+          error: {
+            message: 'this assertion failed',
+            fileName: 'here.js',
+            lineNumber: 5,
+            columnNumber: 10,
+            stack: ['here.js', 'there.js']
+          }
+        })
+      });
+
+      it('marks that assertion as failed', async () => {
+        await actions.fork(results.receive(({ testRun }) => {
+          return testRun.agent.result.children
+            .find(child => child.description === 'Signing In').assertions
+            .find(child => child.description === 'then I am logged in').status === 'failed';
+        }));
       });
     });
   });
