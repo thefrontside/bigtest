@@ -116,6 +116,10 @@ describe('running tests on an agent', () => {
       expect(runCommand.tree.description).toEqual('All tests');
     });
 
+    it('is marks the run as pending', async () => {
+      await actions.fork(results.receive({ testRun: { status: 'pending' }}));
+    });
+
     describe('when the agent reports that it is running', () => {
       beforeEach(() => {
         agent.send({
@@ -124,8 +128,8 @@ describe('running tests on an agent', () => {
         });
       });
 
-      it('is marks the run as running', async () => {
-        await actions.fork(results.receive({ testRun: { status: 'running' }}));
+      it('is marks the agent as running', async () => {
+        await actions.fork(results.receive({ testRun: { agent: { status: 'running' } }}));
       });
     });
 
@@ -136,10 +140,6 @@ describe('running tests on an agent', () => {
           testRunId: runCommand.testRunId,
           path: ['All tests']
         });
-      });
-
-      it('marks that particular agent as running', async () => {
-        await actions.fork(results.receive({ testRun: { agent: { status: 'running' } } }));
       });
 
       it('marks that particular test as running', async () => {
