@@ -84,7 +84,7 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
     }
   }
 
-  function* runTest(agentId: string, result: Slice<TestResult, OrchestratorState>, path: string[]): Operation<void> {
+  function* runTest(agentId: string, result: Slice<TestResult, OrchestratorState>, path: string[]): Operation<ResultStatus> {
     let testStatus = result.slice<ResultStatus>(['status']);
 
     yield spawn(function* () {
@@ -108,8 +108,8 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
     }
   }
 
-  function* collectTestResult(agentId: string, result: Slice<TestResult, OrchestratorState>, path: string[]): Operation<void> {
-    let status = 'ok';
+  function* collectTestResult(agentId: string, result: Slice<TestResult, OrchestratorState>, path: string[]): Operation<ResultStatus> {
+    let status: ResultStatus = 'ok';
     let forks = [];
 
     for (let [index, step] of result.get().steps.entries()) {

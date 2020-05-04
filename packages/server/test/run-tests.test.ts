@@ -1,10 +1,44 @@
 import * as expect from 'expect';
 import { Mailbox } from '@bigtest/effection';
 import { Agent, Command } from '@bigtest/agent';
-import { TestResult, ResultStatus } from '@bigtest/suite';
+import { ResultStatus } from '@bigtest/suite';
 import { actions } from './helpers';
 import { Client } from '../src/client';
 import { generateAgentId } from '../src/connection-server';
+
+interface QueryResult {
+  testRun: {
+    testRunId: string;
+    status: ResultStatus;
+    agent: {
+      status: ResultStatus;
+      agent: {
+        agentId: string;
+      };
+      result: QueryTestResult;
+    };
+  };
+}
+
+interface QueryTestResult {
+  description: string;
+  status: ResultStatus;
+  steps: Array<{
+    description: string;
+    status: ResultStatus;
+  }>;
+  assertions: Array<{
+    description: string;
+    status: ResultStatus;
+  }>;
+  children: [QueryTestResult];
+}
+
+interface AgentsQuery {
+  agents: {
+    agentId: string;
+  }[];
+}
 
 function resultsQuery(testRunId: string, agentId: string) {
   return `
@@ -45,25 +79,6 @@ function resultsQuery(testRunId: string, agentId: string) {
   `;
 }
 
-interface ResultQuery {
-  testRun: {
-    testRunId: string;
-    status: ResultStatus;
-    agent: {
-      agent: {
-        agentId: string;
-      };
-      result: TestResult;
-    };
-  };
-}
-
-interface AgentsQuery {
-  agents: {
-    agentId: string;
-  }[];
-}
-
 describe('running tests on an agent', () => {
   let client: Client;
   let agent: Agent;
@@ -79,7 +94,7 @@ describe('running tests on an agent', () => {
 
     agentsSubscription = await actions.fork(client.subscribe(`{ agents { agentId } }`));
 
-    let match: (params: AgentsQuery) => boolean = ({ agents }) => agents && agents.length === 1; 
+    let match: (params: AgentsQuery) => boolean = ({ agents }) => agents && agents.length === 1;
 
     await actions.fork(agentsSubscription.receive(match));
   });
@@ -143,10 +158,10 @@ describe('running tests on an agent', () => {
       });
 
       it('marks that step as ok', async () => {
-        await actions.fork(results.receive(({ testRun }) => {
+        await actions.fork(results.receive(({ testRun }: QueryResult) => {
           return testRun.agent.result.children
-            .find(child => child.description === "Signing In" ).steps
-            .find(child => child.description === "when I fill in the login form").status === 'ok';
+            .find(child => child.description === "Signing In" )?.steps
+            .find(child => child.description === "when I fill in the login form")?.status === 'ok';
         }));
       });
     });
@@ -169,7 +184,7 @@ describe('running tests on an agent', () => {
       });
 
       it('marks that step as failed', async () => {
-        let match: (result: ResultQuery) => boolean = ({ testRun }) => {
+        let match: (result: QueryResult) => boolean = ({ testRun }) => {
           return testRun.agent.result.children
             .find(child => child.description === "Signing In" )?.steps
             .find(child => child.description === "when I fill in the login form")?.status === 'failed';
@@ -178,14 +193,14 @@ describe('running tests on an agent', () => {
       });
 
       it('marks the entire test as failed', async () => {
-        await actions.fork(results.receive(({ testRun }) => {
+        await actions.fork(results.receive(({ testRun }: QueryResult) => {
           return testRun.agent.result.children
-            .find(child => child.description === "Signing In" ).status === 'failed';
+            .find(child => child.description === "Signing In" )?.status === 'failed';
         }));
       });
 
       it('disregards the remaining steps, and remaining children', async() => {
-        let match: (result: ResultQuery) => boolean = ({ testRun }) => {
+        let match: (result: QueryResult) => boolean = ({ testRun }) => {
           let results = testRun.agent.result.children
             .find(child => child.description === "Signing In");
 
@@ -213,10 +228,10 @@ describe('running tests on an agent', () => {
       });
 
       it('marks that assertion as ok', async () => {
-        await actions.fork(results.receive(({ testRun }) => {
+        await actions.fork(results.receive(({ testRun }: QueryResult) => {
           return testRun.agent.result.children
-            .find(child => child.description === 'Signing In' ).assertions
-            .find(child => child.description === 'then I am logged in').status === 'ok';
+            .find(child => child.description === 'Signing In' )?.assertions
+            .find(child => child.description === 'then I am logged in')?.status === 'ok';
         }));
       });
     });
@@ -239,10 +254,10 @@ describe('running tests on an agent', () => {
       });
 
       it('marks that assertion as failed', async () => {
-        await actions.fork(results.receive(({ testRun }) => {
+        await actions.fork(results.receive(({ testRun }: QueryResult) => {
           return testRun.agent.result.children
-            .find(child => child.description === 'Signing In').assertions
-            .find(child => child.description === 'then I am logged in').status === 'failed';
+            .find(child => child.description === 'Signing In')?.assertions
+            .find(child => child.description === 'then I am logged in')?.status === 'failed';
         }));
       });
     });
@@ -270,10 +285,10 @@ describe('running tests on an agent', () => {
       });
 
       it('marks that test as ok', async () => {
-        await actions.fork(results.receive(({ testRun }) => {
+        await actions.fork(results.receive(({ testRun }: QueryResult) => {
           return testRun.agent.result.children
-            .find(child => child.description === 'Signing In').children
-            .find(child => child.description === 'when I log out').status === 'ok'
+            .find(child => child.description === 'Signing In')?.children
+            .find(child => child.description === 'when I log out')?.status === 'ok'
         }));
       });
     });
@@ -301,10 +316,10 @@ describe('running tests on an agent', () => {
       });
 
       it('marks that test as failed', async () => {
-        await actions.fork(results.receive(({ testRun }) => {
+        await actions.fork(results.receive(({ testRun }: QueryResult) => {
           return testRun.agent.result.children
-            .find(child => child.description === 'Signing In').children
-            .find(child => child.description === 'when I log out').status === 'failed'
+            .find(child => child.description === 'Signing In')?.children
+            .find(child => child.description === 'when I log out')?.status === 'failed'
         }));
       });
     });
@@ -362,9 +377,9 @@ describe('running tests on an agent', () => {
       });
 
       it('marks that test as failed', async () => {
-        await actions.fork(results.receive(({ testRun }) => {
+        await actions.fork(results.receive(({ testRun }: QueryResult) => {
           return testRun.agent.result.children
-            .find(child => child.description === 'Signing In').status === 'failed';
+            .find(child => child.description === 'Signing In')?.status === 'failed';
         }));
       });
 
@@ -416,15 +431,15 @@ describe('running tests on an agent', () => {
     });
 
     it('tracks results for all agents separately', async () => {
-      let matchFailed: (result: ResultQuery) => boolean = ({ testRun }) => {
+      let matchFailed: (result: QueryResult) => boolean = ({ testRun }) => {
         return testRun.agent.result.children
           .find(child => child.description === "Signing In" )?.steps
           .find(child => child.description === "when I fill in the login form")?.status === 'failed';
       };
-      
+
       await actions.fork(agentResults.receive(matchFailed));
 
-      let matchSucess: (result: ResultQuery) => boolean = ({ testRun }) => {
+      let matchSucess: (result: QueryResult) => boolean = ({ testRun }) => {
         return testRun.agent.result.children
           .find(child => child.description === "Signing In" )?.steps
           .find(child => child.description === "when I fill in the login form")?.status === 'ok';
@@ -434,9 +449,3 @@ describe('running tests on an agent', () => {
     });
   });
 });
-
-interface TestRun {
-  testRunId: string;
-  status: 'pending' | 'running' | 'done';
-  tree: TestResult;
-}
