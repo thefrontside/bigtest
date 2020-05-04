@@ -29,35 +29,60 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
 
   testRunSlice.set({ testRunId: testRunId, status: 'pending', agents: {} });
 
-  let runStatus = testRunSlice.slice<ResultStatus>(['status']);
+  yield runSuite(testRunSlice, result, agents);
 
-  yield function*() {
+  function* runSuite(testRunSlice: Slice<TestRunState, OrchestratorState>, result: TestResult, agents: AgentState[]) {
+    let status: ResultStatus = 'ok';
+    let forks = [];
+
+    let runStatus = testRunSlice.slice<ResultStatus>(['status']);
+
     for(let agent of agents) {
-      yield fork(function*() {
-        runStatus.set('running');
+      console.debug(`[command processor] starting test run ${testRunId} on agent ${agent.agentId}`);
 
-        let testRunAgentSlice = testRunSlice.slice<TestRunAgentState>(['agents', agent.agentId]);
-        testRunAgentSlice.set({ agent, result, status: 'pending' });
+      runStatus.set('running');
+      let testRunAgentSlice = testRunSlice.slice<TestRunAgentState>(['agents', agent.agentId]);
 
-        let runAgentStatus = testRunAgentSlice.slice<ResultStatus>(['status']);
+      testRunAgentSlice.set({ agent, result, status: 'pending' });
 
-        console.debug(`[command processor] starting test run ${testRunId} on agent ${agent.agentId}`);
+      forks.push(yield fork(runAgent(agent.agentId, testRunAgentSlice)));
+    }
 
-        options.delegate.send({ type: 'run', status: 'pending', agentId: agent.agentId, appUrl, manifestUrl, testRunId: testRunId, tree: manifest });
-
-        runAgentStatus.set('running');
-        try {
-          let resultSlice = testRunAgentSlice.slice<TestResult>(['result']);
-
-          yield runTest(agent.agentId, resultSlice, [resultSlice.get().description]);
-        } finally {
-          runAgentStatus.set('ok');
+    try {
+      for(let fork of forks) {
+        if((yield fork) === 'failed') {
+          status = 'failed';
         }
-      });
+      }
+
+      runStatus.set(status);
+    } finally {
+      if (runStatus.get() === 'pending' || runStatus.get() === 'running') {
+        runStatus.set('disregarded');
+      }
     }
   }
 
-  runStatus.set('ok');
+  function* runAgent(agentId: string, testRunAgentSlice: Slice<TestRunAgentState, OrchestratorState>) {
+    let runAgentStatus = testRunAgentSlice.slice<ResultStatus>(['status']);
+
+    options.delegate.send({ type: 'run', status: 'pending', agentId, appUrl, manifestUrl, testRunId: testRunId, tree: manifest });
+
+    runAgentStatus.set('running');
+    try {
+      let resultSlice = testRunAgentSlice.slice<TestResult>(['result']);
+
+      let result = yield runTest(agentId, resultSlice, [resultSlice.get().description]);
+
+      runAgentStatus.set(result);
+
+      return result;
+    } finally {
+      if (runAgentStatus.get() === 'pending' || runAgentStatus.get() === 'running') {
+        runAgentStatus.set('disregarded');
+      }
+    }
+  }
 
   function* runTest(agentId: string, result: Slice<TestResult, OrchestratorState>, path: string[]): Operation<void> {
     let testStatus = result.slice<ResultStatus>(['status']);
@@ -68,13 +93,14 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
     })
 
     try {
+      let status = yield collectTestResult(agentId, result, path);
 
-      yield collectTestResult(agentId, result, path);
+      testStatus.set(status);
 
-      testStatus.set('ok');
-
+      return status;
     } catch (error) {
       testStatus.set('failed');
+      return 'failed';
     } finally {
       if (testStatus.get() === 'pending' || testStatus.get() === 'running') {
         testStatus.set('disregarded');
@@ -83,22 +109,38 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
   }
 
   function* collectTestResult(agentId: string, result: Slice<TestResult, OrchestratorState>, path: string[]): Operation<void> {
-    for (let [index, child] of result.get().children.entries()) {
-      yield fork(runTest(agentId, result.slice<TestResult>(['children', index]), path.concat(child.description)));
+    let status = 'ok';
+    let forks = [];
+
+    for (let [index, step] of result.get().steps.entries()) {
+      forks.push(
+        yield fork(collectStepResult(agentId, result.slice<StepResult>(['steps', index]), path.concat(step.description)))
+      );
     }
 
     for (let [index, assertion] of result.get().assertions.entries()) {
-      yield fork(collectAssertionResult(agentId, result.slice<AssertionResult>(['assertions', index]), path.concat(assertion.description)));
+      forks.push(
+        yield fork(collectAssertionResult(agentId, result.slice<AssertionResult>(['assertions', index]), path.concat(assertion.description)))
+      );
     }
 
-    for (let [index, step] of result.get().steps.entries()) {
-      yield fork(collectStepResult(agentId, result.slice<StepResult>(['steps', index]), path.concat(step.description)));
+    for (let [index, child] of result.get().children.entries()) {
+      forks.push(
+        yield fork(runTest(agentId, result.slice<TestResult>(['children', index]), path.concat(child.description)))
+      );
     }
+
+    for (let fork of forks) {
+      if((yield fork) === 'failed') {
+        status = 'failed';
+      }
+    }
+
+    return status;
   }
 
   function* collectStepResult(agentId: string, result: Slice<StepResult, OrchestratorState>, path: string[]) {
     let stepStatus = result.slice<ResultStatus>(['status']);
-
 
     try {
       let update: {status: ResultStatus} = yield function*() {
@@ -109,12 +151,13 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
         return yield options.inbox.receive({ type: 'step:result', agentId, testRunId, path });
       }
 
+      stepStatus.set(update.status);
+
       if (update.status === 'failed') {
-        stepStatus.set('failed');
         throw new Error('Step Failed');
       }
 
-      stepStatus.set(update.status);
+      return update.status;
     } finally {
       if (stepStatus.get() === 'pending' || stepStatus.get() === 'running') {
         stepStatus.set('disregarded');
@@ -135,13 +178,14 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
       }
 
       assertionStatus.set(update.status);
+
+      return update.status;
     } finally {
       if (assertionStatus.get() === 'pending' || assertionStatus.get() === 'running') {
         assertionStatus.set('disregarded');
       }
     }
   }
-
 }
 
 export function* createCommandProcessor(options: CommandProcessorOptions): Operation {
@@ -153,7 +197,6 @@ export function* createCommandProcessor(options: CommandProcessorOptions): Opera
     yield fork(run(message.id, options));
   }
 }
-
 
 function resultsFor(tree: Test): TestResult {
   return {

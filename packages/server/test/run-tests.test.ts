@@ -177,6 +177,13 @@ describe('running tests on an agent', () => {
         await actions.fork(results.receive(match));
       });
 
+      it('marks the entire test as failed', async () => {
+        await actions.fork(results.receive(({ testRun }) => {
+          return testRun.agent.result.children
+            .find(child => child.description === "Signing In" ).status === 'failed';
+        }));
+      });
+
       it('disregards the remaining steps, and remaining children', async() => {
         let match: (result: ResultQuery) => boolean = ({ testRun }) => {
           let results = testRun.agent.result.children
@@ -237,6 +244,136 @@ describe('running tests on an agent', () => {
             .find(child => child.description === 'Signing In').assertions
             .find(child => child.description === 'then I am logged in').status === 'failed';
         }));
+      });
+    });
+
+    describe('when an entire test succeeds', () => {
+      beforeEach(() => {
+        agent.send({
+          type: 'step:result',
+          status: 'ok',
+          testRunId: runCommand.testRunId,
+          path: ['All tests', 'Signing In', 'when I log out', 'when I click on the logout button']
+        })
+        agent.send({
+          type: 'assertion:result',
+          status: 'ok',
+          testRunId: runCommand.testRunId,
+          path: ['All tests', 'Signing In', 'when I log out', 'it takes me back to the homepage']
+        })
+        agent.send({
+          type: 'assertion:result',
+          status: 'ok',
+          testRunId: runCommand.testRunId,
+          path: ['All tests', 'Signing In', 'when I log out', 'My username is no longer in the top bar']
+        })
+      });
+
+      it('marks that test as ok', async () => {
+        await actions.fork(results.receive(({ testRun }) => {
+          return testRun.agent.result.children
+            .find(child => child.description === 'Signing In').children
+            .find(child => child.description === 'when I log out').status === 'ok'
+        }));
+      });
+    });
+
+    describe('when an entire test completes with mixed results', () => {
+      beforeEach(() => {
+        agent.send({
+          type: 'step:result',
+          status: 'ok',
+          testRunId: runCommand.testRunId,
+          path: ['All tests', 'Signing In', 'when I log out', 'when I click on the logout button']
+        })
+        agent.send({
+          type: 'assertion:result',
+          status: 'failed',
+          testRunId: runCommand.testRunId,
+          path: ['All tests', 'Signing In', 'when I log out', 'it takes me back to the homepage']
+        })
+        agent.send({
+          type: 'assertion:result',
+          status: 'ok',
+          testRunId: runCommand.testRunId,
+          path: ['All tests', 'Signing In', 'when I log out', 'My username is no longer in the top bar']
+        })
+      });
+
+      it('marks that test as failed', async () => {
+        await actions.fork(results.receive(({ testRun }) => {
+          return testRun.agent.result.children
+            .find(child => child.description === 'Signing In').children
+            .find(child => child.description === 'when I log out').status === 'failed'
+        }));
+      });
+    });
+
+    describe('when a test completes successfully but one of its children fails', () => {
+      beforeEach(() => {
+        agent.send({
+          type: 'step:result',
+          status: 'ok',
+          testRunId: runCommand.testRunId,
+          path: ['All tests', 'Signing In', 'given a user']
+        })
+        agent.send({
+          type: 'step:result',
+          status: 'ok',
+          testRunId: runCommand.testRunId,
+          path: ['All tests', 'Signing In', 'when I fill in the login form']
+        })
+        agent.send({
+          type: 'step:result',
+          status: 'ok',
+          testRunId: runCommand.testRunId,
+          path: ['All tests', 'Signing In', 'when I press the submit button']
+        })
+        agent.send({
+          type: 'assertion:result',
+          status: 'ok',
+          testRunId: runCommand.testRunId,
+          path: ['All tests', 'Signing In', 'then I am logged in']
+        })
+        agent.send({
+          type: 'assertion:result',
+          status: 'ok',
+          testRunId: runCommand.testRunId,
+          path: ['All tests', 'Signing In', 'then I am on the homepage']
+        })
+        agent.send({
+          type: 'step:result',
+          status: 'failed',
+          testRunId: runCommand.testRunId,
+          path: ['All tests', 'Signing In', 'when I log out', 'when I click on the logout button']
+        })
+        agent.send({
+          type: 'step:result',
+          status: 'ok',
+          testRunId: runCommand.testRunId,
+          path: ['All tests', 'Signing In', 'when I go to the main navigation page', 'I click the hamburger button']
+        })
+        agent.send({
+          type: 'assertion:result',
+          status: 'ok',
+          testRunId: runCommand.testRunId,
+          path: ['All tests', 'Signing In', 'when I go to the main navigation page', 'I see my username']
+        })
+      });
+
+      it('marks that test as failed', async () => {
+        await actions.fork(results.receive(({ testRun }) => {
+          return testRun.agent.result.children
+            .find(child => child.description === 'Signing In').status === 'failed';
+        }));
+      });
+
+      it('marks the entire agent as failed if it is the root test', async () => {
+        await actions.fork(results.receive({ testRun: { agent: { status: 'failed' } } }));
+      });
+
+      it('marks the entire suite as failed if it is the root test', async () => {
+        await actions.fork(results.receive({ testRun: { agent: { status: 'failed' } } }));
       });
     });
   });
