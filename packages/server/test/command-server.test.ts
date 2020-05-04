@@ -40,29 +40,29 @@ describe('command server', () => {
     });
 
     it('contains an empty list', () => {
-      expect(result).toEqual({ "data": { "agents": [] } });
+      expect(result).toEqual({ 'data': { 'agents': [] } });
     });
   });
 
   describe('running the entire suite', () => {
-    let result: unknown;
+    let result: GraphQLPayload<{run: {}}>;
     beforeEach(async () => {
       result = await mutation('run');
     });
 
     it('returns a test run id', () => {
-      expect(result['data'].run).toMatch('TestRun');
+      expect(result.data.run).toMatch('TestRun');
     });
 
     it('sends a message to the orchestrator telling it to start the test run', async () => {
       let message = await actions.receive(delegate, { type: "run" });
       expect(message['type']).toEqual("run")
-      expect(message['id']).toEqual(result['data'].run)
+      expect(message['id']).toEqual(result.data.run)
     });
   });
 
   describe('querying connected agents', () => {
-    let result: unknown;
+    let result: GraphQLPayload;
     beforeEach(async () => {
       agents.set({
         safari: {
@@ -103,7 +103,7 @@ describe('command server', () => {
     });
 
     describe('over websockets', () => {
-      let wsResult: unknown;
+      let wsResult: GraphQLPayload;
       beforeEach(async () => {
         wsResult = await websocketQuery('{agents { browser { name } os { name } platform { type }}}');
       });
@@ -242,12 +242,16 @@ describe('command server', () => {
   });
 });
 
-async function query(text: string): Promise<unknown> {
+interface GraphQLPayload<T = unknown> {
+  data: T;
+}
+
+async function query<T>(text: string): Promise<GraphQLPayload<T>> {
   let response = await actions.fetch(`http://localhost:${COMMAND_PORT}?query={${encodeURIComponent(text)}}`);
   return await response.json();
 }
 
-async function mutation(text: string): Promise<unknown> {
+async function mutation<T>(text: string): Promise<GraphQLPayload<T>> {
   let body = `mutation { ${text} }`
   let response = await actions.fetch(`http://localhost:${COMMAND_PORT}`, {
     method: "POST",

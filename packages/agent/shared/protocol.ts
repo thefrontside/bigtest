@@ -6,47 +6,47 @@ export interface AgentProtocol {
   receive(): Operation<Command>;
 }
 
-interface Connect {
+export interface Connect {
   type: 'connected';
   agentId?: string;
   data: unknown;
 }
 
-interface RunBegin {
+export interface RunBegin {
   type: 'run:begin';
   testRunId: string;
 }
 
-interface RunEnd {
+export interface RunEnd {
   type: 'run:end';
   testRunId: string;
 }
 
-interface LaneBegin {
+export interface LaneBegin {
   type: 'lane:begin';
   testRunId: string;
   path: string[];
 }
 
-interface LaneEnd {
+export interface LaneEnd {
   type: 'lane:end';
   testRunId: string;
   path: string[];
 }
 
-interface TestRunning {
+export interface TestRunning {
   type: 'test:running';
   testRunId: string;
   path: string[];
 }
 
-interface StepRunning {
+export interface StepRunning {
   type: 'step:running';
   testRunId: string;
   path: string[];
 }
 
-interface StepResult {
+export interface StepResult {
   type: 'step:result';
   status: ResultStatus;
   testRunId: string;
@@ -54,13 +54,13 @@ interface StepResult {
   error?: ErrorDetails;
 }
 
-interface AssertionRunning {
+export interface AssertionRunning {
   type: 'assertion:running';
   testRunId: string;
   path: string[];
 }
 
-interface AssertionResult {
+export interface AssertionResult {
   type: 'assertion:result';
   status: ResultStatus;
   testRunId: string;

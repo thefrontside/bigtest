@@ -16,6 +16,9 @@
     "test": "echo success",
     "prepack": "tsc --outDir dist --declaration"
   },
+  "devDependencies": {
+    "@frontside/tsconfig": "*"
+  },
   "volta": {
     "node": "12.16.0",
     "yarn": "1.19.1"

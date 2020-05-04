@@ -59,7 +59,7 @@ export class Mailbox<T = any> {
 
   *pipe(other: Mailbox<T>) {
     let that = this; // eslint-disable-line @typescript-eslint/no-this-alias
-    return yield spawn(function*() {
+    return yield spawn(function*(): Operation<unknown> {
       while(true) {
         let message = yield that.receive();
         other.send(message);
@@ -85,7 +85,7 @@ export function *subscribe(
   events: string | string[],
 ): Operation {
   return yield spawn(function*() {
-    for (let name of [].concat(events)) {
+    for (let name of typeof events === 'string' ? [events] : events) {
       yield fork(function*() {
         let events = yield on(source, name);
         while(true) {

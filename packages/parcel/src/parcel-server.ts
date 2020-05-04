@@ -36,7 +36,9 @@ export function* createParcelServer(entryPoints: string[], options: ParcelServer
     while(true) {
       yield events.receive({ event: "buildEnd" });
 
-      process.send({ type: "update" });
+      if (process.send) {
+        process.send({ type: "update" });
+      }
     }
   } finally {
     bundler.stop();

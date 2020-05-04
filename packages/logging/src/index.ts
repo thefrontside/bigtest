@@ -1,3 +1,5 @@
+export type Levels = "debug" | "info" | "warn" | "error";
+
 const HIDDEN_LOGS = {
   debug: [],
   info: ["debug"],
@@ -14,10 +16,10 @@ export function resetLogLevel() {
   console.error = error
 }
 
-export function setLogLevel(level) {
+export function setLogLevel(level: Levels) {
   resetLogLevel();
   HIDDEN_LOGS[level].forEach((level) => {
-    console[level] = function() {
+    console[level as Levels] = function() {
       // do nothing
     }
   });

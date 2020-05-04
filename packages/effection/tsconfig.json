@@ -1,16 +1,10 @@
 {
-  "compilerOptions": {
-    "target": "esnext",
-    "moduleResolution": "node",
-    "noImplicitAny": false,
-    "skipLibCheck": true,
-    "typeRoots": [
-      "./node_modules/@types"
-    ],
-    "baseUrl": "."
-  },
+  "extends": "@frontside/tsconfig",
   "include": [
     "src/**/*.ts",
     "bin/*.ts"
+  ],
+  "exclude": [
+    "../../node_modules"
   ]
 }

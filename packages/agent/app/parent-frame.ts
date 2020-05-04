@@ -10,7 +10,7 @@ export class ParentFrame {
 
   constructor(private mailbox: Mailbox) {}
 
-  send(message) {
+  send(message: unknown) {
     window.parent.postMessage(JSON.stringify(message), "*");
   }
 

@@ -12,7 +12,7 @@ export class TestFrame {
 
   constructor(private element: HTMLIFrameElement, private mailbox: Mailbox) {}
 
-  load(url): Operation {
+  load(url: string): Operation {
     return ({ resume, ensure }) => {
       this.element.src = url;
       this.element.addEventListener('load', resume);
@@ -20,8 +20,10 @@ export class TestFrame {
     }
   }
 
-  send(message) {
-    this.element.contentWindow.postMessage(message, '*');
+  send(message: unknown) {
+    if (this.element.contentWindow) {
+      this.element.contentWindow.postMessage(message, '*');
+    }
   }
 
   *receive(): Operation {

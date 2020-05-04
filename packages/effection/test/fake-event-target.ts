@@ -23,10 +23,10 @@ export class FakeEvent implements Event {
   }
 
   composedPath(): EventTarget[] { return [] }
-  initEvent(): void { return null; }
-  preventDefault(): void { return null; }
-  stopImmediatePropagation(): void { return null; }
-  stopPropagation(): void { return null; }
+  initEvent(): void { return; }
+  preventDefault(): void { return; }
+  stopImmediatePropagation(): void { return; }
+  stopPropagation(): void { return; }
 
   readonly AT_TARGET: number = 0;
   readonly BUBBLING_PHASE: number = 1;
@@ -38,12 +38,12 @@ export class FakeEvent implements Event {
 export class FakeEventEmitter implements EventTarget {
   private emitter = new EventEmitter();
 
-  addEventListener(type: string, listener: EventListenerOrEventListenerObject | null): void {
-    this.emitter.on(type, listener as (...args) => void);
+  addEventListener(type: string, listener: EventListenerOrEventListenerObject): void {
+    this.emitter.on(type, listener as (...args: unknown[]) => void);
   }
 
-  removeEventListener(type: string, listener: EventListenerOrEventListenerObject | null): void {
-    this.emitter.off(type, listener as (...args) => void);
+  removeEventListener(type: string, listener: EventListenerOrEventListenerObject): void {
+    this.emitter.off(type, listener as (...args: unknown[]) => void);
   }
 
   dispatchEvent(event: Event): boolean {

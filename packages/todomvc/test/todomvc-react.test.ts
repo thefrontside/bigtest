@@ -1,18 +1,20 @@
-import { main, Operation, Context } from 'effection';
+import { main, Operation, Context, Controls } from 'effection';
 import { describe, it } from 'mocha';
 import * as expect from 'expect'
 import fetch, { Response } from 'node-fetch';
 import { todomvc } from '../dist/index';
 
+type World<T> = Context<T> & Controls<T>;
+
 describe("@bigtest/todomvc", () => {
 
-  let World: Context;
+  let World: World<unknown>;
   async function spawn<T>(operation: Operation): Promise<T> {
-    return World["spawn"](operation);
+    return World.spawn(operation);
   }
 
   beforeEach(() => {
-    World = main(undefined);
+    World = main(undefined) as World<unknown>;
   });
 
   afterEach(() => {

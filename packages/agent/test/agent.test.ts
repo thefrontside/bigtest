@@ -1,16 +1,18 @@
 import { Local, WebDriver } from '@bigtest/webdriver';
 
-import { main, Operation, Context, resource } from 'effection';
+import { resource } from 'effection';
 import { describe, it } from 'mocha';
 import * as expect from 'expect';
 import * as express from 'express';
 import fetch from 'node-fetch';
 import * as fixtureManifest from './fixtures/manifest.src';
 
-import { AgentConnectionServer, AgentServer } from '../src/index';
+import { AgentConnectionServer, AgentServer, AssertionResult } from '../src/index';
 
 import { Mailbox, ensure } from '@bigtest/effection';
 import { throwOnErrorEvent, once } from '@effection/events';
+
+import { spawn } from './helpers';
 
 function* staticServer(port: number) {
   let app = express().use(express.static("./test/fixtures"));
@@ -28,19 +30,6 @@ function* staticServer(port: number) {
 
 describe("@bigtest/agent", function() {
   this.timeout(20000);
-
-  let World: Context;
-  function spawn<T>(operation: Operation): Promise<T> {
-    return World["spawn"](operation);
-  }
-
-  beforeEach(() => {
-    World = main(undefined);
-  });
-
-  afterEach(() => {
-    World.halt();
-  });
 
   describe('starting a new server', () => {
     let server: AgentServer;
@@ -100,8 +89,8 @@ describe("@bigtest/agent", function() {
       });
 
       describe('sending a run message', () => {
-        let success;
-        let failure;
+        let success: AssertionResult;
+        let failure: AssertionResult;
 
         beforeEach(async () => {
           let testRunId = 'test-run-1';
@@ -130,12 +119,12 @@ describe("@bigtest/agent", function() {
         it('reports success and failure results', () => {
           expect(success.status).toEqual('ok');
           expect(failure.status).toEqual('failed');
-          expect(failure.error.message).toEqual('boom');
+          expect(failure.error && failure.error.message).toEqual('boom');
         });
       });
 
       describe('closing browser connection', () => {
-        let message;
+        let message: string;
         beforeEach(async () => {
           await spawn(browser.navigateTo('about:blank'));
           message = await spawn(delegate.receive({ status: 'disconnected', agentId }))

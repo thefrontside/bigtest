@@ -38,7 +38,7 @@ describe("ensure()", () => {
   });
 
   describe('with successful context', () => {
-    let result;
+    let result: number;
 
     beforeEach(async () => {
       result = await spawn(function*() {
@@ -54,7 +54,7 @@ describe("ensure()", () => {
   });
 
   describe('with failed context', () => {
-    let error;
+    let error: Error;
 
     beforeEach(async () => {
       try {

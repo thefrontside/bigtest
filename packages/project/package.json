@@ -17,6 +17,7 @@
     "prepack": "tsc --outdir dist --declaration --sourcemap"
   },
   "devDependencies": {
+    "@frontside/tsconfig": "*",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
     "effection": "^0.6.2",

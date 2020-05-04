@@ -28,7 +28,11 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
 
     messages = yield messages.map(({ args }) => {
       let [message] = args as IMessage[];
-      return JSON.parse(message.utf8Data);
+      if (message.utf8Data) {
+        return JSON.parse(message.utf8Data)
+      } else {
+        return {};
+      }
     });
 
     let { data, agentId } = yield messages.receive({ type: 'connected' });

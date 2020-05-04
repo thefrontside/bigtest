@@ -37,11 +37,11 @@ export function* listenWS(server: Server, handler: ConnectionHandler): Operation
   try {
     while (true) {
       let [request]: [Request] = yield once(socket, "request");
-      let connection = request.accept(null, request.origin);
+      let connection = request.accept(undefined, request.origin);
 
       let handle = yield fork(function* setupConnection() {
         let halt = () => handle.halt();
-        let fail = (error: Error) => {
+        let fail = (error: NodeJS.ErrnoException) => {
           if(error["code"] === 'ECONNRESET' || error["code"] === 'ERR_STREAM_WRITE_AFTER_END') {
             handle.halt();
           } else {

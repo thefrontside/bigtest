@@ -2,11 +2,11 @@ import { fork } from 'effection';
 import { main } from '@effection/node';
 import { Mailbox } from '@bigtest/effection';
 import * as tempy from 'tempy';
-import { setLogLevel } from '@bigtest/logging';
+import { setLogLevel, Levels } from '@bigtest/logging';
 
 import { createOrchestrator, createOrchestratorAtom } from '../src/index';
 
-setLogLevel(process.env.LOG_LEVEL || 'info');
+setLogLevel(process.env.LOG_LEVEL as Levels || 'info');
 
 main(function*() {
   let delegate = new Mailbox();

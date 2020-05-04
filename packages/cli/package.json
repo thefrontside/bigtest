@@ -21,6 +21,8 @@
     "bigtest": "./bin/bigtest"
   },
   "devDependencies": {
+    "@frontside/tsconfig": "*",
+    "@types/capture-console": "1.0.0",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
     "@types/yargs": "^15.0.3",

@@ -4,34 +4,25 @@ import { Mailbox } from '@bigtest/effection';
 import { beforeEach, afterEach } from 'mocha';
 import { w3cwebsocket } from 'websocket';
 import { Agent } from '@bigtest/agent';
-import { Atom } from '@bigtest/atom';
+// import { Atom } from '@bigtest/atom';
 
 import { World } from './helpers/world';
 
 import { createOrchestrator } from '../src/index';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
-import { Manifest, OrchestratorState } from '../src/orchestrator/state';
-
-interface Actions {
-  atom: Atom<OrchestratorState>;
-  fork<Result>(operation: Operation<Result>): Context<Result>;
-  receive(mailbox: Mailbox, pattern: unknown): PromiseLike<unknown>;
-  fetch(resource: RequestInfo, init?: RequestInit): PromiseLike<Response>;
-  createAgent(): PromiseLike<Agent>;
-  startOrchestrator(): PromiseLike<Context>;
-}
+import { Manifest } from '../src/orchestrator/state';
 
 let orchestratorPromise: Context;
 let manifest: Manifest;
 
-export const actions: Actions = {
+export const actions = {
   atom: createOrchestratorAtom(),
 
   fork(operation: Operation): Context {
     return currentWorld.fork(operation);
   },
 
-  receive(mailbox: Mailbox, pattern): PromiseLike<unknown> {
+  receive(mailbox: Mailbox, pattern: unknown) {
     return actions.fork(mailbox.receive(pattern));
   },
 

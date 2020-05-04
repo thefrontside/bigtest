@@ -1,27 +1,16 @@
-import { main, Context, Operation } from 'effection';
+import { main, Context, Operation, Controls } from 'effection';
 
-class World {
-  static current: World;
+type World<T = unknown> = Context<T> & Controls<T>;
 
-  context: Context = main(undefined);
-
-  spawn<T>(operation: Operation): Context & PromiseLike<T>{
-    return this.context['spawn'](operation);
-  }
-
-  halt() {
-    this.context.halt();
-  }
-}
-
-export function spawn<T>(operation: Operation): Context & PromiseLike<T> {
-  return World.current.spawn(operation);
+let World: World;
+export function spawn<T>(operation: Operation) {
+  return World.spawn<T>(operation);
 }
 
 beforeEach(() => {
-  World.current = new World();
+  World = main(undefined) as World<unknown>;
 });
 
 afterEach(() => {
-  World.current.halt();
-})
+  World.halt();
+});

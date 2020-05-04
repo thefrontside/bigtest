@@ -1,14 +1,5 @@
 {
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "noImplicitAny": false,
-    "typeRoots": [
-      "./node_modules/@types"
-    ],
-    "baseUrl": "."
-  },
+  "extends": "@frontside/tsconfig",
   "include": [
     "src/**/*.ts",
     "bin/*.ts"

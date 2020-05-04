@@ -24,7 +24,7 @@ export class ParcelProcess {
     let stdioMode = options.stdio || 'pipe';
     let parcelProcess = new ParcelProcess();
 
-    let entries = [].concat(options.sourceEntries);
+    let entries = typeof options.sourceEntries === 'string' ? [options.sourceEntries] : options.sourceEntries;
     let runParcel = Path.join(__dirname, 'parcel-run');
     let child: ChildProcess = forkProcess(
       runParcel,
@@ -39,7 +39,7 @@ export class ParcelProcess {
 
     let readiness = new Mailbox();
 
-    let res = yield resource(parcelProcess, function* supervise() {
+    let res = yield resource(parcelProcess, function* supervise(): Operation<void> {
       // Killing all child processes started by this command is surprisingly
       // tricky. If a process spawns another processes and we kill the parent,
       // then the child process is NOT automatically killed. Instead we're using
@@ -60,7 +60,7 @@ export class ParcelProcess {
         readiness.send("ready");
 
         // deliver "update" messages to the main parcel process object
-        yield monitor(function* () {
+        yield monitor(function* (): Operation<void> {
           while (true) {
             let message = yield messages.receive();
             parcelProcess.mailbox.send(message);
