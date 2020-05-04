@@ -1124,10 +1124,10 @@
   resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.6.1.tgz#839aad2303f4c95cf70092bbc62d5992f72e1a26"
   integrity sha512-IdJO10dxoPYtZHAAefEsQ4sXT5jF4gZ+CI/HBPHPVFih2+OJZaNbTg2s5uwufkSk2Kma1jsXl1JaXZ0ruDLIFQ==
 
-"@effection/node@^0.6.0-42a94ec", "@effection/node@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@effection/node/-/node-0.6.1.tgz#ee64cdd91923a182c77f4f55f3f5a6754a1b2fc1"
-  integrity sha512-K8IqscuoMoJ7Zrwn/npbSeHgvQ2ldmQRTyYLXQ0C+M8yevJ8xFkjlK7egBqHLIvpaHN8cZl0ogRygHRd54yylw==
+"@effection/node@^0.6.2":
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/@effection/node/-/node-0.6.2.tgz#69aa57683e13dd990864de1e4ae37f138f4dbdf8"
+  integrity sha512-FB4Tck9Nub/1eJZoClvWpr1TVUpkduk+UTx+gNjSAgY30VAncVaxr0o6KaGfbtyzWDpmi9NhtB8YO0/ur7EDfQ==
   dependencies:
     "@effection/events" "^0.6.0"
 

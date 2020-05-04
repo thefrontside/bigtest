@@ -10,9 +10,9 @@ interface ProcessOptions {
 }
 
 export class Process {
-  public stdout: Stream;
-  public stdin: Stream;
-  private child: ChildProcess;
+  public stdout?: Stream;
+  public stderr?: Stream;
+  private child?: ChildProcess;
 
   public code?: number;
   public signal?: string;
@@ -25,7 +25,7 @@ export class Process {
   constructor(private command: string, private args: string[] = [], private options: ProcessOptions = {}) {}
 
   *join() {
-    if(!this.child.killed) {
+    if(this.child && !this.child.killed) {
       yield once(this.child, 'exit');
     }
   }
@@ -50,26 +50,26 @@ export class Process {
     }
   }
 
-  int() {
+  kill() {
     if(this.child && this.child.pid) {
       try {
-        process.kill(-this.child.pid, "SIGINT")
+        process.kill(-this.child.pid, "SIGKILL")
       } catch(e) {
         // do nothing, process is probably already dead
       }
     }
   }
 
-  *close(t = 2000) {
-    this.int();
-    yield spawn(function*() {
+  *close(t = 2000): Operation<void> {
+    this.term();
+    yield spawn(function*(): Operation<void> {
       yield timeout(t);
       throw new Error("unable to shut down child process cleanly");
     });
     try {
       yield this.join();
     } finally {
-      this.term(); // always try to clean up the process group in case the process left behind some orphans
+      this.kill(); // always try to clean up the process group in case the process left behind some orphans
     }
   }
 
@@ -79,8 +79,14 @@ export class Process {
       shell: true,
       detached: true,
     });
-    this.stdout = yield Stream.of(this.child.stdout, this.options.verbose);
-    this.stdin = yield Stream.of(this.child.stderr, this.options.verbose);
+
+    if (this.child.stdout) {
+      this.stdout = yield Stream.of(this.child.stdout, this.options.verbose);
+    }
+    if (this.child.stderr) {
+      this.stderr = yield Stream.of(this.child.stderr, this.options.verbose);
+    }
+
     let [code, signal] = yield once(this.child, 'exit');
     this.code = code;
     this.signal = signal;
