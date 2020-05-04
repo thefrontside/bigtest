@@ -66,5 +66,5 @@ describe('@bigtest/cli', function() {
 interface AgentQueryResult {
   agents: Array<{
     agentId: string;
-  }>
+  }>;
 }
