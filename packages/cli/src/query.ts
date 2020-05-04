@@ -6,7 +6,7 @@ export function run() {
   `
 }
 
-export function testRunResults(testRunId) {
+export function testRunResults(testRunId: string) {
   return `
     fragment TestData on TestResult {
       description

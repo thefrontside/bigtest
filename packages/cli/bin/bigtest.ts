@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-import "@bigtest/cli";
+require("@bigtest/cli");

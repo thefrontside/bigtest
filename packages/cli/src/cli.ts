@@ -1,7 +1,7 @@
 import { Operation } from 'effection';
 import yargs from 'yargs';
 import { createServer, Client } from '@bigtest/server';
-import { setLogLevel } from '@bigtest/logging';
+import { setLogLevel, Levels } from '@bigtest/logging';
 
 import { loadConfig } from './config';
 import * as query from './query';
@@ -11,7 +11,7 @@ export function CLI(argv: string[]): Operation {
     yargs({})
       .scriptName('bigtest')
       .command('server', 'start a bigtest server', (yargs) => yargs, (options) => {
-        setLogLevel(options.logLevel);
+        setLogLevel(options.logLevel as Levels);
 
         fork(function* server() {
           let config = yield loadConfig(options.configFile as string | undefined);
@@ -19,7 +19,7 @@ export function CLI(argv: string[]): Operation {
         });
       })
       .command('test', 'run tests against server', (yargs) => yargs, (options) => {
-        setLogLevel(options.logLevel);
+        setLogLevel(options.logLevel as Levels);
 
         fork(function* server() {
           let config = yield loadConfig(options.configFile as string | undefined);
