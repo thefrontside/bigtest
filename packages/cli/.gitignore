@@ -2,3 +2,4 @@
 /yarn-error.log
 .node-version
 .cache
+.bigtest

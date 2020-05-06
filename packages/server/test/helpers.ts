@@ -47,16 +47,28 @@ export const actions = {
       globalWorld.fork(createOrchestrator({
         delegate,
         atom: this.atom,
-        appCommand: "yarn",
-        appArgs: ['test:app:start', '24100'],
-        appPort: 24100,
-        testFiles: ["test/fixtures/*.t.js"],
-        cacheDir: "./tmp/test/orchestrator",
-        manifestPort: 24105,
-        proxyPort: 24101,
-        commandPort: 24102,
-        connectionPort: 24103,
-        agentPort: 24104,
+        project: {
+          port: 24102,
+          testFiles: ["test/fixtures/*.t.js"],
+          cacheDir: "./tmp/test/orchestrator",
+          app: {
+            command: "yarn",
+            args: ['test:app:start', '24100'],
+            port: 24100,
+          },
+          manifest: {
+            port: 24105,
+          },
+          proxy: {
+            port: 24101,
+          },
+          connection: {
+            port: 24103,
+          },
+          agent: {
+            port: 24104,
+          }
+        }
       }));
 
       orchestratorPromise = this.receive(delegate, { status: 'ready' });

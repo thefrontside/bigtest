@@ -3,6 +3,7 @@ import { fork, Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { AgentServer } from '@bigtest/agent';
 import { Atom } from '@bigtest/atom';
+import { ProjectOptions } from '@bigtest/project';
 
 import { createProxyServer } from './proxy';
 import { createCommandServer } from './command-server';
@@ -18,20 +19,8 @@ import { OrchestratorState } from './orchestrator/state';
 
 type OrchestratorOptions = {
   atom: Atom<OrchestratorState>;
-  delegate: Mailbox;
-  agentPort: number;
-  externalAgentServerURL?: string;
-  appPort: number;
-  appCommand: string;
-  appArgs?: string[];
-  appEnv?: Record<string, string>;
-  appDir?: string;
-  proxyPort: number;
-  commandPort: number;
-  connectionPort: number;
-  testFiles: [string];
-  manifestPort: number;
-  cacheDir: string;
+  delegate?: Mailbox;
+  project: ProjectOptions;
 }
 
 export function* createOrchestrator(options: OrchestratorOptions): Operation {
@@ -48,11 +37,11 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   let manifestBuilderDelegate = new Mailbox();
   let manifestServerDelegate = new Mailbox();
 
-  let agentServer = AgentServer.create({ port: options.agentPort, externalURL: options.externalAgentServerURL });
+  let agentServer = AgentServer.create({ port: options.project.agent.port, externalURL: process.env['BIGTEST_AGENT_SERVER_URL'] });
 
-  let manifestSrcDir = path.resolve(options.cacheDir, 'manifest/src');
-  let manifestBuildDir = path.resolve(options.cacheDir, 'manifest/build');
-  let manifestDistDir = path.resolve(options.cacheDir, 'manifest/dist');
+  let manifestSrcDir = path.resolve(options.project.cacheDir, 'manifest/src');
+  let manifestBuildDir = path.resolve(options.project.cacheDir, 'manifest/build');
+  let manifestDistDir = path.resolve(options.project.cacheDir, 'manifest/dist');
 
   let manifestSrcPath = path.resolve(manifestSrcDir, 'manifest.js');
 
@@ -63,44 +52,40 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield fork(createProxyServer({
     delegate: proxyServerDelegate,
-    port: options.proxyPort,
-    targetPort: options.appPort,
+    port: options.project.proxy.port,
+    targetPort: options.project.app.port,
     inject: `<script src="${agentServer.harnessScriptURL}"></script>`,
   }));
 
   yield fork(createCommandServer({
     delegate: commandServerDelegate,
     atom: options.atom,
-    port: options.commandPort,
+    port: options.project.port,
   }));
 
   yield fork(createConnectionServer({
     inbox: connectionServerInbox,
     delegate: connectionServerDelegate,
     atom: options.atom,
-    port: options.connectionPort,
-    proxyPort: options.proxyPort,
-    manifestPort: options.manifestPort,
+    port: options.project.connection.port,
+    proxyPort: options.project.proxy.port,
+    manifestPort: options.project.manifest.port,
   }));
 
   yield fork(createAppServer({
     delegate: appServerDelegate,
-    dir: options.appDir,
-    command: options.appCommand,
-    args: options.appArgs,
-    env: options.appEnv,
-    port: options.appPort,
+    ...options.project.app
   }));
 
   yield fork(createManifestServer({
     delegate: manifestServerDelegate,
     dir: manifestDistDir,
-    port: options.manifestPort,
+    port: options.project.manifest.port,
   }));
 
   yield fork(createManifestGenerator({
     delegate: manifestGeneratorDelegate,
-    files: options.testFiles,
+    files: options.project.testFiles,
     destinationPath: manifestSrcPath,
   }));
 
@@ -146,12 +131,12 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   console.log("[orchestrator] running!");
 
-  let commandUrl = `http://localhost:${options.commandPort}`;
-  let connectUrl = agentServer.connectURL(`ws://localhost:${options.connectionPort}`);
+  let commandUrl = `http://localhost:${options.project.port}`;
+  let connectUrl = agentServer.connectURL(`ws://localhost:${options.project.connection.port}`);
   console.log(`[orchestrator] launch agents via: ${connectUrl}`);
   console.log(`[orchestrator] show GraphQL dashboard via: ${commandUrl}`);
 
-  options.delegate.send({ status: 'ready' });
+  options.delegate && options.delegate.send({ status: 'ready' });
 
   let commandProcessorInbox = new Mailbox();
   commandProcessorInbox.setMaxListeners(100000);
@@ -160,8 +145,8 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   try {
     yield createCommandProcessor({
-      proxyPort: options.proxyPort,
-      manifestPort: options.manifestPort,
+      proxyPort: options.project.proxy.port,
+      manifestPort: options.project.manifest.port,
       atom: options.atom,
       inbox: commandProcessorInbox,
       delegate: connectionServerInbox,

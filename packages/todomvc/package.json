@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "effection": "^0.6.2",
+    "@effection/node": "^0.6.2",
     "express": "^4.17.1"
   },
   "volta": {
