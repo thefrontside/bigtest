@@ -18,7 +18,6 @@ export class Process {
   public code?: number;
   public signal?: string;
 
-
   static spawn(command: string, args: string[] = [], options: ProcessOptions) {
     let process = new Process(command, args, options);
     return resource(process, process.run());
@@ -61,16 +60,16 @@ export class Process {
   }
 
   *close(t = 2000): Operation<void> {
+    let kill = () => this.kill();
     this.term();
     yield spawn(function*(): Operation<void> {
       yield timeout(t);
+      kill(); // always try to clean up the process group in case the process left behind some orphans
       throw new Error("unable to shut down child process cleanly");
     });
-    try {
-      yield this.join();
-    } finally {
-      this.kill(); // always try to clean up the process group in case the process left behind some orphans
-    }
+
+    yield this.join();
+
   }
 
   *run(): Operation<void> {
