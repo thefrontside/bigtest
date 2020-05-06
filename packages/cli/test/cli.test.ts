@@ -15,7 +15,7 @@ function run(...args: string[]) {
 }
 
 describe('@bigtest/cli', function() {
-  this.timeout(20000);
+  this.timeout(60000);
 
   describe('starting the server', () => {
     let child: Process;
