@@ -1,55 +1,36 @@
-import { fork, spawn, Operation } from 'effection';
+import { spawn, Operation } from 'effection';
 import { TestResult, StepResult, AssertionResult, ResultStatus } from '@bigtest/suite';
 import { Aggregator, AggregatorTestOptions } from './aggregator';
 import { StepAggregator } from './step';
 import { AssertionAggregator } from './assertion';
+import { parallel } from './parallel';
 
 export class TestAggregator extends Aggregator<TestResult, AggregatorTestOptions> {
   *collectTestResult(): Operation<ResultStatus> {
     yield spawn(this.markRunning());
 
-    let status: ResultStatus = 'ok';
-    let forks = [];
-
-    for (let [index, step] of this.slice.get().steps.entries()) {
+    let results = [...this.slice.get().steps.entries()].map(([index, step]) => {
       let slice = this.slice.slice<StepResult>(['steps', index]);
-      let aggregator = new StepAggregator(slice, {
+      return new StepAggregator(slice, {
         ...this.options,
         path: this.options.path.concat(step.description),
-      });
-      forks.push(
-        yield fork(aggregator.run())
-      );
-    }
-
-    for (let [index, assertion] of this.slice.get().assertions.entries()) {
+      }).run();
+    }).concat([...this.slice.get().assertions.entries()].map(([index, assertion]) => {
       let slice = this.slice.slice<AssertionResult>(['assertions', index]);
-      let aggregator = new AssertionAggregator(slice, {
+      return new AssertionAggregator(slice, {
         ...this.options,
         path: this.options.path.concat(assertion.description),
-      });
-      forks.push(
-        yield fork(aggregator.run())
-      );
-    }
-
-    for (let [index, child] of this.slice.get().children.entries()) {
+      }).run();
+    })).concat([...this.slice.get().children.entries()].map(([index, child]) => {
       let slice = this.slice.slice<TestResult>(['children', index]);
-      let aggregator = new TestAggregator(slice, {
+      return new TestAggregator(slice, {
         ...this.options,
         path: this.options.path.concat(child.description),
-      });
+      }).run();
+    }));
 
-      forks.push(
-        yield fork(aggregator.run())
-      );
-    }
-
-    for (let fork of forks) {
-      if((yield fork) === 'failed') {
-        status = 'failed';
-      }
-    }
+    let statuses: ResultStatus[] = yield parallel(results);
+    let status: ResultStatus = statuses.some(result => result === 'failed') ? 'failed' : 'ok';
 
     return status;
   }
