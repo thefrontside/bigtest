@@ -1,6 +1,6 @@
 import { Operation, resource } from 'effection';
 import { Mailbox, subscribe, ensure } from '@bigtest/effection';
-import { throwOnErrorEvent, once } from '@effection/events';
+import { once } from '@effection/events';
 import { AgentProtocol, AgentEvent, Command } from './protocol';
 
 export * from './protocol';
@@ -12,11 +12,13 @@ export class Agent implements AgentProtocol {
     let mailbox = new Mailbox();
 
     let socket = createSocket();
-    let res = yield resource(new Agent(socket, mailbox), function*() {
+    let res = yield resource(new Agent(socket, mailbox), function*(): Operation<void> {
       yield subscribe(mailbox, socket, 'message');
       yield ensure(() => socket.close());
-      yield throwOnErrorEvent(socket);
-      yield once(socket, 'close');
+      let [event] = yield once(socket, 'close');
+      if(!event.wasClean) {
+        throw new Error(`[agent] socket closed unexpectedly: [${event.code}] ${event.reason}`);
+      }
     });
 
     yield once(socket, 'open');

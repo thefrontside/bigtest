@@ -138,17 +138,20 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   options.delegate && options.delegate.send({ status: 'ready' });
 
-  let commandProcessorInbox = new Mailbox();
-  commandProcessorInbox.setMaxListeners(100000);
-  yield connectionServerDelegate.pipe(commandProcessorInbox);
-  yield commandServerDelegate.pipe(commandProcessorInbox);
+  let commandProcessorEvents = new Mailbox();
+  commandProcessorEvents.setMaxListeners(100000);
+  yield connectionServerDelegate.pipe(commandProcessorEvents);
+
+  let commandProcessorCommands = new Mailbox();
+  yield commandServerDelegate.pipe(commandProcessorCommands);
 
   try {
     yield createCommandProcessor({
       proxyPort: options.project.proxy.port,
       manifestPort: options.project.manifest.port,
       atom: options.atom,
-      inbox: commandProcessorInbox,
+      events: commandProcessorEvents,
+      commands: commandProcessorCommands,
       delegate: connectionServerInbox,
     });
   } finally {

@@ -4,20 +4,25 @@ import * as expect from 'expect';
 import { Mailbox } from '@bigtest/effection';
 import { Atom } from '@bigtest/atom';
 
+import { AgentEvent, Command as AgentCommand } from '@bigtest/agent';
+
 import { actions } from './helpers';
 import { createCommandProcessor } from '../src/command-processor';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
+import { CommandMessage } from '../src/command-server';
 
 import { AgentState, Manifest, TestRunState, OrchestratorState } from '../src/orchestrator/state';
 
-describe('command server', () => {
-  let delegate: Mailbox;
-  let inbox: Mailbox;
+describe('command processor', () => {
+  let delegate: Mailbox<AgentCommand & { agentId: string }>;
+  let events: Mailbox<AgentEvent>;
+  let commands: Mailbox<CommandMessage>;
   let atom: Atom<OrchestratorState>;
 
   beforeEach(async () => {
     delegate = new Mailbox();
-    inbox = new Mailbox();
+    events = new Mailbox();
+    commands = new Mailbox();
     atom = createOrchestratorAtom();
     atom.slice<AgentState>(['agents', 'agent-1']).set({
       agentId: 'agent-1',
@@ -35,7 +40,8 @@ describe('command server', () => {
     });
     actions.fork(createCommandProcessor({
       atom,
-      inbox,
+      events,
+      commands,
       delegate,
       proxyPort: 24201,
       manifestPort: 24202,
@@ -45,11 +51,11 @@ describe('command server', () => {
   describe('when sent a `run` message', () => {
     let pendingMessage: any; // eslint-disable-line @typescript-eslint/no-explicit-any
     beforeEach(async () => {
-      inbox.send({ type: 'run', id: 'test-id-1' });
-      pendingMessage = await actions.fork(delegate.receive({ type: 'run', status: 'pending' }));
+      commands.send({ type: 'run', id: 'test-id-1' });
+      pendingMessage = await actions.fork(delegate.receive({ type: 'run' }));
     });
 
-    it('picks the first available agent for now', () => {
+    it('runs on the available agents', () => {
       expect(pendingMessage.agentId).toEqual('agent-1');
     });
 

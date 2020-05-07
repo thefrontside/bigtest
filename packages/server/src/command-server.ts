@@ -11,8 +11,10 @@ import { OrchestratorState } from './orchestrator/state';
 
 import { handleMessage } from './command-server/websocket';
 
+export type CommandMessage = { status: "ready" } | { type: "run"; id: string };
+
 interface CommandServerOptions {
-  delegate: Mailbox;
+  delegate: Mailbox<CommandMessage>;
   atom: Atom<OrchestratorState>;
   port: number;
 };
