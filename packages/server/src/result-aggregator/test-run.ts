@@ -1,30 +1,22 @@
-import { fork, Operation } from 'effection';
+import { Operation } from 'effection';
 import { ResultStatus } from '@bigtest/suite';
 import { TestRunState, TestRunAgentState } from '../orchestrator/state';
 import { Aggregator, AggregatorOptions } from './aggregator';
 import { TestRunAgentAggregator } from './test-run-agent';
+import { parallel } from './parallel';
 
 export class TestRunAggregator extends Aggregator<TestRunState, AggregatorOptions> {
   *perform(): Operation<ResultStatus> {
-    let status: ResultStatus = 'ok';
-    let forks = [];
-
-    for(let agentId of Object.keys(this.slice.get().agents)) {
+    let agentRuns = Object.keys(this.slice.get().agents).map(agentId => {
       let testRunAgentSlice = this.slice.slice<TestRunAgentState>(['agents', agentId]);
 
-      let aggregator = new TestRunAgentAggregator(testRunAgentSlice, { agentId, ...this.options });
+      return new TestRunAgentAggregator(testRunAgentSlice, { agentId, ...this.options }).run();
+    });
 
-      forks.push(yield fork(aggregator.run()));
-    }
+    let statuses: ResultStatus[] = yield parallel(agentRuns);
 
-    for(let fork of forks) {
-      if((yield fork) === 'failed') {
-        status = 'failed';
-      }
-    }
+    this.statusSlice.set(statuses.some(status => status === 'failed') ? 'failed' : 'ok');
 
-    this.statusSlice.set(status);
-
-    return status;
+    return this.statusSlice.get();
   }
 }
