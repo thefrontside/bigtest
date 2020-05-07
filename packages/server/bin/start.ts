@@ -26,5 +26,19 @@ main(createServer({
     port: 24005,
   },
   testFiles: ["./test/fixtures/*.t.js"],
-  cacheDir: "./tmp/start"
+  cacheDir: "./tmp/start",
+  drivers: {
+    "chrome": {
+      browserName: "chrome",
+      headless: true
+    },
+    "firefox": {
+      browserName: "firefox",
+      headless: true
+    }
+  },
+  launch: {
+    "chrome": { },
+    "firefox": { }
+  }
 }));

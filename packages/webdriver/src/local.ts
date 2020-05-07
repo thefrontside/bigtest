@@ -9,8 +9,6 @@ import { findAvailablePortNumber } from './find-available-port-number';
 import { untilURLAvailable } from './until-url-available';
 import { WebDriver, Options, connect } from './web-driver';
 
-type LocalDriverName = 'chromedriver' | 'geckodriver';
-
 /**
  * Create a local `WebDriver` resource based on `driverName` (either 'geckodriver' or
  * 'chromedriver').
@@ -24,7 +22,9 @@ type LocalDriverName = 'chromedriver' | 'geckodriver';
  * suopports a single Firefox session per driver process, we spawn a
  * new process for each local driver.
  */
-export function * Local(driverName: LocalDriverName, options: Options): Operation<WebDriver> {
+export function * Local(options: Options): Operation<WebDriver> {
+
+  let driverName = options.browserName === 'chrome' ? 'chromedriver' : 'geckodriver';
 
   let port: number = yield findAvailablePortNumber();
   let driverURL = `http://localhost:${port}`;

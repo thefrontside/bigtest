@@ -1,23 +1,39 @@
 import { Operation } from 'effection';
 import yargs from 'yargs';
+import { ProjectOptions } from '@bigtest/project';
 import { createServer, Client } from '@bigtest/server';
 import { setLogLevel, Levels } from '@bigtest/logging';
 
 import { loadConfig } from './config';
 import * as query from './query';
 
+import { Launches, parseLaunches } from './parse-launches';
+
 export function CLI(argv: string[]): Operation {
   return ({ fork, resume }) => {
     yargs({})
       .scriptName('bigtest')
-      .command('server', 'start a bigtest server', (yargs) => yargs, (options) => {
+      .command('server', 'start a bigtest server', (yargs) => {
+        yargs
+          .option('launch', {
+            describe: 'launch specified driver at server startup',
+            default: []
+          })
+          .coerce('launch', parseLaunches)
+      }, (options) => {
         setLogLevel(options.logLevel as Levels);
 
         fork(function* server() {
-          let config = yield loadConfig(options.configFile as string | undefined);
+          let config: ProjectOptions = yield loadConfig(options.configFile as string | undefined);
+
+          if (Object.keys(options.launch as object).length !== 0) {
+            config.launch = options.launch as Launches;
+          }
+
           yield createServer(config);
         });
       })
+
       .command('test', 'run tests against server', (yargs) => yargs, (options) => {
         setLogLevel(options.logLevel as Levels);
 

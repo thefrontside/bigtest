@@ -24,6 +24,7 @@
   "devDependencies": {
     "@frontside/tsconfig": "*",
     "@types/capture-console": "1.0.0",
+    "@types/json5": "^0.0.30",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
     "@types/yargs": "^15.0.3",
@@ -43,7 +44,8 @@
     "@effection/node": "^0.6.2",
     "capture-console": "^1.0.1",
     "deepmerge": "^4.2.2",
-    "effection": "^0.6.2"
+    "effection": "^0.6.2",
+    "json5": "^2.1.3"
   },
   "volta": {
     "node": "12.16.0",
