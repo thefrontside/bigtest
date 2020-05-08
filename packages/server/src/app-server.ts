@@ -1,6 +1,6 @@
 import { timeout, Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
-import { spawn } from './effection/child_process';
+import { ChildProcess } from '@effection/node';
 import { Socket } from 'net';
 import * as process from 'process';
 
@@ -36,7 +36,7 @@ function isReachable(port: number, options: { timeout: number } = { timeout: 100
 };
 
 export function* createAppServer(options: AppServerOptions): Operation {
-  yield spawn(options.command, options.args || [], {
+  yield ChildProcess.spawn(options.command, options.args || [], {
     cwd: options.dir,
     detached: true,
     env: Object.assign({}, process.env, options.env),
