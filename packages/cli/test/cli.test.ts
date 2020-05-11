@@ -20,7 +20,7 @@ describe('@bigtest/cli', function() {
     let child: Process;
 
     beforeEach(async () => {
-      child = await World.spawn(run('server', '--launch', 'chrome@headless:true'));
+      child = await World.spawn(run('server', '--launch', 'chrome.headless'));
     });
 
     afterEach(async () => {

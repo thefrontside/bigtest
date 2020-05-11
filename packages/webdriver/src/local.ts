@@ -24,7 +24,7 @@ import { WebDriver, Options, connect } from './web-driver';
  */
 export function * Local(options: Options): Operation<WebDriver> {
 
-  let driverName = options.browserName === 'chrome' ? 'chromedriver' : 'geckodriver';
+  let driverName = driverNameFor(options.browserName);
 
   let port: number = yield findAvailablePortNumber();
   let driverURL = `http://localhost:${port}`;
@@ -39,4 +39,12 @@ export function * Local(options: Options): Operation<WebDriver> {
   yield connect(driver, options);
 
   return driver;
+}
+
+function driverNameFor(browserName: Options["browserName"]) {
+  if (browserName == 'firefox') {
+    return 'geckodriver';
+  } else {
+    return `${browserName}driver`;
+  }
 }

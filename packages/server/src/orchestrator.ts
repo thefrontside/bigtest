@@ -22,7 +22,6 @@ type OrchestratorOptions = {
   atom: Atom<OrchestratorState>;
   delegate?: Mailbox;
   project: ProjectOptions;
-  browsers?: string[];
 }
 
 export function* createOrchestrator(options: OrchestratorOptions): Operation {

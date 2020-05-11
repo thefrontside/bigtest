@@ -30,15 +30,20 @@ main(createServer({
   drivers: {
     "chrome": {
       browserName: "chrome",
+      headless: false
+    },
+    "chrome.headless": {
+      browserName: "chrome",
       headless: true
     },
     "firefox": {
       browserName: "firefox",
+      headless: false
+    },
+    "firefox.headless": {
+      browserName: "firefox",
       headless: true
     }
   },
-  launch: {
-    "chrome": { },
-    "firefox": { }
-  }
+  launch: ['chrome.headless', 'firefox.headless']
 }));

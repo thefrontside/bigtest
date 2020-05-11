@@ -7,8 +7,6 @@ import { setLogLevel, Levels } from '@bigtest/logging';
 import { loadConfig } from './config';
 import * as query from './query';
 
-import { Launches, parseLaunches } from './parse-launches';
-
 export function CLI(argv: string[]): Operation {
   return ({ fork, resume }) => {
     yargs({})
@@ -17,17 +15,24 @@ export function CLI(argv: string[]): Operation {
         yargs
           .option('launch', {
             describe: 'launch specified driver at server startup',
+            type: 'array',
             default: []
           })
-          .coerce('launch', parseLaunches)
       }, (options) => {
         setLogLevel(options.logLevel as Levels);
 
         fork(function* server() {
           let config: ProjectOptions = yield loadConfig(options.configFile as string | undefined);
 
-          if (Object.keys(options.launch as object).length !== 0) {
-            config.launch = options.launch as Launches;
+          let launch = options.launch as string[];
+          if (launch.length > 0) {
+            config.launch = launch;
+          }
+
+          for (let key of config.launch) {
+            if (!config.drivers[key]) {
+              throw new Error(`Could not find launch key ${key} in the set of drivers: ${JSON.stringify(Object.keys(config.drivers))}`);
+            }
           }
 
           yield createServer(config);

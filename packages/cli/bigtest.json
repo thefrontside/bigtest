@@ -4,14 +4,5 @@
     "port": 36000
   },
   "testFiles": ["./test/fixtures/*.test.{ts,js}"],
-  "drivers": {
-    "chrome": {
-      "browserName": "chrome",
-      "headless": true
-    },
-    "firefox": {
-      "browserName": "firefox",
-      "headless": true
-    }
-  }
+  "launch": ["chrome"]
 }

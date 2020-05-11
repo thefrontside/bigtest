@@ -42,7 +42,7 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
     let agent = options.atom.slice<AgentState>(['agents', agentId]);
 
     try {
-      console.debug('[connection] received connection message', data);
+      console.info(`[connection] connected ${agentId} ${data.browser.name}@${data.browser.version}`);
 
       agent.set({ ...data, agentId });
 

@@ -26,7 +26,7 @@ export function *loadConfigFile(configFilePath: string): Operation<ProjectOption
 
 export type ProjectOptions = {
   port: number;
-  testFiles: [string];
+  testFiles: string[];
   cacheDir: string;
   app: {
     port: number;
@@ -48,5 +48,5 @@ export type ProjectOptions = {
     port: number;
   };
   drivers: Record<string, WebDriverOptions>;
-  launch: Record<string, Partial<WebDriverOptions>>;
+  launch: string[];
 }
