@@ -42,7 +42,7 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
     let agent = options.atom.slice<AgentState>(['agents', agentId]);
 
     try {
-      console.info(`[connection] connected ${agentId} ${data.browser.name}@${data.browser.version}`);
+      console.log(`[connection] connected ${agentId}`);
 
       agent.set({ ...data, agentId });
 
@@ -66,7 +66,7 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
       yield;
     } finally {
       agent.remove();
-      console.debug('[connection] disconnected');
+      console.debug(`[connection] disconnected ${agentId}`);
     }
   }
   yield createSocketServer(options.port, handleConnection, function*() {

@@ -43,6 +43,10 @@ main(createServer({
     "firefox.headless": {
       browserName: "firefox",
       headless: true
+    },
+    "safari": {
+      browserName: "safari",
+      headless: false
     }
   },
   launch: ['chrome.headless', 'firefox.headless']

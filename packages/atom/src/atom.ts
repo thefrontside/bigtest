@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import { Operation } from "effection";
-import { Mailbox } from "@bigtest/effection";
+import { on } from '@effection/events';
 import { Slice } from "./slice";
 
 export class Atom<S> {
@@ -34,14 +34,19 @@ export class Atom<S> {
     return new Slice(this, path);
   }
 
-  *each(fn: (state: S) => Operation) {
-    let mailbox = yield Mailbox.subscribe(this.subscriptions, "state");
+  *each(fn: (state: S) => Operation): Operation {
+    let subscription = yield on(this.subscriptions, 'state');
 
     while (true) {
-      let {
-        args: [state],
-      } = yield mailbox.receive();
+      let [state] = yield subscription.next();
       yield fn(state);
+    }
+  }
+
+  *once(predicate: (state: S) => boolean): Operation<void> {
+    let subscription = yield on(this.subscriptions, 'state');
+    while (!predicate(this.state)) {
+      yield subscription.next();
     }
   }
 }

@@ -51,10 +51,11 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     agentServer
   }));
 
-  let connectURL = agentServer.connectURL(`ws://localhost:${options.project.connection.port}`);
+  let connectTo = `ws://localhost:${options.project.connection.port}`;
 
   let browserManager: BrowserManager = yield createBrowserManager({
-    connectURL,
+    atom: options.atom,
+    connectURL: (agentId: string) => agentServer.connectURL(connectTo, agentId),
     drivers: options.project.drivers,
     launch: options.project.launch
   })
@@ -145,6 +146,8 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   console.log("[orchestrator] running!");
 
   let commandUrl = `http://localhost:${options.project.port}`;
+  let connectURL = agentServer.connectURL(connectTo);
+
   console.log(`[orchestrator] launch agents via: ${connectURL}`);
   console.log(`[orchestrator] show GraphQL dashboard via: ${commandUrl}`);
 

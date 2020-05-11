@@ -1,22 +1,20 @@
 import * as Bowser from 'bowser';
 import { Test } from '@bigtest/suite';
 import { TestFrame } from './test-frame';
+import { QueryParams } from './query-params';
 import { Agent, Command, Run } from '../shared/agent';
 
-export function* createAgent(connectTo: string) {
-  if (!connectTo) {
-    throw new Error("no orchestrator URL given, please specify the URL of the orchestrator by setting the `orchestrator` query param");
-  }
-
-  console.log('[agent] connecting to', connectTo);
+export function* createAgent(queryParams: QueryParams) {
+  console.log('[agent] connecting to', queryParams.connectTo);
 
   let testFrame = yield TestFrame.start();
 
-  let createSocket = () => new WebSocket(connectTo);
+  let createSocket = () => new WebSocket(queryParams.connectTo);
   let agent: Agent = yield Agent.start(createSocket);
 
   agent.send({
     type: 'connected',
+    agentId: queryParams.agentId,
     data: Bowser.parse(navigator.userAgent)
   });
 
