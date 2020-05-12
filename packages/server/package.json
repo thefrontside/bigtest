@@ -20,7 +20,7 @@
   },
   "files": [
     "README.md",
-    "dist/*"
+    "dist/**/*"
   ],
   "devDependencies": {
     "@bigtest/todomvc": "^0.1.0",
@@ -43,7 +43,8 @@
     "typescript": "^3.6.3"
   },
   "peerDependencies": {
-    "effection": "^0.6.2"
+    "effection": "^0.6.2",
+    "@bigtest/project": "^0.1.0"
   },
   "dependencies": {
     "@babel/core": "^7.0.0-0",
@@ -52,9 +53,11 @@
     "@bigtest/agent": "^0.1.0",
     "@bigtest/atom": "*",
     "@bigtest/effection": "^0.1.1",
+    "@bigtest/effection-express": "^0.1.0",
     "@bigtest/logging": "^0.1.0",
     "@bigtest/parcel": "^0.1.0",
     "@bigtest/suite": "^0.1.0",
+    "@bigtest/webdriver": "^0.1.0",
     "@effection/events": "^0.6.1",
     "@nexus/schema": "^0.13.1",
     "bowser": "^2.8.1",

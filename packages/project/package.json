@@ -26,7 +26,8 @@
     "ts-node": "*"
   },
   "peerDependencies": {
-    "effection": "^0.6.2"
+    "effection": "^0.6.2",
+    "@bigtest/webdriver": "^0.1.0"
   },
   "volta": {
     "node": "12.16.0",

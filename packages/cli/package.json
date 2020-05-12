@@ -8,7 +8,7 @@
   "license": "MIT",
   "files": [
     "bin/*",
-    "dist/*",
+    "dist/**/*",
     "README.md"
   ],
   "scripts": {
@@ -39,6 +39,8 @@
   },
   "dependencies": {
     "@bigtest/effection": "^0.1.1",
+    "@bigtest/project": "^0.1.0",
+    "@bigtest/server": "^0.1.0",
     "@bigtest/todomvc": "^0.1.1",
     "@effection/events": "^0.6.0",
     "@effection/node": "^0.6.2",
