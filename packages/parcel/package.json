@@ -8,7 +8,7 @@
   "author": "Frontside Engineering <engineering@frontside.io>",
   "license": "MIT",
   "files": [
-    "dist/*",
+    "dist/**/*",
     "README.md"
   ],
   "scripts": {
