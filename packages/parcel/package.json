@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/parcel",
-  "version": "0.1.0",
+  "version": "0.4.0",
   "description": "Effection wrappers for working with parcel",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
@@ -18,7 +18,7 @@
     "prepack": "tsc --outDir dist --declaration --sourcemap --module commonjs"
   },
   "dependencies": {
-    "@bigtest/effection": "^0.1.1",
+    "@bigtest/effection": "^0.4.0",
     "@effection/events": "^0.6.1",
     "@effection/node": "^0.6.2",
     "parcel": "^1.12.4",

@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/project",
-  "version": "0.1.0",
+  "version": "0.4.0",
   "description": "Utilities for with BigTest projects",
   "main": "dist/index.js",
   "typings": "dist/index.d.js",
@@ -27,7 +27,7 @@
   },
   "peerDependencies": {
     "effection": "^0.6.2",
-    "@bigtest/webdriver": "^0.1.0"
+    "@bigtest/webdriver": "^0.4.0"
   },
   "volta": {
     "node": "12.16.0",
