@@ -33,7 +33,7 @@ describe("Running a local wedriver", () => {
 
   describe('with chromedriver', () => {
     beforeEach(async () => {
-      driver = await spawn(Local('chromedriver', { headless: true }));
+      driver = await spawn(Local({ browserName: 'chrome', headless: true }));
       await spawn(driver.navigateTo(serverURL));
     });
 
@@ -45,9 +45,10 @@ describe("Running a local wedriver", () => {
 
   describe('with geckodriver', () => {
     beforeEach(async () => {
-      driver = await spawn(Local('geckodriver', { headless: true }));
+      driver = await spawn(Local({ browserName: 'firefox', headless: true }));
       await spawn(driver.navigateTo(serverURL));
     });
+
     it('can navigate to a url', () => {
       expect(latestRequest).toBeDefined();
       expect(latestRequest.headers['user-agent']).toMatch('Firefox');

@@ -1,4 +1,5 @@
 import { Operation } from 'effection';
+import { Options as WebDriverOptions } from '@bigtest/webdriver';
 import * as path from 'path';
 import { existsSync } from 'fs';
 import * as fs from 'fs';
@@ -25,7 +26,7 @@ export function *loadConfigFile(configFilePath: string): Operation<ProjectOption
 
 export type ProjectOptions = {
   port: number;
-  testFiles: [string];
+  testFiles: string[];
   cacheDir: string;
   app: {
     port: number;
@@ -46,4 +47,6 @@ export type ProjectOptions = {
   manifest: {
     port: number;
   };
+  drivers: Record<string, WebDriverOptions>;
+  launch: string[];
 }

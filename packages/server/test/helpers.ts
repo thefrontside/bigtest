@@ -67,7 +67,9 @@ export const actions = {
           },
           agent: {
             port: 24104,
-          }
+          },
+          drivers: {},
+          launch: []
         }
       }));
 

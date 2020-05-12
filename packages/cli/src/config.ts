@@ -30,9 +30,32 @@ export function *loadConfig(configFilePath: string | undefined): Operation<Proje
     },
     testFiles: ["./test/**/*.test.{ts,js}"],
     cacheDir: path.resolve(path.dirname(configFilePath), '.bigtest'),
+    drivers: {
+      chrome: {
+        browserName: "chrome",
+        headless: false
+      },
+      "chrome.headless": {
+        browserName: "chrome",
+        headless: true
+      },
+      firefox: {
+        browserName: "firefox",
+        headless: false
+      },
+      "firefox.headless": {
+        browserName: "firefox",
+        headless: true
+      },
+      "safari": {
+        browserName: "safari",
+        headless: false
+      },
+    },
+    launch: []
   }
 
   return merge(defaultConfig, projectConfig, {
-    arrayMerge: (a, b) => b
+    arrayMerge: (_a, b) => b
   });
 }

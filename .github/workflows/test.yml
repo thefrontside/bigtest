@@ -50,4 +50,4 @@ jobs:
       - name: Install dependencies
         run: yarn
       - name: Run tests
-        run: xvfb-run --auto-servernum -- yarn workspace @bigtest/${{ matrix.package }} test --browsers=ChromeHeadless
+        run: xvfb-run --auto-servernum -- yarn workspace @bigtest/${{ matrix.package }} test

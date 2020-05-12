@@ -6,6 +6,7 @@ import { Atom } from '@bigtest/atom';
 import { ProjectOptions } from '@bigtest/project';
 
 import { createProxyServer } from './proxy';
+import { createBrowserManager, BrowserManager } from './browser-manager';
 import { createCommandServer } from './command-server';
 import { createCommandProcessor } from './command-processor';
 import { createConnectionServer } from './connection-server';
@@ -49,6 +50,15 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     delegate: agentServerDelegate,
     agentServer
   }));
+
+  let connectTo = `ws://localhost:${options.project.connection.port}`;
+
+  let browserManager: BrowserManager = yield createBrowserManager({
+    atom: options.atom,
+    connectURL: (agentId: string) => agentServer.connectURL(connectTo, agentId),
+    drivers: options.project.drivers,
+    launch: options.project.launch
+  })
 
   yield fork(createProxyServer({
     delegate: proxyServerDelegate,
@@ -127,13 +137,18 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       yield manifestServerDelegate.receive({ status: 'ready' });
       console.debug('[orchestrator] manifest server ready');
     });
+    yield fork(function*() {
+      yield browserManager.ready();
+      console.debug('[orchestrator] browser manager ready');
+    })
   }
 
   console.log("[orchestrator] running!");
 
   let commandUrl = `http://localhost:${options.project.port}`;
-  let connectUrl = agentServer.connectURL(`ws://localhost:${options.project.connection.port}`);
-  console.log(`[orchestrator] launch agents via: ${connectUrl}`);
+  let connectURL = agentServer.connectURL(connectTo);
+
+  console.log(`[orchestrator] launch agents via: ${connectURL}`);
   console.log(`[orchestrator] show GraphQL dashboard via: ${commandUrl}`);
 
   options.delegate && options.delegate.send({ status: 'ready' });

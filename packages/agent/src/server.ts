@@ -24,8 +24,13 @@ export class AgentServer {
     }
   }
 
-  connectURL(connectBackURL: string) {
-    return `${this.url}/?connectTo=${encodeURIComponent(connectBackURL)}`;
+  connectURL(connectBackURL: string, agentId?: string) {
+    let url = new URL(this.url);
+    url.searchParams.append('connectTo', connectBackURL);
+    if (agentId) {
+      url.searchParams.append('agentId', agentId);
+    }
+    return url.toString();
   }
 
   get harnessScriptURL() {

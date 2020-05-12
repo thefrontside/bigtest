@@ -11,7 +11,7 @@ const { writeFile, mkdir } = fs.promises;
 
 interface ManifestGeneratorOptions {
   delegate: Mailbox;
-  files: [string];
+  files: string[];
   destinationPath: string;
 };
 

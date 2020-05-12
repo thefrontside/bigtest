@@ -9,8 +9,5 @@ import { ProjectOptions } from '@bigtest/project';
 
 export function* createServer(project: ProjectOptions): Operation {
   let atom = createOrchestratorAtom();
-  yield createOrchestrator({
-    atom: atom,
-    project: project,
-  });
+  yield createOrchestrator({ atom, project });
 }

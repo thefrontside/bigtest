@@ -58,6 +58,7 @@ function* request(url: string, init: RequestInit): Operation<WDResponse> {
 }
 
 export interface Options {
+  browserName: 'chrome' | 'firefox' | 'safari';
   headless: boolean;
 }
 

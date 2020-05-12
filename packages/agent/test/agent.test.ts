@@ -78,7 +78,7 @@ describe("@bigtest/agent", function() {
 
       beforeEach(async function() {
         await spawn(staticServer(8002));
-        browser = await spawn(Local('chromedriver', { headless: true }));
+        browser = await spawn(Local({ browserName: 'chrome', headless: true }));
         await spawn(browser.navigateTo(server.connectURL(`ws://localhost:8001`)));
         message = await spawn(delegate.receive({ status: 'connected' })) as typeof message;
         agentId = message.agentId;

@@ -5,7 +5,6 @@ import * as process from 'process';
 import { Process } from './helpers/process';
 import { World } from './helpers/world';
 
-import { Local, WebDriver } from '@bigtest/webdriver';
 import { Client } from '@bigtest/server';
 
 function run(...args: string[]) {
@@ -21,7 +20,7 @@ describe('@bigtest/cli', function() {
     let child: Process;
 
     beforeEach(async () => {
-      child = await World.spawn(run('server'));
+      child = await World.spawn(run('server', '--launch', 'chrome.headless'));
     });
 
     afterEach(async () => {
@@ -34,17 +33,10 @@ describe('@bigtest/cli', function() {
 
     describe('running the suite', () => {
       let runChild: Process;
-      let browser: WebDriver;
       let client: Client;
 
       beforeEach(async () => {
         await World.spawn(child.stdout?.waitFor("[orchestrator] running!"));
-
-        let connectionUrl = "ws://localhost:24003";
-        let agentUrl = `http://localhost:24004?connectTo=${encodeURIComponent(connectionUrl)}`;
-
-        browser = await World.spawn(Local('chromedriver', { headless: true }));
-        await World.spawn(browser.navigateTo(agentUrl));
 
         client = await World.spawn(Client.create(`http://localhost:24002`));
 
