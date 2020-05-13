@@ -1,6 +1,7 @@
 {
   "extends": "@frontside/tsconfig",
   "include": [
-    "index.ts"
+    "src/**/*.ts",
+    "bin/*.ts"
   ]
 }

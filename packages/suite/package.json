@@ -8,16 +8,21 @@
   "author": "Frontside Engineering <engineering@frontside.io>",
   "license": "MIT",
   "files": [
-    "dist/*",
+    "dist/**/*",
     "README.md"
   ],
   "scripts": {
-    "lint": "eslint 'index.ts'",
-    "test": "echo success",
-    "prepack": "tsc --outDir dist --declaration"
+    "lint": "eslint '{src,test}/**/*.ts'",
+    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "prepack": "tsc --outDir dist --declaration --sourcemap"
   },
   "devDependencies": {
-    "@frontside/tsconfig": "*"
+    "@frontside/tsconfig": "*",
+    "@types/mocha": "^7.0.1",
+    "@types/node": "^13.13.4",
+    "expect": "^24.9.0",
+    "mocha": "^6.2.2",
+    "ts-node": "*"
   },
   "volta": {
     "node": "12.16.0",
