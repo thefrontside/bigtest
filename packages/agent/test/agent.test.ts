@@ -29,7 +29,7 @@ function* staticServer(port: number) {
 }
 
 describe("@bigtest/agent", function() {
-  this.timeout(20000);
+  this.timeout(process.env.CI ? 60000 : 10000);
 
   describe('starting a new server', () => {
     let server: AgentServer;
