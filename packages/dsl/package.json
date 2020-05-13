@@ -1,0 +1,37 @@
+{
+  "name": "@bigtest/dsl",
+  "version": "0.1.0",
+  "description": "DSL for writing bigtest test suites",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.js",
+  "repository": "https://github.com/thefrontside/bigtest.git",
+  "author": "Frontside Engineering <engineering@frontside.io>",
+  "license": "MIT",
+  "files": [
+    "dist/*",
+    "README.md"
+  ],
+  "scripts": {
+    "lint": "eslint '{src,test}/**/*.ts'",
+    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "prepack": "tsc --outdir dist --declaration --sourcemap"
+  },
+  "devDependencies": {
+    "@frontside/tsconfig": "*",
+    "@types/mocha": "^7.0.1",
+    "@types/node": "^13.13.4",
+    "expect": "^24.9.0",
+    "mocha": "^6.2.2",
+    "ts-node": "*"
+  },
+  "peerDependencies": {
+    "effection": "^0.6.2"
+  },
+  "volta": {
+    "node": "12.16.0",
+    "yarn": "1.19.1"
+  },
+  "dependencies": {
+    "@bigtest/suite": "^0.1.0"
+  }
+}

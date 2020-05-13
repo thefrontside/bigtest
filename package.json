@@ -16,6 +16,7 @@
       "packages/project",
       "packages/todomvc",
       "packages/suite",
+      "packages/dsl",
       "packages/agent",
       "packages/convergence",
       "packages/interactor",

@@ -30,6 +30,8 @@ export interface TestImplementation extends Test {
   children: TestImplementation[];
 }
 
+export type Action = (context: Context) => Promise<Context | void>;
+
 /**
  * A single operation that is part of the test. It contains an Action
  * which is an `async` function that accepts the current test
@@ -39,8 +41,10 @@ export interface TestImplementation extends Test {
  */
 export interface Step extends Node {
   description: string;
-  action: (context: Context) => Promise<Context | void>;
+  action: Action;
 }
+
+export type Check = (context: Context) => void;
 
 /**
  * A single assertion that is part of a test case. It accepts the
@@ -50,7 +54,7 @@ export interface Step extends Node {
  */
 export interface Assertion extends Node {
   description: string;
-  check: (context: Context) => void;
+  check: Check;
 }
 
 /**
