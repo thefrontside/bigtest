@@ -14,7 +14,7 @@ function run(...args: string[]) {
 }
 
 describe('@bigtest/cli', function() {
-  this.timeout(60000);
+  this.timeout(process.env.CI ? 120000 : 30000);
 
   describe('starting the server', () => {
     let child: Process;
