@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/project",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Utilities for with BigTest projects",
   "main": "dist/index.js",
   "typings": "dist/index.d.js",
