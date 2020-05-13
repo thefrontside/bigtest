@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/effection-express",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Makes it easy to use Express from Effection",
   "main": "dist/index.js",
   "typings": "dist/index.d.js",

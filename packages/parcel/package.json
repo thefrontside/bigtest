@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/parcel",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Effection wrappers for working with parcel",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
