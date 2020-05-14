@@ -1,27 +1,8 @@
-module.exports = {
-  description: "tests",
-  steps: [],
-  assertions: [],
-  children: [
-    {
-      description: "test with failing assertion",
-      steps: [
-        {
-          description: "successful step",
-          action: async () => {}
-        },
-      ],
-      assertions: [
-        {
-          description: "failing assertion",
-          check: () => { throw new Error("boom") }
-        },
-        {
-          description: "successful assertion",
-          check: () => true
-        }
-      ],
-      children: []
-    }
-  ]
-}
+const { test } = require('@bigtest/suite');
+
+module.exports = test("tests")
+  .child(
+    "test with failing assertion", test => test
+      .step("successful step", async () => {})
+      .assertion("failing assertion", () => { throw new Error("boom!"); })
+      .assertion("successful assertion", () => true))
