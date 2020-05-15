@@ -91,6 +91,7 @@ describe("@bigtest/agent", function() {
       describe('sending a run message', () => {
         let success: AssertionResult;
         let failure: AssertionResult;
+        let checkContext: AssertionResult;
 
         beforeEach(async () => {
           let testRunId = 'test-run-1';
@@ -114,12 +115,29 @@ describe("@bigtest/agent", function() {
             type: 'assertion:result',
             path: ['tests', 'test with failing assertion', 'failing assertion'],
           }));
+
+          checkContext = await spawn(delegate.receive({
+            agentId,
+            testRunId,
+            type: 'assertion:result',
+            path: ['tests', 'tests that track context', 'contains entire context from all steps']
+          }));
         });
 
         it('reports success and failure results', () => {
           expect(success.status).toEqual('ok');
           expect(failure.status).toEqual('failed');
-          expect(failure.error && failure.error.message).toEqual('boom');
+          expect(failure.error && failure.error.message).toEqual('boom!');
+        });
+
+        it('preserves test context all the way down the entire test run', () => {
+          if (checkContext.status !== "ok") {
+            if (checkContext.error) {
+              throw new Error(checkContext.error.message);
+            } else {
+              expect(checkContext.error).toBeDefined();
+            }
+          }
         });
       });
 

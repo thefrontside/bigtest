@@ -1,5 +1,5 @@
 import { ParentFrame } from './parent-frame';
-import { TestImplementation, ErrorDetails } from '@bigtest/suite';
+import { TestImplementation, ErrorDetails, Context as TestContext } from '@bigtest/suite';
 import { Operation } from 'effection';
 import { Deferred } from '@bigtest/effection';
 
@@ -20,7 +20,7 @@ export function* createHarness() {
       let path = message.path.slice(1);
       try {
         parentFrame.send({ type: 'lane:begin', path });
-        yield runTest(parentFrame, manifest, path);
+        yield runTest(parentFrame, manifest, {}, path);
       } finally {
         parentFrame.send({ type: 'lane:end', path });
       }
@@ -36,7 +36,7 @@ const serializeError: (error: ErrorDetails) => ErrorDetails = ({ message, fileNa
   stack
 });
 
-function *runTest(parentFrame: ParentFrame, test: TestImplementation, path: string[], prefix: string[] = []): Operation<void> {
+function *runTest(parentFrame: ParentFrame, test: TestImplementation, context: TestContext, path: string[], prefix: string[] = []): Operation<void> {
   let currentPath = prefix.concat(test.description);
 
   console.debug('[harness] running test', currentPath);
@@ -47,8 +47,10 @@ function *runTest(parentFrame: ParentFrame, test: TestImplementation, path: stri
     try {
       console.debug('[harness] running step', step);
       parentFrame.send({ type: 'step:running', path: stepPath });
-      yield step.action({});
-
+      let result: TestContext | void = yield step.action(context);
+      if (result != null) {
+        context = {...context, ...result};
+      }
       parentFrame.send({ type: 'step:result', status: 'ok', path: stepPath });
     } catch(error) {
       console.error('[harness] step failed', step, error);
@@ -63,7 +65,7 @@ function *runTest(parentFrame: ParentFrame, test: TestImplementation, path: stri
       console.debug('[harness] running assertion', assertion);
       parentFrame.send({ type: 'assertion:running', path: assertionPath });
 
-      assertion.check({});
+      assertion.check(context);
 
       parentFrame.send({ type: 'assertion:result', status: 'ok', path: assertionPath });
     } catch(error) {
@@ -75,7 +77,7 @@ function *runTest(parentFrame: ParentFrame, test: TestImplementation, path: stri
   if (path.length > 0) {
     for (let child of test.children) {
       if (child.description === path[0]) {
-        yield runTest(parentFrame, child, path.slice(1), currentPath);
+        yield runTest(parentFrame, child, context, path.slice(1), currentPath);
       }
     }
   }
