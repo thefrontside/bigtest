@@ -218,6 +218,7 @@ export const schema = makeSchema({
           type: "Error",
           nullable: true
         })
+        t.boolean("timeout", { nullable: true });
       }
     }),
     objectType({

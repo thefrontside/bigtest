@@ -3,6 +3,8 @@ import { TestImplementation, ErrorDetails, Context as TestContext } from '@bigte
 import { Operation } from 'effection';
 import { Deferred } from '@bigtest/effection';
 
+import { timebox } from './timebox';
+
 declare const __bigtestManifest: TestImplementation;
 
 export function* createHarness() {
@@ -47,14 +49,31 @@ function *runTest(parentFrame: ParentFrame, test: TestImplementation, context: T
     try {
       console.debug('[harness] running step', step);
       parentFrame.send({ type: 'step:running', path: stepPath });
-      let result: TestContext | void = yield step.action(context);
+
+      let result: TestContext | void = yield timebox(step.action(context), 2000)
+
       if (result != null) {
         context = {...context, ...result};
       }
       parentFrame.send({ type: 'step:result', status: 'ok', path: stepPath });
     } catch(error) {
       console.error('[harness] step failed', step, error);
-      parentFrame.send({ type: 'step:result', status: 'failed', error: serializeError(error), path: stepPath });
+      if (error.name === 'TimeoutError') {
+        parentFrame.send({
+          type: 'step:result',
+          status: 'failed',
+          timeout: true,
+          path: stepPath
+        })
+      } else {
+        parentFrame.send({
+          type: 'step:result',
+          status: 'failed',
+          timeout: false,
+          error: serializeError(error),
+          path: stepPath
+        });
+      }
       return;
     }
   }

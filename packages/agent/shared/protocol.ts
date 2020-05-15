@@ -52,6 +52,7 @@ export interface StepResult {
   testRunId: string;
   path: string[];
   error?: ErrorDetails;
+  timeout?: boolean;
 }
 
 export interface AssertionRunning {
