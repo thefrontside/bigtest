@@ -50,3 +50,52 @@ export type ProjectOptions = {
   drivers: Record<string, WebDriverOptions>;
   launch: string[];
 }
+
+export function defaultConfig(configFilePath: string): ProjectOptions {
+  return {
+    port: 24002,
+    app: {
+      command: "yarn start",
+      args: [],
+      env: { PORT: "24000" },
+      port: 24000,
+    },
+    proxy: {
+      port: 24001,
+    },
+    connection: {
+      port: 24003,
+    },
+    agent: {
+      port: 24004,
+    },
+    manifest: {
+      port: 24005,
+    },
+    testFiles: ["./test/**/*.test.{ts,js}"],
+    cacheDir: path.resolve(path.dirname(configFilePath), '.bigtest'),
+    drivers: {
+      chrome: {
+        browserName: "chrome",
+        headless: false
+      },
+      "chrome.headless": {
+        browserName: "chrome",
+        headless: true
+      },
+      firefox: {
+        browserName: "firefox",
+        headless: false
+      },
+      "firefox.headless": {
+        browserName: "firefox",
+        headless: true
+      },
+      "safari": {
+        browserName: "safari",
+        headless: false
+      },
+    },
+    launch: []
+  }
+};
