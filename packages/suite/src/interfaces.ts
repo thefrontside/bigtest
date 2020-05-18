@@ -95,6 +95,7 @@ export interface TestResult extends Test {
 export interface StepResult extends Node {
   description: string;
   status: ResultStatus;
+  timeout?: boolean;
 }
 
 /**

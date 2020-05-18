@@ -14,4 +14,7 @@ module.exports = test("tests")
       .step("extends existing context", async ({ username }) => ({ hello: username }))
       .assertion("contains entire context from all steps", context => {
         assert.deepEqual(context, { username: "tyrion", hello: "tyrion" });
-      }));
+      }))
+  .child(
+    "test step timeouts", test => test
+      .step("this takes literally forever", async () => await new Promise(() => {})));

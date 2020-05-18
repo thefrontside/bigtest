@@ -7,7 +7,7 @@ import * as express from 'express';
 import fetch from 'node-fetch';
 import * as fixtureManifest from './fixtures/manifest.src';
 
-import { AgentConnectionServer, AgentServer, AssertionResult } from '../src/index';
+import { AgentConnectionServer, AgentServer, AssertionResult, StepResult } from '../src/index';
 
 import { Mailbox, ensure } from '@bigtest/effection';
 import { throwOnErrorEvent, once } from '@effection/events';
@@ -92,9 +92,9 @@ describe("@bigtest/agent", function() {
         let success: AssertionResult;
         let failure: AssertionResult;
         let checkContext: AssertionResult;
+        let testRunId = 'test-run-1';
 
         beforeEach(async () => {
-          let testRunId = 'test-run-1';
           let manifestUrl = 'http://localhost:8002/manifest.js';
           let appUrl = 'http://localhost:8002/app.html';
           inbox.send({ type: 'run', testRunId, agentId, manifestUrl, appUrl, tree: fixtureManifest });
@@ -139,6 +139,24 @@ describe("@bigtest/agent", function() {
             }
           }
         });
+
+        describe('steps that timeout', () => {
+          let longStep: StepResult;
+          beforeEach(async () => {
+            longStep = await spawn(delegate.receive({
+              agentId,
+              testRunId,
+              type: 'step:result',
+              path: ['tests', 'test step timeouts', 'this takes literally forever']
+            }));
+          });
+
+          it('cuts off steps that dont return within the given time period', () => {
+            expect(longStep.status).toEqual('failed');
+            expect(longStep.timeout).toEqual(true);
+          });
+        });
+
       });
 
       describe('closing browser connection', () => {
