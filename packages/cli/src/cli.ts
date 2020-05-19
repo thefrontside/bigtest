@@ -1,7 +1,8 @@
-import { Operation } from 'effection';
+import { spawn, Operation } from 'effection';
+import { Mailbox } from '@bigtest/effection';
 import yargs from 'yargs';
 import { ProjectOptions } from '@bigtest/project';
-import { createServer, Client } from '@bigtest/server';
+import { createServer, createOrchestratorAtom, createOrchestrator, Client } from '@bigtest/server';
 import { setLogLevel, Levels } from '@bigtest/logging';
 
 import { loadConfig } from './config';
@@ -44,6 +45,57 @@ export function CLI(argv: string[]): Operation {
 
         fork(function* server() {
           let config = yield loadConfig(options.configFile as string | undefined);
+          let client: Client = yield Client.create(`ws://localhost:${config.port}`);
+
+          let { run: testRunId } = yield client.query(query.run());
+
+          console.log('Starting test run:', testRunId);
+
+          let subscription = yield client.subscribe(query.testRunResults(testRunId));
+
+          while(true) {
+            let { testRun } = yield subscription.receive();
+            if(testRun.status === 'ok') {
+              console.log('SUCCESS');
+              break;
+            }
+            if(testRun.status === 'failed') {
+              console.log('FAILED');
+              break;
+            }
+          };
+        });
+      })
+      .command('ci', 'start a server and run the test suite', (yargs) => {
+        yargs
+          .option('launch', {
+            describe: 'launch specified driver at server startup',
+            type: 'array',
+            default: []
+          })
+      }, (options) => {
+        setLogLevel(options.logLevel as Levels);
+
+        fork(function* server() {
+          let config: ProjectOptions = yield loadConfig(options.configFile as string | undefined);
+
+          let launch = options.launch as string[];
+          if (launch.length > 0) {
+            config.launch = launch;
+          }
+
+          for (let key of config.launch) {
+            if (!config.drivers[key]) {
+              throw new Error(`Could not find launch key ${key} in the set of drivers: ${JSON.stringify(Object.keys(config.drivers))}`);
+            }
+          }
+
+          let delegate = new Mailbox();
+          let atom = createOrchestratorAtom();
+          yield spawn(createOrchestrator({ atom, delegate, project: config }));
+
+          yield delegate.receive({ status: 'ready' });
+
           let client: Client = yield Client.create(`ws://localhost:${config.port}`);
 
           let { run: testRunId } = yield client.query(query.run());
