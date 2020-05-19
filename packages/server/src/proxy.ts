@@ -1,11 +1,12 @@
-import { fork, Operation } from 'effection';
+import { fork, spawn, Operation } from 'effection';
 import { Mailbox, any } from '@bigtest/effection';
-import { throwOnErrorEvent, once } from '@effection/events';
+import { throwOnErrorEvent, once, on } from '@effection/events';
 
 import * as proxy from 'http-proxy';
 import * as http from 'http';
 import * as Trumpet from 'trumpet';
 import * as zlib from 'zlib';
+import { Duplex } from 'stream';
 
 import { listen } from './http';
 
@@ -87,12 +88,44 @@ export function* createProxyServer(options: ProxyOptions): Operation {
 
   let server = http.createServer();
 
-  server.on('request', (req, res) => proxyServer.web(req, res));
-  server.on('upgrade', (req, socket, head) => proxyServer.ws(req, socket, head));
+  yield spawn(function*(): Operation<void> {
+    let subscription = yield on(server, 'upgrade');
 
+    while(true) {
+      let [req, socket, head]: [http.IncomingMessage, Duplex, Buffer] = yield subscription.next();
+
+      yield spawn(function*() {
+        proxyServer.ws(req, socket, head);
+
+        try {
+          yield once(socket, 'close');
+        } finally {
+          socket.destroy();
+          req.destroy();
+        }
+      });
+    }
+  });
+
+  yield spawn(function*(): Operation<void> {
+    let subscription = yield on(server, 'request');
+
+    while(true) {
+      let [req, res]: [http.IncomingMessage, http.ServerResponse] = yield subscription.next();
+
+      yield spawn(function*() {
+        proxyServer.web(req, res);
+
+        try {
+          yield once(res, 'close');
+        } finally {
+          req.destroy();
+        }
+      });
+    }
+  });
 
   try {
-
     yield listen(server, options.port);
     options.delegate.send({ status: "ready" });
 
