@@ -1,8 +1,8 @@
 {
   "app": {
-    "command": "bigtest-todomvc 36000",
+    "command": "yarn bigtest-todomvc 36000",
     "port": 36000
   },
   "testFiles": ["./test/fixtures/*.test.{ts,js}"],
-  "launch": ["chrome"]
+  "launch": ["chrome.headless"]
 }
