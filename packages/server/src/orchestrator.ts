@@ -1,4 +1,6 @@
 import * as path from 'path';
+
+import { EventEmitter } from 'events';
 import { fork, Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { AgentServer } from '@bigtest/agent';
@@ -26,6 +28,8 @@ type OrchestratorOptions = {
 
 export function* createOrchestrator(options: OrchestratorOptions): Operation {
   console.log('[orchestrator] starting');
+
+  let bus = new EventEmitter();
 
   let connectionServerInbox = new Mailbox();
 
@@ -68,6 +72,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   }));
 
   yield fork(createCommandServer({
+    bus,
     delegate: commandServerDelegate,
     atom: options.atom,
     port: options.project.port,
@@ -162,6 +167,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   try {
     yield createCommandProcessor({
+      bus,
       proxyPort: options.project.proxy.port,
       manifestPort: options.project.manifest.port,
       atom: options.atom,

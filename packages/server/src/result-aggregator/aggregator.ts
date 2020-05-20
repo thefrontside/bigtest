@@ -1,3 +1,4 @@
+import { EventEmitter } from 'events';
 import { Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { ResultStatus } from '@bigtest/suite';
@@ -6,6 +7,7 @@ import { AgentEvent } from '@bigtest/agent';
 import { OrchestratorState } from '../orchestrator/state';
 
 export interface AggregatorOptions {
+  bus: EventEmitter;
   events: Mailbox<AgentEvent>;
   testRunId: string;
 }

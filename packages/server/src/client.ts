@@ -73,6 +73,8 @@ export class Client {
           }
           if (isDataResponse(message)) {
             mailbox.send(message.data);
+          } else if (isDoneResponse(message)) {
+            break;
           } else {
             throw new Error("unknown response format");;
           }

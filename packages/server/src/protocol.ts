@@ -6,6 +6,7 @@ export interface Message {
 }
 
 export interface Response {
+  done?: boolean;
   data?: unknown;
   errors?: Array<{ message: string }>;
   responseId?: string;
@@ -28,6 +29,10 @@ export interface DataResponse extends Response {
   data: unknown;
 }
 
+export interface DoneResponse extends Response {
+  done: true;
+}
+
 export interface ErrorResponse extends Response {
   errors: Array<{ message: string }>;
 }
@@ -46,6 +51,10 @@ export function isMutation(message: Message): message is MutationMessage {
 
 export function isDataResponse(message: Response): message is DataResponse {
   return !!message['data'];
+}
+
+export function isDoneResponse(message: Response): message is DoneResponse {
+  return !!message['done'];
 }
 
 export function isErrorResponse(message: Response): message is ErrorResponse {

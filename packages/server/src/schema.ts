@@ -3,9 +3,12 @@ import {
   objectType,
   queryType,
   mutationType,
+  subscriptionField,
   stringArg,
+  plugin,
   makeSchema,
 } from "@nexus/schema";
+import { TestEvent } from './schema/test-event';
 
 export const schema = makeSchema({
   typegenAutoConfig: {
@@ -76,6 +79,27 @@ export const schema = makeSchema({
           }
         })
       }
+    }),
+    objectType({
+      name: "TestEvent",
+      rootTyping: {
+        name: "TestEvent",
+        path: path.join(__dirname, 'schema', 'agent-event.ts')
+      },
+      definition(t) {
+        t.string('type');
+        t.string('status');
+        t.id('testRunId');
+        t.id('agentId', { nullable: true });
+        t.list.string("path", { nullable: true });
+        t.field("error", { type: "Error", nullable: true });
+        t.boolean("timeout", { nullable: true });
+      }
+    }),
+    subscriptionField('run', {
+      type: 'TestEvent',
+      subscribe: (root, args, cxt) => cxt.runTestSubscribe(),
+      resolve: payload => payload
     }),
     objectType({
       name: "Agent",

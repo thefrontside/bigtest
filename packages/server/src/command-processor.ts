@@ -1,3 +1,4 @@
+import { EventEmitter } from 'events';
 import { fork, Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { Test, TestResult } from '@bigtest/suite';
@@ -8,6 +9,7 @@ import { TestRunAggregator } from './result-aggregator/test-run';
 import { CommandMessage } from './command-server';
 
 interface CommandProcessorOptions {
+  bus: EventEmitter;
   atom: Atom<OrchestratorState>;
   commands: Mailbox<CommandMessage>;
   events: Mailbox<AgentEvent>;

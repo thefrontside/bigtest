@@ -17,6 +17,12 @@ export class TestRunAggregator extends Aggregator<TestRunState, AggregatorOption
 
     this.statusSlice.set(statuses.some(status => status === 'failed') ? 'failed' : 'ok');
 
+    this.options.bus.emit("test:event", {
+      type: "testRun:result",
+      status: this.statusSlice.get(),
+      testRunId: this.options.testRunId
+    });
+
     return this.statusSlice.get();
   }
 }
