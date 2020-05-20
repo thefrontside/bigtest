@@ -69,7 +69,9 @@ export interface AssertionResult {
   error?: ErrorDetails;
 }
 
-export type AgentEvent = Connect | RunBegin | RunEnd | LaneBegin | LaneEnd | TestRunning | StepRunning | StepResult | AssertionRunning | AssertionResult;
+export type TestEvent = RunBegin | RunEnd | LaneBegin | LaneEnd | TestRunning | StepRunning | StepResult | AssertionRunning | AssertionResult;
+
+export type AgentEvent = Connect | TestEvent
 
 export type Command = Run;
 

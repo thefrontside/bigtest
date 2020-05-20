@@ -34,11 +34,24 @@ export class Client {
   }
 
   *query(source: string): Operation {
-    let subscription = yield this.subscribe(source, false);
+    let subscription = yield this.send("query", source, false);
     return yield subscription.receive();
   }
 
-  *subscribe(source: string, live = true): Operation<Mailbox> {
+  *liveQuery(source: string): Operation {
+    return yield this.send("query", source, true);
+  }
+
+  *mutation(source: string): Operation {
+    let subscription = yield this.send("mutation", source);
+    return yield subscription.receive();
+  }
+
+  *subscription(source: string): Operation {
+    return yield this.send("subscription", source);
+  }
+
+  private *send(type: string, source: string, live = false): Operation<Mailbox> {
     let mailbox = new Mailbox();
     let { socket } = this;
 
@@ -47,7 +60,7 @@ export class Client {
 
       let responseId = `${responseIds++}`; //we'd want a UUID to avoid hijacking?
 
-      socket.send(JSON.stringify({ query: source, live, responseId}));
+      socket.send(JSON.stringify({ [type]: source, live, responseId}));
 
       while (true) {
         let [event] = yield messages.next();

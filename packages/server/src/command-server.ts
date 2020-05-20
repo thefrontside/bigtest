@@ -2,13 +2,13 @@ import { Operation, spawn, fork } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { express } from '@bigtest/effection-express';
 import * as graphqlHTTP from 'express-graphql';
-import { graphql as executeGraphql } from 'graphql';
+import { parse as parseGraphql, graphql as executeGraphql, subscribe as executeGraphqlSubscription, ExecutionResult } from 'graphql';
 
 import { Connection, sendData, listenWS } from './ws';
 import { schema } from './schema';
 import { Atom } from '@bigtest/atom';
 import { OrchestratorState } from './orchestrator/state';
-import { Message, QueryMessage, MutationMessage, isQuery, isMutation } from './protocol';
+import { Message, Response, QueryMessage, MutationMessage, SubscriptionMessage, isQuery, isMutation, isSubscription } from './protocol';
 
 export type CommandMessage = { status: "ready" } | { type: "run"; id: string };
 
@@ -17,6 +17,14 @@ interface CommandServerOptions {
   atom: Atom<OrchestratorState>;
   port: number;
 };
+
+function isAsyncIterator(value: AsyncIterableIterator<unknown> | ExecutionResult<unknown>): value is AsyncIterableIterator<unknown> {
+  return value && ("next" in value) && typeof(value["next"]) === 'function';
+}
+
+function sendResponse(connection: Connection, result: Response): Operation {
+  return sendData(connection, JSON.stringify(result));
+}
 
 export function* createCommandServer(options: CommandServerOptions): Operation {
   let app = express();
@@ -58,7 +66,10 @@ function graphqlOptions(delegate: Mailbox, state: OrchestratorState) {
   return {
     schema,
     rootValue: state,
-    context: { delegate, testRunIds }
+    context: {
+      delegate,
+      testRunIds
+    }
   };
 }
 
@@ -67,24 +78,51 @@ function handleMessage(delegate: Mailbox, atom: Atom<OrchestratorState>): (conne
     yield publishQueryResult(message, atom.get(), connection);
 
     if (message.live) {
-      yield fork(subscribe(message, connection));
+      yield fork(atom.each(state => publishQueryResult(message, state, connection)));
     }
   }
 
   function* handleMutation(message: MutationMessage, connection: Connection): Operation {
     let result = yield graphql(message.mutation, delegate, atom.get());
     result.responseId = message.responseId;
-    yield sendData(connection, JSON.stringify(result));
+    yield sendResponse(connection, result);
+  }
+
+  function* handleSubscription(message: SubscriptionMessage, connection: Connection): Operation {
+    let result = yield executeGraphqlSubscription({
+      schema,
+      document: parseGraphql(message.subscription),
+      contextValue: {
+        delegate,
+        testRunIds,
+      }
+    });
+
+    if(isAsyncIterator(result)) {
+      try {
+        while(true) {
+          let next = yield result.next();
+
+          if(next.done) {
+            break;
+          } else {
+            next.value.responseId = message.responseId;
+            yield sendResponse(connection, next.value);
+          }
+        }
+      } finally {
+        result.return && result.return();
+      }
+    } else {
+      result.responseId = message.responseId;
+      yield sendResponse(connection, result);
+    }
   }
 
   function* publishQueryResult(message: QueryMessage, state: OrchestratorState, connection: Connection): Operation {
     let result = yield graphql(message.query, delegate, state);
     result.responseId = message.responseId;
-    yield sendData(connection, JSON.stringify(result));
-  }
-
-  function* subscribe(message: QueryMessage, connection: Connection) {
-    yield atom.each(state => publishQueryResult(message, state, connection));
+    yield sendResponse(connection, result);
   }
 
   return function*(connection) {
@@ -96,6 +134,9 @@ function handleMessage(delegate: Mailbox, atom: Atom<OrchestratorState>): (conne
 
       if (isQuery(message)) {
         yield fork(handleQuery(message, connection));
+      }
+      if (isSubscription(message)) {
+        yield fork(handleSubscription(message, connection));
       }
       if (isMutation(message)) {
         yield fork(handleMutation(message, connection));

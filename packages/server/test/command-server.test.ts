@@ -184,14 +184,14 @@ describe('command server', () => {
     });
   });
 
-  describe('subscribing to a query', () => {
+  describe('subscribing to a live query', () => {
     let client: Client;
     let subscription: Mailbox;
     let initial: unknown;
 
     beforeEach(async () => {
       client = await actions.fork(Client.create(`ws://localhost:${COMMAND_PORT}`));
-      subscription = await actions.fork(client.subscribe('{ agents { browser { name } } }'));
+      subscription = await actions.fork(client.liveQuery('{ agents { browser { name } } }'));
       initial = await actions.fork(subscription.receive());
     });
 

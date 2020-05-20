@@ -6,7 +6,7 @@ main(function* main() {
 
   let [ source ]  = process.argv.slice(2);
 
-  let subscription = yield client.subscribe(source);
+  let subscription = yield client.liveQuery(source);
 
   while (true) {
     let data = yield subscription.receive();
