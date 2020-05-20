@@ -6,6 +6,7 @@ import { parse as parseGraphql, graphql as executeGraphql, subscribe as executeG
 
 import { Connection, sendData, listenWS } from './ws';
 import { schema } from './schema';
+import { GraphqlContext as Context } from './schema/context';
 import { Atom } from '@bigtest/atom';
 import { OrchestratorState } from './orchestrator/state';
 import { Message, Response, QueryMessage, MutationMessage, SubscriptionMessage, isQuery, isMutation, isSubscription } from './protocol';
@@ -51,12 +52,6 @@ function graphql(source: string, delegate: Mailbox, state: OrchestratorState): O
   return executeGraphql({...options, contextValue: options.context, source });
 }
 
-let testRunIds = (function * () {
-  for (let current = 1; ; current++) {
-    yield `TestRun:${current}`;
-  }
-})()
-
 /**
  * Get the graphql options for running a query against `state`. Needed
  * because the express graphql server calls the `graphql` function for
@@ -66,10 +61,7 @@ function graphqlOptions(delegate: Mailbox, state: OrchestratorState) {
   return {
     schema,
     rootValue: state,
-    context: {
-      delegate,
-      testRunIds
-    }
+    context: new Context(delegate)
   };
 }
 
@@ -92,10 +84,7 @@ function handleMessage(delegate: Mailbox, atom: Atom<OrchestratorState>): (conne
     let result = yield executeGraphqlSubscription({
       schema,
       document: parseGraphql(message.subscription),
-      contextValue: {
-        delegate,
-        testRunIds,
-      }
+      contextValue: new Context(delegate)
     });
 
     if(isAsyncIterator(result)) {

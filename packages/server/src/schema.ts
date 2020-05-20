@@ -72,10 +72,7 @@ export const schema = makeSchema({
       definition(t) {
         t.string("run", {
           resolve(_source, _args, cxt) {
-            let { delegate, testRunIds } = cxt;
-            let { value: id } = testRunIds.next();
-            delegate.send({ type: "run", id });
-            return id;
+            return cxt.runTest();
           }
         })
       }
