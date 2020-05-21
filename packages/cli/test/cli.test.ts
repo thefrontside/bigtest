@@ -5,8 +5,6 @@ import * as process from 'process';
 import { Process } from './helpers/process';
 import { World } from './helpers/world';
 
-import { Client } from '@bigtest/server';
-
 function run(...args: string[]) {
   return Process.spawn("yarn ts-node ./src/index.ts", args, {
     verbose: !!process.env["LOG_CLI"]
@@ -33,17 +31,12 @@ describe('@bigtest/cli', function() {
 
     describe('running the suite', () => {
       let runChild: Process;
-      let client: Client;
 
       beforeEach(async () => {
         await World.spawn(child.stdout?.waitFor("[orchestrator] running!"));
 
-        client = await World.spawn(Client.create(`http://localhost:24002`));
-
-        let agentsSubscription = await World.spawn(client.subscribe(`{ agents { agentId } }`));
-        await World.spawn(agentsSubscription.receive(({ agents }: AgentQueryResult) => agents && agents.length === 1));
-
         runChild = await World.spawn(run('test'));
+
         await World.spawn(runChild.join());
       });
 
@@ -51,6 +44,25 @@ describe('@bigtest/cli', function() {
         expect(runChild.code).toEqual(0);
         expect(runChild.stdout?.output).toContain("SUCCESS")
       });
+    });
+  });
+
+  describe('running the suite in CI mode', () => {
+    let child: Process;
+
+    beforeEach(async () => {
+      child = await World.spawn(run('ci', '--launch', 'chrome.headless', '--log-level', 'debug'));
+      await World.spawn(child.stdout?.waitFor("[orchestrator] running!"));
+      await World.spawn(child.join());
+    });
+
+    afterEach(async () => {
+      await World.spawn(child.close());
+    });
+
+    it('exits successfully', async () => {
+      expect(child.code).toEqual(0);
+      expect(child.stdout?.output).toContain("SUCCESS")
     });
   });
 });
