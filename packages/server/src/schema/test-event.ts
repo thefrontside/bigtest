@@ -10,4 +10,4 @@ export interface TestRunResult {
 
 export type TestEvent =
   TestRunResult |
-  (AgentTestEvent & { agentId: string });
+  (AgentTestEvent & { status?: string, agentId: string });

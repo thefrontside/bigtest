@@ -84,7 +84,7 @@ export const schema = makeSchema({
       name: "TestEvent",
       rootTyping: {
         name: "TestEvent",
-        path: path.join(__dirname, 'schema', 'agent-event.ts')
+        path: path.join(__dirname, 'schema', 'test-event.ts')
       },
       definition(t) {
         t.string('type');
@@ -98,7 +98,7 @@ export const schema = makeSchema({
     }),
     subscriptionField('run', {
       type: 'TestEvent',
-      subscribe: (root, args, cxt) => cxt.runTestSubscribe(),
+      subscribe: (_root, _args, cxt) => cxt.runTestSubscribe(),
       resolve: payload => payload
     }),
     objectType({

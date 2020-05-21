@@ -99,7 +99,7 @@ function handleMessage(options: CommandServerOptions, atom: Atom<OrchestratorSta
           let next = yield result.next();
 
           if(next.done) {
-            yield sendResponse(connection, { done: true });
+            yield sendResponse(connection, { done: true, responseId: message.responseId });
             break;
           } else {
             next.value.responseId = message.responseId;

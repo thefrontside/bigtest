@@ -29,6 +29,14 @@ export class StepAggregator extends Aggregator<StepResult, AggregatorTestOptions
 
     this.statusSlice.set(result.status);
 
+    this.options.bus.emit("test:event", {
+      type: "step:result",
+      path: this.options.path,
+      status: this.statusSlice.get(),
+      testRunId: this.options.testRunId,
+      agentId: this.options.agentId
+    });
+
     if (result.status === 'failed') {
       throw new Error('Step Failed');
     }

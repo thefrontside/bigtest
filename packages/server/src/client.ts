@@ -4,7 +4,7 @@ import { spawn, resource, Operation } from 'effection';
 import { ensure, Mailbox } from '@bigtest/effection';
 import { on, once } from '@effection/events';
 
-import { Message, isErrorResponse, isDataResponse } from './protocol';
+import { Message, isErrorResponse, isDataResponse, isDoneResponse } from './protocol';
 
 let responseIds = 0;
 
@@ -74,6 +74,7 @@ export class Client {
           if (isDataResponse(message)) {
             mailbox.send(message.data);
           } else if (isDoneResponse(message)) {
+            mailbox.send({done: true});
             break;
           } else {
             throw new Error("unknown response format");;

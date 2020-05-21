@@ -51,6 +51,14 @@ export class TestAggregator extends Aggregator<TestResult, AggregatorTestOptions
 
       this.statusSlice.set(status);
 
+      this.options.bus.emit("test:event", {
+        type: "test:result",
+        path: this.options.path,
+        status: this.statusSlice.get(),
+        testRunId: this.options.testRunId,
+        agentId: this.options.agentId
+      });
+
       return status;
     } catch (error) {
       this.statusSlice.set('failed');

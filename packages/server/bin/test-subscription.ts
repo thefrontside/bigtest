@@ -26,7 +26,12 @@ main(function* main() {
 
   while (true) {
     let data = yield subscription.receive();
-    console.log('==== new subscription result ==== ');
-    console.log(JSON.stringify(data, null, 2));
+    if (data.done) {
+      console.log('==== done ==== ');
+      break;
+    } else {
+      console.log('==== new subscription result ==== ');
+      console.log(JSON.stringify(data, null, 2));
+    }
   }
 });
