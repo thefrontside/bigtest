@@ -1,10 +1,25 @@
 export function run() {
   return `
-    mutation {
-      run
-    }
-  `
+    subscription {
+      run {
+        type
+        status
+        agentId
+        testRunId
+        path
+        error {
+          message
+          fileName
+          lineNumber
+          columnNumber
+          stack
+        }
+        timeout
+      }
+    }`
 }
+
+
 
 export function testRunResults(testRunId: string) {
   return `
