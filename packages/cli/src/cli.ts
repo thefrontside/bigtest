@@ -32,23 +32,24 @@ export function * CLI(argv: string[]): Operation {
   } else if (options.command === 'test') {
     let client: Client = yield Client.create(`ws://localhost:${config.port}`);
 
-    let { run: testRunId } = yield client.query(query.run());
+    let run: Mailbox = yield client.subscription(query.run());
 
-    console.log('Starting test run:', testRunId);
+    while (true) {
+      let event = yield run.receive();
 
-    let subscription = yield client.subscribe(query.testRunResults(testRunId));
-
-    while(true) {
-      let { testRun } = yield subscription.receive();
-      if(testRun.status === 'ok') {
-        console.log('SUCCESS');
+      if (event.done) {
         break;
-      }
-      if(testRun.status === 'failed') {
-        console.log('FAILED');
-        break;
+      } else {
+        if (event.run.status === 'ok') {
+          process.stdout.write('.');
+        } else if (event.run.status === 'failed') {
+          process.stdout.write('x');
+        } else if (event.run.status === 'disregarded') {
+          process.stdout.write('-');
+        }
       }
     }
+    console.log('');
   } else {
     let launch = options.launch as string[];
     if (launch.length > 0) {
@@ -69,23 +70,24 @@ export function * CLI(argv: string[]): Operation {
 
     let client: Client = yield Client.create(`ws://localhost:${config.port}`);
 
-    let { run: testRunId } = yield client.query(query.run());
+    let run: Mailbox = yield client.subscription(query.run());
 
-    console.log('Starting test run:', testRunId);
+    while (true) {
+      let event = yield run.receive();
 
-    let subscription = yield client.subscribe(query.testRunResults(testRunId));
-
-    while(true) {
-      let { testRun } = yield subscription.receive();
-      if(testRun.status === 'ok') {
-        console.log('SUCCESS');
+      if (event.done) {
         break;
-      }
-      if(testRun.status === 'failed') {
-        console.log('FAILED');
-        break;
+      } else {
+        if (event.run.status === 'ok') {
+          process.stdout.write('.');
+        } else if (event.run.status === 'failed') {
+          process.stdout.write('x');
+        } else if (event.run.status === 'disregarded') {
+          process.stdout.write('-');
+        }
       }
     }
+    console.log('');
   }
 }
 
