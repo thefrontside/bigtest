@@ -24,32 +24,58 @@ export interface InteractorSpecification {
 export type LocatorSpecification = string;
 
 export class Interactor {
+  protected parent?: Interactor;
+
   constructor(private specification: InteractorSpecification, private locator: LocatorSpecification) {
   }
 
-  async find(): Promise<HTMLElement> {
-    return converge(defaultOptions.timeout, () => {
+  find<T extends Interactor>(interactor: T): T {
+    let child = Object.create(interactor);
+    child.parent = this;
+    return child;
+  }
+
+  get description(): string {
+    let desc = `${this.specification.name} ${JSON.stringify(this.locator)}`;
+    if(this.parent) {
+      desc += ` within ${this.parent.description}`;
+    }
+    return desc;
+  }
+
+  protected unsafeSyncResolve(): HTMLElement {
+    let root: HTMLElement | HTMLDocument;
+
+    if(this.parent) {
+      root = this.parent.unsafeSyncResolve();
+    } else {
       if(!defaultOptions.document) {
         throw new Error('must specify document');
       }
-      let elements = defaultOptions.document.querySelectorAll(this.specification.selector);
+      root = defaultOptions.document;
+    }
 
-      let matchingElements = [].filter.call(elements, (element) => {
-        return this.specification.defaultLocator(element) === this.locator
-      });
+    let elements = root.querySelectorAll(this.specification.selector);
 
-      if(matchingElements.length === 1) {
-        return matchingElements[0];
-      } else if(matchingElements.length === 0) {
-        throw new Error(`${this.specification.name} ${JSON.stringify(this.locator)} does not exist`);
-      } else {
-        throw new Error(`${this.specification.name} ${JSON.stringify(this.locator)} is ambiguous`);
-      }
+    let matchingElements = [].filter.call(elements, (element) => {
+      return this.specification.defaultLocator(element) === this.locator
     });
+
+    if(matchingElements.length === 1) {
+      return matchingElements[0];
+    } else if(matchingElements.length === 0) {
+      throw new Error(`${this.description} does not exist`);
+    } else {
+      throw new Error(`${this.description} is ambiguous`);
+    }
+  }
+
+  async resolve(): Promise<HTMLElement> {
+    return converge(defaultOptions.timeout, this.unsafeSyncResolve.bind(this));
   }
 
   async exists(): Promise<true> {
-    await this.find();
+    await this.resolve();
     return true;
   }
 }
@@ -61,7 +87,7 @@ export function interactor<A extends ActionSpecification>(specification: Interac
     for(let [name, action] of Object.entries(specification.actions || {})) {
       Object.defineProperty(interactor, name, {
         value: async function() {
-          let element = await this.find();
+          let element = await this.resolve();
           return action(element);
         },
         configurable: true,
