@@ -103,6 +103,16 @@ describe('@bigtest/interactor', () => {
       await expect(Div("foo").find(Link("Bar")).exists()).rejects.toHaveProperty('message', 'link "Bar" within div "foo" does not exist');
       await expect(Div("bar").find(Link("Foo")).exists()).rejects.toHaveProperty('message', 'link "Foo" within div "bar" does not exist');
     });
+
+    it('is rejected if the parent interactor cannot be found', async () => {
+      dom(`
+        <div id="foo">
+          <a href="/foo">Foo</a>
+        </div>
+      `);
+
+      await expect(Div("blah").find(Link("Foo")).exists()).rejects.toHaveProperty('message', 'div "blah" does not exist');
+    });
   });
 
   describe('actions', () => {
