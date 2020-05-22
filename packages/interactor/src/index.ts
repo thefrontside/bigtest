@@ -1,4 +1,4 @@
-import { main, timeout } from 'effection';
+import { main, timeout as effectionTimeout } from 'effection';
 
 // TODO: this API is available on browsers as `window.performance`, we need to figure out
 // a way to package this so it'll work on both browsers and node.
@@ -23,6 +23,8 @@ async function converge<T>(timeout: number, fn: () => T): Promise<T> {
         let diff = performance.now() - startTime;
         if(diff > timeout) {
           throw e;
+        } else {
+          yield effectionTimeout(1);
         }
       }
     }
@@ -41,7 +43,7 @@ export class Interactor {
   constructor(private specification: InteractorSpecification, private locator: LocatorSpecification) {
   }
 
-  exists(): Promise<true> {
+  async exists(): Promise<true> {
     return converge(defaultOptions.timeout, () => {
       if(!defaultOptions.document) {
         throw new Error('must specify document');
@@ -49,7 +51,7 @@ export class Interactor {
       let elements = defaultOptions.document.querySelectorAll(this.specification.selector);
 
       let matchingElements = [].filter.call(elements, (element) => {
-        return this.specification.defaultLocator(element) == this.locator
+        return this.specification.defaultLocator(element) === this.locator
       });
 
       if(matchingElements.length === 1) {

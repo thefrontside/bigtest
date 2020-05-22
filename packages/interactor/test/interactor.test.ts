@@ -11,11 +11,11 @@ process.on('unhandledRejection', () => {
 const Link = interactor({
   name: 'link',
   selector: 'a',
-  defaultLocator: (element) => element.innerText
+  defaultLocator: (element) => element.textContent || ""
 });
 
 function dom(html: string) {
-  let jsdom = new JSDOM(html);
+  let jsdom = new JSDOM(`<!doctype html><html><body>${html}</body></html>`, { runScripts: "dangerously" });
   setDefaultOptions({
     document: jsdom.window.document,
     timeout: 20,
@@ -24,16 +24,16 @@ function dom(html: string) {
 
 describe('@bigtest/interactor', () => {
   describe('.exists', () => {
-    it('can determine whether an element exists based on the interactor', () => {
+    it('can determine whether an element exists based on the interactor', async () => {
       dom(`
         <p><a href="/foobar">Foo Bar</a></p>
       `);
 
-      expect(Link('Foo Bar').exists()).resolves.toEqual(true);
-      expect(Link('Blah').exists()).rejects.toHaveProperty('message', 'link "Blah" does not exist');
+      await expect(Link('Foo Bar').exists()).resolves.toEqual(true);
+      await expect(Link('Blah').exists()).rejects.toHaveProperty('message', 'link "Blah" does not exist');
     });
 
-    it('can wait for condition to become true', () => {
+    it('can wait for condition to become true', async () => {
       dom(`
         <p id="foo"></p>
         <script>
@@ -43,7 +43,7 @@ describe('@bigtest/interactor', () => {
         </script>
       `);
 
-      expect(Link('Foo Bar').exists()).resolves.toEqual(true);
+      await expect(Link('Foo Bar').exists()).resolves.toEqual(true);
     });
   });
 })
