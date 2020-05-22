@@ -43,7 +43,7 @@ export class Interactor {
     return desc;
   }
 
-  protected unsafeSyncResolve(): HTMLElement {
+  private unsafeFindMatching(): HTMLElement[] {
     let root: HTMLElement | HTMLDocument;
 
     if(this.parent) {
@@ -57,10 +57,13 @@ export class Interactor {
 
     let elements = root.querySelectorAll(this.specification.selector);
 
-    let matchingElements = [].filter.call(elements, (element) => {
+    return [].filter.call(elements, (element) => {
       return this.specification.defaultLocator(element) === this.locator
     });
+  }
 
+  protected unsafeSyncResolve(): HTMLElement {
+    let matchingElements = this.unsafeFindMatching();
     if(matchingElements.length === 1) {
       return matchingElements[0];
     } else if(matchingElements.length === 0) {
@@ -77,6 +80,17 @@ export class Interactor {
   async exists(): Promise<true> {
     await this.resolve();
     return true;
+  }
+
+  async absent(): Promise<true> {
+    return converge(defaultOptions.timeout, () => {
+      let matchingElements = this.unsafeFindMatching();
+      if(matchingElements.length === 0) {
+        return true;
+      } else {
+        throw new Error(`${this.description} exists but should not`);
+      }
+    });
   }
 }
 

@@ -62,6 +62,30 @@ describe('@bigtest/interactor', () => {
     });
   });
 
+  describe('.absent', () => {
+    it('can determine whether an element exists based on the interactor', async () => {
+      dom(`
+        <p><a href="/foobar">Foo Bar</a></p>
+      `);
+
+      await expect(Link('Blah').absent()).resolves.toEqual(true);
+      await expect(Link('Foo Bar').absent()).rejects.toHaveProperty('message', 'link "Foo Bar" exists but should not');
+    });
+
+    it('can wait for condition to become true', async () => {
+      dom(`
+        <p id="foo"><a href="/foobar">Foo Bar</a></p>
+        <script>
+          setTimeout(() => {
+            foo.innerHTML = '';
+          }, 5);
+        </script>
+      `);
+
+      await expect(Link('Foo Bar').absent()).resolves.toEqual(true);
+    });
+  });
+
   describe('.find', () => {
     it('can find an interactor with the scope of another interactor', async () => {
       dom(`
