@@ -11,6 +11,15 @@ process.on('unhandledRejection', () => {
 const Link = interactor({
   name: 'link',
   selector: 'a',
+  defaultLocator: (element) => element.textContent || "",
+  actions: {
+    click: (element) => { element.click() }
+  }
+});
+
+const Header = interactor({
+  name: 'header',
+  selector: 'h1,h2,h3,h4,h5,h6',
   defaultLocator: (element) => element.textContent || ""
 });
 
@@ -44,6 +53,23 @@ describe('@bigtest/interactor', () => {
       `);
 
       await expect(Link('Foo Bar').exists()).resolves.toEqual(true);
+    });
+  });
+
+  describe('actions', () => {
+    it('can use action to interact with element', async () => {
+      dom(`
+        <a id="foo" href="/foobar">Foo Bar</a>
+        <div id="target"></div>
+        <script>
+          foo.onclick = () => {
+            target.innerHTML = '<h1>Hello!</h1>';
+          }
+        </script>
+      `);
+
+      await Link('Foo Bar').click();
+      await expect(Header('Hello!').exists()).resolves.toEqual(true);
     });
   });
 })
