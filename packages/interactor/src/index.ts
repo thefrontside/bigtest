@@ -1,8 +1,8 @@
 import { converge } from './converge';
 
 interface Options {
-  timeout: number,
-  document?: HTMLDocument
+  timeout: number;
+  document?: HTMLDocument;
 }
 
 let defaultOptions: Options = {
@@ -16,8 +16,8 @@ type ActionImplementation<T extends ActionSpecification> = {
 }
 
 export interface InteractorSpecification {
-  name: string,
-  selector: string,
+  name: string;
+  selector: string;
   defaultLocator: (element: HTMLElement) => string;
 }
 
