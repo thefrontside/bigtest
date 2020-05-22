@@ -101,8 +101,10 @@ export function interactor<A extends ActionSpecification>(specification: Interac
     for(let [name, action] of Object.entries(specification.actions || {})) {
       Object.defineProperty(interactor, name, {
         value: async function() {
-          let element = await this.resolve();
-          return action(element);
+          await converge(defaultOptions.timeout, () => {
+            let element = this.unsafeSyncResolve();
+            return action(element);
+          });
         },
         configurable: true,
         writable: true,
