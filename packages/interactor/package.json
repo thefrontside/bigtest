@@ -20,9 +20,14 @@
     "@frontside/tsconfig": "*",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
+    "@types/jsdom": "^16.2.3",
     "expect": "^24.9.0",
+    "jsdom": "^16.2.2",
     "mocha": "^6.2.2",
     "ts-node": "*"
+  },
+  "peerDependencies": {
+    "effection": "^0.6.2"
   },
   "volta": {
     "node": "12.16.0",
