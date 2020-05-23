@@ -4,14 +4,12 @@ import { LocatorSpecification, LocatorArguments, Locator } from './locator';
 import { defaultOptions } from './options';
 
 export interface InteractorSpecification<L extends LocatorSpecification> {
-  name: string;
   selector: string;
   defaultLocator: (element: HTMLElement) => string;
   locators: L;
 }
 
 const defaultSpecification: InteractorSpecification<{}> = {
-  name: 'interactor',
   selector: 'div',
   defaultLocator: (element) => element.textContent || "",
   locators: {},
@@ -20,7 +18,7 @@ const defaultSpecification: InteractorSpecification<{}> = {
 export class Interactor {
   protected parent?: Interactor;
 
-  constructor(private specification: InteractorSpecification<LocatorSpecification>, private locator: Locator) {
+  constructor(public name: string, private specification: InteractorSpecification<LocatorSpecification>, private locator: Locator) {
   }
 
   find<T extends Interactor>(interactor: T): T {
@@ -30,7 +28,7 @@ export class Interactor {
   }
 
   get description(): string {
-    let desc = `${this.specification.name} ${this.locator.description}`
+    let desc = `${this.name} ${this.locator.description}`
     if(this.parent) {
       desc += ` within ${this.parent.description}`;
     }
@@ -86,28 +84,29 @@ export class Interactor {
   }
 }
 
-export function interactor<A extends ActionSpecification, L extends LocatorSpecification>(
-  specification: Partial<InteractorSpecification<L>> & { actions?: A }
-): (...locatorArgs: LocatorArguments<L>) => Interactor & ActionImplementation<A> {
-  return function(...locatorArgs) {
-    let fullSpecification = Object.assign({}, defaultSpecification, specification);
-    let locator = new Locator(fullSpecification.defaultLocator, fullSpecification.locators, locatorArgs);
-    let interactor = new Interactor(fullSpecification, locator as unknown as Locator);
 
-    for(let [name, action] of Object.entries(specification.actions || {})) {
-      Object.defineProperty(interactor, name, {
-        value: async function() {
-          await converge(defaultOptions.timeout, () => {
-            let element = this.unsafeSyncResolve();
-            return action(element);
-          });
-        },
-        configurable: true,
-        writable: true,
-        enumerable: false,
-      });
+export function interactor(name: string) {
+  return function<A extends ActionSpecification, L extends LocatorSpecification>(specification: Partial<InteractorSpecification<L>> & { actions?: A }) {
+    return function(...locatorArgs: LocatorArguments<L>): Interactor & ActionImplementation<A> {
+      let fullSpecification = Object.assign({ selector: name }, defaultSpecification, specification);
+      let locator = new Locator(fullSpecification.defaultLocator, fullSpecification.locators, locatorArgs);
+      let interactor = new Interactor(name, fullSpecification, locator as unknown as Locator);
+
+      for(let [name, action] of Object.entries(specification.actions || {})) {
+        Object.defineProperty(interactor, name, {
+          value: async function() {
+            await converge(defaultOptions.timeout, () => {
+              let element = this.unsafeSyncResolve();
+              return action(element);
+            });
+          },
+          configurable: true,
+          writable: true,
+          enumerable: false,
+        });
+      }
+
+      return interactor as Interactor & ActionImplementation<A>;
     }
-
-    return interactor as Interactor & ActionImplementation<A>;
   }
 }
