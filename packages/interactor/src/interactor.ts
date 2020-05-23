@@ -2,28 +2,36 @@ import { converge } from './converge';
 import { ActionSpecification, ActionImplementation } from './action';
 import { defaultOptions } from './options';
 
-export interface InteractorSpecification {
+export type LocatorSpecification = Record<string, (element: HTMLElement) => string>
+
+export interface InteractorSpecification<L extends LocatorSpecification> {
   name: string;
   selector: string;
   defaultLocator: (element: HTMLElement) => string;
+  locators?: L;
 }
 
-export type LocatorSpecification = string;
+export type Locator<L extends LocatorSpecification> = [string] | [keyof L, string]
 
-export class Interactor {
-  protected parent?: Interactor;
+export class Interactor<L extends LocatorSpecification> {
+  protected parent?: Interactor<LocatorSpecification>;
 
-  constructor(private specification: InteractorSpecification, private locator: LocatorSpecification) {
+  constructor(private specification: InteractorSpecification<L>, private locator: Locator<L>) {
   }
 
-  find<T extends Interactor>(interactor: T): T {
+  find<LT extends LocatorSpecification, T extends Interactor<LT>>(interactor: T): T {
     let child = Object.create(interactor);
     child.parent = this;
     return child;
   }
 
   get description(): string {
-    let desc = `${this.specification.name} ${JSON.stringify(this.locator)}`;
+    let desc: string;
+    if(this.locator.length === 1) {
+      desc = `${this.specification.name} ${JSON.stringify(this.locator[0])}`;
+    } else {
+      desc = `${this.specification.name} with ${this.locator[0]} ${JSON.stringify(this.locator[1])}`;
+    }
     if(this.parent) {
       desc += ` within ${this.parent.description}`;
     }
@@ -45,7 +53,17 @@ export class Interactor {
     let elements = root.querySelectorAll(this.specification.selector);
 
     return [].filter.call(elements, (element) => {
-      return this.specification.defaultLocator(element) === this.locator
+      if(this.locator.length === 2) {
+        let locator = this.specification.locators && this.specification.locators[this.locator[0]];
+
+        if(!locator) {
+          throw new  Error(`unknown locator '${this.locator[0]}'`);
+        }
+
+        return locator(element) === this.locator[1];
+      } else {
+        return this.specification.defaultLocator(element) === this.locator[0];
+      }
     });
   }
 
@@ -81,8 +99,10 @@ export class Interactor {
   }
 }
 
-export function interactor<A extends ActionSpecification>(specification: InteractorSpecification & { actions?: A }): (locator: LocatorSpecification) => Interactor & ActionImplementation<A> {
-  return function(locator: LocatorSpecification) {
+export function interactor<A extends ActionSpecification, L extends LocatorSpecification>(
+  specification: InteractorSpecification<L> & { actions?: A }
+): (...locator: Locator<L>) => Interactor<L> & ActionImplementation<A> {
+  return function(...locator) {
     let interactor = new Interactor(specification, locator);
 
     for(let [name, action] of Object.entries(specification.actions || {})) {
@@ -99,6 +119,6 @@ export function interactor<A extends ActionSpecification>(specification: Interac
       });
     }
 
-    return interactor as Interactor & ActionImplementation<A>;
+    return interactor as Interactor<L> & ActionImplementation<A>;
   }
 }
