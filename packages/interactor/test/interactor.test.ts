@@ -12,6 +12,10 @@ const Link = interactor({
   name: 'link',
   selector: 'a',
   defaultLocator: (element) => element.textContent || "",
+  locators: {
+    id: (element) => element.id,
+    title: (element) => element.title
+  },
   actions: {
     click: (element) => { element.click() }
   }
@@ -46,6 +50,15 @@ describe('@bigtest/interactor', () => {
 
       await expect(Link('Foo Bar').exists()).resolves.toEqual(true);
       await expect(Link('Blah').exists()).rejects.toHaveProperty('message', 'link "Blah" does not exist');
+    });
+
+    it('can use locators', async () => {
+      dom(`
+        <p><a title="Monkey" href="/foobar">Foo Bar</a></p>
+      `);
+
+      await expect(Link('title', 'Monkey').exists()).resolves.toEqual(true);
+      await expect(Link('title', 'Zebra').exists()).rejects.toHaveProperty('message', 'link with title "Zebra" does not exist');
     });
 
     it('can wait for condition to become true', async () => {
