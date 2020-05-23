@@ -11,9 +11,8 @@ process.on('unhandledRejection', () => {
 const Link = interactor({
   name: 'link',
   selector: 'a',
-  defaultLocator: (element) => element.textContent || "",
   locators: {
-    id: (element) => element.id,
+    href: (element) => element.id,
     title: (element) => element.title
   },
   actions: {
@@ -24,15 +23,12 @@ const Link = interactor({
 const Header = interactor({
   name: 'header',
   selector: 'h1,h2,h3,h4,h5,h6',
-  defaultLocator: (element) => element.textContent || "",
-  locators: {}
 });
 
 const Div = interactor({
   name: 'div',
   selector: 'div',
   defaultLocator: (element) => element.id || "",
-  locators: {}
 });
 
 function dom(html: string) {
