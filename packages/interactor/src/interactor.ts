@@ -1,37 +1,29 @@
 import { converge } from './converge';
 import { ActionSpecification, ActionImplementation } from './action';
+import { LocatorSpecification, LocatorArguments, Locator } from './locator';
 import { defaultOptions } from './options';
-
-export type LocatorSpecification = Record<string, (element: HTMLElement) => string>
 
 export interface InteractorSpecification<L extends LocatorSpecification> {
   name: string;
   selector: string;
   defaultLocator: (element: HTMLElement) => string;
-  locators?: L;
+  locators: L;
 }
 
-export type Locator<L extends LocatorSpecification> = [string] | [keyof L, string]
+export class Interactor {
+  protected parent?: Interactor;
 
-export class Interactor<L extends LocatorSpecification> {
-  protected parent?: Interactor<LocatorSpecification>;
-
-  constructor(private specification: InteractorSpecification<L>, private locator: Locator<L>) {
+  constructor(private specification: InteractorSpecification<LocatorSpecification>, private locator: Locator) {
   }
 
-  find<LT extends LocatorSpecification, T extends Interactor<LT>>(interactor: T): T {
+  find<T extends Interactor>(interactor: T): T {
     let child = Object.create(interactor);
     child.parent = this;
     return child;
   }
 
   get description(): string {
-    let desc: string;
-    if(this.locator.length === 1) {
-      desc = `${this.specification.name} ${JSON.stringify(this.locator[0])}`;
-    } else {
-      desc = `${this.specification.name} with ${this.locator[0]} ${JSON.stringify(this.locator[1])}`;
-    }
+    let desc = `${this.specification.name} ${this.locator.description}`
     if(this.parent) {
       desc += ` within ${this.parent.description}`;
     }
@@ -52,19 +44,7 @@ export class Interactor<L extends LocatorSpecification> {
 
     let elements = root.querySelectorAll(this.specification.selector);
 
-    return [].filter.call(elements, (element) => {
-      if(this.locator.length === 2) {
-        let locator = this.specification.locators && this.specification.locators[this.locator[0]];
-
-        if(!locator) {
-          throw new  Error(`unknown locator '${this.locator[0]}'`);
-        }
-
-        return locator(element) === this.locator[1];
-      } else {
-        return this.specification.defaultLocator(element) === this.locator[0];
-      }
-    });
+    return [].filter.call(elements, (element) => this.locator.matches(element));
   }
 
   protected unsafeSyncResolve(): HTMLElement {
@@ -101,9 +81,10 @@ export class Interactor<L extends LocatorSpecification> {
 
 export function interactor<A extends ActionSpecification, L extends LocatorSpecification>(
   specification: InteractorSpecification<L> & { actions?: A }
-): (...locator: Locator<L>) => Interactor<L> & ActionImplementation<A> {
-  return function(...locator) {
-    let interactor = new Interactor(specification, locator);
+): (...locatorArgs: LocatorArguments<L>) => Interactor & ActionImplementation<A> {
+  return function(...locatorArgs) {
+    let locator = new Locator(specification.defaultLocator, specification.locators, locatorArgs);
+    let interactor = new Interactor(specification, locator as unknown as Locator);
 
     for(let [name, action] of Object.entries(specification.actions || {})) {
       Object.defineProperty(interactor, name, {
@@ -119,6 +100,6 @@ export function interactor<A extends ActionSpecification, L extends LocatorSpeci
       });
     }
 
-    return interactor as Interactor<L> & ActionImplementation<A>;
+    return interactor as Interactor & ActionImplementation<A>;
   }
 }
