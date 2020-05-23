@@ -8,11 +8,10 @@ process.on('unhandledRejection', () => {
   // do nothing
 });
 
-const Link = interactor({
-  name: 'link',
+const Link = interactor('link')({
   selector: 'a',
   locators: {
-    href: (element) => element.id,
+    id: (element) => element.id,
     title: (element) => element.title
   },
   actions: {
@@ -20,14 +19,11 @@ const Link = interactor({
   }
 });
 
-const Header = interactor({
-  name: 'header',
+const Header = interactor('header')({
   selector: 'h1,h2,h3,h4,h5,h6',
 });
 
-const Div = interactor({
-  name: 'div',
-  selector: 'div',
+const Div = interactor('div')({
   defaultLocator: (element) => element.id || "",
 });
 
