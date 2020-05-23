@@ -10,6 +10,13 @@ export interface InteractorSpecification<L extends LocatorSpecification> {
   locators: L;
 }
 
+const defaultSpecification: InteractorSpecification<{}> = {
+  name: 'interactor',
+  selector: 'div',
+  defaultLocator: (element) => element.textContent || "",
+  locators: {},
+}
+
 export class Interactor {
   protected parent?: Interactor;
 
@@ -80,11 +87,12 @@ export class Interactor {
 }
 
 export function interactor<A extends ActionSpecification, L extends LocatorSpecification>(
-  specification: InteractorSpecification<L> & { actions?: A }
+  specification: Partial<InteractorSpecification<L>> & { actions?: A }
 ): (...locatorArgs: LocatorArguments<L>) => Interactor & ActionImplementation<A> {
   return function(...locatorArgs) {
-    let locator = new Locator(specification.defaultLocator, specification.locators, locatorArgs);
-    let interactor = new Interactor(specification, locator as unknown as Locator);
+    let fullSpecification = Object.assign({}, defaultSpecification, specification);
+    let locator = new Locator(fullSpecification.defaultLocator, fullSpecification.locators, locatorArgs);
+    let interactor = new Interactor(fullSpecification, locator as unknown as Locator);
 
     for(let [name, action] of Object.entries(specification.actions || {})) {
       Object.defineProperty(interactor, name, {
