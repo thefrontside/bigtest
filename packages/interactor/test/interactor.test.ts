@@ -24,13 +24,15 @@ const Link = interactor({
 const Header = interactor({
   name: 'header',
   selector: 'h1,h2,h3,h4,h5,h6',
-  defaultLocator: (element) => element.textContent || ""
+  defaultLocator: (element) => element.textContent || "",
+  locators: {}
 });
 
 const Div = interactor({
   name: 'div',
   selector: 'div',
-  defaultLocator: (element) => element.id || ""
+  defaultLocator: (element) => element.id || "",
+  locators: {}
 });
 
 function dom(html: string) {
