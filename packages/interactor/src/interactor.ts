@@ -3,13 +3,13 @@ import { ActionSpecification, ActionImplementation } from './action';
 import { LocatorSpecification, LocatorArguments, Locator } from './locator';
 import { defaultOptions } from './options';
 
-export interface InteractorSpecification<L extends LocatorSpecification> {
+export interface InteractorSpecification<E extends HTMLElement, L extends LocatorSpecification<E>> {
   selector: string;
-  defaultLocator: (element: HTMLElement) => string;
+  defaultLocator: (element: E) => string;
   locators: L;
 }
 
-const defaultSpecification: InteractorSpecification<{}> = {
+const defaultSpecification: InteractorSpecification<HTMLElement, {}> = {
   selector: 'div',
   defaultLocator: (element) => element.textContent || "",
   locators: {},
@@ -18,8 +18,11 @@ const defaultSpecification: InteractorSpecification<{}> = {
 export class Interactor {
   protected parent?: Interactor;
 
-  constructor(public name: string, private specification: InteractorSpecification<LocatorSpecification>, private locator: Locator) {
-  }
+  constructor(
+    public name: string,
+    private specification: InteractorSpecification<HTMLElement, LocatorSpecification<HTMLElement>>,
+    private locator: Locator<HTMLElement>
+  ) {}
 
   find<T extends Interactor>(interactor: T): T {
     let child = Object.create(interactor);
@@ -85,12 +88,16 @@ export class Interactor {
 }
 
 
-export function interactor(name: string) {
-  return function<A extends ActionSpecification, L extends LocatorSpecification>(specification: Partial<InteractorSpecification<L>> & { actions?: A }) {
-    return function(...locatorArgs: LocatorArguments<L>): Interactor & ActionImplementation<A> {
+export function interactor<E extends HTMLElement>(name: string) {
+  return function<A extends ActionSpecification<E>, L extends LocatorSpecification<E>>(specification: Partial<InteractorSpecification<E, L>> & { actions?: A }) {
+    return function(...locatorArgs: LocatorArguments<E, L>): Interactor & ActionImplementation<E, A> {
       let fullSpecification = Object.assign({ selector: name }, defaultSpecification, specification);
       let locator = new Locator(fullSpecification.defaultLocator, fullSpecification.locators, locatorArgs);
-      let interactor = new Interactor(name, fullSpecification, locator as unknown as Locator);
+      let interactor = new Interactor(
+        name,
+        fullSpecification as unknown as InteractorSpecification<HTMLElement, LocatorSpecification<HTMLElement>>,
+        locator as unknown as Locator<HTMLElement>
+      );
 
       for(let [name, action] of Object.entries(specification.actions || {})) {
         Object.defineProperty(interactor, name, {
@@ -106,7 +113,7 @@ export function interactor(name: string) {
         });
       }
 
-      return interactor as Interactor & ActionImplementation<A>;
+      return interactor as Interactor & ActionImplementation<E, A>;
     }
   }
 }

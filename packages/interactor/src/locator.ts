@@ -1,14 +1,14 @@
-export type LocatorFn = (element: HTMLElement) => string;
+export type LocatorFn<E extends HTMLElement> = (element: E) => string;
 
-export type LocatorSpecification = Record<string, LocatorFn>;
+export type LocatorSpecification<E extends HTMLElement> = Record<string, LocatorFn<E>>;
 
-export type LocatorArguments<L extends LocatorSpecification> = [string] | [keyof L, string];
+export type LocatorArguments<E extends HTMLElement, L extends LocatorSpecification<E>> = [string] | [keyof L, string];
 
-export class Locator<L extends LocatorSpecification = LocatorSpecification> {
+export class Locator<E extends HTMLElement, L extends LocatorSpecification<E> = LocatorSpecification<E>> {
   public name?: keyof L;
   public value: string;
 
-  constructor(public defaultLocator: LocatorFn, public specification: L, locator: LocatorArguments<L>) {
+  constructor(public defaultLocator: LocatorFn<E>, public specification: L, locator: LocatorArguments<E, L>) {
     if(locator.length === 2) {
       this.name = locator[0];
       this.value = locator[1];
@@ -25,7 +25,7 @@ export class Locator<L extends LocatorSpecification = LocatorSpecification> {
     }
   }
 
-  matches(element: HTMLElement): boolean {
+  matches(element: E): boolean {
     if(this.name) {
       let locator = this.specification[this.name];
 
