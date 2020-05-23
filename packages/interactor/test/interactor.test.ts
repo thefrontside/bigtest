@@ -8,10 +8,10 @@ process.on('unhandledRejection', () => {
   // do nothing
 });
 
-const Link = interactor('link')({
+const Link = interactor<HTMLLinkElement>('link')({
   selector: 'a',
   locators: {
-    id: (element) => element.id,
+    href: (element) => element.href,
     title: (element) => element.title
   },
   actions: {
