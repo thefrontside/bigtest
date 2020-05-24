@@ -120,6 +120,26 @@ describe('@bigtest/interactor', () => {
 
       await expect(Div("blah").find(Link("Foo")).exists()).rejects.toHaveProperty('message', 'div "blah" does not exist');
     });
+
+    it('is composable', async () => {
+      dom(`
+        <div id="test">
+          <div id="foo">
+            <a href="/foo">Foo</a>
+          </div>
+          <div id="bar">
+            <a href="/Bar">Bar</a>
+          </div>
+        </div>
+        <a href="/foo">Foo</a>
+      `);
+
+      await expect(Div("test").find(Div("foo").find(Link("Foo"))).exists()).resolves.toEqual(true);
+      await expect(Div("test").find(Div("foo").find(Link("Bar"))).exists()).rejects.toHaveProperty('message', 'link "Bar" within div "foo" within div "test" does not exist');
+
+      await expect(Div("test").find(Div("foo")).find(Link("Foo")).exists()).resolves.toEqual(true);
+      await expect(Div("test").find(Div("foo")).find(Link("Bar")).exists()).rejects.toHaveProperty('message', 'link "Bar" within div "foo" within div "test" does not exist');
+    });
   });
 
   describe('actions', () => {
