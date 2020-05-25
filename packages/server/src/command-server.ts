@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { Operation, Context, spawn, fork } from 'effection';
+import { Operation, spawn, fork } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { express } from '@bigtest/effection-express';
 import * as graphqlHTTP from 'express-graphql';

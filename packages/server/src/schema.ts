@@ -5,10 +5,8 @@ import {
   mutationType,
   subscriptionField,
   stringArg,
-  plugin,
   makeSchema,
 } from "@nexus/schema";
-import { TestEvent } from './schema/test-event';
 
 export const schema = makeSchema({
   typegenAutoConfig: {
