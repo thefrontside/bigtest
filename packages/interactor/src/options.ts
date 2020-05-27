@@ -1,6 +1,6 @@
 export interface Options {
   timeout: number;
-  document?: HTMLDocument;
+  document?: Document;
 }
 
 export const defaultOptions: Options = {
