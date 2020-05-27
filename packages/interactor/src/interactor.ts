@@ -59,7 +59,7 @@ export class Interactor {
   }
 
   async resolve(): Promise<Element> {
-    return converge(defaultOptions.timeout, this.unsafeSyncResolve.bind(this));
+    return await converge(defaultOptions.timeout, this.unsafeSyncResolve.bind(this));
   }
 
   async exists(): Promise<true> {
