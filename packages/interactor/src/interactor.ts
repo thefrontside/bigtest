@@ -2,6 +2,7 @@ import { converge } from './converge';
 import { ActionSpecification, ActionImplementation } from './action';
 import { LocatorSpecification, LocatorArguments, Locator } from './locator';
 import { defaultOptions } from './options';
+import { NoSuchElementError, AmbigousElementError, NotAbsentError } from './errors';
 
 export interface InteractorSpecification<E extends Element, L extends LocatorSpecification<E>> {
   selector: string;
@@ -13,18 +14,6 @@ const defaultSpecification: InteractorSpecification<Element, {}> = {
   selector: 'div',
   defaultLocator: (element) => element.textContent || "",
   locators: {},
-}
-
-class NoSuchElementError extends Error {
-  get name() { return "NoSuchElementError" }
-}
-
-class AmbigousElementError extends Error {
-  get name() { return "AmbigousElementError" }
-}
-
-class NotAbsentError extends Error {
-  get name() { return "NotAbsentError" }
 }
 
 export class Interactor {
