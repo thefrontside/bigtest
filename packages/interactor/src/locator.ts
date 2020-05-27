@@ -1,10 +1,10 @@
-export type LocatorFn<E extends HTMLElement> = (element: E) => string;
+export type LocatorFn<E extends Element> = (element: E) => string;
 
-export type LocatorSpecification<E extends HTMLElement> = Record<string, LocatorFn<E>>;
+export type LocatorSpecification<E extends Element> = Record<string, LocatorFn<E>>;
 
-export type LocatorArguments<E extends HTMLElement, L extends LocatorSpecification<E>> = [string] | [keyof L, string];
+export type LocatorArguments<E extends Element, L extends LocatorSpecification<E>> = [string] | [keyof L, string];
 
-export class Locator<E extends HTMLElement, L extends LocatorSpecification<E> = LocatorSpecification<E>> {
+export class Locator<E extends Element, L extends LocatorSpecification<E> = LocatorSpecification<E>> {
   public name?: keyof L;
   public value: string;
 
