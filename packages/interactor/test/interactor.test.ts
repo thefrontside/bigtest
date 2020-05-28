@@ -51,8 +51,8 @@ describe('@bigtest/interactor', () => {
         <p><a title="Monkey" href="/foobar">Foo Bar</a></p>
       `);
 
-      await expect(Link('byTitle', 'Monkey').exists()).resolves.toEqual(true);
-      await expect(Link('byTitle', 'Zebra').exists()).rejects.toHaveProperty('message', 'link with title "Zebra" does not exist');
+      await expect(Link.byTitle('Monkey').exists()).resolves.toEqual(true);
+      await expect(Link.byTitle('Zebra').exists()).rejects.toHaveProperty('message', 'link with title "Zebra" does not exist');
     });
 
     it('can wait for condition to become true', async () => {

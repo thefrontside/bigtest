@@ -1,28 +1,16 @@
 import { converge } from './converge';
-import { ActionSpecification, ActionImplementation } from './action';
-import { LocatorSpecification, LocatorArguments, Locator } from './locator';
+import { InteractorSpecification } from './specification';
+import { Locator } from './locator';
 import { defaultOptions } from './options';
 import { NoSuchElementError, AmbigousElementError, NotAbsentError } from './errors';
 import { interaction, Interaction } from './interaction';
 
-export interface InteractorSpecification<E extends Element, L extends LocatorSpecification<E>> {
-  selector: string;
-  defaultLocator: (element: E) => string;
-  locators: L;
-}
-
-const defaultSpecification: InteractorSpecification<Element, {}> = {
-  selector: 'div',
-  defaultLocator: (element) => element.textContent || "",
-  locators: {},
-}
-
 export class Interactor {
-  protected ancestors: Interactor[] = [];
+  private ancestors: Interactor[] = [];
 
   constructor(
     public name: string,
-    private specification: InteractorSpecification<Element, LocatorSpecification<Element>>,
+    private specification: InteractorSpecification<Element>,
     private locator: Locator<Element>
   ) {}
 
@@ -38,7 +26,7 @@ export class Interactor {
     }, `${this.name} ${this.locator.description}`);
   }
 
-  protected unsafeSyncResolve(): Element {
+  private unsafeSyncResolve(): Element {
     let root = defaultOptions.document?.documentElement;
 
     if(!root) {
@@ -87,37 +75,5 @@ export class Interactor {
         throw new NotAbsentError(`${this.description} exists but should not`);
       });
     });
-  }
-}
-
-export function interactor<E extends Element>(name: string) {
-  return function<A extends ActionSpecification<E>, L extends LocatorSpecification<E>>(specification: Partial<InteractorSpecification<E, L>> & { actions?: A }) {
-    return function(...locatorArgs: LocatorArguments<E, L>): Interactor & ActionImplementation<E, A> {
-      let fullSpecification = Object.assign({ selector: name }, defaultSpecification, specification);
-      let locator = new Locator(fullSpecification.defaultLocator, fullSpecification.locators, locatorArgs);
-      let interactor = new Interactor(
-        name,
-        fullSpecification as unknown as InteractorSpecification<Element, LocatorSpecification<Element>>,
-        locator as unknown as Locator<Element>
-      );
-
-      for(let [name, action] of Object.entries(specification.actions || {})) {
-        Object.defineProperty(interactor, name, {
-          value: function() {
-            return interaction(`performing ${name} on ${this.description}`, () => {
-              return converge(defaultOptions.timeout, () => {
-                let element = this.unsafeSyncResolve();
-                return action(element);
-              });
-            });
-          },
-          configurable: true,
-          writable: true,
-          enumerable: false,
-        });
-      }
-
-      return interactor as Interactor & ActionImplementation<E, A>;
-    }
   }
 }
