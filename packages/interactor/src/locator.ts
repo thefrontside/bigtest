@@ -19,7 +19,9 @@ export class Locator<E extends Element, L extends LocatorSpecification<E> = Loca
 
   get description(): string {
     if(this.name) {
-      return `with ${this.name} ${JSON.stringify(this.value)}`;
+      let name = this.name.toString().replace(/^by/, '');
+      name = name.charAt(0).toLowerCase() + name.slice(1);
+      return `with ${name} ${JSON.stringify(this.value)}`;
     } else {
       return `${JSON.stringify(this.value)}`;
     }
