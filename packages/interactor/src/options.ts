@@ -4,6 +4,7 @@ export interface Options {
 }
 
 export const defaultOptions: Options = {
+  document: (typeof(window) === 'object') ? window.document : undefined,
   timeout: 1900
 }
 
