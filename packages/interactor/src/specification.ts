@@ -24,7 +24,7 @@ export type LocatorImplementation<E extends Element, S extends InteractorSpecifi
   [P in keyof S['locators']]: (value: string) => InteractorInstance<E, S>
 }
 
-export type InteractorInstance<E extends Element, S extends InteractorSpecification<E>> = Interactor & ActionImplementation<E, S>;
+export type InteractorInstance<E extends Element, S extends InteractorSpecification<E>> = Interactor<E> & ActionImplementation<E, S>;
 
 export type InteractorType<E extends Element, S extends InteractorSpecification<E>> =
   ((value: string) => InteractorInstance<E, S>) &
