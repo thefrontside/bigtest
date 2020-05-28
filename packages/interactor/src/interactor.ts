@@ -3,6 +3,7 @@ import { ActionSpecification, ActionImplementation } from './action';
 import { LocatorSpecification, LocatorArguments, Locator } from './locator';
 import { defaultOptions } from './options';
 import { NoSuchElementError, AmbigousElementError, NotAbsentError } from './errors';
+import { interaction, Interaction } from './interaction';
 
 export interface InteractorSpecification<E extends Element, L extends LocatorSpecification<E>> {
   selector: string;
@@ -58,25 +59,33 @@ export class Interactor {
     }, root);
   }
 
-  async resolve(): Promise<Element> {
-    return await converge(defaultOptions.timeout, this.unsafeSyncResolve.bind(this));
+  resolve(): Interaction<Element> {
+    return interaction(`${this.description} resolves`, () => {
+      return converge(defaultOptions.timeout, this.unsafeSyncResolve.bind(this));
+    });
   }
 
-  async exists(): Promise<true> {
-    await this.resolve();
-    return true;
-  }
-
-  async absent(): Promise<true> {
-    return converge(defaultOptions.timeout, () => {
-      try {
+  exists(): Interaction<true> {
+    return interaction(`${this.description} exists`, () => {
+      return converge(defaultOptions.timeout, () => {
         this.unsafeSyncResolve();
-      } catch(e) {
-        if(e.name === 'NoSuchElementError') {
-          return true;
+        return true;
+      });
+    });
+  }
+
+  absent(): Interaction<true> {
+    return interaction(`${this.description} does not exist`, () => {
+      return converge(defaultOptions.timeout, () => {
+        try {
+          this.unsafeSyncResolve();
+        } catch(e) {
+          if(e.name === 'NoSuchElementError') {
+            return true;
+          }
         }
-      }
-      throw new NotAbsentError(`${this.description} exists but should not`);
+        throw new NotAbsentError(`${this.description} exists but should not`);
+      });
     });
   }
 }
@@ -95,10 +104,12 @@ export function interactor<E extends Element>(name: string) {
 
       for(let [name, action] of Object.entries(specification.actions || {})) {
         Object.defineProperty(interactor, name, {
-          value: async function() {
-            await converge(defaultOptions.timeout, () => {
-              let element = this.unsafeSyncResolve();
-              return action(element);
+          value: function() {
+            return interaction(`performing ${name} on ${this.description}`, () => {
+              return converge(defaultOptions.timeout, () => {
+                let element = this.unsafeSyncResolve();
+                return action(element);
+              });
             });
           },
           configurable: true,
