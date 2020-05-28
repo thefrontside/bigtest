@@ -26,9 +26,6 @@
     "mocha": "^6.2.2",
     "ts-node": "*"
   },
-  "peerDependencies": {
-    "effection": "^0.6.2"
-  },
   "volta": {
     "node": "12.16.0",
     "yarn": "1.19.1"
