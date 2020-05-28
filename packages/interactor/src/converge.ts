@@ -1,8 +1,7 @@
 import { main, timeout as effectionTimeout } from 'effection';
 
-// TODO: this API is available on browsers as `window.performance`, we need to figure out
-// a way to package this so it'll work on both browsers and node.
-import { performance } from 'perf_hooks';
+const win: { performance?: unknown } = (typeof(window) === 'object') ? window : {};
+const performance = (typeof(win.performance) === 'object') ? win.performance : require('perf_hooks').performance;
 
 export async function converge<T>(timeout: number, fn: () => T): Promise<T> {
   return await main(function*() {
