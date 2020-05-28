@@ -27,6 +27,11 @@ const Div = defineInteractor('div')({
   defaultLocator: (element) => element.id || "",
 });
 
+const Details = defineInteractor<HTMLDetailsElement>('details')({
+  selector: 'details',
+  defaultLocator: (element) => element.querySelector('summary')?.textContent || ''
+});
+
 function dom(html: string) {
   let jsdom = new JSDOM(`<!doctype html><html><body>${html}</body></html>`, { runScripts: "dangerously" });
   setDefaultOptions({
@@ -127,6 +132,18 @@ describe('@bigtest/interactor', () => {
       `);
 
       await expect(Div("blah").find(Link("Foo")).exists()).rejects.toHaveProperty('message', 'div "blah" does not exist');
+    });
+
+    it('can be used with interactors with disjoint element types', async () => {
+      dom(`
+        <details>
+          <summary>More stuff</summary>
+
+          <a href="/foo">Foo</a>
+        </details>
+      `);
+
+      await Details("More stuff").find(Link("Foo")).exists();
     });
 
     it('is composable', async () => {
