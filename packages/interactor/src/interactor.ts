@@ -14,7 +14,7 @@ export class Interactor<E extends Element> {
     private locator: Locator<Element>
   ) {}
 
-  find<T extends Interactor<E>>(interactor: T): T {
+  find<T extends Interactor<Element>>(interactor: T): T {
     return Object.create(interactor, {
       ancestors: {
         value: [...this.ancestors, this, ...interactor.ancestors]

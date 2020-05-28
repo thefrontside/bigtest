@@ -1,4 +1,4 @@
-import { defaultSpecification, InteractorSpecification, InteractorInstance, InteractorType } from './specification';
+import { defaultSpecification, InteractorSpecification, InteractorType } from './specification';
 import { Locator } from './locator';
 import { Interactor } from './interactor';
 import { interaction } from './interaction';
