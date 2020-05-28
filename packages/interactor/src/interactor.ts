@@ -28,7 +28,7 @@ export class Interactor {
     }, `${this.name} ${this.locator.description}`);
   }
 
-  private unsafeSyncResolve(): Element {
+  private unsafeSyncResolve() {
     let root = defaultOptions.document?.documentElement;
 
     if(!root) {
