@@ -90,7 +90,6 @@ export class Interactor {
   }
 }
 
-
 export function interactor<E extends Element>(name: string) {
   return function<A extends ActionSpecification<E>, L extends LocatorSpecification<E>>(specification: Partial<InteractorSpecification<E, L>> & { actions?: A }) {
     return function(...locatorArgs: LocatorArguments<E, L>): Interactor & ActionImplementation<E, A> {
