@@ -15,9 +15,11 @@ export class Interactor {
   ) {}
 
   find<T extends Interactor>(interactor: T): T {
-    let child = Object.create(interactor);
-    child.ancestors = [...this.ancestors, this, ...interactor.ancestors];
-    return child;
+    return Object.create(interactor, {
+      ancestors: {
+        value: [...this.ancestors, this, ...interactor.ancestors]
+      }
+    });
   }
 
   get description(): string {
