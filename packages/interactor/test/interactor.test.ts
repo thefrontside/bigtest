@@ -67,6 +67,10 @@ describe('@bigtest/interactor', () => {
 
       await expect(Link('Foo Bar').exists()).resolves.toEqual(true);
     });
+
+    it('can return description', () => {
+      expect(Link('Foo Bar').exists().description).toEqual('link "Foo Bar" exists')
+    });
   });
 
   describe('.absent', () => {
@@ -90,6 +94,10 @@ describe('@bigtest/interactor', () => {
       `);
 
       await expect(Link('Foo Bar').absent()).resolves.toEqual(true);
+    });
+
+    it('can return description', () => {
+      expect(Link('Foo Bar').absent().description).toEqual('link "Foo Bar" does not exist')
     });
   });
 
@@ -155,7 +163,22 @@ describe('@bigtest/interactor', () => {
       `);
 
       await Link('Foo Bar').click();
-      await expect(Header('Hello!').exists()).resolves.toEqual(true);
+      await Header('Hello!').exists();
+    });
+
+    it('does nothing unless awaited', async () => {
+      dom(`
+        <a id="foo" href="/foobar">Foo Bar</a>
+        <div id="target"></div>
+        <script>
+          foo.onclick = () => {
+            target.innerHTML = '<h1>Hello!</h1>';
+          }
+        </script>
+      `);
+
+      Link('Foo Bar').click();
+      await Header('Hello!').absent();
     });
 
     it('works on scoped interactor', async () => {
@@ -171,6 +194,10 @@ describe('@bigtest/interactor', () => {
 
       await Div("foo").find(Link('Foo Bar')).click();
       await expect(Header('Hello!').exists()).resolves.toEqual(true);
+    });
+
+    it('can return description of interaction', () => {
+      expect(Div("foo").find(Link('Foo Bar')).click().description).toEqual('performing click on link "Foo Bar" within div "foo"');
     });
   });
 })
