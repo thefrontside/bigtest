@@ -2,13 +2,13 @@ import { describe, it } from 'mocha';
 import * as expect from 'expect'
 import { JSDOM } from 'jsdom';
 
-import { interactor, setDefaultOptions } from '../src/index';
+import { defineInteractor, setDefaultOptions } from '../src/index';
 
 process.on('unhandledRejection', () => {
   // do nothing
 });
 
-const Link = interactor<HTMLLinkElement>('link')({
+const Link = defineInteractor<HTMLLinkElement>('link')({
   selector: 'a',
   locators: {
     byHref: (element) => element.href,
@@ -19,11 +19,11 @@ const Link = interactor<HTMLLinkElement>('link')({
   }
 });
 
-const Header = interactor('header')({
+const Header = defineInteractor('header')({
   selector: 'h1,h2,h3,h4,h5,h6',
 });
 
-const Div = interactor('div')({
+const Div = defineInteractor('div')({
   defaultLocator: (element) => element.id || "",
 });
 
