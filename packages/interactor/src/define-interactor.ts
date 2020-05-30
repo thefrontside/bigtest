@@ -9,7 +9,7 @@ export function defineInteractor<E extends Element>(interactorName: string) {
   return function<S extends InteractorSpecification<E>>(specification: Partial<S>) {
     let fullSpecification: InteractorSpecification<Element> = Object.assign({ selector: interactorName }, defaultSpecification, specification);
 
-    let InteractorClass = class extends Interactor<E> {};
+    let InteractorClass = class extends Interactor {};
 
     for(let [actionName, action] of Object.entries(specification.actions || {})) {
       Object.defineProperty(InteractorClass.prototype, actionName, {

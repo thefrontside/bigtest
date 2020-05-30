@@ -5,8 +5,8 @@ import { defaultOptions } from './options';
 import { NoSuchElementError, AmbigousElementError, NotAbsentError } from './errors';
 import { interaction } from './interaction';
 
-export class Interactor<E extends Element> {
-  private ancestors: Interactor<E>[] = [];
+export class Interactor {
+  private ancestors: Interactor[] = [];
 
   constructor(
     public name: string,
@@ -14,7 +14,7 @@ export class Interactor<E extends Element> {
     private locator: Locator<Element>
   ) {}
 
-  find<T extends Interactor<Element>>(interactor: T): T {
+  find<T extends Interactor>(interactor: T): T {
     return Object.create(interactor, {
       ancestors: {
         value: [...this.ancestors, this, ...interactor.ancestors]
