@@ -29,7 +29,7 @@ export function defineInteractor<E extends Element>(interactorName: string) {
 
     let result = function(value: string) {
       let locator = new Locator(fullSpecification.defaultLocator, value);
-      let interactor = new InteractorClass(interactorName, fullSpecification, locator as Locator<Element>);
+      let interactor = new InteractorClass(interactorName, fullSpecification, locator);
       return interactor;
     }
 
