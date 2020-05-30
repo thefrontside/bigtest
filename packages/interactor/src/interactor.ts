@@ -3,18 +3,18 @@ import { InteractorSpecification } from './specification';
 import { Locator } from './locator';
 import { defaultOptions } from './options';
 import { NoSuchElementError, AmbigousElementError, NotAbsentError } from './errors';
-import { interaction, Interaction } from './interaction';
+import { interaction } from './interaction';
 
-export class Interactor {
-  private ancestors: Interactor[] = [];
+export class Interactor<E extends Element> {
+  private ancestors: Interactor<E>[] = [];
 
   constructor(
     public name: string,
-    private specification: InteractorSpecification<Element>,
-    private locator: Locator<Element>
+    private specification: InteractorSpecification<E>,
+    private locator: Locator<E>
   ) {}
 
-  find<T extends Interactor>(interactor: T): T {
+  find<T extends Interactor<never>>(interactor: T): T {
     return Object.create(interactor, {
       ancestors: {
         value: [...this.ancestors, this, ...interactor.ancestors]
@@ -28,7 +28,7 @@ export class Interactor {
     }, `${this.name} ${this.locator.description}`);
   }
 
-  private unsafeSyncResolve() {
+  private unsafeSyncResolve(): Element {
     let root = defaultOptions.document?.documentElement;
 
     if(!root) {
@@ -36,7 +36,7 @@ export class Interactor {
     }
 
     return [...this.ancestors, this].reduce((parentElement: Element, interactor) => {
-      let elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector));
+      let elements = Array.from(parentElement.querySelectorAll<E>(interactor.specification.selector));
       let matchingElements = elements.filter((element) => interactor.locator.matches(element));
 
       if(matchingElements.length === 1) {
@@ -49,13 +49,13 @@ export class Interactor {
     }, root);
   }
 
-  resolve(): Interaction<Element> {
+  resolve(){
     return interaction(`${this.description} resolves`, () => {
       return converge(defaultOptions.timeout, this.unsafeSyncResolve.bind(this));
     });
   }
 
-  exists(): Interaction<true> {
+  exists() {
     return interaction(`${this.description} exists`, () => {
       return converge(defaultOptions.timeout, () => {
         this.unsafeSyncResolve();
@@ -64,7 +64,7 @@ export class Interactor {
     });
   }
 
-  absent(): Interaction<true> {
+  absent() {
     return interaction(`${this.description} does not exist`, () => {
       return converge(defaultOptions.timeout, () => {
         try {

@@ -1,4 +1,4 @@
-import { defaultSpecification, InteractorSpecification, InteractorInstance, InteractorType } from './specification';
+import { defaultSpecification, InteractorSpecification, InteractorType } from './specification';
 import { Locator } from './locator';
 import { Interactor } from './interactor';
 import { interaction } from './interaction';
@@ -6,10 +6,10 @@ import { converge } from './converge';
 import { defaultOptions } from './options';
 
 export function defineInteractor<E extends Element>(interactorName: string) {
-  return function<S extends InteractorSpecification<E>>(specification: Partial<S>): InteractorType<E, S> {
+  return function<S extends InteractorSpecification<E>>(specification: Partial<S>) {
     let fullSpecification: InteractorSpecification<Element> = Object.assign({ selector: interactorName }, defaultSpecification, specification);
 
-    let InteractorClass = class extends Interactor {};
+    let InteractorClass = class extends Interactor<E> {};
 
     for(let [actionName, action] of Object.entries(specification.actions || {})) {
       Object.defineProperty(InteractorClass.prototype, actionName, {
@@ -27,18 +27,18 @@ export function defineInteractor<E extends Element>(interactorName: string) {
       });
     }
 
-    let result = function(value: string): InteractorInstance<E, S> {
+    let result = function(value: string) {
       let locator = new Locator(fullSpecification.defaultLocator, value);
-      let interactor = new InteractorClass(interactorName, fullSpecification, locator as Locator<Element>);
-      return interactor as InteractorInstance<E, S>;
+      let interactor = new InteractorClass(interactorName, fullSpecification, locator);
+      return interactor;
     }
 
     for(let [locatorName, locatorFn] of Object.entries(specification.locators || {})) {
       Object.defineProperty(result, locatorName, {
         value: function(value: string) {
           let locator = new Locator(locatorFn, value, locatorName);
-          let interactor = new InteractorClass(interactorName, fullSpecification, locator as Locator<Element>);
-          return interactor as InteractorInstance<E, S>;
+          let interactor = new InteractorClass(interactorName, fullSpecification, locator);
+          return interactor;
         },
         configurable: true,
         writable: true,

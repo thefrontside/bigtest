@@ -5,7 +5,7 @@ export type LocatorSpecification<E extends Element> = Record<string, LocatorFn<E
 export class Locator<E extends Element> {
   constructor(public locatorFn: LocatorFn<E>, public value: string, public name?: string) {}
 
-  get description(): string {
+  get description() {
     if(this.name) {
       let name = this.name.toString().replace(/^by/, '');
       name = name.charAt(0).toLowerCase() + name.slice(1);
@@ -15,7 +15,7 @@ export class Locator<E extends Element> {
     }
   }
 
-  matches(element: E): boolean {
+  matches(element: E) {
     return this.locatorFn(element) === this.value;
   }
 }

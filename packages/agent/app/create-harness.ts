@@ -105,7 +105,7 @@ function *runTest(parentFrame: ParentFrame, test: TestImplementation, context: T
 function* loadManifest(manifestUrl: string): Operation<TestImplementation> {
   let { resolve, promise } = Deferred<TestImplementation>();
 
-  let scriptElement = document.createElement('script') as HTMLScriptElement;
+  let scriptElement = document.createElement('script');
 
   let listener = () => resolve(__bigtestManifest)
 
