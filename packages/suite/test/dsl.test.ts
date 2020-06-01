@@ -1,7 +1,31 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect'
 
-import example from './fixtures/example';
+import { test } from '../src/index';
+
+let example = test('a test')
+  .step('some step', async () => {
+    return { foo: 'foo' }
+  })
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  .step('this does nothing', async() => {})
+  .step('another step', async ({ foo }) => {
+    return { bar: foo.toUpperCase() + 'bar' }
+  })
+  .assertion('this is an assertion', async ({ foo }) => {
+    expect(foo).toEqual('foo');
+  })
+  .assertion('this is another assertion', async ({ bar }) => {
+    expect(bar).toEqual('foobar');
+  })
+  .child('a child test', test => test
+    .step('a child step', async ({ foo }) => {
+      return { quox: foo.toUpperCase() + 'blah' }
+    })
+    .assertion('a child assertion', async ({ quox }) => {
+      expect(quox).toEqual('FOOblah');
+    })
+  );
 
 describe('dsl', () => {
   it('returns a serialized test suite', async () => {
