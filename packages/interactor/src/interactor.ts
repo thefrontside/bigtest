@@ -5,16 +5,18 @@ import { defaultOptions } from './options';
 import { NoSuchElementError, AmbigousElementError, NotAbsentError } from './errors';
 import { interaction, Interaction } from './interaction';
 
-export class Interactor {
-  private ancestors: Interactor[] = [];
+export class Interactor<E extends Element> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private ancestors: Interactor<any>[] = [];
 
   constructor(
     public name: string,
-    private specification: InteractorSpecification<Element>,
-    private locator: Locator<Element>
+    private specification: InteractorSpecification<E>,
+    private locator: Locator<E>
   ) {}
 
-  find<T extends Interactor>(interactor: T): T {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  find<T extends Interactor<any>>(interactor: T): T {
     return Object.create(interactor, {
       ancestors: {
         value: [...this.ancestors, this, ...interactor.ancestors]
@@ -28,14 +30,17 @@ export class Interactor {
     }, `${this.name} ${this.locator.description}`);
   }
 
-  private unsafeSyncResolve() {
+  private unsafeSyncResolve(): E {
     let root = defaultOptions.document?.documentElement;
 
     if(!root) {
       throw new Error('must specify document');
     }
 
-    return [...this.ancestors, this].reduce((parentElement: Element, interactor) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let ancestorChain: Interactor<any>[] = [...this.ancestors, this];
+
+    return ancestorChain.reduce((parentElement: Element, interactor) => {
       let elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector));
       let matchingElements = elements.filter((element) => interactor.locator.matches(element));
 
@@ -46,10 +51,10 @@ export class Interactor {
       } else {
         throw new AmbigousElementError(`${interactor.description} is ambiguous`);
       }
-    }, root);
+    }, root) as E;
   }
 
-  resolve(): Interaction<Element> {
+  resolve(): Interaction<E> {
     return interaction(`${this.description} resolves`, () => {
       return converge(defaultOptions.timeout, this.unsafeSyncResolve.bind(this));
     });

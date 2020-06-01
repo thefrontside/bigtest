@@ -7,9 +7,9 @@ import { defaultOptions } from './options';
 
 export function defineInteractor<E extends Element>(interactorName: string) {
   return function<S extends InteractorSpecification<E>>(specification: Partial<S>): InteractorType<E, S> {
-    let fullSpecification: InteractorSpecification<Element> = Object.assign({ selector: interactorName }, defaultSpecification, specification);
+    let fullSpecification: InteractorSpecification<E> = Object.assign({ selector: interactorName }, defaultSpecification, specification);
 
-    let InteractorClass = class extends Interactor {};
+    let InteractorClass = class extends Interactor<E> {};
 
     for(let [actionName, action] of Object.entries(specification.actions || {})) {
       Object.defineProperty(InteractorClass.prototype, actionName, {
@@ -29,15 +29,15 @@ export function defineInteractor<E extends Element>(interactorName: string) {
 
     let result = function(value: string): InteractorInstance<E, S> {
       let locator = new Locator(fullSpecification.defaultLocator, value);
-      let interactor = new InteractorClass(interactorName, fullSpecification, locator as Locator<Element>);
+      let interactor = new InteractorClass(interactorName, fullSpecification, locator);
       return interactor as InteractorInstance<E, S>;
     }
 
     for(let [locatorName, locatorFn] of Object.entries(specification.locators || {})) {
       Object.defineProperty(result, locatorName, {
-        value: function(value: string) {
+        value: function(value: string): InteractorInstance<E, S> {
           let locator = new Locator(locatorFn, value, locatorName);
-          let interactor = new InteractorClass(interactorName, fullSpecification, locator as Locator<Element>);
+          let interactor = new InteractorClass(interactorName, fullSpecification, locator);
           return interactor as InteractorInstance<E, S>;
         },
         configurable: true,
