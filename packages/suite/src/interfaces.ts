@@ -44,7 +44,7 @@ export interface Step extends Node {
   action: Action;
 }
 
-export type Check = (context: Context) => void;
+export type Check = (context: Context) => Promise<void>;
 
 /**
  * A single assertion that is part of a test case. It accepts the

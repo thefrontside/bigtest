@@ -22,7 +22,7 @@ export class TestBuilder<C extends Context> implements TestImplementation {
     this.children = test.children;
   }
 
-  step<R extends Context | void>(description: string, action: (context: C) => PromiseLike<R>): TestBuilder<R extends void ? C : C & R> {
+  step<R extends Context | void>(description: string, action: (context: C) => Promise<R>): TestBuilder<R extends void ? C : C & R> {
     return new TestBuilder({
       ...this,
       steps: this.steps.concat({
@@ -32,7 +32,7 @@ export class TestBuilder<C extends Context> implements TestImplementation {
     });
   }
 
-  assertion<R extends Context | void>(description: string, check: (context: C) => R): TestBuilder<R extends void ? C : C & R> {
+  assertion(description: string, check: (context: C) => Promise<void>): TestBuilder<C> {
     return new TestBuilder({
       ...this,
       assertions: this.assertions.concat({

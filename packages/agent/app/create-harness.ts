@@ -1,6 +1,6 @@
 import { ParentFrame } from './parent-frame';
 import { TestImplementation, ErrorDetails, Context as TestContext } from '@bigtest/suite';
-import { Operation } from 'effection';
+import { Operation, fork } from 'effection';
 import { Deferred } from '@bigtest/effection';
 
 import { timebox } from './timebox';
@@ -78,18 +78,22 @@ function *runTest(parentFrame: ParentFrame, test: TestImplementation, context: T
     }
   }
 
-  for(let assertion of test.assertions) {
-    let assertionPath = currentPath.concat(assertion.description);
-    try {
-      console.debug('[harness] running assertion', assertion);
-      parentFrame.send({ type: 'assertion:running', path: assertionPath });
+  yield function*() {
+    for(let assertion of test.assertions) {
+      yield fork(function*() {
+        let assertionPath = currentPath.concat(assertion.description);
+        try {
+          console.debug('[harness] running assertion', assertion);
+          parentFrame.send({ type: 'assertion:running', path: assertionPath });
 
-      assertion.check(context);
+          yield timebox(assertion.check(context), 2000)
 
-      parentFrame.send({ type: 'assertion:result', status: 'ok', path: assertionPath });
-    } catch(error) {
-      console.error('[harness] assertion failed', assertion, error);
-      parentFrame.send({ type: 'assertion:result', status: 'failed', error: serializeError(error), path: assertionPath });
+          parentFrame.send({ type: 'assertion:result', status: 'ok', path: assertionPath });
+        } catch(error) {
+          console.error('[harness] assertion failed', assertion, error);
+          parentFrame.send({ type: 'assertion:result', status: 'failed', error: serializeError(error), path: assertionPath });
+        }
+      });
     }
   }
 
