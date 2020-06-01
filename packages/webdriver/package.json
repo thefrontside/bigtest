@@ -32,7 +32,7 @@
     "@bigtest/atom": "^0.4.0",
     "@effection/node": "^0.6.2",
     "abort-controller": "^3.0.0",
-    "chromedriver": "~80.0.0",
+    "chromedriver": "~83.0.0",
     "geckodriver": "^1.19.1",
     "node-fetch": "^2.6.0"
   }
