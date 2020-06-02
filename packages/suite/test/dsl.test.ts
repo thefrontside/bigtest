@@ -27,6 +27,24 @@ let example = test('a test')
     })
   );
 
+let stepWithDescription = Object.assign(Promise.resolve({ bar: 123 }), {
+  description: 'this is a description'
+});
+
+let assertionWithDescription = Object.assign(Promise.resolve(undefined), {
+  description: 'shorthand assertion with description'
+});
+
+let shorthandExample = test('a test')
+  .step('some step', Promise.resolve({ foo: 'foo' }))
+  .step(stepWithDescription)
+  .assertion('this is an assertion', async ({ foo, bar }) => {
+    expect(foo).toEqual('foo');
+    expect(bar).toEqual(123);
+  })
+  .assertion('shorthand assertion', Promise.resolve(undefined))
+  .assertion(assertionWithDescription);
+
 describe('dsl', () => {
   it('returns a serialized test suite', async () => {
     expect(example.description).toEqual('a test');
@@ -40,5 +58,19 @@ describe('dsl', () => {
     expect(example.children[0].assertions[0].description).toEqual('a child assertion');
 
     await expect(example.steps[0].action({})).resolves.toHaveProperty('foo', 'foo');
+  });
+
+  it('can use shorthand forms', async () => {
+    expect(shorthandExample.description).toEqual('a test');
+    expect(shorthandExample.steps[0].description).toEqual('some step');
+    expect(shorthandExample.steps[1].description).toEqual('this is a description');
+    expect(shorthandExample.assertions[0].description).toEqual('this is an assertion');
+    expect(shorthandExample.assertions[1].description).toEqual('shorthand assertion');
+    expect(shorthandExample.assertions[2].description).toEqual('shorthand assertion with description');
+
+    await expect(shorthandExample.steps[0].action({})).resolves.toHaveProperty('foo', 'foo');
+    await expect(shorthandExample.steps[1].action({})).resolves.toHaveProperty('bar', 123);
+    await expect(shorthandExample.assertions[1].check({})).resolves.toEqual(undefined);
+    await expect(shorthandExample.assertions[2].check({})).resolves.toEqual(undefined);
   });
 })

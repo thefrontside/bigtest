@@ -9,6 +9,9 @@ export function test<C extends Context>(description: string): TestBuilder<C> {
   });
 }
 
+type ActionArgument<R extends Context | void, C extends Context> = Promise<R> | ((context: C) => Promise<R>);
+type CheckArgument<C extends Context> = ActionArgument<void, C>;
+
 export class TestBuilder<C extends Context> implements TestImplementation {
   public description: string;
   public steps: Step[];
@@ -22,23 +25,27 @@ export class TestBuilder<C extends Context> implements TestImplementation {
     this.children = test.children;
   }
 
-  step<R extends Context | void>(description: string, action: (context: C) => Promise<R>): TestBuilder<R extends void ? C : C & R> {
+  step<R extends Context | void>(
+    ...args: [string, ActionArgument<R, C>] | [ActionArgument<R, C> & { description: string }]
+  ): TestBuilder<R extends void ? C : C & R> {
+    let [description, actionOrPromise] = (args.length === 1) ? [args[0].description, args[0]] : args;
+    let action = typeof(actionOrPromise) === 'function' ? actionOrPromise : async () => { return await actionOrPromise }
+
     return new TestBuilder({
       ...this,
-      steps: this.steps.concat({
-        description,
-        action: action as Action
-      }),
+      steps: this.steps.concat({ description, action: action as Action }),
     });
   }
 
-  assertion(description: string, check: (context: C) => Promise<void>): TestBuilder<C> {
+  assertion(
+    ...args: [string, CheckArgument<C>] | [CheckArgument<C> & { description: string }]
+  ): TestBuilder<C> {
+    let [description, checkOrPromise] = (args.length === 1) ? [args[0].description, args[0]] : args;
+    let check = typeof(checkOrPromise) === 'function' ? checkOrPromise : async () => { return await checkOrPromise }
+
     return new TestBuilder({
       ...this,
-      assertions: this.assertions.concat({
-        description,
-        check: check as Check
-      }),
+      assertions: this.assertions.concat({ description, check: check as Check }),
     });
   }
 
