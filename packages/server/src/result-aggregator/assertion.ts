@@ -27,14 +27,6 @@ export class AssertionAggregator extends Aggregator<AssertionResult, AggregatorT
   *perform(): Operation<ResultStatus> {
     let result: AssertionResultEvent = yield this.receiveResult();
 
-    this.options.bus.emit("test:event", {
-      type: "assertion:result",
-      path: this.options.path,
-      status: this.statusSlice.get(),
-      testRunId: this.options.testRunId,
-      agentId: this.options.agentId
-    });
-
     this.statusSlice.set(result.status);
 
     return result.status;

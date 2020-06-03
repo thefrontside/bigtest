@@ -1,3 +1,4 @@
+import { Operation } from 'effection';
 import { lensPath, view, set, dissoc, over } from "ramda";
 import { Atom } from "./atom";
 
@@ -31,6 +32,10 @@ export class Slice<T, S> {
     return new Slice(this.atom, this.path.concat(path));
   }
 
+  once(predicate: (state: T) => boolean): Operation<void> {
+    return this.atom.once(state => predicate(view(this.lens)(state) as unknown as T));
+  }
+
   remove(): void {
     // If this is the root, then it cannot be removed.
     if (this.path.length === 0) {
@@ -53,11 +58,11 @@ export class Slice<T, S> {
       let [property] = this.path.slice(-1);
       this.atom.update((state) => {
         return (set(
-          parentLens, 
+          parentLens,
           dissoc(property, parent as object),
           state
         ) as unknown) as S;
-      }); 
+      });
     }
   }
 }

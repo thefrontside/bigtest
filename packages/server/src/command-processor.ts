@@ -1,10 +1,10 @@
 import { EventEmitter } from 'events';
-import { fork, Operation } from 'effection';
+import { fork, spawn, Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
-import { Test, TestResult } from '@bigtest/suite';
-import { Atom } from '@bigtest/atom';
+import { Test, TestResult, ResultStatus } from '@bigtest/suite';
+import { Atom, Slice } from '@bigtest/atom';
 import { AgentEvent, Command as AgentCommand } from '@bigtest/agent';
-import { AgentState, TestRunState, OrchestratorState } from './orchestrator/state';
+import { AgentState, TestRunState, OrchestratorState, TestRunAgentState } from './orchestrator/state';
 import { TestRunAggregator } from './result-aggregator/test-run';
 import { CommandMessage } from './command-server';
 
@@ -48,8 +48,65 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
 
   let aggregator = new TestRunAggregator(testRunSlice, { testRunId, ...options });
 
+  yield spawn(notify(options.bus, testRunSlice));
+
   yield aggregator.run();
 }
+
+function * notify(bus: EventEmitter, slice: Slice<TestRunState, OrchestratorState>) {
+  for (let agentId of Object.keys(slice.get().agents)) {
+    let result = slice.slice<TestResult>(['agents', agentId, 'result']);
+    yield fork(publishAgentResult(result, agentId));
+  }
+
+  function isSettled(result: { status: ResultStatus }): boolean {
+    return result.status !== 'pending' && result.status != 'running';
+  }
+
+  function * publishAgentResult(resultSlice: Slice<TestResult, OrchestratorState>, agentId: string): Operation<void> {
+    for (let i = 0; i < resultSlice.get().children.length; i++) {
+      yield spawn(publishAgentResult(resultSlice.slice(['children', i]), agentId));
+    }
+
+    for (let i = 0; i < resultSlice.get().steps.length; i++) {
+      let stepIndex = i;
+      yield spawn(function*() {
+        yield resultSlice.once(result => isSettled(result.steps[stepIndex]));
+        bus.emit("test:event", {
+          type: "step:result",
+          // path: this.options.path,
+          status: resultSlice.get().steps[stepIndex].status,
+          testRunId: slice.get().testRunId,
+          agentId
+        });
+      });
+    }
+
+    for (let i = 0; i < resultSlice.get().assertions.length; i++) {
+      let assertionIndex = i;
+      yield spawn(function*() {
+        yield resultSlice.once(result => isSettled(result.assertions[assertionIndex]));
+        bus.emit("test:event", {
+          type: "assertion:result",
+          // path: this.options.path,
+          status: resultSlice.get().assertions[assertionIndex].status,
+          testRunId: slice.get().testRunId,
+          agentId
+        });
+      });
+    }
+
+    yield resultSlice.once(isSettled);
+
+    bus.emit('test:event', {
+      type: "test:result",
+      status: resultSlice.get().status,
+      testRunId: slice.get().testRunId,
+      agentId
+    });
+  }
+}
+
 
 export function* createCommandProcessor(options: CommandProcessorOptions): Operation {
   while(true) {
