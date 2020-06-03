@@ -216,5 +216,14 @@ describe('@bigtest/interactor', () => {
     it('can return description of interaction', () => {
       expect(Div("foo").find(Link('Foo Bar')).click().description).toEqual('performing click on link "Foo Bar" within div "foo"');
     });
+
+    it('is rejected if actions are disabled', async () => {
+      setDefaultOptions({ actionsDisabled: 'no action yo!' });
+      dom(`
+        <a id="foo" href="/foobar">Foo Bar</a>
+      `);
+
+      await expect(Link('Foo Bar').click()).rejects.toHaveProperty('message', 'Actions are disabled: no action yo!');
+    });
   });
 })

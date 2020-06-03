@@ -9,3 +9,15 @@ export class AmbigousElementError extends Error {
 export class NotAbsentError extends Error {
   get name() { return "NotAbsentError" }
 }
+
+export class ActionsDisabledError extends Error {
+  constructor(reason: string | boolean) {
+    let message = 'Actions are disabled';
+    if(typeof(reason) === 'string') {
+      message += `: ${reason}`;
+    }
+    super(message);
+  }
+
+  get name() { return "ActionsDisabledError" }
+}

@@ -4,6 +4,7 @@ import { Interactor } from './interactor';
 import { interaction } from './interaction';
 import { converge } from './converge';
 import { defaultOptions } from './options';
+import { ActionsDisabledError } from './errors';
 
 export function defineInteractor<E extends Element>(interactorName: string) {
   return function<S extends InteractorSpecification<E>>(specification: Partial<S>): InteractorType<E, S> {
@@ -14,8 +15,11 @@ export function defineInteractor<E extends Element>(interactorName: string) {
     for(let [actionName, action] of Object.entries(specification.actions || {})) {
       Object.defineProperty(InteractorClass.prototype, actionName, {
         value: function() {
-          return interaction(`performing ${actionName} on ${this.description}`, () => {
-            return converge(defaultOptions.timeout, () => {
+          return interaction(`performing ${actionName} on ${this.description}`, async () => {
+            if(defaultOptions.actionsDisabled) {
+              throw new ActionsDisabledError(defaultOptions.actionsDisabled);
+            }
+            return await converge(defaultOptions.timeout, () => {
               let element = this.unsafeSyncResolve();
               return action(element);
             });
