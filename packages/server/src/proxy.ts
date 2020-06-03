@@ -1,6 +1,7 @@
 import { fork, spawn, Operation } from 'effection';
 import { Mailbox, any } from '@bigtest/effection';
 import { throwOnErrorEvent, on, once } from '@effection/events';
+import { express } from "@bigtest/effection-express";
 
 import * as net from 'net';
 import * as proxy from 'http-proxy';
@@ -86,44 +87,30 @@ export function* createProxyServer(options: ProxyOptions): Operation {
 
   let events = yield Mailbox.subscribe(proxyServer, ['proxyRes', 'error', 'open', 'close']);
 
-  let server = http.createServer();
+  let server = express();
 
   // proxy http requests
-  yield spawn(function*(): Operation<void> {
-    let subscription = yield on(server, 'request');
-
-    while (true) {
-      let [req, res]: [http.IncomingMessage, http.ServerResponse] = yield subscription.next();
-      yield spawn(function*() {
-        try {
-          proxyServer.web(req, res)
-          yield once(res, 'close');
-        } finally {
-          req.destroy();
-        }
-      });
+  yield spawn(server.useOperation(function*(req, res) {
+    try {
+      proxyServer.web(req, res)
+      yield once(res, 'close');
+    } finally {
+      req.destroy();
     }
-  });
+  }));
 
   // proxy ws requests
-  yield spawn(function*(): Operation<void> {
-    let subscription = yield on(server, 'upgrade');
-
-    while (true) {
-      let [req, socket, head]: [http.IncomingMessage, net.Socket, unknown] = yield subscription.next();
-      yield spawn(function*() {
-        try {
-          proxyServer.ws(req, socket, head);
-          yield once(socket, 'close');
-        } finally {
-          req.destroy();
-        }
-      });
+  yield spawn(server.ws('/*', function*(socket, req) {
+    try {
+      proxyServer.ws(req, socket, null);
+      yield once(socket, 'close');
+    } finally {
+      req.destroy();
     }
-  });
+  }));
 
   try {
-    yield listen(server, options.port);
+    yield server.listen(options.port);
     options.delegate.send({ status: "ready" });
 
     while(true) {
@@ -152,6 +139,5 @@ export function* createProxyServer(options: ProxyOptions): Operation {
     }
   } finally {
     proxyServer.close();
-    server.close();
   }
 };
