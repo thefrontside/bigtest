@@ -1,4 +1,4 @@
-import { Operation, resource } from 'effection';
+import { Operation, resource, spawn } from 'effection';
 import * as actualExpress from 'express';
 import { RequestHandler } from 'express';
 import * as ws from 'ws';
@@ -24,17 +24,25 @@ export class Express {
   }
 
   *useOperation(handler: OperationRequestHandler): Operation<void> {
-    yield ({ spawn }) => {
+    yield (controls) => {
       this.inner.use((req, res) => {
-        spawn(handler(req, res));
+        controls.spawn(handler(req, res));
       });
     };
   }
 
   *ws(path: string, handler: WsOperationRequestHandler): Operation<void> {
-    yield ({ spawn }) => {
-      this.inner.ws(path, (ws, req) => {
-        spawn(handler(ws, req));
+    yield (controls) => {
+      this.inner.ws(path, (socket, req) => {
+        controls.spawn(function*(): Operation<void> {
+          yield ensure(() => socket.close());
+          yield spawn(handler(socket, req));
+
+          let [{ reason, code }] = yield once(socket, 'close');
+          if(code !== 1000) {
+            throw new Error(`websocket client closed connection unexpectedly: [${code}] ${reason}`);
+          }
+        });
       })
     }
   }

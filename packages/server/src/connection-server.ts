@@ -1,6 +1,5 @@
 import { Operation, fork, spawn } from 'effection';
 import { Mailbox } from '@bigtest/effection';
-import { IMessage } from 'websocket';
 import * as WebSocket from 'ws'
 import { sendData } from './ws';
 import { Atom } from '@bigtest/atom';

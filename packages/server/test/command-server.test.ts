@@ -102,7 +102,7 @@ describe('command server', () => {
       })
     });
 
-    describe.only('over websockets', () => {
+    describe('over websockets', () => {
       let wsResult: GraphQLPayload;
       beforeEach(async () => {
         wsResult = await websocketQuery('{agents { browser { name } os { name } platform { type }}}');

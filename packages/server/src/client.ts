@@ -1,5 +1,5 @@
 import { w3cwebsocket } from 'websocket';
-import { spawn, resource, Operation } from 'effection';
+import { resource, Operation } from 'effection';
 
 import { ensure, Mailbox } from '@bigtest/effection';
 import { on, once } from '@effection/events';
@@ -19,13 +19,11 @@ export class Client {
     let client = new Client(socket);
     let res = yield resource(client, function*() {
       yield ensure(() => socket.close());
-      yield spawn(function* (): Operation<void> {
-        let [event] = yield once(socket, 'close');
-        if(event.code !== 1000) {
-          throw new Error(`Socket closed on the remote end: [${event.code}] ${event.reason}`);
-        }
-      });
-      yield;
+
+      let [{ reason, code }] = yield once(socket, 'close');
+      if(code !== 1000) {
+        throw new Error(`websocket server closed connection unexpectedly: [${code}] ${reason}`);
+      }
     });
 
     yield once(socket, 'open');

@@ -1,15 +1,12 @@
 import { fork, spawn, Operation } from 'effection';
 import { Mailbox, any } from '@bigtest/effection';
-import { throwOnErrorEvent, on, once } from '@effection/events';
+import { throwOnErrorEvent, once } from '@effection/events';
 import { express } from "@bigtest/effection-express";
 
-import * as net from 'net';
 import * as proxy from 'http-proxy';
 import * as http from 'http';
 import * as Trumpet from 'trumpet';
 import * as zlib from 'zlib';
-
-import { listen } from './http';
 
 interface ProxyOptions {
   delegate: Mailbox;

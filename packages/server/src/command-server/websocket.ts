@@ -10,7 +10,7 @@ import { sendData } from '../ws';
 
 import { graphql } from '../command-server';
 
-export function handleMessage(delegate: Mailbox, atom: Atom<OrchestratorState>): (ws: WebSocket) => Operation {
+export function handleMessage(delegate: Mailbox, atom: Atom<OrchestratorState>): (socket: WebSocket) => Operation {
   function* handleQuery(message: QueryMessage, socket: WebSocket): Operation {
     yield publishQueryResult(message, atom.get(), socket);
 
@@ -40,7 +40,7 @@ export function handleMessage(delegate: Mailbox, atom: Atom<OrchestratorState>):
 
     while (true) {
       let { args } = yield messages.receive();
-      let message = JSON.parse(args[0].utf8Data) as Message;
+      let message = JSON.parse(args[0].data) as Message;
 
       if (isQuery(message)) {
         yield fork(handleQuery(message, socket));
