@@ -9,7 +9,7 @@ import { throwOnErrorEvent, once } from '@effection/events';
 import { ensure } from '@bigtest/effection';
 
 type OperationRequestHandler = (req: actualExpress.Request, res: actualExpress.Response) => Operation<void>;
-type WsOperationRequestHandler = (ws: ws, req: actualExpress.Request, next: actualExpress.NextFunction) => Operation<void>;
+type WsOperationRequestHandler = (ws: ws, req: actualExpress.Request) => Operation<void>;
 
 export class Express {
   private inner: ews.Application;
@@ -33,8 +33,8 @@ export class Express {
 
   *ws(path: string, handler: WsOperationRequestHandler): Operation<void> {
     yield ({ spawn }) => {
-      this.inner.ws(path, (ws, req, next) => {
-        spawn(handler(ws, req, next));
+      this.inner.ws(path, (ws, req) => {
+        spawn(handler(ws, req));
       })
     }
   }

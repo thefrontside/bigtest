@@ -100,7 +100,7 @@ export function* createProxyServer(options: ProxyOptions): Operation {
   }));
 
   // proxy ws requests
-  yield spawn(server.ws('/*', function*(socket, req) {
+  yield spawn(server.ws('*', function*(socket, req) {
     try {
       proxyServer.ws(req, socket, null);
       yield once(socket, 'close');
