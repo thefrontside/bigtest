@@ -1,10 +1,8 @@
 import { Operation, fork, spawn } from 'effection';
 import { Mailbox } from '@bigtest/effection';
-import * as WebSocket from 'ws'
-import { sendData } from './ws';
 import { Atom } from '@bigtest/atom';
 import { AgentState, OrchestratorState } from './orchestrator/state';
-import { express } from '@bigtest/effection-express';
+import { express, Socket } from '@bigtest/effection-express';
 
 interface ConnectionServerOptions {
   inbox: Mailbox;
@@ -22,15 +20,10 @@ export function generateAgentId(): string {
 }
 
 export function* createConnectionServer(options: ConnectionServerOptions): Operation {
-  function* handleConnection(socket: WebSocket): Operation {
+  function* handleConnection(socket: Socket): Operation {
     console.debug('[connection] connected');
 
-    let messages: Mailbox = yield Mailbox.subscribe(socket, "message")
-
-    messages = yield messages.map(({ args }) => {
-      let message = args[0].data;
-      return JSON.parse(message);
-    });
+    let messages: Mailbox = yield socket.subscribe();
 
     let { data, agentId } = yield messages.receive({ type: 'connected' });
 
@@ -48,7 +41,7 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
           console.debug('[connection] waiting for message', agentId);
           let message = yield options.inbox.receive({ agentId: agentId });
 
-          yield sendData(socket, JSON.stringify(message));
+          yield socket.send(message);
         }
       });
 

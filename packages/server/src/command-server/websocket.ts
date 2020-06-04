@@ -1,17 +1,16 @@
 import { Operation, fork } from 'effection';
 import { Mailbox } from '@bigtest/effection';
+import { Socket } from '@bigtest/effection-express';
 import { Atom } from '@bigtest/atom';
-import * as WebSocket from 'ws'
 
 import { Message, QueryMessage, MutationMessage, isQuery, isMutation } from '../protocol';
 
 import { OrchestratorState } from '../orchestrator/state';
-import { sendData } from '../ws';
 
 import { graphql } from '../command-server';
 
-export function handleMessage(delegate: Mailbox, atom: Atom<OrchestratorState>): (socket: WebSocket) => Operation {
-  function* handleQuery(message: QueryMessage, socket: WebSocket): Operation {
+export function handleMessage(delegate: Mailbox, atom: Atom<OrchestratorState>): (socket: Socket) => Operation {
+  function* handleQuery(message: QueryMessage, socket: Socket): Operation {
     yield publishQueryResult(message, atom.get(), socket);
 
     if (message.live) {
@@ -19,28 +18,27 @@ export function handleMessage(delegate: Mailbox, atom: Atom<OrchestratorState>):
     }
   }
 
-  function* handleMutation(message: MutationMessage, socket: WebSocket): Operation {
+  function* handleMutation(message: MutationMessage, socket: Socket): Operation {
     let result = yield graphql(message.mutation, delegate, atom.get());
     result.responseId = message.responseId;
-    yield sendData(socket, JSON.stringify(result));
+    yield socket.send(result);
   }
 
-  function* publishQueryResult(message: QueryMessage, state: OrchestratorState, socket: WebSocket): Operation {
+  function* publishQueryResult(message: QueryMessage, state: OrchestratorState, socket: Socket): Operation {
     let result = yield graphql(message.query, delegate, state);
     result.responseId = message.responseId;
-    yield sendData(socket, JSON.stringify(result));
+    yield socket.send(result);
   }
 
-  function* subscribe(message: QueryMessage, socket: WebSocket) {
+  function* subscribe(message: QueryMessage, socket: Socket) {
     yield atom.each(state => publishQueryResult(message, state, socket));
   }
 
   return function*(socket) {
-    let messages: Mailbox = yield Mailbox.subscribe(socket, "message");
+    let messages: Mailbox = yield socket.subscribe();
 
     while (true) {
-      let { args } = yield messages.receive();
-      let message = JSON.parse(args[0].data) as Message;
+      let message: Message = yield messages.receive();
 
       if (isQuery(message)) {
         yield fork(handleQuery(message, socket));
