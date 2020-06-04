@@ -1,26 +1,17 @@
 import * as Path from 'path';
+import { ParcelOptions } from  'parcel-bundler';
 import { ChildProcess, fork as forkProcess } from 'child_process';
 
 import { monitor, resource, Operation } from 'effection'
-import { Mailbox, SubscriptionMessage } from '@bigtest/effection';
+import { Mailbox, SubscriptionMessage, readyResource } from '@bigtest/effection';
 import { once, throwOnErrorEvent } from '@effection/events';
 
 type ParcelMessage = { type: "ready" } | { type: "update" };
 
-interface ParcelOptions  {
-  buildDir: string;
-  sourceEntries: string | string[];
-  global: string;
-  outFile: string;
-
-  stdio?: 'pipe' | 'inherit';
-  execPath?: 'ts-node' | undefined;
-}
-
 export class ParcelProcess {
   mailbox: Mailbox = new Mailbox();
 
-  static *create(options: ParcelOptions): Operation {
+  static *create(options: ParcelOptions & { port?: number }): Operation {
     let stdioMode = options.stdio || 'pipe';
     let parcelProcess = new ParcelProcess();
 
@@ -37,9 +28,7 @@ export class ParcelProcess {
       }
     );
 
-    let readiness = new Mailbox();
-
-    let res = yield resource(parcelProcess, function* supervise(): Operation<void> {
+    return yield readyResource(parcelProcess, function*(ready): Operation<void> {
       // Killing all child processes started by this command is surprisingly
       // tricky. If a process spawns another processes and we kill the parent,
       // then the child process is NOT automatically killed. Instead we're using
@@ -57,7 +46,8 @@ export class ParcelProcess {
         yield throwOnErrorEvent(child);
 
         yield messages.receive({ type: "ready" });
-        readiness.send("ready");
+
+        ready();
 
         // deliver "update" messages to the main parcel process object
         yield monitor(function* (): Operation<void> {
@@ -80,10 +70,6 @@ export class ParcelProcess {
         }
       }
     });
-
-    yield readiness.receive();
-
-    return res;
   }
 
   receive(pattern: unknown = undefined): Operation {

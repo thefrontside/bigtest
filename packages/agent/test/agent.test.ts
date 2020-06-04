@@ -7,7 +7,7 @@ import * as express from 'express';
 import fetch from 'node-fetch';
 import * as fixtureManifest from './fixtures/manifest.src';
 
-import { AgentConnectionServer, AgentServer, AssertionResult, StepResult } from '../src/index';
+import { AgentConnectionServer, AgentServerConfig, AssertionResult, StepResult } from '../src/index';
 
 import { Mailbox, ensure } from '@bigtest/effection';
 import { throwOnErrorEvent, once } from '@effection/events';
@@ -28,17 +28,19 @@ function* staticServer(port: number) {
   return res;
 }
 
+let config = new AgentServerConfig({ port: 8000 });
+
 describe("@bigtest/agent", function() {
   this.timeout(process.env.CI ? 60000 : 10000);
 
   describe('starting a new server', () => {
-    let server: AgentServer;
+    let parcel: ParcelProcess;
     let client: AgentConnectionServer;
     let delegate: Mailbox;
     let inbox: Mailbox;
 
     beforeEach(async () => {
-      server = AgentServer.create({port: 8000}, 'dist/app');
+      parcel = await spawn(ParcelProcess.create({port: 8000}, 'dist/app'))
       client = new AgentConnectionServer({
         port: 8001,
         inbox: inbox = new Mailbox(),
