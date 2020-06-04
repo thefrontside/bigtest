@@ -33,6 +33,7 @@
     "@types/node": "^13.13.4",
     "@types/node-fetch": "^2.5.3",
     "@types/rimraf": "3.0.0",
+    "@types/websocket": "^1.0.0",
     "abort-controller": "^3.0.0",
     "effection": "^0.6.2",
     "expect": "^24.9.0",
@@ -73,6 +74,7 @@
     "rimraf": "^3.0.0",
     "tempy": "^0.3.0",
     "trumpet": "^1.7.2",
+    "websocket": "^1.0.30",
     "yargs": "^15.0.2"
   }
 }
