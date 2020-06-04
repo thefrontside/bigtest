@@ -11,8 +11,8 @@ interface ParcelServerOptions {
   port?: number;
 };
 
-export function* createParcelServer(entryPoints: string[], options: ParcelServerOptions, parcelOptions?: ParcelOptions): Operation {
-  let bundler = new Bundler(entryPoints, parcelOptions || {}) as unknown as ParcelBundler;
+export function* createParcelServer(entryPoints: string[], options: ParcelServerOptions & ParcelOptions): Operation {
+  let bundler = new Bundler(entryPoints, options) as unknown as ParcelBundler;
 
   let events = yield Mailbox.subscribe(bundler, "buildEnd");
 
