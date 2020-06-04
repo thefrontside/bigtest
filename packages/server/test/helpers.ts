@@ -97,5 +97,11 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  if(globalWorld.execution.state === 'errored') {
+    throw globalWorld.execution.result;
+  }
+  if(currentWorld.execution.state === 'errored') {
+    throw currentWorld.execution.result;
+  }
   currentWorld.destroy();
 });
