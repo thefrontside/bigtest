@@ -17,6 +17,7 @@ export class AgentServerConfig {
 
   agentUrl(connectionUrl: string, agentId?: string) {
     let url = new URL(this.url());
+    url.pathname = url.pathname + 'index.html';
     url.searchParams.append('connectTo', connectionUrl);
     if (agentId) {
       url.searchParams.append('agentId', agentId);
@@ -25,7 +26,7 @@ export class AgentServerConfig {
   }
 
   harnessUrl() {
-    return `${this.url()}/harness.js`;
+    return `${this.url()}harness.js`;
   }
 
   appDir() {
