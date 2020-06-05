@@ -17,11 +17,11 @@ export default {
   assertions: [
     {
       description: "then I am logged in",
-      check: () => true
+      check: async () => true
     },
     {
       description: "then I am on the homepage",
-      check: () => true
+      check: async () => true
     }
   ],
   children: [
@@ -36,11 +36,11 @@ export default {
       assertions: [
         {
           description: "it takes me back to the homepage",
-          check: () => {}
+          check: async () => {}
         },
         {
           description: "My username is no longer in the top bar",
-          check: () => {}
+          check: async () => {}
         }
       ],
       children: []
@@ -56,7 +56,7 @@ export default {
       assertions: [
         {
           description: "I see my username",
-          check: () => {}
+          check: async () => {}
         }
       ],
       children: []

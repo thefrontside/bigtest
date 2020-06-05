@@ -10,17 +10,17 @@ export default test('a test')
   .step('another step', async ({ foo }) => {
     return { bar: foo.toUpperCase() + 'bar' }
   })
-  .assertion('this is an assertion', ({ foo }) => {
+  .assertion('this is an assertion', async ({ foo }) => {
     assert.equal(foo, 'foo');
   })
-  .assertion('this is another assertion', ({ bar }) => {
+  .assertion('this is another assertion', async ({ bar }) => {
     assert.equal(bar, 'foobar');
   })
   .child('a child test', test => test
     .step('a child step', async ({ foo }) => {
       return { quox: foo.toUpperCase() + 'blah' }
     })
-    .assertion('a child assertion', ({ quox }) => {
+    .assertion('a child assertion', async ({ quox }) => {
       assert.equal(quox, 'FOOblah');
     })
   );

@@ -5,14 +5,14 @@ module.exports = test("tests")
   .child(
     "test with failing assertion", test => test
       .step("successful step", async () => {})
-      .assertion("failing assertion", () => { throw new Error("boom!"); })
-      .assertion("successful assertion", () => true))
+      .assertion("failing assertion", async () => { throw new Error("boom!"); })
+      .assertion("successful assertion", async () => true))
   .child(
     "tests that track context", test => test
       .step("creates initial context", async () => ({ username: "tyrion" }))
       .step("contributes nothing to context", async () => {})
       .step("extends existing context", async ({ username }) => ({ hello: username }))
-      .assertion("contains entire context from all steps", context => {
+      .assertion("contains entire context from all steps", async context => {
         assert.deepEqual(context, { username: "tyrion", hello: "tyrion" });
       }))
   .child(
