@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { fork, Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
-import { AgentServer } from '@bigtest/agent';
+import { AgentServerConfig } from '@bigtest/agent';
 import { Atom } from '@bigtest/atom';
 import { ProjectOptions } from '@bigtest/project';
 
@@ -38,7 +38,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   let manifestBuilderDelegate = new Mailbox();
   let manifestServerDelegate = new Mailbox();
 
-  let agentServer = AgentServer.create({ port: options.project.agent.port, externalURL: process.env['BIGTEST_AGENT_SERVER_URL'] });
+  let agentServerConfig = new AgentServerConfig({ port: options.project.agent.port });
 
   let manifestSrcDir = path.resolve(options.project.cacheDir, 'manifest/src');
   let manifestBuildDir = path.resolve(options.project.cacheDir, 'manifest/build');
@@ -48,14 +48,14 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield fork(createAgentServer({
     delegate: agentServerDelegate,
-    agentServer
+    agentServerConfig
   }));
 
   let connectTo = `ws://localhost:${options.project.connection.port}`;
 
   let browserManager: BrowserManager = yield createBrowserManager({
     atom: options.atom,
-    connectURL: (agentId: string) => agentServer.connectURL(connectTo, agentId),
+    connectURL: (agentId: string) => agentServerConfig.agentUrl(connectTo, agentId),
     drivers: options.project.drivers,
     launch: options.project.launch
   })
@@ -64,7 +64,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     delegate: proxyServerDelegate,
     port: options.project.proxy.port,
     targetPort: options.project.app.port,
-    inject: `<script src="${agentServer.harnessScriptURL}"></script>`,
+    inject: `<script src="${agentServerConfig.harnessUrl()}"></script>`,
   }));
 
   yield fork(createCommandServer({
@@ -146,7 +146,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   console.log("[orchestrator] running!");
 
   let commandUrl = `http://localhost:${options.project.port}`;
-  let connectURL = agentServer.connectURL(connectTo);
+  let connectURL = agentServerConfig.agentUrl(connectTo);
 
   console.log(`[orchestrator] launch agents via: ${connectURL}`);
   console.log(`[orchestrator] show GraphQL dashboard via: ${commandUrl}`);

@@ -44,12 +44,14 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
 }
 
 export function* createManifestBuilder(options: ManifestBuilderOptions): Operation {
-  let parcel: ParcelProcess = yield ParcelProcess.create({
-    buildDir: options.buildDir,
-    sourceEntries: options.srcPath,
-    global: "__bigtestManifest",
-    outFile: "manifest.js"
-  });
+  let parcel: ParcelProcess = yield ParcelProcess.create(
+    [options.srcPath],
+    {
+      outDir: options.buildDir,
+      global: "__bigtestManifest",
+      outFile: "manifest.js"
+    }
+  );
 
   let distPath = yield processManifest(options);
 

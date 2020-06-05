@@ -14,13 +14,15 @@ describe("Parcel Process", function() {
     await fs.mkdir("./build/test/output", { recursive: true });
     await fs.writeFile("./build/test/sources/input.ts", "export default {}\n");
 
-    parcel = await spawn(ParcelProcess.create({
-      buildDir: "./build/test/output",
-      sourceEntries: "./build/test/sources/*.ts",
-      outFile: "manifest.js",
-      global: "__bigtestManifest",
-      execPath: 'ts-node'
-    }))
+    parcel = await spawn(ParcelProcess.create(
+      ["./build/test/sources/*.ts"],
+      {
+        outDir: "./build/test/output",
+        outFile: "manifest.js",
+        global: "__bigtestManifest",
+        execPath: 'ts-node'
+      }
+    ))
   });
 
   it('builds the sources into the output directory', () => {
