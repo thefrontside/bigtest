@@ -1,51 +1,50 @@
 import { Operation, fork } from 'effection';
 import { Mailbox } from '@bigtest/effection';
+import { Socket } from '@bigtest/effection-express';
 import { Atom } from '@bigtest/atom';
 
 import { Message, QueryMessage, MutationMessage, isQuery, isMutation } from '../protocol';
 
 import { OrchestratorState } from '../orchestrator/state';
-import { Connection, sendData } from '../ws';
 
 import { graphql } from '../command-server';
 
-export function handleMessage(delegate: Mailbox, atom: Atom<OrchestratorState>): (connection: Connection) => Operation {
-  function* handleQuery(message: QueryMessage, connection: Connection): Operation {
-    yield publishQueryResult(message, atom.get(), connection);
+export function handleMessage(delegate: Mailbox, atom: Atom<OrchestratorState>): (socket: Socket) => Operation {
+  function* handleQuery(message: QueryMessage, socket: Socket): Operation {
+    yield publishQueryResult(message, atom.get(), socket);
 
     if (message.live) {
-      yield fork(subscribe(message, connection));
+      yield fork(subscribe(message, socket));
     }
   }
 
-  function* handleMutation(message: MutationMessage, connection: Connection): Operation {
+  function* handleMutation(message: MutationMessage, socket: Socket): Operation {
     let result = yield graphql(message.mutation, delegate, atom.get());
     result.responseId = message.responseId;
-    yield sendData(connection, JSON.stringify(result));
+    yield socket.send(result);
   }
 
-  function* publishQueryResult(message: QueryMessage, state: OrchestratorState, connection: Connection): Operation {
+  function* publishQueryResult(message: QueryMessage, state: OrchestratorState, socket: Socket): Operation {
     let result = yield graphql(message.query, delegate, state);
     result.responseId = message.responseId;
-    yield sendData(connection, JSON.stringify(result));
+    yield socket.send(result);
   }
 
-  function* subscribe(message: QueryMessage, connection: Connection) {
-    yield atom.each(state => publishQueryResult(message, state, connection));
+  function* subscribe(message: QueryMessage, socket: Socket) {
+    yield atom.each(state => publishQueryResult(message, state, socket));
   }
 
-  return function*(connection) {
-    let messages: Mailbox = yield Mailbox.subscribe(connection, "message");
+  return function*(socket) {
+    let messages: Mailbox = yield socket.subscribe();
 
     while (true) {
-      let { args } = yield messages.receive();
-      let message = JSON.parse(args[0].utf8Data) as Message;
+      let message: Message = yield messages.receive();
 
       if (isQuery(message)) {
-        yield fork(handleQuery(message, connection));
+        yield fork(handleQuery(message, socket));
       }
       if (isMutation(message)) {
-        yield fork(handleMutation(message, connection));
+        yield fork(handleMutation(message, socket));
       }
     }
   }

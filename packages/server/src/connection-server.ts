@@ -1,9 +1,8 @@
-import { Operation, fork } from 'effection';
+import { Operation, fork, spawn } from 'effection';
 import { Mailbox } from '@bigtest/effection';
-import { IMessage } from 'websocket';
-import { createSocketServer, Connection, sendData } from './ws';
 import { Atom } from '@bigtest/atom';
 import { AgentState, OrchestratorState } from './orchestrator/state';
+import { express, Socket } from '@bigtest/effection-express';
 
 interface ConnectionServerOptions {
   inbox: Mailbox;
@@ -21,19 +20,10 @@ export function generateAgentId(): string {
 }
 
 export function* createConnectionServer(options: ConnectionServerOptions): Operation {
-  function* handleConnection(connection: Connection): Operation {
+  function* handleConnection(socket: Socket): Operation {
     console.debug('[connection] connected');
 
-    let messages: Mailbox = yield Mailbox.subscribe(connection, "message")
-
-    messages = yield messages.map(({ args }) => {
-      let [message] = args as IMessage[];
-      if (message.utf8Data) {
-        return JSON.parse(message.utf8Data)
-      } else {
-        return {};
-      }
-    });
+    let messages: Mailbox = yield socket.subscribe();
 
     let { data, agentId } = yield messages.receive({ type: 'connected' });
 
@@ -51,7 +41,7 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
           console.debug('[connection] waiting for message', agentId);
           let message = yield options.inbox.receive({ agentId: agentId });
 
-          yield sendData(connection, JSON.stringify(message));
+          yield socket.send(message);
         }
       });
 
@@ -69,7 +59,13 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
       console.debug(`[connection] disconnected ${agentId}`);
     }
   }
-  yield createSocketServer(options.port, handleConnection, function*() {
-    options.delegate.send({ status: "ready" });
-  });
+
+  let app = express();
+
+  yield spawn(app.ws('*', handleConnection));
+  yield app.listen(options.port);
+
+  options.delegate.send({ status: "ready" });
+
+  yield;
 }

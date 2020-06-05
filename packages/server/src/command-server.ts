@@ -4,7 +4,6 @@ import { express } from '@bigtest/effection-express';
 import * as graphqlHTTP from 'express-graphql';
 import { graphql as executeGraphql } from 'graphql';
 
-import { listenWS } from './ws';
 import { schema } from './schema';
 import { Atom } from '@bigtest/atom';
 import { OrchestratorState } from './orchestrator/state';
@@ -22,17 +21,19 @@ interface CommandServerOptions {
 export function* createCommandServer(options: CommandServerOptions): Operation {
   let app = express();
 
+  yield spawn(app.ws('*', handleMessage(options.delegate, options.atom)));
+
   yield spawn(({ spawn }) => {
     app.use(graphqlHTTP(async () => await spawn(function* getOptionsData() {
       return { ...graphqlOptions(options.delegate, options.atom.get()), graphiql: true};
     })));
   });
 
-  let server = yield app.listen(options.port);
+  yield app.listen(options.port);
 
   options.delegate.send({ status: "ready" });
 
-  yield listenWS(server, handleMessage(options.delegate, options.atom));
+  yield;
 }
 
 /**

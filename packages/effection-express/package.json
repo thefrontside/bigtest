@@ -31,8 +31,10 @@
   },
   "dependencies": {
     "@effection/events": "^0.6.1",
+    "@types/express-ws": "^3.0.0",
     "@types/node": "^13.13.4",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "express-ws": "^4.0.0"
   },
   "volta": {
     "node": "12.16.0",

@@ -27,7 +27,6 @@
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
     "@types/node-fetch": "^2.5.4",
-    "@types/websocket": "^1.0.0",
     "assert": "^2.0.0",
     "classnames": "^2.2.5",
     "effection": "^0.6.2",
@@ -38,17 +37,17 @@
     "parcel-bundler": "^1.12.4",
     "regenerator-runtime": "^0.13.3",
     "ts-node": "*",
-    "typescript": "^3.7.0"
+    "typescript": "^3.7.0",
+    "express": "^4.17.1"
   },
   "peerDependencies": {
     "effection": "^0.6.2"
   },
   "dependencies": {
     "@bigtest/effection": "^0.4.0",
+    "@bigtest/effection-express": "^0.4.1",
     "@effection/events": "^0.6.1",
-    "bowser": "^2.9.0",
-    "express": "^4.17.1",
-    "websocket": "^1.0.31"
+    "bowser": "^2.9.0"
   },
   "volta": {
     "node": "12.16.0",
