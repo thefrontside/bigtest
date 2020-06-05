@@ -4,7 +4,6 @@ import { readyResource } from '@bigtest/effection';
 import { express } from '@bigtest/effection-express';
 import { static as staticMiddleware } from 'express';
 
-import { spawn } from 'effection';
 import { describe, it } from 'mocha';
 import * as expect from 'expect';
 import fetch from 'node-fetch';
