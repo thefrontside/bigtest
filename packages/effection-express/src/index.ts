@@ -15,8 +15,7 @@ type WsOperationRequestHandler = (socket: Socket, req: actualExpress.Request) =>
 export class Socket {
   constructor(public raw: WebSocket) {}
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  *send(data: any) {
+  *send(data: unknown) {
     if(this.raw.readyState === 1) {
       yield util.promisify(this.raw.send.bind(this.raw))(JSON.stringify(data));
     }
