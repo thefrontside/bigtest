@@ -1,11 +1,11 @@
 import { Operation } from 'effection';
 import { Atom } from '@bigtest/atom';
-import { fetch, RequestInit } from './fetch';
+import { fetch, RequestInit } from '@effection/fetch';
 
 export class WebDriver {
   session: { sessionId: string } = { sessionId: '' };
 
-  constructor(public serverURL: string) {}
+  constructor(public serverURL: string) { }
 
   *navigateTo(url: string): Operation<void> {
     yield request(`${this.serverURL}/session/${this.session.sessionId}/url`, {
@@ -46,7 +46,7 @@ function* request(url: string, init: RequestInit): Operation<WDResponse> {
     let details: WDResponse;
     try {
       details = yield response.json();
-    } catch (e) { /* ok, no json details*/}
+    } catch (e) { /* ok, no json details*/ }
     if (details && details.value && details.value) {
       throw new Error(details.value.message);
     } else {
