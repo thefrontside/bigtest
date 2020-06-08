@@ -4,10 +4,6 @@ import { JSDOM } from 'jsdom';
 
 import { defineInteractor, setDefaultOptions } from '../src/index';
 
-process.on('unhandledRejection', () => {
-  // do nothing
-});
-
 const Link = defineInteractor<HTMLLinkElement>('link')({
   selector: 'a',
   locators: {
