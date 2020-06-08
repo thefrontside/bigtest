@@ -5,7 +5,7 @@ import { interaction } from './interaction';
 import { converge } from './converge';
 import { defaultOptions } from './options';
 
-export function defineInteractor<E extends Element>(interactorName: string) {
+export function createInteractor<E extends Element>(interactorName: string) {
   return function<S extends InteractorSpecification<E>>(specification: Partial<S>): InteractorType<E, S> {
     let fullSpecification: InteractorSpecification<E> = Object.assign({ selector: interactorName }, defaultSpecification, specification);
 

@@ -2,9 +2,9 @@ import { describe, it } from 'mocha';
 import * as expect from 'expect'
 import { JSDOM } from 'jsdom';
 
-import { defineInteractor, setDefaultOptions } from '../src/index';
+import { createInteractor, setDefaultOptions } from '../src/index';
 
-const Link = defineInteractor<HTMLLinkElement>('link')({
+const Link = createInteractor<HTMLLinkElement>('link')({
   selector: 'a',
   locators: {
     byHref: (element) => element.href,
@@ -15,15 +15,15 @@ const Link = defineInteractor<HTMLLinkElement>('link')({
   }
 });
 
-const Header = defineInteractor('header')({
+const Header = createInteractor('header')({
   selector: 'h1,h2,h3,h4,h5,h6',
 });
 
-const Div = defineInteractor('div')({
+const Div = createInteractor('div')({
   defaultLocator: (element) => element.id || "",
 });
 
-const Details = defineInteractor<HTMLDetailsElement>('details')({
+const Details = createInteractor<HTMLDetailsElement>('details')({
   selector: 'details',
   defaultLocator: (element) => element.querySelector('summary')?.textContent || ''
 });
