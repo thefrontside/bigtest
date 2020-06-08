@@ -1,6 +1,4 @@
-export type LocatorFn<E extends Element> = (element: E) => string;
-
-export type LocatorSpecification<E extends Element> = Record<string, LocatorFn<E>>;
+import { LocatorFn } from './specification';
 
 export class Locator<E extends Element> {
   constructor(public locatorFn: LocatorFn<E>, public value: string, public name?: string) {}

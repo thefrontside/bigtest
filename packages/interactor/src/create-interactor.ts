@@ -1,5 +1,6 @@
-import { InteractorSpecification, InteractorInstance, InteractorType, LocatorFn } from './specification';
+import { InteractorSpecification, FilterImplementation, InteractorInstance, InteractorType, LocatorFn } from './specification';
 import { Locator } from './locator';
+import { Filter } from './filter';
 import { Interactor } from './interactor';
 import { interaction } from './interaction';
 import { converge } from './converge';
@@ -30,17 +31,19 @@ export function createInteractor<E extends Element>(interactorName: string) {
       });
     }
 
-    let result = function(value: string): InteractorInstance<E, S> {
+    let result = function(value: string, filters?: FilterImplementation<E, S>): InteractorInstance<E, S> {
       let locator = new Locator(specification.defaultLocator || defaultLocator, value);
-      let interactor = new InteractorClass(interactorName, specification, locator);
+      let filter = new Filter(specification, filters || {});
+      let interactor = new InteractorClass(interactorName, specification, locator, filter);
       return interactor as InteractorInstance<E, S>;
     }
 
     for(let [locatorName, locatorFn] of Object.entries(specification.locators || {})) {
       Object.defineProperty(result, locatorName, {
-        value: function(value: string): InteractorInstance<E, S> {
+        value: function(value: string, filters?: FilterImplementation<E, S>): InteractorInstance<E, S> {
           let locator = new Locator(locatorFn, value, locatorName);
-          let interactor = new InteractorClass(interactorName, specification, locator);
+          let filter = new Filter(specification, filters || {});
+          let interactor = new InteractorClass(interactorName, specification, locator, filter);
           return interactor as InteractorInstance<E, S>;
         },
         configurable: true,

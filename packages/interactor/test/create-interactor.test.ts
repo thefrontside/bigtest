@@ -31,6 +31,21 @@ const Details = createInteractor<HTMLDetailsElement>('details')({
   defaultLocator: (element) => element.querySelector('summary')?.textContent || ''
 });
 
+const TextField = createInteractor<HTMLInputElement>('text field')({
+  selector: 'input',
+  defaultLocator: (element) => element.id,
+  filters: {
+    enabled: {
+      apply: (element) => !element.disabled,
+      default: true
+    },
+    value: (element) => element.value
+  },
+  actions: {
+    fillIn: (element, value: string) => { element.value = value }
+  }
+});
+
 function dom(html: string) {
   let jsdom = new JSDOM(`<!doctype html><html><body>${html}</body></html>`, { runScripts: "dangerously" });
   bigtestGlobals.document = jsdom.window.document;
@@ -229,6 +244,40 @@ describe('@bigtest/interactor', () => {
 
     it('can return description of interaction with argument', () => {
       expect(Link('Foo Bar').setHref('/monkey').description).toEqual('setHref with "/monkey" on link "Foo Bar"');
+    });
+  });
+
+  describe('filters', () => {
+    it('can determine whether an element exists based on the interactor', async () => {
+      dom(`
+        <input id="Email" value='jonas@example.com'/>
+      `);
+
+      await expect(TextField('Email').exists()).resolves.toEqual(true);
+      await expect(TextField('Email', { value: 'jonas@example.com' }).exists()).resolves.toEqual(true);
+      await expect(TextField('Email', { value: 'incorrect@example.com' }).exists()).rejects.toHaveProperty('message', 'text field "Email" with value "incorrect@example.com" does not exist');
+    });
+
+    it('can apply default values', async () => {
+      dom(`
+        <input id="Email" value='jonas@example.com'/>
+        <input id="Password" disabled="disabled" value='test1234'/>
+      `);
+
+      await expect(TextField('Password').exists()).rejects.toHaveProperty('message', 'text field "Password" does not exist');
+      await expect(TextField('Password', { enabled: true }).exists()).rejects.toHaveProperty('message', 'text field "Password" which is enabled does not exist');
+      await expect(TextField('Password', { enabled: false }).exists()).resolves.toEqual(true);
+    });
+
+    it('can apply multiple filters', async () => {
+      dom(`
+        <input id="Email" value='jonas@example.com'/>
+        <input id="Password" disabled="disabled" value='test1234'/>
+      `);
+
+      await expect(TextField('Password', { enabled: false, value: 'incorrect' }).exists()).rejects.toHaveProperty('message', 'text field "Password" which is not enabled and with value "incorrect" does not exist');
+      await expect(TextField('Password', { enabled: true, value: 'test1234' }).exists()).rejects.toHaveProperty('message', 'text field "Password" which is enabled and with value "test1234" does not exist');
+      await expect(TextField('Password', { enabled: false, value: 'test1234' }).exists()).resolves.toEqual(true);
     });
   });
 })

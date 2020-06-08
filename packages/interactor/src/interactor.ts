@@ -2,6 +2,7 @@ import { bigtestGlobals } from '@bigtest/globals';
 import { converge } from './converge';
 import { InteractorSpecification } from './specification';
 import { Locator } from './locator';
+import { Filter } from './filter';
 import { NoSuchElementError, AmbiguousElementError, NotAbsentError } from './errors';
 import { interaction, Interaction } from './interaction';
 
@@ -14,8 +15,14 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
   constructor(
     public name: string,
     private specification: S,
-    private locator: Locator<E>
+    private locator: Locator<E>,
+    private filter: Filter<E, S>
   ) {}
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private get ancestorsAndSelf(): Array<Interactor<any, any>> {
+    return [...this.ancestors, this];
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   find<T extends Interactor<any, any>>(interactor: T): T {
@@ -27,22 +34,20 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
   }
 
   get description(): string {
-    return this.ancestors.slice().reverse().reduce((desc, interactor) => {
-      return `${desc} within ${interactor.name} ${interactor.locator.description}`
-    }, `${this.name} ${this.locator.description}`);
+    return this.ancestorsAndSelf.reverse().map((interactor) => {
+      return `${interactor.name} ${interactor.locator.description} ${interactor.filter.description}`.trim();
+    }).join(' within ');
   }
 
   private unsafeSyncResolve(): E {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let ancestorChain: Array<Interactor<any, any>> = [...this.ancestors, this];
-
-    return ancestorChain.reduce((parentElement: Element, interactor) => {
+    return this.ancestorsAndSelf.reduce((parentElement: Element, interactor) => {
       let elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector || defaultSelector));
-      let matchingElements = elements.filter((element) => interactor.locator.matches(element));
+      let locatedElements = elements.filter((element) => interactor.locator.matches(element));
+      let filteredElements = locatedElements.filter((element) => interactor.filter.matches(element));
 
-      if(matchingElements.length === 1) {
-        return matchingElements[0];
-      } else if(matchingElements.length === 0) {
+      if(filteredElements.length === 1) {
+        return filteredElements[0];
+      } else if(filteredElements.length === 0) {
         throw new NoSuchElementError(`${interactor.description} does not exist`);
       } else {
         throw new AmbiguousElementError(`${interactor.description} is ambiguous`);
