@@ -2,14 +2,14 @@ import { Operation, resource } from 'effection';
 import { spawn } from 'effection';
 import { Atom } from '@bigtest/atom';
 import { Deferred } from '@bigtest/effection';
-import { Local, Options as WebDriverOptions, WebDriver } from '@bigtest/webdriver';
+import { load, Driver, DriverSpec } from '@bigtest/driver';
 
 import { OrchestratorState } from './orchestrator/state';
 
 interface CreateOptions {
   atom: Atom<OrchestratorState>;
   connectURL(agentId: string): string;
-  drivers: Record<string, WebDriverOptions>;
+  drivers: Record<string, DriverSpec<unknown>>;
   launch: string[];
 }
 
@@ -28,8 +28,8 @@ export function* createBrowserManager(options: CreateOptions): Operation<Browser
   return yield resource(manager, function*() {
 
     for (let launch of options.launch) {
-      let driver: WebDriver = yield Local(options.drivers[launch]);
-      yield spawn(driver.navigateTo(options.connectURL(launch)));
+      let driver: Driver = yield load(options.drivers[launch]);
+      yield spawn(driver.connect(options.connectURL(launch)));
     }
 
     for (let launch of options.launch) {

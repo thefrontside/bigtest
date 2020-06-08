@@ -11,6 +11,7 @@
       "packages/effection",
       "packages/effection-express",
       "packages/atom",
+      "packages/driver",
       "packages/webdriver",
       "packages/parcel",
       "packages/project",

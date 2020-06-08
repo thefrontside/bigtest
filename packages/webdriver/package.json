@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@bigtest/atom": "^0.4.0",
+    "@bigtest/driver": "^0.4.0",
     "@effection/node": "^0.6.2",
     "abort-controller": "^3.0.0",
     "chromedriver": "~83.0.0",

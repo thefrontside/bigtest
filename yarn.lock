@@ -1172,7 +1172,7 @@
   resolved "https://registry.yarnpkg.com/@frontside/eslint-config/-/eslint-config-1.0.0.tgz#d4db29f1cceafc6ad3735d339964160c96e19b3d"
   integrity sha512-R3Wu9zVb34GaeDB1AKf1MulnkI+HKdejr0dGLPkWhD5dpwo4FJyDESmil1Bc5/uSn1Gq0zBWzM2QzjmvhLydlA==
 
-"@frontside/tsconfig@*":
+"@frontside/tsconfig@*", "@frontside/tsconfig@^0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@frontside/tsconfig/-/tsconfig-0.0.1.tgz#f7481d8681fed3d2274991271e6f36fa5e3ed32f"
   integrity sha512-BQyLcpBIV9WQsBFQQqK/SIoEeKImWYMmu7kqLYpE3SCbCjY6ZN/yBpY63AMCCrv7V70Z5itATHTWvMAlkzkJPQ==
@@ -1759,6 +1759,11 @@
   version "12.12.39"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.39.tgz#532d25c1e639d89dd6f3aa1d7b3962e3e7fa943d"
   integrity sha512-pADGfwnDkr6zagDwEiCVE4yQrv7XDkoeVa4OfA9Ju/zRTk6YNDLGtQbkdL4/56mCQQCs4AhNrBIag6jrp7ZuOg==
+
+"@types/node@^14.0.11":
+  version "14.0.11"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.11.tgz#61d4886e2424da73b7b25547f59fdcb534c165a3"
+  integrity sha512-lCvvI24L21ZVeIiyIUHZ5Oflv1hhHQ5E1S25IRlKIXaRkVgmXpJMI3wUJkmym2bTbCe+WoIibQnMVAU3FguaOg==
 
 "@types/parcel-bundler@^1.12.1":
   version "1.12.1"
@@ -4550,7 +4555,7 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-effection@0.6.4, effection@^0.6.0, effection@^0.6.2, effection@^0.6.4:
+effection@0.6.4, effection@^0.6.0, effection@^0.6.2, effection@^0.6.3:
   version "0.6.4"
   resolved "https://registry.yarnpkg.com/effection/-/effection-0.6.4.tgz#590cbe6c40357acf6c185940fbae2b1434fafcc4"
   integrity sha512-ZzACE6YjtMbM0t0/fov2LkpCDdZffQ0eVI8qdaygQCtYEErVc4VT55AArGKCovQpyevmY5sdMnR9K/rB1wkAwQ==
@@ -12295,6 +12300,11 @@ typescript@^3.7.5:
   version "3.9.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.2.tgz#64e9c8e9be6ea583c54607677dd4680a1cf35db9"
   integrity sha512-q2ktq4n/uLuNNShyayit+DTobV2ApPEo/6so68JaD5ojvc/6GClBipedB9zNWYxRSAlZXAe405Rlijzl6qDiSw==
+
+typescript@^3.9.5:
+  version "3.9.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.5.tgz#586f0dba300cde8be52dd1ac4f7e1009c1b13f36"
+  integrity sha512-hSAifV3k+i6lEoCJ2k6R2Z/rp/H3+8sdmcn5NrS3/3kE7+RyZXm9aqvxWqjEXHAd8b0pShatpcdMTvEdvAJltQ==
 
 typescript@next:
   version "4.0.0-dev.20200512"
