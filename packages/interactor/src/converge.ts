@@ -1,7 +1,7 @@
 const win: { performance?: unknown } = (typeof(window) === 'object') ? window : {};
 const performance = (typeof(win.performance) === 'object') ? win.performance : require('perf_hooks').performance;
 
-function wait(ms: number): Promise<undefined> {
+function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
