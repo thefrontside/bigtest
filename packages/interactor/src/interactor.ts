@@ -7,7 +7,7 @@ import { interaction, Interaction } from './interaction';
 
 export class Interactor<E extends Element> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private ancestors: Interactor<any>[] = [];
+  private ancestors: Array<Interactor<any>> = [];
 
   constructor(
     public name: string,
@@ -38,7 +38,7 @@ export class Interactor<E extends Element> {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let ancestorChain: Interactor<any>[] = [...this.ancestors, this];
+    let ancestorChain: Array<Interactor<any>> = [...this.ancestors, this];
 
     return ancestorChain.reduce((parentElement: Element, interactor) => {
       let elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector));
