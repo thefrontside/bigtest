@@ -2,7 +2,7 @@ import { converge } from './converge';
 import { InteractorSpecification } from './specification';
 import { Locator } from './locator';
 import { defaultOptions } from './options';
-import { NoSuchElementError, AmbigousElementError, NotAbsentError } from './errors';
+import { NoSuchElementError, AmbiguousElementError, NotAbsentError } from './errors';
 import { interaction, Interaction } from './interaction';
 
 export class Interactor<E extends Element> {
@@ -49,7 +49,7 @@ export class Interactor<E extends Element> {
       } else if(matchingElements.length === 0) {
         throw new NoSuchElementError(`${interactor.description} does not exist`);
       } else {
-        throw new AmbigousElementError(`${interactor.description} is ambiguous`);
+        throw new AmbiguousElementError(`${interactor.description} is ambiguous`);
       }
     }, root) as E;
   }
