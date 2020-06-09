@@ -10,7 +10,7 @@
   "scripts": {
     "start": "ts-node bin/start.ts",
     "query": "ts-node bin/query.ts",
-    "subscribe": "ts-node bin/subscribe.ts",
+    "query:live": "ts-node bin/live-query.ts",
     "lint": "eslint '{src,bin,test}/**/*.ts'",
     "test": "mocha ./test/setup test/**/*.test.ts",
     "mocha": "mocha ./test/setup",

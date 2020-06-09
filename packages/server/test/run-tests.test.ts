@@ -92,7 +92,7 @@ describe('running tests on an agent', () => {
 
     agent.send({ type: 'connected', agentId, data: {} });
 
-    agentsSubscription = await actions.fork(client.subscribe(`{ agents { agentId } }`));
+    agentsSubscription = await actions.fork(client.liveQuery(`{ agents { agentId } }`));
 
     let match: (params: AgentsQuery) => boolean = ({ agents }) => agents && agents.length === 1;
 
@@ -107,7 +107,7 @@ describe('running tests on an agent', () => {
       await actions.fork(client.query(`mutation { run }`));
 
       runCommand = await actions.fork(agent.receive());
-      results = await actions.fork(client.subscribe(resultsQuery(runCommand.testRunId, agentId)));
+      results = await actions.fork(client.liveQuery(resultsQuery(runCommand.testRunId, agentId)));
     });
 
     it('receives a run event on the agent', () => {
@@ -411,8 +411,8 @@ describe('running tests on an agent', () => {
       await actions.fork(client.query(`mutation { run }`));
 
       let runCommand: Command = await actions.fork(agent.receive());
-      agentResults = await actions.fork(client.subscribe(resultsQuery(runCommand.testRunId, agentId)));
-      secondAgentResults = await actions.fork(client.subscribe(resultsQuery(runCommand.testRunId, secondAgentId)));
+      agentResults = await actions.fork(client.liveQuery(resultsQuery(runCommand.testRunId, agentId)));
+      secondAgentResults = await actions.fork(client.liveQuery(resultsQuery(runCommand.testRunId, secondAgentId)));
 
       secondAgent.send({
         type: 'step:result',
