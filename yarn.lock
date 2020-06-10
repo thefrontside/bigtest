@@ -1346,12 +1346,24 @@
   resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.6.1.tgz#839aad2303f4c95cf70092bbc62d5992f72e1a26"
   integrity sha512-IdJO10dxoPYtZHAAefEsQ4sXT5jF4gZ+CI/HBPHPVFih2+OJZaNbTg2s5uwufkSk2Kma1jsXl1JaXZ0ruDLIFQ==
 
+"@effection/events@^0.7.1":
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.7.3.tgz#2df633df29417b6f8279d061e908ef5c4970b993"
+  integrity sha512-Lf83FUhQ6zTbygcVohoSrBLG+5W6GMhjPPNKilKywImO53Uc9qftDveLgHv+6ypLbybxP/eRtZLpzhq2Jnc+Jg==
+  dependencies:
+    "@effection/subscription" "^0.7.1"
+
 "@effection/node@^0.6.2":
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/@effection/node/-/node-0.6.2.tgz#69aa57683e13dd990864de1e4ae37f138f4dbdf8"
   integrity sha512-FB4Tck9Nub/1eJZoClvWpr1TVUpkduk+UTx+gNjSAgY30VAncVaxr0o6KaGfbtyzWDpmi9NhtB8YO0/ur7EDfQ==
   dependencies:
     "@effection/events" "^0.6.0"
+
+"@effection/subscription@^0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-0.7.1.tgz#fdc66c1978af594b3e76fb091a62b7268223d0fc"
+  integrity sha512-hSJM6tNYPPxo/+jm6usFHJe8C68gZXN633A5duRTG2fTUCSzU0jhfKsQZMwC4g1SYJ5Z3vVGXKMUZgfPHeHC6g==
 
 "@frontside/eslint-config@^1.0.0":
   version "1.0.0"
