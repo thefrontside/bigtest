@@ -6,7 +6,7 @@
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
-  "author": "Frontside Engineering <engineering@frontside.io>",
+  "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "files": [
     "dist/**/*",

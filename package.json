@@ -3,7 +3,7 @@
   "version": "0.0.0-monorepo",
   "description": "Tests that speed up development ",
   "repository": "git@github.com:thefrontside/bigtest.git",
-  "author": "Frontside Engineering <engineering@frontside.io>",
+  "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "private": true,
   "workspaces": {
