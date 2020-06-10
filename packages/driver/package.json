@@ -1,0 +1,32 @@
+{
+  "name": "@bigtest/driver",
+  "version": "0.4.0",
+  "description": "Startup and connect BigTest agents to an orchestrator",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "repository": "https://github.com/thefrontside/bigtest.git",
+  "author": "Frontside Engineering <engineering@frontside.io>",
+  "license": "MIT",
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "scripts": {
+    "lint": "eslint '{src,test}/**/*.ts'",
+    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "prepack": "tsc --outdir dist"
+  },
+  "devDependencies": {
+    "@frontside/tsconfig": "^0.0.1",
+    "@types/mocha": "^7.0.1",
+    "@types/node": "^14.0.11",
+    "effection": "^0.6.3",
+    "expect": "^24.9.0",
+    "mocha": "^6.2.2",
+    "ts-node": "*",
+    "typescript": "^3.9.5"
+  },
+  "peerDependencies": {
+    "effection": "^0.6.2"
+  }
+}

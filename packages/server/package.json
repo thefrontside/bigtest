@@ -52,6 +52,7 @@
     "@babel/preset-env": "7.8.4",
     "@bigtest/agent": "^0.4.0",
     "@bigtest/atom": "^0.4.0",
+    "@bigtest/driver": "^0.4.0",
     "@bigtest/effection": "^0.4.0",
     "@bigtest/effection-express": "^0.4.0",
     "@bigtest/logging": "^0.4.0",

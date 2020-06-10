@@ -1,5 +1,5 @@
 import { Operation } from 'effection';
-import { Options as WebDriverOptions } from '@bigtest/webdriver';
+import { DriverSpec } from '@bigtest/driver';
 import * as path from 'path';
 import { existsSync } from 'fs';
 import * as fs from 'fs';
@@ -47,7 +47,7 @@ export type ProjectOptions = {
   manifest: {
     port: number;
   };
-  drivers: Record<string, WebDriverOptions>;
+  drivers: Record<string, DriverSpec>;
   launch: string[];
 }
 
@@ -76,24 +76,39 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
     cacheDir: path.resolve(path.dirname(configFilePath), '.bigtest'),
     drivers: {
       chrome: {
-        browserName: "chrome",
-        headless: false
+        module: "@bigtest/webdriver",
+        options: {
+          browserName: "chrome",
+          headless: false
+        }
       },
       "chrome.headless": {
-        browserName: "chrome",
-        headless: true
+        module: "@bigtest/webdriver",
+        options: {
+          browserName: "chrome",
+          headless: true
+        }
       },
       firefox: {
-        browserName: "firefox",
-        headless: false
+        module: "@bigtest/webdriver",
+        options: {
+          browserName: "firefox",
+          headless: false
+        }
       },
       "firefox.headless": {
-        browserName: "firefox",
-        headless: true
+        module: "@bigtest/webdriver",
+        options: {
+          browserName: "firefox",
+          headless: true
+        }
       },
       "safari": {
-        browserName: "safari",
-        headless: false
+        module: "@bigtest/webdriver",
+        options: {
+          browserName: "safari",
+          headless: false
+        }
       },
     },
     launch: []
