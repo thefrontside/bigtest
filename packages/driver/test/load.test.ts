@@ -6,11 +6,11 @@ import { Driver, load } from '../index';
 describe('loading a driver', () => {
   describe('when the driver module cannot be found', () => {
     let error: Error;
-    beforeEach(() => {
+    beforeEach(async () => {
       try {
-        load({
+        await spawn(load({
           module: 'wut'
-        })
+        }));
       } catch (e) {
         error = e;
       }
@@ -24,11 +24,11 @@ describe('loading a driver', () => {
 
   describe('missing factory function', () => {
     let error: Error;
-    beforeEach(() => {
+    beforeEach(async () => {
       try {
-        load({
+        await spawn(load({
           module: './test/fixtures/missing-factory-function'
-        })
+        }));
       } catch (e) {
         error = e;
       }
@@ -42,11 +42,11 @@ describe('loading a driver', () => {
 
   describe('when the driver module does not export a driver factory function', () => {
     let error: Error;
-    beforeEach(() => {
+    beforeEach(async () => {
       try {
-        load({
+        await spawn(load({
           module: './test/fixtures/bad-factory-function'
-        })
+        }));
       } catch (e) {
         error = e;
       }

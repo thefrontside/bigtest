@@ -15,15 +15,15 @@ export interface DriverFactory<TOptions, TData> {
   (spec: DriverSpec<TOptions>): Operation<Driver<TData>>;
 }
 
-export function load<TOptions, TData>(spec: DriverSpec<TOptions>): Operation<Driver<TData>> {
+export function * load<TOptions, TData>(spec: DriverSpec<TOptions>): Operation<Driver<TData>> {
   try {
-    let exports = require(spec.module);
+    let exports = yield import(spec.module);
     if (typeof exports.create !== 'function') {
       throw new DriverError(`found the driver '${spec.module} at ${require.resolve(spec.module)}, but it must export a 'create' function.
 Instead of a function however, it was found ${exports.create}`);
     }
     let factory: DriverFactory<TOptions, TData> = exports.create;
-    return factory(spec);
+    return yield factory(spec);
   } catch(error) {
     if (error.code === 'MODULE_NOT_FOUND') {
       throw new DriverNotFoundError(spec);
