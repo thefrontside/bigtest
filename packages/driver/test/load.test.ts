@@ -9,7 +9,7 @@ describe('loading a driver', () => {
     beforeEach(async () => {
       try {
         await spawn(load({
-          module: 'wut'
+          module: 'wut', options: {}
         }));
       } catch (e) {
         error = e;
@@ -27,7 +27,7 @@ describe('loading a driver', () => {
     beforeEach(async () => {
       try {
         await spawn(load({
-          module: './test/fixtures/missing-factory-function'
+          module: './test/fixtures/missing-factory-function', options: {}
         }));
       } catch (e) {
         error = e;
@@ -45,7 +45,7 @@ describe('loading a driver', () => {
     beforeEach(async () => {
       try {
         await spawn(load({
-          module: './test/fixtures/bad-factory-function'
+          module: './test/fixtures/bad-factory-function', options: {}
         }));
       } catch (e) {
         error = e;

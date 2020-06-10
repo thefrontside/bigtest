@@ -14,6 +14,7 @@
       "packages/suite",
       "packages/agent",
       "packages/driver",
+      "packages/nodedriver",
       "packages/webdriver",
       "packages/parcel",
       "packages/project",

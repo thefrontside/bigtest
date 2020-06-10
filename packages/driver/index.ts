@@ -2,7 +2,7 @@ import { Operation } from 'effection';
 
 export interface DriverSpec<TOptions = unknown> {
   module: string;
-  options?: TOptions;
+  options: TOptions;
 }
 
 export interface Driver<TData = unknown> {
