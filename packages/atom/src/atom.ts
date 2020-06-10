@@ -1,13 +1,17 @@
 import { EventEmitter } from "events";
 import { Operation } from "effection";
 import { on } from '@effection/events';
+import { Subscribable, SymbolSubscribable } from '@effection/subscription';
 import { Slice } from "./slice";
 
-export class Atom<S> {
+export class Atom<S> implements Subscribable<S,void> {
   initial: S;
   state: S;
 
   subscriptions = new EventEmitter();
+
+  states = Subscribable.from(on(this.subscriptions, 'state'))
+    .map(([state]) => state as S)
 
   get(): S {
     return this.state;
@@ -35,18 +39,14 @@ export class Atom<S> {
   }
 
   *each(fn: (state: S) => Operation): Operation {
-    let subscription = yield on(this.subscriptions, 'state');
-
-    while (true) {
-      let [state] = yield subscription.next();
-      yield fn(state);
-    }
+    return this.states.forEach(fn);
   }
 
   *once(predicate: (state: S) => boolean): Operation<void> {
-    let subscription = yield on(this.subscriptions, 'state');
-    while (!predicate(this.state)) {
-      yield subscription.next();
-    }
+    yield this.states.filter(predicate).first();
+  }
+
+  [SymbolSubscribable]() {
+    return this.states[SymbolSubscribable]();
   }
 }
