@@ -36,7 +36,7 @@ export function * CLI(argv: string[]): Operation {
 
     console.log('Starting test run:', testRunId);
 
-    let subscription = yield client.subscribe(query.testRunResults(testRunId));
+    let subscription = yield client.liveQuery(query.testRunResults(testRunId));
 
     while(true) {
       let { testRun } = yield subscription.receive();
@@ -73,7 +73,7 @@ export function * CLI(argv: string[]): Operation {
 
     console.log('Starting test run:', testRunId);
 
-    let subscription = yield client.subscribe(query.testRunResults(testRunId));
+    let subscription = yield client.liveQuery(query.testRunResults(testRunId));
 
     while(true) {
       let { testRun } = yield subscription.receive();
