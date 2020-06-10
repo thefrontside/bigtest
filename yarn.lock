@@ -4550,10 +4550,10 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-effection@0.6.2, effection@^0.6.0, effection@^0.6.2:
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/effection/-/effection-0.6.2.tgz#4b64f3538c777f044df954cffdacb15db636f501"
-  integrity sha512-Ba7lPfh0X1RE83LpwGHlqPymxVezOi72bkaZFnyGVic4O8o2HXfOto9BIBZ8UwNNe+lhEqjbz0IW7KkklQrzig==
+effection@0.6.4, effection@^0.6.0, effection@^0.6.2, effection@^0.6.4:
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/effection/-/effection-0.6.4.tgz#590cbe6c40357acf6c185940fbae2b1434fafcc4"
+  integrity sha512-ZzACE6YjtMbM0t0/fov2LkpCDdZffQ0eVI8qdaygQCtYEErVc4VT55AArGKCovQpyevmY5sdMnR9K/rB1wkAwQ==
 
 electron-to-chromium@^1.3.378, electron-to-chromium@^1.3.413:
   version "1.3.425"
