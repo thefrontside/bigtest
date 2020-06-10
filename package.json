@@ -46,6 +46,6 @@
     "typescript": "^3.7.0"
   },
   "resolutions": {
-    "**/effection": "0.6.2"
+    "**/effection": "0.6.4"
   }
 }
