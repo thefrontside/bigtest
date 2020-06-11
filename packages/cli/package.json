@@ -22,7 +22,7 @@
     "bigtest": "dist/bin/bigtest.js"
   },
   "devDependencies": {
-    "@bigtest/todomvc": "^0.1.1",
+    "@bigtest/todomvc": "^0.4.1",
     "@effection/events": "^0.7.1",
     "@frontside/tsconfig": "*",
     "@types/capture-console": "1.0.0",
