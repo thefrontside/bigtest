@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@effection/events": "^0.7.1",
+    "@effection/subscription": "^0.7.1",
     "ramda": "0.27.0"
   },
   "volta": {
