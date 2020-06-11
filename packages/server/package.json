@@ -59,7 +59,7 @@
     "@bigtest/parcel": "^0.4.0",
     "@bigtest/suite": "^0.4.0",
     "@bigtest/webdriver": "^0.4.0",
-    "@effection/events": "^0.6.1",
+    "@effection/events": "^0.7.1",
     "@nexus/schema": "^0.13.1",
     "bowser": "^2.8.1",
     "chokidar": "^3.3.1",

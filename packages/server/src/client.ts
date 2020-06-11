@@ -57,7 +57,7 @@ export class Client {
       socket.send(JSON.stringify({ [type]: source, live, responseId}));
 
       while (true) {
-        let [event] = yield messages.next();
+        let { value: [event] } = yield messages.next();
         let message: Message = JSON.parse(event.data);
 
         if(message.responseId === responseId) {

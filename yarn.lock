@@ -1341,7 +1341,7 @@
     tar "^2.2.2"
     tar-stream "1.6.2"
 
-"@effection/events@^0.6.0", "@effection/events@^0.6.1":
+"@effection/events@^0.6.0":
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.6.1.tgz#839aad2303f4c95cf70092bbc62d5992f72e1a26"
   integrity sha512-IdJO10dxoPYtZHAAefEsQ4sXT5jF4gZ+CI/HBPHPVFih2+OJZaNbTg2s5uwufkSk2Kma1jsXl1JaXZ0ruDLIFQ==
@@ -4891,7 +4891,7 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-effection@^0.6.0, effection@^0.6.2, effection@^0.6.3:
+effection@0.6.4, effection@^0.6.0, effection@^0.6.2, effection@^0.6.3:
   version "0.6.4"
   resolved "https://registry.yarnpkg.com/effection/-/effection-0.6.4.tgz#590cbe6c40357acf6c185940fbae2b1434fafcc4"
   integrity sha512-ZzACE6YjtMbM0t0/fov2LkpCDdZffQ0eVI8qdaygQCtYEErVc4VT55AArGKCovQpyevmY5sdMnR9K/rB1wkAwQ==

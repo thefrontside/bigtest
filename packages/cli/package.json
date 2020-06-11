@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@bigtest/todomvc": "^0.1.1",
+    "@effection/events": "^0.7.1",
     "@frontside/tsconfig": "*",
     "@types/capture-console": "1.0.0",
     "@types/json5": "^0.0.30",
@@ -42,7 +43,6 @@
     "@bigtest/effection": "^0.4.0",
     "@bigtest/project": "^0.4.0",
     "@bigtest/server": "^0.4.0",
-    "@effection/events": "^0.6.0",
     "@effection/node": "^0.6.2",
     "capture-console": "^1.0.1",
     "deepmerge": "^4.2.2",

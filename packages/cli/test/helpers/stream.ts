@@ -15,7 +15,7 @@ export class Stream {
   *run() {
     let events = yield on(this.stream, "data");
     while(true) {
-      let chunk = yield events.next();
+      let { value: chunk } = yield events.next();
       this.output += chunk;
       if(this.verbose) {
         console.debug(chunk.toString());
