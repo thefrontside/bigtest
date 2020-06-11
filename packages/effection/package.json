@@ -30,7 +30,7 @@
     "effection": "^0.6.2"
   },
   "dependencies": {
-    "@effection/events": "^0.6.1",
+    "@effection/events": "^0.7.1",
     "@types/node": "^13.13.4"
   },
   "volta": {

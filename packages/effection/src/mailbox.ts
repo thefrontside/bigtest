@@ -79,6 +79,8 @@ export class Mailbox<T = any> {
   }
 }
 
+import { Subscribable} from '@effection/subscription';
+
 export function *subscribe(
   mailbox: Mailbox<SubscriptionMessage>,
   source: EventEmitter | EventTarget,
@@ -86,13 +88,13 @@ export function *subscribe(
 ): Operation {
   return yield spawn(function*() {
     for (let name of typeof events === 'string' ? [events] : events) {
-      yield fork(function*() {
-        let events = yield on(source, name);
-        while(true) {
-          let args = yield events.next();
-          mailbox.send({ event: name, args });
-        }
-      });
+      let pipeline = Subscribable.from(on(source, name))
+        .map(args => ({ event: name, args }))
+        .forEach(function*(value) {
+          mailbox.send(value);
+        });
+
+      yield fork(pipeline);
     }
   });
 }
