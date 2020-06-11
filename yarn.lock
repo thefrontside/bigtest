@@ -4891,7 +4891,7 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-effection@0.6.4, effection@^0.6.0, effection@^0.6.2, effection@^0.6.3:
+effection@^0.6.0, effection@^0.6.2, effection@^0.6.3:
   version "0.6.4"
   resolved "https://registry.yarnpkg.com/effection/-/effection-0.6.4.tgz#590cbe6c40357acf6c185940fbae2b1434fafcc4"
   integrity sha512-ZzACE6YjtMbM0t0/fov2LkpCDdZffQ0eVI8qdaygQCtYEErVc4VT55AArGKCovQpyevmY5sdMnR9K/rB1wkAwQ==

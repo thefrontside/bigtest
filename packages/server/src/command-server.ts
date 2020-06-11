@@ -85,8 +85,8 @@ export function handleMessage(delegate: Mailbox, atom: Atom<OrchestratorState>):
     yield socket.send(result);
   }
 
-  function* subscribe(message: QueryMessage, socket: Socket) {
-    yield atom.each(state => publishQueryResult(message, state, socket));
+  function subscribe(message: QueryMessage, socket: Socket): Operation<void> {
+    return atom.each(state => publishQueryResult(message, state, socket));
   }
 
   return function*(socket) {
