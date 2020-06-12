@@ -50,6 +50,7 @@
     "@bigtest/effection": "^0.5.1",
     "@bigtest/effection-express": "^0.5.1",
     "@bigtest/logging": "^0.5.1",
+    "@bigtest/nodedriver": "^0.5.0",
     "@bigtest/parcel": "^0.5.1",
     "@bigtest/project": "^0.5.1",
     "@bigtest/suite": "^0.5.1",

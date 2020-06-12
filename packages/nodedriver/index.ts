@@ -1,10 +1,9 @@
-import { Operation, resource, spawn, contextOf, Context } from 'effection';
-import { throwOnErrorEvent, once } from '@effection/events';
-import { Subscribable, SymbolSubscribable, createSubscription, forEach } from '@effection/subscription';
+import { Operation, resource, contextOf, Context } from 'effection';
 import { DriverSpec, Driver } from '@bigtest/driver';
-import { Command, AgentEvent } from '@bigtest/agent';
+import { Agent, Socket } from '@bigtest/agent';
 
 import * as WebSocket from 'ws';
+import * as os from 'os';
 
 export function *create(spec: DriverSpec<NodeOptions>): Operation<Driver> {
   return yield resource(new NodeDriver(spec.options), undefined);
@@ -22,78 +21,32 @@ class NodeDriver {
   *connect(agentURL: string) {
     let url = new URL(agentURL);
     let connectTo: string = url.searchParams.get('connectTo') || '';
-    let agentId: string = url.searchParams.get('agentId') || '';
+    let agentId = url.searchParams.get('agentId') || undefined;
 
     if (connectTo === '') {
       throw new Error(`unable to extract connectTo url from ${url}`);
     }
 
-    if (agentId === '') {
-      throw new Error(`unable to extract agentId url from ${url}`);
-    }
-
-    this.context.spawn(function*() {
-      let websocket = new WebSocket(connectTo);
-      yield throwOnErrorEvent(websocket);
-
-      yield once(websocket, "open");
-
-      try {
-        let connection = createConnection(websocket, agentId);
-
-        yield forEach(connection, function*(command) {
-          console.log('command =', command);
-        });
-      } finally {
-        websocket.close();
-      }
-    })
-  }
-}
-
-class Connection implements Subscribable<Command, void> {
-  constructor(private socket: WebSocket) {}
-
-  send(event: AgentEvent) {
-    this.socket.send(JSON.stringify(event));
-  }
-
-  [SymbolSubscribable]() {
-    let { socket } = this;
-    return createSubscription<Command, void>(function*(publish) {
-      spawn(function*() {
-        try {
-          socket.on('message', publish)
-          yield;
-        } finally {
-          socket.off('message', publish);
+    let agent: Agent = yield Agent.start({
+      createSocket: () => new WebSocket(connectTo) as Socket,
+      agentId,
+      data: {
+        os: {
+          name: os.type(),
+          version: os.release(),
+          versionName: os.platform()
+        },
+        platform: {
+          type: os.arch(),
+          vendor: os.cpus()[0].model
         }
-      });
-
-      yield once(socket, 'close');
-    });
-  }
-}
-
-function createConnection(socket: WebSocket, agentId: string) {
-  let connection = new Connection(socket);
-  let os = require('os');
-  connection.send({
-    type: "connected",
-    agentId,
-    data: {
-      os: {
-        name: os.type(),
-        version: os.release(),
-        versionName: os.platform()
-      },
-      platform: {
-        type: os.arch(),
-        vendor: os.cpus()[0].model
       }
-    }
-  });
-  return connection;
+    });
+
+    this.context.spawn(agent.commands.forEach(function*(command) {
+      console.log('received ->', command);
+    }));
+  }
 }
 
 interface SpawnPoint {
