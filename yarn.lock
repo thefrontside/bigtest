@@ -1108,14 +1108,6 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@bigtest/todomvc@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@bigtest/todomvc/-/todomvc-0.1.1.tgz#a457f8e97babe5c038c183311f59e775af493f89"
-  integrity sha512-CJyzji58rphcxLOxdaWSn/tqykIInj+reiegxuEr+oC0iwe5WWgHTGIitgDbrgnltkyyJ/VP1750SJnSIimNbA==
-  dependencies:
-    effection "^0.6.0"
-    express "^4.17.1"
-
 "@changesets/apply-release-plan@^3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@changesets/apply-release-plan/-/apply-release-plan-3.1.0.tgz#f0d8c4bd45cc65838be2c145186b137fae1d0842"

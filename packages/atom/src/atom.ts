@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 import { Operation } from "effection";
 import { on } from '@effection/events';
-import { Subscribable, SymbolSubscribable, createSubscription, forEach } from '@effection/subscription';
+import { Subscribable, SymbolSubscribable } from '@effection/subscription';
 import { Slice } from "./slice";
 
 export class Atom<S> implements Subscribable<S,void> {
@@ -9,6 +9,11 @@ export class Atom<S> implements Subscribable<S,void> {
   state: S;
 
   subscriptions = new EventEmitter();
+
+  get states() {
+    return Subscribable.from(on(this.subscriptions, 'state'))
+      .map(([state]) => state as S);
+  }
 
   get(): S {
     return this.state;
@@ -36,22 +41,14 @@ export class Atom<S> implements Subscribable<S,void> {
   }
 
   each(fn: (state: S) => Operation<void>): Operation<void> {
-    return forEach(this, fn);
+    return this.states.forEach(fn);
   }
 
   once(predicate: (state: S) => boolean): Operation<S | undefined> {
-    return Subscribable.from(this).filter(predicate).first();
+    return this.states.filter(predicate).first();
   }
 
   [SymbolSubscribable]() {
-    let { subscriptions } = this;
-
-    return createSubscription<S,void>(function*(publish) {
-      let events = yield on(subscriptions, 'state');
-      while (true) {
-        let { value: [state] } = yield events.next();
-        publish(state as S);
-      }
-    })
+    return this.states[SymbolSubscribable]();
   }
 }

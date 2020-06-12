@@ -1,4 +1,5 @@
 ---
+"@bigtest/atom": patch
 "@bigtest/agent": patch
 "@bigtest/cli": patch
 "@bigtest/effection-express": patch
