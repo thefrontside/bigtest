@@ -1108,14 +1108,6 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@bigtest/todomvc@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@bigtest/todomvc/-/todomvc-0.1.1.tgz#a457f8e97babe5c038c183311f59e775af493f89"
-  integrity sha512-CJyzji58rphcxLOxdaWSn/tqykIInj+reiegxuEr+oC0iwe5WWgHTGIitgDbrgnltkyyJ/VP1750SJnSIimNbA==
-  dependencies:
-    effection "^0.6.0"
-    express "^4.17.1"
-
 "@changesets/apply-release-plan@^3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@changesets/apply-release-plan/-/apply-release-plan-3.1.0.tgz#f0d8c4bd45cc65838be2c145186b137fae1d0842"
@@ -1341,7 +1333,7 @@
     tar "^2.2.2"
     tar-stream "1.6.2"
 
-"@effection/events@^0.6.0", "@effection/events@^0.6.1":
+"@effection/events@^0.6.0":
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.6.1.tgz#839aad2303f4c95cf70092bbc62d5992f72e1a26"
   integrity sha512-IdJO10dxoPYtZHAAefEsQ4sXT5jF4gZ+CI/HBPHPVFih2+OJZaNbTg2s5uwufkSk2Kma1jsXl1JaXZ0ruDLIFQ==
@@ -4891,7 +4883,7 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-effection@^0.6.0, effection@^0.6.2, effection@^0.6.3:
+effection@0.6.4, effection@^0.6.0, effection@^0.6.2, effection@^0.6.3:
   version "0.6.4"
   resolved "https://registry.yarnpkg.com/effection/-/effection-0.6.4.tgz#590cbe6c40357acf6c185940fbae2b1434fafcc4"
   integrity sha512-ZzACE6YjtMbM0t0/fov2LkpCDdZffQ0eVI8qdaygQCtYEErVc4VT55AArGKCovQpyevmY5sdMnR9K/rB1wkAwQ==

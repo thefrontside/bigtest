@@ -28,7 +28,7 @@ export class Socket {
       let subscription = yield on(raw, 'message');
 
       while(true) {
-        let [message] = yield subscription.next();
+        let { value: [message] } = yield subscription.next();
         mailbox.send(JSON.parse(message.data));
       }
     });
