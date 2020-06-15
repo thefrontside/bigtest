@@ -2,7 +2,7 @@ import * as Bowser from 'bowser';
 import { Test } from '@bigtest/suite';
 import { TestFrame } from './test-frame';
 import { QueryParams } from './query-params';
-import { Agent, Command, Run } from '../shared/agent';
+import { Agent, Run } from '../shared/agent';
 
 export function* createAgent(queryParams: QueryParams) {
   console.log('[agent] connecting to', queryParams.connectTo);
@@ -10,23 +10,21 @@ export function* createAgent(queryParams: QueryParams) {
   let testFrame = yield TestFrame.start();
 
   let createSocket = () => new WebSocket(queryParams.connectTo);
-  let agent: Agent = yield Agent.start(createSocket);
-
-  agent.send({
-    type: 'connected',
+  let agent: Agent = yield Agent.start({
+    createSocket,
     agentId: queryParams.agentId,
     data: Bowser.parse(navigator.userAgent)
   });
 
-  while(true) {
-    console.log('[agent] waiting for message');
-    let command: Command = yield agent.receive();
-    console.log('[agent] receive message', command);
+  yield agent.commands.forEach(function*(command) {
+    console.log('[agent] received command', command);
 
-    if(command.type === "run") {
+    if (command.type === "run") {
       yield run(agent, testFrame, command);
     }
-  }
+  });
+
+  console.debug('[agent] complete');
 }
 
 function* leafPaths(tree: Test, prefix: string[] = []): Generator<string[]> {

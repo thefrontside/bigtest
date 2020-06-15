@@ -87,10 +87,8 @@ describe('running tests on an agent', () => {
 
   beforeEach(async () => {
     await actions.startOrchestrator();
-    agent = await actions.createAgent();
+    agent = await actions.createAgent(agentId);
     client = await actions.fork(Client.create(`http://localhost:24102`));
-
-    agent.send({ type: 'connected', agentId, data: {} });
 
     agentsSubscription = await actions.fork(client.liveQuery(`{ agents { agentId } }`));
 
@@ -400,9 +398,7 @@ describe('running tests on an agent', () => {
     let secondAgentResults: Mailbox;
 
     beforeEach(async () => {
-      secondAgent = await actions.createAgent();
-
-      secondAgent.send({ type: 'connected', agentId: secondAgentId, data: {} });
+      secondAgent = await actions.createAgent(secondAgentId);
 
       let match: (results: AgentsQuery) => boolean = ({ agents }) => agents && agents.length === 2;
 

@@ -43,7 +43,7 @@
     "@bigtest/effection": "^0.4.0",
     "@bigtest/project": "^0.4.0",
     "@bigtest/server": "^0.4.0",
-    "@effection/node": "^0.6.2",
+    "@effection/node": "^0.6.4",
     "capture-console": "^1.0.1",
     "deepmerge": "^4.2.2",
     "effection": "^0.6.2",
