@@ -5,6 +5,8 @@ import { Agent, Socket } from '@bigtest/agent';
 import * as WebSocket from 'ws';
 import * as os from 'os';
 
+import { run } from './run';
+
 export function *create(spec: DriverSpec<NodeOptions>): Operation<Driver> {
   return yield resource(new NodeDriver(spec.options), undefined);
 }
@@ -43,9 +45,21 @@ class NodeDriver {
       }
     });
 
-    this.context.spawn(agent.commands.forEach(function*(command) {
-      console.log('received ->', command);
-    }));
+
+    this.context.spawn(function*() {
+      console.log('[node agent] waiting for commands');
+      yield agent.commands.forEach(function*(command) {
+        let { testRunId } = command;
+        agent.send({ type: 'run:begin', testRunId });
+        try {
+          yield run(agent, command);
+        } finally {
+          agent.send({ type: 'run:end', testRunId });
+        }
+      });
+    });
+
+    return agent;
   }
 }
 

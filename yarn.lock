@@ -1333,13 +1333,23 @@
     tar "^2.2.2"
     tar-stream "1.6.2"
 
-"@effection/events@^0.7.4":
+"@effection/events@^0.7.1", "@effection/events@^0.7.4":
   version "0.7.4"
   resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.7.4.tgz#13a3a0789f29c5df5bee121ff336ac7e9bb11a5f"
   integrity sha512-lfO2RNCi1KpAv61OeNqztCufM1L/X390KkLC4vCnzvoxVT11uwi+qnK/v9tc4WsowKDCL/0Vj86bB70RnQ8rng==
   dependencies:
     "@effection/subscription" "^0.7.2"
     effection "^0.7.0"
+
+"@effection/fetch@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@effection/fetch/-/fetch-0.1.1.tgz#e17d7d0c262328a4f507c159f404bb05c6a63adb"
+  integrity sha512-KJlGxBDBzqimHF5tc5SRo+cHKLtyjJONu3nILiU7ZW27hWBq1Y7N2f/zSdkAY1SehaEEusSkKz2+6/JLPn68Aw==
+  dependencies:
+    abort-controller "^3.0.0"
+    cross-fetch "^3.0.4"
+    effection "^0.7.0"
+    node-fetch "^2.6.0"
 
 "@effection/node@^0.6.5":
   version "0.6.5"
@@ -1349,7 +1359,7 @@
     "@effection/events" "^0.7.4"
     effection "^0.7.0"
 
-"@effection/subscription@^0.7.2":
+"@effection/subscription@^0.7.1", "@effection/subscription@^0.7.2":
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-0.7.2.tgz#1510d2844d979d67af36bbc5b19425ce73ab5f37"
   integrity sha512-BdYyq3jdr0vZXjKHBl/Uu9TUvzGaEKqxU45Su/hYUZvO2uoIZkQwxMxsKA/ol9tOXzvzzhEHYdQlmJJ5mN9U3Q==
@@ -4048,6 +4058,13 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     ripemd160 "^2.0.0"
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
+
+cross-fetch@^3.0.4:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.0.5.tgz#2739d2981892e7ab488a7ad03b92df2816e03f4c"
+  integrity sha512-FFLcLtraisj5eteosnX1gf01qYDCOc4fDy0+euOt8Kn9YBY2NtXL/pCoYPavw24NIQkQqm5ZOLsGD5Zzj0gyew==
+  dependencies:
+    node-fetch "2.6.0"
 
 cross-spawn@7.0.1:
   version "7.0.1"
@@ -8840,7 +8857,7 @@ node-environment-flags@1.0.5:
     object.getownpropertydescriptors "^2.0.3"
     semver "^5.7.0"
 
-node-fetch@^2.6.0:
+node-fetch@2.6.0, node-fetch@^2.6.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.0.tgz#e633456386d4aa55863f676a7ab0daa8fdecb0fd"
   integrity sha512-8dG4H5ujfvFiqDmVu9fQ5bOHUC15JMjMY/Zumv26oOvvVJjM67KF8koCWIabKQ1GJIa9r2mMZscBq/TbdOcmNA==

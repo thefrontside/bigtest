@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/nodedriver",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Startup and connect node agents",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -21,18 +21,16 @@
     "@types/mocha": "^7.0.1",
     "@types/node": "^14.0.11",
     "@types/ws": "^7.2.5",
-    "effection": "^0.6.3",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
     "ts-node": "*",
     "typescript": "^3.9.5"
   },
-  "peerDependencies": {
-    "effection": "^0.6.2"
-  },
   "dependencies": {
     "@effection/events": "^0.7.1",
+    "@effection/fetch": "^0.1.1",
     "@effection/subscription": "^0.7.1",
+    "effection": "^0.7.0",
     "ws": "^7.3.0"
   }
 }
