@@ -34,15 +34,11 @@
     "@types/rimraf": "3.0.0",
     "@types/websocket": "^1.0.0",
     "abort-controller": "^3.0.0",
-    "effection": "^0.6.2",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
     "node-fetch": "^2.6.0",
     "ts-node": "^8.9.1",
     "typescript": "^3.6.3"
-  },
-  "peerDependencies": {
-    "effection": "^0.6.2"
   },
   "dependencies": {
     "@babel/core": "^7.0.0-0",
@@ -58,11 +54,12 @@
     "@bigtest/project": "^0.5.0",
     "@bigtest/suite": "^0.5.0",
     "@bigtest/webdriver": "^0.5.0",
-    "@effection/events": "^0.7.1",
-    "@effection/node": "^0.6.4",
+    "@effection/events": "^0.7.4",
+    "@effection/node": "^0.6.5",
     "@nexus/schema": "^0.13.1",
     "bowser": "^2.8.1",
     "chokidar": "^3.3.1",
+    "effection": "^0.7.0",
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
     "fprint": "^2.0.1",

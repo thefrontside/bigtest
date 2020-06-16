@@ -30,7 +30,6 @@
     "@types/node-fetch": "^2.5.4",
     "assert": "^2.0.0",
     "classnames": "^2.2.5",
-    "effection": "^0.6.2",
     "expect": "^24.9.0",
     "express": "^4.17.1",
     "mocha": "^6.2.2",
@@ -41,13 +40,11 @@
     "ts-node": "*",
     "typescript": "^3.7.0"
   },
-  "peerDependencies": {
-    "effection": "^0.6.2"
-  },
   "dependencies": {
+    "effection": "^0.7.0",
     "@bigtest/effection": "^0.5.0",
     "@bigtest/effection-express": "^0.5.0",
-    "@effection/events": "^0.7.1",
+    "@effection/events": "^0.7.4",
     "bowser": "^2.9.0"
   },
   "volta": {
