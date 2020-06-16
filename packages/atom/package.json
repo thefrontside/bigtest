@@ -25,12 +25,10 @@
     "mocha": "^6.2.2",
     "ts-node": "*"
   },
-  "peerDependencies": {
-    "effection": "^0.6.2"
-  },
   "dependencies": {
-    "@effection/events": "^0.7.1",
-    "@effection/subscription": "^0.7.1",
+    "effection": "0.7.0",
+    "@effection/events": "^0.7.4",
+    "@effection/subscription": "^0.7.2",
     "ramda": "0.27.0"
   },
   "volta": {

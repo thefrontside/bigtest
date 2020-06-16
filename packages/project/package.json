@@ -17,19 +17,16 @@
     "prepack": "tsc --outdir dist --declaration --sourcemap --module commonjs"
   },
   "dependencies": {
-    "@bigtest/driver": "^0.5.0"
+    "@bigtest/driver": "^0.5.0",
+    "effection": "^0.7.0"
   },
   "devDependencies": {
     "@frontside/tsconfig": "*",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
-    "effection": "^0.6.2",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
     "ts-node": "*"
-  },
-  "peerDependencies": {
-    "effection": "^0.6.2"
   },
   "volta": {
     "node": "12.16.0",
