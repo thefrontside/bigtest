@@ -53,16 +53,32 @@ describe('@bigtest/atom', () => {
     describe('.once()', () => {
       let result: Promise<string | undefined>;
 
-      beforeEach(async () => {
-        result = spawn(subject.once(() => true));
+      describe('when initial state matches', () => {
+        beforeEach(async () => {
+          result = spawn(subject.once((state) => state === 'foo'));
 
-        subject.update(() => 'bar');
-        subject.update(() => 'baz');
+          subject.update(() => 'bar');
+        });
+
+        it('gets the first state that passes the given predicate', async () => {
+          expect(await result).toEqual('foo');
+          expect(subject.get()).toEqual('bar');
+        });
       });
 
-      it('gets the first state that passes the given predicate', async () => {
-        expect(await result).toEqual('bar');
-        expect(subject.get()).toEqual('baz');
+      describe('when initial state does not match', () => {
+        beforeEach(async () => {
+          result = spawn(subject.once((state) => state === 'baz'));
+
+          subject.update(() => 'bar');
+          subject.update(() => 'baz');
+          subject.update(() => 'quox');
+        });
+
+        it('gets the first state that passes the given predicate', async () => {
+          expect(await result).toEqual('baz');
+          expect(subject.get()).toEqual('quox');
+        });
       });
     });
 
