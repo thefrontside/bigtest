@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.5.1
+
+### Patch Changes
+
+- d2d50a5b: upgrade effection
+- Updated dependencies [d2d50a5b]
+  - @bigtest/agent@0.5.1
+  - @bigtest/atom@0.5.1
+  - @bigtest/driver@0.5.1
+  - @bigtest/effection@0.5.1
+  - @bigtest/effection-express@0.5.1
+  - @bigtest/logging@0.5.1
+  - @bigtest/parcel@0.5.1
+  - @bigtest/project@0.5.1
+  - @bigtest/suite@0.5.1
+  - @bigtest/webdriver@0.5.1
+
 ## 0.5.0
 
 ### Minor Changes

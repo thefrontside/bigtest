@@ -1,6 +1,15 @@
 # @bigtest/project
 
+## 0.5.1
+
+### Patch Changes
+
+- d2d50a5b: upgrade effection
+- Updated dependencies [d2d50a5b]
+  - @bigtest/driver@0.5.1
+
 ## 0.5.0
+
 ### Minor Changes
 
 - 358e07ab: `@bigtest/project` used to have a peer dependency on
