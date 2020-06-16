@@ -16,6 +16,9 @@
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "prepack": "tsc --outdir dist --declaration --sourcemap --module commonjs"
   },
+  "dependencies": {
+    "@bigtest/driver": "^0.4.0"
+  },
   "devDependencies": {
     "@frontside/tsconfig": "*",
     "@types/mocha": "^7.0.1",
@@ -26,8 +29,7 @@
     "ts-node": "*"
   },
   "peerDependencies": {
-    "effection": "^0.6.2",
-    "@bigtest/webdriver": "^0.4.0"
+    "effection": "^0.6.2"
   },
   "volta": {
     "node": "12.16.0",
