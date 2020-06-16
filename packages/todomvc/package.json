@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/todomvc",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Quickly run Todo MVC apps from different frameworks",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "effection": "^0.6.2",
-    "@bigtest/effection-express": "^0.4.0",
+    "@bigtest/effection-express": "^0.5.0",
     "@effection/node": "^0.6.2",
     "express": "^4.17.1"
   },
