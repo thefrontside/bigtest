@@ -1,6 +1,6 @@
 import { Operation, resource, spawn } from 'effection';
 import * as actualExpress from 'express';
-import { RequestHandler } from 'express';
+import { RequestHandler, IRouterHandler, IRouterMatcher } from 'express';
 import * as WebSocket from 'ws';
 import * as ews from 'express-ws';
 import * as util from 'util';
@@ -43,9 +43,11 @@ export class Express {
     this.inner = inner;
   }
 
-  use(...handlers: RequestHandler[]) {
-    this.inner.use(...handlers);
-  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  use: IRouterHandler<Express> & IRouterMatcher<Express> = function(this: Express, ...args: any[]) {
+    this.inner.use(...args);
+    return this;
+  };
 
   *useOperation(handler: OperationRequestHandler): Operation<void> {
     yield (controls) => {

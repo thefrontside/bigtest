@@ -19,9 +19,6 @@ main(createServer({
   connection: {
     port: 24003,
   },
-  agent: {
-    port: 24004,
-  },
   manifest: {
     port: 24005,
   },

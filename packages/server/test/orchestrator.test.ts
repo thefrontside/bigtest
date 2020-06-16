@@ -28,11 +28,11 @@ describe('orchestrator', () => {
     });
   });
 
-  describe('retrieving agent', () => {
+  describe('retrieving agent from proxy server', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
-      response = await actions.fetch('http://localhost:24104/index.html');
+      response = await actions.fetch('http://localhost:24101/__bigtest/index.html');
       body = await response.text();
     });
 
@@ -49,7 +49,7 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
-      response = await actions.fetch('http://localhost:24104/harness.js');
+      response = await actions.fetch('http://localhost:24101/__bigtest/harness.js');
       body = await response.text();
     });
 
@@ -96,7 +96,7 @@ describe('orchestrator', () => {
     });
 
     it('injects the harness script tag', () => {
-      expect(body).toMatch(new RegExp(`<script src="http://localhost:\\d+/harness.js"></script>`, 'mg'));
+      expect(body).toMatch(new RegExp(`<script src="http://localhost:\\d+/__bigtest/harness.js"></script>`, 'mg'));
     });
   });
 

@@ -69,9 +69,6 @@ export const actions = {
           connection: {
             port: 24103,
           },
-          agent: {
-            port: 24104,
-          },
           drivers: {},
           launch: []
         }
