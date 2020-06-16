@@ -24,7 +24,7 @@ export function* createCommandServer(options: CommandServerOptions): Operation {
   yield spawn(app.ws('*', handleMessage(options.delegate, options.atom)));
 
   yield spawn(({ spawn }) => {
-    app.use(graphqlHTTP(async () => await spawn(function* getOptionsData() {
+    app.raw.use(graphqlHTTP(async () => await spawn(function* getOptionsData() {
       return { ...graphqlOptions(options.delegate, options.atom.get()), graphiql: true};
     })));
   });

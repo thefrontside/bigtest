@@ -12,7 +12,7 @@ interface ManifestServerOptions {
 export function* createManifestServer(options: ManifestServerOptions): Operation {
   let app = express();
 
-  app.use(staticMiddleware(options.dir));
+  app.raw.use(staticMiddleware(options.dir));
 
   yield app.listen(options.port);
 

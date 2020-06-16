@@ -89,13 +89,13 @@ export function* createProxyServer(options: ProxyOptions): Operation {
   let server = express();
 
   if(options.agentServerConfig.options.prefix) {
-    server.use(options.agentServerConfig.options.prefix, staticMiddleware(options.agentServerConfig.appDir()));
+    server.raw.use(options.agentServerConfig.options.prefix, staticMiddleware(options.agentServerConfig.appDir()));
   } else {
     throw new Error('must set prefix');
   }
 
   // proxy http requests
-  yield spawn(server.useOperation(function*(req, res) {
+  yield spawn(server.use(function*(req, res) {
     try {
       proxyServer.web(req, res)
       yield once(res, 'close');
