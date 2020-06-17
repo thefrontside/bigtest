@@ -3,7 +3,7 @@
   "version": "0.0.0-monorepo",
   "description": "Tests that speed up development ",
   "repository": "git@github.com:thefrontside/bigtest.git",
-  "author": "Frontside Engineering <engineering@frontside.io>",
+  "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "private": true,
   "workspaces": {
@@ -11,12 +11,13 @@
       "packages/effection",
       "packages/effection-express",
       "packages/atom",
+      "packages/suite",
+      "packages/agent",
+      "packages/driver",
       "packages/webdriver",
       "packages/parcel",
       "packages/project",
       "packages/todomvc",
-      "packages/suite",
-      "packages/agent",
       "packages/convergence",
       "packages/interactor",
       "packages/logging",
@@ -38,14 +39,12 @@
     "yarn": "1.22.4"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.8.0",
     "@frontside/eslint-config": "^1.0.0",
     "@typescript-eslint/eslint-plugin": "^2.3.2",
     "@typescript-eslint/parser": "^2.3.2",
     "eslint": "^6.6.0",
     "eslint-plugin-prefer-let": "^1.0.1",
     "typescript": "^3.7.0"
-  },
-  "resolutions": {
-    "**/effection": "0.6.2"
   }
 }

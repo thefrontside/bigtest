@@ -1,11 +1,11 @@
 {
   "name": "@bigtest/agent",
-  "version": "0.4.1",
+  "version": "0.5.1",
   "description": "Agent for connecting test environments (browsers) to BigTest",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
-  "author": "Frontside Engineering <engineering@frontside.io>",
+  "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "files": [
     "dist/**/*",
@@ -20,9 +20,9 @@
     "manifest:build": "parcel build test/fixtures/manifest.src.js --out-dir test/fixtures --out-file manifest.js --global __bigtestManifest"
   },
   "devDependencies": {
-    "@bigtest/suite": "^0.4.0",
-    "@bigtest/webdriver": "^0.4.0",
-    "@bigtest/parcel": "^0.4.1",
+    "@bigtest/suite": "^0.5.1",
+    "@bigtest/webdriver": "^0.5.1",
+    "@bigtest/parcel": "^0.5.1",
     "@frontside/tsconfig": "*",
     "@types/express": "^4.17.2",
     "@types/mocha": "^7.0.1",
@@ -30,7 +30,6 @@
     "@types/node-fetch": "^2.5.4",
     "assert": "^2.0.0",
     "classnames": "^2.2.5",
-    "effection": "^0.6.2",
     "expect": "^24.9.0",
     "express": "^4.17.1",
     "mocha": "^6.2.2",
@@ -41,13 +40,11 @@
     "ts-node": "*",
     "typescript": "^3.7.0"
   },
-  "peerDependencies": {
-    "effection": "^0.6.2"
-  },
   "dependencies": {
-    "@bigtest/effection": "^0.4.0",
-    "@bigtest/effection-express": "^0.4.1",
-    "@effection/events": "^0.6.1",
+    "effection": "^0.7.0",
+    "@bigtest/effection": "^0.5.1",
+    "@bigtest/effection-express": "^0.5.1",
+    "@effection/events": "^0.7.4",
     "bowser": "^2.9.0"
   },
   "volta": {

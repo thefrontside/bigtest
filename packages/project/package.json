@@ -1,11 +1,11 @@
 {
   "name": "@bigtest/project",
-  "version": "0.4.1",
+  "version": "0.5.1",
   "description": "Utilities for with BigTest projects",
   "main": "dist/index.js",
   "typings": "dist/index.d.js",
   "repository": "https://github.com/thefrontside/bigtest.git",
-  "author": "Frontside Engineering <engineering@frontside.io>",
+  "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "files": [
     "dist/*",
@@ -16,18 +16,17 @@
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "prepack": "tsc --outdir dist --declaration --sourcemap --module commonjs"
   },
+  "dependencies": {
+    "@bigtest/driver": "^0.5.1",
+    "effection": "^0.7.0"
+  },
   "devDependencies": {
     "@frontside/tsconfig": "*",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
-    "effection": "^0.6.2",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
     "ts-node": "*"
-  },
-  "peerDependencies": {
-    "effection": "^0.6.2",
-    "@bigtest/webdriver": "^0.4.0"
   },
   "volta": {
     "node": "12.16.0",

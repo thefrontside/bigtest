@@ -1,11 +1,11 @@
 {
   "name": "@bigtest/effection",
-  "version": "0.4.1",
+  "version": "0.5.1",
   "description": "Collection of handly utilities for working with effection. May find a different home later",
   "main": "dist/index.js",
   "typings": "dist/index.d.js",
   "repository": "https://github.com/thefrontside/bigtest.git",
-  "author": "Frontside Engineering <engineering@frontside.io>",
+  "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "files": [
     "dist/*",
@@ -21,16 +21,13 @@
     "@frontside/tsconfig": "*",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
-    "effection": "^0.6.0",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
     "ts-node": "*"
   },
-  "peerDependencies": {
-    "effection": "^0.6.2"
-  },
   "dependencies": {
-    "@effection/events": "^0.6.1",
+    "effection": "^0.7.0",
+    "@effection/events": "^0.7.4",
     "@types/node": "^13.13.4"
   },
   "volta": {

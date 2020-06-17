@@ -28,26 +28,41 @@ main(createServer({
   testFiles: ["./test/fixtures/*.t.js"],
   cacheDir: "./tmp/start",
   drivers: {
-    "chrome": {
-      browserName: "chrome",
-      headless: false
-    },
-    "chrome.headless": {
-      browserName: "chrome",
-      headless: true
-    },
-    "firefox": {
-      browserName: "firefox",
-      headless: false
-    },
-    "firefox.headless": {
-      browserName: "firefox",
-      headless: true
-    },
-    "safari": {
-      browserName: "safari",
-      headless: false
-    }
+      chrome: {
+        module: "@bigtest/webdriver",
+        options: {
+          browserName: "chrome",
+          headless: false
+        }
+      },
+      "chrome.headless": {
+        module: "@bigtest/webdriver",
+        options: {
+          browserName: "chrome",
+          headless: true
+        }
+      },
+      firefox: {
+        module: "@bigtest/webdriver",
+        options: {
+          browserName: "firefox",
+          headless: false
+        }
+      },
+      "firefox.headless": {
+        module: "@bigtest/webdriver",
+        options: {
+          browserName: "firefox",
+          headless: true
+        }
+      },
+      "safari": {
+        module: "@bigtest/webdriver",
+        options: {
+          browserName: "safari",
+          headless: false
+        }
+      }
   },
   launch: ['chrome.headless', 'firefox.headless']
 }));

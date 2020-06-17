@@ -1,9 +1,9 @@
 {
   "name": "@bigtest/cli",
-  "version": "0.4.1",
+  "version": "0.5.1",
   "description": "Use BigTest",
   "repository": "https://github.com/thefrontside/bigtest.git",
-  "author": "Frontside Engineering <engineering@frontside.io>",
+  "author": "Frontside Engineering <engineering@frontside.com>",
   "main": "dist/src/index.js",
   "license": "MIT",
   "files": [
@@ -22,7 +22,8 @@
     "bigtest": "dist/bin/bigtest.js"
   },
   "devDependencies": {
-    "@bigtest/todomvc": "^0.1.1",
+    "@bigtest/todomvc": "^0.5.1",
+    "@effection/events": "^0.7.4",
     "@frontside/tsconfig": "*",
     "@types/capture-console": "1.0.0",
     "@types/json5": "^0.0.30",
@@ -39,14 +40,13 @@
     "typescript": "^3.7.0"
   },
   "dependencies": {
-    "@bigtest/effection": "^0.4.0",
-    "@bigtest/project": "^0.4.0",
-    "@bigtest/server": "^0.4.0",
-    "@effection/events": "^0.6.0",
-    "@effection/node": "^0.6.2",
+    "@bigtest/effection": "^0.5.1",
+    "@bigtest/project": "^0.5.1",
+    "@bigtest/server": "^0.5.1",
+    "@effection/node": "^0.6.5",
     "capture-console": "^1.0.1",
     "deepmerge": "^4.2.2",
-    "effection": "^0.6.2",
+    "effection": "^0.7.0",
     "json5": "^2.1.3"
   },
   "volta": {

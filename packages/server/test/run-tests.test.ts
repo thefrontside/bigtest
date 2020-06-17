@@ -87,12 +87,10 @@ describe('running tests on an agent', () => {
 
   beforeEach(async () => {
     await actions.startOrchestrator();
-    agent = await actions.createAgent();
+    agent = await actions.createAgent(agentId);
     client = await actions.fork(Client.create(`http://localhost:24102`));
 
-    agent.send({ type: 'connected', agentId, data: {} });
-
-    agentsSubscription = await actions.fork(client.subscribe(`{ agents { agentId } }`));
+    agentsSubscription = await actions.fork(client.liveQuery(`{ agents { agentId } }`));
 
     let match: (params: AgentsQuery) => boolean = ({ agents }) => agents && agents.length === 1;
 
@@ -107,7 +105,7 @@ describe('running tests on an agent', () => {
       await actions.fork(client.query(`mutation { run }`));
 
       runCommand = await actions.fork(agent.receive());
-      results = await actions.fork(client.subscribe(resultsQuery(runCommand.testRunId, agentId)));
+      results = await actions.fork(client.liveQuery(resultsQuery(runCommand.testRunId, agentId)));
     });
 
     it('receives a run event on the agent', () => {
@@ -400,9 +398,7 @@ describe('running tests on an agent', () => {
     let secondAgentResults: Mailbox;
 
     beforeEach(async () => {
-      secondAgent = await actions.createAgent();
-
-      secondAgent.send({ type: 'connected', agentId: secondAgentId, data: {} });
+      secondAgent = await actions.createAgent(secondAgentId);
 
       let match: (results: AgentsQuery) => boolean = ({ agents }) => agents && agents.length === 2;
 
@@ -411,8 +407,8 @@ describe('running tests on an agent', () => {
       await actions.fork(client.query(`mutation { run }`));
 
       let runCommand: Command = await actions.fork(agent.receive());
-      agentResults = await actions.fork(client.subscribe(resultsQuery(runCommand.testRunId, agentId)));
-      secondAgentResults = await actions.fork(client.subscribe(resultsQuery(runCommand.testRunId, secondAgentId)));
+      agentResults = await actions.fork(client.liveQuery(resultsQuery(runCommand.testRunId, agentId)));
+      secondAgentResults = await actions.fork(client.liveQuery(resultsQuery(runCommand.testRunId, secondAgentId)));
 
       secondAgent.send({
         type: 'step:result',

@@ -1,11 +1,11 @@
 {
   "name": "@bigtest/effection-express",
-  "version": "0.4.1",
+  "version": "0.5.1",
   "description": "Makes it easy to use Express from Effection",
   "main": "dist/index.js",
   "typings": "dist/index.d.js",
   "repository": "https://github.com/thefrontside/bigtest.git",
-  "author": "Frontside Engineering <engineering@frontside.io>",
+  "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "files": [
     "dist/*",
@@ -21,18 +21,15 @@
     "@frontside/tsconfig": "*",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
-    "effection": "^0.6.2",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
     "ts-node": "*"
   },
-  "peerDependencies": {
-    "effection": "^0.6.2"
-  },
   "dependencies": {
-    "@effection/events": "^0.6.1",
+    "@effection/events": "^0.7.4",
     "@types/express-ws": "^3.0.0",
     "@types/node": "^13.13.4",
+    "effection": "^0.7.0",
     "express": "^4.17.1",
     "express-ws": "^4.0.0"
   },

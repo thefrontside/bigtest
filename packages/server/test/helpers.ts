@@ -30,14 +30,18 @@ export const actions = {
     return actions.fork(currentWorld.fetch(resource, init));
   },
 
-  async createAgent() {
+  async createAgent(agentId: string) {
     // the types are broken in the 'websocket' package.... the `w3cwebsocket` class
     // _is_ in fact an EventTarget, but it is not declared as such. So we have
     // to dynamically cast it.
     type W3CWebSocket = w3cwebsocket & EventTarget;
     let createSocket = () => new w3cwebsocket(`http://localhost:24103`) as W3CWebSocket;
 
-    return actions.fork(Agent.start(createSocket));
+    return actions.fork(Agent.start({
+      createSocket,
+      agentId,
+      data: {}
+    }));
   },
 
   async startOrchestrator() {

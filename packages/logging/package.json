@@ -1,10 +1,10 @@
 {
   "name": "@bigtest/logging",
-  "version": "0.4.1",
+  "version": "0.5.1",
   "description": "Utilities for logging within BigTest projects",
   "main": "dist/index.js",
   "repository": "https://github.com/thefrontside/bigtest.git",
-  "author": "Frontside Engineering <engineering@frontside.io>",
+  "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "files": [
     "dist/*",

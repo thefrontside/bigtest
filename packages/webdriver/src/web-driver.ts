@@ -1,11 +1,26 @@
 import { Operation } from 'effection';
 import { Atom } from '@bigtest/atom';
+<<<<<<< HEAD
 import { fetch, RequestInit } from '@effection/fetch';
+=======
+import { Driver } from '@bigtest/driver';
+import { fetch, RequestInit } from './fetch';
+>>>>>>> origin
 
-export class WebDriver {
-  session: { sessionId: string } = { sessionId: '' };
+export class WebDriver implements Driver<WDSession> {
+  session: WDSession = { sessionId: '' };
 
   constructor(public serverURL: string) { }
+
+  get description() {
+    return `WebDriver<${this.serverURL}/session/${this.session.sessionId}>`;
+  }
+
+  get data() { return this.session; }
+
+  connect(agentURL: string): Operation<void> {
+    return this.navigateTo(agentURL);
+  }
 
   *navigateTo(url: string): Operation<void> {
     yield request(`${this.serverURL}/session/${this.session.sessionId}/url`, {
@@ -60,6 +75,10 @@ function* request(url: string, init: RequestInit): Operation<WDResponse> {
 export interface Options {
   browserName: 'chrome' | 'firefox' | 'safari';
   headless: boolean;
+}
+
+interface WDSession {
+  sessionId: string;
 }
 
 interface WDResponse {
