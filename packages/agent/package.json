@@ -16,7 +16,7 @@
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "mocha": "mocha -r ts-node/register",
     "start": "parcel serve --out-dir dist/app app/index.html app/harness.ts",
-    "prepack": "tsc --outdir dist --declaration --sourcemap && parcel build --no-minify --out-dir dist/app app/index.html app/harness.ts",
+    "prepack": "tsc --outdir dist --declaration --sourcemap && parcel build --public-url ./ --no-minify --out-dir dist/app app/index.html app/harness.ts",
     "manifest:build": "parcel build test/fixtures/manifest.src.js --out-dir test/fixtures --out-file manifest.js --global __bigtestManifest"
   },
   "devDependencies": {

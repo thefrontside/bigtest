@@ -18,7 +18,7 @@ import { main } from './helpers';
 function* staticServer(port: number) {
   let app = express();
   return yield readyResource(app, function*(ready) {
-    app.use(staticMiddleware("./test/fixtures"));
+    app.raw.use(staticMiddleware("./test/fixtures"));
     yield app.listen(port);
     ready();
     yield;

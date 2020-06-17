@@ -10,7 +10,6 @@ import { createBrowserManager, BrowserManager } from './browser-manager';
 import { createCommandServer } from './command-server';
 import { createCommandProcessor } from './command-processor';
 import { createConnectionServer } from './connection-server';
-import { createAgentServer } from './agent-server';
 import { createAppServer } from './app-server';
 import { createManifestGenerator } from './manifest-generator';
 import { createManifestBuilder } from './manifest-builder';
@@ -32,24 +31,18 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   let proxyServerDelegate = new Mailbox();
   let commandServerDelegate = new Mailbox();
   let connectionServerDelegate = new Mailbox();
-  let agentServerDelegate = new Mailbox();
   let appServerDelegate = new Mailbox();
   let manifestGeneratorDelegate = new Mailbox();
   let manifestBuilderDelegate = new Mailbox();
   let manifestServerDelegate = new Mailbox();
 
-  let agentServerConfig = new AgentServerConfig({ port: options.project.agent.port });
+  let agentServerConfig = new AgentServerConfig({ port: options.project.proxy.port, prefix: '/__bigtest/', });
 
   let manifestSrcDir = path.resolve(options.project.cacheDir, 'manifest/src');
   let manifestBuildDir = path.resolve(options.project.cacheDir, 'manifest/build');
   let manifestDistDir = path.resolve(options.project.cacheDir, 'manifest/dist');
 
   let manifestSrcPath = path.resolve(manifestSrcDir, 'manifest.js');
-
-  yield fork(createAgentServer({
-    delegate: agentServerDelegate,
-    agentServerConfig
-  }));
 
   let connectTo = `ws://localhost:${options.project.connection.port}`;
 
@@ -61,10 +54,10 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   })
 
   yield fork(createProxyServer({
+    agentServerConfig,
     delegate: proxyServerDelegate,
     port: options.project.proxy.port,
     targetPort: options.project.app.port,
-    inject: `<script src="${agentServerConfig.harnessUrl()}"></script>`,
   }));
 
   yield fork(createCommandServer({
