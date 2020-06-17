@@ -1,4 +1,4 @@
-import { Operation, fork, spawn } from 'effection';
+import { Operation, fork } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { Atom } from '@bigtest/atom';
 import { AgentState, OrchestratorState } from './orchestrator/state';
@@ -62,7 +62,7 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
 
   let app = express();
 
-  yield spawn(app.ws('*', handleConnection));
+  yield app.ws('*', handleConnection);
   yield app.listen(options.port);
 
   options.delegate.send({ status: "ready" });

@@ -15,10 +15,10 @@ describe('express', () => {
 
     app = express();
 
-    app.use((req, res) => {
+    await world.spawn(app.use(function*(req, res) {
       res.send("hello");
       res.end();
-    });
+    }));
 
     await world.spawn(app.listen(26000));
   });

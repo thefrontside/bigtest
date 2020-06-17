@@ -39,16 +39,18 @@ export class Express {
 
   constructor(public raw: ews.Application) {}
 
-  *use(handler: OperationRequestHandler): Operation<void> {
-    yield (controls) => {
+  *use(handler: OperationRequestHandler): Operation<{}> {
+    return yield resource({}, (controls) => {
       this.raw.use((req, res) => {
-        controls.spawn(handler(req, res));
+        controls.spawn(function*() {
+          yield handler(req, res);
+        });
       });
-    };
+    });
   }
 
-  *ws(path: string, handler: WsOperationRequestHandler): Operation<void> {
-    yield (controls) => {
+  *ws(path: string, handler: WsOperationRequestHandler): Operation<{}> {
+    return yield resource({}, (controls) => {
       this.raw.ws(path, (socket, req) => {
         controls.spawn(function*(): Operation<void> {
           yield ensure(() => socket.close());
@@ -61,7 +63,7 @@ export class Express {
           }
         });
       })
-    }
+    })
   }
 
   *listen(port: number): Operation<Server> {

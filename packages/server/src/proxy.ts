@@ -1,4 +1,4 @@
-import { fork, spawn, Operation } from 'effection';
+import { fork, Operation } from 'effection';
 import { Mailbox, any } from '@bigtest/effection';
 import { AgentServerConfig } from '@bigtest/agent';
 import { throwOnErrorEvent, once } from '@effection/events';
@@ -95,19 +95,19 @@ export function* createProxyServer(options: ProxyOptions): Operation {
   }
 
   // proxy http requests
-  yield spawn(server.use(function*(req, res) {
+  yield server.use(function*(req, res) {
     try {
       proxyServer.web(req, res)
       yield once(res, 'close');
     } finally {
       req.destroy();
     }
-  }));
+  });
 
   // proxy ws requests
-  yield spawn(server.ws('*', function*(socket, req) {
+  yield server.ws('*', function*(socket, req) {
     proxyServer.ws(req, socket.raw, null);
-  }));
+  });
 
   try {
     yield server.listen(options.port);
