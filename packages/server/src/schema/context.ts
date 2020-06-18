@@ -1,8 +1,5 @@
-import { Operation, Context, Controls, contextOf } from 'effection';
-import { EventEmitter } from 'events';
+import { Operation, Context, Controls } from 'effection';
 import { Mailbox } from '@bigtest/effection';
-import { on } from '@effection/events';
-import { Subscription } from '@effection/subscription';
 import { Atom } from '@bigtest/atom';
 import { CommandMessage } from '../command-server';
 import { resultStream } from '../result-stream';

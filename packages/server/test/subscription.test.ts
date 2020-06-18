@@ -1,11 +1,8 @@
 import * as expect from 'expect';
 import { Mailbox } from '@bigtest/effection';
-import { Subscription } from '@effection/subscription';
 import { Agent, Command } from '@bigtest/agent';
-import { ResultStatus } from '@bigtest/suite';
 import { actions } from './helpers';
 import { Client } from '../src/client';
-import { TestEvent } from '../src/schema/test-event';
 import { generateAgentId } from '../src/connection-server';
 
 interface AgentsQuery {

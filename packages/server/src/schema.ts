@@ -104,18 +104,20 @@ export const schema = makeSchema({
       definition(t) {
         t.id("agentId");
         t.field("os", {
+          nullable: true,
           type: "OS"
         });
         t.field("platform", {
+          nullable: true,
           type: "Platform"
         })
         t.field("browser", {
-          type: "Browser",
           nullable: true,
+          type: "Browser",
         });
         t.field("engine", {
-          type: "Engine",
-          nullable: true
+          nullable: true,
+          type: "Engine"
         })
       }
     }),
@@ -255,10 +257,10 @@ export const schema = makeSchema({
       name: "Error",
       definition(t) {
         t.string("message");
-        t.string("fileName");
-        t.int("lineNumber");
-        t.int("columnNumber");
-        t.string("stack");
+        t.string("fileName", { nullable: true });
+        t.int("lineNumber", { nullable: true });
+        t.int("columnNumber", { nullable: true });
+        t.string("stack", { nullable: true });
       }
     })
   ]

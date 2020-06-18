@@ -1,4 +1,3 @@
-import { EventEmitter } from 'events';
 import { Operation, spawn, fork } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { express, Socket } from '@bigtest/effection-express';

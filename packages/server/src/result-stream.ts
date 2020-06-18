@@ -30,6 +30,7 @@ export interface StreamerTestOptions extends StreamerAgentOptions {
   path: string[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function* streamResults(type: string, slice: Slice<any, OrchestratorState>, publish: Publish, options: StreamerOptions): Operation<void> {
   let statusSlice = slice.slice<ResultStatus>(['status']);
   let previousStatus = statusSlice.get();
