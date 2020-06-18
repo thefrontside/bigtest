@@ -44,7 +44,7 @@ describe('@bigtest/atom', () => {
       });
 
       it('performs given operation for each state change', async () => {
-        await when(50, () => {
+        await when(() => {
           expect(result).toEqual(['bar', 'baz']);
         });
       });
@@ -116,13 +116,13 @@ describe('@bigtest/atom', () => {
         });
 
         it('emits state changes to listeners before reset', async () => {
-          await when(50, () => {
+          await when(() => {
             expect(result).toEqual(['state before reset']);
           });
         });
 
         it('stops emitting changes to listeners set before reset', async () => {
-          await never(50, () => {
+          await never(() => {
             expect(result).toEqual(['state before reset', 'state after reset']);
           });
         });
