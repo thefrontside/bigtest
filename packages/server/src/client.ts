@@ -4,7 +4,7 @@ import { resource, Operation } from 'effection';
 import { ensure, Mailbox } from '@bigtest/effection';
 import { on, once } from '@effection/events';
 
-import { Message, isErrorResponse, isDataResponse } from './protocol';
+import { Message, isErrorResponse, isDataResponse, isDoneResponse } from './protocol';
 
 let responseIds = 0;
 
@@ -36,13 +36,17 @@ export class Client {
     return yield subscription.receive();
   }
 
-  *liveQuery(source: string): Operation {
-    return yield this.send("query", source, true);
-  }
-
   *mutation(source: string): Operation {
     let subscription = yield this.send("mutation", source);
     return yield subscription.receive();
+  }
+
+  *liveQuery(source: string): Operation<Mailbox> {
+    return yield this.send("query", source, true);
+  }
+
+  *subscription(source: string): Operation<Mailbox> {
+    return yield this.send("subscription", source);
   }
 
   private *send(type: string, source: string, live = false): Operation<Mailbox> {
@@ -67,6 +71,9 @@ export class Client {
           }
           if (isDataResponse(message)) {
             mailbox.send(message.data);
+          } else if (isDoneResponse(message)) {
+            mailbox.send({done: true});
+            break;
           } else {
             throw new Error("unknown response format");;
           }
