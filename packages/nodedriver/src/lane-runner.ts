@@ -10,7 +10,7 @@ import { timebox } from './timebox';
 main(function*(): Operation<void> {
   send({ ready: true });
   let [message] = yield once(process, 'message');
-  console.log(`[nodeagent:lane<${process.pid}>] received command`, message);
+  // console.log(`[nodeagent:lane<${process.pid}>] received command`, message);
 
   if (message.type === 'run') {
     let bundle: TestImplementation = yield fetchTestBundle(message.manifestUrl);
@@ -30,9 +30,12 @@ function send(event: TestEvent | { ready: true }) {
 function* fetchTestBundle(url: string): Operation<TestImplementation> {
   let response: Response = yield fetch(url);
   let source: string = yield response.text();
-  let parcelRequire: any = null;
+
+  let parcelRequire = null;
+  let exports = {};
+  let module = { exports };
   eval(source);
-  return parcelRequire('manifest.js');
+  return module.exports as TestImplementation;
 }
 
 function* runTest(report: Report, test: TestImplementation, context: TestContext, path: string[], prefix: string[] = []): Operation<void> {

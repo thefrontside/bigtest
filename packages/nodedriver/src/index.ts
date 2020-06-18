@@ -1,1 +1,1 @@
-export { create } from './driver';
+export { create, NodeDriver, NodeOptions } from './driver';

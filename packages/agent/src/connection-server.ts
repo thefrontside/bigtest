@@ -25,13 +25,21 @@ export class AgentConnectionServer {
   }
 }
 
-let ids = 1;
+const ids = (function* agentIds() {
+  let id = 0;
+  while (true) {
+    yield `Agent:${id++}`;
+  }
+})()
 
 function handleSocket(inbox: Mailbox, delegate: Mailbox): (socket: Socket) => Operation<void> {
   return function*(socket) {
-    let agentId = `agent.${ids++}`;
 
     let messages = yield socket.subscribe();
+
+    let { agentId } = yield messages.receive({ type: 'connected' });
+
+    agentId = agentId || ids.next().value;
 
     yield fork(function*() {
       while (true) {

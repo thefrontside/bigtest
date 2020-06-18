@@ -12,6 +12,6 @@ afterEach(() => {
   currentWorld.halt();
 });
 
-export function spawn<T>(operation: Operation<T>): Promise<T> {
+export function run<T>(operation: Operation<T>): Promise<T> {
   return currentWorld.spawn(operation);
 }

@@ -7,14 +7,33 @@ import * as os from 'os';
 
 import { run } from './run';
 
-export function *create(spec: DriverSpec<NodeOptions>): Operation<Driver> {
+export function *create(spec: DriverSpec<NodeOptions>): Operation<Driver<NodeOptions>> {
   return yield resource(new NodeDriver(spec.options), undefined);
 }
 
+// We don't have any options for node currently, but we will
+// so allow this interface to be empty
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface NodeOptions {}
 
-class NodeDriver {
+export class NodeDriver implements Driver<NodeOptions> {
   constructor(public options: NodeOptions) {}
+
+  get description() { return `@bigtest/nodedriver`; }
+
+  get data() {
+    return {
+      os: {
+        name: os.type(),
+        version: os.release(),
+        versionName: os.platform()
+      },
+      platform: {
+        type: os.arch(),
+        vendor: os.cpus()[0].model
+      }
+    };
+  }
 
   get context(): SpawnPoint {
     return contextOf(this) as unknown as SpawnPoint;
@@ -32,22 +51,12 @@ class NodeDriver {
     let agent: Agent = yield Agent.start({
       createSocket: () => new WebSocket(connectTo) as Socket,
       agentId,
-      data: {
-        os: {
-          name: os.type(),
-          version: os.release(),
-          versionName: os.platform()
-        },
-        platform: {
-          type: os.arch(),
-          vendor: os.cpus()[0].model
-        }
-      }
+      data: this.data
     });
 
 
     this.context.spawn(function*() {
-      console.log('[node agent] waiting for commands');
+      // console.log('[node agent] waiting for commands');
       yield agent.commands.forEach(function*(command) {
         let { testRunId } = command;
         agent.send({ type: 'run:begin', testRunId });

@@ -22,7 +22,6 @@ function* leafPaths(tree: Test, prefix: string[] = []): Generator<string[]> {
 
 export function * run(agent: Agent, command: Run) {
   let { manifestUrl, testRunId, tree } = command;
-
   for (let path of leafPaths(tree)) {
 
     yield fork(function*() {
@@ -31,7 +30,7 @@ export function * run(agent: Agent, command: Run) {
         let runner: Subscribable<any, void> = yield createLaneRunner(manifestUrl, path, testRunId);
         yield forEach(runner, function*(event) {
           agent.send(event);
-        })
+        });
       } finally {
         agent.send({ type: 'lane:end', testRunId, path });
       }
@@ -39,16 +38,17 @@ export function * run(agent: Agent, command: Run) {
   }
 }
 
-
 function* createLaneRunner(manifestUrl: string, path: string[], testRunId: string): Operation<Subscribable<TestEvent,void>> {
   let subprocess: ChildProcess.ChildProcess = yield ChildProcess.fork(RunnerProcess, [], {
-    stdio: 'inherit'
+    stdio: 'inherit',
+    execPath: process.env.NODE_ENV === 'test' ? 'ts-node' : undefined
   });
 
   let messages = () => Subscribable.from<object[], void>(on(subprocess, 'message'))
     .map(([message]) => message)
 
   yield messages().match({ ready: true }).first();
+
 
   Object.defineProperty(subprocess, SymbolSubscribable, {
     value: () => createSubscription<TestEvent, void>(function*(publish) {

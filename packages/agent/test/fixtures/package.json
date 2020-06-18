@@ -1,0 +1,17 @@
+{
+  "name": "manifest",
+  "license": "MIT",
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env"
+      ]
+    ]
+  },
+  "browserslist": [
+    "since 2017-06"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.10.2"
+  }
+}

@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "lint": "eslint '{src,test}/**/*.ts'",
-    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "test": "NODE_ENV=test mocha -r ts-node/register test/**/*.test.ts",
     "prepack": "tsc --outdir dist"
   },
   "devDependencies": {
@@ -27,6 +27,7 @@
     "typescript": "^3.9.5"
   },
   "dependencies": {
+    "@bigtest/agent": "^0.5.1",
     "@effection/events": "^0.7.1",
     "@effection/fetch": "^0.1.1",
     "@effection/subscription": "^0.7.1",

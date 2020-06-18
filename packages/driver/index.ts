@@ -8,7 +8,7 @@ export interface DriverSpec<TOptions = unknown> {
 export interface Driver<TData = unknown> {
   description: string;
   data: TData;
-  connect(agentURL: string): Operation<void>;
+  connect(agentURL: string): Operation<unknown>;
 }
 
 export interface DriverFactory<TOptions, TData> {
