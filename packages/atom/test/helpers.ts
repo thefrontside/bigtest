@@ -21,7 +21,7 @@ async function wait(ms: number) {
   await new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function converge<T>(timeout: number, fn: () => T): Promise<T> {
+export async function when<T>(timeout: number, fn: () => T): Promise<T> {
   let startTime = performance.now();
 
   while (true) {

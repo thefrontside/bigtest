@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect';
 import { Atom } from '../src/atom';
-import { spawn, converge, never } from './helpers';
+import { spawn, when, never } from './helpers';
 import { Slice } from '../src/slice';
 
 describe('@bigtest/atom', () => {
@@ -44,7 +44,7 @@ describe('@bigtest/atom', () => {
       });
 
       it('performs given operation for each state change', async () => {
-        await converge(50, () => {
+        await when(50, () => {
           expect(result).toEqual(['bar', 'baz']);
         });
       });
@@ -116,7 +116,7 @@ describe('@bigtest/atom', () => {
         });
 
         it('emits state changes to listeners before reset', async () => {
-          await converge(50, () => {
+          await when(50, () => {
             expect(result).toEqual(['state before reset']);
           });
         });
