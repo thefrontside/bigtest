@@ -77,10 +77,6 @@ describe('@bigtest/atom', () => {
         it('resets to the initial value', async () => {
           expect(subject.get()).toEqual('foo');
         });
-
-        it('removes listeners', () => {
-          expect(subject['subscriptions'].listenerCount('state')).toEqual(0);
-        });
       });
 
       describe('with an initializer', () => {
