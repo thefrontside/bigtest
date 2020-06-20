@@ -1,7 +1,7 @@
 {
   "name": "@bigtest/cucumber",
   "version": "0.5.1",
-  "description": "p",
+  "description": "Use BigTest",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "main": "dist/src/index.js",
