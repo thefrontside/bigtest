@@ -24,7 +24,8 @@
       "packages/convergence",
       "packages/logging",
       "packages/server",
-      "packages/cli"
+      "packages/cli",
+      "packages/cucumber"
     ],
     "nohoist": [
       "@bigtest/server/@types/node"

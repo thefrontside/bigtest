@@ -1,0 +1,54 @@
+{
+  "name": "@bigtest/cucumber",
+  "version": "0.5.1",
+  "description": "Use BigTest",
+  "repository": "https://github.com/thefrontside/bigtest.git",
+  "author": "Frontside Engineering <engineering@frontside.com>",
+  "main": "dist/src/index.js",
+  "license": "MIT",
+  "files": [
+    "bin/*",
+    "dist/**/*",
+    "README.md"
+  ],
+  "scripts": {
+    "lint": "eslint '{src,test,bin}/**/*.ts'",
+    "test": "mocha -r ts-node/register 'test/{,!(fixtures)/**}/*.test.ts'",
+    "mocha": "mocha -r ts-node/register",
+    "bigtest": "ts-node src/index.ts",
+    "prepack": "tsc --outdir dist --module commonjs && chmod +x dist/bin/bigtest.js"
+  },
+  "devDependencies": {
+    "@effection/events": "^0.7.4",
+    "@frontside/tsconfig": "*",
+    "@types/json5": "^0.0.30",
+    "@types/mocha": "^7.0.1",
+    "@types/node": "^13.13.4",
+    "@types/yargs": "^15.0.3",
+    "@typescript-eslint/eslint-plugin": "^2.3.2",
+    "@typescript-eslint/parser": "^2.3.2",
+    "eslint": "^6.6.0",
+    "eslint-plugin-prefer-let": "^1.0.1",
+    "expect": "^24.9.0",
+    "mocha": "^6.2.2",
+    "ts-node": "*",
+    "typescript": "^3.7.0"
+  },
+  "dependencies": {
+    "@bigtest/suite": "^0.5.1",
+    "@bigtest/project": "^0.5.1",
+    "@bigtest/server": "^0.5.1",
+    "@effection/node": "^0.6.5",
+    "capture-console": "^1.0.1",
+    "cucumber": "^6.0.5",
+    "cucumber-tag-expressions": "^2.0.3",
+    "gherkin": "^9.0.0",
+    "deepmerge": "^4.2.2",
+    "effection": "^0.7.0",
+    "json5": "^2.1.3"
+  },
+  "volta": {
+    "node": "12.16.0",
+    "yarn": "1.19.1"
+  }
+}
