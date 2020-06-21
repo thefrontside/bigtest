@@ -1,7 +1,7 @@
 {
   "name": "@bigtest/cucumber",
   "version": "0.5.1",
-  "description": "Use BigTest",
+  "description": "p",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "main": "dist/src/index.js",
@@ -19,7 +19,11 @@
     "bigtest": "ts-node src/index.ts",
     "prepack": "tsc --outdir dist --module commonjs --noEmit"
   },
+  "bin": {
+    "bigtest": "dist/bin/bigtest.js"
+  },
   "devDependencies": {
+    "@bigtest/todomvc": "^0.5.1",
     "@effection/events": "^0.7.4",
     "@frontside/tsconfig": "*",
     "@types/capture-console": "1.0.0",
@@ -43,7 +47,6 @@
   },
   "dependencies": {
     "@bigtest/effection": "^0.5.1",
-    "@bigtest/interactor": "^0.13.0",
     "@bigtest/project": "^0.5.1",
     "@bigtest/suite": "^0.5.1",
     "@effection/node": "^0.6.5",

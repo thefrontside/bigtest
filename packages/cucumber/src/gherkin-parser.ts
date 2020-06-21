@@ -9,8 +9,6 @@ import { stepRegistry } from './steps/step-registry';
 import { IdGenerator } from 'cucumber-messages';
 import { StepDefinitionType } from './types/steps';
 
-const { uuid } = IdGenerator;
-
 export class GherkinParser {
   featureFiles: string[] = [];
   stepFiles: string[] = [];
