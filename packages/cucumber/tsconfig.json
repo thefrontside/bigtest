@@ -1,7 +1,14 @@
 {
   "extends": "@frontside/tsconfig",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "sourceMap": true
+  },
   "include": [
     "bin/**/*.ts",
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "test/**/*.ts"
   ]
 }
