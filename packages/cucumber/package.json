@@ -13,8 +13,8 @@
   ],
   "scripts": {
     "lint": "eslint '{src,test,bin}/**/*.ts'",
-    "test": "mocha -r ts-node/register 'test/{,!(fixtures)/**}/*.test.ts'",
-    "test:watch": "mocha --watch  --watch-extensions ts -r ts-node/register 'test/{,!(fixtures)/**}/*.test.ts'",
+    "test": "mocha --timeout 10000   -r ts-node/register 'test/{,!(fixtures)/**}/*.test.ts'",
+    "test:watch": "mocha --timeout 10000 --watch  --watch-extensions ts -r ts-node/register 'test/{,!(fixtures)/**}/*.test.ts'",
     "mocha": "mocha -r ts-node/register",
     "bigtest": "ts-node src/index.ts",
     "prepack": "tsc --outdir dist --module commonjs && chmod +x dist/bin/bigtest.js"
