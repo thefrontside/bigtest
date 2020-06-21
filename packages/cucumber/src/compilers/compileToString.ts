@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { exec } from 'child_process';
 import fs from 'fs';
 import path from 'path';
@@ -5,12 +6,10 @@ import { Module } from 'module';
 
 export const compileFile = async (file: string) => {
   return new Promise<void>((resolve, reject) => {
-    // TODO: very lazy should use import tsc from 'typescript';
+    // TODO: very lazy should use
+    // import tsc from 'typescript';
     // set compilerOptions etc. but this is a spike
     let tscCommand = `yarn run tsc ${file}`;
-    console.log(tscCommand);
-
-    console.log(`running tsc`);
 
     let tsc = exec(tscCommand);
 
@@ -35,7 +34,6 @@ const getNodeModulesLookupPath = (filename: string) => {
 };
 
 export const runCode = (code: string, fileName: string) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mod = new Module(fileName, module.parent as any);
   mod.filename = fileName;
   mod.paths = getNodeModulesLookupPath(fileName);
@@ -54,6 +52,7 @@ export const executeSteps = async (filePaths: string[]) => {
     let code = fs.readFileSync(fileName, 'utf-8');
 
     runCode(code, fileName);
+
     return { code, fileName };
   }
 

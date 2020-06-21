@@ -12,11 +12,14 @@ import { StepDefinitionType } from './types/steps';
 export class GherkinParser {
   featureFiles: string[] = [];
   stepFiles: string[] = [];
+  stepDefinitions: StepDefinition[] = [];
+  cucumberExpressionParamRegistry: ParameterTypeRegistry;
 
   constructor(sources: string[]) {
     this.featureFiles = sources.filter(source => source.endsWith('.feature'));
     // TODO: add support for js files
     this.stepFiles = sources.filter(source => source.endsWith('.ts'));
+    this.cucumberExpressionParamRegistry = new ParameterTypeRegistry();
   }
 
   createTestImplementationFromFeature(gherkinDocument: messages.IGherkinDocument): TestImplementation {

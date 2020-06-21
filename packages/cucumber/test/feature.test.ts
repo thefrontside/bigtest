@@ -9,7 +9,7 @@ const sourcesPath = path.join(process.cwd(), 'features');
 let sources = glob.sync(`${sourcesPath}/**/*.{ts,js,feature}`);
 
 describe('feature parser', () => {
-  it('should find features and steps', () => {
+  it('should find feature files and step definitions', () => {
     let cucumber = new GherkinParser(sources);
 
     expect(cucumber.featureFiles).toHaveLength(1);
