@@ -52,6 +52,10 @@ export class Atom<S> implements Subscribable<S,void> {
     }
   }
 
+  setMaxListeners(value: number) {
+    this.subscriptions.setMaxListeners(value);
+  }
+
   [SymbolSubscribable]() {
     return this.states[SymbolSubscribable]();
   }

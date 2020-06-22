@@ -27,7 +27,7 @@ export class StepAggregator extends Aggregator<StepResult, AggregatorTestOptions
   *perform(): Operation<ResultStatus> {
     let result: StepResultEvent = yield this.receiveResult();
 
-    this.statusSlice.set(result.status);
+    this.slice.update((s) => ({ ...s, status: result.status, error: result.error, timeout: result.timeout }));
 
     if (result.status === 'failed') {
       throw new Error('Step Failed');

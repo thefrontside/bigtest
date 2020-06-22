@@ -173,10 +173,6 @@ describe('running tests on an agent', () => {
           path: ['All tests', "Signing In", "when I fill in the login form"],
           error: {
             message: "this step failed",
-            fileName: 'here.js',
-            lineNumber: 5,
-            columnNumber: 10,
-            stack: ['here.js', 'there.js']
           }
         })
       });
@@ -243,10 +239,6 @@ describe('running tests on an agent', () => {
           path: ['All tests', 'Signing In', 'then I am logged in'],
           error: {
             message: 'this assertion failed',
-            fileName: 'here.js',
-            lineNumber: 5,
-            columnNumber: 10,
-            stack: ['here.js', 'there.js']
           }
         })
       });
@@ -422,7 +414,7 @@ describe('running tests on an agent', () => {
         status: 'failed',
         testRunId: runCommand.testRunId,
         path: ['All tests', "Signing In", "when I fill in the login form"],
-        error: { message: "this step failed", fileName: 'here.js', lineNumber: 5, columnNumber: 10, stack: ['here.js', 'there.js'] }
+        error: { message: "this step failed" }
       });
     });
 

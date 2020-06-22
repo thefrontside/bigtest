@@ -95,6 +95,7 @@ export interface TestResult extends Test {
 export interface StepResult extends Node {
   description: string;
   status: ResultStatus;
+  error?: ErrorDetails;
   timeout?: boolean;
 }
 
@@ -104,12 +105,14 @@ export interface StepResult extends Node {
 export interface AssertionResult extends Node {
   description: string;
   status: ResultStatus;
+  error?: ErrorDetails;
+  timeout?: boolean;
 }
 
 export interface ErrorDetails {
   message: string;
-  fileName: string;
-  lineNumber: number;
-  columnNumber: number;
-  stack: string[];
+  fileName?: string;
+  lineNumber?: number;
+  columnNumber?: number;
+  stack?: string;
 }

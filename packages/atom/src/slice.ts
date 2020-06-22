@@ -1,7 +1,9 @@
+import { Operation } from "effection";
 import { lensPath, view, set, dissoc, over } from "ramda";
 import { Atom } from "./atom";
+import { Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
 
-export class Slice<T, S> {
+export class Slice<T, S> implements Subscribable<T, void> {
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
   lens: any;
 
@@ -21,6 +23,10 @@ export class Slice<T, S> {
     this.atom.update((state) => {
       return (set(this.lens, value, state) as unknown) as S;
     });
+  }
+
+  update(fn: (value: T) => T): void {
+    this.set(fn(this.get()));
   }
 
   over(fn: (value: T) => T): void {
@@ -53,11 +59,15 @@ export class Slice<T, S> {
       let [property] = this.path.slice(-1);
       this.atom.update((state) => {
         return (set(
-          parentLens, 
+          parentLens,
           dissoc(property, parent as object),
           state
         ) as unknown) as S;
-      }); 
+      });
     }
+  }
+
+  [SymbolSubscribable](): Operation<Subscription<T, void>> {
+    return Subscribable.from(this.atom).map((state) => view(this.lens)(state) as unknown as T)[SymbolSubscribable]()
   }
 }

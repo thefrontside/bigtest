@@ -2,20 +2,20 @@ import { Test, TestResult, ResultStatus } from '@bigtest/suite';
 
 export type AgentState = {
   agentId: string;
-  browser: {
+  browser?: {
     name: string;
     version: string;
   };
-  os: {
+  os?: {
     name: string;
     version: string;
     versionName: string;
   };
-  platform: {
+  platform?: {
     type: string;
     vendor: string;
   };
-  engine: {
+  engine?: {
     name: string;
     version: string;
   };
