@@ -5,12 +5,12 @@ import { Subscribable, SymbolSubscribable } from '@effection/subscription';
 import { Slice } from "./slice";
 
 export class Atom<S> implements Subscribable<S,void> {
-  initial: S;
-  state: S;
+  private readonly initial: S;
+  private state: S;
 
-  subscriptions = new EventEmitter();
+  private subscriptions = new EventEmitter();
 
-  get states() {
+  private get states() {
     return Subscribable.from(on(this.subscriptions, 'state'))
       .map(([state]) => state as S);
   }
