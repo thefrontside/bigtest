@@ -44,8 +44,12 @@ export class Atom<S> implements Subscribable<S,void> {
     return this.states.forEach(fn);
   }
 
-  once(predicate: (state: S) => boolean): Operation<S | undefined> {
-    return this.states.filter(predicate).first();
+  *once(predicate: (state: S) => boolean): Operation<S | undefined> {
+    if(predicate(this.state)) {
+      return this.state;
+    } else {
+      return yield this.states.filter(predicate).first();
+    }
   }
 
   [SymbolSubscribable]() {
