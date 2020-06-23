@@ -1,3 +1,5 @@
+import { ResultStatus } from '@bigtest/suite';
+
 export function run() {
   return `
     subscription {
@@ -23,7 +25,7 @@ export type RunResultEvent = {
   type: string;
   agentId: string;
   testRunId: string;
-  status?: string;
+  status?: ResultStatus;
   path?: string[];
   error?: {
     message: string;

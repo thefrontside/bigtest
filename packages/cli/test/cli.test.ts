@@ -62,7 +62,9 @@ describe('@bigtest/cli', function() {
 
     it('exits successfully', async () => {
       expect(child.code).toEqual(0);
-      expect(child.stdout?.output).toContain("SUCCESS")
+      expect(child.stdout?.output).toContain("✓ [step]       Passing Test -> first step")
+      expect(child.stdout?.output).toContain("✓ [assertion]  Passing Test -> check the thing")
+      expect(child.stdout?.output).toContain("✓ SUCCESS")
     });
   });
 });
