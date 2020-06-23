@@ -5,6 +5,7 @@ import { setLogLevel, Levels } from '@bigtest/logging';
 
 import { startServer } from './start-server';
 import { runTest } from './run-test';
+import lines from './formatters/lines';
 
 import { loadConfig } from './config';
 
@@ -18,10 +19,10 @@ export function * CLI(argv: string[]): Operation {
     yield startServer(config);
     yield;
   } else if (command === 'test') {
-    yield runTest(config);
+    yield runTest(config, lines);
   } else {
     yield startServer(config);
-    yield runTest(config);
+    yield runTest(config, lines);
   }
 }
 
