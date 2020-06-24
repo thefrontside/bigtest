@@ -1,53 +1,43 @@
-import { Operation } from 'effection';
+import { Operation, spawn } from 'effection';
 import { Mailbox } from '@bigtest/effection';
-import { once, throwOnErrorEvent } from '@effection/events';
 
-import * as Bundler from 'parcel-bundler';
-import { ParcelOptions } from  'parcel-bundler';
-import { createServer, RequestListener } from 'http';
-import { EventEmitter } from 'events';
+import Parcel, { createWorkerFarm } from '@parcel/core';
+
+type ParcelOptions = { [key: string]: unknown };
+type ParcelAsyncSubscription = { unsubscribe(): Promise<void> };
 
 interface ParcelServerOptions {
   port?: number;
 };
 
 export function* createParcelServer(entryPoints: string[], options: ParcelServerOptions & ParcelOptions): Operation {
-  let bundler = new Bundler(entryPoints, options) as unknown as ParcelBundler;
+  let workerFarm = createWorkerFarm();
+  let parcel = new Parcel({ entries: entryPoints, workerFarm, ...options });
 
-  let events = yield Mailbox.subscribe(bundler, "buildEnd");
+  let events = new Mailbox();
 
-  let middleware = bundler.middleware();
-  let server = createServer(middleware)
+  yield spawn(function*() {
+    let subscription: ParcelAsyncSubscription = yield parcel.watch(() => events.send({ type: 'update' }));
 
-  try {
-    yield throwOnErrorEvent(server);
-
-    if(options.port) {
-      server.listen(options.port);
-      yield once(server, "listening");
+    try {
+      yield;
+    } finally {
+      subscription.unsubscribe().finally(() => {
+        workerFarm.end();
+      });
     }
+  });
 
-    yield events.receive({ event: "buildEnd" });
+  yield events.receive();
 
-    if (process.send) {
-      process.send({ type: "ready", options: bundler.options });
-    }
-
-    while(true) {
-      yield events.receive({ event: "buildEnd" });
-
-      if (process.send) {
-        process.send({ type: "update" });
-      }
-    }
-  } finally {
-    bundler.stop();
-    server.close();
+  if (process.send) {
+    process.send({ type: 'ready', options: parcel.options });
   }
-}
 
-interface ParcelBundler extends EventEmitter {
-  middleware(): RequestListener;
-  stop(): void;
-  options: ParcelOptions;
+  while (true) {
+    yield events.receive();
+    if (process.send) {
+      process.send({ type: 'update'});
+    }
+  };
 }

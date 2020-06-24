@@ -46,7 +46,12 @@ describe("@bigtest/agent", function() {
     let inbox: Mailbox;
 
     beforeEach(async () => {
-      await main(ParcelProcess.create(['./app/index.html', './app/harness.ts'], { port: 8000 }))
+      await main(ParcelProcess.create(
+        ['./app/index.html', './app/harness.ts'],
+        {
+          serve: { port: 8000 }
+        }
+      ));
 
       client = new AgentConnectionServer({
         port: 8001,
@@ -106,14 +111,12 @@ describe("@bigtest/agent", function() {
             type: 'assertion:result',
             path: ['tests', 'test with failing assertion', 'successful assertion'],
           }));
-
           failure = await main(delegate.receive({
             agentId,
             testRunId,
             type: 'assertion:result',
             path: ['tests', 'test with failing assertion', 'failing assertion'],
           }));
-
           checkContext = await main(delegate.receive({
             agentId,
             testRunId,

@@ -1,13 +1,12 @@
 import * as Path from 'path';
-import { ParcelOptions } from  'parcel-bundler';
 
 import { Operation } from 'effection'
 import { Mailbox, SubscriptionMessage, readyResource } from '@bigtest/effection';
 import { ChildProcess } from '@effection/node';
 
 type ParcelMessage = { type: "ready" } | { type: "update" };
-
-type ProcessOptions = { port?: number; stdioMode?: 'pipe' | 'inherit'; execPath?: string }
+type ParcelOptions = { [key: string]: unknown };
+type ProcessOptions = { port?: number; stdioMode?: 'pipe' | 'inherit'; execPath?: string; execArgv?: string[] };
 
 export class ParcelProcess {
   mailbox: Mailbox = new Mailbox();
@@ -24,9 +23,9 @@ export class ParcelProcess {
         [...entries, '--options', JSON.stringify(options)],
         {
           stdio: [mode, mode, mode, 'ipc'],
-          detached: true,
           env: { NODE_ENV: 'test', ...process.env },
           execPath: options.execPath,
+          execArgv: options.execArgv
         }
       );
 

@@ -17,16 +17,17 @@ describe("Parcel Process", function() {
     parcel = await spawn(ParcelProcess.create(
       ["./build/test/sources/*.ts"],
       {
-        outDir: "./build/test/output",
-        outFile: "manifest.js",
-        global: "__bigtestManifest",
-        execPath: 'ts-node'
+        distDir: './build/test/output',
+        outFile: 'manifest.js',
+        scopeHoist: true,
+        execPath: 'ts-node',
+        execArgv: ['-T']
       }
     ))
   });
 
   it('builds the sources into the output directory', () => {
-    expect(existsSync("./build/test/output/manifest.js")).toEqual(true);
+    expect(existsSync("./build/test/output/input.js")).toEqual(true);
   });
 
   describe('editing the sources', () => {
