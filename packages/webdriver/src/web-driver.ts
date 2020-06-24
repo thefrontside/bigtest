@@ -1,11 +1,7 @@
 import { Operation } from 'effection';
 import { Atom } from '@bigtest/atom';
-<<<<<<< HEAD
-import { fetch, RequestInit } from '@effection/fetch';
-=======
+import { fetch } from '@effection/fetch';
 import { Driver } from '@bigtest/driver';
-import { fetch, RequestInit } from './fetch';
->>>>>>> origin
 
 export class WebDriver implements Driver<WDSession> {
   session: WDSession = { sessionId: '' };

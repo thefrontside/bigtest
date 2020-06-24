@@ -28,7 +28,7 @@
   "dependencies": {
     "@bigtest/atom": "^0.6.0",
     "@bigtest/driver": "^0.5.1",
-    "@effection/fetch": "^0.1.1",
+    "@effection/fetch": "^0.1.2",
     "@effection/node": "^0.6.5",
     "abort-controller": "^3.0.0",
     "chromedriver": "~83.0.0",

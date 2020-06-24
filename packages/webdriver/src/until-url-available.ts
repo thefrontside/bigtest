@@ -1,5 +1,5 @@
 import { Operation, spawn, timeout } from 'effection';
-import { fetch, Response } from '@effection/fetch';
+import { fetch } from '@effection/fetch';
 
 /**
  * An operation that completes when the server at `url` begins
@@ -12,7 +12,7 @@ export function* untilURLAvailable(url: string, maxWait: number): Operation<void
   });
   while (true) {
     try {
-      let response: Response = yield fetch(url);
+      let response = yield fetch(url);
       if (response.ok) {
         return;
       }
