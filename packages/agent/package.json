@@ -3,6 +3,8 @@
   "version": "0.5.2",
   "description": "Agent for connecting test environments (browsers) to BigTest",
   "main": "dist/src/index.js",
+  "app": "dist/app/index.html",
+  "harness": "dist/app/harness.js",
   "typings": "dist/src/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
@@ -15,9 +17,9 @@
     "lint": "eslint '{app,bin,src,test}/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "mocha": "mocha -r ts-node/register",
-    "start": "parcel serve --out-dir dist/app app/index.html app/harness.ts",
-    "prepack": "tsc --outdir dist --declaration --sourcemap && parcel build --public-url ./ --no-minify --out-dir dist/app app/index.html app/harness.ts",
-    "manifest:build": "parcel build test/fixtures/manifest.src.js --out-dir test/fixtures --out-file manifest.js --global __bigtestManifest"
+    "start": "parcel serve --dist-dir dist/app app/index.html app/harness.ts",
+    "prepack": "tsc --outdir dist --declaration --sourcemap && parcel build --public-url ./ --no-minify --dist-dir dist/app --target app app/index.html && parcel build --public-url ./ --no-minify --dist-dir dist/app --target harness app/harness.ts",
+    "manifest:build": "parcel build test/fixtures/manifest.src.js --dist-dir test/fixtures --out-file manifest.js --global __bigtestManifest"
   },
   "devDependencies": {
     "@bigtest/suite": "^0.5.1",
@@ -49,5 +51,14 @@
   "volta": {
     "node": "12.16.0",
     "yarn": "1.19.1"
+  },
+  "targets": {
+    "app": {
+      "context": "browser"
+    },
+    "harness": {
+      "context": "node",
+      "isLibrary": true
+    }
   }
 }
