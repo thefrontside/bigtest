@@ -1,8 +1,10 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect'
+
+import { bigtestGlobals } from '@bigtest/globals';
 import { JSDOM } from 'jsdom';
 
-import { createInteractor, setDefaultOptions } from '../src/index';
+import { createInteractor } from '../src/index';
 
 const Link = createInteractor<HTMLLinkElement>('link')({
   selector: 'a',
@@ -28,12 +30,11 @@ const Details = createInteractor<HTMLDetailsElement>('details')({
   defaultLocator: (element) => element.querySelector('summary')?.textContent || ''
 });
 
+bigtestGlobals.defaultInteractorTimeout = 20;
+
 function dom(html: string) {
   let jsdom = new JSDOM(`<!doctype html><html><body>${html}</body></html>`, { runScripts: "dangerously" });
-  setDefaultOptions({
-    document: jsdom.window.document,
-    timeout: 20,
-  });
+  bigtestGlobals.document = jsdom.window.document;
 }
 
 describe('@bigtest/interactor', () => {

@@ -1,11 +1,10 @@
-import { ParentFrame } from './parent-frame';
-import { TestImplementation, ErrorDetails, Context as TestContext } from '@bigtest/suite';
 import { Operation, fork } from 'effection';
-import { Deferred } from '@bigtest/effection';
+import { once } from '@effection/events';
+import { bigtestGlobals } from '@bigtest/globals';
+import { TestImplementation, ErrorDetails, Context as TestContext } from '@bigtest/suite';
 
+import { ParentFrame } from './parent-frame';
 import { timebox } from './timebox';
-
-declare const __bigtestManifest: TestImplementation;
 
 export function* createHarness() {
   console.log('[harness] starting');
@@ -107,18 +106,11 @@ function *runTest(parentFrame: ParentFrame, test: TestImplementation, context: T
 }
 
 function* loadManifest(manifestUrl: string): Operation<TestImplementation> {
-  let { resolve, promise } = Deferred<TestImplementation>();
-
   let scriptElement = document.createElement('script') as HTMLScriptElement;
+  scriptElement.src = manifestUrl;
+  document.head.appendChild(scriptElement);
 
-  let listener = () => resolve(__bigtestManifest)
+  yield once(scriptElement, 'load');
 
-  try {
-    scriptElement.addEventListener('load', listener);
-    scriptElement.src = manifestUrl;
-    document.head.appendChild(scriptElement);
-    return yield promise;
-  } finally {
-    scriptElement.removeEventListener('load', listener);
-  }
+  return bigtestGlobals.manifest;
 }

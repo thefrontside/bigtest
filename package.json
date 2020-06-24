@@ -13,6 +13,7 @@
       "packages/performance",
       "packages/atom",
       "packages/suite",
+      "packages/globals",
       "packages/agent",
       "packages/driver",
       "packages/webdriver",

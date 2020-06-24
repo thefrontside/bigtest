@@ -3,7 +3,6 @@ import { Locator } from './locator';
 import { Interactor } from './interactor';
 import { interaction } from './interaction';
 import { converge } from './converge';
-import { defaultOptions } from './options';
 
 export function createInteractor<E extends Element>(interactorName: string) {
   return function<S extends InteractorSpecification<E>>(specification: Partial<S>): InteractorType<E, S> {
@@ -15,7 +14,7 @@ export function createInteractor<E extends Element>(interactorName: string) {
       Object.defineProperty(InteractorClass.prototype, actionName, {
         value: function() {
           return interaction(`performing ${actionName} on ${this.description}`, () => {
-            return converge(defaultOptions.timeout, () => {
+            return converge(() => {
               let element = this.unsafeSyncResolve();
               return action(element);
             });

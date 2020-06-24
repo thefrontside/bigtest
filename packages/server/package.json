@@ -49,6 +49,7 @@
     "@bigtest/driver": "^0.5.1",
     "@bigtest/effection": "^0.5.1",
     "@bigtest/effection-express": "^0.6.0",
+    "@bigtest/globals": "^0.5.1",
     "@bigtest/logging": "^0.5.1",
     "@bigtest/parcel": "^0.5.1",
     "@bigtest/project": "^0.5.1",
