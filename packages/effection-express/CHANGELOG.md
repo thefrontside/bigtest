@@ -1,5 +1,12 @@
 # @bigtest/effection-express
 
+## 0.6.0
+
+### Minor Changes
+
+- d671a894: Better wrapping of middleware as effection context, and exposing underlying raw
+  express application.
+
 ## 0.5.1
 
 ### Patch Changes

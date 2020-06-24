@@ -1,5 +1,22 @@
 # @bigtest/atom
 
+## 0.6.0
+
+### Minor Changes
+
+- e0822c30: Some properties on `Atom` are now private which shouldn't have been public:
+
+  - `initial`
+  - `state`
+  - `subscriptions`
+  - `states`
+
+### Patch Changes
+
+- c3633b37: `once` should check the current state and return immediately if it matches
+- dbc25fa3: Can set max listeners on atom
+- 6df5d976: Make slice subscribable
+
 ## 0.5.1
 
 ### Patch Changes
