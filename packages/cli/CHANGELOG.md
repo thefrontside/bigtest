@@ -1,5 +1,18 @@
 # @bigtest/cli
 
+## 0.6.0
+
+### Minor Changes
+
+- 6cd196e5: Add streaming output to CLI package, and start on abstract formatter interface.
+
+### Patch Changes
+
+- 9f9bd795: better code re-use within the CLI
+- Updated dependencies [981dc561]
+- Updated dependencies [d671a894]
+  - @bigtest/server@0.6.0
+
 ## 0.5.1
 
 ### Patch Changes

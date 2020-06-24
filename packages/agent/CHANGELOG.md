@@ -1,5 +1,13 @@
 # @bigtest/agent
 
+## 0.5.2
+
+### Patch Changes
+
+- e7855d80: Split `AgentEvent` type into a union of two types
+- Updated dependencies [d671a894]
+  - @bigtest/effection-express@0.6.0
+
 ## 0.5.1
 
 ### Patch Changes
