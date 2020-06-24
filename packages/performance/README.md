@@ -3,7 +3,7 @@
 Cross platform access to the browser [performance API][1] which is
 needed for implementing accurate convergences and deadlines.
 
-``` java-server-pages
+``` js
 import { performance, PerformanceObserver } from '@bigtest/performance';
 ```
 
