@@ -12,7 +12,7 @@ export function* untilURLAvailable(url: string, maxWait: number): Operation<void
   });
   while (true) {
     try {
-      let response = yield fetch(url);
+      let response: Response = yield fetch(url);
       if (response.ok) {
         return;
       }
