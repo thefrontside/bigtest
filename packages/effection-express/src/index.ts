@@ -1,6 +1,5 @@
 import { Operation, resource, spawn } from 'effection';
 import * as actualExpress from 'express';
-import { RequestHandler } from 'express';
 import * as WebSocket from 'ws';
 import * as ews from 'express-ws';
 import * as util from 'util';
@@ -36,28 +35,23 @@ export class Socket {
 }
 
 export class Express {
-  private inner: ews.Application;
   private server?: Server;
 
-  constructor(inner: ews.Application) {
-    this.inner = inner;
-  }
+  constructor(public raw: ews.Application) {}
 
-  use(...handlers: RequestHandler[]) {
-    this.inner.use(...handlers);
-  }
-
-  *useOperation(handler: OperationRequestHandler): Operation<void> {
-    yield (controls) => {
-      this.inner.use((req, res) => {
-        controls.spawn(handler(req, res));
+  *use(handler: OperationRequestHandler): Operation<{}> {
+    return yield resource({}, (controls) => {
+      this.raw.use((req, res) => {
+        controls.spawn(function*() {
+          yield handler(req, res);
+        });
       });
-    };
+    });
   }
 
-  *ws(path: string, handler: WsOperationRequestHandler): Operation<void> {
-    yield (controls) => {
-      this.inner.ws(path, (socket, req) => {
+  *ws(path: string, handler: WsOperationRequestHandler): Operation<{}> {
+    return yield resource({}, (controls) => {
+      this.raw.ws(path, (socket, req) => {
         controls.spawn(function*(): Operation<void> {
           yield ensure(() => socket.close());
           yield ensure(() => req.destroy());
@@ -69,11 +63,11 @@ export class Express {
           }
         });
       })
-    }
+    })
   }
 
   *listen(port: number): Operation<Server> {
-    let server = this.server = this.inner.listen(port);
+    let server = this.server = this.raw.listen(port);
 
     let res = yield resource(server, function*() {
       yield throwOnErrorEvent(server);

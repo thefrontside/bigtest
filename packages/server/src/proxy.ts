@@ -1,7 +1,9 @@
-import { fork, spawn, Operation } from 'effection';
+import { fork, Operation } from 'effection';
 import { Mailbox, any } from '@bigtest/effection';
+import { AgentServerConfig } from '@bigtest/agent';
 import { throwOnErrorEvent, once } from '@effection/events';
 import { express } from "@bigtest/effection-express";
+import { static as staticMiddleware } from 'express';
 
 import * as proxy from 'http-proxy';
 import * as http from 'http';
@@ -9,10 +11,10 @@ import * as Trumpet from 'trumpet';
 import * as zlib from 'zlib';
 
 interface ProxyOptions {
+  agentServerConfig: AgentServerConfig;
   delegate: Mailbox;
   port: number;
   targetPort: number;
-  inject?: string;
 };
 
 export function* createProxyServer(options: ProxyOptions): Operation {
@@ -46,7 +48,7 @@ export function* createProxyServer(options: ProxyOptions): Operation {
       tr.select('head', (node) => {
         let rs = node.createReadStream();
         let ws = node.createWriteStream();
-        ws.write(options.inject || '');
+        ws.write(`<script src="${options.agentServerConfig.harnessUrl()}"></script>`);
         rs.pipe(ws);
       });
 
@@ -86,20 +88,26 @@ export function* createProxyServer(options: ProxyOptions): Operation {
 
   let server = express();
 
+  if(options.agentServerConfig.options.prefix) {
+    server.raw.use(options.agentServerConfig.options.prefix, staticMiddleware(options.agentServerConfig.appDir()));
+  } else {
+    throw new Error('must set prefix');
+  }
+
   // proxy http requests
-  yield spawn(server.useOperation(function*(req, res) {
+  yield server.use(function*(req, res) {
     try {
       proxyServer.web(req, res)
       yield once(res, 'close');
     } finally {
       req.destroy();
     }
-  }));
+  });
 
   // proxy ws requests
-  yield spawn(server.ws('*', function*(socket, req) {
+  yield server.ws('*', function*(socket, req) {
     proxyServer.ws(req, socket.raw, null);
-  }));
+  });
 
   try {
     yield server.listen(options.port);

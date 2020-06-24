@@ -67,6 +67,7 @@ export interface AssertionResult {
   testRunId: string;
   path: string[];
   error?: ErrorDetails;
+  timeout?: boolean;
 }
 
 export type TestEvent = RunBegin | RunEnd | LaneBegin | LaneEnd | TestRunning | StepRunning | StepResult | AssertionRunning | AssertionResult;

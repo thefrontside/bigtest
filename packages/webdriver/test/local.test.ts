@@ -12,7 +12,7 @@ describe("Running a local wedriver", () => {
   let driver: WebDriver;
   let server = express();
   let latestRequest: Request;
-  server.use(function(request: Request, response: Response) {
+  server.raw.use(function(request: Request, response: Response) {
     latestRequest = request;
     response.write("thank you");
     response.end();

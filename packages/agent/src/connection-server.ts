@@ -1,4 +1,4 @@
-import { spawn, fork, Operation } from 'effection';
+import { fork, Operation } from 'effection';
 import { Mailbox, readyResource } from '@bigtest/effection';
 import { express, Express, Socket } from '@bigtest/effection-express';
 
@@ -17,7 +17,7 @@ export class AgentConnectionServer {
     let app = express();
 
     return yield readyResource(app, function*(ready) {
-      yield spawn(app.ws('*', handleSocket(inbox, delegate)));
+      yield app.ws('*', handleSocket(inbox, delegate));
       yield app.listen(port);
       ready();
       yield;

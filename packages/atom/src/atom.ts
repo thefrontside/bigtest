@@ -5,12 +5,12 @@ import { Subscribable, SymbolSubscribable } from '@effection/subscription';
 import { Slice } from "./slice";
 
 export class Atom<S> implements Subscribable<S,void> {
-  initial: S;
-  state: S;
+  private readonly initial: S;
+  private state: S;
 
-  subscriptions = new EventEmitter();
+  private subscriptions = new EventEmitter();
 
-  get states() {
+  private get states() {
     return Subscribable.from(on(this.subscriptions, 'state'))
       .map(([state]) => state as S);
   }
@@ -44,8 +44,16 @@ export class Atom<S> implements Subscribable<S,void> {
     return this.states.forEach(fn);
   }
 
-  once(predicate: (state: S) => boolean): Operation<S | undefined> {
-    return this.states.filter(predicate).first();
+  *once(predicate: (state: S) => boolean): Operation<S | undefined> {
+    if(predicate(this.state)) {
+      return this.state;
+    } else {
+      return yield this.states.filter(predicate).first();
+    }
+  }
+
+  setMaxListeners(value: number) {
+    this.subscriptions.setMaxListeners(value);
   }
 
   [SymbolSubscribable]() {

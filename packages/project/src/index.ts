@@ -38,9 +38,6 @@ export type ProjectOptions = {
   proxy: {
     port: number;
   };
-  agent: {
-    port: number;
-  };
   connection: {
     port: number;
   };
@@ -65,9 +62,6 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
     },
     connection: {
       port: 24003,
-    },
-    agent: {
-      port: 24004,
     },
     manifest: {
       port: 24005,

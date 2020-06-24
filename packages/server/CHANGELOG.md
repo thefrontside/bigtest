@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.6.0
+
+### Minor Changes
+
+- 981dc561: Add GraphQL subscriptions for streaming results of a test run
+- d671a894: The agent and proxy servers are merged into one, so that they can run on the same port.
+
+### Patch Changes
+
+- Updated dependencies [e7855d80]
+- Updated dependencies [c3633b37]
+- Updated dependencies [dbc25fa3]
+- Updated dependencies [6df5d976]
+- Updated dependencies [d671a894]
+- Updated dependencies [e0822c30]
+  - @bigtest/agent@0.5.2
+  - @bigtest/atom@0.6.0
+  - @bigtest/effection-express@0.6.0
+  - @bigtest/webdriver@0.5.2
+
 ## 0.5.1
 
 ### Patch Changes

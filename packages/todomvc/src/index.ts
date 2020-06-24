@@ -6,7 +6,7 @@ export function todomvc(): Express {
   let appDir = Path.join(__dirname, 'app');
   let app = express();
 
-  app.use(xp.static(appDir));
+  app.raw.use(xp.static(appDir));
 
   return app;
 }

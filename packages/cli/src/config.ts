@@ -8,7 +8,19 @@ export function *loadConfig(): Operation<ProjectOptions> {
 
   let projectConfig: ProjectOptions = yield loadConfigFile(configFilePath);
 
-  return merge(defaultConfig(configFilePath), projectConfig, {
+  let config = merge(defaultConfig(configFilePath), projectConfig, {
     arrayMerge: (_a, b) => b
   });
+
+  yield validateConfig(config);
+
+  return config;
+}
+
+export function *validateConfig(config: ProjectOptions) {
+  for (let key of config.launch) {
+    if (!config.drivers[key]) {
+      throw new Error(`Could not find launch key ${key} in the set of drivers: ${JSON.stringify(Object.keys(config.drivers))}`);
+    }
+  }
 }

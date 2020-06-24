@@ -3,6 +3,7 @@ import {
   objectType,
   queryType,
   mutationType,
+  subscriptionField,
   stringArg,
   makeSchema,
 } from "@nexus/schema";
@@ -72,31 +73,51 @@ export const schema = makeSchema({
       definition(t) {
         t.string("run", {
           resolve(_source, _args, cxt) {
-            let { delegate, testRunIds } = cxt;
-            let { value: id } = testRunIds.next();
-            delegate.send({ type: "run", id });
-            return id;
+            return cxt.runTest();
           }
         })
       }
+    }),
+    objectType({
+      name: "TestEvent",
+      rootTyping: {
+        name: "TestEvent",
+        path: path.join(__dirname, 'schema', 'test-event.ts')
+      },
+      definition(t) {
+        t.string('type');
+        t.string('status', { nullable: true });
+        t.id('testRunId');
+        t.id('agentId', { nullable: true });
+        t.list.string("path", { nullable: true });
+        t.field("error", { type: "Error", nullable: true });
+        t.boolean("timeout", { nullable: true });
+      }
+    }),
+    subscriptionField('run', {
+      type: 'TestEvent',
+      subscribe: (_root, _args, cxt) => cxt.runTestSubscribe(),
+      resolve: payload => payload
     }),
     objectType({
       name: "Agent",
       definition(t) {
         t.id("agentId");
         t.field("os", {
+          nullable: true,
           type: "OS"
         });
         t.field("platform", {
+          nullable: true,
           type: "Platform"
         })
         t.field("browser", {
-          type: "Browser",
           nullable: true,
+          type: "Browser",
         });
         t.field("engine", {
-          type: "Engine",
-          nullable: true
+          nullable: true,
+          type: "Engine"
         })
       }
     }),
@@ -236,10 +257,10 @@ export const schema = makeSchema({
       name: "Error",
       definition(t) {
         t.string("message");
-        t.string("fileName");
-        t.int("lineNumber");
-        t.int("columnNumber");
-        t.string("stack");
+        t.string("fileName", { nullable: true });
+        t.int("lineNumber", { nullable: true });
+        t.int("columnNumber", { nullable: true });
+        t.string("stack", { nullable: true });
       }
     })
   ]
