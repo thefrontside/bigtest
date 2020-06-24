@@ -16,6 +16,9 @@
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "prepack": "tsc --outdir dist --declaration --sourcemap"
   },
+  "dependencies": {
+    "@bigtest/performance": "^0.5.0"
+  },
   "devDependencies": {
     "@frontside/tsconfig": "*",
     "@types/mocha": "^7.0.1",
