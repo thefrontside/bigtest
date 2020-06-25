@@ -1,5 +1,11 @@
 # @bigtest/cli
 
+## 0.6.1
+
+### Patch Changes
+
+- f2ca496e: use @bigtest/performance to ponyfill performance apis
+
 ## 0.6.0
 
 ### Minor Changes

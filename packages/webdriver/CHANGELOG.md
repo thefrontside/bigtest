@@ -1,5 +1,11 @@
 # @bigtest/webdriver
 
+## 0.5.3
+
+### Patch Changes
+
+- 1692b369: Refactor webdriver to use fetch from effection
+
 ## 0.5.2
 
 ### Patch Changes
