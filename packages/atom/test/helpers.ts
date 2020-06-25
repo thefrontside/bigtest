@@ -1,5 +1,5 @@
 import { Context, Operation, main } from 'effection';
-import { performance } from 'perf_hooks';
+import { performance } from '@bigtest/performance';
 
 type World = Context & { spawn<T>(operation: Operation<T>): Promise<T> };
 

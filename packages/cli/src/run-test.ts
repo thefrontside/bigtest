@@ -1,6 +1,6 @@
 import { Operation } from 'effection';
 import { ProjectOptions } from '@bigtest/project';
-import { performance } from 'perf_hooks';
+import { performance } from '@bigtest/performance';
 import { ResultStatus } from '@bigtest/suite';
 import { Client } from '@bigtest/server';
 import * as query from './query';
