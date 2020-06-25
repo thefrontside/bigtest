@@ -7,9 +7,9 @@ import { defaultOptions } from './options';
 
 export function createInteractor<E extends Element>(interactorName: string) {
   return function<S extends InteractorSpecification<E>>(specification: Partial<S>): InteractorType<E, S> {
-    let fullSpecification: InteractorSpecification<E> = Object.assign({ selector: interactorName }, defaultSpecification, specification);
+    let fullSpecification = Object.assign({}, defaultSpecification, specification) as unknown as S;
 
-    let InteractorClass = class extends Interactor<E> {};
+    let InteractorClass = class extends Interactor<E, S> {};
 
     for(let [actionName, action] of Object.entries(specification.actions || {})) {
       Object.defineProperty(InteractorClass.prototype, actionName, {
