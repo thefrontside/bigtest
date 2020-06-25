@@ -1,5 +1,5 @@
 import { Operation, spawn, timeout } from 'effection';
-import { fetch, Response } from './fetch';
+import { fetch } from '@effection/fetch';
 
 /**
  * An operation that completes when the server at `url` begins

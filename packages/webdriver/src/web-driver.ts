@@ -1,12 +1,12 @@
 import { Operation } from 'effection';
 import { Atom } from '@bigtest/atom';
+import { fetch } from '@effection/fetch';
 import { Driver } from '@bigtest/driver';
-import { fetch, RequestInit } from './fetch';
 
 export class WebDriver implements Driver<WDSession> {
   session: WDSession = { sessionId: '' };
 
-  constructor(public serverURL: string) {}
+  constructor(public serverURL: string) { }
 
   get description() {
     return `WebDriver<${this.serverURL}/session/${this.session.sessionId}>`;
@@ -57,7 +57,7 @@ function* request(url: string, init: RequestInit): Operation<WDResponse> {
     let details: WDResponse;
     try {
       details = yield response.json();
-    } catch (e) { /* ok, no json details*/}
+    } catch (e) { /* ok, no json details*/ }
     if (details && details.value && details.value) {
       throw new Error(details.value.message);
     } else {
