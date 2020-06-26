@@ -4,7 +4,7 @@ import { JSDOM } from 'jsdom';
 
 import { createInteractor, setDefaultOptions } from '../src/index';
 
-const Link = createInteractor<HTMLLinkElement>('link')({
+const Link = createInteractor<HTMLLinkElement>('link', {
   selector: 'a',
   locators: {
     byHref: (element) => element.href,
@@ -15,15 +15,15 @@ const Link = createInteractor<HTMLLinkElement>('link')({
   }
 });
 
-const Header = createInteractor('header')({
+const Header = createInteractor('header', {
   selector: 'h1,h2,h3,h4,h5,h6',
 });
 
-const Div = createInteractor('div')({
+const Div = createInteractor('div', {
   defaultLocator: (element) => element.id || "",
 });
 
-const Details = createInteractor<HTMLDetailsElement>('details')({
+const Details = createInteractor<HTMLDetailsElement>('details', {
   selector: 'details',
   defaultLocator: (element) => element.querySelector('summary')?.textContent || ''
 });
