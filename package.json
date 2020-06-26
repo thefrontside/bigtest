@@ -10,6 +10,7 @@
     "packages": [
       "packages/effection",
       "packages/effection-express",
+      "packages/performance",
       "packages/atom",
       "packages/suite",
       "packages/agent",

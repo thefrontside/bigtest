@@ -1,0 +1,20 @@
+{
+  "name": "@bigtest/performance",
+  "version": "0.5.0",
+  "description": "Cross platform interface to the DOM performance API",
+  "main": "node-ponyfill.js",
+  "browser": "browser-ponyfill.js",
+  "typings": "index.d.ts",
+  "repository": "https://github.com/thefrontside/bigtest.git",
+  "author": "Frontside Engineering <engineering@frontside.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "mocha test/**/*.test.js",
+    "lint": "echo no-op",
+    "prepack": "echo no-op"
+  },
+  "devDependencies": {
+    "expect": "^24.9.0",
+    "mocha": "^6.2.2"
+  }
+}

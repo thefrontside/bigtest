@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/interactor",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "description": "Interactors for working with applications",
   "main": "dist/index.js",
   "typings": "dist/index.d.js",
@@ -16,6 +16,9 @@
     "lint": "eslint '{src,test}/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "prepack": "tsc --outdir dist --declaration --sourcemap"
+  },
+  "dependencies": {
+    "@bigtest/performance": "^0.5.0"
   },
   "devDependencies": {
     "@frontside/tsconfig": "*",

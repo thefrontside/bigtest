@@ -1,5 +1,4 @@
-const win: { performance?: unknown } = (typeof(window) === 'object') ? window : {};
-const performance = (typeof(win.performance) === 'object') ? win.performance : require('perf_hooks').performance;
+import { performance } from '@bigtest/performance';
 
 function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
