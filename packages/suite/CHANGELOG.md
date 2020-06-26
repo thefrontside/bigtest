@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.2
+
+### Patch Changes
+
+- ae576595: distribute typescript sources so that bundlers like parcl can have
+  access to them
+
 ## 0.5.1
 
 ### Patch Changes
