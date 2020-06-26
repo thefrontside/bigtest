@@ -21,21 +21,32 @@ interface ManifestBuilderOptions {
   distDir: string;
 };
 
+function* updateSourceMapURL(filePath: string, sourcemapName: string){
+  let statsTest = fs.statSync(filePath);
+  fs.truncate(filePath, statsTest.size - 16, () => {
+    fs.appendFileSync(filePath, sourcemapName);
+  })
+}
+
 function* processManifest(options: ManifestBuilderOptions): Operation {
   let buildDir = path.resolve(options.buildDir, 'manifest.js');
+  let sourcemapDir = path.resolve(options.buildDir, 'manifest.js.map');
   let fingerprint = yield createFingerprint(buildDir, 'sha256');
   let fileName = `manifest-${fingerprint}.js`;
+  let sourcemapName = `${fileName}.map`;
   let distPath = path.resolve(options.distDir, fileName);
+  let mapPath = path.resolve(options.distDir, sourcemapName);
 
   yield mkdir(path.dirname(distPath), { recursive: true });
   yield copyFile(buildDir, distPath);
+  yield copyFile(sourcemapDir, mapPath);
+  yield updateSourceMapURL(distPath, sourcemapName);
 
   let manifest = yield import(distPath);
 
   manifest = manifest.default || manifest;
 
   manifest.fileName = fileName;
-
 
   let slice = options.atom.slice<Test>(['manifest']);
   slice.set(manifest as Test);
