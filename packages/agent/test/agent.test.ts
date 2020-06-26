@@ -74,6 +74,8 @@ describe("@bigtest/agent", function() {
       let message: { agentId: string };
       let agentId: string;
 
+      this.timeout(10000);
+
       beforeEach(async function() {
         await main(staticServer(8002));
         browser = await main(Local({ browserName: 'chrome', headless: true }));
