@@ -22,9 +22,14 @@ interface ManifestBuilderOptions {
 };
 
 function* updateSourceMapURL(filePath: string, sourcemapName: string){
-  let statsTest = fs.statSync(filePath);
-  fs.truncate(filePath, statsTest.size - 16, () => {
-    fs.appendFileSync(filePath, sourcemapName);
+  let { size } = fs.statSync(filePath);
+  let readStream = fs.createReadStream(filePath, {start: size - 16});
+  readStream.on('data', currentURL => {
+    if(currentURL == '/manifest.js.map'){
+      fs.truncate(filePath, size - 16, () => {
+        fs.appendFileSync(filePath, sourcemapName);
+      })
+    }
   })
 }
 
@@ -47,6 +52,7 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
   manifest = manifest.default || manifest;
 
   manifest.fileName = fileName;
+
 
   let slice = options.atom.slice<Test>(['manifest']);
   slice.set(manifest as Test);
