@@ -1,14 +1,17 @@
-import { defaultSpecification, InteractorSpecification, InteractorInstance, InteractorType } from './specification';
+import { defaultSpecification, InteractorSpecification, InteractorType, LocatorSpecification, ActionSpecification } from './specification';
 import { Locator } from './locator';
 import { Interactor } from './interactor';
 import { interaction } from './interaction';
 import { converge } from './converge';
 
 export function createInteractor<E extends Element>(interactorName: string) {
-  return function<S extends InteractorSpecification<E>>(specification: Partial<S>): InteractorType<E, S> {
-    let fullSpecification = Object.assign({}, defaultSpecification, specification) as unknown as S;
+  return function <
+    L extends LocatorSpecification<E>,
+    A extends ActionSpecification<E>
+  >(specification: Partial<InteractorSpecification<E, L, A>>): InteractorType<E, L, A> {
+    let fullSpecification = Object.assign({}, defaultSpecification, specification) as unknown as InteractorSpecification<E, L, A>;
 
-    let InteractorClass = class extends Interactor<E, S> {};
+    let InteractorClass = class extends Interactor<E, InteractorSpecification<E, L, A>> {};
 
     for(let [actionName, action] of Object.entries(specification.actions || {})) {
       Object.defineProperty(InteractorClass.prototype, actionName, {
@@ -26,18 +29,16 @@ export function createInteractor<E extends Element>(interactorName: string) {
       });
     }
 
-    let result = function(value: string): InteractorInstance<E, S> {
+    let result = function(value: string) {
       let locator = new Locator(fullSpecification.defaultLocator, value);
-      let interactor = new InteractorClass(interactorName, fullSpecification, locator);
-      return interactor as InteractorInstance<E, S>;
+      return new InteractorClass(interactorName, fullSpecification, locator);
     }
 
     for(let [locatorName, locatorFn] of Object.entries(specification.locators || {})) {
       Object.defineProperty(result, locatorName, {
-        value: function(value: string): InteractorInstance<E, S> {
+        value: function(value: string) {
           let locator = new Locator(locatorFn, value, locatorName);
-          let interactor = new InteractorClass(interactorName, fullSpecification, locator);
-          return interactor as InteractorInstance<E, S>;
+          return new InteractorClass(interactorName, fullSpecification, locator);
         },
         configurable: true,
         writable: true,
@@ -45,6 +46,6 @@ export function createInteractor<E extends Element>(interactorName: string) {
       });
     }
 
-    return result as InteractorType<E, S>;
+    return result as unknown as InteractorType<E, L, A>;
   }
 }

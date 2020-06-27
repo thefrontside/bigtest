@@ -5,7 +5,8 @@ import { Locator } from './locator';
 import { NoSuchElementError, AmbiguousElementError, NotAbsentError } from './errors';
 import { interaction, Interaction } from './interaction';
 
-export class Interactor<E extends Element, S extends InteractorSpecification<E>> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export class Interactor<E extends Element, S extends InteractorSpecification<E, any, any>> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private ancestors: Array<Interactor<any, any>> = [];
 
