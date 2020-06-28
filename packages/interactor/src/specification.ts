@@ -1,7 +1,8 @@
 import { Interactor } from './interactor';
 import { Interaction } from './interaction';
 
-export type ActionFn<E extends Element> = (element: E) => unknown;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ActionFn<E extends Element> = (element: E, ...args: any[]) => unknown;
 
 export type LocatorFn<E extends Element> = (element: E) => string;
 
@@ -10,10 +11,10 @@ export type LocatorSpecification<E extends Element> = Record<string, LocatorFn<E
 export type ActionSpecification<E extends Element> = Record<string, ActionFn<E>>;
 
 export interface InteractorSpecification<E extends Element> {
-  selector: string;
-  defaultLocator: LocatorFn<E>;
-  locators: LocatorSpecification<E>;
-  actions: ActionSpecification<E>;
+  selector?: string;
+  defaultLocator?: LocatorFn<E>;
+  locators?: LocatorSpecification<E>;
+  actions?: ActionSpecification<E>;
 }
 
 export type ActionImplementation<E extends Element, S extends InteractorSpecification<E>> = {
@@ -30,9 +31,3 @@ export type InteractorType<E extends Element, S extends InteractorSpecification<
   ((value: string) => InteractorInstance<E, S>) &
   LocatorImplementation<E, S>;
 
-export const defaultSpecification: InteractorSpecification<Element> = {
-  selector: 'div',
-  defaultLocator: (element) => element.textContent || "",
-  locators: {},
-  actions: {},
-}

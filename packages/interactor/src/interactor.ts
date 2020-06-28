@@ -5,6 +5,8 @@ import { Locator } from './locator';
 import { NoSuchElementError, AmbiguousElementError, NotAbsentError } from './errors';
 import { interaction, Interaction } from './interaction';
 
+const defaultSelector = 'div';
+
 export class Interactor<E extends Element, S extends InteractorSpecification<E>> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private ancestors: Array<Interactor<any, any>> = [];
@@ -35,7 +37,7 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
     let ancestorChain: Array<Interactor<any, any>> = [...this.ancestors, this];
 
     return ancestorChain.reduce((parentElement: Element, interactor) => {
-      let elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector));
+      let elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector || defaultSelector));
       let matchingElements = elements.filter((element) => interactor.locator.matches(element));
 
       if(matchingElements.length === 1) {
