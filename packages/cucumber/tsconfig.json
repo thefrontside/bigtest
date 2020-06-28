@@ -4,7 +4,8 @@
     "baseUrl": ".",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "lib": ["ES2019"],
   },
   "include": [
     "bin/**/*.ts",
