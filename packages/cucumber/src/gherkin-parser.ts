@@ -6,7 +6,7 @@ import { executeSteps } from './compilers/compileToString';
 import { CucumberExpression, ParameterTypeRegistry } from 'cucumber-expressions';
 import { StepDefinition } from 'cucumber';
 import { assert } from './util/assert/assert';
-import { notNothing, isNothing } from './types/guards';
+import { notNothing } from './types/guards';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { supportCodeLibraryBuilder } = require('cucumber');
@@ -75,8 +75,6 @@ export class GherkinParser {
       assert(currentStepDefinition.text, 'no text in stepDefinition');
       // let code = stepDefinition.code;
 
-      console.dir(currentStepDefinition, { depth: 33 });
-
       let step: Step = {
         description: currentStepDefinition.text,
         action: async c => c,
@@ -100,54 +98,29 @@ export class GherkinParser {
       }),
     );
 
-    return candidates
-      .map(envelope => {
-        let { gherkinDocument } = envelope[1];
+    return candidates.flatMap(e => {
+      let gherkinFeature = e[1]?.gherkinDocument?.feature;
 
-        let gherkinFeature = gherkinDocument?.feature;
+      assert(!!gherkinFeature?.name, 'No feature name');
 
-        if (isNothing(gherkinFeature)) {
-          return;
-        }
+      let feature = testBuilder(`feature: ${gherkinFeature.name}`);
 
-        assert(!!gherkinFeature.name, 'No feature name');
+      feature.children = e
+        .flatMap(el => (notNothing(el.pickle) ? [el.pickle] : []))
+        .flatMap(pickle => {
+          let scenario = testBuilder(`scenario: ${pickle.name}`);
 
-        let feature = testBuilder(`feature: ${gherkinFeature.name}`);
+          scenario.steps =
+            pickle.steps?.flatMap(stepDefinition => {
+              let step = this.resolveStepDefinition(stepDefinition);
 
-        feature.children =
-          envelope
-            .map(e => {
-              if (isNothing(e?.pickle?.steps)) {
-                return;
-              }
+              return notNothing(step) ? [step] : [];
+            }) ?? [];
 
-              let pickle = e.pickle;
+          return scenario.steps.length > 0 ? [scenario] : [];
+        });
 
-              assert(pickle?.name, 'no pickle name');
-
-              let scenario = testBuilder(`scenario: ${pickle.name}`);
-
-              scenario.steps =
-                pickle.steps
-                  ?.map(stepDefinition => {
-                    let potential = this.resolveStepDefinition(stepDefinition);
-
-                    return potential;
-                  })
-                  .filter(notNothing) ?? [];
-
-              console.log(scenario.steps.length);
-
-              return scenario.steps.length > 0 ? scenario : undefined;
-            })
-            .filter(notNothing) ?? [];
-
-        if (feature.children.length === 0) {
-          return;
-        }
-
-        return feature;
-      })
-      .filter(notNothing);
+      return feature.children.length > 0 ? [feature] : [];
+    });
   }
 }
