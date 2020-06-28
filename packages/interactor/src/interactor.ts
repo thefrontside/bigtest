@@ -1,7 +1,7 @@
+import { bigtestGlobals } from '@bigtest/globals';
 import { converge } from './converge';
 import { InteractorSpecification } from './specification';
 import { Locator } from './locator';
-import { defaultOptions } from './options';
 import { NoSuchElementError, AmbiguousElementError, NotAbsentError } from './errors';
 import { interaction, Interaction } from './interaction';
 
@@ -31,12 +31,6 @@ export class Interactor<E extends Element> {
   }
 
   private unsafeSyncResolve(): E {
-    let root = defaultOptions.document?.documentElement;
-
-    if(!root) {
-      throw new Error('must specify document');
-    }
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let ancestorChain: Array<Interactor<any>> = [...this.ancestors, this];
 
@@ -51,18 +45,18 @@ export class Interactor<E extends Element> {
       } else {
         throw new AmbiguousElementError(`${interactor.description} is ambiguous`);
       }
-    }, root) as E;
+    }, bigtestGlobals.document.documentElement) as E;
   }
 
   resolve(): Interaction<E> {
     return interaction(`${this.description} resolves`, () => {
-      return converge(defaultOptions.timeout, this.unsafeSyncResolve.bind(this));
+      return converge(this.unsafeSyncResolve.bind(this));
     });
   }
 
   exists(): Interaction<true> {
     return interaction(`${this.description} exists`, () => {
-      return converge(defaultOptions.timeout, () => {
+      return converge(() => {
         this.unsafeSyncResolve();
         return true;
       });
@@ -71,7 +65,7 @@ export class Interactor<E extends Element> {
 
   absent(): Interaction<true> {
     return interaction(`${this.description} does not exist`, () => {
-      return converge(defaultOptions.timeout, () => {
+      return converge(() => {
         try {
           this.unsafeSyncResolve();
         } catch(e) {
