@@ -5,18 +5,18 @@ import { Locator } from './locator';
 import { NoSuchElementError, AmbiguousElementError, NotAbsentError } from './errors';
 import { interaction, Interaction } from './interaction';
 
-export class Interactor<E extends Element> {
+export class Interactor<E extends Element, S extends InteractorSpecification<E>> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private ancestors: Array<Interactor<any>> = [];
+  private ancestors: Array<Interactor<any, any>> = [];
 
   constructor(
     public name: string,
-    private specification: InteractorSpecification<E>,
+    private specification: S,
     private locator: Locator<E>
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  find<T extends Interactor<any>>(interactor: T): T {
+  find<T extends Interactor<any, any>>(interactor: T): T {
     return Object.create(interactor, {
       ancestors: {
         value: [...this.ancestors, this, ...interactor.ancestors]
@@ -32,7 +32,7 @@ export class Interactor<E extends Element> {
 
   private unsafeSyncResolve(): E {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let ancestorChain: Array<Interactor<any>> = [...this.ancestors, this];
+    let ancestorChain: Array<Interactor<any, any>> = [...this.ancestors, this];
 
     return ancestorChain.reduce((parentElement: Element, interactor) => {
       let elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector));
