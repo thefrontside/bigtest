@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { exec } from 'child_process';
 import fs from 'fs';
-import path from 'path';
-import { Module } from 'module';
+import vm from 'vm';
 
 export const compileFile = async (file: string) => {
   return new Promise<void>((resolve, reject) => {
@@ -28,16 +26,8 @@ export const compileFile = async (file: string) => {
   });
 };
 
-const getNodeModulesLookupPath = (filename: string) => {
-  let dir = path.dirname(filename);
-  return (Module as any)._nodeModulePaths(dir);
-};
-
-export const runCode = (code: string, fileName: string) => {
-  let mod = new Module(fileName, module.parent as any);
-  mod.filename = fileName;
-  mod.paths = getNodeModulesLookupPath(fileName);
-  (mod as any)._compile(code, fileName);
+export const runCode = (code: string) => {
+  vm.runInNewContext(code, { exports: {}, module: {}, require: require });
 };
 
 const trimExtension = (file: string) => file.substring(0, file.lastIndexOf('.')) || file;
@@ -51,7 +41,7 @@ export const executeSteps = async (filePaths: string[]) => {
     let fileName = `${trimExtension(filePath)}.js`;
     let code = fs.readFileSync(fileName, 'utf-8');
 
-    runCode(code, fileName);
+    runCode(code);
 
     return { code, fileName };
   }
