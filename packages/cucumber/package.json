@@ -19,11 +19,7 @@
     "bigtest": "ts-node src/index.ts",
     "prepack": "tsc --outdir dist --module commonjs --noEmit"
   },
-  "bin": {
-    "bigtest": "dist/bin/bigtest.js"
-  },
   "devDependencies": {
-    "@bigtest/todomvc": "^0.5.1",
     "@effection/events": "^0.7.4",
     "@frontside/tsconfig": "*",
     "@types/capture-console": "1.0.0",

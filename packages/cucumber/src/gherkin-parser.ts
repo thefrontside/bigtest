@@ -1,6 +1,5 @@
-import gherkin from 'gherkin';
+import { Parser, AstBuilder, compile } from '@cucumber/gherkin';
 import { messages } from 'cucumber-messages';
-import { Readable } from 'stream';
 import { test as testBuilder, TestImplementation, Check } from '@bigtest/suite';
 import { assert } from './util/assert';
 import { Compiler } from './compilers/compiler';
@@ -8,18 +7,30 @@ import { runCode } from './compilers/run-code';
 import { stepRegistry } from './steps/step-registry';
 import { IdGenerator } from 'cucumber-messages';
 import { StepDefinitionType } from './types/steps';
+import { glob } from './promisified';
 
 export class GherkinParser {
-  featureFiles: string[] = [];
   stepFiles: string[] = [];
-  stepDefinitions: StepDefinition[] = [];
-  cucumberExpressionParamRegistry: ParameterTypeRegistry;
+  code: string;
+  rootDir: string;
+  parser: Parser;
+  uri: string;
+  id: IdGenerator.NewId;
 
-  constructor(sources: string[]) {
-    this.featureFiles = sources.filter(source => source.endsWith('.feature'));
+  constructor({ code, uri, rootDir }: { code: string; uri: string; rootDir: string }) {
+    this.code = code;
+    this.rootDir = rootDir;
+    this.uri = uri;
+    // TODO: should this id come from bigtest?
+    this.id = IdGenerator.incrementing();
+    this.parser = new Parser(new AstBuilder(this.id));
+  }
+
+  async getStepFiles() {
     // TODO: add support for js files
+    let sources = await glob(`${this.rootDir}/**/*.{ts,js}`);
+
     this.stepFiles = sources.filter(source => source.endsWith('.ts'));
-    this.cucumberExpressionParamRegistry = new ParameterTypeRegistry();
   }
 
   createTestImplementationFromFeature(gherkinDocument: messages.IGherkinDocument): TestImplementation {
@@ -30,14 +41,12 @@ export class GherkinParser {
     return testBuilder(`feature: ${feature.name}`);
   }
 
-  createTestsFromFeature(pickle: messages.IPickle, tests: TestImplementation[]) {
+  createTestsFromFeature(pickle: messages.IPickle): TestImplementation | undefined {
     if (!pickle.steps?.length) {
       return;
     }
 
     assert(!!pickle?.name, 'No pickle name');
-
-    let test = tests[tests.length - 1];
 
     let child = testBuilder(`scenario: ${pickle.name}`);
 
@@ -57,31 +66,34 @@ export class GherkinParser {
       }
     }
 
-    test.children.push(child);
+    return child;
   }
 
-  private parseFeatures(readableStream: Readable): Promise<TestImplementation[]> {
+  async parse(): Promise<TestImplementation[]> {
     let tests: TestImplementation[] = [];
 
-    return new Promise((resolve, reject) => {
-      readableStream.on('data', (envelope: messages.IEnvelope) => {
-        if (envelope?.gherkinDocument) {
-          tests.push(this.createTestImplementationFromFeature(envelope.gherkinDocument));
-        }
+    let document = this.parser.parse(this.code);
 
-        if (envelope?.pickle) {
-          this.createTestsFromFeature(envelope.pickle, tests);
-        }
-      });
+    let pickles = compile(document, this.uri, this.id);
 
-      readableStream.on('error', reject);
-      readableStream.on('end', () => resolve(tests));
-    });
+    assert(pickles.length, 'no pickles in gherkin document.');
+
+    await this.loadStepDefinitions();
+
+    let test = this.createTestImplementationFromFeature(document);
+
+    test.children = pickles.map(this.createTestsFromFeature).filter((c: unknown): c is TestImplementation => !!c);
+
+    tests.push(test);
+
+    return tests;
   }
 
   async loadStepDefinitions() {
     // should test id be coming from uuid
-    stepRegistry.reset(process.cwd(), uuid());
+    stepRegistry.reset(this.rootDir, this.id);
+
+    await this.getStepFiles();
 
     let compiler = new Compiler();
 
@@ -90,11 +102,5 @@ export class GherkinParser {
     for (let { code, fileName } of precompiled) {
       runCode(code, fileName);
     }
-  }
-
-  async compileFeatures(): Promise<TestImplementation[]> {
-    await this.loadStepDefinitions();
-
-    return await this.parseFeatures(gherkin.fromPaths(this.featureFiles));
   }
 }
