@@ -1,4 +1,5 @@
 import { Operation } from 'effection';
+import { on } from '@effection/events';
 import { Mailbox } from '@bigtest/effection';
 import { ParcelProcess } from '@bigtest/parcel';
 import { Atom } from '@bigtest/atom';
@@ -11,7 +12,7 @@ import { Test } from '@bigtest/suite';
 
 import { OrchestratorState } from './orchestrator/state';
 
-const { copyFile, mkdir } = fs.promises;
+const { copyFile, mkdir, truncate } = fs.promises;
 
 interface ManifestBuilderOptions {
   delegate: Mailbox;
@@ -24,13 +25,11 @@ interface ManifestBuilderOptions {
 function* updateSourceMapURL(filePath: string, sourcemapName: string){
   let { size } = fs.statSync(filePath);
   let readStream = fs.createReadStream(filePath, {start: size - 16});
-  readStream.on('data', currentURL => {
-    if(currentURL == '/manifest.js.map'){
-      fs.truncate(filePath, size - 16, () => {
-        fs.appendFileSync(filePath, sourcemapName);
-      })
-    }
-  })
+  let currentURL = yield on(readStream, 'data');
+  if(currentURL == '/manifest.js.map'){
+    yield truncate(filePath, size - 16);
+    fs.appendFileSync(filePath, sourcemapName);
+  };
 }
 
 function* processManifest(options: ManifestBuilderOptions): Operation {
