@@ -25,8 +25,10 @@ interface ManifestBuilderOptions {
 function* updateSourceMapURL(filePath: string, sourcemapName: string){
   let { size } = fs.statSync(filePath);
   let readStream = fs.createReadStream(filePath, {start: size - 16});
-  let currentURL = yield on(readStream, 'data');
-  if(currentURL == '/manifest.js.map'){
+  let onRead = yield on(readStream, 'data');
+  let currentURL = yield onRead.next();
+  
+  if( currentURL.value.toString('utf-8') == '/manifest.js.map'){
     yield truncate(filePath, size - 16);
     fs.appendFileSync(filePath, sourcemapName);
   };

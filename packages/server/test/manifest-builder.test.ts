@@ -64,6 +64,19 @@ describe('manifest builder', () => {
     });
   });
 
+  describe('getting and updating the sourcemapURL', () => {
+    it('contains the sourcemapURL at the bottom of the manifest', () => {
+      expect(1).toBe(1);
+    });
+    it('copies over the *.js.map file to dist/', () => {
+      // wip
+      expect(1).toBe(1);
+    });
+    it('updates the sourcemapURL with fingerprinted file', () => {
+      expect(1).toBe(1);
+    })
+  })
+
   describe('updating the manifest and then reading it', () => {
     beforeEach(async () => {
       await copyFile('./test/fixtures/empty.t.js', MANIFEST_PATH);
