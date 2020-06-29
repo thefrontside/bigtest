@@ -43,7 +43,6 @@ export class GherkinParser {
     this.stepDefinitions = finalizedStepDefinitions.stepDefinitions;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   shoudRunStepDefinition(stepDefinition: StepDefinition, pickleStep: messages.Pickle.IPickleStep) {
     assert(!!pickleStep.text, 'No text in step');
 
@@ -74,6 +73,11 @@ export class GherkinParser {
 
       assert(currentStepDefinition.text, 'no text in stepDefinition');
       // let code = stepDefinition.code;
+
+      console.log('-----------------------');
+      console.dir(args, { depth: 33 });
+      console.log(stepDefinition.code.toString());
+      console.log('-----------------------');
 
       let step: Step = {
         description: currentStepDefinition.text,

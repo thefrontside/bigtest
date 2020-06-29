@@ -20,6 +20,8 @@ describe('feature parser', () => {
 
     let tests = await cucumber.compileFeatures();
 
+    console.dir(tests, { depth: null });
+
     expect(tests).toHaveLength(1);
   });
 });
