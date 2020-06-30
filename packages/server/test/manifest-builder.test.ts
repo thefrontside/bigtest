@@ -64,16 +64,24 @@ describe('manifest builder', () => {
     });
   });
 
-  describe('getting and updating the sourcemapURL', () => {
-    it('contains the sourcemapURL at the bottom of the manifest', () => {
-      expect(1).toBe(1);
+  describe('retreiving and updating the sourceMappingURL', () => {
+    let body: string;
+    let sourceMappingURL: string;
+
+    beforeEach(async () => {
+      body = await readFile(path.resolve(DIST_DIR, resultPath), 'utf8');
+      sourceMappingURL = body.split(" ").slice(-1)[0];
     });
+
     it('copies over the *.js.map file to dist/', () => {
-      // wip
-      expect(1).toBe(1);
+      // expect(atom.get().manifest.sourcemapName).toMatch(/manifest-[0-9a-f]+\.js.mpa/);
+      // what is atom?
+    });
+    it('contains the sourcemapURL at the bottom of the manifest', () => {
+      expect(sourceMappingURL).toContain("sourceMappingURL=");
     });
     it('updates the sourcemapURL with fingerprinted file', () => {
-      expect(1).toBe(1);
+      expect(sourceMappingURL).toMatch(/manifest-[0-9a-f]+\.js.map/);
     })
   })
 
