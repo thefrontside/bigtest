@@ -74,8 +74,7 @@ describe('manifest builder', () => {
     });
 
     it('copies over the *.js.map file to dist/', () => {
-      // expect(atom.get().manifest.sourcemapName).toMatch(/manifest-[0-9a-f]+\.js.mpa/);
-      // what is atom?
+      expect(fs.existsSync(`${DIST_DIR}/${atom.get().manifest.fileName}.map`)).toBeTruthy();
     });
     it('contains the sourcemapURL at the bottom of the manifest', () => {
       expect(sourceMappingURL).toContain("sourceMappingURL=");
