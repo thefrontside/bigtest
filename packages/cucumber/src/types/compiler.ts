@@ -5,5 +5,6 @@ export interface StepCode {
 
 export interface ExternalCompiler {
   precompile(files: string[]): Promise<StepCode[]>;
+
   supportedExtensions: readonly string[];
 }

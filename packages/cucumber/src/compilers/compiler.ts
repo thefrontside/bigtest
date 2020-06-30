@@ -43,6 +43,7 @@ export class Compiler {
 
   getCompilerTasks(testFiles: TestFile[]): CompilerTask[] {
     let tasks = new WeakMap<ExternalCompiler, TestFile[]>();
+
     let compilers = [];
 
     for (let testFile of testFiles) {
