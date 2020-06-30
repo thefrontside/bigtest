@@ -4,8 +4,8 @@ import { JSDOM } from 'jsdom';
 
 import { bigtestGlobals } from '../src/index';
 
-function makeDocument(): Document {
-  return new JSDOM(`<!doctype html><html></html>`).window.document;
+function makeDocument(body = ''): Document {
+  return new JSDOM(`<!doctype html><html><body>${body}</body></html>`).window.document;
 }
 
 describe('@bigtest/globals', () => {
@@ -54,6 +54,13 @@ describe('@bigtest/globals', () => {
       expect(bigtestGlobals.document).toEqual(globalDocument);
     });
 
+    it('returns the document from the test frame if there is one', () => {
+      let myDocument = makeDocument('<iframe/>');
+      let testFrame = myDocument.querySelector('iframe') as HTMLIFrameElement;
+      bigtestGlobals.testFrame = testFrame;
+      expect(bigtestGlobals.document).toEqual(testFrame.contentDocument);
+    });
+
     it('can assign a document', () => {
       let myDocument = makeDocument();
       bigtestGlobals.document = myDocument;
@@ -69,6 +76,19 @@ describe('@bigtest/globals', () => {
     it('can assign a number', () => {
       bigtestGlobals.defaultInteractorTimeout = 3000;
       expect(bigtestGlobals.defaultInteractorTimeout).toEqual(3000);
+    });
+  });
+
+  describe('testFrame', () => {
+    it('returns undefined if there is not test frame', () => {
+      expect(bigtestGlobals.testFrame).toEqual(undefined);
+    });
+
+    it('can assign a frame', () => {
+      let myDocument = makeDocument('<iframe/>');
+      let frameElement = myDocument.querySelector('iframe') as HTMLIFrameElement;
+      bigtestGlobals.testFrame = frameElement;
+      expect(bigtestGlobals.testFrame).toEqual(frameElement);
     });
   });
 })
