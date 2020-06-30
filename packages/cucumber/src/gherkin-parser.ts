@@ -2,11 +2,11 @@ import gherkin from 'gherkin';
 import { messages } from 'cucumber-messages';
 import { Readable } from 'stream';
 import { test as testBuilder, TestImplementation, Step } from '@bigtest/suite';
-import { executeSteps } from './compilers/compileToString';
 import { CucumberExpression, ParameterTypeRegistry } from 'cucumber-expressions';
 import { StepDefinition } from 'cucumber';
-import { assert } from './util/assert/assert';
-import { notNothing } from './types/guards';
+import { assert } from './util/assert';
+import { notNothing } from './util/guards/guards';
+import { Compiler } from './compilers/compiler';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { supportCodeLibraryBuilder } = require('cucumber');
@@ -36,7 +36,9 @@ export class GherkinParser {
   async loadStepDefinitions() {
     supportCodeLibraryBuilder.reset(process.cwd());
 
-    await executeSteps(this.stepFiles);
+    let compiler = new Compiler();
+
+    await compiler.precompile(this.stepFiles);
 
     supportCodeLibraryBuilder.options.parameterTypeRegistry = this.cucumberExpressionParamRegistry;
     let finalizedStepDefinitions = supportCodeLibraryBuilder.finalize();

@@ -1,0 +1,1 @@
+export { trimExtension } from './string';
