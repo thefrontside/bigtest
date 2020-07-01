@@ -33,4 +33,8 @@ export class TestFrame {
     let { args: [message] } = yield this.mailbox.receive();
     return JSON.parse(message.data);
   }
+
+  clear() {
+    this.element.src = 'about:blank';
+  }
 }

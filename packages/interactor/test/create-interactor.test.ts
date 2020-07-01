@@ -30,14 +30,17 @@ const Details = createInteractor<HTMLDetailsElement>('details')({
   defaultLocator: (element) => element.querySelector('summary')?.textContent || ''
 });
 
-bigtestGlobals.defaultInteractorTimeout = 20;
-
 function dom(html: string) {
   let jsdom = new JSDOM(`<!doctype html><html><body>${html}</body></html>`, { runScripts: "dangerously" });
   bigtestGlobals.document = jsdom.window.document;
 }
 
 describe('@bigtest/interactor', () => {
+  beforeEach(() => {
+    bigtestGlobals.reset();
+    bigtestGlobals.defaultInteractorTimeout = 20;
+  });
+
   describe('.exists', () => {
     it('can determine whether an element exists based on the interactor', async () => {
       dom(`

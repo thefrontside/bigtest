@@ -1,5 +1,6 @@
 import * as Bowser from 'bowser';
 import { TestImplementation } from '@bigtest/suite';
+import { bigtestGlobals } from '@bigtest/globals';
 import { TestFrame } from './test-frame';
 import { QueryParams } from './query-params';
 import { Agent, Run } from '../shared/agent';
@@ -52,7 +53,10 @@ function* run(agent: Agent, testFrame: TestFrame, command: Run) {
   try {
     for (let lanePath of lanePaths(test)) {
       console.log('[agent] running lane', lanePath);
-      yield testFrame.load(appUrl);
+
+      testFrame.clear();
+      bigtestGlobals.appUrl = appUrl;
+
       yield runLane(testRunId, agent, test, lanePath);
       console.log('[agent] lane completed', lanePath);
     }

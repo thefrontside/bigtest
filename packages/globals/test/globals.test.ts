@@ -10,8 +10,7 @@ function makeDocument(body = ''): Document {
 
 describe('@bigtest/globals', () => {
   beforeEach(() => {
-    delete globalThis.__bigtestManifest;
-    delete globalThis.__bigtest;
+    bigtestGlobals.reset();
     delete globalThis.document;
   });
 

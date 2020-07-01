@@ -5,6 +5,7 @@ interface BigtestOptions {
   testFrame?: HTMLIFrameElement;
   document?: Document;
   defaultInteractorTimeout?: number;
+  appUrl?: string;
 }
 
 const defaultManifest: TestImplementation = {
@@ -58,4 +59,17 @@ export const bigtestGlobals = {
   set testFrame(value: HTMLIFrameElement | undefined) {
     options().testFrame = value;
   },
+
+  get appUrl(): string | undefined {
+    return options().appUrl;
+  },
+
+  set appUrl(value: string | undefined) {
+    options().appUrl = value;
+  },
+
+  reset() {
+    delete globalThis.__bigtest;
+    delete globalThis.__bigtestManifest;
+  }
 };
