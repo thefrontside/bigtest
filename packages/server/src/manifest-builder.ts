@@ -28,10 +28,16 @@ function* updateSourceMapURL(filePath: string, sourcemapName: string){
   let onRead = yield on(readStream, 'data');
   let currentURL = yield onRead.next();
   
-  if( currentURL.value.toString('utf-8') == '/manifest.js.map'){
-    yield truncate(filePath, size - 16);
-    fs.appendFileSync(filePath, sourcemapName);
-  };
+  try {
+    if( currentURL.value.toString('utf-8') == '/manifest.js.map' ){
+      yield truncate(filePath, size - 16);
+      fs.appendFileSync(filePath, sourcemapName);
+    } else {
+      throw "Unexpected placement and or formatting of sourceMappingURL in the manifest"
+    };
+  } catch (error) {
+    throw error;
+  }
 }
 
 function* processManifest(options: ManifestBuilderOptions): Operation {
