@@ -15,28 +15,12 @@ describe('@bigtest/interactor', () => {
   });
 
   describe('App', () => {
-    describe('load', () => {
+    describe('visit', () => {
       it('can load the app by visiting the root path', async () => {
-        await App.load();
+        await App.visit();
         await expect(bigtestGlobals.testFrame?.src).toEqual('http://example.com/');
       });
 
-      it('is an interaction which can describe itself', async () => {
-        expect(App.load().description).toEqual('loading the app');
-      });
-
-      it('throws an error if app url is not defined', async () => {
-        bigtestGlobals.appUrl = undefined;
-        await expect(App.load()).rejects.toThrow('no app url defined');
-      });
-
-      it('throws an error if test frame is not defined', async () => {
-        bigtestGlobals.testFrame = undefined;
-        await expect(App.load()).rejects.toThrow('no test frame defined');
-      });
-    });
-
-    describe('visit', () => {
       it('can load the app by visiting the given path', async () => {
         await App.visit('/foobar');
         await expect(bigtestGlobals.testFrame?.src).toEqual('http://example.com/foobar');
