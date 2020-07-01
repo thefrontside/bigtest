@@ -1,5 +1,5 @@
 import { Operation } from 'effection';
-import { on } from '@effection/events';
+import { once } from '@effection/events';
 import { Mailbox } from '@bigtest/effection';
 import { ParcelProcess } from '@bigtest/parcel';
 import { Atom } from '@bigtest/atom';
@@ -22,22 +22,17 @@ interface ManifestBuilderOptions {
   distDir: string;
 };
 
-function* updateSourceMapURL(filePath: string, sourcemapName: string){
+function* updateSourceMapURL(filePath: string, sourcemapName: string): Operation{
   let { size } = fs.statSync(filePath);
   let readStream = fs.createReadStream(filePath, {start: size - 16});
-  let onRead = yield on(readStream, 'data');
-  let currentURL = yield onRead.next();
-  
-  try {
-    if( currentURL.value.toString('utf-8') == '/manifest.js.map' ){
-      yield truncate(filePath, size - 16);
-      fs.appendFileSync(filePath, sourcemapName);
-    } else {
-      throw "Unexpected placement and or formatting of sourceMappingURL in the manifest"
-    };
-  } catch (error) {
-    throw error;
-  }
+  let [currentURL] = yield once(readStream, 'data');
+
+  if( currentURL == '/manifest.js.map' ){
+    yield truncate(filePath, size - 16);
+    fs.appendFileSync(filePath, sourcemapName);
+  } else {
+    console.warn(`Expected a sourcemapping near the end of the generated test bundle, but found "${currentURL}" instead`);
+  };
 }
 
 function* processManifest(options: ManifestBuilderOptions): Operation {
