@@ -1,4 +1,4 @@
-# Never write a flaky test again!
+# BigTest Interactors: helping you never write a flaky test again!
 
 For the past few months, Frontside has been working on BigTest, a new and
 revolutionary testing framework. Testing the frontend of complex applications
@@ -28,7 +28,7 @@ ambiguities is what allows you to write very stable tests.
 
 Let's take a deep dive into our strategy for avoiding flakiness.
 
-## Let's wait!
+## Convergence: the waiting strategy to avoid flakiness
 
 The approach we've taken is simple: for any interaction we want to perform,
 or any assertion we want to check, we will try it and see if it succeeds, if
@@ -43,7 +43,7 @@ of details that need to be done right for this to work as intended.
 We are calling this strategy "convergence", and a function which exhibts this
 waiting behaviour is called "convergent".
 
-### Retaining references
+## Challenge: retaining references
 
 The most important detail is that an interaction or assertion must fully
 capture all of the work that it needs to perform, and perform all of the work
@@ -111,7 +111,7 @@ be specific enough so that you don't end up interacting with a random element
 on the page, and your tests might break due to layout changes where the order
 of elements changes.
 
-### Taming the event loop
+## Challenge: Taming the event loop
 
 One huge advantage that we have over Capybara is that since we are running tests
 directly in the browser, we can leverage the event loop, and ensure that our
@@ -152,7 +152,7 @@ interaction of finding the element and runnign the functions against them.
 BigTest is written in TypeScript and our interactors are fully typesafe when
 used from TypeScript both in their definition and when using them.
 
-## Inherent ambiguities
+## Challenge: Inherent ambiguities
 
 We have claimed that our convergence strategy is enough to eliminate
 flakiness, but as we mentioned as well, having a solid strategy is only part
@@ -183,7 +183,7 @@ page *twice*, and we actually end up on the *second* page.
 
 [GRAPHIC]
 
-### Guessing
+### A naïve approach: Guessing
 
 A common way to work around this issue is to try and guess when an
 interaction is "done", for example, by checking if there are any active
@@ -201,7 +201,7 @@ but in fact, making the window smaller is actually
 *worse*, because it means that the issue will occur more rarely, and
 therefore will be harder to track down and fix.
 
-### Anchoring
+### A better approach: Anchoring
 
 A better solution would be to "anchor" the second interaction, by adding an assertion
 which ensures we have transitioned to the second page beforehand:
@@ -217,7 +217,7 @@ that the modifications to the DOM of rendering the second page and updating the
 link will occurr in separate ticks of the event loop, so most likely this will
 be enought to eliminate the race condition.
 
-### Fixing the UI
+### The best approach: Fixing the UI
 
 But there's an even better solution. The problem here stems from the fact
 that the UI itself is ambiguous. If the user of the application did hit the
