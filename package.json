@@ -18,6 +18,7 @@
       "packages/agent",
       "packages/driver",
       "packages/webdriver",
+      "packages/bundler",
       "packages/parcel",
       "packages/project",
       "packages/todomvc",
