@@ -183,6 +183,28 @@ describe('@bigtest/interactor', () => {
     });
   });
 
+  describe('.is', () => {
+    it('can apply filter', async () => {
+      dom(`
+        <input id="Email" value='jonas@example.com'/>
+      `);
+
+      await expect(TextField('Email').is({ value: 'jonas@example.com' })).resolves.toEqual(true);
+      await expect(TextField('Email').is({ value: 'incorrect@example.com' })).rejects.toHaveProperty('message', 'text field "Email" does not match filters: with value "incorrect@example.com"');
+    });
+  });
+
+  describe('.has', () => {
+    it('can apply filter', async () => {
+      dom(`
+        <input id="Email" value='jonas@example.com'/>
+      `);
+
+      await expect(TextField('Email').has({ value: 'jonas@example.com' })).resolves.toEqual(true);
+      await expect(TextField('Email').has({ value: 'incorrect@example.com' })).rejects.toHaveProperty('message', 'text field "Email" does not match filters: with value "incorrect@example.com"');
+    });
+  });
+
   describe('actions', () => {
     it('can use action to interact with element', async () => {
       dom(`

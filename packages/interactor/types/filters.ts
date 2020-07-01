@@ -19,6 +19,9 @@ TextField('foo', { enabled: true, value: 'thing' });
 
 TextField('foo', { enabled: false });
 
+TextField('foo').has({ value: 'thing' });
+TextField('foo').is({ enabled: true });
+
 // cannot use wrong type of filter
 
 // $ExpectError
@@ -32,3 +35,31 @@ TextField('foo', { value: 123 });
 
 // $ExpectError
 TextField('foo', { blah: 'thing' });
+
+// cannot use wrong type of filter with is
+
+// $ExpectError
+TextField('foo').is({ enabled: 'thing' });
+// $ExpectError
+TextField('foo').is({ value: true });
+// $ExpectError
+TextField('foo').is({ value: 123 });
+
+// cannot use filter which doesn't exist with is
+
+// $ExpectError
+TextField('foo').is({ blah: 'thing' });
+
+// cannot use wrong type of filter with has
+
+// $ExpectError
+TextField('foo').has({ enabled: 'thing' });
+// $ExpectError
+TextField('foo').has({ value: true });
+// $ExpectError
+TextField('foo').has({ value: 123 });
+
+// cannot use filter which doesn't exist with has
+
+// $ExpectError
+TextField('foo').has({ blah: 'thing' });

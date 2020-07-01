@@ -1,9 +1,9 @@
 import { bigtestGlobals } from '@bigtest/globals';
 import { converge } from './converge';
-import { InteractorSpecification } from './specification';
+import { InteractorSpecification, FilterImplementation } from './specification';
 import { Locator } from './locator';
 import { Filter } from './filter';
-import { NoSuchElementError, AmbiguousElementError, NotAbsentError } from './errors';
+import { NoSuchElementError, AmbiguousElementError, NotAbsentError, FilterNotMatchingError } from './errors';
 import { interaction, Interaction } from './interaction';
 
 const defaultSelector = 'div';
@@ -83,5 +83,23 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
         throw new NotAbsentError(`${this.description} exists but should not`);
       });
     });
+  }
+
+  is(filters: FilterImplementation<E, S>): Interaction<true> {
+    let filter = new Filter(this.specification, filters);
+    return interaction(`${this.description} matches filters: ${filter.description}`, () => {
+      return converge(() => {
+        let element = this.unsafeSyncResolve();
+        if(filter.matches(element)) {
+          return true;
+        } else {
+          throw new FilterNotMatchingError(`${this.description} does not match filters: ${filter.description}`);
+        }
+      });
+    });
+  }
+
+  has(filters: FilterImplementation<E, S>): Interaction<true> {
+    return this.is(filters);
   }
 }
