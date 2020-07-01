@@ -13,11 +13,9 @@ export interface FilterObject<T, E extends Element> {
   default?: T;
 }
 
-export type FilterDefinition<T, E extends Element> = FilterFn<T, E> | FilterObject<T, E>;
-
 export type LocatorSpecification<E extends Element> = Record<string, LocatorFn<E>>;
 
-export type FilterSpecification<E extends Element> = Record<string, FilterDefinition<unknown, E>>;
+export type FilterSpecification<E extends Element> = Record<string, FilterFn<unknown, E> | FilterObject<unknown, E>>
 
 export type ActionSpecification<E extends Element> = Record<string, ActionFn<E>>;
 
@@ -34,7 +32,12 @@ export type ActionImplementation<E extends Element, S extends InteractorSpecific
 }
 
 export type FilterImplementation<E extends Element, S extends InteractorSpecification<E>> = {
-  [P in keyof S['filters']]?: S['filters'][P] extends FilterDefinition<infer TArg, E> ? TArg : never;
+  [P in keyof S['filters']]?:
+    S['filters'][P] extends FilterFn<infer TArg, E> ?
+    TArg :
+    S['filters'][P] extends FilterObject<infer TArg, E> ?
+    TArg :
+    never;
 }
 
 export type LocatorImplementation<E extends Element, S extends InteractorSpecification<E>> = {

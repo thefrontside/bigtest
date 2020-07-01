@@ -30,7 +30,7 @@ export class Filter<E extends Element, S extends InteractorSpecification<E>> {
     return Object.entries(this.specification.filters || {}).every(([key, definition]) => {
       let value;
       if(key in this.filters) {
-        value = (this.filters as any)[key];
+        value = (this.filters as any)[key]; // eslint-disable-line @typescript-eslint/no-explicit-any
       } else if(typeof(definition) !== 'function' && 'default' in definition) {
         value = definition.default;
       } else {
