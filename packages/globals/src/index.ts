@@ -2,6 +2,7 @@ import './globals';
 import { TestImplementation } from '@bigtest/suite';
 
 interface BigtestOptions {
+  testFrame?: HTMLIFrameElement;
   document?: Document;
   defaultInteractorTimeout?: number;
 }
@@ -32,7 +33,8 @@ export const bigtestGlobals = {
   },
 
   get document(): Document {
-    let doc = options().document || globalThis.document;
+    let testFrame = options().testFrame;
+    let doc = options().document || (testFrame && testFrame.contentDocument) || globalThis.document;
     if(!doc) { throw new Error('no document found') };
     return doc;
   },
@@ -47,5 +49,13 @@ export const bigtestGlobals = {
 
   set defaultInteractorTimeout(value: number) {
     options().defaultInteractorTimeout = value;
+  },
+
+  get testFrame(): HTMLIFrameElement | undefined {
+    return options().testFrame;
+  },
+
+  set testFrame(value: HTMLIFrameElement | undefined) {
+    options().testFrame = value;
   },
 };

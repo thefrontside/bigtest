@@ -1,9 +1,12 @@
 import { Operation, resource } from 'effection';
 import { Mailbox, subscribe } from '@bigtest/effection';
+import { bigtestGlobals } from '@bigtest/globals';
 
 export class TestFrame {
   static *start(): Operation<TestFrame> {
     let element = document.getElementById('test-frame') as HTMLIFrameElement;
+
+    bigtestGlobals.testFrame = element;
 
     let mailbox = new Mailbox();
     let frame = new TestFrame(element, mailbox);

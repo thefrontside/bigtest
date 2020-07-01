@@ -1,8 +1,10 @@
 import * as Bowser from 'bowser';
-import { Test } from '@bigtest/suite';
+import { TestImplementation } from '@bigtest/suite';
 import { TestFrame } from './test-frame';
 import { QueryParams } from './query-params';
 import { Agent, Run } from '../shared/agent';
+import { runLane } from './lane';
+import { loadManifest } from './manifest';
 
 export function* createAgent(queryParams: QueryParams) {
   console.log('[agent] connecting to', queryParams.connectTo);
@@ -27,39 +29,36 @@ export function* createAgent(queryParams: QueryParams) {
   console.debug('[agent] complete');
 }
 
-function* leafPaths(tree: Test, prefix: string[] = []): Generator<string[]> {
-  let path = prefix.concat(tree.description);
-  if(tree.children.length === 0) {
+function* lanePaths(test: TestImplementation, prefix: string[] = []): Generator<string[]> {
+  let path = prefix.concat(test.description);
+  if(test.children.length === 0) {
     yield path;
   } else {
-    for(let child of tree.children) {
-      yield* leafPaths(child, path);
+    for(let child of test.children) {
+      yield* lanePaths(child, path);
     }
   }
 }
 
 function* run(agent: Agent, testFrame: TestFrame, command: Run) {
-  let { appUrl, manifestUrl, testRunId, tree } = command;
-  console.log('[agent] loading test app via', appUrl);
+  let { appUrl, manifestUrl, testRunId } = command;
 
+  console.log('[agent] loading test manifest via', manifestUrl);
+  let test = yield loadManifest(manifestUrl);
+
+  console.log('[agent] beginning test run', testRunId);
   agent.send({ type: 'run:begin', testRunId });
 
   try {
-    for (let leafPath of leafPaths(tree)) {
-      console.log('[agent] running test', leafPath);
+    for (let lanePath of lanePaths(test)) {
+      console.log('[agent] running lane', lanePath);
       yield testFrame.load(appUrl);
-      testFrame.send({ type: 'run', manifestUrl, path: leafPath });
-      while(true) {
-        let message = yield testFrame.receive();
-        console.log('[lane] ->', message);
-        agent.send({ ...message, testRunId });
-
-        if(message.type === 'lane:end') {
-          break;
-        }
-      }
+      yield runLane(testRunId, agent, test, lanePath);
+      console.log('[agent] lane completed', lanePath);
     }
   } finally {
+    console.log('[agent] test run completed', testRunId);
     agent.send({ type: 'run:end', testRunId });
   }
 }
+
