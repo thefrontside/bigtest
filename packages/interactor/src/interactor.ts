@@ -1,22 +1,24 @@
+import { bigtestGlobals } from '@bigtest/globals';
 import { converge } from './converge';
 import { InteractorSpecification } from './specification';
 import { Locator } from './locator';
-import { defaultOptions } from './options';
 import { NoSuchElementError, AmbiguousElementError, NotAbsentError } from './errors';
 import { interaction, Interaction } from './interaction';
 
-export class Interactor<E extends Element> {
+const defaultSelector = 'div';
+
+export class Interactor<E extends Element, S extends InteractorSpecification<E>> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private ancestors: Array<Interactor<any>> = [];
+  private ancestors: Array<Interactor<any, any>> = [];
 
   constructor(
     public name: string,
-    private specification: InteractorSpecification<E>,
+    private specification: S,
     private locator: Locator<E>
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  find<T extends Interactor<any>>(interactor: T): T {
+  find<T extends Interactor<any, any>>(interactor: T): T {
     return Object.create(interactor, {
       ancestors: {
         value: [...this.ancestors, this, ...interactor.ancestors]
@@ -31,17 +33,11 @@ export class Interactor<E extends Element> {
   }
 
   private unsafeSyncResolve(): E {
-    let root = defaultOptions.document?.documentElement;
-
-    if(!root) {
-      throw new Error('must specify document');
-    }
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let ancestorChain: Array<Interactor<any>> = [...this.ancestors, this];
+    let ancestorChain: Array<Interactor<any, any>> = [...this.ancestors, this];
 
     return ancestorChain.reduce((parentElement: Element, interactor) => {
-      let elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector));
+      let elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector || defaultSelector));
       let matchingElements = elements.filter((element) => interactor.locator.matches(element));
 
       if(matchingElements.length === 1) {
@@ -51,18 +47,18 @@ export class Interactor<E extends Element> {
       } else {
         throw new AmbiguousElementError(`${interactor.description} is ambiguous`);
       }
-    }, root) as E;
+    }, bigtestGlobals.document.documentElement) as E;
   }
 
   resolve(): Interaction<E> {
     return interaction(`${this.description} resolves`, () => {
-      return converge(defaultOptions.timeout, this.unsafeSyncResolve.bind(this));
+      return converge(this.unsafeSyncResolve.bind(this));
     });
   }
 
   exists(): Interaction<true> {
     return interaction(`${this.description} exists`, () => {
-      return converge(defaultOptions.timeout, () => {
+      return converge(() => {
         this.unsafeSyncResolve();
         return true;
       });
@@ -71,7 +67,7 @@ export class Interactor<E extends Element> {
 
   absent(): Interaction<true> {
     return interaction(`${this.description} does not exist`, () => {
-      return converge(defaultOptions.timeout, () => {
+      return converge(() => {
         try {
           this.unsafeSyncResolve();
         } catch(e) {

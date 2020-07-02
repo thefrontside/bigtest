@@ -1,8 +1,10 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect'
+
+import { bigtestGlobals } from '@bigtest/globals';
 import { JSDOM } from 'jsdom';
 
-import { createInteractor, setDefaultOptions } from '../src/index';
+import { createInteractor } from '../src/index';
 
 const Link = createInteractor<HTMLLinkElement>('link')({
   selector: 'a',
@@ -11,7 +13,8 @@ const Link = createInteractor<HTMLLinkElement>('link')({
     byTitle: (element) => element.title
   },
   actions: {
-    click: (element) => { element.click() }
+    click: (element) => { element.click() },
+    setHref: (element, value: string) => { element.href = value }
   }
 });
 
@@ -30,13 +33,15 @@ const Details = createInteractor<HTMLDetailsElement>('details')({
 
 function dom(html: string) {
   let jsdom = new JSDOM(`<!doctype html><html><body>${html}</body></html>`, { runScripts: "dangerously" });
-  setDefaultOptions({
-    document: jsdom.window.document,
-    timeout: 20,
-  });
+  bigtestGlobals.document = jsdom.window.document;
 }
 
 describe('@bigtest/interactor', () => {
+  beforeEach(() => {
+    bigtestGlobals.reset();
+    bigtestGlobals.defaultInteractorTimeout = 20;
+  });
+
   describe('.exists', () => {
     it('can determine whether an element exists based on the interactor', async () => {
       dom(`
@@ -179,6 +184,15 @@ describe('@bigtest/interactor', () => {
       await Header('Hello!').exists();
     });
 
+    it('can pass arguments to action', async () => {
+      dom(`
+        <a id="foo" href="/foobar">Foo Bar</a>
+      `);
+
+      await Link('Foo Bar').setHref('/monkey');
+      await Link.byHref('/monkey').exists();
+    });
+
     it('does nothing unless awaited', async () => {
       dom(`
         <a id="foo" href="/foobar">Foo Bar</a>
@@ -210,7 +224,11 @@ describe('@bigtest/interactor', () => {
     });
 
     it('can return description of interaction', () => {
-      expect(Div("foo").find(Link('Foo Bar')).click().description).toEqual('performing click on link "Foo Bar" within div "foo"');
+      expect(Div("foo").find(Link('Foo Bar')).click().description).toEqual('click on link "Foo Bar" within div "foo"');
+    });
+
+    it('can return description of interaction with argument', () => {
+      expect(Link('Foo Bar').setHref('/monkey').description).toEqual('setHref with "/monkey" on link "Foo Bar"');
     });
   });
 })

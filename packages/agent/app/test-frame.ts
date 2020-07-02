@@ -1,9 +1,13 @@
 import { Operation, resource } from 'effection';
 import { Mailbox, subscribe } from '@bigtest/effection';
+import { bigtestGlobals } from '@bigtest/globals';
+import { once } from '@effection/events';
 
 export class TestFrame {
   static *start(): Operation<TestFrame> {
     let element = document.getElementById('test-frame') as HTMLIFrameElement;
+
+    bigtestGlobals.testFrame = element;
 
     let mailbox = new Mailbox();
     let frame = new TestFrame(element, mailbox);
@@ -29,5 +33,10 @@ export class TestFrame {
   *receive(): Operation {
     let { args: [message] } = yield this.mailbox.receive();
     return JSON.parse(message.data);
+  }
+
+  *clear(): Operation<void> {
+    this.element.src = 'about:blank';
+    yield once(this.element, 'load');
   }
 }

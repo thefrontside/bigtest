@@ -1,35 +1,30 @@
 {
-  "name": "@bigtest/interactor",
-  "version": "0.12.0",
-  "description": "Interactors for working with applications",
+  "name": "@bigtest/globals",
+  "version": "0.6.0",
+  "description": "Global variable accesors for bigtest",
   "main": "dist/index.js",
   "typings": "dist/index.d.js",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist/*",
     "README.md"
   ],
   "scripts": {
     "lint": "eslint '{src,test}/**/*.ts'",
     "mocha": "mocha -r ts-node/register",
-    "test:unit": "mocha -r ts-node/register test/**/*.test.ts",
-    "test:types": "dtslint types --localTs ../../node_modules/typescript/lib --expectOnly",
-    "test": "yarn test:unit && yarn test:types",
-    "prepack": "tsc --outdir dist --declaration --sourcemap"
+    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "prepack": "tsc --outdir dist --declaration --sourcemap --module commonjs"
   },
   "dependencies": {
-    "@bigtest/performance": "^0.5.0",
-    "@bigtest/globals": "^0.6.0"
+    "@bigtest/suite": "^0.5.2",
+    "effection": "^0.7.0"
   },
   "devDependencies": {
     "@frontside/tsconfig": "*",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
-    "@types/jsdom": "^16.2.3",
-    "dtslint": "^3.5.2",
     "expect": "^24.9.0",
     "jsdom": "^16.2.2",
     "mocha": "^6.2.2",

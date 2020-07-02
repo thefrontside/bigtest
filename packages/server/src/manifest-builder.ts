@@ -1,3 +1,4 @@
+import { bigtestGlobals } from '@bigtest/globals';
 import { Operation } from 'effection';
 import { once } from '@effection/events';
 import { Mailbox } from '@bigtest/effection';
@@ -67,7 +68,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
     [options.srcPath],
     {
       outDir: options.buildDir,
-      global: "__bigtestManifest",
+      global: bigtestGlobals.manifestProperty,
       outFile: "manifest.js"
     }
   );
