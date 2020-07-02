@@ -12,11 +12,15 @@ export function createInteractor<E extends Element>(interactorName: string) {
 
     for(let [actionName, action] of Object.entries(specification.actions || {})) {
       Object.defineProperty(InteractorClass.prototype, actionName, {
-        value: function() {
-          return interaction(`performing ${actionName} on ${this.description}`, () => {
+        value: function(...args: unknown[]) {
+          let actionDescription = actionName;
+          if(args.length) {
+            actionDescription += ` with ` + args.map((a) => JSON.stringify(a)).join(', ');
+          }
+          return interaction(`${actionDescription} on ${this.description}`, () => {
             return converge(() => {
               let element = this.unsafeSyncResolve();
-              return action(element);
+              return action(element, ...args);
             });
           });
         },
