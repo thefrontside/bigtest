@@ -1,6 +1,7 @@
 import { Operation, resource } from 'effection';
 import { Mailbox, subscribe } from '@bigtest/effection';
 import { bigtestGlobals } from '@bigtest/globals';
+import { once } from '@effection/events';
 
 export class TestFrame {
   static *start(): Operation<TestFrame> {
@@ -34,7 +35,8 @@ export class TestFrame {
     return JSON.parse(message.data);
   }
 
-  clear() {
+  *clear(): Operation<void> {
     this.element.src = 'about:blank';
+    yield once(this.element, 'load');
   }
 }
