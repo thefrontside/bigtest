@@ -19,7 +19,6 @@
       "packages/driver",
       "packages/webdriver",
       "packages/bundler",
-      "packages/parcel",
       "packages/project",
       "packages/todomvc",
       "packages/convergence",
@@ -49,6 +48,7 @@
     "@typescript-eslint/parser": "^2.3.2",
     "eslint": "^6.6.0",
     "eslint-plugin-prefer-let": "^1.0.1",
-    "typescript": "^3.7.0"
+    "typescript": "^3.7.0",
+    "why-is-node-running": "^2.2.0"
   }
 }

@@ -2,8 +2,9 @@
   "name": "@bigtest/globals",
   "version": "0.6.0",
   "description": "Global variable accesors for bigtest",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.js",
+  "main": "dist/cjs/index.js",
+  "browser": "dist/esm/index.js",
+  "typings": "dist/types/index.d.js",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
@@ -15,7 +16,7 @@
     "lint": "eslint '{src,test}/**/*.ts'",
     "mocha": "mocha -r ts-node/register",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "prepack": "tsc --outdir dist --declaration --sourcemap --module commonjs"
+    "prepack": "tsc --outdir dist/esm --sourcemap --module es2015 && tsc --outdir dist/cjs --sourcemap --module commonjs && tsc --outdir dist/types --emitDeclarationOnly"
   },
   "dependencies": {
     "@bigtest/suite": "^0.5.2",

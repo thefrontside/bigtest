@@ -1,10 +1,6 @@
 {
   "extends": "@frontside/tsconfig",
-  "include": [
-    "app/**/*.ts",
-    "shared/**/*.ts",
-    "src/**/*.ts",
-  ],
+  "files": ["src/index.ts"],
   "compilerOptions": {
     "target": "esnext"
   }

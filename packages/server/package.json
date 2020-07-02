@@ -41,9 +41,9 @@
     "typescript": "^3.6.3"
   },
   "dependencies": {
-    "@babel/core": "^7.0.0-0",
-    "@babel/plugin-transform-runtime": "7.8.3",
-    "@babel/preset-env": "7.8.4",
+    "@babel/core": "^7.10.4",
+    "@babel/plugin-transform-runtime": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
     "@bigtest/agent": "^0.7.0",
     "@bigtest/atom": "^0.6.0",
     "@bigtest/driver": "^0.5.1",
@@ -59,6 +59,7 @@
     "@effection/node": "^0.6.5",
     "@nexus/schema": "^0.13.1",
     "bowser": "^2.8.1",
+    "camelcase": "^6.0.0",
     "chokidar": "^3.3.1",
     "effection": "^0.7.0",
     "express": "^4.17.1",

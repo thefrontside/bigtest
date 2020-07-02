@@ -72,16 +72,16 @@ describe('manifest builder', () => {
 
     beforeEach(async () => {
       build = await readFile(path.resolve(BUILD_DIR, 'manifest.js'), 'utf8');
-      buildMapURL = build.split(" ").slice(-1)[0];
+      buildMapURL = build.split(" ").slice(-1)[0].trim();
       dist = await readFile(path.resolve(DIST_DIR, resultPath), 'utf8');
-      distMapURL = dist.split(" ").slice(-1)[0];
+      distMapURL = dist.split(" ").slice(-1)[0].trim();
     });
 
     it('copies over the *.js.map file to dist/', () => {
       expect(fs.existsSync(`${DIST_DIR}/${atom.get().manifest.fileName}.map`)).toBeTruthy();
     });
     it('contains the sourcemapURL at the bottom of the manifest', () => {
-      expect(buildMapURL).toEqual("sourceMappingURL=/manifest.js.map");
+      expect(buildMapURL).toEqual("sourceMappingURL=manifest.js.map");
     });
     it('updates the sourcemapURL of dist manifest with fingerprinted file', () => {
       expect(distMapURL).toMatch(/manifest-[0-9a-f]+\.js.map/);

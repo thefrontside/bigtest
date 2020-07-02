@@ -34,9 +34,7 @@ describe('@bigtest/cli', function() {
 
       beforeEach(async () => {
         await World.spawn(child.stdout?.waitFor("[orchestrator] running!"));
-
         runChild = await World.spawn(run('test'));
-
         await World.spawn(runChild.join());
       });
 

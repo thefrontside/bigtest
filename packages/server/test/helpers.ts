@@ -53,7 +53,7 @@ export const actions = {
         atom: this.atom,
         project: {
           port: 24102,
-          testFiles: ["test/fixtures/*.t.js"],
+          testFiles: ["test/fixtures/empty.t.js", "test/fixtures/raw-tree-format.t.js"],
           cacheDir: "./tmp/test/orchestrator",
           app: {
             command: "yarn",
