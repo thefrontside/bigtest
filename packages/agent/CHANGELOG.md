@@ -1,5 +1,18 @@
 # @bigtest/agent
 
+## 0.6.0
+
+### Minor Changes
+
+- b215166e: The running of the lanes has been moved from the harness to the agent.
+- d62c4e2b: Add an app interactor which can be used to load the application into the test frame. Agent no longer loads app automatically.
+
+### Patch Changes
+
+- Updated dependencies [d62c4e2b]
+- Updated dependencies [65b0156c]
+  - @bigtest/globals@0.6.0
+
 ## 0.5.2
 
 ### Patch Changes

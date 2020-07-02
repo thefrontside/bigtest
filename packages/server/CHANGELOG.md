@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.6.1
+
+### Patch Changes
+
+- Updated dependencies [b215166e]
+- Updated dependencies [d62c4e2b]
+- Updated dependencies [ae576595]
+- Updated dependencies [65b0156c]
+  - @bigtest/agent@0.6.0
+  - @bigtest/globals@0.6.0
+  - @bigtest/suite@0.5.2
+
 ## 0.6.0
 
 ### Minor Changes
