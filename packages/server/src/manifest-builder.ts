@@ -22,7 +22,7 @@ interface ManifestBuilderOptions {
   distDir: string;
 };
 
-function* updateSourceMapURL(filePath: string, sourcemapName: string): Operation{
+export function* updateSourceMapURL(filePath: string, sourcemapName: string): Operation{
   let { size } = fs.statSync(filePath);
   let readStream = fs.createReadStream(filePath, {start: size - 16});
   let [currentURL] = yield once(readStream, 'data');
@@ -31,7 +31,8 @@ function* updateSourceMapURL(filePath: string, sourcemapName: string): Operation
     yield truncate(filePath, size - 16);
     fs.appendFileSync(filePath, sourcemapName);
   } else {
-    console.warn(`Expected a sourcemapping near the end of the generated test bundle, but found "${currentURL}" instead`);
+    // throw new Error(`Expected a sourcemapping near the end of the generated test bundle, but found "${currentURL}" instead`);
+    return 1;
   };
 }
 

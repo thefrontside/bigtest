@@ -8,7 +8,7 @@ import { Mailbox } from '@bigtest/effection';
 import { Atom } from '@bigtest/atom';
 
 import { actions } from './helpers';
-import { createManifestBuilder } from '../src/manifest-builder';
+import { createManifestBuilder, updateSourceMapURL } from '../src/manifest-builder';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { OrchestratorState } from '../src/orchestrator/state';
 
@@ -18,7 +18,9 @@ const BUILD_DIR = `${TEST_DIR}/build`
 const DIST_DIR = `${TEST_DIR}/dist`
 const MANIFEST_PATH = `${SRC_DIR}/manifest.js`
 
-const { mkdir, copyFile, readFile } = fs.promises;
+const { mkdir, copyFile, readFile, writeFile } = fs.promises;
+
+import { once } from '@effection/events';
 
 describe('manifest builder', () => {
   let atom: Atom<OrchestratorState>;
@@ -64,7 +66,7 @@ describe('manifest builder', () => {
     });
   });
 
-  describe('retreiving and updating the sourceMappingURL', () => {
+  describe.only('retreiving and updating the sourceMappingURL', () => {
     let build: string;
     let buildMapURL: string;
     let dist: string;
@@ -85,8 +87,14 @@ describe('manifest builder', () => {
     });
     it('updates the sourcemapURL of dist manifest with fingerprinted file', () => {
       expect(distMapURL).toMatch(/manifest-[0-9a-f]+\.js.map/);
-    })
-  })
+    });
+    it('warning when sourcemapURL is not generated at the bottom', async () => {
+      // wip
+      await writeFile('tmp/manifest-builder/fakeManifest.js', 'hello');
+      let error = await updateSourceMapURL('tmp/manifest-builder/fakeManifest.js', '');
+      expect(error).toBe(1);
+    });
+  });
 
   describe('updating the manifest and then reading it', () => {
     beforeEach(async () => {
