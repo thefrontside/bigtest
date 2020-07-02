@@ -1,5 +1,11 @@
 # @bigtest/interactor
 
+## 0.12.1
+
+### Patch Changes
+
+- 05f42175: Interactor actions should forward arguments
+
 ## 0.12.0
 
 ### Minor Changes

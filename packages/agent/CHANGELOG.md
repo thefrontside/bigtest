@@ -1,5 +1,11 @@
 # @bigtest/agent
 
+## 0.6.1
+
+### Patch Changes
+
+- b8c5d65f: Wait for test frame to be cleared
+
 ## 0.6.0
 
 ### Minor Changes
