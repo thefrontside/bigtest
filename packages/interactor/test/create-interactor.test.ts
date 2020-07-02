@@ -13,7 +13,8 @@ const Link = createInteractor<HTMLLinkElement>('link')({
     byTitle: (element) => element.title
   },
   actions: {
-    click: (element) => { element.click() }
+    click: (element) => { element.click() },
+    setHref: (element, value: string) => { element.href = value }
   }
 });
 
@@ -183,6 +184,15 @@ describe('@bigtest/interactor', () => {
       await Header('Hello!').exists();
     });
 
+    it('can pass arguments to action', async () => {
+      dom(`
+        <a id="foo" href="/foobar">Foo Bar</a>
+      `);
+
+      await Link('Foo Bar').setHref('/monkey');
+      await Link.byHref('/monkey').exists();
+    });
+
     it('does nothing unless awaited', async () => {
       dom(`
         <a id="foo" href="/foobar">Foo Bar</a>
@@ -214,7 +224,11 @@ describe('@bigtest/interactor', () => {
     });
 
     it('can return description of interaction', () => {
-      expect(Div("foo").find(Link('Foo Bar')).click().description).toEqual('performing click on link "Foo Bar" within div "foo"');
+      expect(Div("foo").find(Link('Foo Bar')).click().description).toEqual('click on link "Foo Bar" within div "foo"');
+    });
+
+    it('can return description of interaction with argument', () => {
+      expect(Link('Foo Bar').setHref('/monkey').description).toEqual('setHref with "/monkey" on link "Foo Bar"');
     });
   });
 })
