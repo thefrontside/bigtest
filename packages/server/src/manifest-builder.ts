@@ -31,8 +31,7 @@ export function* updateSourceMapURL(filePath: string, sourcemapName: string): Op
     yield truncate(filePath, size - 16);
     fs.appendFileSync(filePath, sourcemapName);
   } else {
-    // throw new Error(`Expected a sourcemapping near the end of the generated test bundle, but found "${currentURL}" instead`);
-    return 1;
+    throw new Error(`Expected a sourcemapping near the end of the generated test bundle, but found "${currentURL}" instead.`);
   };
 }
 

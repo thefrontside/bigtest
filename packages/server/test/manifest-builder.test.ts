@@ -18,9 +18,7 @@ const BUILD_DIR = `${TEST_DIR}/build`
 const DIST_DIR = `${TEST_DIR}/dist`
 const MANIFEST_PATH = `${SRC_DIR}/manifest.js`
 
-const { mkdir, copyFile, readFile, writeFile } = fs.promises;
-
-import { once } from '@effection/events';
+const { mkdir, copyFile, readFile } = fs.promises;
 
 describe('manifest builder', () => {
   let atom: Atom<OrchestratorState>;
@@ -66,7 +64,7 @@ describe('manifest builder', () => {
     });
   });
 
-  describe.only('retreiving and updating the sourceMappingURL', () => {
+  describe('retreiving and updating the sourceMappingURL', () => {
     let build: string;
     let buildMapURL: string;
     let dist: string;
@@ -88,11 +86,27 @@ describe('manifest builder', () => {
     it('updates the sourcemapURL of dist manifest with fingerprinted file', () => {
       expect(distMapURL).toMatch(/manifest-[0-9a-f]+\.js.map/);
     });
-    it('warning when sourcemapURL is not generated at the bottom', async () => {
-      // wip
-      await writeFile('tmp/manifest-builder/fakeManifest.js', 'hello');
-      let error = await updateSourceMapURL('tmp/manifest-builder/fakeManifest.js', '');
-      expect(error).toBe(1);
+  });
+  
+  describe('when manifest is generated in a different format', () => {
+    let error: Error;
+    let emptyFilePath: string;
+
+    beforeEach(async () => {
+      emptyFilePath = `${TEST_DIR}/empty.t.js`;
+
+      await copyFile('./test/fixtures/empty.t.js', emptyFilePath);
+      await actions.fork(function* (){
+        try {
+          yield updateSourceMapURL(emptyFilePath, '');
+        } catch(e) {
+          error = e.toString();
+        }
+      });
+    });
+
+    it('throws error message when sourcemapURL is not generated at the bottom', async () => {
+      expect(error).toMatch(/^Error: Expected a sourcemapping near the end/);
     });
   });
 
