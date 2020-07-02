@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/globals",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Global variable accesors for bigtest",
   "main": "dist/index.js",
   "typings": "dist/index.d.js",
@@ -18,7 +18,7 @@
     "prepack": "tsc --outdir dist --declaration --sourcemap --module commonjs"
   },
   "dependencies": {
-    "@bigtest/suite": "^0.5.1",
+    "@bigtest/suite": "^0.5.2",
     "effection": "^0.7.0"
   },
   "devDependencies": {
