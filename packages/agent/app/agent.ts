@@ -54,9 +54,8 @@ function* run(agent: Agent, testFrame: TestFrame, command: Run) {
     for (let lanePath of lanePaths(test)) {
       console.log('[agent] running lane', lanePath);
 
-      testFrame.clear();
       bigtestGlobals.appUrl = appUrl;
-
+      yield testFrame.clear();
       yield runLane(testRunId, agent, test, lanePath);
       console.log('[agent] lane completed', lanePath);
     }
