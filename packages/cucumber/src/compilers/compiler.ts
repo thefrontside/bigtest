@@ -59,9 +59,11 @@ export class Compiler {
     let compilerTasks = this.getCompilerTasks(testFiles);
 
     for (let task of compilerTasks) {
-      let precompiledCode = await task.compiler.precompile(task.testFiles);
+      let precompiledCode = await task.compiler.precompile(
+        task.testFiles.map((testFile: TestFile) => testFile.fileName),
+      );
 
-      console.log(precompiledCode);
+      console.log(precompiledCode, { depth: 33 });
     }
   }
 }

@@ -1,9 +1,9 @@
-import { exec } from 'child_process';
 import { ExternalCompiler } from 'src/types/compiler';
 import ts, { TranspileOptions, CompilerOptions, Diagnostic } from 'typescript';
 import path from 'path';
 import { readFile } from '../../promisified';
 import JSON5 from 'json5';
+import { assert } from '../../util/assert';
 
 const CWD = process.cwd();
 
@@ -13,19 +13,19 @@ export const EssentialCompilerOptions: Partial<CompilerOptions> = {
   allowJs: true,
   pretty: true,
   inlineSourceMap: true,
+  noImplicitAny: false,
+  module: ts.ModuleKind.CommonJS,
+  moduleResolution: ts.ModuleResolutionKind.NodeJs,
+  target: ts.ScriptTarget.ES2015,
   jsx: ts.JsxEmit.React,
   suppressOutputPathCheck: true,
   skipLibCheck: true,
-} as const;
+};
+
+export const NonOverridableCompilerOptions = ['module', 'moduleResolution', 'target', 'sourceMap', 'lib', 'target'];
 
 export class TypescriptCompiler implements ExternalCompiler {
   supportedExtensions = ['.ts', '.tsx'] as const;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  cache: any;
-
-  constructor() {
-    this.cache = Object.create(null);
-  }
 
   reportErrors(diagnostics: readonly Diagnostic[]) {
     let errMsg = 'TypeScript compilation failed.\n';
@@ -47,18 +47,34 @@ export class TypescriptCompiler implements ExternalCompiler {
   }
 
   async getOptions() {
-    let filePath = path.join(CWD, 'tsconfig.json');
+    let tsconfigPath = path.join(CWD, 'tsconfig.json');
 
-    let configFile = await readFile(filePath);
+    let configFile = await readFile(tsconfigPath);
 
     let tsConfig = JSON5.parse(configFile.toString()) as TranspileOptions;
 
-    return { ...EssentialCompilerOptions, ...tsConfig.compilerOptions };
+    assert(tsConfig.compilerOptions, 'no compiler options defined');
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let host: any = ts.sys;
+
+    return ts.getParsedCommandLineOfConfigFile(
+      tsconfigPath,
+      { ...EssentialCompilerOptions, ...tsConfig.compilerOptions },
+      host,
+    )?.options as CompilerOptions;
   }
 
-  async precompile(files: string[]) {
+  async precompile(files: string[]): Promise<ts.OutputFile[]> {
     let options = await this.getOptions();
-    let program = ts.createProgram(files, options);
+
+    let appTsConfig: Partial<CompilerOptions> = {};
+
+    for (let [key, value] of Object.entries(options).filter(([key]) => !NonOverridableCompilerOptions.includes(key))) {
+      appTsConfig[key] = value;
+    }
+
+    let program = ts.createProgram({ rootNames: files, options: appTsConfig });
 
     let diagnostics = ts.getPreEmitDiagnostics(program);
 
@@ -66,38 +82,14 @@ export class TypescriptCompiler implements ExternalCompiler {
       this.reportErrors(diagnostics);
     }
 
-    program.emit(void 0, (outputName, result, writeBOM, onError, sources) => {
-      if (!sources) return;
+    let outputFiles: ts.OutputFile[] = [];
+    let writeFile = (fileName: string, text: string, writeByteOrderMark: boolean) =>
+      outputFiles.push({ name: fileName, writeByteOrderMark, text });
 
-      console.log(sources);
+    program.emit(void 0, writeFile);
 
-      this.cache[sources[0].fileName] = result;
+    console.log(outputFiles);
 
-      console.log(this.cache);
-    });
+    return outputFiles;
   }
 }
-
-export const compile = async (file: string) => {
-  return new Promise<void>((resolve, reject) => {
-    // TODO: very lazy should use
-    // import tsc from 'typescript';
-    // set compilerOptions etc. but this is a spike
-    let tscCommand = `yarn run tsc ${file}`;
-
-    let tsc = exec(tscCommand);
-
-    tsc.stdout?.on('data', data => console.info(data));
-    tsc.stderr?.on('data', data => console.error(data));
-
-    tsc.on('close', code => {
-      console.log(`tsc exited with code ${code}`);
-
-      if (code !== 0) {
-        reject(new Error('it no work'));
-      }
-
-      resolve();
-    });
-  });
-};
