@@ -8,7 +8,7 @@ import { Mailbox } from '@bigtest/effection';
 import { Atom } from '@bigtest/atom';
 
 import { actions } from './helpers';
-import { createManifestBuilder } from '../src/manifest-builder';
+import { createManifestBuilder, updateSourceMapURL } from '../src/manifest-builder';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { OrchestratorState } from '../src/orchestrator/state';
 
@@ -61,6 +61,52 @@ describe('manifest builder', () => {
     it('returns the manifest from the state', () => {
       expect(atom.get().manifest.fileName).toMatch(/manifest-[0-9a-f]+\.js/);
       expect(atom.get().manifest.description).toEqual('Signing In');
+    });
+  });
+
+  describe('retreiving and updating the sourceMappingURL', () => {
+    let build: string;
+    let buildMapURL: string;
+    let dist: string;
+    let distMapURL: string;
+
+    beforeEach(async () => {
+      build = await readFile(path.resolve(BUILD_DIR, 'manifest.js'), 'utf8');
+      buildMapURL = build.split(" ").slice(-1)[0];
+      dist = await readFile(path.resolve(DIST_DIR, resultPath), 'utf8');
+      distMapURL = dist.split(" ").slice(-1)[0];
+    });
+
+    it('copies over the *.js.map file to dist/', () => {
+      expect(fs.existsSync(`${DIST_DIR}/${atom.get().manifest.fileName}.map`)).toBeTruthy();
+    });
+    it('contains the sourcemapURL at the bottom of the manifest', () => {
+      expect(buildMapURL).toEqual("sourceMappingURL=/manifest.js.map");
+    });
+    it('updates the sourcemapURL of dist manifest with fingerprinted file', () => {
+      expect(distMapURL).toMatch(/manifest-[0-9a-f]+\.js.map/);
+    });
+  });
+  
+  describe('when manifest is generated in a different format', () => {
+    let error: Error;
+    let emptyFilePath: string;
+
+    beforeEach(async () => {
+      emptyFilePath = `${TEST_DIR}/empty.t.js`;
+
+      await copyFile('./test/fixtures/empty.t.js', emptyFilePath);
+      await actions.fork(function* (){
+        try {
+          yield updateSourceMapURL(emptyFilePath, '');
+        } catch(e) {
+          error = e.toString();
+        }
+      });
+    });
+
+    it('throws error message when sourcemapURL is not generated at the bottom', async () => {
+      expect(error).toMatch(/^Error: Expected a sourcemapping near the end/);
     });
   });
 
