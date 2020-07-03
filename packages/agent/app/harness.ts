@@ -1,9 +1,17 @@
 import 'regenerator-runtime/runtime';
 import { main } from 'effection';
-import { createHarness } from './create-harness';
+import { ParentFrame } from './parent-frame';
 
-main(createHarness())
-  .catch(error => console.error(error));
+main(function*() {
+  console.log('[harness] starting');
+
+  let parentFrame = yield ParentFrame.start();
+
+  while(true) {
+    let message = yield parentFrame.receive();
+    console.info('[harness] got message', message);
+  }
+}).catch(error => console.error(error));
 
 
 // proxy fetch requests through the parent frame
