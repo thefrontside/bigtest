@@ -14,6 +14,7 @@
       "packages/atom",
       "packages/suite",
       "packages/globals",
+      "packages/interactor",
       "packages/agent",
       "packages/driver",
       "packages/webdriver",
@@ -21,7 +22,6 @@
       "packages/project",
       "packages/todomvc",
       "packages/convergence",
-      "packages/interactor",
       "packages/logging",
       "packages/server",
       "packages/cli"

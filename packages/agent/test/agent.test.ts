@@ -46,7 +46,7 @@ describe("@bigtest/agent", function() {
     let inbox: Mailbox;
 
     beforeEach(async () => {
-      await main(ParcelProcess.create(['./app/index.html', './app/harness.ts'], { port: 8000 }))
+      await main(ParcelProcess.create(['./app/index.html', './app/harness.ts', './test/fixtures/app.html'], { port: 8000 }))
 
       client = new AgentConnectionServer({
         port: 8001,
@@ -94,7 +94,7 @@ describe("@bigtest/agent", function() {
 
         beforeEach(async () => {
           let manifestUrl = 'http://localhost:8002/manifest.js';
-          let appUrl = 'http://localhost:8002/app.html';
+          let appUrl = 'http://localhost:8000/app.html';
           inbox.send({ type: 'run', testRunId, agentId, manifestUrl, appUrl, tree: fixtureManifest });
 
           await main(delegate.receive({ type: 'run:end', agentId, testRunId }));
@@ -155,6 +155,21 @@ describe("@bigtest/agent", function() {
           });
         });
 
+        describe('steps that mock fetch', () => {
+          let step: StepResult;
+          beforeEach(async () => {
+            step = await main(delegate.receive({
+              agentId,
+              testRunId,
+              type: 'step:result',
+              path: ['tests', 'test fetch', 'fetch is mocked']
+            }));
+          });
+
+          it('succeeds', () => {
+            expect(step.status).toEqual('ok');
+          });
+        });
       });
 
       describe('closing browser connection', () => {
