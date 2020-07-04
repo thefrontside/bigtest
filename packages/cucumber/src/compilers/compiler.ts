@@ -3,12 +3,13 @@ import { ExternalCompiler } from 'src/types/compiler';
 import { readFile } from '../promisified';
 import path from 'path';
 import { assert } from '../util/assert';
+import ts from 'typescript';
 
 type SupportedFileExtensions = '.ts' | '.tsx';
 
-type TestFile = {
+type TestFile<R = unknown> = {
   fileName: string;
-  compiler: ExternalCompiler;
+  compiler: ExternalCompiler<R>;
   code: Buffer;
 };
 
@@ -20,11 +21,11 @@ export class Compiler {
     this.compilers = { ['.ts']: tsc, ['.tsx']: tsc };
   }
 
-  async createFileForTesting(fileName: string): Promise<TestFile> {
+  async createFileForTesting(fileName: string): Promise<TestFile<ts.OutputFile>> {
     let code = await readFile(fileName);
     let extension = path.extname(fileName) as SupportedFileExtensions;
 
-    let compiler = this.compilers[extension];
+    let compiler = this.compilers[extension] as ExternalCompiler<ts.OutputFile>;
 
     assert(!!compiler, `unknown file extension ${extension}`);
 
@@ -35,8 +36,8 @@ export class Compiler {
     };
   }
 
-  getCompilerTasks(testFiles: TestFile[]) {
-    let tasks = new WeakMap();
+  getCompilerTasks(testFiles: TestFile<ts.OutputFile>[]) {
+    let tasks = new WeakMap<ExternalCompiler, TestFile<ts.OutputFile>[]>();
     let compilers = [];
 
     for (let testFile of testFiles) {
@@ -47,10 +48,14 @@ export class Compiler {
         tasks.set(compiler, []);
       }
 
-      tasks.get(testFile.compiler).push(testFile);
+      let taskFiles = tasks.get(testFile.compiler);
+
+      assert(!!taskFiles, 'no task files in task');
+
+      taskFiles.push(testFile);
     }
 
-    return compilers.map(compiler => ({ compiler, testFiles: tasks.get(compiler) }));
+    return compilers.map(compiler => ({ compiler, testFiles: tasks.get(compiler) as TestFile<ts.OutputFile>[] }));
   }
 
   async precompile(files: string[]) {
@@ -58,12 +63,8 @@ export class Compiler {
 
     let compilerTasks = this.getCompilerTasks(testFiles);
 
-    for (let task of compilerTasks) {
-      let precompiledCode = await task.compiler.precompile(
-        task.testFiles.map((testFile: TestFile) => testFile.fileName),
-      );
-
-      console.log(precompiledCode, { depth: 33 });
-    }
+    return await Promise.all(
+      compilerTasks.flatMap(({ compiler, testFiles }) => compiler.precompile(testFiles.map(t => t.fileName))),
+    );
   }
 }

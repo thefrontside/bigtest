@@ -38,7 +38,9 @@ export class GherkinParser {
 
     let compiler = new Compiler();
 
-    await compiler.precompile(this.stepFiles);
+    let precompiled = await compiler.precompile(this.stepFiles);
+
+    console.dir(precompiled, { depth: 33 });
 
     supportCodeLibraryBuilder.options.parameterTypeRegistry = this.cucumberExpressionParamRegistry;
     let finalizedStepDefinitions = supportCodeLibraryBuilder.finalize();

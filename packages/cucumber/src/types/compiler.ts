@@ -1,4 +1,4 @@
-export interface ExternalCompiler {
-  precompile(files: string[]): void;
+export interface ExternalCompiler<R = unknown> {
+  precompile(files: string[]): Promise<R>;
   supportedExtensions: readonly string[];
 }

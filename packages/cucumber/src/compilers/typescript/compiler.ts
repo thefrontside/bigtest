@@ -8,23 +8,23 @@ import { assert } from '../../util/assert';
 const CWD = process.cwd();
 
 export const EssentialCompilerOptions: Partial<CompilerOptions> = {
+  allowJs: true,
   experimentalDecorators: true,
   emitDecoratorMetadata: true,
-  allowJs: true,
-  pretty: true,
   inlineSourceMap: true,
+  jsx: ts.JsxEmit.React,
   noImplicitAny: false,
   module: ts.ModuleKind.CommonJS,
   moduleResolution: ts.ModuleResolutionKind.NodeJs,
-  target: ts.ScriptTarget.ES2015,
-  jsx: ts.JsxEmit.React,
+  pretty: true,
   suppressOutputPathCheck: true,
   skipLibCheck: true,
+  target: ts.ScriptTarget.ES2019,
 };
 
 export const NonOverridableCompilerOptions = ['module', 'moduleResolution', 'target', 'sourceMap', 'lib', 'target'];
 
-export class TypescriptCompiler implements ExternalCompiler {
+export class TypescriptCompiler implements ExternalCompiler<ts.OutputFile> {
   supportedExtensions = ['.ts', '.tsx'] as const;
 
   reportErrors(diagnostics: readonly Diagnostic[]) {
@@ -65,7 +65,7 @@ export class TypescriptCompiler implements ExternalCompiler {
     )?.options as CompilerOptions;
   }
 
-  async precompile(files: string[]): Promise<ts.OutputFile[]> {
+  async precompile(files: string[]): Promise<ts.OutputFile> {
     let options = await this.getOptions();
 
     let appTsConfig: Partial<CompilerOptions> = {};
@@ -83,13 +83,15 @@ export class TypescriptCompiler implements ExternalCompiler {
     }
 
     let outputFiles: ts.OutputFile[] = [];
-    let writeFile = (fileName: string, text: string, writeByteOrderMark: boolean) =>
-      outputFiles.push({ name: fileName, writeByteOrderMark, text });
+
+    let writeFile = (fileName: string, text: string, writeByteOrderMark: boolean) => {
+      if (fileName.endsWith('.js')) {
+        outputFiles.push({ name: fileName, writeByteOrderMark, text });
+      }
+    };
 
     program.emit(void 0, writeFile);
 
-    console.log(outputFiles);
-
-    return outputFiles;
+    return outputFiles[0];
   }
 }
