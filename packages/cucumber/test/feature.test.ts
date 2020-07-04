@@ -20,7 +20,11 @@ describe('feature parser', () => {
 
     let tests = await cucumber.compileFeatures();
 
-    console.dir(tests, { depth: null });
+    tests
+      .flatMap(t => t.children.flatMap(t => t.steps))
+      .forEach(t => {
+        (t as any).action();
+      });
 
     expect(tests).toHaveLength(1);
   });

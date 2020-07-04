@@ -41,8 +41,8 @@ export class GherkinParser {
 
     let precompiled = await compiler.precompile(this.stepFiles);
 
-    for (let { code } of precompiled) {
-      runCode(code);
+    for (let { code, fileName } of precompiled) {
+      runCode(code, fileName);
     }
 
     supportCodeLibraryBuilder.options.parameterTypeRegistry = this.cucumberExpressionParamRegistry;
@@ -82,12 +82,9 @@ export class GherkinParser {
 
       let { code } = stepDefinition;
 
-      console.log(code.toString());
-      code(...args);
-
       let step: Step = {
         description: currentStepDefinition.text,
-        action: () => code(...args!),
+        action: () => code(...(args || [])),
       };
 
       return step;
@@ -103,14 +100,14 @@ export class GherkinParser {
       }),
     );
 
-    return candidates.flatMap(e => {
-      let gherkinFeature = e[1]?.gherkinDocument?.feature;
+    return candidates.flatMap(document => {
+      let gherkinFeature = document[1]?.gherkinDocument?.feature;
 
       assert(!!gherkinFeature?.name, 'No feature name');
 
       let feature = testBuilder(`feature: ${gherkinFeature.name}`);
 
-      feature.children = e
+      feature.children = document
         .flatMap(el => (notNothing(el.pickle) ? [el.pickle] : []))
         .flatMap(pickle => {
           let scenario = testBuilder(`scenario: ${pickle.name}`);

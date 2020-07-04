@@ -20,5 +20,5 @@ And('I add them', () => {
 });
 
 Then('I will have {int}', () => {
-  console.log(result);
+  console.log(`the result is ${result}`);
 });
