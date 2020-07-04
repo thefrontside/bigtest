@@ -1,5 +1,5 @@
 import { TypescriptCompiler } from './typescript/compiler';
-import { ExternalCompiler, StepCode } from 'src/types/compiler';
+import { ExternalCompiler } from 'src/types/compiler';
 import { readFile } from '../promisified';
 import path from 'path';
 import { assert } from '../util/assert';
@@ -68,7 +68,7 @@ export class Compiler {
 
     let compilerTasks = this.getCompilerTasks(testFiles);
 
-    return await asyncFlatMap<CompilerTask, StepCode>(compilerTasks, ({ compiler, testFiles }) =>
+    return await asyncFlatMap(compilerTasks, ({ compiler, testFiles }) =>
       compiler.precompile(testFiles.map(t => t.fileName)),
     );
   }

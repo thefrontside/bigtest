@@ -79,24 +79,18 @@ export class GherkinParser {
       }
 
       assert(currentStepDefinition.text, 'no text in stepDefinition');
-      // let code = stepDefinition.code;
 
-      console.log('-----------------------');
-      console.dir(args, { depth: 33 });
-      console.log(stepDefinition.code.toString());
-      console.log('-----------------------');
+      let { code } = stepDefinition;
+
+      console.log(code.toString());
+      code(...args);
 
       let step: Step = {
         description: currentStepDefinition.text,
-        action: async c => c,
+        action: () => code(...args!),
       };
 
       return step;
-      // const step: Step = {
-      //   description: stepDefinition.
-      // }
-
-      // testBuilder.step(step.text as string, code.bind(code, ...args));
     }
   }
 
