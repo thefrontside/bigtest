@@ -7,9 +7,9 @@ import { asyncFlatMap, asyncMap } from '../util/lists';
 
 type SupportedFileExtensions = '.ts' | '.tsx';
 
-type TestFile<R = unknown> = {
+type TestFile = {
   fileName: string;
-  compiler: ExternalCompiler<R>;
+  compiler: ExternalCompiler;
   code: Buffer;
 };
 
@@ -26,7 +26,7 @@ export class Compiler {
     this.compilers = { ['.ts']: tsc, ['.tsx']: tsc };
   }
 
-  async createFileForTesting(fileName: string): Promise<TestFile<ts.OutputFile>> {
+  async createFileForTesting(fileName: string): Promise<TestFile> {
     let code = await readFile(fileName);
     let extension = path.extname(fileName) as SupportedFileExtensions;
 
