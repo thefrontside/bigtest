@@ -26,7 +26,7 @@ export const EssentialCompilerOptions: Partial<CompilerOptions> = {
 
 export const NonOverridableCompilerOptions = ['module', 'moduleResolution', 'target', 'sourceMap', 'target'];
 
-export class TypescriptCompiler implements ExternalCompiler {
+export class TypescriptCompiler implements ExternalCompiler<ts.OutputFile> {
   supportedExtensions = ['.ts', '.tsx'] as const;
 
   reportErrors(diagnostics: readonly Diagnostic[]) {
@@ -94,6 +94,6 @@ export class TypescriptCompiler implements ExternalCompiler {
 
     program.emit(undefined, writeFile);
 
-    return outputFiles;
+    return outputFiles[0];
   }
 }
