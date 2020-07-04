@@ -1,5 +1,5 @@
 import { TypescriptCompiler } from './typescript/compiler';
-import { ExternalCompiler } from 'src/types/compiler';
+import { ExternalCompiler, StepCode } from 'src/types/compiler';
 import { readFile } from '../promisified';
 import path from 'path';
 import { assert } from '../util/assert';
@@ -11,6 +11,11 @@ type TestFile = {
   fileName: string;
   compiler: ExternalCompiler;
   code: Buffer;
+};
+
+type CompilerTask = {
+  compiler: ExternalCompiler;
+  testFiles: TestFile[];
 };
 
 export class Compiler {
@@ -36,7 +41,7 @@ export class Compiler {
     };
   }
 
-  getCompilerTasks(testFiles: TestFile[]) {
+  getCompilerTasks(testFiles: TestFile[]): CompilerTask[] {
     let tasks = new WeakMap<ExternalCompiler, TestFile[]>();
     let compilers = [];
 
@@ -63,7 +68,7 @@ export class Compiler {
 
     let compilerTasks = this.getCompilerTasks(testFiles);
 
-    return await asyncFlatMap(compilerTasks, ({ compiler, testFiles }) =>
+    return await asyncFlatMap<CompilerTask, StepCode>(compilerTasks, ({ compiler, testFiles }) =>
       compiler.precompile(testFiles.map(t => t.fileName)),
     );
   }

@@ -7,6 +7,7 @@ import { StepDefinition } from 'cucumber';
 import { assert } from './util/assert';
 import { notNothing } from './util/guards/guards';
 import { Compiler } from './compilers/compiler';
+import { runCode } from './compilers/run-code';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { supportCodeLibraryBuilder } = require('cucumber');
@@ -40,7 +41,9 @@ export class GherkinParser {
 
     let precompiled = await compiler.precompile(this.stepFiles);
 
-    console.dir(precompiled, { depth: 33 });
+    for (let { code } of precompiled) {
+      runCode(code);
+    }
 
     supportCodeLibraryBuilder.options.parameterTypeRegistry = this.cucumberExpressionParamRegistry;
     let finalizedStepDefinitions = supportCodeLibraryBuilder.finalize();
