@@ -3,13 +3,13 @@ import { ExternalCompiler } from 'src/types/compiler';
 import { readFile } from '../promisified';
 import path from 'path';
 import { assert } from '../util/assert';
-import ts from 'typescript';
+import { asyncFlatMap } from '../util/lists';
 
 type SupportedFileExtensions = '.ts' | '.tsx';
 
-type TestFile<R = unknown> = {
+type TestFile = {
   fileName: string;
-  compiler: ExternalCompiler<R>;
+  compiler: ExternalCompiler;
   code: Buffer;
 };
 
@@ -21,11 +21,11 @@ export class Compiler {
     this.compilers = { ['.ts']: tsc, ['.tsx']: tsc };
   }
 
-  async createFileForTesting(fileName: string): Promise<TestFile<ts.OutputFile>> {
+  async createFileForTesting(fileName: string): Promise<TestFile> {
     let code = await readFile(fileName);
     let extension = path.extname(fileName) as SupportedFileExtensions;
 
-    let compiler = this.compilers[extension] as ExternalCompiler<ts.OutputFile>;
+    let compiler = this.compilers[extension] as ExternalCompiler;
 
     assert(!!compiler, `unknown file extension ${extension}`);
 
@@ -36,8 +36,8 @@ export class Compiler {
     };
   }
 
-  getCompilerTasks(testFiles: TestFile<ts.OutputFile>[]) {
-    let tasks = new WeakMap<ExternalCompiler, TestFile<ts.OutputFile>[]>();
+  getCompilerTasks(testFiles: TestFile[]) {
+    let tasks = new WeakMap<ExternalCompiler, TestFile[]>();
     let compilers = [];
 
     for (let testFile of testFiles) {
@@ -55,7 +55,7 @@ export class Compiler {
       taskFiles.push(testFile);
     }
 
-    return compilers.map(compiler => ({ compiler, testFiles: tasks.get(compiler) as TestFile<ts.OutputFile>[] }));
+    return compilers.map(compiler => ({ compiler, testFiles: tasks.get(compiler) as TestFile[] }));
   }
 
   async precompile(files: string[]) {
@@ -63,8 +63,8 @@ export class Compiler {
 
     let compilerTasks = this.getCompilerTasks(testFiles);
 
-    return await Promise.all(
-      compilerTasks.flatMap(({ compiler, testFiles }) => compiler.precompile(testFiles.map(t => t.fileName))),
+    return await asyncFlatMap(compilerTasks, ({ compiler, testFiles }) =>
+      compiler.precompile(testFiles.map(t => t.fileName)),
     );
   }
 }

@@ -1,4 +1,4 @@
-import { ExternalCompiler } from 'src/types/compiler';
+import { ExternalCompiler, StepCode } from '../../types/compiler';
 import ts, { TranspileOptions, CompilerOptions, Diagnostic } from 'typescript';
 import path from 'path';
 import { readFile } from '../../promisified';
@@ -24,7 +24,7 @@ export const EssentialCompilerOptions: Partial<CompilerOptions> = {
 
 export const NonOverridableCompilerOptions = ['module', 'moduleResolution', 'target', 'sourceMap', 'lib', 'target'];
 
-export class TypescriptCompiler implements ExternalCompiler<ts.OutputFile> {
+export class TypescriptCompiler implements ExternalCompiler {
   supportedExtensions = ['.ts', '.tsx'] as const;
 
   reportErrors(diagnostics: readonly Diagnostic[]) {
@@ -65,7 +65,7 @@ export class TypescriptCompiler implements ExternalCompiler<ts.OutputFile> {
     )?.options as CompilerOptions;
   }
 
-  async precompile(files: string[]): Promise<ts.OutputFile> {
+  async precompile(files: string[]): Promise<StepCode[]> {
     let options = await this.getOptions();
 
     let appTsConfig: Partial<CompilerOptions> = {};
@@ -82,16 +82,16 @@ export class TypescriptCompiler implements ExternalCompiler<ts.OutputFile> {
       this.reportErrors(diagnostics);
     }
 
-    let outputFiles: ts.OutputFile[] = [];
+    let outputFiles: StepCode[] = [];
 
-    let writeFile = (fileName: string, text: string, writeByteOrderMark: boolean) => {
+    let writeFile = (fileName: string, text: string) => {
       if (fileName.endsWith('.js')) {
-        outputFiles.push({ name: fileName, writeByteOrderMark, text });
+        outputFiles.push({ fileName, code: text });
       }
     };
 
     program.emit(void 0, writeFile);
 
-    return outputFiles[0];
+    return outputFiles;
   }
 }
