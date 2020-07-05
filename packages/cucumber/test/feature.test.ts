@@ -21,6 +21,7 @@ describe('feature parser', () => {
 
     let tests = await cucumber.compileFeatures();
 
+<<<<<<< HEAD
     let context: Context = {};
 
     for (let step of tests.flatMap(t => t.children.flatMap(t => t.steps))) {
@@ -32,6 +33,13 @@ describe('feature parser', () => {
     for (let assertion of tests.flatMap(t => t.children.flatMap(t => t.assertions))) {
       await assertion.check(context);
     }
+=======
+    tests
+      .flatMap(t => t.children.flatMap(t => t.steps))
+      .forEach(t => {
+        t.action({});
+      });
+>>>>>>> tidy
 
     expect(tests).toHaveLength(1);
   });
