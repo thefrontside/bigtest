@@ -3,7 +3,7 @@ import { ExternalCompiler } from 'src/types/compiler';
 import { readFile } from '../promisified';
 import path from 'path';
 import { assert } from '../util/assert';
-import { asyncFlatMap } from '../util/lists';
+import { asyncFlatMap, asyncMap } from '../util/lists';
 
 type SupportedFileExtensions = '.ts' | '.tsx';
 
@@ -64,7 +64,7 @@ export class Compiler {
   }
 
   async precompile(files: string[]) {
-    let testFiles = await Promise.all(files.map(file => this.createFileForTesting(file)));
+    let testFiles = await asyncMap(files, file => this.createFileForTesting(file));
 
     let compilerTasks = this.getCompilerTasks(testFiles);
 

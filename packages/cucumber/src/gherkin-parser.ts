@@ -8,6 +8,7 @@ import { assert } from './util/assert';
 import { notNothing } from './util/guards/guards';
 import { Compiler } from './compilers/compiler';
 import { runCode } from './compilers/run-code';
+import { asyncMap } from './util/lists';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { supportCodeLibraryBuilder } = require('cucumber');
@@ -94,11 +95,9 @@ export class GherkinParser {
   async compileFeatures(): Promise<TestImplementation[]> {
     await this.loadStepDefinitions();
 
-    let candidates = await Promise.all(
-      this.featureFiles.map(featureFile => {
-        return this.streamToArray(gherkin.fromPaths([featureFile]));
-      }),
-    );
+    let candidates = await asyncMap(this.featureFiles, featureFile => {
+      return this.streamToArray(gherkin.fromPaths([featureFile]));
+    });
 
     return candidates.flatMap(document => {
       let gherkinFeature = document[1]?.gherkinDocument?.feature;
