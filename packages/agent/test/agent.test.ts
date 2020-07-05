@@ -27,7 +27,7 @@ function* staticServer(dir: string, port: number) {
 let config = new AgentServerConfig({ port: 8000, prefix: 'dist/app/' });
 
 describe("@bigtest/agent", function() {
-  this.timeout(process.env.CI ? 60000 : 30000);
+  this.timeout(process.env.CI ? 60000 : 10000);
 
   describe('config', () => {
     it('has an agent url where it will server the agent application', () => {

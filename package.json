@@ -48,7 +48,6 @@
     "@typescript-eslint/parser": "^2.3.2",
     "eslint": "^6.6.0",
     "eslint-plugin-prefer-let": "^1.0.1",
-    "typescript": "^3.7.0",
-    "why-is-node-running": "^2.2.0"
+    "typescript": "^3.7.0"
   }
 }
