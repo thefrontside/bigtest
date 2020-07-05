@@ -80,7 +80,13 @@ export class GherkinParser {
 
     await this.loadStepDefinitions();
 
+<<<<<<< HEAD
     let test = this.createTestImplementationFromFeature(document);
+=======
+    let candidates = await asyncMap(this.featureFiles, featureFile => {
+      return this.streamToArray(gherkin.fromPaths([featureFile]));
+    });
+>>>>>>> use asyncMap
 
     test.children = pickles.map(this.createTestsFromFeature).filter((c: unknown): c is TestImplementation => !!c);
 
