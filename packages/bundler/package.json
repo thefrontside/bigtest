@@ -2,8 +2,8 @@
   "name": "@bigtest/bundler",
   "version": "0.5.1",
   "description": "Effection wrappers for working with a bundler",
-  "main": "dist/src/index.js",
-  "typings": "dist/src/index.d.ts",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
@@ -14,7 +14,6 @@
   "scripts": {
     "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "start": "ts-node bin/start.ts",
     "prepack": "tsc --outDir dist --declaration --sourcemap --module commonjs"
   },
   "dependencies": {

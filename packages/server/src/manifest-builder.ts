@@ -28,7 +28,7 @@ export function* updateSourceMapURL(filePath: string, sourcemapName: string): Op
   let readStream = fs.createReadStream(filePath, {start: size - 16});
   let [currentURL]: [Buffer] = yield once(readStream, 'data');
 
-  if (currentURL.toString().trim().match(/manifest\.js\.map$/)) {
+  if (currentURL.toString().trim() === 'manifest.js.map') {
     yield truncate(filePath, size - 16);
     fs.appendFileSync(filePath, sourcemapName);
   } else {
@@ -74,7 +74,6 @@ function* handleErrors(bundler: Bundler, delegate: Mailbox): Operation {
 }
 
 export function* createManifestBuilder(options: ManifestBuilderOptions): Operation {
-  let distPath: string;
   let bundler: Bundler = yield Bundler.create(
     [{
       entry: options.srcPath,
@@ -84,11 +83,14 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
   );
 
   yield handleErrors(bundler, options.delegate);
-  distPath = yield processManifest(options);
+
+  let distPath: string = yield processManifest(options);
+
   console.debug("[manifest builder] manifest ready");
+
   options.delegate.send({ status: "ready", path: distPath });
 
-  while(true) {
+  while (true) {
     yield handleErrors(bundler, options.delegate);
     let distPath = yield processManifest(options);
 

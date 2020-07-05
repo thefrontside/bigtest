@@ -13,22 +13,23 @@ export interface BundleOptions {
   entry: string;
   outFile: string;
   globalName?: string;
-}
+};
 
-function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: { mainFields: string[] } = { mainFields: ["browser", "main"] }): Array<RollupWatchOptions> {
+export interface BundlerOptions {
+  mainFields: Array<"browser" | "main">;
+};
+
+function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: BundlerOptions = { mainFields: ["browser", "main"] }): Array<RollupWatchOptions> {
   return bundles.map(bundle => {
     return {
       input: bundle.entry,
       output: {
         file: bundle.outFile,
         name: bundle.globalName || undefined,
-        globals: {
-          "perf_hooks": "perf_hooks"
-        },
         sourcemap: true,
         format: 'umd',
       },
-      external: ['perf_hooks'],
+      external: ['perf_hooks', '@babel/runtime'],
       watch: {
         exclude: ['node_modules/**']
       },
@@ -61,6 +62,7 @@ function* waitForBuild(rollup: RollupWatcher) {
     .filter(event => eventIs(event, 'END') || eventIs(event, 'ERROR'))
     .map(event => {
       if (eventIs(event, 'END')) return { type: 'update' };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (eventIs(event, 'ERROR')) return { type: 'error', error: (event as any).error };
       throw new Error('Please file a bug report and include this stack trace');
     }).first();

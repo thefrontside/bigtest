@@ -6,7 +6,7 @@ import * as rmrf from 'rimraf';
 import { spawn } from './world';
 import { Bundler } from '../src/index';
 
-describe("Bundle Server", function() {
+describe("Bundler", function() {
   this.timeout(5000);
   let bundler: Bundler;
 
@@ -95,7 +95,7 @@ describe("Bundle Server", function() {
       });
     });
 
-    describe('failure', () => {
+    describe('type error', () => {
       beforeEach(async () => {
         await fs.writeFile("./build/test/sources/input.ts", "const foo: number = 'bar';\nexport default foo;\n");
 
