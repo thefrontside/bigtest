@@ -34,7 +34,7 @@ export class TypescriptCompiler implements ExternalCompiler {
       let message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
       let file = diagnostic.file;
 
-      if (file && diagnostic.start !== void 0) {
+      if (file && diagnostic.start !== undefined) {
         let { line, character } = file.getLineAndCharacterOfPosition(diagnostic.start);
 
         errMsg += `${file.fileName} (${line + 1}, ${character + 1}): `;
@@ -90,7 +90,7 @@ export class TypescriptCompiler implements ExternalCompiler {
       }
     };
 
-    program.emit(void 0, writeFile);
+    program.emit(undefined, writeFile);
 
     return outputFiles;
   }

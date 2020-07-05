@@ -85,7 +85,7 @@ export class GherkinParser {
 
       let step: Step = {
         description: currentStepDefinition.text,
-        action: () => code(...(args || [])),
+        action: () => code(...(args ?? [])),
       };
 
       return step;
@@ -95,18 +95,18 @@ export class GherkinParser {
   async compileFeatures(): Promise<TestImplementation[]> {
     await this.loadStepDefinitions();
 
-    let candidates = await asyncMap(this.featureFiles, featureFile => {
+    let envelopes = await asyncMap(this.featureFiles, featureFile => {
       return this.streamToArray(gherkin.fromPaths([featureFile]));
     });
 
-    return candidates.flatMap(document => {
-      let gherkinFeature = document[1]?.gherkinDocument?.feature;
+    return envelopes.flatMap(documents => {
+      let gherkinFeature = documents[1]?.gherkinDocument?.feature;
 
       assert(!!gherkinFeature?.name, 'No feature name');
 
       let feature = testBuilder(`feature: ${gherkinFeature.name}`);
 
-      feature.children = document
+      feature.children = documents
         .flatMap(el => (notNothing(el.pickle) ? [el.pickle] : []))
         .flatMap(pickle => {
           let scenario = testBuilder(`scenario: ${pickle.name}`);

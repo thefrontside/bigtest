@@ -23,7 +23,7 @@ describe('feature parser', () => {
     tests
       .flatMap(t => t.children.flatMap(t => t.steps))
       .forEach(t => {
-        (t as any).action();
+        t.action({});
       });
 
     expect(tests).toHaveLength(1);
