@@ -2037,7 +2037,7 @@ module.exports = test("tests").step("load the app", /*#__PURE__*/_asyncToGenerat
       switch (_context3.prev = _context3.next) {
         case 0:
           _context3.next = 2;
-          return App.visit('/app.html');
+          return App.visit('/test/fixtures/app.html');
 
         case 2:
         case "end":
