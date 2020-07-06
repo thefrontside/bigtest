@@ -21,7 +21,7 @@ export class ParcelProcess {
 
       let child = yield ChildProcess.fork(
         runParcel,
-        [...entries, '--options', JSON.stringify(options)],
+        [...entries, '--options', `'${JSON.stringify(options)}'`],
         {
           stdio: [mode, mode, mode, 'ipc'],
           detached: true,
