@@ -9,3 +9,7 @@ export class AmbiguousElementError extends Error {
 export class NotAbsentError extends Error {
   get name() { return "NotAbsentError" }
 }
+
+export class FilterNotMatchingError extends Error {
+  get name() { return "FilterNotMatchingError" }
+}

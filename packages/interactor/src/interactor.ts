@@ -1,8 +1,9 @@
 import { bigtestGlobals } from '@bigtest/globals';
 import { converge } from './converge';
-import { InteractorSpecification } from './specification';
+import { InteractorSpecification, FilterImplementation } from './specification';
 import { Locator } from './locator';
-import { NoSuchElementError, AmbiguousElementError, NotAbsentError } from './errors';
+import { Filter } from './filter';
+import { NoSuchElementError, AmbiguousElementError, NotAbsentError, FilterNotMatchingError } from './errors';
 import { interaction, Interaction } from './interaction';
 
 const defaultSelector = 'div';
@@ -14,8 +15,14 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
   constructor(
     public name: string,
     private specification: S,
-    private locator: Locator<E>
+    private locator: Locator<E>,
+    private filter: Filter<E, S>
   ) {}
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private get ancestorsAndSelf(): Array<Interactor<any, any>> {
+    return [...this.ancestors, this];
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   find<T extends Interactor<any, any>>(interactor: T): T {
@@ -27,22 +34,20 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
   }
 
   get description(): string {
-    return this.ancestors.slice().reverse().reduce((desc, interactor) => {
-      return `${desc} within ${interactor.name} ${interactor.locator.description}`
-    }, `${this.name} ${this.locator.description}`);
+    return this.ancestorsAndSelf.reverse().map((interactor) => {
+      return `${interactor.name} ${interactor.locator.description} ${interactor.filter.description}`.trim();
+    }).join(' within ');
   }
 
   private unsafeSyncResolve(): E {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let ancestorChain: Array<Interactor<any, any>> = [...this.ancestors, this];
-
-    return ancestorChain.reduce((parentElement: Element, interactor) => {
+    return this.ancestorsAndSelf.reduce((parentElement: Element, interactor) => {
       let elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector || defaultSelector));
-      let matchingElements = elements.filter((element) => interactor.locator.matches(element));
+      let locatedElements = elements.filter((element) => interactor.locator.matches(element));
+      let filteredElements = locatedElements.filter((element) => interactor.filter.matches(element));
 
-      if(matchingElements.length === 1) {
-        return matchingElements[0];
-      } else if(matchingElements.length === 0) {
+      if(filteredElements.length === 1) {
+        return filteredElements[0];
+      } else if(filteredElements.length === 0) {
         throw new NoSuchElementError(`${interactor.description} does not exist`);
       } else {
         throw new AmbiguousElementError(`${interactor.description} is ambiguous`);
@@ -78,5 +83,23 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
         throw new NotAbsentError(`${this.description} exists but should not`);
       });
     });
+  }
+
+  is(filters: FilterImplementation<E, S>): Interaction<true> {
+    let filter = new Filter(this.specification, filters);
+    return interaction(`${this.description} matches filters: ${filter.description}`, () => {
+      return converge(() => {
+        let element = this.unsafeSyncResolve();
+        if(filter.matches(element)) {
+          return true;
+        } else {
+          throw new FilterNotMatchingError(`${this.description} does not match filters: ${filter.description}`);
+        }
+      });
+    });
+  }
+
+  has(filters: FilterImplementation<E, S>): Interaction<true> {
+    return this.is(filters);
   }
 }
