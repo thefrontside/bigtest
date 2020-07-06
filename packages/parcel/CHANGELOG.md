@@ -1,5 +1,11 @@
 # @bigtest/parcel
 
+## 0.5.2
+
+### Patch Changes
+
+- 3cbefaed: Quote options string
+
 ## 0.5.1
 
 ### Patch Changes

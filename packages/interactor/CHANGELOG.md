@@ -1,5 +1,11 @@
 # @bigtest/interactor
 
+## 0.13.0
+
+### Minor Changes
+
+- 30647e65: Can filter interactors to narrow selection without having to define a separate interactor
+
 ## 0.12.1
 
 ### Patch Changes
