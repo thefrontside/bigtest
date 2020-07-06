@@ -2,6 +2,7 @@ import { describe } from 'mocha';
 import { promises as fs, existsSync } from 'fs';
 import * as expect from 'expect';
 import * as rmrf from 'rimraf';
+import { Subscribable } from '@effection/subscription';
 
 import { spawn } from './world';
 import { Bundler } from '../src/index';
@@ -28,6 +29,7 @@ describe("Bundler", function() {
             globalName: "__bigtestManifest",
           }],
         ));
+        await spawn(Subscribable.from(bundler).first());
       });
 
       it('builds the sources into the output directory', () => {
@@ -36,12 +38,11 @@ describe("Bundler", function() {
 
       describe('introducing an error', () => {
         beforeEach(async () => {
-          await spawn(bundler.receive());
           await fs.writeFile("./build/test/sources/input.js", "const foo - 'bar';\nexport default foo;\n");
         });
 
         it('emits an error event', async () => {
-          await expect(spawn(bundler.receive())).resolves.toHaveProperty('type', 'error');
+          await expect(spawn(Subscribable.from(bundler).first())).resolves.toHaveProperty('type', 'error');
         });
       });
     });
@@ -60,17 +61,17 @@ describe("Bundler", function() {
       });
 
       it('emits an error', async () => {
-        await expect(spawn(bundler.receive())).resolves.toHaveProperty('type', 'error');
+        await expect(spawn(Subscribable.from(bundler).first())).resolves.toHaveProperty('type', 'error');
       });
 
       describe('fixing the error', () => {
         beforeEach(async () => {
-          await spawn(bundler.receive());
+          await spawn(Subscribable.from(bundler).first());
           await fs.writeFile("./build/test/sources/input.js", "const foo = 'bar';\nexport default foo;\n");
         });
 
         it('emits an update event', async () => {
-          await expect(spawn(bundler.receive())).resolves.toHaveProperty('type', 'update');
+          await expect(spawn(Subscribable.from(bundler).first())).resolves.toHaveProperty('type', 'update');
         });
       });
     });
@@ -88,6 +89,7 @@ describe("Bundler", function() {
             globalName: "__bigtestManifest",
           }],
         ));
+        await spawn(Subscribable.from(bundler).first());
       });
 
       it('builds the sources into the output directory', () => {
@@ -109,7 +111,7 @@ describe("Bundler", function() {
       });
 
       it('does not typecheck, just transform', async () => {
-        await expect(spawn(bundler.receive())).resolves.toHaveProperty('type', 'update');
+        await expect(spawn(Subscribable.from(bundler).first())).resolves.toHaveProperty('type', 'update');
       });
     })
   });
@@ -129,7 +131,7 @@ describe("Bundler", function() {
     });
 
     it('notifies that a new build is available', async () => {
-      await expect(spawn(bundler.receive())).resolves.toHaveProperty('type', 'update');
+      await expect(spawn(Subscribable.from(bundler).first())).resolves.toHaveProperty('type', 'update');
     });
   });
 })

@@ -2156,12 +2156,21 @@
     tar "^2.2.2"
     tar-stream "1.6.2"
 
-"@effection/events@^0.7.4":
-  version "0.7.5"
-  resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.7.5.tgz#ff391395395b9cbffb3d5afdfcc228e0b6237cce"
-  integrity sha512-WAL8LTuzbogySy9tDgWiIveScVhFy/vvrCxWNgrtN9hph6PwpVKxEg55CoPvjPAz93JuC8qcotAbaWEXp2eoVQ==
+"@effection/channel@^0.6.4":
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/@effection/channel/-/channel-0.6.4.tgz#5e0742039d5712c9382b30cf73394ace2faead94"
+  integrity sha512-ySjXoFW6zWXDUumgCBuNtrLvywDjJdPoC+D+nrhSMoGQ8845fqID7KAyK/gbbGSDeK/YVQCtK0E12t+ReLDEVA==
   dependencies:
-    "@effection/subscription" "^0.8.0"
+    "@effection/events" "^0.7.6"
+    "@effection/subscription" "^0.9.0"
+    effection "^0.7.0"
+
+"@effection/events@^0.7.4", "@effection/events@^0.7.6":
+  version "0.7.6"
+  resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.7.6.tgz#efa9aefc1b0eb013c225af7c46423b540e759f0b"
+  integrity sha512-pTThApQxFPFpeRqfW3RnZYASGzw80tTIw5IrUjAt9OwCZJ7WOTEOEFX7YTeh0/fw92YGAjZOKdv6PP37qKF8aQ==
+  dependencies:
+    "@effection/subscription" "^0.9.0"
     effection "^0.7.0"
 
 "@effection/fetch@^0.1.2":
@@ -2182,17 +2191,10 @@
     "@effection/events" "^0.7.4"
     effection "^0.7.0"
 
-"@effection/subscription@^0.7.2":
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-0.7.3.tgz#a0b7dcd5f2acfe277d327b1cc0559ee26df4313d"
-  integrity sha512-+u0Rkw/3dGJW7Ji3zf9GQbfQHZXOXQgAAVYtvBDRImWa0Q1jYBzqS3ViFGJrCvY3S4gqGpkW3tWjWv0I8ja1OQ==
-  dependencies:
-    effection "^0.7.0"
-
-"@effection/subscription@^0.8.0":
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-0.8.0.tgz#46cd1264ed1953fd6cf2c49b822864114ed62036"
-  integrity sha512-8Qma1arkCLuqGvkIYZc0m+Wi/MpHFAV1h+tllP60QdBAQQBXXygwtbw53hkzXW0CZHIJgmF6nVdKKf2StanfXw==
+"@effection/subscription@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-0.9.0.tgz#5a7ec6ab6381b9d0698e64dc1f7f15368593b145"
+  integrity sha512-k6DuSpEnh+PYHcND/g/cGzWG+V49CEiRqlhrGiJbPdptv8DXY52UxHi6fdwmNDSTZ/GvS0JnX8lhsc4ryxmapQ==
   dependencies:
     effection "^0.7.0"
 

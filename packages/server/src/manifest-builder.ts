@@ -1,6 +1,7 @@
 import { bigtestGlobals } from '@bigtest/globals';
 import { Operation } from 'effection';
 import { once } from '@effection/events';
+import { Subscribable } from '@effection/subscription';
 import { Mailbox } from '@bigtest/effection';
 import { Bundler } from '@bigtest/bundler';
 import { Atom } from '@bigtest/atom';
@@ -64,7 +65,7 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
 }
 
 function* handleErrors(bundler: Bundler, delegate: Mailbox): Operation {
-  let message = yield bundler.receive();
+  let message = yield Subscribable.from(bundler).first();
 
   if (message.type === "error") {
     console.error("[manifest builder] build error:", message.error.message);

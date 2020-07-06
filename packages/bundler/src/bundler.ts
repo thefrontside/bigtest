@@ -1,13 +1,14 @@
 import { Operation } from 'effection';
 import { on } from '@effection/events';
-import { Subscribable } from '@effection/subscription';
-import { watch, RollupWatchOptions, RollupWatcher, RollupWatcherEvent } from 'rollup';
+import { Subscribable, SymbolSubscribable } from '@effection/subscription';
+import { Channel } from '@effection/channel';
+import { watch, RollupWatchOptions, RollupWatcherEvent, RollupError } from 'rollup';
 import resolve from '@rollup/plugin-node-resolve';
 import * as commonjs from '@rollup/plugin-commonjs';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import babel from '@rollup/plugin-babel';
-import { Mailbox, readyResource } from '@bigtest/effection';
+import { readyResource } from '@bigtest/effection';
 
 export interface BundleOptions {
   entry: string;
@@ -18,6 +19,10 @@ export interface BundleOptions {
 export interface BundlerOptions {
   mainFields: Array<"browser" | "main">;
 };
+
+export type BundlerMessage =
+  | { type: 'update' }
+  | { type: 'error'; error: RollupError };
 
 function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: BundlerOptions = { mainFields: ["browser", "main"] }): Array<RollupWatchOptions> {
   return bundles.map(bundle => {
@@ -56,41 +61,39 @@ function eventIs<T extends RollupWatcherEvent, S extends T>(event: T, code: 'ERR
   return event.code === code;
 }
 
-function* waitForBuild(rollup: RollupWatcher) {
-  return yield Subscribable.from(on<Array<RollupWatcherEvent>>(rollup, 'event'))
-    .map(([event]) => event)
-    .filter(event => eventIs(event, 'END') || eventIs(event, 'ERROR'))
-    .map(event => {
-      if (eventIs(event, 'END')) return { type: 'update' };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (eventIs(event, 'ERROR')) return { type: 'error', error: (event as any).error };
-      throw new Error('Please file a bug report and include this stack trace');
-    }).first();
-}
+export class Bundler implements Subscribable<BundlerMessage, undefined> {
+  private channel = new Channel<BundlerMessage>();
 
-export class Bundler {
-  private mailbox: Mailbox = new Mailbox();
+  private get messages() {
+    return Subscribable.from(this.channel);
+  }
 
   static *create(bundles: Array<BundleOptions>): Operation {
     let bundler = new Bundler();
 
-    return yield readyResource(bundler, function*(ready): Operation<void> {
+    return yield readyResource(bundler, function*(ready) {
       let rollup = watch(prepareRollupOptions(bundles));
+      let events = Subscribable
+        .from(on<Array<RollupWatcherEvent>>(rollup, 'event'))
+        .map(([event]) => event)
+        .filter(event => eventIs(event, 'END') || eventIs(event, 'ERROR'))
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        .map(event => event.error ? { type: 'error', error: event.error } : { type: 'update' });
+
+      ready();
 
       try {
-        bundler.mailbox.send(yield waitForBuild(rollup));
-        ready();
-
-        while (true) {
-          bundler.mailbox.send(yield waitForBuild(rollup));
-        }
+        yield events.forEach(function*(message) {
+          bundler.channel.send(message as BundlerMessage);
+        });
       } finally {
         rollup.close();
       }
     });
   }
 
-  receive(pattern: unknown = undefined): Operation {
-    return this.mailbox.receive(pattern);
+  [SymbolSubscribable]() {
+    return this.messages[SymbolSubscribable]();
   }
 }

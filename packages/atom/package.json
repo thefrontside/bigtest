@@ -27,9 +27,9 @@
     "ts-node": "*"
   },
   "dependencies": {
-    "effection": "0.7.0",
     "@effection/events": "^0.7.4",
-    "@effection/subscription": "^0.7.2",
+    "@effection/subscription": "^0.9.0",
+    "effection": "0.7.0",
     "ramda": "0.27.0"
   },
   "volta": {
