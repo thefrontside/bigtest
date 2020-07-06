@@ -1,5 +1,12 @@
 # @bigtest/cli
 
+## 0.6.2
+
+### Patch Changes
+
+- Updated dependencies [c6c5efc5]
+  - @bigtest/server@0.7.0
+
 ## 0.6.1
 
 ### Patch Changes

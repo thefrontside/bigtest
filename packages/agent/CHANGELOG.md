@@ -1,5 +1,16 @@
 # @bigtest/agent
 
+## 0.7.0
+
+### Minor Changes
+
+- ea5784a8: Proxy fetch and XMLHttpRequest through agent frame, enables mocking of requests
+
+### Patch Changes
+
+- Updated dependencies [30647e65]
+  - @bigtest/interactor@0.13.0
+
 ## 0.6.1
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.7.0
+
+### Minor Changes
+
+- c6c5efc5: Copy manifests to dist/ and update sourceMappingURL
+
+### Patch Changes
+
+- Updated dependencies [3cbefaed]
+- Updated dependencies [ea5784a8]
+  - @bigtest/parcel@0.5.2
+  - @bigtest/agent@0.7.0
+
 ## 0.6.1
 
 ### Patch Changes

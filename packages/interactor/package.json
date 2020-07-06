@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/interactor",
-  "version": "0.12.1",
+  "version": "0.13.0",
   "description": "Interactors for working with applications",
   "main": "dist/index.js",
   "typings": "dist/index.d.js",
