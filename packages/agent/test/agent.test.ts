@@ -2,7 +2,7 @@ import { Local, WebDriver } from '@bigtest/webdriver';
 import { readyResource } from '@bigtest/effection';
 import { express } from '@bigtest/effection-express';
 import { static as staticMiddleware } from 'express';
-import * as rmrf from 'rimraf';
+
 import { describe, it } from 'mocha';
 import * as expect from 'expect';
 import fetch from 'node-fetch';
@@ -14,10 +14,10 @@ import { Mailbox } from '@bigtest/effection';
 
 import { main } from './helpers';
 
-function* staticServer(dir: string, port: number) {
+function* staticServer(port: number) {
   let app = express();
   return yield readyResource(app, function*(ready) {
-    app.raw.use(staticMiddleware(dir));
+    app.raw.use(staticMiddleware("./"));
     yield app.listen(port);
     ready();
     yield;
@@ -44,9 +44,8 @@ describe("@bigtest/agent", function() {
     let delegate: Mailbox;
     let inbox: Mailbox;
 
-    beforeEach((done) => rmrf('tmp', done));
     beforeEach(async () => {
-      await main(staticServer("./dist/app", 8000));
+      await main(staticServer(8000));
 
       client = new AgentConnectionServer({
         port: 8001,
@@ -75,7 +74,6 @@ describe("@bigtest/agent", function() {
       let agentId: string;
 
       beforeEach(async function() {
-        await main(staticServer("./test/fixtures", 8002));
         browser = await main(Local({ browserName: 'chrome', headless: true }));
         await main(browser.navigateTo(config.agentUrl(`ws://localhost:8001`)));
         message = await main(delegate.receive({ status: 'connected' })) as typeof message;
@@ -106,12 +104,14 @@ describe("@bigtest/agent", function() {
             type: 'assertion:result',
             path: ['tests', 'test with failing assertion', 'successful assertion'],
           }));
+
           failure = await main(delegate.receive({
             agentId,
             testRunId,
             type: 'assertion:result',
             path: ['tests', 'test with failing assertion', 'failing assertion'],
           }));
+
           checkContext = await main(delegate.receive({
             agentId,
             testRunId,
