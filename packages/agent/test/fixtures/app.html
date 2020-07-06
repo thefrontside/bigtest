@@ -2,10 +2,17 @@
 
 <html>
   <head>
-    <script src="http://localhost:8000/harness.js"></script>
+    <script src="http://localhost:8000/dist/app/harness.js"></script>
   </head>
 
   <body>
     <h1>Fake App for Agent tests</h1>
+    <h2></h2>
+
+    <script>
+      fetch('/greeting').then((req) => req.json()).then((data) => {
+        document.querySelector('h2').textContent = data.greeting;
+      });
+    </script>
   </body>
 </html>

@@ -1,7 +1,20 @@
 const { test } = require('@bigtest/suite');
 const { strict: assert } = require('assert');
+const { createInteractor, App } = require('@bigtest/interactor');
+
+globalThis.fetch = async function(url) {
+  assert.equal(url, '/greeting');
+  return {
+    async json() {
+      return { greeting: "hello from mocked fetch" }
+    }
+  }
+}
+
+const H2 = createInteractor('h2')({ selector: 'h2' });
 
 module.exports = test("tests")
+  .step("load the app", async () => { await App.visit('/test/fixtures/app.html') })
   .child(
     "test with failing assertion", test => test
       .step("successful step", async () => {})
@@ -17,4 +30,7 @@ module.exports = test("tests")
       }))
   .child(
     "test step timeouts", test => test
-      .step("this takes literally forever", async () => await new Promise(() => {})));
+      .step("this takes literally forever", async () => await new Promise(() => {})))
+  .child(
+    "test fetch", test => test
+      .step("fetch is mocked", async () => await H2('hello from mocked fetch').exists()));

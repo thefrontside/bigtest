@@ -1,5 +1,4 @@
 import { Local, WebDriver } from '@bigtest/webdriver';
-import { ParcelProcess } from '@bigtest/parcel';
 import { readyResource } from '@bigtest/effection';
 import { express } from '@bigtest/effection-express';
 import { static as staticMiddleware } from 'express';
@@ -18,14 +17,14 @@ import { main } from './helpers';
 function* staticServer(port: number) {
   let app = express();
   return yield readyResource(app, function*(ready) {
-    app.raw.use(staticMiddleware("./test/fixtures"));
+    app.raw.use(staticMiddleware("./"));
     yield app.listen(port);
     ready();
     yield;
   });
 }
 
-let config = new AgentServerConfig({ port: 8000 });
+let config = new AgentServerConfig({ port: 8000, prefix: 'dist/app/' });
 
 describe("@bigtest/agent", function() {
   this.timeout(process.env.CI ? 60000 : 10000);
@@ -46,7 +45,7 @@ describe("@bigtest/agent", function() {
     let inbox: Mailbox;
 
     beforeEach(async () => {
-      await main(ParcelProcess.create(['./app/index.html', './app/harness.ts'], { port: 8000 }))
+      await main(staticServer(8000));
 
       client = new AgentConnectionServer({
         port: 8001,
@@ -75,7 +74,6 @@ describe("@bigtest/agent", function() {
       let agentId: string;
 
       beforeEach(async function() {
-        await main(staticServer(8002));
         browser = await main(Local({ browserName: 'chrome', headless: true }));
         await main(browser.navigateTo(config.agentUrl(`ws://localhost:8001`)));
         message = await main(delegate.receive({ status: 'connected' })) as typeof message;
@@ -93,8 +91,8 @@ describe("@bigtest/agent", function() {
         let testRunId = 'test-run-1';
 
         beforeEach(async () => {
-          let manifestUrl = 'http://localhost:8002/manifest.js';
-          let appUrl = 'http://localhost:8002/app.html';
+          let manifestUrl = 'http://localhost:8000/test/fixtures/manifest.js';
+          let appUrl = 'http://localhost:8000/test/fixtures';
           inbox.send({ type: 'run', testRunId, agentId, manifestUrl, appUrl, tree: fixtureManifest });
 
           await main(delegate.receive({ type: 'run:end', agentId, testRunId }));
@@ -155,6 +153,21 @@ describe("@bigtest/agent", function() {
           });
         });
 
+        describe('steps that mock fetch', () => {
+          let step: StepResult;
+          beforeEach(async () => {
+            step = await main(delegate.receive({
+              agentId,
+              testRunId,
+              type: 'step:result',
+              path: ['tests', 'test fetch', 'fetch is mocked']
+            }));
+          });
+
+          it('succeeds', async () => {
+            expect(step.status).toEqual('ok');
+          });
+        });
       });
 
       describe('closing browser connection', () => {
