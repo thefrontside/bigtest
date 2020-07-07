@@ -1,9 +1,12 @@
 import { resource } from 'effection';
-import { on, once } from '@effection/events';
+import { on } from '@effection/events';
+import { subscribe } from '@effection/subscription';
+import { Channel } from '@effection/channel';
 import { Readable } from 'stream';
 
 export class Stream {
   public output = "";
+  private semaphore = new Channel<true>();
 
   static *of(value: Readable, verbose = false) {
     let testStream = new Stream(value, verbose);
@@ -17,6 +20,7 @@ export class Stream {
     while(true) {
       let { value: chunk } = yield events.next();
       this.output += chunk;
+      this.semaphore.send(true);
       if(this.verbose) {
         console.debug(chunk.toString());
       }
@@ -24,8 +28,9 @@ export class Stream {
   }
 
   *waitFor(text: string) {
+    let subscription = yield subscribe(this.semaphore);
     while(!this.output.includes(text)) {
-      yield once(this.stream, "data");
+      yield subscription.next();
     }
   }
 }
