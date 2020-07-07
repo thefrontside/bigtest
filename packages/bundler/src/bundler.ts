@@ -1,14 +1,13 @@
-import { Operation } from 'effection';
+import { Operation, resource } from 'effection';
 import { on } from '@effection/events';
 import { Subscribable, SymbolSubscribable } from '@effection/subscription';
 import { Channel } from '@effection/channel';
-import { watch, RollupWatchOptions, RollupWatcherEvent, RollupError } from 'rollup';
+import { watch, RollupWatchOptions, RollupWatcherEvent } from 'rollup';
 import resolve from '@rollup/plugin-node-resolve';
 import * as commonjs from '@rollup/plugin-commonjs';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import babel from '@rollup/plugin-babel';
-import { readyResource } from '@bigtest/effection';
 
 interface BundleOptions {
   entry: string;
@@ -61,10 +60,6 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: Bun
   });
 }
 
-function eventIs<T extends RollupWatcherEvent, S extends T>(event: T, code: 'ERROR' | 'END'): event is S {
-  return event.code === code;
-}
-
 export class Bundler implements Subscribable<BundlerMessage, undefined> {
   private channel = new Channel<BundlerMessage>();
 
@@ -72,21 +67,16 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
     return Subscribable.from(this.channel);
   }
 
-  static *create(bundles: Array<BundleOptions>): Operation {
+  static *create(bundles: Array<BundleOptions>): Operation<Bundler> {
     let bundler = new Bundler();
+    let rollup = watch(prepareRollupOptions(bundles));
+    let events = Subscribable
+      .from(on<Array<RollupWatcherEvent>>(rollup, 'event'))
+      .map(([event]) => event)
+      .filter(event => event.code === 'END' || event.code === 'ERROR')
+      .map(event => event.code === 'ERROR' ? { type: 'error', error: event.error } : { type: 'update' });
 
-    return yield readyResource(bundler, function*(ready) {
-      let rollup = watch(prepareRollupOptions(bundles));
-      let events = Subscribable
-        .from(on<Array<RollupWatcherEvent>>(rollup, 'event'))
-        .map(([event]) => event)
-        .filter(event => eventIs(event, 'END') || eventIs(event, 'ERROR'))
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-        // @ts-ignore
-        .map(event => event.error ? { type: 'error', error: event.error } : { type: 'update' });
-
-      ready();
-
+    return yield resource(bundler, function*() {
       try {
         yield events.forEach(function*(message) {
           bundler.channel.send(message as BundlerMessage);
