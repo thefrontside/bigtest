@@ -11,15 +11,16 @@ when a new build is available.
 
 ``` typescript
 import { Bundler } from '@bigtest/bundler';
-import { Subscribable } from '@effection/subscription';
+import { subscribe } from '@effection/subscription';
 
 function* start() {
   let bundler: Bundler = yield Bundler.create([{
     entry: 'src/index.js',
     outFile: 'dist/index.js'
   }]);
+  let subscription = yield subscribe(bundler);
 
-  yield Subscribable.from(bundler).forEach(function*(message) {
+  yield subscription.forEach(function*(message) {
     console.log('new build happened:', message);
   });
 }

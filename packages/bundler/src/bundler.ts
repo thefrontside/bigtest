@@ -10,19 +10,23 @@ import * as commonjs from '@rollup/plugin-commonjs';
 import babel from '@rollup/plugin-babel';
 import { readyResource } from '@bigtest/effection';
 
-export interface BundleOptions {
+interface BundleOptions {
   entry: string;
   outFile: string;
   globalName?: string;
 };
 
-export interface BundlerOptions {
+interface BundlerOptions {
   mainFields: Array<"browser" | "main">;
+};
+
+export interface BundlerError extends Error {
+  frame: string;
 };
 
 export type BundlerMessage =
   | { type: 'update' }
-  | { type: 'error'; error: RollupError };
+  | { type: 'error'; error: BundlerError };
 
 function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: BundlerOptions = { mainFields: ["browser", "main"] }): Array<RollupWatchOptions> {
   return bundles.map(bundle => {

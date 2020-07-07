@@ -57,6 +57,20 @@ describe('manifest builder', () => {
     });
   });
 
+  describe('updating the manifest', () => {
+    let body: string;
+
+    beforeEach(async () => {
+      await copyFile('./test/fixtures/empty.t.js', MANIFEST_PATH);
+      resultPath = (await actions.receive(delegate, { event: 'update' }))['path'];
+      body = await readFile(path.resolve(DIST_DIR, resultPath), 'utf8')
+    });
+
+    it('contains the built manifest', () => {
+      expect(body).toContain('An empty test with no steps and no children');
+    });
+  });
+
   describe('reading manifest from state on start', () => {
     it('returns the manifest from the state', () => {
       expect(atom.get().manifest.fileName).toMatch(/manifest-[0-9a-f]+\.js/);
