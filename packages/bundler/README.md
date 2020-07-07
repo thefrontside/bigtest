@@ -11,19 +11,17 @@ when a new build is available.
 
 ``` typescript
 import { Bundler } from '@bigtest/bundler';
+import { Subscribable } from '@effection/subscription';
 
 function* start() {
-
-  // this operation does not complete until parcel is up and running
   let bundler: Bundler = yield Bundler.create([{
     entry: 'src/index.js',
     outFile: 'dist/index.js'
   }]);
 
-  while (true) {
-    let message = yield parcel.receive({ type: "update" });
-    console.log('new build happened: ', message);
-  }
+  yield Subscribable.from(bundler).forEach(function*(message) {
+    console.log('new build happened:', message);
+  });
 }
 ```
 
