@@ -70,7 +70,7 @@ function logBuildError(error: BundlerError) {
 }
 
 function* waitForSuccessfulBuild(bundlerEvents: ChainableSubscription<BundlerMessage, undefined>, delegate: Mailbox): Operation {
-  let message = yield bundlerEvents.first();
+  let message: BundlerMessage = yield bundlerEvents.expect();
 
   if (message.type === "error") {
     logBuildError(message.error);

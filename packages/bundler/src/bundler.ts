@@ -37,7 +37,6 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: Bun
         sourcemap: true,
         format: 'umd',
       },
-      external: ['perf_hooks', '@babel/runtime'],
       watch: {
         exclude: ['node_modules/**']
       },
@@ -63,10 +62,6 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: Bun
 export class Bundler implements Subscribable<BundlerMessage, undefined> {
   private channel = new Channel<BundlerMessage>();
 
-  private get messages() {
-    return Subscribable.from(this.channel);
-  }
-
   static *create(bundles: Array<BundleOptions>): Operation<Bundler> {
     let bundler = new Bundler();
     let rollup = watch(prepareRollupOptions(bundles));
@@ -88,6 +83,6 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
   }
 
   [SymbolSubscribable]() {
-    return this.messages[SymbolSubscribable]();
+    return this.channel[SymbolSubscribable]();
   }
 }
