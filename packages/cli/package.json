@@ -46,7 +46,7 @@
     "@bigtest/performance": "^0.5.0",
     "@bigtest/project": "^0.5.1",
     "@bigtest/server": "^0.8.0",
-    "@effection/node": "^0.6.5",
+    "@effection/node": "^0.8.0",
     "capture-console": "^1.0.1",
     "deepmerge": "^4.2.2",
     "effection": "^0.7.0",
