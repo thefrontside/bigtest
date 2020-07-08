@@ -1,9 +1,9 @@
 {
-  "name": "@bigtest/parcel",
-  "version": "0.5.2",
-  "description": "Effection wrappers for working with parcel",
-  "main": "dist/src/index.js",
-  "typings": "dist/src/index.d.ts",
+  "name": "@bigtest/bundler",
+  "version": "0.5.1",
+  "description": "Effection wrappers for working with a bundler",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
@@ -14,16 +14,24 @@
   "scripts": {
     "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "start": "ts-node bin/start.ts",
     "prepack": "tsc --outDir dist --declaration --sourcemap --module commonjs"
   },
   "dependencies": {
+    "@babel/core": "^7.10.4",
+    "@babel/plugin-transform-runtime": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/preset-typescript": "^7.10.4",
+    "@babel/runtime": "^7.10.4",
     "@bigtest/effection": "^0.5.1",
+    "@effection/channel": "^0.6.4",
     "@effection/events": "^0.7.4",
     "@effection/node": "^0.6.5",
+    "@rollup/plugin-babel": "^5.0.4",
+    "@rollup/plugin-commonjs": "^13.0.0",
+    "@rollup/plugin-node-resolve": "^8.1.0",
     "effection": "^0.7.0",
-    "parcel": "^1.12.4",
-    "parcel-bundler": "^1.12.4"
+    "express": "^4.17.1",
+    "rollup": "^2.18.1"
   },
   "volta": {
     "node": "12.16.0",

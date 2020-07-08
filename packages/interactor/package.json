@@ -2,8 +2,9 @@
   "name": "@bigtest/interactor",
   "version": "0.13.0",
   "description": "Interactors for working with applications",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.js",
+  "main": "dist/cjs/index.js",
+  "browser": "dist/esm/index.js",
+  "typings": "dist/types/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
@@ -18,7 +19,7 @@
     "test:unit": "mocha -r ts-node/register test/**/*.test.ts",
     "test:types": "dtslint types --localTs ../../node_modules/typescript/lib --expectOnly",
     "test": "yarn test:unit && yarn test:types",
-    "prepack": "tsc --outdir dist --declaration --sourcemap"
+    "prepack": "tsc --outdir dist/esm --sourcemap --module es2015 && tsc --outdir dist/cjs --sourcemap --module commonjs && tsc --outdir dist/types --emitDeclarationOnly"
   },
   "dependencies": {
     "@bigtest/performance": "^0.5.0",

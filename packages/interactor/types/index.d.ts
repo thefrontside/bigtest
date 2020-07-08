@@ -1,1 +1,1 @@
-../dist/index.d.ts
+../dist/types/index.d.ts

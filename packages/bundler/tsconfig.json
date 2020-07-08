@@ -1,0 +1,4 @@
+{
+  "extends": "@frontside/tsconfig",
+  "files": ["src/index.ts"]
+}
