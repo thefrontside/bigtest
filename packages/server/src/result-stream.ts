@@ -1,6 +1,6 @@
 import { Operation, fork } from 'effection';
 import { Slice } from '@bigtest/atom';
-import { Subscribable, SymbolSubscribable, Subscription, createSubscription } from '@effection/subscription';
+import { subscribe, Subscription, createSubscription } from '@effection/subscription';
 import { TestResult, StepResult, AssertionResult, ResultStatus } from '@bigtest/suite';
 import { OrchestratorState, TestRunState, TestRunAgentState } from './orchestrator/state';
 import { TestEvent } from './schema/test-event';
@@ -9,11 +9,7 @@ type Publish = (event: TestEvent) => void;
 
 export function* resultStream(testRunId: string, slice: Slice<TestRunState, OrchestratorState>): Operation<Subscription<TestEvent, void>> {
   return yield createSubscription(function*(publish) {
-    // TODO: if we have `once` on slice, we should use it here.
-    if(!slice.get()) {
-      yield Subscribable.from(slice).match({ status: "pending" }).first();
-    }
-
+    yield slice.once((state) => state?.status === 'pending');
     yield streamTestRun(slice, publish, { testRunId });
   });
 }
@@ -35,10 +31,12 @@ function* streamResults(type: string, slice: Slice<any, OrchestratorState>, publ
   let statusSlice = slice.slice<ResultStatus>(['status']);
   let previousStatus = statusSlice.get();
 
-  let subscription = yield statusSlice[SymbolSubscribable]();
+  let subscription = yield subscribe(statusSlice);
   while(true) {
-    let { value: status } = yield subscription.next();
-    if(status !== previousStatus) {
+    let { done, value: status } = yield subscription.next();
+    if(done) {
+      return;
+    } else if(status !== previousStatus) {
       if(status === 'pending') {
         // do nothing
       } else if(status === 'running') {

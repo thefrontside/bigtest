@@ -1,4 +1,5 @@
 import { Operation, spawn, fork } from 'effection';
+import { forEach } from '@effection/subscription';
 import { Mailbox } from '@bigtest/effection';
 import { express, Socket } from '@bigtest/effection-express';
 import * as graphqlHTTP from 'express-graphql';
@@ -70,7 +71,7 @@ function handleMessage(options: CommandServerOptions): (socket: Socket) => Opera
     yield publishQueryResult(message, options.atom.get(), socket);
 
     if (message.live) {
-      yield fork(options.atom.each(state => publishQueryResult(message, state, socket)));
+      yield fork(forEach(options.atom, (state) => publishQueryResult(message, state, socket)));
     }
   }
 
