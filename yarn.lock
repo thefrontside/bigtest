@@ -2208,6 +2208,13 @@
     "@effection/events" "^0.7.4"
     effection "^0.7.0"
 
+"@effection/subscription@^0.8.0":
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-0.8.1.tgz#aa0286549b2bb833f211010db33c0324f6b59d81"
+  integrity sha512-0e9U1dAfc4vbr/aRy53VG9Qdh4gwFMcnNJYcYzjHfMu0GznaX4UjwuOdq7W29UfNUV/gTqA4ij95kPUfEwtONQ==
+  dependencies:
+    effection "^0.7.0"
+
 "@effection/subscription@^0.9.0":
   version "0.9.0"
   resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-0.9.0.tgz#5a7ec6ab6381b9d0698e64dc1f7f15368593b145"
