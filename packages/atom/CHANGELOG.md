@@ -1,5 +1,14 @@
 # @bigtest/atom
 
+## 0.7.0
+
+### Minor Changes
+
+- 9ebb822d: Switch to using channel internally. Changes return type of subscription from `void` to `undefined`.
+- 9ebb822d: Remove `Atom#each`, use `forEach` instead.
+- 9ebb822d: Add `set` method to `Atom`
+- 9ebb822d: Add `once` method to `Slice`.
+
 ## 0.6.0
 
 ### Minor Changes

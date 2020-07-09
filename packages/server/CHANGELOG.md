@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.8.0
+
+### Minor Changes
+
+- 6bd0e8a5: Refactor the manifest builder to use Rollup instead of Parcel.
+
+### Patch Changes
+
+- Updated dependencies [9ebb822d]
+- Updated dependencies [9ebb822d]
+- Updated dependencies [9ebb822d]
+- Updated dependencies [9ebb822d]
+- Updated dependencies [6bd0e8a5]
+  - @bigtest/atom@0.7.0
+  - @bigtest/bundler@0.6.0
+  - @bigtest/webdriver@0.5.4
+  - @bigtest/agent@0.7.1
+
 ## 0.7.0
 
 ### Minor Changes

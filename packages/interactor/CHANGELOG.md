@@ -1,5 +1,13 @@
 # @bigtest/interactor
 
+## 0.14.0
+
+### Minor Changes
+
+- 4c695f0e: Drop resolve value from interactions and assertions. If the promise
+  resolves, that means it was successful. in other words, the type of
+  `exists()` is now `() => Promise<void>`, not `() => Promise<true>`
+
 ## 0.13.0
 
 ### Minor Changes
