@@ -3,6 +3,7 @@ import * as expect from 'expect';
 import { Atom } from '../src/atom';
 import { spawn, when, never } from './helpers';
 import { Slice } from '../src/slice';
+import { Subscription, subscribe } from '@effection/subscription';
 
 describe('@bigtest/atom', () => {
   describe('Atom', () => {
@@ -28,25 +29,6 @@ describe('@bigtest/atom', () => {
 
       it('updates the current state', () => {
         expect(subject.get()).toEqual('bar');
-      });
-    });
-
-    describe('.each()', () => {
-      let result: string[] = [];
-
-      beforeEach(() => {
-        spawn(subject.each(function*(state) {
-          result.push(state);
-        }));
-
-        subject.update(() => 'bar');
-        subject.update(() => 'baz');
-      });
-
-      it('performs given operation for each state change', async () => {
-        await when(() => {
-          expect(result).toEqual(['bar', 'baz']);
-        });
       });
     });
 
@@ -122,9 +104,8 @@ describe('@bigtest/atom', () => {
         beforeEach(async () => {
           result = [];
 
-          spawn(subject.each(function*(state) {
-            result.push(state);
-          }));
+          let subscription = await spawn(subscribe(subject));
+          spawn(subscription.forEach(function*(state) { result.push(state); }));
 
           subject.update(() => 'state before reset');
           subject.reset(() => 'reset state');
@@ -161,6 +142,24 @@ describe('@bigtest/atom', () => {
 
       it('returns a slice of the Atom with the given path', async () => {
         expect(result.get()).toEqual('baz');
+      });
+    });
+
+    describe('subscribe', () => {
+      let subscription: Subscription<string, undefined>;
+
+      beforeEach(async () => {
+        subscription = await spawn(subscribe(subject));
+
+        subject.update(() => 'bar');
+        subject.update(() => 'baz');
+        subject.update(() => 'quox');
+      });
+
+      it('iterates over emitted states', async () => {
+        await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'bar' });
+        await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'baz' });
+        await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'quox' });
       });
     });
   });

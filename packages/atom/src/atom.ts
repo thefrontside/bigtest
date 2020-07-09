@@ -1,62 +1,56 @@
-import { EventEmitter } from "events";
 import { Operation } from "effection";
-import { on } from '@effection/events';
-import { Subscribable, SymbolSubscribable } from '@effection/subscription';
+import { Channel } from '@effection/channel';
+import { subscribe, Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
 import { Slice } from "./slice";
 
-export class Atom<S> implements Subscribable<S,void> {
+export class Atom<S> implements Subscribable<S,undefined> {
   private readonly initial: S;
   private state: S;
+  private states = new Channel<S>();
 
-  private subscriptions = new EventEmitter();
+  constructor(initial: S) {
+    this.initial = this.state = initial;
+  }
 
-  private get states() {
-    return Subscribable.from(on(this.subscriptions, 'state'))
-      .map(([state]) => state as S);
+  setMaxListeners(value: number) {
+    this.states.setMaxListeners(value);
   }
 
   get(): S {
     return this.state;
   }
 
-  constructor(initial: S) {
-    this.initial = this.state = initial;
-  }
-
-  reset(initializer?: (initial: S, current: S) => S) {
-    if (!initializer) {
-      initializer = (initial) => initial;
-    }
-    this.state = initializer(this.initial, this.state);
-    this.subscriptions.removeAllListeners();
+  set(value: S) {
+    this.state = value;
+    this.states.send(value);
   }
 
   update(fn: (state: S) => S) {
-    this.state = fn(this.get());
-    this.subscriptions.emit("state", this.state);
-  }
-
-  slice<T>(path: string[]): Slice<T, S> {
-    return new Slice(this, path);
-  }
-
-  each(fn: (state: S) => Operation<void>): Operation<void> {
-    return this.states.forEach(fn);
+    this.set(fn(this.get()));
   }
 
   *once(predicate: (state: S) => boolean): Operation<S | undefined> {
     if(predicate(this.state)) {
       return this.state;
     } else {
-      return yield this.states.filter(predicate).first();
+      let subscription = yield subscribe(this.states);
+      return yield subscription.filter(predicate).first();
     }
   }
 
-  setMaxListeners(value: number) {
-    this.subscriptions.setMaxListeners(value);
+  slice<T>(path: string[]): Slice<T, S> {
+    return new Slice(this, path);
   }
 
-  [SymbolSubscribable]() {
-    return this.states[SymbolSubscribable]();
+  reset(initializer?: (initial: S, current: S) => S) {
+    if (!initializer) {
+      initializer = (initial) => initial;
+    }
+    this.states.close();
+    this.set(initializer(this.initial, this.state));
+  }
+
+  *[SymbolSubscribable](): Operation<Subscription<S,undefined>> {
+    return yield subscribe(this.states);
   }
 }

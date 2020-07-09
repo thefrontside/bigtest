@@ -1,9 +1,9 @@
 import { Operation } from "effection";
 import { lensPath, view, set, dissoc, over } from "ramda";
 import { Atom } from "./atom";
-import { Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
+import { subscribe, Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
 
-export class Slice<T, S> implements Subscribable<T, void> {
+export class Slice<T, S> implements Subscribable<T, undefined> {
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
   lens: any;
 
@@ -67,7 +67,17 @@ export class Slice<T, S> implements Subscribable<T, void> {
     }
   }
 
-  [SymbolSubscribable](): Operation<Subscription<T, void>> {
-    return Subscribable.from(this.atom).map((state) => view(this.lens)(state) as unknown as T)[SymbolSubscribable]()
+  *once(predicate: (state: T) => boolean): Operation<T | undefined> {
+    let currentState = this.get();
+    if(predicate(currentState)) {
+      return currentState;
+    } else {
+      let subscription = yield subscribe(this);
+      return yield subscription.filter(predicate).first();
+    }
+  }
+
+  *[SymbolSubscribable](): Operation<Subscription<T, undefined>> {
+    return yield subscribe(Subscribable.from(this.atom).map((state) => view(this.lens)(state) as unknown as T));
   }
 }
