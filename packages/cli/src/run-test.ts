@@ -3,9 +3,9 @@ import { ProjectOptions } from '@bigtest/project';
 import { performance } from '@bigtest/performance';
 import { ResultStatus } from '@bigtest/suite';
 import { Client } from '@bigtest/server';
+import { MainError } from '@effection/node';
 import * as query from './query';
 import { StreamingFormatter } from './format-helpers';
-import { SuiteError } from './suite-error';
 
 export function* runTest(config: ProjectOptions, formatter: StreamingFormatter): Operation<void> {
   let client: Client = yield Client.create(`ws://localhost:${config.port}`);
@@ -48,6 +48,6 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
   });
 
   if(testRunStatus !== 'ok') {
-    throw new SuiteError();
+    throw new MainError({ exitCode: 1 });
   }
 }
