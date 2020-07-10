@@ -24,9 +24,11 @@
     "@frontside/tsconfig": "*",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
+    "eslint": "^6.6.0",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
-    "ts-node": "*"
+    "ts-node": "*",
+    "typescript": "^3.7.0"
   },
   "volta": {
     "node": "12.16.0",

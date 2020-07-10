@@ -18,7 +18,9 @@
   "devDependencies": {
     "@types/node": "^13.13.4",
     "@frontside/tsconfig": "*",
-    "ts-node": "*"
+    "eslint": "^6.6.0",
+    "ts-node": "*",
+    "typescript": "^3.7.0"
   },
   "volta": {
     "node": "12.16.0",

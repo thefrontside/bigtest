@@ -23,9 +23,11 @@
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
     "@types/ramda": "types/npm-ramda#dist",
+    "eslint": "^6.6.0",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
-    "ts-node": "*"
+    "ts-node": "*",
+    "typescript": "^3.7.0"
   },
   "dependencies": {
     "@effection/channel": "^0.6.5",
