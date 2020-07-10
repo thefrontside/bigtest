@@ -28,6 +28,9 @@ export type BundlerMessage =
   | { type: 'error'; error: BundlerError };
 
 function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: BundlerOptions = { mainFields: ["browser", "main"] }): Array<RollupWatchOptions> {
+  // Rollup types are wrong; `watch.exclude` allows RegExp[]
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore
   return bundles.map(bundle => {
     return {
       input: bundle.entry,
@@ -38,7 +41,7 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: Bun
         format: 'umd',
       },
       watch: {
-        exclude: ['node_modules/**']
+        exclude: [/node_modules/]
       },
       plugins: [
         resolve({
