@@ -44,6 +44,8 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   let manifestSrcPath = path.resolve(manifestSrcDir, 'manifest.js');
 
+  let appLogPath = path.resolve(options.project.cacheDir, 'app.log');
+
   let connectTo = `ws://localhost:${options.project.connection.port}`;
 
   let browserManager: BrowserManager = yield createBrowserManager({
@@ -77,6 +79,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield fork(createAppServer({
     delegate: appServerDelegate,
+    logPath: appLogPath,
     ...options.project.app
   }));
 

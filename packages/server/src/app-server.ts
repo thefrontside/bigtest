@@ -3,6 +3,7 @@ import { Mailbox } from '@bigtest/effection';
 import { ChildProcess } from '@effection/node';
 import { Socket } from 'net';
 import * as process from 'process';
+import { createWriteStream } from 'fs';
 
 interface AppServerOptions {
   delegate: Mailbox;
@@ -11,6 +12,7 @@ interface AppServerOptions {
   args?: string[];
   env?: Record<string, string>;
   port: number;
+  logPath: string;
 };
 
 function isReachable(port: number, options: { timeout: number } = { timeout: 10000 }): Operation {
@@ -36,11 +38,15 @@ function isReachable(port: number, options: { timeout: number } = { timeout: 100
 };
 
 export function* createAppServer(options: AppServerOptions): Operation {
-  yield ChildProcess.spawn(options.command, options.args || [], {
+  let child = yield ChildProcess.spawn(options.command, options.args || [], {
     cwd: options.dir,
     detached: true,
     env: Object.assign({}, process.env, options.env),
   });
+
+  let logStream = createWriteStream(options.logPath);
+  child.stdout.pipe(logStream);
+  child.stderr.pipe(logStream);
 
   while(!(yield isReachable(options.port))) {
     yield timeout(100);
