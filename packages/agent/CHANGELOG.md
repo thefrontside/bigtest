@@ -1,5 +1,12 @@
 # @bigtest/agent
 
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies [4c695f0e]
+  - @bigtest/interactor@0.14.0
+
 ## 0.7.0
 
 ### Minor Changes
