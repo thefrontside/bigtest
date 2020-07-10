@@ -15,6 +15,7 @@ import { createManifestGenerator } from './manifest-generator';
 import { createManifestBuilder } from './manifest-builder';
 import { createManifestServer } from './manifest-server';
 import { OrchestratorState } from './orchestrator/state';
+import { createValidator } from './validator';
 
 
 type OrchestratorOptions = {
@@ -35,6 +36,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   let manifestGeneratorDelegate = new Mailbox();
   let manifestBuilderDelegate = new Mailbox();
   let manifestServerDelegate = new Mailbox();
+  let validatorDelegate = new Mailbox();
 
   let agentServerConfig = new AgentServerConfig({ port: options.project.proxy.port, prefix: '/__bigtest/', });
 
@@ -86,6 +88,10 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     port: options.project.manifest.port,
   }));
 
+  yield fork(createValidator({
+    delegate: validatorDelegate
+  }));
+
   yield fork(createManifestGenerator({
     delegate: manifestGeneratorDelegate,
     files: options.project.testFiles,
@@ -123,6 +129,10 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       console.debug('[orchestrator] app server ready');
     });
     yield fork(function*() {
+      yield validatorDelegate.receive({ status: 'ready' });
+      console.debug('[orchestrator] validator ready');
+    });
+    yield fork(function*() {
       yield manifestBuilderDelegate.receive({ status: 'ready' });
       console.debug('[orchestrator] manifest builder ready');
     });
@@ -133,7 +143,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     yield fork(function*() {
       yield browserManager.ready();
       console.debug('[orchestrator] browser manager ready');
-    })
+    });
   }
 
   console.log("[orchestrator] running!");
