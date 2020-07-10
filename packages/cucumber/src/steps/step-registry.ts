@@ -128,8 +128,8 @@ export class StepRegistry {
         funcArgs.push(ctx);
       }
 
-      if(isPromise(code)){
-        return await code(...funcArgs)
+      if (isPromise(code)) {
+        return await code(...funcArgs);
       }
 
       return code(...funcArgs);
