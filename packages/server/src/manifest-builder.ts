@@ -14,8 +14,6 @@ import { Test } from '@bigtest/suite';
 
 import { OrchestratorState } from './orchestrator/state';
 
-const { copyFile, mkdir, truncate } = fs.promises;
-
 interface ManifestBuilderOptions {
   delegate: Mailbox;
   atom: Atom<OrchestratorState>;
@@ -30,7 +28,7 @@ export function* updateSourceMapURL(filePath: string, sourcemapName: string): Op
   let [currentURL]: [Buffer] = yield once(readStream, 'data');
 
   if (currentURL.toString().trim() === 'manifest.js.map') {
-    yield truncate(filePath, size - 16);
+    fs.truncateSync(filePath, size - 16);
     fs.appendFileSync(filePath, sourcemapName);
   } else {
     throw new Error(`Expected a sourcemapping near the end of the generated test bundle, but found "${currentURL}" instead.`);
@@ -46,9 +44,9 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
   let distPath = path.resolve(options.distDir, fileName);
   let mapPath = path.resolve(options.distDir, sourcemapName);
 
-  yield mkdir(path.dirname(distPath), { recursive: true });
-  yield copyFile(buildPath, distPath);
-  yield copyFile(sourcemapDir, mapPath);
+  fs.mkdirSync(path.dirname(distPath), { recursive: true });
+  fs.copyFileSync(buildPath, distPath);
+  fs.copyFileSync(sourcemapDir, mapPath);
   yield updateSourceMapURL(distPath, sourcemapName);
 
   let manifest = yield import(distPath);
@@ -66,7 +64,9 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
 
 function logBuildError(error: BundlerError) {
   console.error("[manifest builder] build error:", error.message);
-  console.error("[manifest builder] build error frame:\n", error.frame);
+  if (error.frame) {
+    console.error("[manifest builder] build error frame:\n", error.frame);
+  }
 }
 
 function* waitForSuccessfulBuild(bundlerEvents: ChainableSubscription<BundlerMessage, undefined>, delegate: Mailbox): Operation {
@@ -103,7 +103,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
       options.delegate.send({ event: "error" });
     } else {
       let distPath = yield processManifest(options);
-      console.debug("[manifest builder] manifest updated");
+      console.info("[manifest builder] manifest updated");
       options.delegate.send({ event: "update", path: distPath });
     }
   });
