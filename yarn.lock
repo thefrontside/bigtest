@@ -1919,20 +1919,15 @@
     "@bigtest/globals" "^0.6.0"
     "@bigtest/performance" "^0.5.0"
 
-"@bigtest/performance@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@bigtest/performance/-/performance-0.5.0.tgz#195f2c445cbe2ebe4357e08f7b39449240bf62d7"
-  integrity sha512-5lmaul6UIdyEApxapYumCShEdKca7PjwYlcIHiu/5iI032DUQsq4dygYMX07cgevfCZSR2fss57uMGfdB22GbQ==
-
 "@bigtest/suite@^0.5.2":
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/@bigtest/suite/-/suite-0.5.2.tgz#32bd4448d1a6f201390fbbd10c1eace5441797aa"
   integrity sha512-u04PFpeQHVvP84Cnlqc4zXrh5TBqifrW/Srnrcnx5zb0iYevG4yVy4kIS9s0IB7c0UmMN3qj+6j1p6O9CiMtjQ==
 
-"@changesets/apply-release-plan@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@changesets/apply-release-plan/-/apply-release-plan-3.1.0.tgz#f0d8c4bd45cc65838be2c145186b137fae1d0842"
-  integrity sha512-W5bqJtfABXdUZLA0kZEjtUE3xqFPQvjrlGFxUw8uo1m/T3ZrGkAXtpXR3aGrTcSQhOLrQqC4qyGdB2hmUL0AjA==
+"@changesets/apply-release-plan@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.npmjs.org/@changesets/apply-release-plan/-/apply-release-plan-4.0.0.tgz#e78efb56a4e459a8dab814ba43045f2ace0f27c9"
+  integrity sha512-MrcUd8wIlQ4S/PznzqJVsmnEpUGfPEkCGF54iqt8G05GEqi/zuxpoTfebcScpj5zeiDyxFIcA9RbeZ3pvJJxoA==
   dependencies:
     "@babel/runtime" "^7.4.4"
     "@changesets/config" "^1.2.0"
