@@ -123,7 +123,7 @@ export class StepRegistry {
       // TODO: need better logic like a symbol to identify
       // that the last argument is the context or not
       if (typeof funcArgs.slice(-1)[0] === 'object') {
-        funcArgs[funcArgs.length - 1] = ctx;
+        funcArgs.slice(-1)[0] = ctx;
       } else {
         funcArgs.push(ctx);
       }
