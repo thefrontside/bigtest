@@ -1,16 +1,23 @@
-import { StepDefinition, defineStep as defineCucumberStep, StepDefinitionCode } from 'cucumber';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  StepDefinition,
+  defineStep as defineCucumberStep,
+  StepDefinitionCode,
+  setDefinitionFunctionWrapper,
+} from 'cucumber';
 import { ParameterTypeRegistry } from 'cucumber-expressions';
-import { Fn } from 'src/types/common';
 
-export type StepCode<F extends Fn> = (...args: Parameters<F>) => ReturnType<F>;
+export type StepCode<A extends any[], R> = (...args: A) => R;
 
 export type StepDefinitionPattern = string | RegExp;
 
-export type DefineStep = <C extends Fn>(pattern: StepDefinitionPattern, code: StepCode<C>) => void;
+export type DefineStep = <A extends any[], R>(pattern: StepDefinitionPattern, code: StepCode<A, R>) => void;
 
 interface Registry {
   defineStep: DefineStep;
 }
+
+const cacheFunctionWrapper = <A extends any[], R>(fn: (...args: A) => R) => (_: string, ...args: A) => fn(...args);
 
 export class StepRegistry implements Registry {
   parameterTypeRegistry: ParameterTypeRegistry;
@@ -34,7 +41,15 @@ export class StepRegistry implements Registry {
     };
   }
 
-  defineStep<C extends Fn>(pattern: StepDefinitionPattern, code: StepCode<C>) {
-    defineCucumberStep(pattern, code as StepDefinitionCode);
+  defineStep<A extends any[], R>(pattern: StepDefinitionPattern, code: StepCode<A, R>) {
+    let wrapped = (...args: A) => {
+      console.log(args);
+
+      return code(...args);
+    };
+
+    defineCucumberStep(pattern, wrapped as StepDefinitionCode);
   }
 }
+
+export const stepRegistry = new StepRegistry();

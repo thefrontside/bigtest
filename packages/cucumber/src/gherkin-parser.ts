@@ -61,8 +61,6 @@ export class GherkinParser {
       readableStream.on('data', (envelope: messages.IEnvelope) => {
         if (envelope?.gherkinDocument) {
           tests.push(this.newTestFromFeature(envelope.gherkinDocument));
-
-          return;
         }
 
         if (envelope?.pickle) {
