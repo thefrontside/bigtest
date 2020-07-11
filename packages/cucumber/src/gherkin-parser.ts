@@ -26,12 +26,46 @@ export class GherkinParser {
     this.cucumberExpressionParamRegistry = new ParameterTypeRegistry();
   }
 
-  private streamToArray(readableStream: Readable): Promise<messages.IEnvelope[]> {
+  private parseFeatures(readableStream: Readable): Promise<TestImplementation[]> {
+    let tests: TestImplementation[] = [];
+
     return new Promise((resolve, reject) => {
-      let items: messages.IEnvelope[] = [];
-      readableStream.on('data', items.push.bind(items));
+      readableStream.on('data', (envelope: messages.IEnvelope) => {
+        if (envelope?.gherkinDocument) {
+          let feature = envelope.gherkinDocument.feature;
+
+          assert(!!feature?.name, 'No feature name');
+
+          tests.push(testBuilder(`feature: ${feature.name}`));
+
+          return;
+        }
+
+        if (envelope?.pickle) {
+          let pickle = envelope.pickle;
+
+          if (!pickle.steps?.length) {
+            return;
+          }
+
+          assert(!!pickle?.name, 'No pickle name');
+
+          let test = tests[tests.length - 1];
+
+          let child = testBuilder(`scenario: ${pickle.name}`);
+
+          child.steps =
+            pickle.steps.flatMap(stepDefinition => {
+              let step = this.resolveStepDefinition(stepDefinition);
+
+              return notNothing(step) ? [step] : [];
+            }) ?? [];
+
+          test.children.push(child);
+        }
+      });
       readableStream.on('error', reject);
-      readableStream.on('end', () => resolve(items));
+      readableStream.on('end', () => resolve(tests));
     });
   }
 
@@ -95,33 +129,6 @@ export class GherkinParser {
   async compileFeatures(): Promise<TestImplementation[]> {
     await this.loadStepDefinitions();
 
-    let envelopes = await asyncMap(this.featureFiles, featureFile => {
-      return this.streamToArray(gherkin.fromPaths([featureFile]));
-    });
-
-    return envelopes.flatMap(documents => {
-      let gherkinFeature = documents[1]?.gherkinDocument?.feature;
-
-      assert(!!gherkinFeature?.name, 'No feature name');
-
-      let feature = testBuilder(`feature: ${gherkinFeature.name}`);
-
-      feature.children = documents
-        .flatMap(el => (notNothing(el.pickle) ? [el.pickle] : []))
-        .flatMap(pickle => {
-          let scenario = testBuilder(`scenario: ${pickle.name}`);
-
-          scenario.steps =
-            pickle.steps?.flatMap(stepDefinition => {
-              let step = this.resolveStepDefinition(stepDefinition);
-
-              return notNothing(step) ? [step] : [];
-            }) ?? [];
-
-          return scenario.steps.length > 0 ? [scenario] : [];
-        });
-
-      return feature.children.length > 0 ? [feature] : [];
-    });
+    return await this.parseFeatures(gherkin.fromPaths(this.featureFiles));
   }
 }
