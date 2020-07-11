@@ -3,7 +3,7 @@ import { messages } from 'cucumber-messages';
 import { Readable } from 'stream';
 import { test as testBuilder, TestImplementation, Step } from '@bigtest/suite';
 import { CucumberExpression, ParameterTypeRegistry } from 'cucumber-expressions';
-import { StepDefinition } from 'cucumber';
+import { StepDefinition, getDefinitionLineAndUri } from 'cucumber';
 import { assert } from './util/assert';
 import { notNothing } from './util/guards/guards';
 import { Compiler } from './compilers/compiler';
