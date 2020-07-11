@@ -8,7 +8,6 @@ import { assert } from './util/assert';
 import { notNothing } from './util/guards/guards';
 import { Compiler } from './compilers/compiler';
 import { runCode } from './compilers/run-code';
-import { asyncMap } from './util/lists';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { supportCodeLibraryBuilder } = require('cucumber');
@@ -26,42 +25,48 @@ export class GherkinParser {
     this.cucumberExpressionParamRegistry = new ParameterTypeRegistry();
   }
 
+  newTestFromFeature(gherkinDocument: messages.IGherkinDocument): TestImplementation {
+    let feature = gherkinDocument.feature;
+
+    assert(!!feature?.name, 'No feature name');
+
+    return testBuilder(`feature: ${feature.name}`);
+  }
+
+  addScenario(pickle: messages.IPickle, tests: TestImplementation[]) {
+    if (!pickle.steps?.length) {
+      return;
+    }
+
+    assert(!!pickle?.name, 'No pickle name');
+
+    let test = tests[tests.length - 1];
+
+    let child = testBuilder(`scenario: ${pickle.name}`);
+
+    child.steps =
+      pickle.steps.flatMap(stepDefinition => {
+        let step = this.resolveStepDefinition(stepDefinition);
+
+        return notNothing(step) ? [step] : [];
+      }) ?? [];
+
+    test.children.push(child);
+  }
+
   private parseFeatures(readableStream: Readable): Promise<TestImplementation[]> {
     let tests: TestImplementation[] = [];
 
     return new Promise((resolve, reject) => {
       readableStream.on('data', (envelope: messages.IEnvelope) => {
         if (envelope?.gherkinDocument) {
-          let feature = envelope.gherkinDocument.feature;
-
-          assert(!!feature?.name, 'No feature name');
-
-          tests.push(testBuilder(`feature: ${feature.name}`));
+          tests.push(this.newTestFromFeature(envelope.gherkinDocument));
 
           return;
         }
 
         if (envelope?.pickle) {
-          let pickle = envelope.pickle;
-
-          if (!pickle.steps?.length) {
-            return;
-          }
-
-          assert(!!pickle?.name, 'No pickle name');
-
-          let test = tests[tests.length - 1];
-
-          let child = testBuilder(`scenario: ${pickle.name}`);
-
-          child.steps =
-            pickle.steps.flatMap(stepDefinition => {
-              let step = this.resolveStepDefinition(stepDefinition);
-
-              return notNothing(step) ? [step] : [];
-            }) ?? [];
-
-          test.children.push(child);
+          this.addScenario(envelope.pickle, tests);
         }
       });
       readableStream.on('error', reject);
