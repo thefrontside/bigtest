@@ -1,3 +1,6 @@
 {
-  "name": "bigtest"
+  "name": "bigtest",
+  "version": "0.0.1",
+  "repository": "https://github.com/thefrontside/bigtest.git",
+  "author": "Frontside Engineering <engineering@frontside.com>"
 }
