@@ -2,7 +2,7 @@ import { bigtestGlobals } from '@bigtest/globals';
 import { Operation } from 'effection';
 import { once } from '@effection/events';
 import { subscribe, ChainableSubscription } from '@effection/subscription';
-import { Mailbox } from '@bigtest/effection';
+import { Mailbox, ensure } from '@bigtest/effection';
 import { Bundler, BundlerMessage, BundlerError } from '@bigtest/bundler';
 import { Atom } from '@bigtest/atom';
 import { createFingerprint } from 'fprint';
@@ -14,6 +14,8 @@ import { Test } from '@bigtest/suite';
 
 import { OrchestratorState } from './orchestrator/state';
 
+const { copyFile, mkdir, stat, appendFile, open } = fs.promises;
+
 interface ManifestBuilderOptions {
   delegate: Mailbox;
   atom: Atom<OrchestratorState>;
@@ -22,14 +24,33 @@ interface ManifestBuilderOptions {
   distDir: string;
 };
 
+function ftruncate(fd: number, len: number): Operation {
+  return ({ fail, resume }) => {
+    fs.ftruncate(fd, len, err => {
+      if (err) {
+        fail(err);
+        return;
+      }
+      resume();
+    })
+  };
+}
+
+// https://github.com/nodejs/node/issues/34189#issuecomment-654878715
+function* truncate(path: string, len: number): Operation {
+  let file: fs.promises.FileHandle = yield open(path, 'r+');
+  yield ensure(() => file.close());
+  yield ftruncate(file.fd, len);
+}
+
 export function* updateSourceMapURL(filePath: string, sourcemapName: string): Operation{
-  let { size } = fs.statSync(filePath);
+  let { size } = yield stat(filePath);
   let readStream = fs.createReadStream(filePath, {start: size - 16});
   let [currentURL]: [Buffer] = yield once(readStream, 'data');
 
   if (currentURL.toString().trim() === 'manifest.js.map') {
-    fs.truncateSync(filePath, size - 16);
-    fs.appendFileSync(filePath, sourcemapName);
+    yield truncate(filePath, size - 16);
+    yield appendFile(filePath, sourcemapName);
   } else {
     throw new Error(`Expected a sourcemapping near the end of the generated test bundle, but found "${currentURL}" instead.`);
   };
@@ -44,9 +65,9 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
   let distPath = path.resolve(options.distDir, fileName);
   let mapPath = path.resolve(options.distDir, sourcemapName);
 
-  fs.mkdirSync(path.dirname(distPath), { recursive: true });
-  fs.copyFileSync(buildPath, distPath);
-  fs.copyFileSync(sourcemapDir, mapPath);
+  yield mkdir(path.dirname(distPath), { recursive: true });
+  yield copyFile(buildPath, distPath);
+  yield copyFile(sourcemapDir, mapPath);
   yield updateSourceMapURL(distPath, sourcemapName);
 
   let manifest = yield import(distPath);
