@@ -48,7 +48,6 @@
     "@bigtest/suite": "^0.5.1",
     "@effection/node": "^0.6.5",
     "capture-console": "^1.0.1",
-    "cucumber": "^6.0.5",
     "cucumber-expressions": "^8.3.0",
     "deepmerge": "^4.2.2",
     "effection": "^0.7.0",

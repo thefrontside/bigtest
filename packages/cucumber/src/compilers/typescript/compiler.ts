@@ -13,16 +13,18 @@ export const EssentialCompilerOptions: Partial<CompilerOptions> = {
   emitDecoratorMetadata: true,
   inlineSourceMap: true,
   jsx: ts.JsxEmit.React,
-  noImplicitAny: false,
+  noImplicitAny: true,
   module: ts.ModuleKind.CommonJS,
   moduleResolution: ts.ModuleResolutionKind.NodeJs,
   pretty: true,
   suppressOutputPathCheck: true,
   skipLibCheck: true,
-  target: ts.ScriptTarget.ES2019,
+  target: ts.ScriptTarget.ES5,
+  // TODO: why is getParsedCommandLineOfConfigFile not transforming lib values?
+  lib: ['lib.es2019.d.ts'],
 };
 
-export const NonOverridableCompilerOptions = ['module', 'moduleResolution', 'target', 'sourceMap', 'lib', 'target'];
+export const NonOverridableCompilerOptions = ['module', 'moduleResolution', 'target', 'sourceMap', 'target'];
 
 export class TypescriptCompiler implements ExternalCompiler {
   supportedExtensions = ['.ts', '.tsx'] as const;
@@ -60,7 +62,7 @@ export class TypescriptCompiler implements ExternalCompiler {
 
     return ts.getParsedCommandLineOfConfigFile(
       tsconfigPath,
-      { ...EssentialCompilerOptions, ...tsConfig.compilerOptions },
+      { ...tsConfig.compilerOptions, ...EssentialCompilerOptions },
       host,
     )?.options as CompilerOptions;
   }

@@ -2,7 +2,7 @@ import { ParameterTypeRegistry, CucumberExpression, RegularExpression } from 'cu
 import { assert } from '../util/assert';
 import { DefineStepOptions, StepCode, DefineStep, StepDefinitionPattern, StepDefinition } from '../types/steps';
 import { IdGenerator, messages } from 'cucumber-messages';
-import { Step } from '@bigtest/suite';
+import { Step, Context } from '@bigtest/suite';
 
 const { uuid } = IdGenerator;
 
@@ -50,9 +50,9 @@ export class StepRegistry implements Registry {
   }
 
   // TODO: tie step to feature file.  We don't want to run the wrong steps on the wrong feature files
-  defineStep<A extends unknown[], R>(pattern: string | RegExp, code: StepCode<A>): void;
+  defineStep<A extends unknown[]>(pattern: string | RegExp, code: StepCode<A>): void;
   defineStep<A extends unknown[]>(pattern: string | RegExp, options: DefineStepOptions, code: StepCode<A>): void;
-  defineStep<A extends unknown[], R>(
+  defineStep<A extends unknown[]>(
     pattern: string | RegExp,
     optionsOrCode: DefineStepOptions | StepCode<A>,
     code?: StepCode<A>,
@@ -65,16 +65,9 @@ export class StepRegistry implements Registry {
         ? new CucumberExpression(pattern, this.parameterTypeRegistry)
         : new RegularExpression(pattern, this.parameterTypeRegistry);
 
-    let wrapped = (...args: A) => {
-      assert(typeof block !== 'undefined', 'no code in step definition');
-      console.log(args);
-
-      return block(...args);
-    };
-
     // TODO: need to get line numbers etc. of code for good error reporting
     this.stepDefinitions.push({
-      code: wrapped as StepCode<unknown[]>,
+      code: block as StepCode<unknown[]>,
       expression,
       options,
     });
@@ -105,7 +98,18 @@ export class StepRegistry implements Registry {
 
     let step: Step = {
       description: text,
-      action: () => code(...(args ?? [])),
+      action: async (ctx: Context = {}) => {
+        let funcArgs = args ?? [];
+
+        // TODO: need better logic like a symbol to identify
+        // that the last argument is the context or not
+        if (typeof funcArgs.slice(-1)[0] !== 'object') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          funcArgs.push(ctx as any);
+        }
+
+        return await code(...funcArgs);
+      },
     };
 
     return step;

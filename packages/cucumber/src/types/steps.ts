@@ -5,7 +5,7 @@ export type DefineStepOptions = {
   timeout?: number;
 };
 
-export type StepCode<A extends unknown[]> = (...args: A) => Promise<Context>;
+export type StepCode<A extends unknown[]> = (...args: A) => Context | void;
 
 export type StepDefinitionPattern = CucumberExpression | RegularExpression;
 

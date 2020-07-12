@@ -20,11 +20,11 @@ describe('feature parser', () => {
 
     let tests = await cucumber.compileFeatures();
 
-    tests
-      .flatMap(t => t.children.flatMap(t => t.steps))
-      .forEach(t => {
-        t.action({});
-      });
+    // tests
+    //   .flatMap(t => t.children.flatMap(t => t.steps))
+    //   .forEach(t => {
+    //     t.action({});
+    //   });
 
     expect(tests).toHaveLength(1);
   });
