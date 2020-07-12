@@ -4,6 +4,7 @@ import path from 'path';
 import glob from 'glob';
 import { GherkinParser } from '../src/gherkin-parser';
 import { Context } from '@bigtest/suite';
+import { stepRegistry } from 'src/steps/step-registry';
 
 const sourcesPath = path.join(process.cwd(), 'features');
 let sources = glob.sync(`${sourcesPath}/**/*.{ts,js,feature}`);
