@@ -1,41 +1,40 @@
 import { ParameterTypeRegistry, CucumberExpression, RegularExpression } from 'cucumber-expressions';
 import { assert } from '../util/assert';
 import {
-  StepCode,
   DefineStep,
   StepDefinitionPattern,
   StepDefinition,
   StepDefinitionType,
   StepOrAssertion,
+  StepCode,
+  AssertionCode,
+  DefineAssertion,
 } from '../types/steps';
 import { IdGenerator, messages } from 'cucumber-messages';
 import { Context } from '@bigtest/suite';
 
 const { uuid } = IdGenerator;
 
-interface Registry {
-  defineStep: DefineStep;
-}
-
 // TODO: Add support for data tables
 // TODO: Add a similar class HookRegistry
 // TODO: Add support for custom custom ParameterTypeRegistry
-export class StepRegistry implements Registry {
+export class StepRegistry {
   parameterTypeRegistry: ParameterTypeRegistry;
-  stepDefinitions: StepDefinition<unknown[]>[] = [];
+  stepDefinitions: StepDefinition<unknown[], Context>[] = [];
   newId: IdGenerator.NewId;
   cwd: string;
 
   methods: {
     Given: DefineStep;
     When: DefineStep;
-    Then: DefineStep;
     And: DefineStep;
+    Then: DefineAssertion;
   };
 
   constructor() {
     this.parameterTypeRegistry = new ParameterTypeRegistry();
     let defineStep = this.defineStep.bind(this);
+    let defineAssertion = this.defineAssertion.bind(this);
     this.cwd = process.cwd();
     this.newId = uuid();
 
@@ -43,8 +42,7 @@ export class StepRegistry implements Registry {
       Given: defineStep,
       When: defineStep,
       And: defineStep,
-      Then: <A extends unknown[]>(pattern: string | RegExp, code: StepCode<A>) =>
-        defineStep(pattern, code, StepDefinitionType.Assertion),
+      Then: defineAssertion,
     };
   }
 
@@ -54,9 +52,9 @@ export class StepRegistry implements Registry {
     this.stepDefinitions = [];
   }
 
-  defineStep<A extends unknown[]>(
+  define<A extends unknown[], R extends Context>(
     pattern: string | RegExp,
-    code: StepCode<A>,
+    code: StepCode<A, R> | AssertionCode<A>,
     stepType: StepDefinitionType = StepDefinitionType.Step,
   ): void {
     let expression: StepDefinitionPattern =
@@ -66,10 +64,18 @@ export class StepRegistry implements Registry {
 
     // TODO: need to get line numbers to distinguish step
     this.stepDefinitions.push({
-      code: code as StepCode<unknown[]>,
+      code: code as StepCode<unknown[], R>,
       expression,
       type: stepType,
     });
+  }
+
+  defineStep<A extends unknown[], R extends Context>(pattern: string | RegExp, code: StepCode<A, R>): void {
+    this.define(pattern, code, StepDefinitionType.Step);
+  }
+
+  defineAssertion<A extends unknown[]>(pattern: string | RegExp, code: AssertionCode<A>): void {
+    this.define(pattern, code, StepDefinitionType.Step);
   }
 
   resolveStepDefinitionAndArguments(text: string) {

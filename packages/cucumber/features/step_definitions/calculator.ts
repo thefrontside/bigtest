@@ -12,6 +12,9 @@ And('I add another number {int}', (third: number) => {
   return { third: Number(third) };
 });
 
-Then('I will have {int}', (expected: number, { first, second, third }) => {
-  console.log(`the result is ${expected === first + second + third}`);
-});
+Then(
+  'I will have {int}',
+  (expected: number, { first, second, third }: { first: number; second: number; third: number }) => {
+    console.log(`the result is ${expected === first + second + third}`);
+  },
+);
