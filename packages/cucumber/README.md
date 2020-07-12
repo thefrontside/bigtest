@@ -12,5 +12,4 @@ Feature: calculator
 ```
 
 ## The following 3rd party npm packages where used
-
 - 
