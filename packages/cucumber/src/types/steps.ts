@@ -21,6 +21,7 @@ export type DefineAssertion = <A extends unknown[]>(pattern: string | RegExp, co
 
 export interface StepDefinition<A extends unknown[], R extends Context> {
   code: StepCode<A, R>;
+
   expression: StepDefinitionPattern;
   type: StepDefinitionType;
 }
