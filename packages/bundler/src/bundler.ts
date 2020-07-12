@@ -2,6 +2,7 @@ import { Operation, resource } from 'effection';
 import { on } from '@effection/events';
 import { subscribe, Subscribable, SymbolSubscribable, ChainableSubscription } from '@effection/subscription';
 import { Channel } from '@effection/channel';
+import { ensure } from '@bigtest/effection';
 import { watch, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'rollup';
 import resolve from '@rollup/plugin-node-resolve';
 import * as commonjs from '@rollup/plugin-commonjs';
@@ -71,22 +72,22 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
     return yield resource(bundler, function*() {
       let rollup: RollupWatcher | null = null;
 
-      try {
-        rollup = watch(prepareRollupOptions(bundles));
-        let events: ChainableSubscription<Array<RollupWatcherEvent>, undefined> = yield subscribe(on<Array<RollupWatcherEvent>>(rollup, 'event'));
-        let messages = events
-          .map(([event]) => event)
-          .filter(event => event.code === 'END' || event.code === 'ERROR')
-          .map(event => event.code === 'ERROR' ? { type: 'error', error: event.error } : { type: 'update' });
-
-        yield messages.forEach(function*(message) {
-          bundler.channel.send(message as BundlerMessage);
-        });
-      } finally {
+      yield ensure(() => {
         if (rollup) {
           rollup.close();
         }
-      }
+      });
+
+      rollup = watch(prepareRollupOptions(bundles));
+      let events: ChainableSubscription<Array<RollupWatcherEvent>, undefined> = yield subscribe(on<Array<RollupWatcherEvent>>(rollup, 'event'));
+      let messages = events
+        .map(([event]) => event)
+        .filter(event => event.code === 'END' || event.code === 'ERROR')
+        .map(event => event.code === 'ERROR' ? { type: 'error', error: event.error } : { type: 'update' });
+
+      yield messages.forEach(function*(message) {
+        bundler.channel.send(message as BundlerMessage);
+      });
     });
   }
 
