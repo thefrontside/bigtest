@@ -26,7 +26,7 @@ describe('feature parser', () => {
     let context: Context = {};
 
     for (let step of steps) {
-      let result = step.action(context);
+      let result = await step.action(context);
 
       context = { ...context, ...result };
     }

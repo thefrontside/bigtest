@@ -100,7 +100,7 @@ export class StepRegistry implements Registry {
     let step: Step = {
       description: text,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      action: (ctx: Context = {}): any => {
+      action: async (ctx: Context = {}) => {
         let funcArgs = args ?? [];
 
         // TODO: need better logic like a symbol to identify
