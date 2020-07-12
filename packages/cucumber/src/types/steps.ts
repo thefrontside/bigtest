@@ -10,11 +10,7 @@ export enum StepDefinitionType {
   Assertion = 'Assertion',
 }
 
-export type DefineStep = <A extends unknown[], R>(
-  pattern: string | RegExp,
-  code: StepCode<A>,
-  stepType: StepDefinitionType,
-) => void;
+export type DefineStep = <A extends unknown[], R>(pattern: string | RegExp, code: StepCode<A>) => void;
 
 export interface StepDefinition<A extends unknown[]> {
   code: StepCode<A>;
