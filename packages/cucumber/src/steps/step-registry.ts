@@ -1,17 +1,21 @@
 import { ParameterTypeRegistry, CucumberExpression, RegularExpression } from 'cucumber-expressions';
 import { assert } from '../util/assert';
-import { DefineStepOptions, StepCode, DefineStep, StepDefinitionPattern, StepDefinition } from '../types/steps';
+import {
+  StepCode,
+  DefineStep,
+  StepDefinitionPattern,
+  StepDefinition,
+  StepDefinitionType,
+  StepOrAssertion,
+} from '../types/steps';
 import { IdGenerator, messages } from 'cucumber-messages';
-import { Step, Context } from '@bigtest/suite';
+import { Context } from '@bigtest/suite';
 
 const { uuid } = IdGenerator;
 
 interface Registry {
   defineStep: DefineStep;
 }
-
-export const isStepCode = <A extends unknown[]>(c: DefineStepOptions | StepCode<A>): c is StepCode<A> =>
-  c !== undefined && typeof c === 'function';
 
 // TODO: Add support for data tables
 // TODO: Add a similar class HookRegistry
@@ -38,8 +42,9 @@ export class StepRegistry implements Registry {
     this.methods = {
       Given: defineStep,
       When: defineStep,
-      Then: defineStep,
       And: defineStep,
+      Then: <A extends unknown[]>(pattern: string | RegExp, code: StepCode<A>) =>
+        defineStep(pattern, code, StepDefinitionType.Assertion),
     };
   }
 
@@ -49,36 +54,26 @@ export class StepRegistry implements Registry {
     this.stepDefinitions = [];
   }
 
-  // TODO: tie step to feature file.  We don't want to run the wrong steps on the wrong feature files
-  defineStep<A extends unknown[]>(pattern: string | RegExp, code: StepCode<A>): void;
-  defineStep<A extends unknown[]>(pattern: string | RegExp, options: DefineStepOptions, code: StepCode<A>): void;
   defineStep<A extends unknown[]>(
     pattern: string | RegExp,
-    optionsOrCode: DefineStepOptions | StepCode<A>,
-    code?: StepCode<A>,
+    code: StepCode<A>,
+    stepType: StepDefinitionType = StepDefinitionType.Step,
   ): void {
-    let block = isStepCode(optionsOrCode) ? optionsOrCode : code;
-    let options: DefineStepOptions = typeof optionsOrCode === 'object' ? optionsOrCode : {};
-
     let expression: StepDefinitionPattern =
       typeof pattern === 'string'
         ? new CucumberExpression(pattern, this.parameterTypeRegistry)
         : new RegularExpression(pattern, this.parameterTypeRegistry);
 
-    // TODO: need to get line numbers etc. of code for good error reporting
+    // TODO: need to get line numbers to distinguish step
     this.stepDefinitions.push({
-      code: block as StepCode<unknown[]>,
+      code: code as StepCode<unknown[]>,
       expression,
-      options,
+      type: stepType,
     });
   }
 
-  // TODO: should include the feature name in the filter
-  // could potentially have more than one match
-  resolveAndTransformStepDefinition({ text }: messages.Pickle.IPickleStep): Step | undefined {
-    assert(!!text, 'no text in pickleStep');
-
-    let stepAndArgs = this.stepDefinitions.flatMap(stepDefinition => {
+  resolveStepDefinitionAndArguments(text: string) {
+    let potentialStepAndArgs = this.stepDefinitions.flatMap(stepDefinition => {
       let args = stepDefinition.expression.match(text)?.map(match => match.getValue({}));
 
       if (args === undefined) {
@@ -88,35 +83,52 @@ export class StepRegistry implements Registry {
       return [{ stepDefinition, args }];
     });
 
-    if (stepAndArgs.length === 0) {
+    if (potentialStepAndArgs.length === 0) {
       return;
     }
 
+    // TODO: need someway to distinguish more than 1 identical step
+    assert(potentialStepAndArgs.length === 1, 'More than 1 identical feature step text');
+
+    return potentialStepAndArgs;
+  }
+
+  resolveAndTransformStepDefinition({ text }: messages.Pickle.IPickleStep): StepOrAssertion | undefined {
+    assert(!!text, 'no text in pickleStep');
+
+    let stepAndArgs = this.resolveStepDefinitionAndArguments(text);
+
+    if (!stepAndArgs) {
+      return;
+    }
+
+    // TODO: need someway to distinguish more than 1 identical step
+    assert(stepAndArgs.length === 1, 'More than 1 identical feature step text');
+
     let {
-      stepDefinition: { code },
+      stepDefinition: { code, type },
       args,
-    } = stepAndArgs[0]; // TODO: what if there is more than 1 match?
+    } = stepAndArgs[0];
 
-    let step: Step = {
-      description: text,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      action: async (ctx: Context = {}) => {
-        let funcArgs = args ?? [];
+    let action = async (ctx: Context = {}) => {
+      let funcArgs = args ?? [];
 
-        // TODO: need better logic like a symbol to identify
-        // that the last argument is the context or not
-        if (typeof funcArgs.slice(-1)[0] === 'object') {
-          funcArgs[funcArgs.length - 1] = ctx;
-        } else {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          funcArgs.push(ctx);
-        }
+      // TODO: need better logic like a symbol to identify
+      // that the last argument is the context or not
+      if (typeof funcArgs.slice(-1)[0] === 'object') {
+        funcArgs[funcArgs.length - 1] = ctx;
+      } else {
+        funcArgs.push(ctx);
+      }
 
-        return code(...funcArgs);
-      },
+      return code(...funcArgs);
     };
 
-    return step;
+    return {
+      description: text,
+      action,
+      type,
+    };
   }
 }
 

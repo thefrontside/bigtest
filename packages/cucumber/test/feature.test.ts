@@ -4,6 +4,7 @@ import path from 'path';
 import glob from 'glob';
 import { GherkinParser } from '../src/gherkin-parser';
 import { Context } from '@bigtest/suite';
+import { stepRegistry } from 'src/steps/step-registry';
 
 const sourcesPath = path.join(process.cwd(), 'features');
 let sources = glob.sync(`${sourcesPath}/**/*.{ts,js,feature}`);
@@ -21,14 +22,16 @@ describe('feature parser', () => {
 
     let tests = await cucumber.compileFeatures();
 
-    let steps = tests.flatMap(t => t.children.flatMap(t => t.steps));
-
     let context: Context = {};
 
-    for (let step of steps) {
+    for (let step of tests.flatMap(t => t.children.flatMap(t => t.steps))) {
       let result = await step.action(context);
 
       context = { ...context, ...result };
+    }
+
+    for (let assertion of tests.flatMap(t => t.children.flatMap(t => t.assertions))) {
+      await assertion.check(context);
     }
 
     expect(tests).toHaveLength(1);

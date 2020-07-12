@@ -1,13 +1,13 @@
 import gherkin from 'gherkin';
 import { messages } from 'cucumber-messages';
 import { Readable } from 'stream';
-import { test as testBuilder, TestImplementation } from '@bigtest/suite';
+import { test as testBuilder, TestImplementation, Check } from '@bigtest/suite';
 import { assert } from './util/assert';
-import { notNothing } from './util/guards/guards';
 import { Compiler } from './compilers/compiler';
 import { runCode } from './compilers/run-code';
 import { stepRegistry } from './steps/step-registry';
 import { IdGenerator } from 'cucumber-messages';
+import { StepDefinitionType } from './types/steps';
 
 const { uuid } = IdGenerator;
 
@@ -21,7 +21,7 @@ export class GherkinParser {
     this.stepFiles = sources.filter(source => source.endsWith('.ts'));
   }
 
-  createTestFromFeature(gherkinDocument: messages.IGherkinDocument): TestImplementation {
+  createTestImplementationFromFeature(gherkinDocument: messages.IGherkinDocument): TestImplementation {
     let feature = gherkinDocument.feature;
 
     assert(!!feature?.name, 'No feature name');
@@ -29,7 +29,7 @@ export class GherkinParser {
     return testBuilder(`feature: ${feature.name}`);
   }
 
-  addScenario(pickle: messages.IPickle, tests: TestImplementation[]) {
+  createTestsFromFeature(pickle: messages.IPickle, tests: TestImplementation[]) {
     if (!pickle.steps?.length) {
       return;
     }
@@ -40,12 +40,21 @@ export class GherkinParser {
 
     let child = testBuilder(`scenario: ${pickle.name}`);
 
-    child.steps =
-      pickle.steps.flatMap(pickleStep => {
-        let step = stepRegistry.resolveAndTransformStepDefinition(pickleStep);
+    for (let pickleStep of pickle.steps) {
+      let stepDefinition = stepRegistry.resolveAndTransformStepDefinition(pickleStep);
 
-        return notNothing(step) ? [step] : [];
-      }) ?? [];
+      if (stepDefinition === undefined) {
+        continue;
+      }
+
+      let { type, ...step } = stepDefinition;
+
+      if (type === StepDefinitionType.Step) {
+        child.steps.push(step);
+      } else {
+        child.assertions.push({ description: step.description, check: step.action as Check });
+      }
+    }
 
     test.children.push(child);
   }
@@ -56,11 +65,11 @@ export class GherkinParser {
     return new Promise((resolve, reject) => {
       readableStream.on('data', (envelope: messages.IEnvelope) => {
         if (envelope?.gherkinDocument) {
-          tests.push(this.createTestFromFeature(envelope.gherkinDocument));
+          tests.push(this.createTestImplementationFromFeature(envelope.gherkinDocument));
         }
 
         if (envelope?.pickle) {
-          this.addScenario(envelope.pickle, tests);
+          this.createTestsFromFeature(envelope.pickle, tests);
         }
       });
 
