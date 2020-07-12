@@ -102,16 +102,15 @@ export class StepRegistry implements Registry {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       action: (ctx: Context = {}): any => {
         let funcArgs = args ?? [];
-        console.log(args);
 
         // TODO: need better logic like a symbol to identify
         // that the last argument is the context or not
-        if (typeof funcArgs.slice(-1)[0] !== 'object') {
+        if (typeof funcArgs.slice(-1)[0] === 'object') {
+          funcArgs[funcArgs.length - 1] = ctx;
+        } else {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          funcArgs.push(ctx as any);
+          funcArgs.push(ctx);
         }
-
-        console.log(code.toString());
 
         return code(...funcArgs);
       },

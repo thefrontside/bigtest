@@ -3,6 +3,7 @@ import expect from 'expect';
 import path from 'path';
 import glob from 'glob';
 import { GherkinParser } from '../src/gherkin-parser';
+import { Context } from '@bigtest/suite';
 
 const sourcesPath = path.join(process.cwd(), 'features');
 let sources = glob.sync(`${sourcesPath}/**/*.{ts,js,feature}`);
@@ -20,11 +21,15 @@ describe('feature parser', () => {
 
     let tests = await cucumber.compileFeatures();
 
-    tests
-      .flatMap(t => t.children.flatMap(t => t.steps))
-      .forEach(t => {
-        t.action({});
-      });
+    let steps = tests.flatMap(t => t.children.flatMap(t => t.steps));
+
+    let context: Context = {};
+
+    for (let step of steps) {
+      let result = step.action(context);
+
+      context = { ...context, ...result };
+    }
 
     expect(tests).toHaveLength(1);
   });

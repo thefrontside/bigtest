@@ -1,19 +1,17 @@
-import { Given, When, And, Then } from '../../src';
+import { Given, When, Then, And } from '../../src';
 
-// import { App } from '@bigtest/interactor';
-
-Given('I take the number {int}', (n: number) => {
-  return { left: Number(n) };
+Given('I take the number {int}', (first: number) => {
+  return { first: Number(first) };
 });
 
-When('I take the number {int}', (n: number) => {
-  return { right: Number(n) };
+When('I add the number {int}', (second: number) => {
+  return { second: Number(second) };
 });
 
-And('I add them', ({ left, right }) => {
-  return { result: left + right };
+And('I add another number {int}', (third: number) => {
+  return { third: Number(third) };
 });
 
-Then('I will have {int}', ({ result }) => {
-  console.log(`the result is ${result}`);
+Then('I will have {int}', (expected: number, { first, second, third }) => {
+  console.log(`the result is ${expected === first + second + third}`);
 });
