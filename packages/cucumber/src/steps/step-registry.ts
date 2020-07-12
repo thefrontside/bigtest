@@ -73,12 +73,13 @@ export class StepRegistry implements Registry {
     });
   }
 
-  // TODO: should include the feature name in the filter?
+  // TODO: should include the feature name in the filter
+  // could potentially have more than one match
   resolveAndTransformStepDefinition({ text }: messages.Pickle.IPickleStep): Step | undefined {
     assert(!!text, 'no text in pickleStep');
 
     let stepAndArgs = this.stepDefinitions.flatMap(stepDefinition => {
-      let args = stepDefinition.expression.match(text);
+      let args = stepDefinition.expression.match(text)?.map(match => match.getValue({}));
 
       if (args === undefined) {
         return [];
@@ -98,8 +99,10 @@ export class StepRegistry implements Registry {
 
     let step: Step = {
       description: text,
-      action: async (ctx: Context = {}) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      action: (ctx: Context = {}): any => {
         let funcArgs = args ?? [];
+        console.log(args);
 
         // TODO: need better logic like a symbol to identify
         // that the last argument is the context or not
@@ -108,7 +111,9 @@ export class StepRegistry implements Registry {
           funcArgs.push(ctx as any);
         }
 
-        return await code(...funcArgs);
+        console.log(code.toString());
+
+        return code(...funcArgs);
       },
     };
 
