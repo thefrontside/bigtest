@@ -10,7 +10,9 @@
     <h2></h2>
 
     <script>
+      console.log('some log message here');
       fetch('/greeting').then((req) => req.json()).then((data) => {
+        console.log('another log message');
         document.querySelector('h2').textContent = data.greeting;
       });
     </script>

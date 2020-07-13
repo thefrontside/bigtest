@@ -49,6 +49,7 @@
     "@bigtest/effection-express": "^0.7.0",
     "@bigtest/globals": "^0.6.1",
     "@effection/events": "^0.7.8",
+    "@effection/subscription": "^0.11.0",
     "bowser": "^2.9.0",
     "effection": "^0.7.0",
     "error-stack-parser": "^2.0.6",

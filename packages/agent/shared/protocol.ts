@@ -1,6 +1,13 @@
 import { Operation } from 'effection';
 import { Test, ResultStatus, ErrorDetails } from '@bigtest/suite';
 
+export type ConsoleLevel = 'log' | 'info' | 'debug' | 'warn' | 'error';
+
+export interface ConsoleMessage {
+  level: ConsoleLevel;
+  text: string;
+}
+
 export interface AgentProtocol {
   send(event: AgentEvent): void;
   receive(): Operation<Command>;
@@ -60,6 +67,7 @@ export interface StepResult {
   path: string[];
   error?: ErrorDetails;
   timeout?: boolean;
+  console?: ConsoleMessage[];
 }
 
 export interface AssertionRunning {
@@ -77,6 +85,7 @@ export interface AssertionResult {
   path: string[];
   error?: ErrorDetails;
   timeout?: boolean;
+  console?: ConsoleMessage[];
 }
 
 export type TestEvent = RunBegin | RunEnd | LaneBegin | LaneEnd | TestRunning | StepRunning | StepResult | AssertionRunning | AssertionResult;
