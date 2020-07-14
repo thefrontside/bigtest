@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.8.1
+
+### Patch Changes
+
+- 7063bce3: Work around bug in node.js that throws warnings when using `fs.promises.truncate()`: https://github.com/nodejs/node/issues/34189
+- Updated dependencies [7063bce3]
+- Updated dependencies [7063bce3]
+- Updated dependencies [942ff150]
+  - @bigtest/bundler@0.6.1
+  - @bigtest/agent@0.7.2
+
 ## 0.8.0
 
 ### Minor Changes
