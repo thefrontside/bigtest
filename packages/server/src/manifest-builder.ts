@@ -2,7 +2,7 @@ import { bigtestGlobals } from '@bigtest/globals';
 import { Operation } from 'effection';
 import { once } from '@effection/events';
 import { subscribe, ChainableSubscription } from '@effection/subscription';
-import { Mailbox, ensure, Deferred } from '@bigtest/effection';
+import { Mailbox, Deferred } from '@bigtest/effection';
 import { Bundler, BundlerMessage, BundlerError } from '@bigtest/bundler';
 import { Atom } from '@bigtest/atom';
 import { createFingerprint } from 'fprint';
@@ -41,8 +41,12 @@ function* ftruncate(fd: number, len: number): Operation<void> {
 // https://github.com/nodejs/node/issues/34189#issuecomment-654878715
 function* truncate(path: string, len: number): Operation {
   let file: fs.promises.FileHandle = yield open(path, 'r+');
-  yield ensure(() => file.close());
-  yield ftruncate(file.fd, len);
+
+  try {
+    yield ftruncate(file.fd, len);
+  } finally {
+    file.close();
+  }
 }
 
 export function* updateSourceMapURL(filePath: string, sourcemapName: string): Operation{
