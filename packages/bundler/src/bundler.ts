@@ -1,8 +1,8 @@
 import { Operation, resource } from 'effection';
 import { on } from '@effection/events';
-import { Subscribable, SymbolSubscribable } from '@effection/subscription';
+import { subscribe, Subscribable, SymbolSubscribable, ChainableSubscription } from '@effection/subscription';
 import { Channel } from '@effection/channel';
-import { watch, RollupWatchOptions, RollupWatcherEvent } from 'rollup';
+import { watch, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'rollup';
 import resolve from '@rollup/plugin-node-resolve';
 import * as commonjs from '@rollup/plugin-commonjs';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
@@ -28,6 +28,9 @@ export type BundlerMessage =
   | { type: 'error'; error: BundlerError };
 
 function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: BundlerOptions = { mainFields: ["browser", "main"] }): Array<RollupWatchOptions> {
+  // Rollup types are wrong; `watch.exclude` allows RegExp[]
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore
   return bundles.map(bundle => {
     return {
       input: bundle.entry,
@@ -38,7 +41,7 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: Bun
         format: 'umd',
       },
       watch: {
-        exclude: ['node_modules/**']
+        exclude: [/node_modules/]
       },
       plugins: [
         resolve({
@@ -64,16 +67,18 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
 
   static *create(bundles: Array<BundleOptions>): Operation<Bundler> {
     let bundler = new Bundler();
-    let rollup = watch(prepareRollupOptions(bundles));
-    let events = Subscribable
-      .from(on<Array<RollupWatcherEvent>>(rollup, 'event'))
-      .map(([event]) => event)
-      .filter(event => event.code === 'END' || event.code === 'ERROR')
-      .map(event => event.code === 'ERROR' ? { type: 'error', error: event.error } : { type: 'update' });
 
     return yield resource(bundler, function*() {
+      let rollup: RollupWatcher = watch(prepareRollupOptions(bundles));;
+
       try {
-        yield events.forEach(function*(message) {
+        let events: ChainableSubscription<Array<RollupWatcherEvent>, undefined> = yield subscribe(on<Array<RollupWatcherEvent>>(rollup, 'event'));
+        let messages = events
+          .map(([event]) => event)
+          .filter(event => event.code === 'END' || event.code === 'ERROR')
+          .map(event => event.code === 'ERROR' ? { type: 'error', error: event.error } : { type: 'update' });
+
+        yield messages.forEach(function*(message) {
           bundler.channel.send(message as BundlerMessage);
         });
       } finally {

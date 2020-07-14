@@ -2,7 +2,7 @@ import { bigtestGlobals } from '@bigtest/globals';
 import { Operation } from 'effection';
 import { once } from '@effection/events';
 import { subscribe, ChainableSubscription } from '@effection/subscription';
-import { Mailbox } from '@bigtest/effection';
+import { Mailbox, Deferred } from '@bigtest/effection';
 import { Bundler, BundlerMessage, BundlerError } from '@bigtest/bundler';
 import { Atom } from '@bigtest/atom';
 import { createFingerprint } from 'fprint';
@@ -14,7 +14,7 @@ import { Test } from '@bigtest/suite';
 
 import { OrchestratorState } from './orchestrator/state';
 
-const { copyFile, mkdir, truncate } = fs.promises;
+const { copyFile, mkdir, stat, appendFile, open } = fs.promises;
 
 interface ManifestBuilderOptions {
   delegate: Mailbox;
@@ -24,14 +24,39 @@ interface ManifestBuilderOptions {
   distDir: string;
 };
 
+function* ftruncate(fd: number, len: number): Operation<void> {
+  let { resolve, reject, promise } = Deferred<void>();
+
+  fs.ftruncate(fd, len, err => {
+    if (err) {
+      reject(err);
+    } else {
+      resolve();
+    }
+  });
+
+  yield promise;
+}
+
+// https://github.com/nodejs/node/issues/34189#issuecomment-654878715
+function* truncate(path: string, len: number): Operation {
+  let file: fs.promises.FileHandle = yield open(path, 'r+');
+
+  try {
+    yield ftruncate(file.fd, len);
+  } finally {
+    file.close();
+  }
+}
+
 export function* updateSourceMapURL(filePath: string, sourcemapName: string): Operation{
-  let { size } = fs.statSync(filePath);
+  let { size } = yield stat(filePath);
   let readStream = fs.createReadStream(filePath, {start: size - 16});
   let [currentURL]: [Buffer] = yield once(readStream, 'data');
 
   if (currentURL.toString().trim() === 'manifest.js.map') {
     yield truncate(filePath, size - 16);
-    fs.appendFileSync(filePath, sourcemapName);
+    yield appendFile(filePath, sourcemapName);
   } else {
     throw new Error(`Expected a sourcemapping near the end of the generated test bundle, but found "${currentURL}" instead.`);
   };
@@ -66,7 +91,9 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
 
 function logBuildError(error: BundlerError) {
   console.error("[manifest builder] build error:", error.message);
-  console.error("[manifest builder] build error frame:\n", error.frame);
+  if (error.frame) {
+    console.error("[manifest builder] build error frame:\n", error.frame);
+  }
 }
 
 function* waitForSuccessfulBuild(bundlerEvents: ChainableSubscription<BundlerMessage, undefined>, delegate: Mailbox): Operation {
@@ -103,7 +130,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
       options.delegate.send({ event: "error" });
     } else {
       let distPath = yield processManifest(options);
-      console.debug("[manifest builder] manifest updated");
+      console.info("[manifest builder] manifest updated");
       options.delegate.send({ event: "update", path: distPath });
     }
   });
