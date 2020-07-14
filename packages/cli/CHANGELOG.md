@@ -1,5 +1,16 @@
 # @bigtest/cli
 
+## 0.7.0
+
+### Minor Changes
+
+- c07415a4: Set exit code based on result of running test suite
+
+### Patch Changes
+
+- Updated dependencies [7063bce3]
+  - @bigtest/server@0.8.1
+
 ## 0.6.3
 
 ### Patch Changes
