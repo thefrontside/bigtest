@@ -2,7 +2,7 @@ import { bigtestGlobals } from '@bigtest/globals';
 import { Operation } from 'effection';
 import { once } from '@effection/events';
 import { subscribe, ChainableSubscription } from '@effection/subscription';
-import { Mailbox, ensure } from '@bigtest/effection';
+import { Mailbox, ensure, Deferred } from '@bigtest/effection';
 import { Bundler, BundlerMessage, BundlerError } from '@bigtest/bundler';
 import { Atom } from '@bigtest/atom';
 import { createFingerprint } from 'fprint';
@@ -24,16 +24,18 @@ interface ManifestBuilderOptions {
   distDir: string;
 };
 
-function ftruncate(fd: number, len: number): Operation {
-  return ({ fail, resume }) => {
-    fs.ftruncate(fd, len, err => {
-      if (err) {
-        fail(err);
-        return;
-      }
-      resume();
-    })
-  };
+function* ftruncate(fd: number, len: number): Operation<void> {
+  let { resolve, reject, promise } = Deferred<void>();
+
+  fs.ftruncate(fd, len, err => {
+    if (err) {
+      reject(err);
+    } else {
+      resolve();
+    }
+  });
+
+  yield promise;
 }
 
 // https://github.com/nodejs/node/issues/34189#issuecomment-654878715
