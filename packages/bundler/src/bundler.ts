@@ -70,24 +70,21 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
     let bundler = new Bundler();
 
     return yield resource(bundler, function*() {
-      let rollup: RollupWatcher | null = null;
+      let rollup: RollupWatcher = watch(prepareRollupOptions(bundles));;
 
-      yield ensure(() => {
-        if (rollup) {
-          rollup.close();
-        }
-      });
+      try {
+        let events: ChainableSubscription<Array<RollupWatcherEvent>, undefined> = yield subscribe(on<Array<RollupWatcherEvent>>(rollup, 'event'));
+        let messages = events
+          .map(([event]) => event)
+          .filter(event => event.code === 'END' || event.code === 'ERROR')
+          .map(event => event.code === 'ERROR' ? { type: 'error', error: event.error } : { type: 'update' });
 
-      rollup = watch(prepareRollupOptions(bundles));
-      let events: ChainableSubscription<Array<RollupWatcherEvent>, undefined> = yield subscribe(on<Array<RollupWatcherEvent>>(rollup, 'event'));
-      let messages = events
-        .map(([event]) => event)
-        .filter(event => event.code === 'END' || event.code === 'ERROR')
-        .map(event => event.code === 'ERROR' ? { type: 'error', error: event.error } : { type: 'update' });
-
-      yield messages.forEach(function*(message) {
-        bundler.channel.send(message as BundlerMessage);
-      });
+        yield messages.forEach(function*(message) {
+          bundler.channel.send(message as BundlerMessage);
+        });
+      } finally {
+        rollup.close();
+      }
     });
   }
 
