@@ -2,7 +2,6 @@ import { Operation, resource } from 'effection';
 import { on } from '@effection/events';
 import { subscribe, Subscribable, SymbolSubscribable, ChainableSubscription } from '@effection/subscription';
 import { Channel } from '@effection/channel';
-import { ensure } from '@bigtest/effection';
 import { watch, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'rollup';
 import resolve from '@rollup/plugin-node-resolve';
 import * as commonjs from '@rollup/plugin-commonjs';
