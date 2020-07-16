@@ -1903,6 +1903,14 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@bigtest/interactor@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@bigtest/interactor/-/interactor-0.13.0.tgz#9bc7671395b235040a1b25475bd6f19f89a391a6"
+  integrity sha512-w0q3CLCm6MOMLKuVXwSUvZgcf2dd+ygMkfQzd6EFXAeGIIQ9NLZUy51N+uIreOCVzf7RvJF6Qa00sa2GCcDHiQ==
+  dependencies:
+    "@bigtest/globals" "^0.6.0"
+    "@bigtest/performance" "^0.5.0"
+
 "@bigtest/parcel@^0.5.2":
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/@bigtest/parcel/-/parcel-0.5.2.tgz#3ed6d0af2e5ffa809063200834720bdae775373c"
