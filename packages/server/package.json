@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/server",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "description": "BigTest Server",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
@@ -47,7 +47,7 @@
     "@bigtest/agent": "^0.7.2",
     "@bigtest/atom": "^0.7.0",
     "@bigtest/bundler": "^0.6.1",
-    "@bigtest/driver": "^0.5.1",
+    "@bigtest/driver": "^0.5.2",
     "@bigtest/effection": "^0.5.1",
     "@bigtest/effection-express": "^0.6.0",
     "@bigtest/globals": "^0.6.0",
