@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.9.0
+
+### Minor Changes
+
+- f527acd7: ensure that app is not considered ready until it is successfully
+  serving html responses, not just accepting socket connections
+
+### Patch Changes
+
+- Updated dependencies [2c54420b]
+  - @bigtest/driver@0.5.2
+
 ## 0.8.1
 
 ### Patch Changes
