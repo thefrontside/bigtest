@@ -11,5 +11,3 @@ Feature: calculator
     Then I will have 42
 ```
 
-## The following 3rd party npm packages where used
-- 
