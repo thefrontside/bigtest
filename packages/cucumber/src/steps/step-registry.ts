@@ -12,6 +12,7 @@ import {
 } from '../types/steps';
 import { IdGenerator, messages } from 'cucumber-messages';
 import { Context } from '@bigtest/suite';
+import { isPromise } from '../util/guards/guards';
 
 const { uuid } = IdGenerator;
 
@@ -125,6 +126,10 @@ export class StepRegistry {
         funcArgs[funcArgs.length - 1] = ctx;
       } else {
         funcArgs.push(ctx);
+      }
+
+      if(isPromise(code)){
+        return await code(...funcArgs)
       }
 
       return code(...funcArgs);

@@ -17,10 +17,7 @@ export type DefineStep = <A extends unknown[], R extends Context>(
   code: StepCode<A, R>,
 ) => void;
 
-export type DefineAssertion = <A extends unknown[], R extends Context>(
-  pattern: string | RegExp,
-  code: AssertionCode<A>,
-) => void;
+export type DefineAssertion = <A extends unknown[]>(pattern: string | RegExp, code: AssertionCode<A>) => void;
 
 export interface StepDefinition<A extends unknown[], R extends Context> {
   code: StepCode<A, R>;
