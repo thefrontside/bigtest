@@ -34,7 +34,7 @@ export function * Local(options: Options): Operation<WebDriver> {
     yield once(child, 'exit');
   });
 
-  yield untilURLAvailable(`${driverURL}/status`, 1000);
+  yield untilURLAvailable(`${driverURL}/status`, 5000);
 
   yield connect(driver, options);
 
