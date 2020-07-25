@@ -1,15 +1,19 @@
 import { describe, it } from 'mocha';
 import expect from 'expect';
 import path from 'path';
-import glob from 'glob';
+
 import { GherkinParser } from '../src/gherkin-parser';
 import { Context } from '@bigtest/suite';
+import { glob } from '../src/promisified';
 
 const sourcesPath = path.join(process.cwd(), 'features');
-let sources = glob.sync(`${sourcesPath}/**/*.{ts,js,feature}`);
+
+// bigtest should do this step I imagine
+export const getSources = async () => await glob(`${sourcesPath}/**/*.{ts,js,feature}`);
 
 describe('feature parser', () => {
-  it('should find feature files and step definitions', () => {
+  it('should find feature files and step definitions', async () => {
+    let sources = await getSources();
     let cucumber = new GherkinParser(sources);
 
     expect(cucumber.featureFiles).toHaveLength(1);
@@ -17,6 +21,7 @@ describe('feature parser', () => {
   });
 
   it('should transform feature files in tests', async () => {
+    let sources = await getSources();
     let cucumber = new GherkinParser(sources);
 
     let tests = await cucumber.compileFeatures();
