@@ -1,6 +1,7 @@
 import { PluginImpl, TransformResult, Plugin } from 'rollup';
 import { CucumberOptions } from './options';
 import { createFilter } from './filter';
+import { GherkinParser } from '../gherkin-parser';
 
 export const cucumberRollupPlugin: PluginImpl<CucumberOptions> = pluginOptions => {
   let options: CucumberOptions = {
@@ -15,13 +16,16 @@ export const cucumberRollupPlugin: PluginImpl<CucumberOptions> = pluginOptions =
 
   let plugin: Plugin = {
     name: 'bigtest-cucumber',
-    transform(code, id) {
-      console.log('we are in');
-      console.dir({ code, id }, { depth: 33 });
-
+    async transform(code, id) {
       if (!filter(id)) {
         return;
       }
+
+      let parser = new GherkinParser({ code, uri: id, rootDir: options.cwd });
+
+      let result = await parser.parse();
+
+      console.log(result);
 
       let transformResult: TransformResult = { code };
 

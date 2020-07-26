@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import expect from 'expect';
 import { rollup } from 'rollup';
-import { cucumberRollupPlugin } from '../src/rollup/rollup-bigtest-cucumber-plugin';
+import { cucumberRollupPlugin } from '../src/rollup/rollup-cucumber-plugin';
 import path from 'path';
 
 // Is there something more modern with types?
@@ -11,11 +11,11 @@ const hypothetical = require('rollup-plugin-hypothetical');
 describe('bigtest cucumber rollup plugin', () => {
   it('should compile Gherkin code correctly', async () => {
     let bundle = await rollup({
-      input: './test/gherkin.feature',
+      input: './features/calculator.feature',
       plugins: [
         hypothetical({
           files: {
-            './test/gherkin.feature': `Feature: calculator
+            './features/calculator.feature': `Feature: calculator
           Scenario: adding some numbers
             Given I take the number 5
             When I add the number 3
