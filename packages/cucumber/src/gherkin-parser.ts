@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import { Parser, AstBuilder, compile } from '@cucumber/gherkin';
-=======
-import Gherkin, { Parser, AstBuilder } from '@cucumber/gherkin';
->>>>>>> refactor gherkin-parser to use Gherkin.parser
 import { messages } from 'cucumber-messages';
 import { test as testBuilder, TestImplementation, Check } from '@bigtest/suite';
 import { assert } from './util/assert';
@@ -27,20 +23,12 @@ export class GherkinParser {
     this.uri = uri;
     // TODO: should this id come from bigtest?
     this.id = IdGenerator.incrementing();
-<<<<<<< HEAD
     this.parser = new Parser(new AstBuilder(this.id));
-=======
-    this.parser = new Gherkin.Parser(new AstBuilder(this.id));
->>>>>>> refactor gherkin-parser to use Gherkin.parser
   }
 
   async getStepFiles() {
     // TODO: add support for js files
-<<<<<<< HEAD
     let sources = await glob(`${this.rootDir}/**/*.{ts,js}`);
-=======
-    let sources = await glob(`${this.rootDir}/**/*.{ts}`);
->>>>>>> refactor gherkin-parser to use Gherkin.parser
 
     this.stepFiles = sources.filter(source => source.endsWith('.ts'));
   }
