@@ -27,9 +27,9 @@ describe('bigtest cucumber rollup plugin', () => {
       ],
     });
 
-    let result = await bundle.generate({ format: 'commonjs', sourcemap: true });
+    let result = await bundle.generate({ format: 'esm', sourcemap: true });
 
-    console.log(result);
+    // console.log(result);
 
     expect(result).not.toBeFalsy();
   });

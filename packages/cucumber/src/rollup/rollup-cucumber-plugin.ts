@@ -2,6 +2,7 @@ import { PluginImpl, TransformResult, Plugin } from 'rollup';
 import { CucumberOptions } from './options';
 import { createFilter } from './filter';
 import { GherkinParser } from '../gherkin-parser';
+import { dataToEsm } from '@rollup/pluginutils';
 
 export const cucumberRollupPlugin: PluginImpl<CucumberOptions> = pluginOptions => {
   let options: CucumberOptions = {
@@ -25,9 +26,11 @@ export const cucumberRollupPlugin: PluginImpl<CucumberOptions> = pluginOptions =
 
       let result = await parser.parse();
 
-      console.log(result);
+      let esm = dataToEsm(result, { namedExports: false });
 
-      let transformResult: TransformResult = { code };
+      console.log(esm);
+
+      let transformResult: TransformResult = { code: esm };
 
       return transformResult;
     },
