@@ -11,7 +11,7 @@ const sourcesPath = path.join(process.cwd(), 'features');
 // bigtest should do this step I imagine
 export const getSources = async () => await glob(`${sourcesPath}/**/*.{ts,js,feature}`);
 
-describe('feature parser', () => {
+describe.skip('feature parser', () => {
   it('should find feature files and step definitions', async () => {
     let sources = await getSources();
     let cucumber = new GherkinParser(sources);

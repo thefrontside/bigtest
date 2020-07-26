@@ -8,8 +8,8 @@
     "lib": ["ES2019.Array"]
   },
   "include": [
-    "bin/**/*.ts",
     "src/**/*.ts",
     "test/**/*.ts"
-  ]
+  ],
+  "exclude": ["features"]
 }

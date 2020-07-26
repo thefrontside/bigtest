@@ -31,3 +31,5 @@ export const cucumberRollupPlugin: PluginImpl<CucumberOptions> = pluginOptions =
 
   return plugin;
 };
+
+export default cucumberRollupPlugin;
