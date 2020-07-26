@@ -22,6 +22,7 @@
   "devDependencies": {
     "@effection/events": "^0.7.4",
     "@frontside/tsconfig": "*",
+    "@rollup/pluginutils": "^3.1.0",
     "@types/capture-console": "1.0.0",
     "@types/cucumber": "^6.0.1",
     "@types/glob": "^7.1.2",
@@ -32,7 +33,6 @@
     "@typescript-eslint/eslint-plugin": "^2.3.2",
     "@typescript-eslint/parser": "^2.3.2",
     "cucumber-messages": "^8.0.0",
-    "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prefer-let": "^1.0.1",
     "eslint-plugin-prettier": "^3.1.4",
@@ -52,6 +52,7 @@
     "cucumber-expressions": "^8.3.0",
     "deepmerge": "^4.2.2",
     "effection": "^0.7.0",
+    "eslint": "^7.5.0",
     "gherkin": "^9.0.0",
     "glob": "^7.1.6",
     "json5": "^2.1.3",
