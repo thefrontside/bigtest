@@ -17,6 +17,7 @@
     "prepack": "tsc --outDir dist --declaration --sourcemap --module commonjs"
   },
   "dependencies": {
+    "abi"
     "@babel/core": "^7.10.4",
     "@babel/plugin-transform-runtime": "^7.10.4",
     "@babel/preset-env": "^7.10.4",

@@ -12,6 +12,7 @@
     "README.md"
   ],
   "scripts": {
+    "build": "tsc",
     "lint": "eslint '{src,test,bin}/**/*.ts'",
     "test": "mocha --timeout 10000 -r ts-node/register 'test/{,!(fixtures)/**}/*.test.ts'",
     "test:watch": "mocha --timeout 10000 --watch  --watch-extensions ts -r ts-node/register 'test/{,!(fixtures)/**}/*.test.ts'",
