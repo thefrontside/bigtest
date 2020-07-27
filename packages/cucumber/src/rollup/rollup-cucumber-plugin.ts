@@ -28,8 +28,7 @@ export const cucumberRollupPlugin: PluginImpl<CucumberOptions> = pluginOptions =
 
       let esm = dataToEsm(result, { namedExports: false });
 
-      console.log(esm);
-
+      // TODO: add sourcemap support
       let transformResult: TransformResult = { code: esm };
 
       return transformResult;
