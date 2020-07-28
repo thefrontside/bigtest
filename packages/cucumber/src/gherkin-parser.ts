@@ -7,10 +7,9 @@ import { runCode } from './compilers/run-code';
 import { stepRegistry } from './steps/step-registry';
 import { IdGenerator } from 'cucumber-messages';
 import { StepDefinitionType } from './types/steps';
-import { glob } from './promisified';
+import globby from 'globby';
 
 export class GherkinParser {
-  stepFiles: string[] = [];
   code: string;
   rootDir: string;
   parser: Parser;
@@ -24,13 +23,6 @@ export class GherkinParser {
     // TODO: should this id come from bigtest?
     this.id = IdGenerator.incrementing();
     this.parser = new Parser(new AstBuilder(this.id));
-  }
-
-  async getStepFiles() {
-    // TODO: add support for js files
-    let sources = await glob(`${this.rootDir}/**/*.{ts,js}`);
-
-    this.stepFiles = sources.filter(source => source.endsWith('.ts'));
   }
 
   createTestImplementationFromFeature(gherkinDocument: messages.IGherkinDocument): TestImplementation {
@@ -93,11 +85,12 @@ export class GherkinParser {
     // should test id be coming from uuid
     stepRegistry.reset(this.rootDir, this.id);
 
-    await this.getStepFiles();
+    // TODO: add support for js files
+    let stepFiles = await globby('**/*.{ts,js}', { cwd: this.rootDir, absolute: true });
 
     let compiler = new Compiler();
 
-    let precompiled = await compiler.precompile(this.stepFiles);
+    let precompiled = await compiler.precompile(stepFiles);
 
     for (let { code, fileName } of precompiled) {
       runCode(code, fileName);

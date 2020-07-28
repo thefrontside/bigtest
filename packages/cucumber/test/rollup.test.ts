@@ -4,12 +4,15 @@ import { rollup } from 'rollup';
 import { cucumberRollupPlugin } from '../src/rollup/rollup-cucumber-plugin';
 import path from 'path';
 
-// Is there something more modern with types?
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const hypothetical = require('rollup-plugin-hypothetical');
 
+const cwd = process.cwd();
+
+const featuresDir = path.join(cwd, 'features');
+
 describe('bigtest cucumber rollup plugin', () => {
-  it('should compile Gherkin code correctly', async () => {
+  it('should compile Gherkin with entry point', async () => {
     let bundle = await rollup({
       input: './features/calculator.feature',
       plugins: [
@@ -23,13 +26,21 @@ describe('bigtest cucumber rollup plugin', () => {
             Then I will have 42`,
           },
         }),
-        cucumberRollupPlugin({ cwd: path.join(process.cwd(), 'features') }),
+        cucumberRollupPlugin({ cwd: featuresDir }),
       ],
     });
 
     let result = await bundle.generate({ format: 'esm', sourcemap: true });
 
-    // console.log(result);
+    expect(result).not.toBeFalsy();
+  });
+
+  it('should compile Gherkin code without an entry point', async () => {
+    let bundle = await rollup({
+      plugins: [cucumberRollupPlugin({ cwd: featuresDir })],
+    });
+
+    let result = await bundle.generate({ format: 'esm', sourcemap: true });
 
     expect(result).not.toBeFalsy();
   });

@@ -35,7 +35,7 @@ describe('manifest-generator', () => {
 
     actions.fork(createManifestGenerator({
       delegate,
-      files: [TEST_DIR + "/*.t.{js,ts}"],
+      files: [`${TEST_DIR}/*.t.{js,ts}`, `${TEST_DIR}/*.feature`],
       destinationPath: MANIFEST_PATH,
     }));
 
