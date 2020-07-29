@@ -4,7 +4,9 @@ import { subscribe, Subscribable, SymbolSubscribable, ChainableSubscription } fr
 import { Channel } from '@effection/channel';
 import { watch, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'rollup';
 import resolve from '@rollup/plugin-node-resolve';
-import * as commonjs from '@rollup/plugin-commonjs';
+import commonjs from '@rollup/plugin-commonjs';
+import injectProcessEnv from 'rollup-plugin-inject-process-env';
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import babel from '@rollup/plugin-babel';
@@ -16,7 +18,7 @@ interface BundleOptions {
 };
 
 interface BundlerOptions {
-  mainFields: Array<"browser" | "main">;
+  mainFields: Array<"browser" | "main" | "module">;
 };
 
 export interface BundlerError extends Error {
@@ -27,7 +29,7 @@ export type BundlerMessage =
   | { type: 'update' }
   | { type: 'error'; error: BundlerError };
 
-function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: BundlerOptions = { mainFields: ["browser", "main"] }): Array<RollupWatchOptions> {
+function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: BundlerOptions = { mainFields: ["browser", "module", "main"] }): Array<RollupWatchOptions> {
   // Rollup types are wrong; `watch.exclude` allows RegExp[]
   // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
   // @ts-ignore
@@ -48,6 +50,7 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: Bun
           mainFields,
           extensions: ['.js', '.ts']
         }),
+
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         commonjs(),
@@ -56,7 +59,10 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: Bun
           extensions: ['.js', '.ts'],
           presets: ['@babel/preset-env', '@babel/preset-typescript'],
           plugins: ['@babel/plugin-transform-runtime']
-        })
+        }),
+        injectProcessEnv({
+          NODE_ENV: 'production'
+        }),
       ]
     }
   });
