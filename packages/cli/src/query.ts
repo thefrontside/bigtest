@@ -6,9 +6,15 @@ export function run() {
       event: run {
         type
         status
-        agentId
         testRunId
         path
+        timeout
+        agent {
+          id
+          browser {
+            name
+          }
+        }
         error {
           message
           fileName
@@ -16,17 +22,22 @@ export function run() {
           columnNumber
           stack
         }
-        timeout
       }
     }`
 }
 
 export type RunResultEvent = {
   type: string;
-  agentId: string;
   testRunId: string;
   status?: ResultStatus;
   path?: string[];
+  timeout?: boolean;
+  agent: {
+    id: string;
+    browser: {
+      name: string;
+    };
+  };
   error?: {
     message: string;
     fileName?: string;
@@ -34,7 +45,6 @@ export type RunResultEvent = {
     columnNumber?: string;
     stack?: string;
   };
-  timeout?: boolean;
 }
 
 export type Done = { done: true };

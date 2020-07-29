@@ -88,7 +88,18 @@ export const schema = makeSchema({
         t.string('type');
         t.string('status', { nullable: true });
         t.id('testRunId');
-        t.id('agentId', { nullable: true });
+        t.list.field("agents", {
+          type: "Agent",
+          resolve: (state) => Object.values(state.agents)
+        });
+        t.field("agent", {
+          type: "Agent",
+          nullable: true,
+          args: {
+            id: stringArg({ required: true })
+          },
+          resolve: (state, { id }) => state.agents[id]
+        });
         t.list.string("path", { nullable: true });
         t.field("error", { type: "Error", nullable: true });
         t.boolean("timeout", { nullable: true });

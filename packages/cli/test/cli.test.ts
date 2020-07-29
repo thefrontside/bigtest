@@ -98,8 +98,8 @@ describe('@bigtest/cli', function() {
 
       it('exits successfully', async () => {
         expect(child.code).toEqual(0);
-        expect(child.stdout?.output).toContain("✓ [step]       Passing Test -> first step")
-        expect(child.stdout?.output).toContain("✓ [assertion]  Passing Test -> check the thing")
+        expect(child.stdout?.output).toContain("✓ [step:Chrome]       Passing Test -> first step")
+        expect(child.stdout?.output).toContain("✓ [assertion:Chrome]  Passing Test -> check the thing")
         expect(child.stdout?.output).toContain("✓ SUCCESS")
       });
     });
@@ -119,9 +119,9 @@ describe('@bigtest/cli', function() {
 
       it('exits with error code', async () => {
         expect(child.code).toEqual(1);
-        expect(child.stdout?.output).toContain("✓ [step]       Failing Test -> first step")
-        expect(child.stdout?.output).toContain("✓ [assertion]  Failing Test -> check the thing")
-        expect(child.stdout?.output).toContain("⨯ [step]       Failing Test -> child -> child second step")
+        expect(child.stdout?.output).toContain("✓ [step:Chrome]       Failing Test -> first step")
+        expect(child.stdout?.output).toContain("✓ [assertion:Chrome]  Failing Test -> check the thing")
+        expect(child.stdout?.output).toContain("⨯ [step:Chrome]       Failing Test -> child -> child second step")
         expect(child.stdout?.output).toContain("⨯ FAILURE")
       });
     });
