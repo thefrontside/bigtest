@@ -1,7 +1,7 @@
 import { describe } from 'mocha';
 import { promises as fs, existsSync } from 'fs';
-import * as expect from 'expect';
-import * as rmrf from 'rimraf';
+import expect from 'expect';
+import rmrf from 'rimraf';
 import { Subscribable } from '@effection/subscription';
 
 import { spawn } from './world';
