@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.9.1
+
+### Patch Changes
+
+- Updated dependencies [80d68ef0]
+  - @bigtest/bundler@0.7.0
+
 ## 0.9.0
 
 ### Minor Changes
