@@ -94,11 +94,7 @@ export const schema = makeSchema({
         });
         t.field("agent", {
           type: "Agent",
-          nullable: true,
-          args: {
-            id: stringArg({ required: true })
-          },
-          resolve: (state, { id }) => state.agents[id]
+          nullable: true
         });
         t.list.string("path", { nullable: true });
         t.field("error", { type: "Error", nullable: true });

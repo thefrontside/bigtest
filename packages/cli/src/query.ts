@@ -10,7 +10,7 @@ export function run() {
         path
         timeout
         agent {
-          id
+          agentId
           browser {
             name
           }
@@ -33,7 +33,7 @@ export type RunResultEvent = {
   path?: string[];
   timeout?: boolean;
   agent: {
-    id: string;
+    agentId: string;
     browser: {
       name: string;
     };

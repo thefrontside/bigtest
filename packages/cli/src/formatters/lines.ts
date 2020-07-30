@@ -14,7 +14,9 @@ function formatFooterCounts(label: string, counts: Counts): string {
 }
 
 function formatEvent(event: RunResultEvent) {
-  let result = `${icon(event)} [${event.type.split(':')[0]}:${event.agent.browser.name}]`.padEnd(14);
+  let agentId = event.agent?.agentId;
+  agentId = agentId ? `:${agentId}` : '';
+  let result = `${icon(event)} [${event.type.split(':')[0]}${agentId}]`.padEnd(14);
   if(event.path) {
     result += ' ' + event.path.slice(1).join(' -> ');
   }

@@ -98,9 +98,11 @@ describe('@bigtest/cli', function() {
 
       it('exits successfully', async () => {
         expect(child.code).toEqual(0);
-        expect(child.stdout?.output).toContain("✓ [step:Chrome]       Passing Test -> first step")
-        expect(child.stdout?.output).toContain("✓ [assertion:Chrome]  Passing Test -> check the thing")
-        expect(child.stdout?.output).toContain("✓ SUCCESS")
+        expect(child.stdout?.output).toContain("✓ [step:chrome.headless]");
+        expect(child.stdout?.output).toContain("Passing Test -> first step");
+        expect(child.stdout?.output).toContain("✓ [assertion:chrome.headless]");
+        expect(child.stdout?.output).toContain("Passing Test -> check the thing");
+        expect(child.stdout?.output).toContain("✓ SUCCESS");
       });
     });
 
@@ -119,9 +121,12 @@ describe('@bigtest/cli', function() {
 
       it('exits with error code', async () => {
         expect(child.code).toEqual(1);
-        expect(child.stdout?.output).toContain("✓ [step:Chrome]       Failing Test -> first step")
-        expect(child.stdout?.output).toContain("✓ [assertion:Chrome]  Failing Test -> check the thing")
-        expect(child.stdout?.output).toContain("⨯ [step:Chrome]       Failing Test -> child -> child second step")
+        expect(child.stdout?.output).toContain("✓ [step:chrome.headless]");
+        expect(child.stdout?.output).toContain("Failing Test -> first step");
+        expect(child.stdout?.output).toContain("✓ [assertion:chrome.headless]");
+        expect(child.stdout?.output).toContain("Failing Test -> check the thing");
+        expect(child.stdout?.output).toContain("⨯ [step:chrome.headless]");
+        expect(child.stdout?.output).toContain("Failing Test -> child -> child second step");
         expect(child.stdout?.output).toContain("⨯ FAILURE")
       });
     });
