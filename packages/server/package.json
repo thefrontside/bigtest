@@ -34,6 +34,8 @@
     "@types/rimraf": "3.0.0",
     "@types/websocket": "^1.0.0",
     "abort-controller": "^3.0.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
     "node-fetch": "^2.6.0",

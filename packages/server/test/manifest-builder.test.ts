@@ -10,7 +10,7 @@ import { Atom } from '@bigtest/atom';
 import { actions } from './helpers';
 import { createManifestBuilder, updateSourceMapURL } from '../src/manifest-builder';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
-import { OrchestratorState } from '../src/orchestrator/state';
+import { OrchestratorState, BundlerStatus } from '../src/orchestrator/state';
 
 const TEST_DIR = "./tmp/manifest-builder"
 const SRC_DIR = `${TEST_DIR}/src`
@@ -121,6 +121,7 @@ describe('manifest builder', () => {
 
     it('throws error message when sourcemapURL is not generated at the bottom', async () => {
       expect(error).toMatch(/^Error: Expected a sourcemapping near the end/);
+      expect(atom.get().manifest.bundle.status).toBe(BundlerStatus.Errored);
     });
   });
 

@@ -1,0 +1,18 @@
+{
+  "extends": ["@frontside",
+    "prettier/@typescript-eslint",
+    "plugin:prettier/recommended"],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": 0,
+    "prettier/prettier": [
+      "error",
+      {
+        "printWidth": 120,
+        "singleQuote": true,
+        "semi": true,
+        "tabWidth": 2,
+        "trailingComma": "all"
+      }
+    ]
+  }
+}

@@ -3,8 +3,15 @@ import { Operation } from 'effection';
 import { Mailbox, ensure } from '@bigtest/effection';
 import { throwOnErrorEvent } from '@effection/events';
 import * as fs from 'fs';
+<<<<<<< HEAD
 import * as path from 'path';
 import * as globby from 'globby';
+=======
+// import * as glob from 'glob';
+import * as path from 'path';
+import * as globby from 'globby';
+// import { promisify } from 'util';
+>>>>>>> create assumptions doc
 
 const { writeFile, mkdir } = fs.promises;
 
@@ -15,6 +22,10 @@ interface ManifestGeneratorOptions {
 };
 
 function* writeManifest(options: ManifestGeneratorOptions) {
+<<<<<<< HEAD
+=======
+  // let files = yield Promise.all(options.files.map((pattern) => promisify(glob)(pattern))).then((l) => l.flat());
+>>>>>>> create assumptions doc
   let files = yield globby(options.files);
 
   let manifest = 'let load = (res) => res.default || res;\n';
@@ -37,6 +48,7 @@ module.exports = {
 `
 
   yield mkdir(path.dirname(options.destinationPath), { recursive: true });
+  throw new Error(manifest)
   yield writeFile(options.destinationPath, manifest);
 }
 

@@ -33,12 +33,20 @@ export type TestRunAgentState = {
   result: TestResult;
 }
 
+type BundlerStatus = 'unknown' | 'building' | 'errored' | 'green';
+
+export type Bundle = {
+  status: BundlerStatus;
+}
+
+export interface Manifest extends Test {
+  fileName: string;
+  bundle: Bundle;
+}
+
 export type OrchestratorState = {
   agents: Record<string, AgentState>;
   manifest: Manifest;
   testRuns: Record<string, TestRunState>;
 }
 
-export interface Manifest extends Test {
-  fileName: string;
-}

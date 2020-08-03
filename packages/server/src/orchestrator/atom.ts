@@ -9,6 +9,9 @@ export const createOrchestratorAtom = () => {
       steps: [],
       assertions: [],
       children: [],
+      bundle: {
+        status: 'unknown'
+      }
     },
     agents: {},
     testRuns: {},
