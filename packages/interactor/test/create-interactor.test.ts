@@ -46,6 +46,18 @@ const TextField = createInteractor<HTMLInputElement>('text field')({
   }
 });
 
+const Datepicker = createInteractor<HTMLDivElement>("datepicker")({
+  selector: "div.datepicker",
+  defaultLocator: element => element.querySelector("label")?.textContent || "",
+  filters: {
+    open: element => !!element.querySelector("div.calendar"),
+    month: element => element.querySelector("div.calendar h4")?.textContent
+  },
+  actions: {
+    toggle: element => element.querySelector("input")?.click()
+  }
+});
+
 function dom(html: string) {
   let jsdom = new JSDOM(`<!doctype html><html><body>${html}</body></html>`, { runScripts: "dangerously" });
   bigtestGlobals.document = jsdom.window.document;
@@ -302,4 +314,32 @@ describe('@bigtest/interactor', () => {
       await expect(TextField('Password', { enabled: false, value: 'test1234' }).exists()).resolves.toBeUndefined();
     });
   });
-})
+
+  describe('composition', () => {
+    it('works', async () => {
+      dom(`
+        <div class="datepicker">
+          <label for="start-date">Start Date</label>
+          <input type="text" id="start-date" />
+        </div>
+        <script>
+          let startDateInput = document.getElementById("start-date");
+          let datepicker = document.querySelector(".datepicker");
+          startDateInput.onclick = () => {
+            let calendar = document.createElement("div");
+            let calendarMonth = document.createElement("h4");
+            calendarMonth.appendChild(document.createTextNode("January"));
+            calendar.classList.add("calendar");
+            calendar.appendChild(calendarMonth);
+            datepicker.appendChild(calendar);
+          };
+        </script>
+      `);
+
+      await expect(Datepicker("Start Date").has({ open: false })).resolves.toBeUndefined();
+      await Datepicker("Start Date").toggle();
+      await expect(Datepicker("Start Date").has({ open: true })).resolves.toBeUndefined();
+      await expect(Datepicker("Start Date").has({ month: "January" })).resolves.toBeUndefined();
+    });
+  });
+});
