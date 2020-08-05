@@ -1,1 +1,1 @@
-export { Bundler, BundlerMessage, BundlerError } from './bundler';
+export { Bundler, BundlerMessage, BundlerError, BundlerWarning } from './bundler';

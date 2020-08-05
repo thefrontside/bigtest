@@ -2,7 +2,7 @@ import { Operation, resource } from 'effection';
 import { on } from '@effection/events';
 import { subscribe, Subscribable, SymbolSubscribable, ChainableSubscription } from '@effection/subscription';
 import { Channel } from '@effection/channel';
-import { watch, RollupWatchOptions, RollupWatcherEvent, RollupWatcher, WatcherOptions } from 'rollup';
+import { watch, RollupWatchOptions, RollupWatcherEvent, RollupWatcher, WatcherOptions, RollupWarning } from 'rollup';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
@@ -24,9 +24,13 @@ export interface BundlerError extends Error {
   frame: string;
 };
 
+// what is required for warnings
+export type BundlerWarning = Pick<RollupWarning, 'frame' | 'code' | 'message'>;
+
 export type BundlerMessage =
   | { type: 'update' }
-  | { type: 'error'; error: BundlerError };
+  | { type: 'warn'; warning: BundlerWarning }
+  | { type: 'error'; error: BundlerError }
 
 function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: BundlerOptions = { mainFields: ["browser", "module", "main"] }): Array<RollupWatchOptions> {
   return bundles.map(bundle => {
@@ -38,6 +42,10 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: Bun
         sourcemap: true,
         format: 'umd',
       },
+      // can we use this?
+      // onwarn(warning){
+      //   console.warn(warning);
+      // },
       watch: {
         // Rollup types are wrong; `watch.exclude` allows RegExp[]
         exclude: [/node_modules/ as unknown as string]
@@ -75,7 +83,7 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
         let events: ChainableSubscription<Array<RollupWatcherEvent>, undefined> = yield subscribe(on<Array<RollupWatcherEvent>>(rollup, 'event'));
         let messages = events
           .map(([event]) => event)
-          .filter(event => event.code === 'END' || event.code === 'ERROR')
+          .filter(event => ['END', 'ERROR'].includes(event.code))
           .map(event => event.code === 'ERROR' ? { type: 'error', error: event.error } : { type: 'update' });
 
         yield messages.forEach(function* (message) {

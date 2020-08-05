@@ -6,11 +6,9 @@ import { Mailbox, Deferred } from '@bigtest/effection';
 import { Bundler, BundlerMessage, BundlerError } from '@bigtest/bundler';
 import { Atom } from '@bigtest/atom';
 import { createFingerprint } from 'fprint';
-
 import * as path from 'path';
 import * as fs from 'fs';
-
-import { OrchestratorState, Manifest } from './orchestrator/state';
+import { OrchestratorState, BundlerState, Manifest } from './orchestrator/state';
 
 const { copyFile, mkdir, stat, appendFile, open } = fs.promises;
 
@@ -105,6 +103,10 @@ function* waitForSuccessfulBuild(bundlerEvents: ChainableSubscription<BundlerMes
 }
 
 export function* createManifestBuilder(options: ManifestBuilderOptions): Operation {
+  let bundlerState = options.atom.slice<BundlerState>(['bundle']);
+
+  bundlerState.set({ status: 'building' })
+  
   let bundler: Bundler = yield Bundler.create(
     [{
       entry: options.srcPath,
@@ -112,6 +114,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
       outFile: path.join(options.buildDir, "manifest.js")
     }]
   );
+  
   let bundlerEvents: ChainableSubscription<BundlerMessage, undefined> = yield subscribe(bundler);
 
   yield waitForSuccessfulBuild(bundlerEvents, options.delegate);
@@ -123,7 +126,11 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
   options.delegate.send({ status: "ready", path: distPath });
 
   yield bundlerEvents.forEach(function*(message) {
-    if (message.type === 'error') {
+    if (message.type === 'warn') {
+      // how do I add warnings to the atom
+    }
+    else if (message.type === 'error') {
+      // how do I add errors to the atom
       logBuildError(message.error);
       options.delegate.send({ event: "error" });
     } else {

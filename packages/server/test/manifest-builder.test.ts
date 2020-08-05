@@ -121,7 +121,6 @@ describe('manifest builder', () => {
 
     it('throws error message when sourcemapURL is not generated at the bottom', async () => {
       expect(error).toMatch(/^Error: Expected a sourcemapping near the end/);
-      expect(atom.get().manifest.bundle.status).toBe(BundlerStatus.Errored);
     });
   });
 
