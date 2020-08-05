@@ -15,7 +15,7 @@
     "test": "mocha ./test/setup test/**/*.test.ts",
     "mocha": "mocha ./test/setup",
     "test:app:start": "ts-node ./bin/todomvc.ts",
-    "generate:schema": "BIGTEST_GENERATE_SCHEMA=true ts-node ./src/schema.ts",
+    "generate:schema": "cross-env BIGTEST_GENERATE_SCHEMA=true ts-node ./src/schema.ts",
     "prepack": "yarn generate:schema && tsc --outdir dist"
   },
   "files": [
@@ -34,6 +34,7 @@
     "@types/rimraf": "3.0.0",
     "@types/websocket": "^1.0.0",
     "abort-controller": "^3.0.0",
+    "cross-env": "7.0.2",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
     "node-fetch": "^2.6.0",
