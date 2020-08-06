@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "lint": "eslint '{src,test,bin}/**/*.ts'",
-    "test": "mocha -r ts-node/register 'test/{,!(fixtures)/**}/*.test.ts'",
+    "test": "cross-env mocha -r ts-node/register 'test/{,!(fixtures)/**}/*.test.ts'",
     "mocha": "mocha -r ts-node/register",
     "bigtest": "ts-node src/index.ts",
     "prepack": "tsc --outdir dist --module commonjs && chmod +x dist/bin/bigtest.js"
@@ -34,6 +34,7 @@
     "@types/yargs": "^15.0.3",
     "@typescript-eslint/eslint-plugin": "^2.3.2",
     "@typescript-eslint/parser": "^2.3.2",
+    "cross-env": "7.0.2",
     "eslint": "^6.6.0",
     "eslint-plugin-prefer-let": "^1.0.1",
     "expect": "^24.9.0",
