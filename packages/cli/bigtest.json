@@ -1,7 +1,7 @@
 {
   "app": {
     "command": "node ../todomvc/dist/start.js 36000",
-    "port": 36000
+    "url": "http://localhost:36000"
   },
   "testFiles": ["./test/fixtures/*.test.{ts,js}"],
   "launch": ["chrome.headless"]
