@@ -11,7 +11,7 @@ main(createServer({
     command: "yarn",
     args: ["test:app:start", "24000"],
     env: {},
-    port: 24000,
+    url: "http://localhost:24000"
   },
   proxy: {
     port: 24001,

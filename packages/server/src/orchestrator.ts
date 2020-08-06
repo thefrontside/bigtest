@@ -58,7 +58,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     agentServerConfig,
     delegate: proxyServerDelegate,
     port: options.project.proxy.port,
-    targetPort: options.project.app.port,
+    targetUrl: options.project.app.url
   }));
 
   yield fork(createCommandServer({

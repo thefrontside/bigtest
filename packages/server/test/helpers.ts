@@ -58,7 +58,7 @@ export const actions = {
           app: {
             command: "yarn",
             args: ['test:app:start', '24100'],
-            port: 24100,
+            url: "http://localhost:24100"
           },
           manifest: {
             port: 24105,

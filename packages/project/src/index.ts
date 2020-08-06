@@ -29,8 +29,8 @@ export type ProjectOptions = {
   testFiles: string[];
   cacheDir: string;
   app: {
-    port: number;
-    command: string;
+    url: string;
+    command?: string;
     args?: string[];
     env?: Record<string, string>;
     dir?: string;
@@ -55,7 +55,7 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
       command: "yarn start",
       args: [],
       env: { PORT: "24000" },
-      port: 24000,
+      url: "http://localhost:24000"
     },
     proxy: {
       port: 24001,

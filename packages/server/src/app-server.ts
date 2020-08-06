@@ -7,15 +7,15 @@ import * as process from 'process';
 interface AppServerOptions {
   delegate: Mailbox;
   dir?: string;
-  command: string;
+  command?: string;
   args?: string[];
   env?: Record<string, string>;
-  port: number;
+  url: string;
 };
 
-function* isReachable(port: number) {
+function* isReachable(url: string) {
   try {
-    let response: Response = yield fetch(`http://127.0.0.1:${port}`)
+    let response: Response = yield fetch(url)
     return response.ok
   } catch (error) {
     return false;
@@ -23,14 +23,16 @@ function* isReachable(port: number) {
 }
 
 export function* createAppServer(options: AppServerOptions): Operation {
-  yield ChildProcess.spawn(options.command, options.args || [], {
-    cwd: options.dir,
-    detached: true,
-    env: Object.assign({}, process.env, options.env),
-    shell: true
-  });
+  if (options.command) {
+    yield ChildProcess.spawn(options.command, options.args || [], {
+      cwd: options.dir,
+      detached: true,
+      env: Object.assign({}, process.env, options.env),
+      shell: true,
+    });
+  }
 
-  while(!(yield isReachable(options.port))) {
+  while(!(yield isReachable(options.url))) {
     yield timeout(100);
   }
 

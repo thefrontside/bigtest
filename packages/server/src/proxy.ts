@@ -14,7 +14,7 @@ interface ProxyOptions {
   agentServerConfig: AgentServerConfig;
   delegate: Mailbox;
   port: number;
-  targetPort: number;
+  targetUrl: string;
 };
 
 export function* createProxyServer(options: ProxyOptions): Operation {
@@ -80,7 +80,7 @@ export function* createProxyServer(options: ProxyOptions): Operation {
   };
 
   let proxyServer = proxy.createProxyServer({
-    target: `http://localhost:${options.targetPort}`,
+    target: options.targetUrl,
     selfHandleResponse: true
   });
 
