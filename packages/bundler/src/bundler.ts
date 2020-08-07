@@ -2,7 +2,7 @@ import { Operation, resource } from 'effection';
 import { on } from '@effection/events';
 import { subscribe, Subscribable, SymbolSubscribable, ChainableSubscription } from '@effection/subscription';
 import { Channel } from '@effection/channel';
-import { watch, RollupWatchOptions, RollupWatcherEvent, RollupWatcher, RollupWarning, RollupError } from 'rollup';
+import { watch, RollupWatchOptions, RollupWatcherEvent, RollupWatcher, WatcherOptions, RollupWarning, RollupError } from 'rollup';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
@@ -22,9 +22,8 @@ interface BundlerOptions {
 
 // could Pick<T> the relevant bits from these types
 // lots of good error info in RollupError and RollupWarning
-// that extend RollupLogProps
-export interface BundlerError extends RollupError {};
-export interface BundlerWarning extends RollupWarning {}
+export type BundlerError = RollupError;
+export type BundlerWarning = RollupWarning;
 
 export type BundlerMessage =
   | { type: 'update' }

@@ -39,9 +39,9 @@ export type BundlerErrors = { errors: BundlerError[], warnings: BundlerWarning[]
 export type BundlerState = 
   | { status: 'unbundled' } 
   | { status: 'building' } 
+  | { status: 'green', path: string } & Pick<BundlerErrors, 'warnings'>
   | { status: 'errored' } & BundlerErrors
-  | { status: 'updated', path: string }
-  | { status: 'green' } & Pick<BundlerErrors, 'warnings'  & { path: string }>;
+  | { status: 'updated', path: string };
 
 export interface Manifest extends Test {
   fileName: string;
