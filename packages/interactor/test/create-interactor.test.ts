@@ -13,8 +13,8 @@ const Link = createInteractor<HTMLLinkElement>('link')({
     byTitle: (element) => element.title
   },
   actions: {
-    click: (element) => { element.click() },
-    setHref: (element, value: string) => { element.href = value }
+    click: ({ element }) => { element.click() },
+    setHref: ({ element }, value: string) => { element.href = value }
   }
 });
 
@@ -34,6 +34,9 @@ const Details = createInteractor<HTMLDetailsElement>('details')({
 const TextField = createInteractor<HTMLInputElement>('text field')({
   selector: 'input',
   defaultLocator: (element) => element.id,
+  locators: {
+    byPlaceholder: element => element.placeholder
+  },
   filters: {
     enabled: {
       apply: (element) => !element.disabled,
@@ -42,7 +45,8 @@ const TextField = createInteractor<HTMLInputElement>('text field')({
     value: (element) => element.value
   },
   actions: {
-    fillIn: (element, value: string) => { element.value = value }
+    fillIn: ({ element }, value: string) => { element.value = value },
+    click: ({ element }) => { element.click() }
   }
 });
 
@@ -54,7 +58,9 @@ const Datepicker = createInteractor<HTMLDivElement>("datepicker")({
     month: element => element.querySelector("div.calendar h4")?.textContent
   },
   actions: {
-    toggle: element => element.querySelector("input")?.click()
+    toggle: async ({ interactor }) => {
+      await interactor.find(TextField.byPlaceholder("YYYY-MM-DD")).click();
+    }
   }
 });
 
@@ -320,7 +326,7 @@ describe('@bigtest/interactor', () => {
       dom(`
         <div class="datepicker">
           <label for="start-date">Start Date</label>
-          <input type="text" id="start-date" />
+          <input type="text" id="start-date" placeholder="YYYY-MM-DD" />
         </div>
         <script>
           let startDateInput = document.getElementById("start-date");

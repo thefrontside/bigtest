@@ -11,7 +11,7 @@ const TextField = createInteractor<HTMLInputElement>('text field')({
     value: (element) => element.value
   },
   actions: {
-    fillIn: (element, value: string) => { element.value = value }
+    fillIn: ({ element }, value: string) => { element.value = value }
   }
 });
 

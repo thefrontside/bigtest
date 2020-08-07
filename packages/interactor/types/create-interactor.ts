@@ -7,8 +7,8 @@ const Link = createInteractor<HTMLLinkElement>('link')({
     byTitle: (element) => element.title
   },
   actions: {
-    click: (element) => { element.click() },
-    setHref: (element, value: string) => { element.href = value }
+    click: ({ element }) => { element.click() },
+    setHref: ({ element }, value: string) => { element.href = value }
   }
 });
 
