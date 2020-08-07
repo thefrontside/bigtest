@@ -138,6 +138,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
   console.debug("[manifest builder] manifest ready");
 
   // not entirely sure if I use set or update here
+  // TODO: should not transition until we have required the generated output yield import distpath
   bundlerSlice.update(() => ({ status: 'green', path: distPath, warnings: [] }));
 
   yield bundlerEvents.forEach(function*(message) {

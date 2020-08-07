@@ -47,6 +47,12 @@ export interface Manifest extends Test {
   fileName: string;
 }
 
+// export interface Manifest {
+//   fileName: string;
+//   test: Test;
+//   bundler: BundlerState;
+// }
+
 export type OrchestratorState = {
   agents: Record<string, AgentState>;
   manifest: Manifest;

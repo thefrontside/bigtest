@@ -43,13 +43,11 @@ describe('manifest builder', () => {
       });
     });
 
-
-    // how do I do this in a test
-    let bundlerState: any = await (atom.slice<BundlerState>(['bundler']).once(({ status }) => status === 'green'))
+    let bundlerState = await actions.fork(atom.slice<BundlerState>(['bundler']).once(({ status }) => status === 'green'))
     
-    assert(bundlerState.status === 'ready', "not ready");
+    assert(bundlerState.status === 'green', "not ready");
 
-    resultPath = bundlerState.path
+    resultPath = bundlerState.path;
   });
 
   describe('retrieving test file manifest from disk', () => {

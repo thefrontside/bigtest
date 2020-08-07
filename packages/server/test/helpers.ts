@@ -18,7 +18,7 @@ let manifest: Manifest;
 export const actions = {
   atom: createOrchestratorAtom(),
 
-  fork(operation: Operation): Context {
+  fork<T>(operation: Operation<T>): Context<T> {
     return currentWorld.fork(operation);
   },
 

@@ -1,6 +1,7 @@
 import * as path from 'path';
-import { fork, Operation } from 'effection';
-import { Mailbox } from '@bigtest/effection';
+import { fork, Operation, spawn } from 'effection';
+import { Mailbox, deprecatedSubscribe } from '@bigtest/effection';
+import { subscribe, Subscribable } from '@effection/subscription';
 import { AgentServerConfig } from '@bigtest/agent';
 import { Atom } from '@bigtest/atom';
 import { ProjectOptions } from '@bigtest/project';
@@ -44,6 +45,13 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   let manifestSrcPath = path.resolve(manifestSrcDir, 'manifest.js');
 
   let connectTo = `ws://localhost:${options.project.connection.port}`;
+
+  yield spawn(function* () {
+    let bundlerState = options.atom.slice<BundlerState>(['bundler']);
+    yield Subscribable.from(bundlerState).forEach(function* (message) {
+      console.log(message);
+    })
+  });
 
   let browserManager: BrowserManager = yield createBrowserManager({
     atom: options.atom,
@@ -103,35 +111,32 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     buildDir: manifestBuildDir,
   }));
 
-  yield function*() {
-    yield fork(function*() {
+  yield function* () {
+    yield fork(function* () {
       yield proxyServerDelegate.receive({ status: 'ready' });
       console.debug('[orchestrator] proxy server ready');
     });
-    yield fork(function*() {
+    yield fork(function* () {
       yield commandServerDelegate.receive({ status: 'ready' });
       console.debug('[orchestrator] command server ready');
     });
-    yield fork(function*() {
+    yield fork(function* () {
       yield connectionServerDelegate.receive({ status: 'ready' });
       console.debug('[orchestrator] connection server ready');
     });
-    yield fork(function*() {
+    yield fork(function* () {
       yield appServerDelegate.receive({ status: 'ready' });
       console.debug('[orchestrator] app server ready');
     });
-    yield fork(function*() {
-      // I've used the slice here which is inconsistent with browserManager.ready
-      // let me know if I should change it to be consistent with browserManager
+    yield fork(function* () {
       yield options.atom.slice<BundlerState>(['bundler']).once(({ status }) => status === 'green');
-      // will execution get here if a status other than `ready` is published?
       console.debug('[orchestrator] manifest builder ready');
     });
-    yield fork(function*() {
+    yield fork(function* () {
       yield manifestServerDelegate.receive({ status: 'ready' });
       console.debug('[orchestrator] manifest server ready');
     });
-    yield fork(function*() {
+    yield fork(function* () {
       yield browserManager.ready();
       console.debug('[orchestrator] browser manager ready');
     })
