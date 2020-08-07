@@ -2,7 +2,7 @@ import { Operation, resource } from 'effection';
 import { on } from '@effection/events';
 import { subscribe, Subscribable, SymbolSubscribable, ChainableSubscription } from '@effection/subscription';
 import { Channel } from '@effection/channel';
-import { watch, RollupWatchOptions, RollupWatcherEvent, RollupWatcher, WatcherOptions, RollupWarning } from 'rollup';
+import { watch, RollupWatchOptions, RollupWatcherEvent, RollupWatcher, WatcherOptions, RollupWarning, RollupError } from 'rollup';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
@@ -20,12 +20,11 @@ interface BundlerOptions {
   mainFields: Array<"browser" | "main" | "module">;
 };
 
-export interface BundlerError extends Error {
-  frame: string;
-};
-
-// what is required for warnings
-export type BundlerWarning = Pick<RollupWarning, 'frame' | 'code' | 'message'>;
+// could Pick<T> the relevant bits from these types
+// lots of good error info in RollupError and RollupWarning
+// that extend RollupLogProps
+export interface BundlerError extends RollupError {};
+export interface BundlerWarning extends RollupWarning {}
 
 export type BundlerMessage =
   | { type: 'update' }
@@ -42,7 +41,7 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: Bun
         sourcemap: true,
         format: 'umd',
       },
-      // can we use this?
+      // can we use this for warnings?
       // onwarn(warning){
       //   console.warn(warning);
       // },
@@ -80,14 +79,15 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
       let rollup: RollupWatcher = watch(prepareRollupOptions(bundles));
 
       try {
-        let events: ChainableSubscription<Array<RollupWatcherEvent>, undefined> = yield subscribe(on<Array<RollupWatcherEvent>>(rollup, 'event'));
+        let events: ChainableSubscription<RollupWatcherEvent[], BundlerMessage> = yield subscribe(on(rollup, 'event'));
+   
         let messages = events
           .map(([event]) => event)
           .filter(event => ['END', 'ERROR'].includes(event.code))
-          .map(event => event.code === 'ERROR' ? { type: 'error', error: event.error } : { type: 'update' });
+          .map(event => event.code === 'ERROR' ? { type: 'error', error: event.error } as const : { type: 'update' } as const);
 
         yield messages.forEach(function* (message) {
-          bundler.channel.send(message as BundlerMessage);
+          bundler.channel.send(message);
         });
       } finally {
         rollup.close();

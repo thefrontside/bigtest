@@ -14,7 +14,7 @@ import { createAppServer } from './app-server';
 import { createManifestGenerator } from './manifest-generator';
 import { createManifestBuilder } from './manifest-builder';
 import { createManifestServer } from './manifest-server';
-import { OrchestratorState } from './orchestrator/state';
+import { OrchestratorState, BundlerState } from './orchestrator/state';
 
 
 type OrchestratorOptions = {
@@ -33,7 +33,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   let connectionServerDelegate = new Mailbox();
   let appServerDelegate = new Mailbox();
   let manifestGeneratorDelegate = new Mailbox();
-  let manifestBuilderDelegate = new Mailbox();
   let manifestServerDelegate = new Mailbox();
 
   let agentServerConfig = new AgentServerConfig({ port: options.project.proxy.port, prefix: '/__bigtest/', });
@@ -98,7 +97,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   console.debug('[orchestrator] manifest generator ready');
 
   yield fork(createManifestBuilder({
-    delegate: manifestBuilderDelegate,
     atom: options.atom,
     srcPath: manifestSrcPath,
     distDir: manifestDistDir,
@@ -123,7 +121,10 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       console.debug('[orchestrator] app server ready');
     });
     yield fork(function*() {
-      yield manifestBuilderDelegate.receive({ status: 'ready' });
+      // I've used the slice here which is inconsistent with browserManager.ready
+      // let me know if I should change it to be consistent with browserManager
+      yield options.atom.slice<BundlerState>(['bundler']).once(({ status }) => status === 'ready');
+      // will execution get here if a status other than `ready` is published?
       console.debug('[orchestrator] manifest builder ready');
     });
     yield fork(function*() {

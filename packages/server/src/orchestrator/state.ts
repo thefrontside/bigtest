@@ -34,15 +34,15 @@ export type TestRunAgentState = {
   result: TestResult;
 }
 
-export type BundlerStatus = 'unbundled' | 'building' | 'errored' | 'green';
-
 export type BundlerErrors = { errors: BundlerError[], warnings: BundlerWarning[] }
 
 export type BundlerState = 
   | { status: 'unbundled' } 
   | { status: 'building' } 
   | { status: 'errored' } & BundlerErrors
-  | { status: 'green' } & Pick<BundlerErrors, 'warnings'>
+  | { status: 'ready', path: string }
+  | { status: 'updated', path: string }
+  | { status: 'green' } & Pick<BundlerErrors, 'warnings'>;
 
 export interface Manifest extends Test {
   fileName: string;

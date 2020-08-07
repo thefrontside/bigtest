@@ -10,7 +10,8 @@ import { Atom } from '@bigtest/atom';
 import { actions } from './helpers';
 import { createManifestBuilder, updateSourceMapURL } from '../src/manifest-builder';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
-import { OrchestratorState, BundlerStatus } from '../src/orchestrator/state';
+import { OrchestratorState, BundlerState } from '../src/orchestrator/state';
+import { assert } from '../src/assertions/assert';
 
 const TEST_DIR = "./tmp/manifest-builder"
 const SRC_DIR = `${TEST_DIR}/src`
@@ -35,7 +36,6 @@ describe('manifest builder', () => {
 
     actions.fork(function*() {
       yield createManifestBuilder({
-        delegate,
         atom,
         srcPath: MANIFEST_PATH,
         buildDir: BUILD_DIR,
@@ -43,7 +43,14 @@ describe('manifest builder', () => {
       });
     });
 
-    resultPath = (await actions.receive(delegate, { status: 'ready' }))['path'];
+
+    
+    // how do I do this in a test
+    let bundlerState: any = await (atom.slice<BundlerState>(['bundler']).once(({ status }) => status === 'ready'))
+    
+    assert(bundlerState.status === 'ready', "not ready");
+
+    resultPath = bundlerState.path
   });
 
   describe('retrieving test file manifest from disk', () => {

@@ -2,18 +2,19 @@ import { bigtestGlobals } from '@bigtest/globals';
 import { Operation } from 'effection';
 import { once } from '@effection/events';
 import { subscribe, ChainableSubscription } from '@effection/subscription';
-import { Mailbox, Deferred } from '@bigtest/effection';
+import { Deferred } from '@bigtest/effection';
 import { Bundler, BundlerMessage, BundlerError } from '@bigtest/bundler';
-import { Atom } from '@bigtest/atom';
+import { Atom, Slice } from '@bigtest/atom';
 import { createFingerprint } from 'fprint';
 import * as path from 'path';
 import * as fs from 'fs';
+
 import { OrchestratorState, BundlerState, Manifest } from './orchestrator/state';
+import { assert } from './assertions/assert';
 
 const { copyFile, mkdir, stat, appendFile, open } = fs.promises;
 
 interface ManifestBuilderOptions {
-  delegate: Mailbox;
   atom: Atom<OrchestratorState>;
   srcPath: string;
   buildDir: string;
@@ -92,20 +93,33 @@ function logBuildError(error: BundlerError) {
   }
 }
 
-function* waitForSuccessfulBuild(bundlerEvents: ChainableSubscription<BundlerMessage, undefined>, delegate: Mailbox): Operation {
+function addBundlerErrorToSlice(message: BundlerMessage, bundlerSlice: Slice<BundlerState, OrchestratorState>): void {
+  assert(message.type === 'error', `invalid message type ${message.type}`);
+  
+  bundlerSlice.update(previous => {
+    if (previous.status !== 'errored'){
+      return { status: 'errored', errors: [message.error], warnings: [] };
+    }
+
+    return { status: 'errored', errors: previous.errors.concat(message.error), warnings: previous.warnings };
+  });
+  
+  logBuildError(message.error);
+}
+
+function* waitForSuccessfulBuild(bundlerEvents: ChainableSubscription<BundlerMessage, undefined>, bundlerSlice: Slice<BundlerState, OrchestratorState>): Operation {
   let message: BundlerMessage = yield bundlerEvents.expect();
 
   if (message.type === "error") {
-    logBuildError(message.error);
-    delegate.send({ event: "error" });
-    yield waitForSuccessfulBuild(bundlerEvents, delegate);
+    addBundlerErrorToSlice(message, bundlerSlice);
+    yield waitForSuccessfulBuild(bundlerEvents, bundlerSlice);
   }
 }
 
 export function* createManifestBuilder(options: ManifestBuilderOptions): Operation {
-  let bundlerState = options.atom.slice<BundlerState>(['bundle']);
+  let bundlerSlice = options.atom.slice('bundle');
 
-  bundlerState.set({ status: 'building' })
+  bundlerSlice.set({ status: 'building' })
   
   let bundler: Bundler = yield Bundler.create(
     [{
@@ -117,26 +131,22 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
   
   let bundlerEvents: ChainableSubscription<BundlerMessage, undefined> = yield subscribe(bundler);
 
-  yield waitForSuccessfulBuild(bundlerEvents, options.delegate);
+  yield waitForSuccessfulBuild(bundlerEvents, bundlerSlice);
 
   let distPath: string = yield processManifest(options);
 
   console.debug("[manifest builder] manifest ready");
 
-  options.delegate.send({ status: "ready", path: distPath });
+  // not entirely sure if I use set or update here
+  bundlerSlice.update(() => ({ status: 'ready', path: distPath }));
 
   yield bundlerEvents.forEach(function*(message) {
-    if (message.type === 'warn') {
-      // how do I add warnings to the atom
+    if(message.type === 'error') {
+      addBundlerErrorToSlice(message, bundlerSlice);
     }
-    else if (message.type === 'error') {
-      // how do I add errors to the atom
-      logBuildError(message.error);
-      options.delegate.send({ event: "error" });
-    } else {
-      let distPath = yield processManifest(options);
-      console.info("[manifest builder] manifest updated");
-      options.delegate.send({ event: "update", path: distPath });
-    }
+    
+    let distPath = yield processManifest(options);
+    console.info("[manifest builder] manifest updated");
+    bundlerSlice.update(() => ({ status: 'updated', path: distPath }))
   });
 }
