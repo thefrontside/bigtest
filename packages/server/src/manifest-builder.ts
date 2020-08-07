@@ -143,10 +143,10 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
   yield bundlerEvents.forEach(function*(message) {
     if(message.type === 'error') {
       addBundlerErrorToSlice(message, bundlerSlice);
+    } else {
+      let distPath = yield processManifest(options);
+      console.info("[manifest builder] manifest updated");
+      bundlerSlice.update(() => ({ status: 'updated', path: distPath }))
     }
-    
-    let distPath = yield processManifest(options);
-    console.info("[manifest builder] manifest updated");
-    bundlerSlice.update(() => ({ status: 'updated', path: distPath }))
   });
 }
