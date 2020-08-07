@@ -44,9 +44,8 @@ describe('manifest builder', () => {
     });
 
 
-    
     // how do I do this in a test
-    let bundlerState: any = await (atom.slice<BundlerState>(['bundler']).once(({ status }) => status === 'ready'))
+    let bundlerState: any = await (atom.slice<BundlerState>(['bundler']).once(({ status }) => status === 'green'))
     
     assert(bundlerState.status === 'ready', "not ready");
 

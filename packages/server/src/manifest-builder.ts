@@ -138,7 +138,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
   console.debug("[manifest builder] manifest ready");
 
   // not entirely sure if I use set or update here
-  bundlerSlice.update(() => ({ status: 'ready', path: distPath }));
+  bundlerSlice.update(() => ({ status: 'green', path: distPath }));
 
   yield bundlerEvents.forEach(function*(message) {
     if(message.type === 'error') {

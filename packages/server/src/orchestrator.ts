@@ -123,7 +123,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     yield fork(function*() {
       // I've used the slice here which is inconsistent with browserManager.ready
       // let me know if I should change it to be consistent with browserManager
-      yield options.atom.slice<BundlerState>(['bundler']).once(({ status }) => status === 'ready');
+      yield options.atom.slice<BundlerState>(['bundler']).once(({ status }) => status === 'green');
       // will execution get here if a status other than `ready` is published?
       console.debug('[orchestrator] manifest builder ready');
     });

@@ -6,7 +6,7 @@ describe('assert', () => {
     expect(() => assert(false, 'houston we have a problem')).toThrow('houston we have a problem');
   });
 
-  it('should not throw if conditino is good', () => {
+  it('should not throw if condition is good', () => {
     expect(assert(true)).toBeUndefined();
   });
 });
