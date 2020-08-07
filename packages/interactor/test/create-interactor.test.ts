@@ -199,6 +199,22 @@ describe('@bigtest/interactor', () => {
       await expect(Div("test").find(Div("foo")).find(Link("Foo")).exists()).resolves.toBeUndefined();
       await expect(Div("test").find(Div("foo")).find(Link("Bar")).exists()).rejects.toHaveProperty('message', 'link "Bar" within div "foo" within div "test" does not exist');
     });
+
+    it('cannot match an element outside of scope', async () => {
+      dom(`
+        <div id="test">
+          <div id="foo">
+            <a href="/foo">Foo</a>
+          </div>
+          <div id="bar">
+            <a href="/Bar">Bar</a>
+          </div>
+        </div>
+        <a href="/foo">Foo</a>
+      `);
+
+      await expect(Div("foo").find(Div("bar")).exists()).rejects.toHaveProperty('message', 'div "bar" within div "foo" does not exist');
+    });
   });
 
   describe('.is', () => {
