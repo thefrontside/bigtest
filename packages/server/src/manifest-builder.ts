@@ -76,11 +76,10 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
   let manifest = yield import(distPath);
 
   manifest = manifest.default || manifest;
-
   manifest.fileName = fileName;
 
-
   let slice = options.atom.slice('manifest');
+  
   slice.set(manifest as Manifest);
 
   return distPath;

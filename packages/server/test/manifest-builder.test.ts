@@ -12,11 +12,13 @@ import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { OrchestratorState, BundlerState } from '../src/orchestrator/state';
 import { assert } from '../src/assertions/assert';
 
-const TEST_DIR = "./tmp/manifest-builder"
-const SRC_DIR = `${TEST_DIR}/src`
-const BUILD_DIR = `${TEST_DIR}/build`
-const DIST_DIR = `${TEST_DIR}/dist`
-const MANIFEST_PATH = `${SRC_DIR}/manifest.js`
+// be nice to windows
+const TEST_DIR = path.resolve('tmp', 'manifest-builder');
+const SRC_DIR = path.resolve(TEST_DIR, 'src');
+const BUILD_DIR = path.resolve(TEST_DIR, 'build');
+const DIST_DIR = path.resolve(TEST_DIR, 'dist');
+const MANIFEST_PATH = path.resolve(SRC_DIR, 'manifest.js');
+const FIXTURES_DIR = path.resolve('test', 'fixtures');
 
 const { mkdir, copyFile, readFile } = fs.promises;
 
@@ -27,7 +29,7 @@ describe('manifest builder', () => {
   beforeEach((done) => rmrf(TEST_DIR, done));
   beforeEach(async () => {
     await mkdir(SRC_DIR, { recursive: true });
-    await copyFile('./test/fixtures/raw-tree-format.t.js', MANIFEST_PATH);
+    await copyFile(path.join(FIXTURES_DIR, 'raw-tree-format.t.js'), MANIFEST_PATH);
 
     atom = createOrchestratorAtom();
 
@@ -42,9 +44,7 @@ describe('manifest builder', () => {
 
     let bundlerState = await actions.fork(atom.slice<BundlerState>(['bundler']).once(({ status }) => status === 'green'))
     
-    assert(!!bundlerState && bundlerState.status === 'green', "not ready");
-
-    resultPath = bundlerState.path;
+    resultPath = (bundlerState?.status === 'green' && bundlerState.path) as string;
   });
 
   describe('retrieving test file manifest from disk', () => {
@@ -62,12 +62,10 @@ describe('manifest builder', () => {
     let body: string;
 
     beforeEach(async () => {
-      await copyFile('./test/fixtures/empty.t.js', MANIFEST_PATH);
+      await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
       let bundler = await actions.fork(atom.slice<BundlerState>(['bundler']).once(({status}) => status === 'updated'));
 
-      assert(!!bundler && bundler.status === 'updated', "not ready");
-
-      resultPath = bundler.path;
+      resultPath = (!!bundler && bundler.status === 'updated' && bundler.path) as string;
       
       body = await readFile(path.resolve(DIST_DIR, resultPath), 'utf8')
     });
@@ -115,7 +113,7 @@ describe('manifest builder', () => {
     beforeEach(async () => {
       emptyFilePath = `${TEST_DIR}/empty.t.js`;
 
-      await copyFile('./test/fixtures/empty.t.js', emptyFilePath);
+      await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), emptyFilePath);
       await actions.fork(function* (){
         try {
           yield updateSourceMapURL(emptyFilePath, '');
@@ -132,8 +130,8 @@ describe('manifest builder', () => {
 
   describe('updating the manifest and then reading it', () => {
     beforeEach(async () => {
-      await copyFile('./test/fixtures/empty.t.js', MANIFEST_PATH);
-      await actions.fork(atom.slice<BundlerState>(['bundler']).once(({status}) => status === 'updated'))
+      await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
+      await actions.fork(atom.slice<BundlerState>(['bundler']).once(({status}) => status === 'updated'));
     });
 
     it('returns the updated manifest from the state', () => {
@@ -141,4 +139,23 @@ describe('manifest builder', () => {
       expect(atom.get().manifest.description).toEqual('An empty test with no steps and no children');
     });
   });
+
+  describe('importing the manifest throws an error', () => {
+    beforeEach(async () => {
+      await copyFile(path.join(FIXTURES_DIR, 'exceptions', 'error.t.js'), MANIFEST_PATH);
+      await actions.fork(atom.slice<BundlerState>(['bundler']).once(({status}) => status === 'errored'));
+    });
+
+    it('should update the global state with the error detail', () => {
+      let bundlerState = atom.get().bundler;
+
+      // this could be a custom expect 
+      assert(bundlerState.status === 'errored', `bundler status is not errored but ${bundlerState.status}`);
+      
+      let errors = bundlerState.errors;
+
+      expect(errors).toHaveLength(1);
+      expect(errors[0].frame).toBeTruthy();
+    });
+  })
 });
