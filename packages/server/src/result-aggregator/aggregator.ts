@@ -18,7 +18,7 @@ export interface AggregatorTestOptions extends AggregatorAgentOptions {
   path: string[];
 }
 
-export abstract class Aggregator<T, O extends AggregatorOptions> {
+export abstract class Aggregator<T extends {status: any }, O extends AggregatorOptions> {
   constructor(
     public slice: Slice<T, OrchestratorState>,
     public options: O,
@@ -29,7 +29,7 @@ export abstract class Aggregator<T, O extends AggregatorOptions> {
   }
 
   get statusSlice() {
-    return this.slice.slice<ResultStatus>(['status']);
+    return this.slice.slice('status');
   }
 
   *perform(): Operation<ResultStatus> {

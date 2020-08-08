@@ -15,7 +15,7 @@ export class TestRunAgentAggregator extends Aggregator<TestRunAgentState, Aggreg
   }
 
   *perform(): Operation<ResultStatus> {
-    let testResultSlice = this.slice.slice<TestResult>(['result']);
+    let testResultSlice = this.slice.slice('result');
 
     let aggregator = new TestAggregator(testResultSlice, {
       ...this.options,

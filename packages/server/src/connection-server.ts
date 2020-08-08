@@ -29,7 +29,7 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
 
     agentId = agentId || generateAgentId();
 
-    let agent = options.atom.slice<AgentState>(['agents', agentId]);
+    let agent = options.atom.slice('agents', agentId);
 
     try {
       console.log(`[connection] connected ${agentId}`);

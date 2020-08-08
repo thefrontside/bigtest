@@ -137,7 +137,7 @@ describe('@bigtest/atom', () => {
 
       beforeEach(async () => {
         subject = new Atom({ foo: { bar: "baz" } });
-        result = subject.slice(['foo', 'bar']);
+        result = subject.slice('foo', 'bar');
       });
 
       it('returns a slice of the Atom with the given path', async () => {

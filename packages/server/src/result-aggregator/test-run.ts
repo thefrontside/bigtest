@@ -8,7 +8,7 @@ import { parallel } from './parallel';
 export class TestRunAggregator extends Aggregator<TestRunState, AggregatorOptions> {
   *perform(): Operation<ResultStatus> {
     let agentRuns = Object.keys(this.slice.get().agents).map(agentId => {
-      let testRunAgentSlice = this.slice.slice<TestRunAgentState>(['agents', agentId]);
+      let testRunAgentSlice = this.slice.slice('agents', agentId);
 
       return new TestRunAgentAggregator(testRunAgentSlice, { agentId, ...this.options }).run();
     });

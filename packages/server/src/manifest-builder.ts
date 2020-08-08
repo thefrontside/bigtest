@@ -12,7 +12,7 @@ import * as fs from 'fs';
 
 import { Test } from '@bigtest/suite';
 
-import { OrchestratorState } from './orchestrator/state';
+import { OrchestratorState, Manifest } from './orchestrator/state';
 
 const { copyFile, mkdir, stat, appendFile, open } = fs.promises;
 
@@ -83,8 +83,8 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
   manifest.fileName = fileName;
 
 
-  let slice = options.atom.slice<Test>(['manifest']);
-  slice.set(manifest as Test);
+  let slice = options.atom.slice('manifest');
+  slice.set(manifest as Manifest);
 
   return distPath;
 }

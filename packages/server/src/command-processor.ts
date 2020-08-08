@@ -19,7 +19,7 @@ interface CommandProcessorOptions {
 function* run(testRunId: string, options: CommandProcessorOptions): Operation {
   console.debug('[command processor] running test', testRunId);
 
-  let testRunSlice = options.atom.slice<TestRunState>(['testRuns', testRunId]);
+  let testRunSlice = options.atom.slice('testRuns', testRunId);
   let manifest = options.atom.get().manifest;
 
   let appUrl = `http://localhost:${options.proxyPort}`;

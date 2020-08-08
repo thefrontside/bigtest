@@ -34,7 +34,7 @@ export class GraphqlContext {
   async *runTestSubscribe(): AsyncIterator<TestEvent> {
     let id = this.runTest();
 
-    let slice = this.atom.slice<TestRunState>(['testRuns', id]);
+    let slice = this.atom.slice('testRuns', id);
 
     let scope = this.context.spawn(undefined) as Context & Controls;
 
