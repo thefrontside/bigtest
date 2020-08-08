@@ -4,7 +4,6 @@ import * as expect from 'expect';
 import { Subscription } from '@effection/subscription';
 
 import { Atom, Slice } from '@bigtest/atom';
-import { ResultStatus, StepResult } from '@bigtest/suite';
 
 import { resultStream } from '../src/result-stream';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';

@@ -1,5 +1,5 @@
 import { spawn, Operation } from 'effection';
-import { TestResult, ResultStatus } from '@bigtest/suite';
+import { ResultStatus } from '@bigtest/suite';
 import { TestRunAgentState } from '../orchestrator/state';
 import { Aggregator, AggregatorAgentOptions } from './aggregator';
 import { TestAggregator } from './test';

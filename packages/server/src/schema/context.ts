@@ -4,7 +4,7 @@ import { Atom } from '@bigtest/atom';
 import { CommandMessage } from '../command-server';
 import { resultStream } from '../result-stream';
 import { TestEvent } from './test-event';
-import { OrchestratorState, TestRunState } from '../orchestrator/state';
+import { OrchestratorState } from '../orchestrator/state';
 
 let testRunIds = (function * () {
   for (let current = 1; ; current++) {

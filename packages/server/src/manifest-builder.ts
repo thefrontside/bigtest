@@ -10,8 +10,6 @@ import { createFingerprint } from 'fprint';
 import * as path from 'path';
 import * as fs from 'fs';
 
-import { Test } from '@bigtest/suite';
-
 import { OrchestratorState, Manifest } from './orchestrator/state';
 
 const { copyFile, mkdir, stat, appendFile, open } = fs.promises;

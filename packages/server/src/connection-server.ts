@@ -1,7 +1,7 @@
 import { Operation, fork } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { Atom } from '@bigtest/atom';
-import { AgentState, OrchestratorState } from './orchestrator/state';
+import { OrchestratorState } from './orchestrator/state';
 import { express, Socket } from '@bigtest/effection-express';
 
 interface ConnectionServerOptions {

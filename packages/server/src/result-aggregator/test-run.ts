@@ -1,6 +1,6 @@
 import { Operation } from 'effection';
 import { ResultStatus } from '@bigtest/suite';
-import { TestRunState, TestRunAgentState } from '../orchestrator/state';
+import { TestRunState } from '../orchestrator/state';
 import { Aggregator, AggregatorOptions } from './aggregator';
 import { TestRunAgentAggregator } from './test-run-agent';
 import { parallel } from './parallel';

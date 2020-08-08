@@ -1,7 +1,7 @@
 import { Operation, fork } from 'effection';
 import { Slice } from '@bigtest/atom';
 import { subscribe, Subscription, createSubscription } from '@effection/subscription';
-import { TestResult, StepResult, AssertionResult, ResultStatus } from '@bigtest/suite';
+import { TestResult, StepResult, AssertionResult } from '@bigtest/suite';
 import { OrchestratorState, TestRunState, TestRunAgentState } from './orchestrator/state';
 import { TestEvent } from './schema/test-event';
 

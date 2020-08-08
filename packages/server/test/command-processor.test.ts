@@ -11,7 +11,7 @@ import { createCommandProcessor } from '../src/command-processor';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { CommandMessage } from '../src/command-server';
 
-import { AgentState, Manifest, TestRunState, OrchestratorState } from '../src/orchestrator/state';
+import { OrchestratorState } from '../src/orchestrator/state';
 
 describe('command processor', () => {
   let delegate: Mailbox<AgentCommand & { agentId: string }>;

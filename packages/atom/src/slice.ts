@@ -33,7 +33,6 @@ export class Slice<T, S> implements Subscribable<T, undefined> {
     this.atom.update((state) => (over(this.lens, fn, state) as unknown) as S);
   }
 
-
   slice<Key extends keyof T>(key: Key): Slice<T[Key], S>;
   slice<Key1 extends keyof T, Key2 extends keyof T[Key1]>(key1: Key1, key2: Key2): Slice<T[Key1][Key2], S>;
   slice<Key1 extends keyof T, Key2 extends keyof T[Key1], Key3 extends keyof T[Key1][Key2]>(key1: Key1, key2: Key2, key3: Key3): Slice<T[Key1][Key2][Key3], S>;
@@ -42,6 +41,7 @@ export class Slice<T, S> implements Subscribable<T, undefined> {
   slice<Key1 extends keyof T, Key2 extends keyof T[Key1], Key3 extends keyof T[Key1][Key2], Key4 extends keyof T[Key1][Key2][Key3], Key5 extends keyof T[Key1][Key2][Key3][Key4], Key6 extends keyof T[Key1][Key2][Key3][Key4][Key5]>(key1: Key1, key2: Key2, key3: Key3, key4: Key4, key5: Key5, key: Key6): Slice<T[Key1][Key2][Key3][Key4][Key5][Key6], S>;
   slice<Key1 extends keyof T, Key2 extends keyof T[Key1], Key3 extends keyof T[Key1][Key2], Key4 extends keyof T[Key1][Key2][Key3], Key5 extends keyof T[Key1][Key2][Key3][Key4], Key6 extends keyof T[Key1][Key2][Key3][Key4][Key5], Key7 extends keyof T[Key1][Key2][Key3][Key4][Key5][Key6]>(key1: Key1, key2: Key2, key3: Key3, key4: Key4, key5: Key5, key: Key6, key7: Key7): Slice<T[Key1][Key2][Key3][Key4][Key5][Key6][Key7], S>;
   slice<Key1 extends keyof T, Key2 extends keyof T[Key1], Key3 extends keyof T[Key1][Key2], Key4 extends keyof T[Key1][Key2][Key3], Key5 extends keyof T[Key1][Key2][Key3][Key4], Key6 extends keyof T[Key1][Key2][Key3][Key4][Key5], Key7 extends keyof T[Key1][Key2][Key3][Key4][Key5][Key6], Key8 extends keyof T[Key1][Key2][Key3][Key4][Key5][Key6][Key7]>(key1: Key1, key2: Key2, key3: Key3, key4: Key4, key5: Key5, key: Key6, key7: Key7, key8: Key8): Slice<T[Key1][Key2][Key3][Key4][Key5][Key6][Key7][Key8], S>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   slice(...path: Array<string | number>): Slice<any, S> {
     return new Slice(this.atom, this.path.concat(path));
   }

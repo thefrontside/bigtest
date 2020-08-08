@@ -1,5 +1,5 @@
 import { spawn, Operation } from 'effection';
-import { TestResult, StepResult, AssertionResult, ResultStatus } from '@bigtest/suite';
+import { TestResult, ResultStatus } from '@bigtest/suite';
 import { Aggregator, AggregatorTestOptions } from './aggregator';
 import { StepAggregator } from './step';
 import { AssertionAggregator } from './assertion';
