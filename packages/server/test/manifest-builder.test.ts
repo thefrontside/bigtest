@@ -4,7 +4,6 @@ import * as path from 'path';
 import * as rmrf from 'rimraf';
 import * as fs from 'fs';
 
-import { Mailbox } from '@bigtest/effection';
 import { Atom } from '@bigtest/atom';
 
 import { actions } from './helpers';
@@ -23,7 +22,6 @@ const { mkdir, copyFile, readFile } = fs.promises;
 
 describe('manifest builder', () => {
   let atom: Atom<OrchestratorState>;
-  let delegate: Mailbox;
   let resultPath: string;
 
   beforeEach((done) => rmrf(TEST_DIR, done));
@@ -32,7 +30,6 @@ describe('manifest builder', () => {
     await copyFile('./test/fixtures/raw-tree-format.t.js', MANIFEST_PATH);
 
     atom = createOrchestratorAtom();
-    delegate = new Mailbox();
 
     actions.fork(function*() {
       yield createManifestBuilder({
@@ -45,7 +42,7 @@ describe('manifest builder', () => {
 
     let bundlerState = await actions.fork(atom.slice<BundlerState>(['bundler']).once(({ status }) => status === 'green'))
     
-    assert(bundlerState.status === 'green', "not ready");
+    assert(!!bundlerState && bundlerState.status === 'green', "not ready");
 
     resultPath = bundlerState.path;
   });
@@ -66,7 +63,12 @@ describe('manifest builder', () => {
 
     beforeEach(async () => {
       await copyFile('./test/fixtures/empty.t.js', MANIFEST_PATH);
-      resultPath = (await actions.receive(delegate, { event: 'update' }))['path'];
+      let bundler = await actions.fork(atom.slice<BundlerState>(['bundler']).once(({status}) => status === 'updated'));
+
+      assert(!!bundler && bundler.status === 'updated', "not ready");
+
+      resultPath = bundler.path;
+      
       body = await readFile(path.resolve(DIST_DIR, resultPath), 'utf8')
     });
 
@@ -131,7 +133,7 @@ describe('manifest builder', () => {
   describe('updating the manifest and then reading it', () => {
     beforeEach(async () => {
       await copyFile('./test/fixtures/empty.t.js', MANIFEST_PATH);
-      await actions.receive(delegate, { event: "update" });
+      await actions.fork(atom.slice<BundlerState>(['bundler']).once(({status}) => status === 'updated'))
     });
 
     it('returns the updated manifest from the state', () => {

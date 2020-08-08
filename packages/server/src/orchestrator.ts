@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { fork, Operation, spawn } from 'effection';
-import { Mailbox, deprecatedSubscribe } from '@bigtest/effection';
-import { subscribe, Subscribable } from '@effection/subscription';
+import { Mailbox } from '@bigtest/effection';
+import { Subscribable } from '@effection/subscription';
 import { AgentServerConfig } from '@bigtest/agent';
 import { Atom } from '@bigtest/atom';
 import { ProjectOptions } from '@bigtest/project';
@@ -46,10 +46,19 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   let connectTo = `ws://localhost:${options.project.connection.port}`;
 
+  // only handling manifest builder errors for now
   yield spawn(function* () {
     let bundlerState = options.atom.slice<BundlerState>(['bundler']);
-    yield Subscribable.from(bundlerState).forEach(function* (message) {
-      console.log(message);
+    yield Subscribable.from(bundlerState).forEach(function* (event) {
+      // what do we do with the errors after they have been logged?
+      if(event.status === 'errored'){
+        for(let error of event.errors) {
+          console.error("[manifest builder] build error:", error);
+          if (error.frame) {
+            console.error("[manifest builder] build error frame:\n", error.frame);
+          }
+        }
+      }
     })
   });
 

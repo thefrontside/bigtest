@@ -54,7 +54,8 @@ describe('running tests with subscription on an agent', () => {
 
     beforeEach(async () => {
       results = await actions.fork(client.subscription(subscriptionQuery()));
-      runCommand = await actions.fork(agent.commands.match({ type: 'run' }).first());
+      // match is returning Chain<Run, void> which seems wrong and required an explicit cast
+      runCommand = await actions.fork(agent.commands.match({ type: 'run' }).first()) as Command;
       testRunId = runCommand.testRunId;
     });
 

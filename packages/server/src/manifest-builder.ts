@@ -3,7 +3,7 @@ import { Operation } from 'effection';
 import { once } from '@effection/events';
 import { subscribe, ChainableSubscription } from '@effection/subscription';
 import { Deferred } from '@bigtest/effection';
-import { Bundler, BundlerMessage, BundlerError } from '@bigtest/bundler';
+import { Bundler, BundlerMessage } from '@bigtest/bundler';
 import { Atom, Slice } from '@bigtest/atom';
 import { createFingerprint } from 'fprint';
 import * as path from 'path';
@@ -86,13 +86,6 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
   return distPath;
 }
 
-function logBuildError(error: BundlerError) {
-  console.error("[manifest builder] build error:", error.message);
-  if (error.frame) {
-    console.error("[manifest builder] build error frame:\n", error.frame);
-  }
-}
-
 function addBundlerErrorToSlice(message: BundlerMessage, bundlerSlice: Slice<BundlerState, OrchestratorState>): void {
   assert(message.type === 'error', `invalid message type ${message.type}`);
   
@@ -103,8 +96,6 @@ function addBundlerErrorToSlice(message: BundlerMessage, bundlerSlice: Slice<Bun
 
     return { status: 'errored', errors: previous.errors.concat(message.error), warnings: previous.warnings };
   });
-  
-  logBuildError(message.error);
 }
 
 function* waitForSuccessfulBuild(bundlerEvents: ChainableSubscription<BundlerMessage, undefined>, bundlerSlice: Slice<BundlerState, OrchestratorState>): Operation {
