@@ -38,13 +38,6 @@ export interface Manifest extends Test {
   fileName: string;
 }
 
-// TODO: bundlerState really belongs in Manifest
-// export interface Manifest {
-//   fileName: string;
-//   test: Test;
-//   bundler: BundlerState;
-// }
-
 export type OrchestratorState = {
   agents: Record<string, AgentState>;
   manifest: Manifest;

@@ -33,7 +33,6 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, bundlerSlice: Slice
         format: 'umd',
       },
       onwarn(warning){
-        console.dir(warning);
         bundlerSlice.update(previous => {
           assert(previous.status === 'building', `in illegal bundler state ${previous.status}`);
 
@@ -84,8 +83,6 @@ export class Bundler {
             } else {
               bundlerSlice.update((previous) => {
                 assert(previous.status === 'building' || previous.status === 'green', `bundler trying to transition to end from ${previous.status}`);
-
-                console.debug('[bundler] finished building')
 
                 return { status: 'end', warnings: previous.warnings ?? [] };
               })

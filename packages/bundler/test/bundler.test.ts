@@ -14,7 +14,7 @@ describe("Bundler", function() {
   let bundlerSlice: Slice<BundlerState, State>;
   this.timeout(5000);
   beforeEach((done) => rmrf('./build', done));
-  beforeEach(async () => {    
+  beforeEach(async () => {
     await fs.mkdir("./build/test/sources", { recursive: true });
     await fs.mkdir("./build/test/output", { recursive: true });
   });
