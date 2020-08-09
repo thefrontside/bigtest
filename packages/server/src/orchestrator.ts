@@ -105,7 +105,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   }));
 
   console.debug('[orchestrator] wait for manifest generator');
-  // wait for manifest generator before starting manifest builder
   yield manifestGeneratorDelegate.receive({ status: 'ready' });
   console.debug('[orchestrator] manifest generator ready');
 

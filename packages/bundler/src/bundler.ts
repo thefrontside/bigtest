@@ -87,7 +87,7 @@ export class Bundler {
 
                 console.debug('[bundler] finished building')
 
-                return { status: 'end', warnings: previous.warnings };
+                return { status: 'end', warnings: previous.warnings ?? [] };
               })
             }
           });

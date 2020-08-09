@@ -3,9 +3,11 @@ import * as expect from 'expect';
 
 describe('AssertionError', () => {
   it('should instantiate error', () => {
-    let error = new AssertionError('blah');
-
-    expect(error).toBeInstanceOf(AssertionError);
-    expect(error.message).toBe('blah');
+    try {
+      throw new AssertionError('blah');
+    } catch(err){
+      expect(err).toBeInstanceOf(AssertionError);
+      expect(err.message).toBe('blah');
+    }
   });
 });
