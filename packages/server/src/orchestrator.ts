@@ -15,8 +15,8 @@ import { createAppServer } from './app-server';
 import { createManifestGenerator } from './manifest-generator';
 import { createManifestBuilder } from './manifest-builder';
 import { createManifestServer } from './manifest-server';
-import { OrchestratorState, BundlerState } from './orchestrator/state';
-
+import { OrchestratorState } from './orchestrator/state';
+import { BundlerState } from '@bigtest/bundler';
 
 type OrchestratorOptions = {
   atom: Atom<OrchestratorState>;
@@ -46,17 +46,13 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   let connectTo = `ws://localhost:${options.project.connection.port}`;
 
-  // only handling manifest builder errors for now
   yield spawn(function* () {
     let bundlerState = options.atom.slice<BundlerState>(['bundler']);
     yield Subscribable.from(bundlerState).forEach(function* (event) {
-      // what do we do with the errors after they have been logged?
       if(event.status === 'errored'){
-        for(let error of event.errors) {
-          console.error("[manifest builder] build error:", error);
-          if (error.frame) {
-            console.error("[manifest builder] build error frame:\n", error.frame);
-          }
+        console.error("[manifest builder] build error:", event.error);
+        if (event.error.frame) {
+          console.error("[manifest builder] build error frame:\n", event.error.frame);
         }
       }
     })

@@ -1,11 +1,13 @@
 import { Operation, resource } from 'effection';
 import { on } from '@effection/events';
-import { subscribe, Subscribable, SymbolSubscribable, ChainableSubscription } from '@effection/subscription';
-import { Channel } from '@effection/channel';
-import { watch, RollupWatchOptions, RollupWatcherEvent, RollupWatcher, RollupWarning, RollupError } from 'rollup';
+import { subscribe, ChainableSubscription } from '@effection/subscription';
+import { watch, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'rollup';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
+import { Slice } from '@bigtest/atom';
+import { BundlerState } from './types';
+import { assert } from '@bigtest/project';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import babel from '@rollup/plugin-babel';
@@ -20,17 +22,7 @@ interface BundlerOptions {
   mainFields: Array<"browser" | "main" | "module">;
 };
 
-// could Pick<T> the relevant bits from these types
-// lots of good error info in RollupError and RollupWarning
-export type BundlerError = RollupError;
-export type BundlerWarning = RollupWarning;
-
-export type BundlerMessage =
-  | { type: 'update' }
-  | { type: 'warn'; warning: BundlerWarning }
-  | { type: 'error'; error: BundlerError }
-
-function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: BundlerOptions = { mainFields: ["browser", "module", "main"] }): Array<RollupWatchOptions> {
+function prepareRollupOptions(bundles: Array<BundleOptions>, bundlerSlice: Slice<BundlerState, unknown>, { mainFields }: BundlerOptions = { mainFields: ["browser", "module", "main"] }): Array<RollupWatchOptions> {
   return bundles.map(bundle => {
     return {
       input: bundle.entry,
@@ -40,10 +32,14 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: Bun
         sourcemap: true,
         format: 'umd',
       },
-      // can we use this for warnings?
-      // onwarn(warning){
-      //   console.warn(warning);
-      // },
+      onwarn(warning){
+        bundlerSlice.update(previous => {
+          assert(previous.status === 'building', `in illegal bundler state ${previous.status}`);
+
+          let warnings = previous.warnings ?? [];
+          return ({ status: 'building', warnings: warnings.concat(warning) });
+        })
+      },
       watch: {
         // Rollup types are wrong; `watch.exclude` allows RegExp[]
         exclude: [/node_modules/ as unknown as string]
@@ -68,33 +64,33 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, { mainFields }: Bun
   });
 }
 
-export class Bundler implements Subscribable<BundlerMessage, undefined> {
-  private channel = new Channel<BundlerMessage>();
-
-  static *create(bundles: Array<BundleOptions>): Operation<Bundler> {
+export class Bundler {
+  static *create(bundles: Array<BundleOptions>, bundlerSlice: Slice<BundlerState, unknown>): Operation<Bundler> {
     let bundler = new Bundler();
 
     return yield resource(bundler, function* () {
-      let rollup: RollupWatcher = watch(prepareRollupOptions(bundles));
+      let rollup: RollupWatcher = watch(prepareRollupOptions(bundles, bundlerSlice));
 
       try {
-        let events: ChainableSubscription<RollupWatcherEvent[], BundlerMessage> = yield subscribe(on(rollup, 'event'));
+        let events: ChainableSubscription<RollupWatcherEvent[], void> = yield subscribe(on(rollup, 'event'));
    
-        let messages = events
+        yield events
           .map(([event]) => event)
           .filter(event => ['END', 'ERROR'].includes(event.code))
-          .map(event => event.code === 'ERROR' ? { type: 'error', error: event.error } as const : { type: 'update' } as const);
+          .forEach(function* (event) {
+            if(event.code === 'ERROR'){
+              bundlerSlice.update(() => ({ status: 'errored', error: event.error }));
+            } else {
+              bundlerSlice.update((previous) => {
+                assert(previous.status === 'building');
 
-        yield messages.forEach(function* (message) {
-          bundler.channel.send(message);
-        });
+                return {status: 'end', warnings: previous.warnings};
+              })
+            }
+          });
       } finally {
         rollup.close();
       }
     });
-  }
-
-  [SymbolSubscribable]() {
-    return this.channel[SymbolSubscribable]();
   }
 }

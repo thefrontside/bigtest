@@ -23,6 +23,7 @@
     "@babel/preset-typescript": "^7.10.4",
     "@babel/runtime": "^7.10.4",
     "@bigtest/effection": "^0.5.1",
+    "@bigtest/project": "^0.5.1",
     "@effection/channel": "^0.6.4",
     "@effection/events": "^0.7.4",
     "@effection/node": "^0.6.5",

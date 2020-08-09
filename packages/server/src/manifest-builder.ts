@@ -1,16 +1,15 @@
 import { bigtestGlobals } from '@bigtest/globals';
-import { Operation } from 'effection';
+import { Operation, spawn } from 'effection';
 import { once } from '@effection/events';
-import { subscribe, ChainableSubscription } from '@effection/subscription';
 import { Deferred } from '@bigtest/effection';
-import { Bundler, BundlerMessage } from '@bigtest/bundler';
-import { Atom, Slice } from '@bigtest/atom';
+import { Bundler, BundlerState } from '@bigtest/bundler';
+import { Atom } from '@bigtest/atom';
 import { createFingerprint } from 'fprint';
 import * as path from 'path';
 import * as fs from 'fs';
 
-import { OrchestratorState, BundlerState, Manifest } from './orchestrator/state';
-import { assert } from './assertions/assert';
+import { OrchestratorState, Manifest } from './orchestrator/state';
+import { assert } from '@bigtest/project';
 
 const { copyFile, mkdir, stat, appendFile, open } = fs.promises;
 
@@ -85,59 +84,36 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
   return distPath;
 }
 
-function addBundlerErrorToSlice(message: BundlerMessage, bundlerSlice: Slice<BundlerState, OrchestratorState>): void {
-  assert(message.type === 'error', `invalid message type ${message.type}`);
-  
-  bundlerSlice.update(previous => {
-    if (previous.status !== 'errored'){
-      return { status: 'errored', errors: [message.error], warnings: [] };
-    }
-
-    return { status: 'errored', errors: previous.errors.concat(message.error), warnings: previous.warnings };
-  });
-}
-
-function* waitForSuccessfulBuild(bundlerEvents: ChainableSubscription<BundlerMessage, undefined>, bundlerSlice: Slice<BundlerState, OrchestratorState>): Operation {
-  let message: BundlerMessage = yield bundlerEvents.expect();
-
-  if (message.type === "error") {
-    addBundlerErrorToSlice(message, bundlerSlice);
-    yield waitForSuccessfulBuild(bundlerEvents, bundlerSlice);
-  }
-}
-
 export function* createManifestBuilder(options: ManifestBuilderOptions): Operation {
   let bundlerSlice = options.atom.slice('bundle');
 
-  bundlerSlice.set({ status: 'building' })
+  bundlerSlice.set({ status: 'building', warnings: [] })
   
-  let bundler: Bundler = yield Bundler.create(
+  yield Bundler.create(
     [{
       entry: options.srcPath,
       globalName: bigtestGlobals.manifestProperty,
       outFile: path.join(options.buildDir, "manifest.js")
-    }]
+    }],
+    bundlerSlice
   );
-  
-  let bundlerEvents: ChainableSubscription<BundlerMessage, undefined> = yield subscribe(bundler);
-
-  yield waitForSuccessfulBuild(bundlerEvents, bundlerSlice);
-
-  let distPath: string = yield processManifest(options);
 
   console.debug("[manifest builder] manifest ready");
-
-  // not entirely sure if I use set or update here
-  // TODO: should not transition until we have required the generated output yield import distpath
-  bundlerSlice.update(() => ({ status: 'green', path: distPath, warnings: [] }));
-
-  yield bundlerEvents.forEach(function*(message) {
-    if(message.type === 'error') {
-      addBundlerErrorToSlice(message, bundlerSlice);
-    } else {
-      let distPath = yield processManifest(options);
-      console.info("[manifest builder] manifest updated");
-      bundlerSlice.update(() => ({ status: 'updated', path: distPath }))
-    }
-  });
+  
+  yield spawn(function* () {
+    yield bundlerSlice.once(({ status }) => status === 'end');
+    
+    let distPath: string = yield processManifest(options);
+          
+    bundlerSlice.update(() => ({ status: 'green', path: distPath }));
+    
+    yield Subscribable.from(bundlerSlice).forEach(function* (message) {
+      // TODO: is there a need to do anything with errors here??
+      if(message.status === 'updated') {
+        let distPath = yield processManifest(options);
+        console.info("[manifest builder] manifest updated");
+        bundlerSlice.update(() => ({ status: 'updated', path: distPath }))
+      }
+    })
+  }); 
 }

@@ -108,3 +108,5 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
     launch: []
   }
 };
+
+export { assert } from './assert';

@@ -1,4 +1,4 @@
-import { AssertionError } from '../src/errors/assertion-error';
+import { AssertionError } from '../src/assert/assertion-error';
 import * as expect from 'expect';
 
 describe('AssertionError', () => {
