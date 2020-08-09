@@ -109,4 +109,17 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
   }
 };
 
-export { assert } from './assert';
+export class AssertionError extends Error {
+  constructor(message: string) {
+    super(message);
+
+    Object.setPrototypeOf(this, new.target.prototype);
+  }
+}
+
+export function assert(condition: unknown, msg?: string): asserts condition {
+  if (!condition) {
+    throw new AssertionError(msg || 'assertion error');
+  }
+}
+

@@ -10,8 +10,8 @@ import { actions } from './helpers';
 import { createManifestBuilder, updateSourceMapURL } from '../src/manifest-builder';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { OrchestratorState } from '../src/orchestrator/state';
-import { assert } from '@bigtest/project';
 import { BundlerState } from '@bigtest/bundler';
+import { assert } from '@bigtest/project';
 
 // be nice to windows
 const TEST_DIR = path.resolve('tmp', 'manifest-builder');

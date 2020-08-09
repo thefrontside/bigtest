@@ -1,4 +1,4 @@
-import { assert } from '../src/assert';
+import { assert } from '../src';
 import * as expect from 'expect';
 
 describe('assert', () => {
