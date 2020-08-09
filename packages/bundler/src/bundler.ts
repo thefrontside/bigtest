@@ -33,6 +33,8 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, bundlerSlice: Slice
         format: 'umd',
       },
       onwarn(warning){
+        console.log('we gottta warning!!!');
+        console.dir(warning,)
         bundlerSlice.update(previous => {
           assert(previous.status === 'building', `in illegal bundler state ${previous.status}`);
 
@@ -65,7 +67,7 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, bundlerSlice: Slice
 }
 
 export class Bundler {
-  static *create(bundles: Array<BundleOptions>, bundlerSlice: Slice<BundlerState, unknown>): Operation<Bundler> {
+  static *create<S>(bundles: Array<BundleOptions>, bundlerSlice: Slice<BundlerState, S>): Operation<Bundler> {
     let bundler = new Bundler();
 
     return yield resource(bundler, function* () {
@@ -73,7 +75,7 @@ export class Bundler {
 
       try {
         let events: ChainableSubscription<RollupWatcherEvent[], void> = yield subscribe(on(rollup, 'event'));
-   
+
         yield events
           .map(([event]) => event)
           .filter(event => ['END', 'ERROR'].includes(event.code))
@@ -82,9 +84,11 @@ export class Bundler {
               bundlerSlice.update(() => ({ status: 'errored', error: event.error }));
             } else {
               bundlerSlice.update((previous) => {
-                assert(previous.status === 'building');
+                assert(previous.status === 'building', `bundler trying to transition to end from ${previous.status}`);
 
-                return {status: 'end', warnings: previous.warnings};
+                console.debug('[bundler] finished building')
+
+                return { status: 'end', warnings: previous.warnings };
               })
             }
           });

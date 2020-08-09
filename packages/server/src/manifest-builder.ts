@@ -100,20 +100,20 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
 
   console.debug("[manifest builder] manifest ready");
   
-  yield spawn(function* () {
-    yield bundlerSlice.once(({ status }) => status === 'end');
-    
-    let distPath: string = yield processManifest(options);
-          
-    bundlerSlice.update(() => ({ status: 'green', path: distPath }));
-    
-    yield Subscribable.from(bundlerSlice).forEach(function* (message) {
-      // TODO: is there a need to do anything with errors here??
-      if(message.status === 'updated') {
-        let distPath = yield processManifest(options);
-        console.info("[manifest builder] manifest updated");
-        bundlerSlice.update(() => ({ status: 'updated', path: distPath }))
-      }
-    })
-  }); 
+  yield bundlerSlice.once(({ status }) => status === 'end');
+
+  console.debug("[manifest builder] bundle built");
+
+  let distPath: string = yield processManifest(options);
+        
+  bundlerSlice.update(() => ({ status: 'green', path: distPath }));
+  
+  yield Subscribable.from(bundlerSlice).forEach(function* (message) {
+    // TODO: is there a need to do anything with errors here??
+    if(message.status === 'updated') {
+      let distPath = yield processManifest(options);
+      console.info("[manifest builder] manifest updated");
+      bundlerSlice.update(() => ({ status: 'updated', path: distPath }))
+    }
+  });
 }

@@ -11,6 +11,7 @@ import { createManifestBuilder, updateSourceMapURL } from '../src/manifest-build
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { OrchestratorState } from '../src/orchestrator/state';
 import { assert } from '@bigtest/project';
+import { BundlerState } from '@bigtest/bundler';
 
 // be nice to windows
 const TEST_DIR = path.resolve('tmp', 'manifest-builder');
@@ -150,12 +151,12 @@ describe('manifest builder', () => {
       let bundlerState = atom.get().bundler;
 
       // this could be a custom expect 
+      // assert is used to type narrow also and does more than just assert
       assert(bundlerState.status === 'errored', `bundler status is not errored but ${bundlerState.status}`);
       
-      let errors = bundlerState.errors;
+      let error = bundlerState.error;
 
-      expect(errors).toHaveLength(1);
-      expect(errors[0].frame).toBeTruthy();
+      expect(error.frame).toBeTruthy();
     });
   })
 });
