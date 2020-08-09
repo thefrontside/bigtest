@@ -1,5 +1,5 @@
 import { bigtestGlobals } from '@bigtest/globals';
-import { Operation, spawn } from 'effection';
+import { Operation } from 'effection';
 import { once } from '@effection/events';
 import { Deferred } from '@bigtest/effection';
 import { Bundler, BundlerState } from '@bigtest/bundler';
@@ -7,7 +7,6 @@ import { Atom } from '@bigtest/atom';
 import { createFingerprint } from 'fprint';
 import * as path from 'path';
 import * as fs from 'fs';
-
 import { OrchestratorState, Manifest } from './orchestrator/state';
 import { assert } from '@bigtest/project';
 
@@ -106,11 +105,17 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
 
   let distPath: string = yield processManifest(options);
         
-  bundlerSlice.update(() => ({ status: 'green', path: distPath }));
+  bundlerSlice.update(previous => {
+    // assert does more than just check the condition
+    // it also type narrows the BundlerState discriminated untion
+    assert(previous.status === 'building' || previous.status === 'end', `trying to transition to green from ${previous.status}`)
+    
+    return { status: 'green', path: distPath, warnings: previous.warnings ?? [] };
+  });
   
   yield Subscribable.from(bundlerSlice).forEach(function* (message) {
     // TODO: is there a need to do anything with errors here??
-    if(message.status === 'updated') {
+    if(message.status === 'end') {
       let distPath = yield processManifest(options);
       console.info("[manifest builder] manifest updated");
       bundlerSlice.update(() => ({ status: 'updated', path: distPath }))
