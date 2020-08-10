@@ -1,7 +1,6 @@
 import * as path from 'path';
 import { fork, Operation, spawn } from 'effection';
 import { Mailbox } from '@bigtest/effection';
-import { Subscribable } from '@effection/subscription';
 import { AgentServerConfig } from '@bigtest/agent';
 import { Atom } from '@bigtest/atom';
 import { ProjectOptions } from '@bigtest/project';
@@ -17,6 +16,7 @@ import { createManifestBuilder } from './manifest-builder';
 import { createManifestServer } from './manifest-server';
 import { OrchestratorState } from './orchestrator/state';
 import { BundlerState } from '@bigtest/bundler';
+import { createLogger } from './logger';
 
 type OrchestratorOptions = {
   atom: Atom<OrchestratorState>;
@@ -47,15 +47,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   let connectTo = `ws://localhost:${options.project.connection.port}`;
 
   yield spawn(function* () {
-    let bundlerState = options.atom.slice<BundlerState>(['bundler']);
-    yield Subscribable.from(bundlerState).forEach(function* (event) {
-      if(event.status === 'errored'){
-        console.error("[manifest builder] build error:", event.error);
-        if (event.error.frame) {
-          console.error("[manifest builder] build error frame:\n", event.error.frame);
-        }
-      }
-    })
+    yield createLogger({ atom: options.atom,  out: console.error });
   });
 
   let browserManager: BrowserManager = yield createBrowserManager({

@@ -1,3 +1,3 @@
 export default {
-  description: "Signing In
+  description: "Missing quotes here
 }

@@ -114,7 +114,6 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
   });
   
   yield Subscribable.from(bundlerSlice).forEach(function* (message) {
-    // TODO: is there a need to do anything with errors here??
     if(message.status === 'end') {
       let distPath = yield processManifest(options);
       console.info("[manifest builder] manifest updated");
