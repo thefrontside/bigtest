@@ -3,8 +3,8 @@ import { Operation } from 'effection';
 import { Mailbox, ensure } from '@bigtest/effection';
 import { throwOnErrorEvent } from '@effection/events';
 import * as fs from 'fs';
-import * as path from 'path';
 import * as globby from 'globby';
+import * as path from 'path';
 
 const { writeFile, mkdir } = fs.promises;
 
@@ -15,7 +15,6 @@ interface ManifestGeneratorOptions {
 };
 
 function* writeManifest(options: ManifestGeneratorOptions) {
-
   let files = yield globby(options.files);
 
   let manifest = 'let load = (res) => res.default || res;\n';
