@@ -39,6 +39,28 @@ export class Atom<S> implements Subscribable<S,undefined> {
   }
 
 
+  /* 
+  * Brute foce overload to allow strong typing of the string path syntax
+  * for every level deep we want to go in the slice there will need to be an overload 
+  * with an argument for each of the string paths
+  * 
+  * e.g. atom.slice('agents', agentId);  // 2 levels deep
+  * 
+  * There must be a matching overload
+  * 
+  * slice<Key1 extends keyof S, Key2 extends keyof S[Key1]>(key1: Key1, key2: Key2): Slice<S[Key1][Key2], S>;
+  * 
+  * key1 is 'agents' and key2 is 'agents'.
+  * 
+  * key1 is constrained to be a key of the atom `agents` which is atom atom.agents or could be
+  * atom.manifest or atom.testRuns of Atom<OrchestratorState>
+  * 
+  * key2 is constrained to be a key of the return type S[Key1] which is the agents object and in this
+  * example whatever the agentId variable is
+  * 
+  * The return type of the function is Slice<S[Key1][Key2], S>; or Slice<AgentState, OrchestratorState>
+  * in this example
+  */
   slice<Key extends keyof S>(key: Key): Slice<S[Key], S>;
   slice<Key1 extends keyof S, Key2 extends keyof S[Key1]>(key1: Key1, key2: Key2): Slice<S[Key1][Key2], S>;
   slice<Key1 extends keyof S, Key2 extends keyof S[Key1], Key3 extends keyof S[Key1][Key2]>(key1: Key1, key2: Key2, key3: Key3): Slice<S[Key1][Key2][Key3], S>;
