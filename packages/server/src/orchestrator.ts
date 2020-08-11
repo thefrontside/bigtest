@@ -46,10 +46,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   let connectTo = `ws://localhost:${options.project.connection.port}`;
 
-  yield spawn(function* () {
-    yield createLogger({ atom: options.atom,  out: console.error });
-  });
-
+  yield spawn(createLogger({ atom: options.atom,  out: console.error }));
   let browserManager: BrowserManager = yield createBrowserManager({
     atom: options.atom,
     connectURL: (agentId: string) => agentServerConfig.agentUrl(connectTo, agentId),
