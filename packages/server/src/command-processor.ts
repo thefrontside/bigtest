@@ -3,7 +3,7 @@ import { Mailbox } from '@bigtest/effection';
 import { Test, TestResult } from '@bigtest/suite';
 import { Atom } from '@bigtest/atom';
 import { AgentEvent, Command as AgentCommand } from '@bigtest/agent';
-import { AgentState, TestRunState, OrchestratorState } from './orchestrator/state';
+import { AgentState, OrchestratorState } from './orchestrator/state';
 import { TestRunAggregator } from './result-aggregator/test-run';
 import { CommandMessage } from './command-server';
 
@@ -19,7 +19,7 @@ interface CommandProcessorOptions {
 function* run(testRunId: string, options: CommandProcessorOptions): Operation {
   console.debug('[command processor] running test', testRunId);
 
-  let testRunSlice = options.atom.slice<TestRunState>(['testRuns', testRunId]);
+  let testRunSlice = options.atom.slice('testRuns', testRunId);
   let manifest = options.atom.get().manifest;
 
   let appUrl = `http://localhost:${options.proxyPort}`;

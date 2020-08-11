@@ -1,5 +1,5 @@
 import { spawn, Operation } from 'effection';
-import { TestResult, ResultStatus } from '@bigtest/suite';
+import { ResultStatus } from '@bigtest/suite';
 import { TestRunAgentState } from '../orchestrator/state';
 import { Aggregator, AggregatorAgentOptions } from './aggregator';
 import { TestAggregator } from './test';
@@ -15,7 +15,7 @@ export class TestRunAgentAggregator extends Aggregator<TestRunAgentState, Aggreg
   }
 
   *perform(): Operation<ResultStatus> {
-    let testResultSlice = this.slice.slice<TestResult>(['result']);
+    let testResultSlice = this.slice.slice('result');
 
     let aggregator = new TestAggregator(testResultSlice, {
       ...this.options,

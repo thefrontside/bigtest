@@ -11,7 +11,7 @@ import { createCommandProcessor } from '../src/command-processor';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { CommandMessage } from '../src/command-server';
 
-import { AgentState, Manifest, TestRunState, OrchestratorState } from '../src/orchestrator/state';
+import { OrchestratorState } from '../src/orchestrator/state';
 
 describe('command processor', () => {
   let delegate: Mailbox<AgentCommand & { agentId: string }>;
@@ -24,14 +24,14 @@ describe('command processor', () => {
     events = new Mailbox();
     commands = new Mailbox();
     atom = createOrchestratorAtom();
-    atom.slice<AgentState>(['agents', 'agent-1']).set({
+    atom.slice('agents', 'agent-1').set({
       agentId: 'agent-1',
       browser: { name: "Safari", version: "13.0.4" },
       os: { name: "macOS", version: "10.15.2", versionName: "Catalina" },
       platform: { type: "desktop", vendor: "Apple" },
       engine: { name: "Gecko", version: "5.0" }
     });
-    atom.slice<Manifest>(['manifest']).set({
+    atom.slice('manifest').set({
       fileName: 'manifest-1234.js',
       description: 'the manifest',
       steps: [],
@@ -76,7 +76,7 @@ describe('command processor', () => {
     });
 
     it('adds agent and test tree to manifest', () => {
-      let testRun = atom.slice<TestRunState>(['testRuns', 'test-id-1']).get();
+      let testRun = atom.slice('testRuns', 'test-id-1').get();
       expect(Object.values(testRun.agents).length).toEqual(1);
       expect(testRun.agents['agent-1'].agent.agentId).toEqual('agent-1');
       expect(testRun.agents['agent-1'].result.description).toEqual('the manifest');
