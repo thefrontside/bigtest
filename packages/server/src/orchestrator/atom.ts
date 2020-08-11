@@ -13,6 +13,9 @@ export const createOrchestratorAtom = () => {
     bundler: {
       type: 'UNBUNDLED'
     },
+    appService: {
+      appStatus: 'unstarted'
+    },
     agents: {},
     testRuns: {},
   });

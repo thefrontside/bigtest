@@ -4,16 +4,16 @@ import { Mailbox } from '@bigtest/effection';
 import { beforeEach, afterEach } from 'mocha';
 import { w3cwebsocket } from 'websocket';
 import { Agent } from '@bigtest/agent';
-// import { Atom } from '@bigtest/atom';
 
 import { World } from './helpers/world';
 
 import { createOrchestrator } from '../src/index';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
-import { Manifest } from '../src/orchestrator/state';
+import { Manifest, AppServiceState, AppOptions } from '../src/orchestrator/state';
 
 let orchestratorPromise: Context;
 let manifest: Manifest;
+let appService: AppServiceState;
 
 export const actions = {
   atom: createOrchestratorAtom(),
@@ -44,6 +44,12 @@ export const actions = {
     }));
   },
 
+  updateApp(appOptions: AppOptions) {
+    actions.atom
+      .slice<AppOptions>(["appService", "appOptions"])
+      .update(() => appOptions);
+  },
+
   async startOrchestrator() {
     if(!orchestratorPromise) {
       let delegate = new Mailbox();
@@ -56,9 +62,7 @@ export const actions = {
           testFiles: ["test/fixtures/*.t.js"],
           cacheDir: "./tmp/test/orchestrator",
           app: {
-            command: "yarn",
-            args: ['test:app:start', '24100'],
-            url: "http://localhost:24100"
+            url: "http://localhost:24100",
           },
           manifest: {
             port: 24105,
@@ -78,6 +82,7 @@ export const actions = {
     }
     return orchestratorPromise.then(cxt => {
       manifest = actions.atom.get().manifest;
+      appService = actions.atom.get().appService;
       return cxt;
     });
   }
@@ -91,8 +96,8 @@ after(async function() {
 });
 
 beforeEach(() => {
-  //reset all the state in the global atom, except for the manifest
-  actions.atom.reset(initial => ({ ...initial, manifest }));
+  //reset all the state in the global atom, except for the appService and manifest
+  // actions.atom.reset(initial => ({ ...initial, appService, manifest }));
 
   currentWorld = new World();
 });

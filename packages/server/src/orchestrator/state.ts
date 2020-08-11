@@ -46,9 +46,26 @@ export interface Manifest extends Test {
   fileName: string;
 }
 
+export type AppStatus = 'unstarted' | 'started' | 'reachable' | 'unreachable' | 'crashed'
+
+export type AppOptions = {
+  url: string;
+  command?: string;
+  env?: Record<string, string>;
+  dir?: string;
+}
+
+export type AppServiceState = {
+  appStatus: AppStatus;
+  appOptions?: AppOptions;
+  lastStdOut?: string;
+  lastStdError?: string;
+}
+
 export type OrchestratorState = {
   agents: Record<string, AgentState>;
   manifest: Manifest;
   bundler: BundlerState;
   testRuns: Record<string, TestRunState>;
+  appService: AppServiceState;
 }
