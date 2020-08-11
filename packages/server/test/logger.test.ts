@@ -16,9 +16,7 @@ describe('logger', () => {
 
     atom = createOrchestratorAtom();
     
-    actions.fork(function* () {
-      yield createLogger({ atom, out: logger });
-    })
+    actions.fork(createLogger({ atom, out: logger }));
     
     atom.slice<BundlerState>(['bundler']).update(() => ({ status: 'errored', error: 'blah' } as any));
   });
