@@ -58,8 +58,6 @@ export type AppOptions = {
 export type AppServiceState = {
   appStatus: AppStatus;
   appOptions?: AppOptions;
-  lastStdOut?: string;
-  lastStdError?: string;
 }
 
 export type OrchestratorState = {
