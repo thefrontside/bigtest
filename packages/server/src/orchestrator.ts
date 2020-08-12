@@ -77,7 +77,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   }));
 
   yield fork(createAppServer({
-    slice: options.atom.slice<AppServiceState>(['appService']),
+    slice: options.atom.slice('appService'),
     ...options.project.app
   }));
 

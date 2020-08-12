@@ -25,8 +25,8 @@ function* isReachable(url: string) {
 }
 
 export function* createAppServer({ slice, ...options }: AppServerOptions): Operation {
-  let appOptions = slice.slice<AppOptions>(['appOptions']);
-  let appStatus = slice.slice<AppStatus>(['appStatus']);
+  let appOptions = slice.slice('appOptions');
+  let appStatus = slice.slice('appStatus');
   let current: Context;
 
   function* startApp(appOptions: AppOptions): Operation<void> {
@@ -70,7 +70,11 @@ export function* createAppServer({ slice, ...options }: AppServerOptions): Opera
     Subscribable
       .from(appOptions)
       .filter(appOptions => appOptions !== currentOptions)
-      .forEach(startApp)
+      .forEach(options => function* () {
+        if (options) {
+          return yield startApp(options);
+        }
+      })
   );
 
   yield startApp(options);
