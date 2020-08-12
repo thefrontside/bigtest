@@ -76,13 +76,22 @@ describe('@bigtest/interactor', () => {
       await expect(Link.byTitle('Zebra').exists()).rejects.toHaveProperty('message', 'link with title "Zebra" does not exist');
     });
 
-    it('can use a custom locator as its default locator', async  () => {
-      dom(`
-        <div id="foo">bar</div>
-      `);
+    describe('with default locator reference', () => {
+      let Div = createInteractor('div')({
+        defaultLocator: 'byId',
+        locators: {
+          byId: (element) => element.id || "",
+        }
+      });
 
-      await expect(Div('foo').exists()).resolves.toBeUndefined();
-      await expect(Div('bar').exists()).rejects.toHaveProperty('message', 'div "bar" does not exist');
+      it('can use a custom locator as its default locator', async  () => {
+        dom(`
+          <div id="foo">bar</div>
+        `);
+
+        await expect(Div('foo').exists()).resolves.toBeUndefined();
+        await expect(Div('bar').exists()).rejects.toHaveProperty('message', 'div "bar" does not exist');
+      });
     });
   });
 
