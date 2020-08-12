@@ -71,14 +71,24 @@ describe.only('orchestrator', () => {
     });
   });
 
-  describe.only('an externally managed application', () => {
+  describe('an externally managed application', () => {
     beforeEach(async function() {
       await actions.fork(function * () {
-        return yield ChildProcess.spawn("yarn test:app:start 24100");
+        let child = yield ChildProcess.spawn("yarn test:app:start 24100");
+
+        actions.registerAfterDestroyPromise(
+          new Promise(resolve => {
+            child.on('exit', () => setTimeout(resolve, 100));
+          })
+        );
+
+        return child;
       });
-    
+
       await actions.fork(function* () {
-        yield actions.atom.once(state => state.appService.appStatus === 'reachable');
+        return yield actions.atom.once(state => {
+          return state.appService.appStatus === 'reachable'
+        });
       });
     });
 
@@ -107,7 +117,7 @@ describe.only('orchestrator', () => {
     });
   });
 
-  describe.only('running the application command', () => {
+  describe('running the application command', () => {
     beforeEach(async function() {
       actions.updateApp({
         url: "http://localhost:24100",
