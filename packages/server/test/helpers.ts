@@ -8,12 +8,11 @@ import { Agent } from '@bigtest/agent';
 import { World } from './helpers/world';
 
 import { createOrchestrator } from '../src/index';
-import { createOrchestratorAtom } from '../src/orchestrator/atom';
-import { Manifest, AppServiceState, AppOptions } from '../src/orchestrator/state';
+import { initialOrchestratorState, createOrchestratorAtom } from '../src/orchestrator/atom';
+import { AppOptions } from '../src/orchestrator/state';
 
 let orchestratorPromise: Context;
-let manifest: Manifest;
-let appService: AppServiceState;
+let afterDestroyPromises: Promise<any>[];
 
 export const actions = {
   atom: createOrchestratorAtom(),
@@ -28,6 +27,10 @@ export const actions = {
 
   fetch(resource: RequestInfo, init?: RequestInit): PromiseLike<Response> {
     return actions.fork(currentWorld.fetch(resource, init));
+  },
+
+  registerAfterDestroyPromise(promise: Promise<any>) {
+    afterDestroyPromises.push(promise);
   },
 
   async createAgent(agentId: string) {
@@ -80,11 +83,8 @@ export const actions = {
 
       orchestratorPromise = this.receive(delegate, { status: 'ready' });
     }
-    return orchestratorPromise.then(cxt => {
-      manifest = actions.atom.get().manifest;
-      appService = actions.atom.get().appService;
-      return cxt;
-    });
+
+    return orchestratorPromise;
   }
 }
 
@@ -96,13 +96,18 @@ after(async function() {
 });
 
 beforeEach(() => {
-  //reset all the state in the global atom, except for the appService and manifest
-  // actions.atom.reset(initial => ({ ...initial, appService, manifest }));
+  actions.atom.update((state) => ({
+    ...state,
+    agents: initialOrchestratorState['agents'],
+    testRuns: initialOrchestratorState['testRuns'],
+  }));
 
+  afterDestroyPromises = [];
+  
   currentWorld = new World();
 });
 
-afterEach(() => {
+afterEach(async () => {
   if(globalWorld.execution.state === 'errored') {
     throw globalWorld.execution.result;
   }
@@ -110,4 +115,6 @@ afterEach(() => {
     throw currentWorld.execution.result;
   }
   currentWorld.destroy();
+
+  await Promise.all(afterDestroyPromises);
 });
