@@ -4,7 +4,7 @@ import * as expect from 'expect'
 import { bigtestGlobals } from '@bigtest/globals';
 import { JSDOM } from 'jsdom';
 
-import { createInteractor } from '../src/index';
+import { createInteractor, perform } from '../src/index';
 
 const Link = createInteractor<HTMLLinkElement>('link')({
   selector: 'a',
@@ -13,8 +13,8 @@ const Link = createInteractor<HTMLLinkElement>('link')({
     byTitle: (element) => element.title
   },
   actions: {
-    click: ({ element }) => { element.click() },
-    setHref: ({ element }, value: string) => { element.href = value }
+    click: perform(element => { element.click() }),
+    setHref: perform((element, value: string) => { element.href = value })
   }
 });
 
@@ -45,8 +45,8 @@ const TextField = createInteractor<HTMLInputElement>('text field')({
     value: (element) => element.value
   },
   actions: {
-    fillIn: ({ element }, value: string) => { element.value = value },
-    click: ({ element }) => { element.click() }
+    fillIn: perform((element, value: string) => { element.value = value }),
+    click: perform(element => { element.click() })
   }
 });
 
@@ -58,7 +58,7 @@ const Datepicker = createInteractor<HTMLDivElement>("datepicker")({
     month: element => element.querySelector("div.calendar h4")?.textContent
   },
   actions: {
-    toggle: async ({ interactor }) => {
+    toggle: async interactor => {
       await interactor.find(TextField.byPlaceholder("YYYY-MM-DD")).click();
     }
   }

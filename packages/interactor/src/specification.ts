@@ -2,7 +2,7 @@ import { Interactor } from './interactor';
 import { Interaction } from './interaction';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ActionFn<E extends Element, S extends InteractorSpecification<E>> = (context: ActionContext<E, S>, ...args: any[]) => unknown;
+export type ActionFn<E extends Element, S extends InteractorSpecification<E>> = (interactor: InteractorInstance<E, S>, ...args: any[]) => unknown;
 
 export type LocatorFn<E extends Element> = (element: E) => string;
 
@@ -29,7 +29,7 @@ export interface InteractorSpecification<E extends Element> {
 }
 
 export type ActionImplementation<E extends Element, S extends InteractorSpecification<E>> = {
-  [P in keyof S['actions']]: S['actions'][P] extends ((context: ActionContext<E, S>, ...args: infer TArgs) => infer TReturn)
+  [P in keyof S['actions']]: S['actions'][P] extends ((interactor: InteractorInstance<E, S>, ...args: infer TArgs) => infer TReturn)
     ? ((...args: TArgs) => Interaction<TReturn>)
     : never;
 }
@@ -53,8 +53,3 @@ export type InteractorConstructor<E extends Element, S extends InteractorSpecifi
   (value: string, filters?: FilterImplementation<E, S>) => InteractorInstance<E, S>;
 
 export type InteractorType<E extends Element, S extends InteractorSpecification<E>> = InteractorConstructor<E, S> & LocatorImplementation<E, S>;
-
-export interface ActionContext<E extends Element, S extends InteractorSpecification<E>> {
-  element: E;
-  interactor: InteractorInstance<E, S>;
-}
