@@ -57,6 +57,35 @@ describe('@bigtest/interactor', () => {
     bigtestGlobals.defaultInteractorTimeout = 20;
   });
 
+  describe('locators', () => {
+    it('has a default locator which selects based on textContent', async  () => {
+      dom(`
+        <h1>Foo Bar</h1>
+      `);
+
+      await expect(Header('Foo Bar').exists()).resolves.toBeUndefined();
+      await expect(Header('Foo').exists()).rejects.toHaveProperty('message', 'header "Foo" does not exist');
+    });
+
+    it('supports custom locators', async  () => {
+      dom(`
+        <p><a title="Monkey" href="/foobar">Foo Bar</a></p>
+      `);
+
+      await expect(Link.byTitle('Monkey').exists()).resolves.toBeUndefined();
+      await expect(Link.byTitle('Zebra').exists()).rejects.toHaveProperty('message', 'link with title "Zebra" does not exist');
+    });
+
+    it('can use a custom locator as its default locator', async  () => {
+      dom(`
+        <div id="foo">bar</div>
+      `);
+
+      await expect(Div('foo').exists()).resolves.toBeUndefined();
+      await expect(Div('bar').exists()).rejects.toHaveProperty('message', 'div "bar" does not exist');
+    });
+  });
+
   describe('.exists', () => {
     it('can determine whether an element exists based on the interactor', async () => {
       dom(`
@@ -65,15 +94,6 @@ describe('@bigtest/interactor', () => {
 
       await expect(Link('Foo Bar').exists()).resolves.toBeUndefined();
       await expect(Link('Blah').exists()).rejects.toHaveProperty('message', 'link "Blah" does not exist');
-    });
-
-    it('can use locators', async () => {
-      dom(`
-        <p><a title="Monkey" href="/foobar">Foo Bar</a></p>
-      `);
-
-      await expect(Link.byTitle('Monkey').exists()).resolves.toBeUndefined();
-      await expect(Link.byTitle('Zebra').exists()).rejects.toHaveProperty('message', 'link with title "Zebra" does not exist');
     });
 
     it('can wait for condition to become true', async () => {
