@@ -1,7 +1,26 @@
-import { LocatorFn } from './specification';
+import { LocatorFn, LocatorSpecification } from './specification';
+
+export interface LocatorOptions<E extends Element> {
+  name?: string;
+  locators?: LocatorSpecification<E>;
+}
 
 export class Locator<E extends Element> {
-  constructor(public locatorFn: LocatorFn<E>, public value: string, public name?: string) {}
+  private locatorFn: LocatorFn<E>;
+  public name?: string;
+
+  constructor(locator: string | LocatorFn<E>, public value: string, { locators = {}, name }: LocatorOptions<E> = { locators: {} }) {
+    if (typeof locator === 'string') {
+      let locatorFn = locators[locator];
+      if (!locatorFn) {
+        throw new Error(`Unable to find locator "${locator}"`);
+      }
+      this.locatorFn = locatorFn;
+    } else {
+      this.locatorFn = locator;
+    }
+    this.name = name;
+  }
 
   get description(): string {
     if(this.name) {

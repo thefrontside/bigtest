@@ -32,7 +32,7 @@ export function createInteractor<E extends Element>(interactorName: string) {
     }
 
     let result = function(value: string, filters?: FilterImplementation<E, S>): InteractorInstance<E, S> {
-      let locator = new Locator(specification.defaultLocator || defaultLocator, value);
+      let locator = new Locator(specification.defaultLocator || defaultLocator, value, { locators: specification.locators });
       let filter = new Filter(specification, filters || {});
       let interactor = new InteractorClass(interactorName, specification, locator, filter);
       return interactor as InteractorInstance<E, S>;
@@ -41,7 +41,7 @@ export function createInteractor<E extends Element>(interactorName: string) {
     for(let [locatorName, locatorFn] of Object.entries(specification.locators || {})) {
       Object.defineProperty(result, locatorName, {
         value: function(value: string, filters?: FilterImplementation<E, S>): InteractorInstance<E, S> {
-          let locator = new Locator(locatorFn, value, locatorName);
+          let locator = new Locator(locatorFn, value, { name: locatorName });
           let filter = new Filter(specification, filters || {});
           let interactor = new InteractorClass(interactorName, specification, locator, filter);
           return interactor as InteractorInstance<E, S>;
