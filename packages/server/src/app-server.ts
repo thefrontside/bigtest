@@ -1,5 +1,6 @@
 import { timeout, Operation, Context, fork } from 'effection';
-import { Subscribable } from '@effection/subscription'
+import { once } from '@effection/events';
+import { Subscribable } from '@effection/subscription';
 import { fetch } from '@effection/fetch';
 import { ChildProcess } from '@effection/node';
 import * as process from 'process';
@@ -29,16 +30,10 @@ export function* createAppServer({ slice, ...options }: AppServerOptions): Opera
   let current: Context;
 
   function* startApp(appOptions: AppOptions): Operation<void> {
-    if (!appOptions) {
-      return;
-    }
-
     if (current) {
-      console.debug("[app]", 'halting');
       current.halt();
     }
 
-    console.debug("[app]", 'unstarted');
     appStatus.set('unstarted');
 
     current = yield fork(function* () {
@@ -48,37 +43,35 @@ export function* createAppServer({ slice, ...options }: AppServerOptions): Opera
           detached: true,
           env: Object.assign({}, process.env, appOptions.env),
           shell: true,
-          stdio: 'inherit'
         });
 
-        child.on('exit', (code: number, signal: string) => {
-          console.log("🧨", code, signal);
+        yield fork(function* () {
+          yield once(child, 'exit');
           appStatus.set('crashed');
-        });
+        })
       }
 
-      console.debug('[app]', 'started');
       appStatus.set('started');
 
       while(true) {
         yield timeout(100);
 
         if (yield isReachable(appOptions.url)) {
-          if (appStatus.get() !== 'reachable') {
-            console.debug('[app]', 'reachable');
-            appStatus.set('reachable');
-          }
+          appStatus.set('reachable');
         } else {
-          if (appStatus.get() !== 'unreachable') {
-            console.debug('[app]', 'unreachable');
-            appStatus.set('unreachable');
-          }
+          appStatus.set('unreachable');
         }
       }
     });
   }
 
-  yield fork(Subscribable.from(appOptions).forEach(startApp));
+  let currentOptions = appOptions.get();
+  yield fork(
+    Subscribable
+      .from(appOptions)
+      .filter(appOptions => appOptions !== currentOptions)
+      .forEach(startApp)
+  );
 
   yield startApp(options);
 }
