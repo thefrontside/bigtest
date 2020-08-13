@@ -15,7 +15,6 @@ import { createManifestGenerator } from './manifest-generator';
 import { createManifestBuilder } from './manifest-builder';
 import { createManifestServer } from './manifest-server';
 import { OrchestratorState } from './orchestrator/state';
-import { BundlerState } from '@bigtest/bundler';
 import { createLogger } from './logger';
 
 type OrchestratorOptions = {
@@ -123,7 +122,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       console.debug('[orchestrator] app server ready');
     });
     yield fork(function* () {
-      yield options.atom.slice<BundlerState>(['bundler']).once(({ status }) => status === 'green');
+      yield options.atom.slice('bundler').once(({ status }) => status === 'green');
       console.debug('[orchestrator] manifest builder ready');
     });
     yield fork(function* () {

@@ -10,7 +10,6 @@ import { actions } from './helpers';
 import { createManifestBuilder, updateSourceMapURL } from '../src/manifest-builder';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { OrchestratorState } from '../src/orchestrator/state';
-import { BundlerState } from '@bigtest/bundler';
 import { assert } from '@bigtest/project';
 
 // be nice to windows
@@ -43,7 +42,7 @@ describe('manifest builder', () => {
       });
     });
 
-    let bundlerState = await actions.fork(atom.slice<BundlerState>(['bundler']).once(({ status }) => status === 'green'))
+    let bundlerState = await actions.fork(atom.slice('bundler').once(({ status }) => status === 'green'))
     
     resultPath = (bundlerState?.status === 'green' && bundlerState.path) as string;
   });
@@ -64,7 +63,7 @@ describe('manifest builder', () => {
 
     beforeEach(async () => {
       await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
-      let bundler = await actions.fork(atom.slice<BundlerState>(['bundler']).once(({status}) => status === 'updated'));
+      let bundler = await actions.fork(atom.slice('bundler').once(({status}) => status === 'updated'));
 
       resultPath = (!!bundler && bundler.status === 'updated' && bundler.path) as string;
       
@@ -132,7 +131,7 @@ describe('manifest builder', () => {
   describe('updating the manifest and then reading it', () => {
     beforeEach(async () => {
       await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
-      await actions.fork(atom.slice<BundlerState>(['bundler']).once(({status}) => status === 'updated'));
+      await actions.fork(atom.slice('bundler').once(({status}) => status === 'updated'));
     });
 
     it('returns the updated manifest from the state', () => {
@@ -144,7 +143,7 @@ describe('manifest builder', () => {
   describe('importing the manifest throws an error', () => {
     beforeEach(async () => {
       await copyFile(path.join(FIXTURES_DIR, 'exceptions', 'error.t.js'), MANIFEST_PATH);
-      await actions.fork(atom.slice<BundlerState>(['bundler']).once(({status}) => status === 'errored'));
+      await actions.fork(atom.slice('bundler').once(({status}) => status === 'errored'));
     });
 
     it('should update the global state with the error detail', () => {

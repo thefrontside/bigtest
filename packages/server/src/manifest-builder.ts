@@ -1,8 +1,9 @@
 import { bigtestGlobals } from '@bigtest/globals';
 import { Operation } from 'effection';
+import { Subscribable } from '@effection/subscription';
 import { once } from '@effection/events';
 import { Deferred } from '@bigtest/effection';
-import { Bundler, BundlerState } from '@bigtest/bundler';
+import { Bundler } from '@bigtest/bundler';
 import { Atom } from '@bigtest/atom';
 import { createFingerprint } from 'fprint';
 import * as path from 'path';
@@ -84,7 +85,7 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
 }
 
 export function* createManifestBuilder(options: ManifestBuilderOptions): Operation {
-  let bundlerSlice = options.atom.slice('bundle');
+  let bundlerSlice = options.atom.slice('bundler');
 
   bundlerSlice.set({ status: 'building', warnings: [] })
   

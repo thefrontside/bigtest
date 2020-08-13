@@ -47,6 +47,7 @@
     "@frontside/eslint-config": "^1.1.0"
   },
   "resolutions": {
+    "globby": "11.0.1",
     "lodash": "4.17.19"
   }
 }
