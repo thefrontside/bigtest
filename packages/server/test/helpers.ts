@@ -66,6 +66,7 @@ export const actions = {
           cacheDir: "./tmp/test/orchestrator",
           app: {
             url: "http://localhost:24100",
+            command: "yarn test:app:start 24100",
           },
           manifest: {
             port: 24105,
