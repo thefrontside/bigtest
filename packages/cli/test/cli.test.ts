@@ -30,6 +30,44 @@ describe('@bigtest/cli', function() {
         await World.spawn(child.stdout?.waitFor("[orchestrator] running!"));
       });
     });
+
+    describe('starting the server without a command', () => {
+      let child: Process;
+      let childApp: Process;
+
+      beforeEach(async () => {
+        childApp = await World.spawn(Process.spawn('yarn bigtest-todomvc 36001', [], {}));
+        child = await World.spawn(run('server', '--launch', 'chrome.headless', '--app.url', 'http://localhost:36001', '--no-app.command', '--test-files', './test/fixtures/passing.test.ts'));
+
+        await World.spawn(child.stdout?.waitFor("[orchestrator] running!"));
+      });
+
+      afterEach(async () => {
+        await World.spawn(child.close());
+        await World.spawn(childApp.close());
+      });
+
+      it('outputs that the server was started successfully', async () => {
+        await World.spawn(child.stdout?.waitFor("[orchestrator] running!"));
+      });
+    });
+
+    describe('specifying the command via the cli', () => {
+      let child: Process;
+  
+      beforeEach(async () => {
+        child = await World.spawn(run('server', '--launch', 'chrome.headless', '--app.url', 'http://localhost:36001', '--app.command', '"yarn bigtest-todomvc 36001"', '--test-files', './test/fixtures/passing.test.ts'));
+        await World.spawn(child.stdout?.waitFor("[orchestrator] running!"));
+      });
+  
+      afterEach(async () => {
+        await World.spawn(child.close());
+      });
+
+      it('outputs that the server was started successfully', async () => {
+        await World.spawn(child.stdout?.waitFor("[orchestrator] running!"));
+      });
+    });
   });
 
   describe('test', () => {
@@ -146,9 +184,3 @@ describe('@bigtest/cli', function() {
     });
   });
 });
-
-interface AgentQueryResult {
-  agents: Array<{
-    agentId: string;
-  }>;
-}

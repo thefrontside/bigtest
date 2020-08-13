@@ -16,7 +16,8 @@
     "test": "mocha -r ts-node/register 'test/{,!(fixtures)/**}/*.test.ts'",
     "mocha": "mocha -r ts-node/register",
     "bigtest": "ts-node src/index.ts",
-    "prepack": "tsc --outdir dist --module commonjs && chmod +x dist/bin/bigtest.js"
+    "prepack": "tsc --outdir dist --module commonjs && chmod +x dist/bin/bigtest.js",
+    "bigtest-todomvc": "node ../todomvc/dist/start.js"
   },
   "bin": {
     "bigtest": "dist/bin/bigtest.js"
