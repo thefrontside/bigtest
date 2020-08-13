@@ -4,7 +4,7 @@ import { Subscribable } from '@effection/subscription';
 import { fetch } from '@effection/fetch';
 import { ChildProcess } from '@effection/node';
 import * as process from 'process';
-import { OrchestratorState, AppServiceState, AppOptions, AppStatus } from './orchestrator/state';
+import { OrchestratorState, AppServiceState, AppOptions } from './orchestrator/state';
 import { Slice } from '@bigtest/atom';
 
 interface AppServerOptions {

@@ -15,7 +15,7 @@ import { createManifestGenerator } from './manifest-generator';
 import { createManifestBuilder } from './manifest-builder';
 import { createManifestServer } from './manifest-server';
 import { createLogger } from './logger';
-import { OrchestratorState, AppServiceState } from './orchestrator/state';
+import { OrchestratorState } from './orchestrator/state';
 
 
 type OrchestratorOptions = {
