@@ -24,7 +24,7 @@ describe("Bundler", function() {
       beforeEach(async () => {
         await fs.writeFile("./build/test/sources/input.js", "const foo = 'bar';\nexport default foo;\n");
 
-        bundlerSlice = new Atom<State>({ bundler: { status: 'building', warnings: [] } }).slice<BundlerState>([ 'bundler' ]);
+        bundlerSlice = new Atom<State>({ bundler: { status: 'building', warnings: [] } }).slice('bundler');
         
         await spawn(Bundler.create(
           [{
@@ -57,7 +57,7 @@ describe("Bundler", function() {
 
     describe('failure', () => {
       beforeEach(async () => {
-        bundlerSlice = new Atom<State>({ bundler: { status: 'building', warnings: [] } }).slice<BundlerState>([ 'bundler' ]);
+        bundlerSlice = new Atom<State>({ bundler: { status: 'building', warnings: [] } }).slice('bundler');
         await fs.writeFile("./build/test/sources/input.js", "const foo - 'bar';\nexport default foo;\n");
 
         await spawn(Bundler.create(
@@ -93,7 +93,7 @@ describe("Bundler", function() {
   describe("TypeScript support", () => {
     describe('success', () => {
       beforeEach(async () => {
-        bundlerSlice = new Atom<State>({ bundler: { status: 'building', warnings: [] } }).slice<BundlerState>([ 'bundler' ]);
+        bundlerSlice = new Atom<State>({ bundler: { status: 'building', warnings: [] } }).slice('bundler');
         await fs.writeFile("./build/test/sources/input.ts", "const foo: string = 'bar';\nexport default foo;\n");
 
         await spawn(Bundler.create(
@@ -115,7 +115,7 @@ describe("Bundler", function() {
 
     describe('type error', () => {
       beforeEach(async () => {
-        bundlerSlice = new Atom<State>({ bundler: { status: 'building', warnings: [] } }).slice<BundlerState>([ 'bundler' ]);
+        bundlerSlice = new Atom<State>({ bundler: { status: 'building', warnings: [] } }).slice('bundler');
         await fs.writeFile("./build/test/sources/input.ts", "const foo: number = 'bar';\nexport default foo;\n");
 
         await spawn(Bundler.create(
@@ -138,7 +138,7 @@ describe("Bundler", function() {
 
   describe('editing the sources', () => {
     beforeEach(async () => {
-      bundlerSlice = new Atom<State>({ bundler: { status: 'building', warnings: [] } }).slice<BundlerState>([ 'bundler' ]);
+      bundlerSlice = new Atom<State>({ bundler: { status: 'building', warnings: [] } }).slice('bundler');
       await fs.writeFile("./build/test/sources/input.ts", "const foo: string = 'bar';\nexport default foo;\n");
 
       await spawn(Bundler.create(
