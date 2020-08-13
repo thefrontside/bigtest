@@ -93,6 +93,39 @@ describe('@bigtest/interactor', () => {
         await expect(Div('bar').exists()).rejects.toHaveProperty('message', 'div "bar" does not exist');
       });
     });
+
+    describe('with default locator referencing multiple locators', () => {
+      let Div = createInteractor('div')({
+        defaultLocator: ['byId', 'byText'],
+        locators: {
+          byId: (element) => element.id,
+          byText: (element) => element.textContent || ""
+        },
+        filters: {
+          text: (element) => element.textContent
+        }
+      });
+
+      it('can use a custom locator as its default locator', async  () => {
+        dom(`
+          <div id="foo">bar</div>
+          <div id="baz">qux</div>
+        `);
+
+        await expect(Div('foo').exists()).resolves.toBeUndefined();
+        await expect(Div('bar').exists()).resolves.toBeUndefined();
+      });
+
+      it('will throw an AmbiguousElementError if locators find more than one match', async  () => {
+        dom(`
+          <div id="foo">bar</div>
+          <div id="bar">foo</div>
+        `);
+
+        await expect(Div('foo').exists()).rejects.toHaveProperty('message', 'div "foo" is ambiguous');
+        await expect(Div('bar').exists()).rejects.toHaveProperty('message', 'div "bar" is ambiguous');
+      });
+    });
   });
 
   describe('.exists', () => {

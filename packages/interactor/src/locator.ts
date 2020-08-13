@@ -6,18 +6,20 @@ export interface LocatorOptions<E extends Element> {
 }
 
 export class Locator<E extends Element> {
-  private locatorFn: LocatorFn<E>;
+  private locatorFns: Array<LocatorFn<E>>;
   public name?: string;
 
-  constructor(locator: string | LocatorFn<E>, public value: string, { locators = {}, name }: LocatorOptions<E> = { locators: {} }) {
+  constructor(locator: string | string[] | LocatorFn<E>, public value: string, { locators = {}, name }: LocatorOptions<E> = { locators: {} }) {
     if (typeof locator === 'string') {
       let locatorFn = locators[locator];
       if (!locatorFn) {
         throw new Error(`Unable to find locator "${locator}"`);
       }
-      this.locatorFn = locatorFn;
+      this.locatorFns = [locatorFn];
+    } else if (typeof locator === 'object') {
+      this.locatorFns = locator.map(name => locators[name]);
     } else {
-      this.locatorFn = locator;
+      this.locatorFns = [locator];
     }
     this.name = name;
   }
@@ -33,6 +35,12 @@ export class Locator<E extends Element> {
   }
 
   matches(element: E): boolean {
-    return this.locatorFn(element) === this.value;
+    for (let fn of this.locatorFns) {
+      if (fn(element) === this.value) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }
