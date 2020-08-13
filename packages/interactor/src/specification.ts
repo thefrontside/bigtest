@@ -21,7 +21,7 @@ export type ActionSpecification<E extends Element> = Record<string, ActionFn<E>>
 
 export interface InteractorSpecification<E extends Element> {
   selector?: string;
-  defaultLocator?: string | LocatorFn<E>;
+  defaultLocator?: string | string[] | LocatorFn<E>;
   locators?: LocatorSpecification<E>;
   actions?: ActionSpecification<E>;
   filters?: FilterSpecification<E>;
