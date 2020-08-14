@@ -30,16 +30,3 @@ Div('foo').click();
 
 // $ExpectError
 Div('foo').blah();
-
-Link.byHref('foobar');
-
-// cannot use wrong type argument on locator
-// $ExpectError
-Link.byHref(123);
-
-// cannot use locator which is not defined
-// $ExpectError
-Div.byHref('foobar');
-
-// $ExpectError
-Div.moo('foobar');
