@@ -1,6 +1,6 @@
 import { bigtestGlobals } from '@bigtest/globals';
 import { converge } from './converge';
-import { InteractorSpecification, FilterImplementation } from './specification';
+import { InteractorSpecification, FilterImplementation, LocatorSpecification } from './specification';
 import { Locator } from './locator';
 import { Filter } from './filter';
 import { NoSuchElementError, AmbiguousElementError, NotAbsentError, FilterNotMatchingError } from './errors';
@@ -8,24 +8,24 @@ import { interaction, Interaction } from './interaction';
 
 const defaultSelector = 'div';
 
-export class Interactor<E extends Element, S extends InteractorSpecification<E>> {
+export class Interactor<E extends Element, S extends InteractorSpecification<E, L>, L extends LocatorSpecification<E>> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private ancestors: Array<Interactor<any, any>> = [];
+  private ancestors: Array<Interactor<any, any, any>> = [];
 
   constructor(
     public name: string,
     private specification: S,
-    private locator: Locator<E>,
+    private locator: Locator<E, L>,
     private filter: Filter<E, S>
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private get ancestorsAndSelf(): Array<Interactor<any, any>> {
+  private get ancestorsAndSelf(): Array<Interactor<any, any, any>> {
     return [...this.ancestors, this];
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  find<T extends Interactor<any, any>>(interactor: T): T {
+  find<T extends Interactor<any, any, any>>(interactor: T): T {
     return Object.create(interactor, {
       ancestors: {
         value: [...this.ancestors, this, ...interactor.ancestors]

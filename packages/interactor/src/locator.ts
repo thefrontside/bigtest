@@ -1,15 +1,19 @@
 import { LocatorFn, LocatorSpecification } from './specification';
 
-export interface LocatorOptions<E extends Element> {
+export interface LocatorOptions<E extends Element, L extends LocatorSpecification<E>> {
   name?: string;
-  locators?: LocatorSpecification<E>;
+  locators?: L;
 }
 
-export class Locator<E extends Element> {
+export class Locator<E extends Element, L extends LocatorSpecification<E>> {
   private locatorFns: Array<LocatorFn<E>>;
   public name?: string;
 
-  constructor(locator: string | string[] | LocatorFn<E>, public value: string, { locators = {}, name }: LocatorOptions<E> = { locators: {} }) {
+  constructor(
+    locator: keyof L | Array<keyof L> | LocatorFn<E>,
+    public value: string,
+    { locators = Object.create({}), name }: LocatorOptions<E, L> = { locators: Object.create({}) }
+  ) {
     if (typeof locator === 'string') {
       let locatorFn = locators[locator];
       if (!locatorFn) {
@@ -18,8 +22,10 @@ export class Locator<E extends Element> {
       this.locatorFns = [locatorFn];
     } else if (typeof locator === 'object') {
       this.locatorFns = locator.map(name => locators[name]);
-    } else {
+    } else if (typeof locator === 'function') {
       this.locatorFns = [locator];
+    } else {
+      throw new Error('asdf')
     }
     this.name = name;
   }

@@ -19,19 +19,21 @@ export type FilterSpecification<E extends Element> = Record<string, FilterFn<unk
 
 export type ActionSpecification<E extends Element> = Record<string, ActionFn<E>>;
 
-export interface InteractorSpecification<E extends Element> {
+export interface InteractorSpecification<E extends Element, L extends LocatorSpecification<E>> {
   selector?: string;
-  defaultLocator?: string | string[] | LocatorFn<E>;
-  locators?: LocatorSpecification<E>;
+  defaultLocator?: keyof L | Array<keyof L> | LocatorFn<E>;
+  locators?: L;
   actions?: ActionSpecification<E>;
   filters?: FilterSpecification<E>;
 }
 
-export type ActionImplementation<E extends Element, S extends InteractorSpecification<E>> = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ActionImplementation<E extends Element, S extends InteractorSpecification<E, any>> = {
   [P in keyof S['actions']]: S['actions'][P] extends ((element: E, ...args: infer TArgs) => infer TReturn) ? ((...args: TArgs) => Interaction<TReturn>) : never;
 }
 
-export type FilterImplementation<E extends Element, S extends InteractorSpecification<E>> = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type FilterImplementation<E extends Element, S extends InteractorSpecification<E, any>> = {
   [P in keyof S['filters']]?:
     S['filters'][P] extends FilterFn<infer TArg, E> ?
     TArg :
@@ -40,12 +42,12 @@ export type FilterImplementation<E extends Element, S extends InteractorSpecific
     never;
 }
 
-export type LocatorImplementation<E extends Element, S extends InteractorSpecification<E>> = {
-  [P in keyof S['locators']]: (value: string, filters?: FilterImplementation<E, S>) => InteractorInstance<E, S>
+export type LocatorImplementation<E extends Element, S extends InteractorSpecification<E, L>, L extends LocatorSpecification<E>> = {
+  [P in keyof L]: (value: string, filters?: FilterImplementation<E, S>) => InteractorInstance<E, S, L>
 }
 
-export type InteractorInstance<E extends Element, S extends InteractorSpecification<E>> = Interactor<E, S> & ActionImplementation<E, S>;
+export type InteractorInstance<E extends Element, S extends InteractorSpecification<E, L>, L extends LocatorSpecification<E>> = Interactor<E, S, L> & ActionImplementation<E, S>;
 
-export type InteractorType<E extends Element, S extends InteractorSpecification<E>> =
-  ((value: string, filters?: FilterImplementation<E, S>) => InteractorInstance<E, S>) &
-  LocatorImplementation<E, S>;
+export type InteractorType<E extends Element, S extends InteractorSpecification<E, L>, L extends LocatorSpecification<E>> =
+  ((value: string, filters?: FilterImplementation<E, S>) => InteractorInstance<E, S, L>) &
+  LocatorImplementation<E, S, L>;

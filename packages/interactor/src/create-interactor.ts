@@ -1,4 +1,4 @@
-import { InteractorSpecification, FilterImplementation, InteractorInstance, InteractorType, LocatorFn } from './specification';
+import { InteractorSpecification, FilterImplementation, InteractorInstance, InteractorType, LocatorFn, LocatorSpecification } from './specification';
 import { Locator } from './locator';
 import { Filter } from './filter';
 import { Interactor } from './interactor';
@@ -8,8 +8,8 @@ import { converge } from './converge';
 const defaultLocator: LocatorFn<Element> = (element) => element.textContent || "";
 
 export function createInteractor<E extends Element>(interactorName: string) {
-  return function<S extends InteractorSpecification<E>>(specification: S): InteractorType<E, S> {
-    let InteractorClass = class extends Interactor<E, S> {};
+  return function<S extends InteractorSpecification<E, L>, L extends LocatorSpecification<E>>(specification: S): InteractorType<E, S, L> {
+    let InteractorClass = class extends Interactor<E, S, L> {};
 
     for(let [actionName, action] of Object.entries(specification.actions || {})) {
       Object.defineProperty(InteractorClass.prototype, actionName, {
@@ -31,20 +31,20 @@ export function createInteractor<E extends Element>(interactorName: string) {
       });
     }
 
-    let result = function(value: string, filters?: FilterImplementation<E, S>): InteractorInstance<E, S> {
+    let result = function(value: string, filters?: FilterImplementation<E, S>): InteractorInstance<E, S, L> {
       let locator = new Locator(specification.defaultLocator || defaultLocator, value, { locators: specification.locators });
       let filter = new Filter(specification, filters || {});
       let interactor = new InteractorClass(interactorName, specification, locator, filter);
-      return interactor as InteractorInstance<E, S>;
+      return interactor as InteractorInstance<E, S, L>;
     }
 
     for(let [locatorName, locatorFn] of Object.entries(specification.locators || {})) {
       Object.defineProperty(result, locatorName, {
-        value: function(value: string, filters?: FilterImplementation<E, S>): InteractorInstance<E, S> {
+        value: function(value: string, filters?: FilterImplementation<E, S>): InteractorInstance<E, S, L> {
           let locator = new Locator(locatorFn, value, { name: locatorName });
           let filter = new Filter(specification, filters || {});
           let interactor = new InteractorClass(interactorName, specification, locator, filter);
-          return interactor as InteractorInstance<E, S>;
+          return interactor as InteractorInstance<E, S, L>;
         },
         configurable: true,
         writable: true,
@@ -52,6 +52,6 @@ export function createInteractor<E extends Element>(interactorName: string) {
       });
     }
 
-    return result as InteractorType<E, S>;
+    return result as InteractorType<E, S, L>;
   }
 }
