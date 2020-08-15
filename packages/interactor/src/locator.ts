@@ -2,7 +2,7 @@ import { LocatorFn, LocatorSpecification } from './specification';
 
 export interface LocatorOptions<E extends Element, L extends LocatorSpecification<E>> {
   name?: string;
-  locators?: L;
+  locators?: L['locators'];
 }
 
 export class Locator<E extends Element, L extends LocatorSpecification<E>> {
@@ -10,7 +10,7 @@ export class Locator<E extends Element, L extends LocatorSpecification<E>> {
   public name?: string;
 
   constructor(
-    locator: keyof L | Array<keyof L> | LocatorFn<E>,
+    locator: keyof L['locators'] | Array<keyof L['locators']> | LocatorFn<E>,
     public value: string,
     { locators = Object.create({}), name }: LocatorOptions<E, L> = { locators: Object.create({}) }
   ) {

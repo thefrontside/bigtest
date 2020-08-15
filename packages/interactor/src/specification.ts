@@ -13,16 +13,16 @@ export interface FilterObject<T, E extends Element> {
   default?: T;
 }
 
-export type LocatorSpecification<E extends Element> = Record<string, LocatorFn<E>>;
+export type LocatorSpecification<E extends Element> = { locators: Record<string, LocatorFn<E>>};
 
 export type FilterSpecification<E extends Element> = Record<string, FilterFn<unknown, E> | FilterObject<unknown, E>>
 
 export type ActionSpecification<E extends Element> = Record<string, ActionFn<E>>;
 
-export interface InteractorSpecification<E extends Element, L extends LocatorSpecification<E>> {
+export type InteractorSpecification<E extends Element, L extends LocatorSpecification<E>> = {
   selector?: string;
-  defaultLocator?: keyof L | Array<keyof L> | LocatorFn<E>;
-  locators?: L;
+  defaultLocator?: keyof L['locators'] | Array<keyof L['locators']> | LocatorFn<E>;
+  locators?: L['locators'];
   actions?: ActionSpecification<E>;
   filters?: FilterSpecification<E>;
 }
@@ -43,7 +43,7 @@ export type FilterImplementation<E extends Element, S extends InteractorSpecific
 }
 
 export type LocatorImplementation<E extends Element, S extends InteractorSpecification<E, L>, L extends LocatorSpecification<E>> = {
-  [P in keyof L]: (value: string, filters?: FilterImplementation<E, S>) => InteractorInstance<E, S, L>
+  [P in keyof S['locators']]: S['locators'][P] extends ((element: E, ...args: unknown[]) => unknown) ? (value: string, filters?: FilterImplementation<E, S>) => InteractorInstance<E, S, L> : never;
 }
 
 export type InteractorInstance<E extends Element, S extends InteractorSpecification<E, L>, L extends LocatorSpecification<E>> = Interactor<E, S, L> & ActionImplementation<E, S>;
