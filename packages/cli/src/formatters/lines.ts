@@ -1,3 +1,4 @@
+import { ProjectOptions } from '@bigtest/project';
 import { StreamingFormatter, Counts, RunResultEvent, icon } from '../format-helpers';
 
 function formatFooterCounts(label: string, counts: Counts): string {
@@ -9,11 +10,13 @@ function formatFooterCounts(label: string, counts: Counts): string {
   ].join(' ');
 }
 
-function formatEvent(event: RunResultEvent) {
+function formatEvent(event: RunResultEvent, config: ProjectOptions) {
   let result = `${icon(event)} [${event.type.split(':')[0]}]`.padEnd(14);
+
   if(event.path) {
     result += ' ' + event.path.slice(1).join(' -> ');
   }
+
   if(event.error) {
     result += ["\n|    ERROR:", event.error.name, event.error.message].filter(e => e).join(' ');
     if(event.error.stack) {
@@ -32,7 +35,8 @@ function formatEvent(event: RunResultEvent) {
       }
     }
   }
-  return result;
+
+  return config.showTree ? result : '.';
 }
 
 const formatter: StreamingFormatter = {
@@ -42,9 +46,9 @@ const formatter: StreamingFormatter = {
     // no op
   },
 
-  event(event) {
+  event(event, config) {
     if(event.type === 'step:result' || event.type === 'assertion:result') {
-      console.log(formatEvent(event));
+      console.log(formatEvent(event, config));
     }
   },
 

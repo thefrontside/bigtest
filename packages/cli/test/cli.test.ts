@@ -19,7 +19,7 @@ describe('@bigtest/cli', function() {
       let child: Process;
 
       beforeEach(async () => {
-        child = await World.spawn(run('server', '--launch', 'chrome.headless'));
+        child = await World.spawn(run('server', '--launch', 'chrome.headless', '--show-tree'));
       });
 
       afterEach(async () => {
@@ -91,7 +91,7 @@ describe('@bigtest/cli', function() {
       let runChild: Process;
 
       beforeEach(async () => {
-        startChild = await World.spawn(run('server', '--launch', 'chrome.headless', '--test-files', './test/fixtures/passing.test.ts'));
+        startChild = await World.spawn(run('server', '--launch', 'chrome.headless', '--show-tree', '--test-files', './test/fixtures/passing.test.ts'));
 
         await World.spawn(startChild.stdout?.waitFor("[orchestrator] running!"));
 
@@ -115,7 +115,7 @@ describe('@bigtest/cli', function() {
       let runChild: Process;
 
       beforeEach(async () => {
-        startChild = await World.spawn(run('server', '--launch', 'chrome.headless', '--test-files', './test/fixtures/failing.test.ts'));
+        startChild = await World.spawn(run('server', '--launch', 'chrome.headless', '--show-tree', '--test-files', './test/fixtures/failing.test.ts'));
 
         await World.spawn(startChild.stdout?.waitFor("[orchestrator] running!"));
 
@@ -140,7 +140,7 @@ describe('@bigtest/cli', function() {
       let child: Process;
 
       beforeEach(async () => {
-        child = await World.spawn(run('ci', '--launch', 'chrome.headless', '--test-files', './test/fixtures/passing.test.ts'));
+        child = await World.spawn(run('ci', '--launch', 'chrome.headless', '--show-tree', '--test-files', './test/fixtures/passing.test.ts'));
         await World.spawn(child.stdout?.waitFor("[orchestrator] running!"));
         await World.spawn(child.join());
       });
@@ -157,11 +157,32 @@ describe('@bigtest/cli', function() {
       });
     });
 
+    describe('running the suite without --show-tree', () => {
+      let child: Process;
+
+      beforeEach(async () => {
+        child = await World.spawn(run('ci', '--launch', 'chrome.headless', '--test-files', './test/fixtures/passing.test.ts'));
+        await World.spawn(child.stdout?.waitFor("[orchestrator] running!"));
+        await World.spawn(child.join());
+      });
+
+      afterEach(async () => {
+        await World.spawn(child.close());
+      });
+
+      it('prints `.` for passing tests', async () => {
+        expect(child.code).toEqual(0);
+        expect(child.stdout?.output).not.toContain("✓ [step]       Passing Test -> first step")
+        expect(child.stdout?.output).not.toContain("✓ [assertion]  Passing Test -> check the thing")
+        expect(child.stdout?.output).toContain("✓ SUCCESS")
+      });
+    });
+
     describe('running the suite with failures', () => {
       let child: Process;
 
       beforeEach(async () => {
-        child = await World.spawn(run('ci', '--launch', 'chrome.headless', '--test-files', './test/fixtures/failing.test.ts'));
+        child = await World.spawn(run('ci', '--launch', 'chrome.headless', '--show-tree', '--test-files', './test/fixtures/failing.test.ts'));
         await World.spawn(child.stdout?.waitFor("[orchestrator] running!"));
         await World.spawn(child.join());
       });

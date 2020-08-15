@@ -1,3 +1,4 @@
+import { ProjectOptions } from '@bigtest/project';
 import { ResultStatus } from '@bigtest/suite'
 import { RunResultEvent } from './query'
 
@@ -27,7 +28,7 @@ export function icon(event: RunResultEvent) {
 export type StreamingFormatter = {
   type: "streaming";
   header(): void;
-  event(event: RunResultEvent): void;
+  event(event: RunResultEvent, config: ProjectOptions): void;
   footer(summary: Summary): void;
 }
 
