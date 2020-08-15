@@ -101,11 +101,12 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
   yield Subscribable.from(bundler).forEach(function* (message) {
     switch (message.type) {
       case 'START':
+        console.debug("[manifest builder] received bundler start");
         bundlerSlice.update(() => ({ status: 'BUILDING', warnings: [] }));
         
         break;
       case 'UPDATE':
-        console.debug("received bundle update");
+        console.debug("[manifest builder] received bundle update");
         
         let path: string = yield processManifest(options);
         
@@ -134,7 +135,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
 
         break;
       case 'ERROR':
-        console.debug("received bundle error");
+        console.debug("[manifest builder] received bundle error");
         
         bundlerSlice.update(() => ({ status: 'ERRORED', error: message.error }));
 

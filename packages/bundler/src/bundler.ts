@@ -74,7 +74,10 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
    
         let messages = events
           .map(([event]) => event)
-          .filter(event => ['START', 'END', 'ERROR'].includes(event.code))
+          .filter(event => {
+            console.log(event);
+            return ['START', 'END', 'ERROR'].includes(event.code);
+          })
           .map(event => {
             switch (event.code) {
               case 'START':
