@@ -1,5 +1,5 @@
 import { Test, TestResult, ResultStatus } from '@bigtest/suite';
-import { BundlerState } from '@bigtest/bundler';
+import { BundlerError, BundlerWarning } from '@bigtest/bundler';
 
 export type AgentState = {
   agentId: string;
@@ -33,6 +33,12 @@ export type TestRunAgentState = {
   agent: AgentState;
   result: TestResult;
 }
+
+export type BundlerState = 
+  | { status: 'unbundled' } 
+  | { status: 'BUILDING'; warnings: BundlerWarning[] } 
+  | { status: 'GREEN'; path: string;  warnings: BundlerWarning[] }
+  | { status: 'ERRORED'; error: BundlerError }
 
 export interface Manifest extends Test {
   fileName: string;

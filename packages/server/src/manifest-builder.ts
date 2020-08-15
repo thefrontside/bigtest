@@ -11,6 +11,7 @@ import * as fs from 'fs';
 import { OrchestratorState, Manifest } from './orchestrator/state';
 import { assert } from '@bigtest/project';
 
+
 const { copyFile, mkdir, stat, appendFile, open } = fs.promises;
 
 interface ManifestBuilderOptions {
@@ -87,38 +88,57 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
 export function* createManifestBuilder(options: ManifestBuilderOptions): Operation {
   let bundlerSlice = options.atom.slice('bundler');
 
-  bundlerSlice.set({ status: 'building', warnings: [] })
+  bundlerSlice.set({ status: 'unbundled' });
   
-  yield Bundler.create(
+  let bundler: Bundler = yield Bundler.create(
     [{
       entry: options.srcPath,
       globalName: bigtestGlobals.manifestProperty,
       outFile: path.join(options.buildDir, "manifest.js")
     }],
-    bundlerSlice
   );
 
-  console.debug("[manifest builder] manifest ready");
-  
-  yield bundlerSlice.once(({ status }) => status === 'end');
-
-  console.debug("[manifest builder] bundle built");
-
-  let distPath: string = yield processManifest(options);
+  yield Subscribable.from(bundler).forEach(function* (message) {
+    switch (message.type) {
+      case 'START':
+        bundlerSlice.update(() => ({ status: 'BUILDING', warnings: [] }));
         
-  bundlerSlice.update(previous => {
-    // assert does more than just check the condition
-    // it also type narrows the BundlerState discriminated untion
-    assert(previous.status === 'building' || previous.status === 'end', `trying to transition to green from ${previous.status}`)
-    
-    return { status: 'green', path: distPath, warnings: previous.warnings ?? [] };
-  });
-  
-  yield Subscribable.from(bundlerSlice).forEach(function* (message) {
-    if(message.status === 'end') {
-      let distPath = yield processManifest(options);
-      console.info("[manifest builder] manifest updated");
-      bundlerSlice.update(() => ({ status: 'updated', path: distPath }))
+        break;
+      case 'UPDATE':
+        console.debug("received bundle update");
+        
+        let path: string = yield processManifest(options);
+        
+        bundlerSlice.update((previous) => {
+          // as this is a typescript assertion it does more than just check the condition
+          // it will type narrow the discriminated union for the code after
+          assert(previous.status === 'BUILDING', `invalid transition from ${previous.status} to 'GREEN'`);
+
+
+          return { ...previous, status: 'GREEN', path };
+        });
+
+        console.debug("[manifest builder] manifest ready");
+
+        break;
+      case 'WARN':
+        console.debug("received bundle warning");
+        
+        bundlerSlice.update((previous) => {
+          assert(previous.status === 'BUILDING', `trying to add warnings to bundler state ${previous.status}`);
+
+          let warnings = !!previous.warnings ? [...previous.warnings, message.warning] : [message.warning];
+          
+          return {...previous, warnings };
+        })
+
+        break;
+      case 'ERROR':
+        console.debug("received bundle error");
+        
+        bundlerSlice.update(() => ({ status: 'ERRORED', error: message.error }));
+
+        break; 
     }
   });
 }

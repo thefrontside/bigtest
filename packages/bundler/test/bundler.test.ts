@@ -2,17 +2,15 @@ import { describe } from 'mocha';
 import { promises as fs, existsSync } from 'fs';
 import expect from 'expect';
 import rmrf from 'rimraf';
-import { spawn } from './world';
-import { Bundler, BundlerState } from '../src/index';
-import { Atom, Slice } from '@bigtest/atom';
+import { Subscribable } from '@effection/subscription';
 
-type State = {
-  bundler: BundlerState;
-}
+import { spawn } from './world';
+import { Bundler } from '../src/index';
 
 describe("Bundler", function() {
-  let bundlerSlice: Slice<BundlerState, State>;
   this.timeout(5000);
+  let bundler: Bundler;
+
   beforeEach((done) => rmrf('./build', done));
   beforeEach(async () => {
     await fs.mkdir("./build/test/sources", { recursive: true });
@@ -24,18 +22,14 @@ describe("Bundler", function() {
       beforeEach(async () => {
         await fs.writeFile("./build/test/sources/input.js", "const foo = 'bar';\nexport default foo;\n");
 
-        bundlerSlice = new Atom<State>({ bundler: { status: 'building', warnings: [] } }).slice('bundler');
-        
-        await spawn(Bundler.create(
+        bundler = await spawn(Bundler.create(
           [{
             entry: "./build/test/sources/input.js",
             outFile: "./build/test/output/manifest.js",
             globalName: "__bigtestManifest",
           }],
-          bundlerSlice
         ));
-        
-        await spawn(bundlerSlice.once(({ status }) => status === 'end'));
+        await spawn(Subscribable.from(bundler).first());
       });
 
       it('builds the sources into the output directory', () => {
@@ -48,43 +42,36 @@ describe("Bundler", function() {
         });
 
         it('emits an error event', async () => {
-          let state = await spawn<BundlerState>(bundlerSlice.once(({ status }) => status === 'errored'));
-
-          expect(state.status === 'errored' && state.error.frame).toBe("1: const foo - 'bar';\n             ^\n2: export default foo;");
+          await expect(spawn(Subscribable.from(bundler).first())).resolves.toHaveProperty('type', 'error');
         });
       });
     });
 
     describe('failure', () => {
       beforeEach(async () => {
-        bundlerSlice = new Atom<State>({ bundler: { status: 'building', warnings: [] } }).slice('bundler');
         await fs.writeFile("./build/test/sources/input.js", "const foo - 'bar';\nexport default foo;\n");
 
-        await spawn(Bundler.create(
+        bundler = await spawn(Bundler.create(
           [{
             entry: "./build/test/sources/input.js",
             outFile: "./build/test/output/manifest.js",
             globalName: "__bigtestManifest",
           }],
-          bundlerSlice
         ));
       });
 
       it('emits an error', async () => {
-        let state = await spawn<BundlerState>(bundlerSlice.once(({ status }) => status === 'errored'));
-        
-        await expect(state.status === 'errored' && state.error).toBeTruthy();
+        await expect(spawn(Subscribable.from(bundler).first())).resolves.toHaveProperty('type', 'error');
       });
 
       describe('fixing the error', () => {
         beforeEach(async () => {
+          await spawn(Subscribable.from(bundler).first());
           await fs.writeFile("./build/test/sources/input.js", "const foo = 'bar';\nexport default foo;\n");
         });
 
-        it('emits an end event', async () => {
-          let state = await spawn<BundlerState>(bundlerSlice.once(({ status }) => status === 'end'));
-          
-          await expect(state.status).toBe('end');
+        it('emits an update event', async () => {
+          await expect(spawn(Subscribable.from(bundler).first())).resolves.toHaveProperty('type', 'update');
         });
       });
     });
@@ -93,19 +80,16 @@ describe("Bundler", function() {
   describe("TypeScript support", () => {
     describe('success', () => {
       beforeEach(async () => {
-        bundlerSlice = new Atom<State>({ bundler: { status: 'building', warnings: [] } }).slice('bundler');
         await fs.writeFile("./build/test/sources/input.ts", "const foo: string = 'bar';\nexport default foo;\n");
 
-        await spawn(Bundler.create(
+        bundler = await spawn(Bundler.create(
           [{
             entry: "./build/test/sources/input.ts",
             outFile: "./build/test/output/manifest.js",
             globalName: "__bigtestManifest",
           }],
-          bundlerSlice
         ));
-        
-        await spawn(bundlerSlice.once(({ status }) => status === 'end'));
+        await spawn(Subscribable.from(bundler).first());
       });
 
       it('builds the sources into the output directory', () => {
@@ -115,48 +99,39 @@ describe("Bundler", function() {
 
     describe('type error', () => {
       beforeEach(async () => {
-        bundlerSlice = new Atom<State>({ bundler: { status: 'building', warnings: [] } }).slice('bundler');
         await fs.writeFile("./build/test/sources/input.ts", "const foo: number = 'bar';\nexport default foo;\n");
 
-        await spawn(Bundler.create(
+        bundler = await spawn(Bundler.create(
           [{
             entry: "./build/test/sources/input.ts",
             outFile: "./build/test/output/manifest.js",
             globalName: "__bigtestManifest",
           }],
-          bundlerSlice
         ));
       });
 
       it('does not typecheck, just transform', async () => {
-        let state = await spawn<BundlerState>(bundlerSlice.once(({ status }) => status === 'end'));
-          
-        await expect(state.status).toBe('end');
+        await expect(spawn(Subscribable.from(bundler).first())).resolves.toHaveProperty('type', 'update');
       });
     })
   });
 
   describe('editing the sources', () => {
     beforeEach(async () => {
-      bundlerSlice = new Atom<State>({ bundler: { status: 'building', warnings: [] } }).slice('bundler');
       await fs.writeFile("./build/test/sources/input.ts", "const foo: string = 'bar';\nexport default foo;\n");
 
-      await spawn(Bundler.create(
+      bundler = await spawn(Bundler.create(
         [{
           entry: "./build/test/sources/input.ts",
           outFile: "./build/test/output/manifest.js",
           globalName: "__bigtestManifest",
         }],
-        bundlerSlice
       ));
-      
       await fs.writeFile("./build/test/sources/input.ts", "export default {hello: 'world'}\n");
     });
 
     it('notifies that a new build is available', async () => {
-      let state = await spawn<BundlerState>(bundlerSlice.once(({ status }) => status === 'end'));
-          
-      await expect(state.status).toBe('end');
+      await expect(spawn(Subscribable.from(bundler).first())).resolves.toHaveProperty('type', 'update');
     });
   });
 })

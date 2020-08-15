@@ -1,16 +1,15 @@
 import { Operation, resource } from 'effection';
 import { on } from '@effection/events';
-import { subscribe, ChainableSubscription } from '@effection/subscription';
+import { subscribe, Subscribable, SymbolSubscribable, ChainableSubscription } from '@effection/subscription';
+import { Channel } from '@effection/channel';
 import { watch, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'rollup';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
-import { Slice } from '@bigtest/atom';
-import { BundlerState } from './types';
-import { assert } from '@bigtest/project';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import babel from '@rollup/plugin-babel';
+import { BundlerMessage } from './types';
 
 interface BundleOptions {
   entry: string;
@@ -22,8 +21,8 @@ interface BundlerOptions {
   mainFields: Array<"browser" | "main" | "module">;
 };
 
-function prepareRollupOptions(bundles: Array<BundleOptions>, bundlerSlice: Slice<BundlerState, unknown>, { mainFields }: BundlerOptions = { mainFields: ["browser", "module", "main"] }): Array<RollupWatchOptions> {
-  return bundles.map(bundle => {
+function prepareRollupOptions(bundles: Array<BundleOptions>, channel: Channel<BundlerMessage>, { mainFields }: BundlerOptions = { mainFields: ["browser", "module", "main"] }): Array<RollupWatchOptions> {
+  return bundles.map<RollupWatchOptions>(bundle => {
     return {
       input: bundle.entry,
       output: {
@@ -33,12 +32,7 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, bundlerSlice: Slice
         format: 'umd',
       },
       onwarn(warning){
-        bundlerSlice.update(previous => {
-          assert(previous.status === 'building', `in illegal bundler state ${previous.status}`);
-
-          let warnings = previous.warnings ?? [];
-          return ({ status: 'building', warnings: warnings.concat(warning) });
-        })
+        channel.send({ type: 'WARN', warning })
       },
       watch: {
         // Rollup types are wrong; `watch.exclude` allows RegExp[]
@@ -64,33 +58,47 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, bundlerSlice: Slice
   });
 }
 
-export class Bundler {
-  static *create<S>(bundles: Array<BundleOptions>, bundlerSlice: Slice<BundlerState, S>): Operation<Bundler> {
+export class Bundler implements Subscribable<BundlerMessage, undefined> {
+  private channel = new Channel<BundlerMessage>();
+
+  static *create(bundles: Array<BundleOptions>): Operation<Bundler> {
     let bundler = new Bundler();
 
     return yield resource(bundler, function* () {
-      let rollup: RollupWatcher = watch(prepareRollupOptions(bundles, bundlerSlice));
+      let rollup: RollupWatcher = watch(prepareRollupOptions(bundles, bundler.channel));
 
+      console.debug('[bundler] ready');
+      
       try {
-        let events: ChainableSubscription<RollupWatcherEvent[], void> = yield subscribe(on(rollup, 'event'));
-
-        yield events
+        let events: ChainableSubscription<RollupWatcherEvent[], BundlerMessage> = yield subscribe(on(rollup, 'event'));
+   
+        let messages = events
           .map(([event]) => event)
-          .filter(event => ['END', 'ERROR'].includes(event.code))
-          .forEach(function* (event) {
-            if(event.code === 'ERROR'){
-              bundlerSlice.update(() => ({ status: 'errored', error: event.error }));
-            } else {
-              bundlerSlice.update((previous) => {
-                assert(previous.status === 'building' || previous.status === 'green', `bundler trying to transition to end from ${previous.status}`);
-
-                return { status: 'end', warnings: previous.warnings ?? [] };
-              })
+          .filter(event => ['START', 'END', 'ERROR'].includes(event.code))
+          .map(event => {
+            switch (event.code) {
+              case 'START':
+                return { type: 'START' } as const;
+              case 'END':
+                return { type: 'UPDATE' } as const;
+              case 'ERROR':
+                return { type: 'ERROR', error: event.error } as const;
+              default: 
+                throw new Error(`unexpect event ${event.code}`);
             }
           });
+          
+        yield messages.forEach(function* (message) {
+          bundler.channel.send(message);
+        });
       } finally {
+        console.debug('[bundler] shutting down');
         rollup.close();
       }
     });
+  }
+
+  [SymbolSubscribable]() {
+    return this.channel[SymbolSubscribable]();
   }
 }
