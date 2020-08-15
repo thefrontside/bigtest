@@ -42,11 +42,11 @@ describe('manifest builder', () => {
       });
     });
 
-    let bundlerState = await actions.fork(atom.slice('bundler').once(({ status }) => status === 'GREEN'));
+    let bundlerState = await actions.fork(atom.slice('bundler').once(({ kind }) => kind === 'GREEN'));
 
-    atom.slice('bundler').update(() => ({status: 'BUILDING', warnings: []}));
+    resultPath = (bundlerState?.kind === 'GREEN' && bundlerState.path) as string;
 
-    resultPath = (bundlerState?.status === 'GREEN' && bundlerState.path) as string;
+    atom.slice('bundler').update(() => ({ kind: 'BUILDING', warnings: []}));
   });
 
   describe('retrieving test file manifest from disk', () => {
@@ -65,11 +65,10 @@ describe('manifest builder', () => {
 
     beforeEach(async () => {
       await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
-      let bundle = await actions.fork(atom.slice('bundler').once(({status}) => status === 'GREEN'));
+      
+      let bundle = await actions.fork(atom.slice('bundler').once(({ kind }) => kind === 'GREEN'));
 
-      console.log('we got 2')
-
-      resultPath = (!!bundle && bundle.status === 'GREEN' && bundle.path) as string;
+      resultPath = (!!bundle && bundle.kind === 'GREEN' && bundle.path) as string;
 
 
       console.log(resultPath);
@@ -138,9 +137,9 @@ describe('manifest builder', () => {
   describe('updating the manifest and then reading it', () => {
     beforeEach(async () => {
       await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
-      let bundle = await actions.fork(atom.slice('bundler').once(({status}) => status === 'GREEN'))
+      let bundle = await actions.fork(atom.slice('bundler').once(({ kind }) => kind === 'GREEN'))
 
-      console.log(bundle && bundle.status === 'GREEN' && bundle.path);
+      console.log(bundle && bundle.kind === 'GREEN' && bundle.path);
     });
 
     it('returns the updated manifest from the state', () => {
@@ -149,10 +148,10 @@ describe('manifest builder', () => {
     });
   });
 
-  describe('importing the manifest throws an error', () => {
+  describe('importing the manifest with an error adds the error to the state', () => {
     beforeEach(async () => {
       await copyFile(path.join(FIXTURES_DIR, 'exceptions', 'error.t.js'), MANIFEST_PATH);
-      await actions.fork(atom.slice('bundler').once(({status}) => status === 'ERRORED'));
+      await actions.fork(atom.slice('bundler').once(({ kind }) => kind === 'ERRORED'));
     });
 
     it('should update the global state with the error detail', () => {
@@ -160,7 +159,7 @@ describe('manifest builder', () => {
 
       // this could be a custom expect 
       // assert is used to type narrow also and does more than just assert
-      assert(bundlerState.status === 'ERRORED', `bundler status is not errored but ${bundlerState.status}`);
+      assert(bundlerState.kind === 'ERRORED', `bundler status is not errored but ${bundlerState.kind}`);
       
       let error = bundlerState.error;
 

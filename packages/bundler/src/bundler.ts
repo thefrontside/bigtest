@@ -32,7 +32,7 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, channel: Channel<Bu
         format: 'umd',
       },
       onwarn(warning){
-        channel.send({ type: 'WARN', warning })
+        channel.send({ kind: 'WARN', warning })
       },
       watch: {
         // Rollup types are wrong; `watch.exclude` allows RegExp[]
@@ -67,25 +67,20 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
     return yield resource(bundler, function* () {
       let rollup: RollupWatcher = watch(prepareRollupOptions(bundles, bundler.channel));
 
-      console.debug('[bundler] ready');
-      
       try {
         let events: ChainableSubscription<RollupWatcherEvent[], BundlerMessage> = yield subscribe(on(rollup, 'event'));
    
         let messages = events
           .map(([event]) => event)
-          .filter(event => {
-            console.log(event);
-            return ['START', 'END', 'ERROR'].includes(event.code);
-          })
+          .filter(event => ['START', 'END', 'ERROR'].includes(event.code))
           .map(event => {
             switch (event.code) {
               case 'START':
-                return { type: 'START' } as const;
+                return { kind: 'START' } as const;
               case 'END':
-                return { type: 'UPDATE' } as const;
+                return { kind: 'UPDATE' } as const;
               case 'ERROR':
-                return { type: 'ERROR', error: event.error } as const;
+                return { kind: 'ERROR', error: event.error } as const;
               default: 
                 throw new Error(`unexpect event ${event.code}`);
             }
