@@ -9,7 +9,6 @@ import { interaction, Interaction } from './interaction';
 const defaultSelector = 'div';
 
 export class Interactor<E extends Element, S extends InteractorSpecification<E>> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private ancestors: Array<Interactor<E, S>> = [];
 
   constructor(

@@ -40,13 +40,13 @@ export type FilterImplementation<E extends Element, S extends InteractorSpecific
     never;
 }
 
-// export type DefaultLocator<E extends Element, S extends InteractorSpecification<E>> = {
-//   defaultLocator?: keyof S['locators'] | keyof S['locators'][] | LocatorFn<E>;
-// }
+export type DefaultLocator<E extends Element, S extends InteractorSpecification<E>> = {
+  defaultLocator?: S['defaultLocator'] extends never ? never : keyof S['locators'] | (keyof S['locators'])[] | LocatorFn<E>; 
+}
 
 export type LocatorImplementation<E extends Element, S extends InteractorSpecification<E>> = {
   [P in keyof S['locators']]: S['locators'][P] extends LocatorFn<E> ? (value: string, filters?: FilterImplementation<E, S>) => InteractorInstance<E, S> : never;
-}
+} & DefaultLocator<E, S>;
 
 export type InteractorInstance<E extends Element, S extends InteractorSpecification<E>> = Interactor<E, S> & ActionImplementation<E, S>;
 

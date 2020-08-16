@@ -1,7 +1,6 @@
 export type LocatorFn<E extends Element> = (element: E) => string;
 import { FilterImplementation, InteractorSpecification } from './specification';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class Filter<E extends Element, S extends InteractorSpecification<E>> {
   constructor(
     public specification: S,
