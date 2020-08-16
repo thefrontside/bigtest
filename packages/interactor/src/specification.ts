@@ -13,27 +13,27 @@ export interface FilterObject<T, E extends Element> {
   default?: T;
 }
 
-export type LocatorSpecification<E extends Element> = { locators: Record<string, LocatorFn<E>>};
+export type LocatorSpecification<E extends Element> = Record<string, LocatorFn<E>>;
 
 export type FilterSpecification<E extends Element> = Record<string, FilterFn<unknown, E> | FilterObject<unknown, E>>
 
 export type ActionSpecification<E extends Element> = Record<string, ActionFn<E>>;
 
-export type InteractorSpecification<E extends Element, L extends LocatorSpecification<E>> = {
+export type InteractorSpecification<E extends Element> = {
   selector?: string;
-  defaultLocator?: keyof L['locators'] | Array<keyof L['locators']> | LocatorFn<E>;
-  locators?: L['locators'];
+  defaultLocator?: string | string[] | LocatorFn<E>;
+  locators?: LocatorSpecification<E>;
   actions?: ActionSpecification<E>;
   filters?: FilterSpecification<E>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ActionImplementation<E extends Element, S extends InteractorSpecification<E, any>> = {
+export type ActionImplementation<E extends Element, S extends InteractorSpecification<E>> = {
   [P in keyof S['actions']]: S['actions'][P] extends ((element: E, ...args: infer TArgs) => infer TReturn) ? ((...args: TArgs) => Interaction<TReturn>) : never;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type FilterImplementation<E extends Element, S extends InteractorSpecification<E, any>> = {
+export type FilterImplementation<E extends Element, S extends InteractorSpecification<E>> = {
   [P in keyof S['filters']]?:
     S['filters'][P] extends FilterFn<infer TArg, E> ?
     TArg :
@@ -42,12 +42,12 @@ export type FilterImplementation<E extends Element, S extends InteractorSpecific
     never;
 }
 
-export type LocatorImplementation<E extends Element, S extends InteractorSpecification<E, L>, L extends LocatorSpecification<E>> = {
-  [P in keyof S['locators']]: S['locators'][P] extends ((element: E, ...args: unknown[]) => unknown) ? (value: string, filters?: FilterImplementation<E, S>) => InteractorInstance<E, S, L> : never;
+export type LocatorImplementation<E extends Element, S extends InteractorSpecification<E>> = {
+  [P in keyof S['locators']]: S['locators'][P] extends ((element: E, ...args: unknown[]) => unknown) ? (value: string, filters?: FilterImplementation<E, S>) => InteractorInstance<E, S> : never;
 }
 
-export type InteractorInstance<E extends Element, S extends InteractorSpecification<E, L>, L extends LocatorSpecification<E>> = Interactor<E, S, L> & ActionImplementation<E, S>;
+export type InteractorInstance<E extends Element, S extends InteractorSpecification<E>> = Interactor<E, S> & ActionImplementation<E, S>;
 
-export type InteractorType<E extends Element, S extends InteractorSpecification<E, L>, L extends LocatorSpecification<E>> =
-  ((value: string, filters?: FilterImplementation<E, S>) => InteractorInstance<E, S, L>) &
-  LocatorImplementation<E, S, L>;
+export type InteractorType<E extends Element, S extends InteractorSpecification<E>> =
+  ((value: string, filters?: FilterImplementation<E, S>) => InteractorInstance<E, S>) &
+  LocatorImplementation<E, S>;

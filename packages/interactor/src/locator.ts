@@ -1,18 +1,18 @@
 import { LocatorFn, LocatorSpecification } from './specification';
 
-export interface LocatorOptions<E extends Element, L extends LocatorSpecification<E>> {
+export interface LocatorOptions<E extends Element> {
   name?: string;
-  locators?: L['locators'];
+  locators?: LocatorSpecification<E>;
 }
 
-export class Locator<E extends Element, L extends LocatorSpecification<E>> {
+export class Locator<E extends Element> {
   private locatorFns: Array<LocatorFn<E>>;
   public name?: string;
 
   constructor(
-    locator: keyof L['locators'] | Array<keyof L['locators']> | LocatorFn<E>,
+    locator: string | string[] | LocatorFn<E>,
     public value: string,
-    { locators = Object.create({}), name }: LocatorOptions<E, L> = { locators: Object.create({}) }
+    { locators = Object.create({}), name }: LocatorOptions<E> = { locators: Object.create({}) }
   ) {
     if (typeof locator === 'string') {
       let locatorFn = locators[locator];
