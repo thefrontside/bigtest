@@ -1,6 +1,6 @@
 import { bigtestGlobals } from '@bigtest/globals';
 import { converge } from './converge';
-import { InteractorSpecification, FilterImplementation } from './specification';
+import { InteractorSpecification, FilterImplementation, InteractorInstance } from './specification';
 import { Locator } from './locator';
 import { Filter } from './filter';
 import { NoSuchElementError, AmbiguousElementError, NotAbsentError, FilterNotMatchingError } from './errors';
@@ -10,7 +10,7 @@ const defaultSelector = 'div';
 
 export class Interactor<E extends Element, S extends InteractorSpecification<E>> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private ancestors: Array<Interactor<any, any>> = [];
+  private ancestors: Array<Interactor<E, S>> = [];
 
   constructor(
     public name: string,
@@ -19,13 +19,11 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
     private filter: Filter<E, S>
   ) {}
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private get ancestorsAndSelf(): Array<Interactor<any, any>> {
+  private get ancestorsAndSelf(): Array<Interactor<E, S>> {
     return [...this.ancestors, this];
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  find<T extends Interactor<any, any>>(interactor: T): T {
+  find<E extends Element, S extends InteractorSpecification<E>>(interactor: Interactor<E, S>): InteractorInstance<E, S> {
     return Object.create(interactor, {
       ancestors: {
         value: [...this.ancestors, this, ...interactor.ancestors]
@@ -42,8 +40,8 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
   private unsafeSyncResolve(): E {
     return this.ancestorsAndSelf.reduce((parentElement: Element, interactor) => {
       let elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector || defaultSelector));
-      let locatedElements = elements.filter((element) => interactor.locator.matches(element));
-      let filteredElements = locatedElements.filter((element) => interactor.filter.matches(element));
+      let locatedElements = elements.filter((element) => interactor.locator.matches(element as E));
+      let filteredElements = locatedElements.filter((element) => interactor.filter.matches(element as E));
 
       if(filteredElements.length === 1) {
         return filteredElements[0];
