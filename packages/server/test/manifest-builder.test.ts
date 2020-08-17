@@ -70,9 +70,6 @@ describe('manifest builder', () => {
 
       resultPath = (!!bundle && bundle.kind === 'GREEN' && bundle.path) as string;
 
-
-      console.log(resultPath);
-      
       body = await readFile(path.resolve(DIST_DIR, resultPath), 'utf8')
     });
 
