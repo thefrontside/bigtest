@@ -2,6 +2,7 @@ import { Operation } from "effection";
 import { Channel } from '@effection/channel';
 import { subscribe, Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
 import { Slice } from "./slice";
+import { Sliceable } from './sliceable';
 
 export class Atom<S> implements Subscribable<S,undefined> {
   private readonly initial: S;
@@ -38,8 +39,9 @@ export class Atom<S> implements Subscribable<S,undefined> {
     }
   }
 
-  slice<T>(path: string[]): Slice<T, S> {
-    return new Slice(this, path);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  slice: Sliceable<S, S>['slice'] = (...keys: string[]): Slice<any, S> => {
+    return new Slice(this, keys);
   }
 
   reset(initializer?: (initial: S, current: S) => S) {

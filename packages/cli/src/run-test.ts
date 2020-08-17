@@ -3,10 +3,11 @@ import { ProjectOptions } from '@bigtest/project';
 import { performance } from '@bigtest/performance';
 import { ResultStatus } from '@bigtest/suite';
 import { Client } from '@bigtest/server';
+import { MainError } from '@effection/node';
 import * as query from './query';
 import { StreamingFormatter } from './format-helpers';
 
-export function* runTest(config: ProjectOptions, formatter: StreamingFormatter): Operation<ResultStatus> {
+export function* runTest(config: ProjectOptions, formatter: StreamingFormatter): Operation<void> {
   let client: Client = yield Client.create(`ws://localhost:${config.port}`);
 
   let subscription = yield client.subscription(query.run());
@@ -46,5 +47,7 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
     assertionCounts,
   });
 
-  return testRunStatus || 'failed';
+  if(testRunStatus !== 'ok') {
+    throw new MainError({ exitCode: 1 });
+  }
 }

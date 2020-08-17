@@ -1,4 +1,7 @@
 {
   "extends": "@frontside/tsconfig",
-  "files": ["src/index.ts"]
+  "files": ["src/index.ts"],
+  "compilerOptions": {
+    "esModuleInterop": true
+  }
 }

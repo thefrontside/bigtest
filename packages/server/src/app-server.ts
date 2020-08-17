@@ -1,7 +1,7 @@
 import { timeout, Operation } from 'effection';
 import { Mailbox } from '@bigtest/effection';
+import { fetch } from '@effection/fetch';
 import { ChildProcess } from '@effection/node';
-import { Socket } from 'net';
 import * as process from 'process';
 
 interface AppServerOptions {
@@ -13,27 +13,14 @@ interface AppServerOptions {
   port: number;
 };
 
-function isReachable(port: number, options: { timeout: number } = { timeout: 10000 }): Operation {
-  return (execution) => {
-    let socket = new Socket();
-
-    let onError = () => {
-      socket.destroy();
-      execution.resume(false);
-    };
-
-    socket.setTimeout(options.timeout);
-    socket.once('error', onError);
-    socket.once('timeout', onError);
-
-    socket.connect(port, '127.0.0.1', () => {
-      socket.destroy();
-      execution.resume(true);
-    });
-
-    execution.ensure(() => socket.destroy());
+function* isReachable(port: number) {
+  try {
+    let response: Response = yield fetch(`http://127.0.0.1:${port}`)
+    return response.ok
+  } catch (error) {
+    return false;
   }
-};
+}
 
 export function* createAppServer(options: AppServerOptions): Operation {
   yield ChildProcess.spawn(options.command, options.args || [], {

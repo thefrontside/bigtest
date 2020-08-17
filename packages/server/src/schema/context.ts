@@ -4,7 +4,7 @@ import { Atom } from '@bigtest/atom';
 import { CommandMessage } from '../command-server';
 import { resultStream } from '../result-stream';
 import { TestEvent } from './test-event';
-import { OrchestratorState, TestRunState } from '../orchestrator/state';
+import { OrchestratorState } from '../orchestrator/state';
 
 let testRunIds = (function * () {
   for (let current = 1; ; current++) {
@@ -34,7 +34,7 @@ export class GraphqlContext {
   async *runTestSubscribe(): AsyncIterator<TestEvent> {
     let id = this.runTest();
 
-    let slice = this.atom.slice<TestRunState>(['testRuns', id]);
+    let slice = this.atom.slice('testRuns', id);
 
     let scope = this.context.spawn(undefined) as Context & Controls;
 

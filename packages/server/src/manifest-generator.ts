@@ -3,20 +3,19 @@ import { Operation } from 'effection';
 import { Mailbox, ensure } from '@bigtest/effection';
 import { throwOnErrorEvent } from '@effection/events';
 import * as fs from 'fs';
-import * as glob from 'glob';
 import * as path from 'path';
-import { promisify } from 'util';
+import * as globby from 'globby';
 
 const { writeFile, mkdir } = fs.promises;
 
 interface ManifestGeneratorOptions {
   delegate: Mailbox;
-  files: string[];
+  files: string[]; 
   destinationPath: string;
 };
 
 function* writeManifest(options: ManifestGeneratorOptions) {
-  let files = yield Promise.all(options.files.map((pattern) => promisify(glob)(pattern))).then((l) => l.flat());
+  let files = yield globby(options.files);
 
   let manifest = 'let load = (res) => res.default || res;\n';
   manifest += 'const children = [\n';

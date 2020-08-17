@@ -1903,6 +1903,14 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@bigtest/interactor@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@bigtest/interactor/-/interactor-0.13.0.tgz#9bc7671395b235040a1b25475bd6f19f89a391a6"
+  integrity sha512-w0q3CLCm6MOMLKuVXwSUvZgcf2dd+ygMkfQzd6EFXAeGIIQ9NLZUy51N+uIreOCVzf7RvJF6Qa00sa2GCcDHiQ==
+  dependencies:
+    "@bigtest/globals" "^0.6.0"
+    "@bigtest/performance" "^0.5.0"
+
 "@bigtest/parcel@^0.5.2":
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/@bigtest/parcel/-/parcel-0.5.2.tgz#3ed6d0af2e5ffa809063200834720bdae775373c"
@@ -2204,6 +2212,14 @@
   version "0.6.5"
   resolved "https://registry.yarnpkg.com/@effection/node/-/node-0.6.5.tgz#936487d04f4f734b4d6e5604d881b202732b165f"
   integrity sha512-9Ke85fVLQDHc0JNKqfizrMqs4a5rDjz1SNDlyIoNZqcYGajr5ETzK75Z7UcxK1iO6MsUcoeoH6SJoEkXJcHjQg==
+  dependencies:
+    "@effection/events" "^0.7.4"
+    effection "^0.7.0"
+
+"@effection/node@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@effection/node/-/node-0.8.0.tgz#a73069ecd60c628d1aa2b9e61a8ff930be8faa7c"
+  integrity sha512-p+6QQINBvGO0ev05LKRMlcsC567ubfBfEefkzNRBNWb1drumOMtD8FMjZjWCB/brPLPO5un7CAOErorfCHvkaA==
   dependencies:
     "@effection/events" "^0.7.4"
     effection "^0.7.0"
@@ -7255,7 +7271,7 @@ globby@^10.0.1:
     merge2 "^1.2.3"
     slash "^3.0.0"
 
-globby@^11.0.0:
+globby@^11.0.0, globby@^11.0.1:
   version "11.0.1"
   resolved "https://registry.yarnpkg.com/globby/-/globby-11.0.1.tgz#9a2bf107a068f3ffeabc49ad702c79ede8cfd357"
   integrity sha512-iH9RmgwCmUJHi2z5o2l3eTtGBtXek1OYlHrbcxOYugyHLmAsZrPj43OtHThd62Buh/Vv6VyCBD2bdyWcGNQqoQ==
@@ -9294,10 +9310,10 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-"lodash@>=3.5 <5", lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@^4.17.5:
-  version "4.17.15"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
-  integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
+lodash@4.17.19, "lodash@>=3.5 <5", lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@^4.17.5:
+  version "4.17.19"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
+  integrity sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==
 
 log-symbols@2.2.0, log-symbols@^2.2.0:
   version "2.2.0"
@@ -9360,7 +9376,7 @@ magic-string@^0.22.4:
   dependencies:
     vlq "^0.2.2"
 
-magic-string@^0.25.2:
+magic-string@^0.25.2, magic-string@^0.25.7:
   version "0.25.7"
   resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.25.7.tgz#3f497d6fd34c669c6798dcb821f2ef31f5445051"
   integrity sha512-4CrMT5DOHTDk4HYDlzmwu4FVCcIYI8gauveasrdCu2IKIFOJ3f0v/8MDGJCDL9oD2ppz/Av1b0Nj345H9M+XIA==
@@ -12521,6 +12537,13 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
   dependencies:
     hash-base "^3.0.0"
     inherits "^2.0.1"
+
+rollup-plugin-inject-process-env@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-inject-process-env/-/rollup-plugin-inject-process-env-1.3.0.tgz#eb746fbbf0a571174707010c0cf62eb292c89dc4"
+  integrity sha512-LYuOvcnLZErqK1WaDGMT5ECn1JPvOgeURfQGR9tRRyMb/sqmt5G7jT2/KSChRkyEDNKsn24J4FBxubB8bbs2Fg==
+  dependencies:
+    magic-string "^0.25.7"
 
 rollup@^2.18.1:
   version "2.18.1"

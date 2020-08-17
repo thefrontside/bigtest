@@ -1,5 +1,22 @@
 # @bigtest/webdriver
 
+## 0.5.5
+
+### Patch Changes
+
+- 23f684ce: As a stop-gap, increase the timeout to connect to the webdriver
+  server
+
+## 0.5.4
+
+### Patch Changes
+
+- Updated dependencies [9ebb822d]
+- Updated dependencies [9ebb822d]
+- Updated dependencies [9ebb822d]
+- Updated dependencies [9ebb822d]
+  - @bigtest/atom@0.7.0
+
 ## 0.5.3
 
 ### Patch Changes

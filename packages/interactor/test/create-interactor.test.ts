@@ -63,7 +63,7 @@ describe('@bigtest/interactor', () => {
         <p><a href="/foobar">Foo Bar</a></p>
       `);
 
-      await expect(Link('Foo Bar').exists()).resolves.toEqual(true);
+      await expect(Link('Foo Bar').exists()).resolves.toBeUndefined();
       await expect(Link('Blah').exists()).rejects.toHaveProperty('message', 'link "Blah" does not exist');
     });
 
@@ -72,7 +72,7 @@ describe('@bigtest/interactor', () => {
         <p><a title="Monkey" href="/foobar">Foo Bar</a></p>
       `);
 
-      await expect(Link.byTitle('Monkey').exists()).resolves.toEqual(true);
+      await expect(Link.byTitle('Monkey').exists()).resolves.toBeUndefined();
       await expect(Link.byTitle('Zebra').exists()).rejects.toHaveProperty('message', 'link with title "Zebra" does not exist');
     });
 
@@ -86,7 +86,7 @@ describe('@bigtest/interactor', () => {
         </script>
       `);
 
-      await expect(Link('Foo Bar').exists()).resolves.toEqual(true);
+      await expect(Link('Foo Bar').exists()).resolves.toBeUndefined();
     });
 
     it('can return description', () => {
@@ -100,7 +100,7 @@ describe('@bigtest/interactor', () => {
         <p><a href="/foobar">Foo Bar</a></p>
       `);
 
-      await expect(Link('Blah').absent()).resolves.toEqual(true);
+      await expect(Link('Blah').absent()).resolves.toBeUndefined();
       await expect(Link('Foo Bar').absent()).rejects.toHaveProperty('message', 'link "Foo Bar" exists but should not');
     });
 
@@ -114,7 +114,7 @@ describe('@bigtest/interactor', () => {
         </script>
       `);
 
-      await expect(Link('Foo Bar').absent()).resolves.toEqual(true);
+      await expect(Link('Foo Bar').absent()).resolves.toBeUndefined();
     });
 
     it('can return description', () => {
@@ -133,8 +133,8 @@ describe('@bigtest/interactor', () => {
         </div>
       `);
 
-      await expect(Div("foo").find(Link("Foo")).exists()).resolves.toEqual(true);
-      await expect(Div("bar").find(Link("Bar")).exists()).resolves.toEqual(true);
+      await expect(Div("foo").find(Link("Foo")).exists()).resolves.toBeUndefined();
+      await expect(Div("bar").find(Link("Bar")).exists()).resolves.toBeUndefined();
 
       await expect(Div("foo").find(Link("Bar")).exists()).rejects.toHaveProperty('message', 'link "Bar" within div "foo" does not exist');
       await expect(Div("bar").find(Link("Foo")).exists()).rejects.toHaveProperty('message', 'link "Foo" within div "bar" does not exist');
@@ -175,10 +175,10 @@ describe('@bigtest/interactor', () => {
         <a href="/foo">Foo</a>
       `);
 
-      await expect(Div("test").find(Div("foo").find(Link("Foo"))).exists()).resolves.toEqual(true);
+      await expect(Div("test").find(Div("foo").find(Link("Foo"))).exists()).resolves.toBeUndefined();
       await expect(Div("test").find(Div("foo").find(Link("Bar"))).exists()).rejects.toHaveProperty('message', 'link "Bar" within div "foo" within div "test" does not exist');
 
-      await expect(Div("test").find(Div("foo")).find(Link("Foo")).exists()).resolves.toEqual(true);
+      await expect(Div("test").find(Div("foo")).find(Link("Foo")).exists()).resolves.toBeUndefined();
       await expect(Div("test").find(Div("foo")).find(Link("Bar")).exists()).rejects.toHaveProperty('message', 'link "Bar" within div "foo" within div "test" does not exist');
     });
   });
@@ -189,7 +189,7 @@ describe('@bigtest/interactor', () => {
         <input id="Email" value='jonas@example.com'/>
       `);
 
-      await expect(TextField('Email').is({ value: 'jonas@example.com' })).resolves.toEqual(true);
+      await expect(TextField('Email').is({ value: 'jonas@example.com' })).resolves.toBeUndefined();
       await expect(TextField('Email').is({ value: 'incorrect@example.com' })).rejects.toHaveProperty('message', 'text field "Email" does not match filters: with value "incorrect@example.com"');
     });
   });
@@ -200,7 +200,7 @@ describe('@bigtest/interactor', () => {
         <input id="Email" value='jonas@example.com'/>
       `);
 
-      await expect(TextField('Email').has({ value: 'jonas@example.com' })).resolves.toEqual(true);
+      await expect(TextField('Email').has({ value: 'jonas@example.com' })).resolves.toBeUndefined();
       await expect(TextField('Email').has({ value: 'incorrect@example.com' })).rejects.toHaveProperty('message', 'text field "Email" does not match filters: with value "incorrect@example.com"');
     });
   });
@@ -257,7 +257,7 @@ describe('@bigtest/interactor', () => {
       `);
 
       await Div("foo").find(Link('Foo Bar')).click();
-      await expect(Header('Hello!').exists()).resolves.toEqual(true);
+      await expect(Header('Hello!').exists()).resolves.toBeUndefined();
     });
 
     it('can return description of interaction', () => {
@@ -275,8 +275,8 @@ describe('@bigtest/interactor', () => {
         <input id="Email" value='jonas@example.com'/>
       `);
 
-      await expect(TextField('Email').exists()).resolves.toEqual(true);
-      await expect(TextField('Email', { value: 'jonas@example.com' }).exists()).resolves.toEqual(true);
+      await expect(TextField('Email').exists()).resolves.toBeUndefined();
+      await expect(TextField('Email', { value: 'jonas@example.com' }).exists()).resolves.toBeUndefined();
       await expect(TextField('Email', { value: 'incorrect@example.com' }).exists()).rejects.toHaveProperty('message', 'text field "Email" with value "incorrect@example.com" does not exist');
     });
 
@@ -288,7 +288,7 @@ describe('@bigtest/interactor', () => {
 
       await expect(TextField('Password').exists()).rejects.toHaveProperty('message', 'text field "Password" does not exist');
       await expect(TextField('Password', { enabled: true }).exists()).rejects.toHaveProperty('message', 'text field "Password" which is enabled does not exist');
-      await expect(TextField('Password', { enabled: false }).exists()).resolves.toEqual(true);
+      await expect(TextField('Password', { enabled: false }).exists()).resolves.toBeUndefined();
     });
 
     it('can apply multiple filters', async () => {
@@ -299,7 +299,7 @@ describe('@bigtest/interactor', () => {
 
       await expect(TextField('Password', { enabled: false, value: 'incorrect' }).exists()).rejects.toHaveProperty('message', 'text field "Password" which is not enabled and with value "incorrect" does not exist');
       await expect(TextField('Password', { enabled: true, value: 'test1234' }).exists()).rejects.toHaveProperty('message', 'text field "Password" which is enabled and with value "test1234" does not exist');
-      await expect(TextField('Password', { enabled: false, value: 'test1234' }).exists()).resolves.toEqual(true);
+      await expect(TextField('Password', { enabled: false, value: 'test1234' }).exists()).resolves.toBeUndefined();
     });
   });
 })
