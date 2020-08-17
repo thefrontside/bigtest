@@ -14,7 +14,7 @@ describe('@bigtest/atom', () => {
 
     beforeEach(() => {
       atom = new Atom({ data: 'foo' });
-      slice = atom.slice<string>(['data']);
+      slice = atom.slice('data');
     });
 
     describe('.get()', () => {
@@ -79,8 +79,8 @@ describe('@bigtest/atom', () => {
 
       beforeEach(() => {
         atom = new Atom<{ outer: Data }>({ outer: { data: "baz" } });
-        slice1 = atom.slice(['outer']);
-        slice2 = slice1.slice(['data']);
+        slice1 = atom.slice('outer');
+        slice2 = slice1.slice('data');
       });
 
       it('further slices the slice', async () => {

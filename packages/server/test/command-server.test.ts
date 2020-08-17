@@ -10,20 +10,20 @@ import { actions } from './helpers';
 import { createCommandServer } from '../src/command-server';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 
-import { AgentState, OrchestratorState } from '../src/orchestrator/state';
+import { AgentState, OrchestratorState, Manifest } from '../src/orchestrator/state';
 
 let COMMAND_PORT = 24200;
 
 describe('command server', () => {
   let delegate: Mailbox
   let agents: Slice<Record<string, AgentState>, OrchestratorState>;
-  let manifest: Slice<Test, OrchestratorState>;
+  let manifest: Slice<Manifest, OrchestratorState>;
 
   beforeEach(async () => {
     delegate = new Mailbox();
     let atom = createOrchestratorAtom();
-    agents = atom.slice<Record<string, AgentState>>(['agents']);
-    manifest = atom.slice<Test>(['manifest']);
+    agents = atom.slice('agents');
+    manifest = atom.slice('manifest');
     actions.fork(createCommandServer({
       delegate,
       atom,
@@ -144,6 +144,7 @@ describe('command server', () => {
       };
 
       manifest.set({
+        fileName: 'blah',
         description: "All Tests",
         steps: [],
         assertions: [],

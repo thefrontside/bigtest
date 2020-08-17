@@ -65,7 +65,7 @@
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
     "fprint": "^2.0.1",
-    "glob": "^7.1.6",
+    "globby": "^11.0.1",
     "graphql": "^14.5.8",
     "http-proxy": "^1.18.0",
     "nexus": "^0.12.0",
