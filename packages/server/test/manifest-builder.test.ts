@@ -134,9 +134,7 @@ describe('manifest builder', () => {
   describe('updating the manifest and then reading it', () => {
     beforeEach(async () => {
       await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
-      let bundle = await actions.fork(atom.slice('bundler').once(({ kind }) => kind === 'GREEN'))
-
-      console.log(bundle && bundle.kind === 'GREEN' && bundle.path);
+      await actions.fork(atom.slice('bundler').once(({ kind }) => kind === 'GREEN'))
     });
 
     it('returns the updated manifest from the state', () => {
