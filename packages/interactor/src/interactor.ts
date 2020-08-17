@@ -55,9 +55,12 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
     }, bigtestGlobals.document.documentElement) as E;
   }
 
-  resolve(): Interaction<E> {
-    return interaction(`${this.description} resolves`, () => {
-      return converge(this.unsafeSyncResolve.bind(this));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  perform(fn: (element: E) => void): Interaction<void> {
+    return interaction(`${this.description} performs`, () => {
+      return converge(() => {
+        fn(this.unsafeSyncResolve());
+      });
     });
   }
 

@@ -20,8 +20,7 @@ export function createInteractor<E extends Element>(interactorName: string) {
           }
           return interaction(`${actionDescription} on ${this.description}`, () => {
             return converge(() => {
-              let element = this.unsafeSyncResolve();
-              return action(element, ...args);
+              return action(this, ...args);
             });
           });
         },

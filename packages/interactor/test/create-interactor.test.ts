@@ -4,7 +4,7 @@ import * as expect from 'expect'
 import { bigtestGlobals } from '@bigtest/globals';
 import { JSDOM } from 'jsdom';
 
-import { createInteractor } from '../src/index';
+import { createInteractor, perform } from '../src/index';
 
 const Link = createInteractor<HTMLLinkElement>('link')({
   selector: 'a',
@@ -13,8 +13,8 @@ const Link = createInteractor<HTMLLinkElement>('link')({
     byTitle: (element) => element.title
   },
   actions: {
-    click: (element) => { element.click() },
-    setHref: (element, value: string) => { element.href = value }
+    click: perform(element => { element.click() }),
+    setHref: perform((element, value: string) => { element.href = value })
   }
 });
 
@@ -34,6 +34,9 @@ const Details = createInteractor<HTMLDetailsElement>('details')({
 const TextField = createInteractor<HTMLInputElement>('text field')({
   selector: 'input',
   defaultLocator: (element) => element.id,
+  locators: {
+    byPlaceholder: element => element.placeholder
+  },
   filters: {
     enabled: {
       apply: (element) => !element.disabled,
@@ -42,7 +45,22 @@ const TextField = createInteractor<HTMLInputElement>('text field')({
     value: (element) => element.value
   },
   actions: {
-    fillIn: (element, value: string) => { element.value = value }
+    fillIn: perform((element, value: string) => { element.value = value }),
+    click: perform(element => { element.click() })
+  }
+});
+
+const Datepicker = createInteractor<HTMLDivElement>("datepicker")({
+  selector: "div.datepicker",
+  defaultLocator: element => element.querySelector("label")?.textContent || "",
+  filters: {
+    open: element => !!element.querySelector("div.calendar"),
+    month: element => element.querySelector("div.calendar h4")?.textContent
+  },
+  actions: {
+    toggle: async interactor => {
+      await interactor.find(TextField.byPlaceholder("YYYY-MM-DD")).click();
+    }
   }
 });
 
@@ -181,6 +199,22 @@ describe('@bigtest/interactor', () => {
       await expect(Div("test").find(Div("foo")).find(Link("Foo")).exists()).resolves.toBeUndefined();
       await expect(Div("test").find(Div("foo")).find(Link("Bar")).exists()).rejects.toHaveProperty('message', 'link "Bar" within div "foo" within div "test" does not exist');
     });
+
+    it('cannot match an element outside of scope', async () => {
+      dom(`
+        <div id="test">
+          <div id="foo">
+            <a href="/foo">Foo</a>
+          </div>
+          <div id="bar">
+            <a href="/Bar">Bar</a>
+          </div>
+        </div>
+        <a href="/foo">Foo</a>
+      `);
+
+      await expect(Div("foo").find(Div("bar")).exists()).rejects.toHaveProperty('message', 'div "bar" within div "foo" does not exist');
+    });
   });
 
   describe('.is', () => {
@@ -267,6 +301,32 @@ describe('@bigtest/interactor', () => {
     it('can return description of interaction with argument', () => {
       expect(Link('Foo Bar').setHref('/monkey').description).toEqual('setHref with "/monkey" on link "Foo Bar"');
     });
+
+    it('can use interactors within actions', async () => {
+      dom(`
+        <div class="datepicker">
+          <label for="start-date">Start Date</label>
+          <input type="text" id="start-date" placeholder="YYYY-MM-DD" />
+        </div>
+        <script>
+          let startDateInput = document.getElementById("start-date");
+          let datepicker = document.querySelector(".datepicker");
+          startDateInput.onclick = () => {
+            let calendar = document.createElement("div");
+            let calendarMonth = document.createElement("h4");
+            calendarMonth.appendChild(document.createTextNode("January"));
+            calendar.classList.add("calendar");
+            calendar.appendChild(calendarMonth);
+            datepicker.appendChild(calendar);
+          };
+        </script>
+      `);
+
+      await expect(Datepicker("Start Date").has({ open: false })).resolves.toBeUndefined();
+      await Datepicker("Start Date").toggle();
+      await expect(Datepicker("Start Date").has({ open: true })).resolves.toBeUndefined();
+      await expect(Datepicker("Start Date").has({ month: "January" })).resolves.toBeUndefined();
+    });
   });
 
   describe('filters', () => {
@@ -302,4 +362,4 @@ describe('@bigtest/interactor', () => {
       await expect(TextField('Password', { enabled: false, value: 'test1234' }).exists()).resolves.toBeUndefined();
     });
   });
-})
+});
