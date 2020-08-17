@@ -44,7 +44,7 @@
     "@changesets/cli": "^2.8.0",
     "@types/node": "^12",
     "@frontside/eslint-config": "^1.1.2",
-    "@frontside/typescript": "^1.0.1",
+    "@frontside/typescript": "^1.0.1"
   },
   "resolutions": {
     "lodash": "4.17.19"
