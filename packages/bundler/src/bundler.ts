@@ -32,7 +32,7 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, channel: Channel<Bu
         format: 'umd',
       },
       onwarn(warning){
-        channel.send({ kind: 'WARN', warning })
+        channel.send({ type: 'WARN', warning })
       },
       watch: {
         // Rollup types are wrong; `watch.exclude` allows RegExp[]
@@ -76,11 +76,11 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
           .map(event => {
             switch (event.code) {
               case 'START':
-                return { kind: 'START' } as const;
+                return { type: 'START' } as const;
               case 'END':
-                return { kind: 'UPDATE' } as const;
+                return { type: 'UPDATE' } as const;
               case 'ERROR':
-                return { kind: 'ERROR', error: event.error } as const;
+                return { type: 'ERROR', error: event.error } as const;
               default: 
                 throw new Error(`unexpect event ${event.code}`);
             }

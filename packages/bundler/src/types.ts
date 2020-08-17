@@ -4,7 +4,7 @@ export type BundlerError = RollupError;
 export type BundlerWarning = RollupWarning;
 
 export type BundlerMessage =
-  | { kind: 'START' }
-  | { kind: 'UPDATE' }
-  | { kind: 'WARN'; warning: BundlerWarning }
-  | { kind: 'ERROR'; error: BundlerError }
+  | { type: 'START' }
+  | { type: 'UPDATE' }
+  | { type: 'WARN'; warning: BundlerWarning }
+  | { type: 'ERROR'; error: BundlerError }

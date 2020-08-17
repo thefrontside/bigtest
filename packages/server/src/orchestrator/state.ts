@@ -35,10 +35,10 @@ export type TestRunAgentState = {
 }
 
 export type BundlerState = 
-  | { kind: 'UNBUNDLED' } 
-  | { kind: 'BUILDING'; warnings: BundlerWarning[] } 
-  | { kind: 'GREEN'; path: string;  warnings: BundlerWarning[] }
-  | { kind: 'ERRORED'; error: BundlerError }
+  | { type: 'UNBUNDLED' } 
+  | { type: 'BUILDING'; warnings: BundlerWarning[] } 
+  | { type: 'GREEN'; path: string;  warnings: BundlerWarning[] }
+  | { type: 'ERRORED'; error: BundlerError }
 
 export interface Manifest extends Test {
   fileName: string;

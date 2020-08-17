@@ -88,7 +88,7 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
 export function* createManifestBuilder(options: ManifestBuilderOptions): Operation {
   let bundlerSlice = options.atom.slice('bundler');
 
-  bundlerSlice.set({ kind: 'UNBUNDLED' });
+  bundlerSlice.set({ type: 'UNBUNDLED' });
   
   let bundler: Bundler = yield Bundler.create(
     [{
@@ -99,11 +99,11 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
   );
 
   yield Subscribable.from(bundler).forEach(function* (message) {
-    switch (message.kind) {
+    switch (message.type) {
       case 'START':
         console.debug("[manifest builder] received bundler start");
         
-        bundlerSlice.update(() => ({ kind: 'BUILDING', warnings: [] }));
+        bundlerSlice.update(() => ({ type: 'BUILDING', warnings: [] }));
         break;
       case 'UPDATE':
         console.debug("[manifest builder] received bundle update");
@@ -112,10 +112,10 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
         
         bundlerSlice.update((previous) => {
           // as this is a typescript assertion it does more than just check the condition
-          // it will type narrow the discriminated union based on the kind discriminator
-          assert(previous.kind === 'BUILDING', `invalid transition from ${previous.kind} to 'GREEN'`);
+          // it will type narrow the discriminated union based on the type discriminator
+          assert(previous.type === 'BUILDING', `invalid transition from ${previous.type} to 'GREEN'`);
 
-          return { ...previous, kind: 'GREEN', path };
+          return { ...previous, type: 'GREEN', path };
         });
 
         console.debug("[manifest builder] manifest ready");
@@ -123,13 +123,13 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
       case 'ERROR':
         console.debug("[manifest builder] received bundle error");
 
-        bundlerSlice.update(() => ({ kind: 'ERRORED', error: message.error }));
+        bundlerSlice.update(() => ({ type: 'ERRORED', error: message.error }));
         break; 
       case 'WARN':
         console.debug("received bundle warning");
         
         bundlerSlice.update((previous) => {
-          assert(previous.kind === 'BUILDING', `trying to add warnings to bundler state ${previous.kind}`);
+          assert(previous.type === 'BUILDING', `trying to add warnings to bundler state ${previous.type}`);
 
           let warnings = !!previous.warnings ? [...previous.warnings, message.warning] : [message.warning];
           

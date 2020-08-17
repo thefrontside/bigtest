@@ -11,7 +11,7 @@ export const createOrchestratorAtom = () => {
       children: [],
     },
     bundler: {
-      kind: 'UNBUNDLED'
+      type: 'UNBUNDLED'
     },
     agents: {},
     testRuns: {},
