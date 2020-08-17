@@ -1,12 +1,11 @@
 import { Operation } from "effection";
-import { lensPath, view, set, dissoc, over } from "ramda";
+import { lensPath, view, set, dissoc, over, ManualLens } from "ramda";
 import { Atom } from "./atom";
 import { subscribe, Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
 import { Sliceable } from './sliceable';
 
 export class Slice<S, A> implements Subscribable<S, undefined> {
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any
-  lens: any;
+  lens: ManualLens<S, A>;
 
   constructor(private atom: Atom<A>, public path: Array<string | number>) {
     this.lens = lensPath(path);
@@ -17,12 +16,12 @@ export class Slice<S, A> implements Subscribable<S, undefined> {
   }
 
   get(): S {
-    return (view(this.lens)(this.state) as unknown) as S;
+    return (view(this.lens)(this.state));
   }
 
   set(value: S): void {
     this.atom.update((state) => {
-      return (set(this.lens, value, state) as unknown) as A;
+      return (set(this.lens, value, state));
     });
   }
 
@@ -31,7 +30,7 @@ export class Slice<S, A> implements Subscribable<S, undefined> {
   }
 
   over(fn: (value: S) => S): void {
-    this.atom.update((state) => (over(this.lens, fn, state) as unknown) as A);
+    this.atom.update((state) => (over(this.lens, fn, state)));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
