@@ -61,23 +61,22 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
     });
   }
 
-  exists(): Interaction<true> {
+  exists(): Interaction<void> {
     return interaction(`${this.description} exists`, () => {
       return converge(() => {
         this.unsafeSyncResolve();
-        return true;
       });
     });
   }
 
-  absent(): Interaction<true> {
+  absent(): Interaction<void> {
     return interaction(`${this.description} does not exist`, () => {
       return converge(() => {
         try {
           this.unsafeSyncResolve();
         } catch(e) {
           if(e.name === 'NoSuchElementError') {
-            return true;
+            return;
           }
         }
         throw new NotAbsentError(`${this.description} exists but should not`);
@@ -85,13 +84,13 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
     });
   }
 
-  is(filters: FilterImplementation<E, S>): Interaction<true> {
+  is(filters: FilterImplementation<E, S>): Interaction<void> {
     let filter = new Filter(this.specification, filters);
     return interaction(`${this.description} matches filters: ${filter.description}`, () => {
       return converge(() => {
         let element = this.unsafeSyncResolve();
         if(filter.matches(element)) {
-          return true;
+          return;
         } else {
           throw new FilterNotMatchingError(`${this.description} does not match filters: ${filter.description}`);
         }
@@ -99,7 +98,7 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
     });
   }
 
-  has(filters: FilterImplementation<E, S>): Interaction<true> {
+  has(filters: FilterImplementation<E, S>): Interaction<void> {
     return this.is(filters);
   }
 }

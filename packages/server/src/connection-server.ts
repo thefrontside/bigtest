@@ -1,7 +1,7 @@
 import { Operation, fork } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { Atom } from '@bigtest/atom';
-import { AgentState, OrchestratorState } from './orchestrator/state';
+import { OrchestratorState } from './orchestrator/state';
 import { express, Socket } from '@bigtest/effection-express';
 
 interface ConnectionServerOptions {
@@ -29,7 +29,7 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
 
     agentId = agentId || generateAgentId();
 
-    let agent = options.atom.slice<AgentState>(['agents', agentId]);
+    let agent = options.atom.slice('agents', agentId);
 
     try {
       console.log(`[connection] connected ${agentId}`);

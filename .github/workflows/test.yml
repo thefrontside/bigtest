@@ -43,11 +43,7 @@ jobs:
         with:
           name: bigtest.dist.tgz
       - run: tar -xvf bigtest.dist.tgz/bigtest.dist.tgz
-      - name: Install XVFB
-        run: |
-          sudo apt-get update
-          sudo apt-get install xvfb
       - name: Install dependencies
         run: yarn
       - name: Run tests
-        run: xvfb-run --auto-servernum -- yarn workspace @bigtest/${{ matrix.package }} test
+        run: yarn workspace @bigtest/${{ matrix.package }} test

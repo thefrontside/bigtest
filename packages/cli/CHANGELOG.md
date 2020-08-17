@@ -1,5 +1,39 @@
 # @bigtest/cli
 
+## 0.7.2
+
+### Patch Changes
+
+- 80d68ef0: set process.env.NODE_ENV='production' inside the test bundle. This
+  will ensure that 3rd party packages that depend on this will continue
+  to function
+  - @bigtest/server@0.9.1
+
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies [f527acd7]
+  - @bigtest/server@0.9.0
+
+## 0.7.0
+
+### Minor Changes
+
+- c07415a4: Set exit code based on result of running test suite
+
+### Patch Changes
+
+- Updated dependencies [7063bce3]
+  - @bigtest/server@0.8.1
+
+## 0.6.3
+
+### Patch Changes
+
+- Updated dependencies [6bd0e8a5]
+  - @bigtest/server@0.8.0
+
 ## 0.6.2
 
 ### Patch Changes

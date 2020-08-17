@@ -1,5 +1,53 @@
 # Changelog
 
+## 0.9.1
+
+### Patch Changes
+
+- Updated dependencies [80d68ef0]
+  - @bigtest/bundler@0.7.0
+
+## 0.9.0
+
+### Minor Changes
+
+- f527acd7: ensure that app is not considered ready until it is successfully
+  serving html responses, not just accepting socket connections
+
+### Patch Changes
+
+- Updated dependencies [2c54420b]
+  - @bigtest/driver@0.5.2
+
+## 0.8.1
+
+### Patch Changes
+
+- 7063bce3: Work around bug in node.js that throws warnings when using `fs.promises.truncate()`: https://github.com/nodejs/node/issues/34189
+- Updated dependencies [7063bce3]
+- Updated dependencies [7063bce3]
+- Updated dependencies [942ff150]
+  - @bigtest/bundler@0.6.1
+  - @bigtest/agent@0.7.2
+
+## 0.8.0
+
+### Minor Changes
+
+- 6bd0e8a5: Refactor the manifest builder to use Rollup instead of Parcel.
+
+### Patch Changes
+
+- Updated dependencies [9ebb822d]
+- Updated dependencies [9ebb822d]
+- Updated dependencies [9ebb822d]
+- Updated dependencies [9ebb822d]
+- Updated dependencies [6bd0e8a5]
+  - @bigtest/atom@0.7.0
+  - @bigtest/bundler@0.6.0
+  - @bigtest/webdriver@0.5.4
+  - @bigtest/agent@0.7.1
+
 ## 0.7.0
 
 ### Minor Changes

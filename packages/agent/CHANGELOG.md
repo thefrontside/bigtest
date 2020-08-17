@@ -1,5 +1,19 @@
 # @bigtest/agent
 
+## 0.7.2
+
+### Patch Changes
+
+- 942ff150: make @bigtest/interactor a devDependency only since it is only used in
+  tests
+
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies [4c695f0e]
+  - @bigtest/interactor@0.14.0
+
 ## 0.7.0
 
 ### Minor Changes
