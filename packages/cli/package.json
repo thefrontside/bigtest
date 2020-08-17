@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/cli",
-  "version": "0.6.3",
+  "version": "0.7.2",
   "description": "Use BigTest",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
@@ -45,8 +45,8 @@
     "@bigtest/effection": "^0.5.1",
     "@bigtest/performance": "^0.5.0",
     "@bigtest/project": "^0.5.1",
-    "@bigtest/server": "^0.8.0",
-    "@effection/node": "^0.6.5",
+    "@bigtest/server": "^0.9.1",
+    "@effection/node": "^0.8.0",
     "capture-console": "^1.0.1",
     "deepmerge": "^4.2.2",
     "effection": "^0.7.0",

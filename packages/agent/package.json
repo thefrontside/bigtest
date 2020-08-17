@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/agent",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "Agent for connecting test environments (browsers) to BigTest",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
@@ -20,6 +20,7 @@
     "manifest:build": "parcel build test/fixtures/manifest.src.js --out-dir test/fixtures --out-file manifest.js --no-minify --global __bigtestManifest"
   },
   "devDependencies": {
+    "@bigtest/interactor": "^0.13.0",
     "@bigtest/parcel": "^0.5.2",
     "@bigtest/suite": "^0.5.2",
     "@bigtest/webdriver": "^0.5.4",
@@ -44,7 +45,6 @@
     "@bigtest/effection": "^0.5.1",
     "@bigtest/effection-express": "^0.6.0",
     "@bigtest/globals": "^0.6.0",
-    "@bigtest/interactor": "^0.14.0",
     "@effection/events": "^0.7.4",
     "bowser": "^2.9.0",
     "effection": "^0.7.0"

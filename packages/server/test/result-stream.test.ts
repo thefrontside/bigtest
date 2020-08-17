@@ -4,7 +4,6 @@ import * as expect from 'expect';
 import { Subscription } from '@effection/subscription';
 
 import { Atom, Slice } from '@bigtest/atom';
-import { ResultStatus, StepResult } from '@bigtest/suite';
 
 import { resultStream } from '../src/result-stream';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
@@ -20,7 +19,7 @@ describe('result stream', () => {
 
   beforeEach(async () => {
     atom = createOrchestratorAtom();
-    slice = atom.slice<TestRunState>(['testRuns', 'test-run-1']);
+    slice = atom.slice('testRuns', 'test-run-1');
     slice.set({
       testRunId: 'test-run-1',
       status: 'pending',
@@ -63,7 +62,7 @@ describe('result stream', () => {
   describe('steps', () => {
     describe('marking a step as running', () => {
       beforeEach(() => {
-        slice.slice<ResultStatus>(['agents', 'agent-1', 'result', 'steps', 0, 'status']).set('running');
+        slice.slice('agents', 'agent-1', 'result', 'steps', 0, 'status').set('running');
       });
 
       it('generates a test event', async () => {
@@ -79,7 +78,7 @@ describe('result stream', () => {
 
     describe('marking a step as ok', () => {
       beforeEach(() => {
-        slice.slice<ResultStatus>(['agents', 'agent-1', 'result', 'steps', 0, 'status']).set('ok');
+        slice.slice('agents', 'agent-1', 'result', 'steps', 0, 'status').set('ok');
       });
 
       it('generates a test event', async () => {
@@ -96,7 +95,7 @@ describe('result stream', () => {
 
     describe('marking a step as failed', () => {
       beforeEach(() => {
-        slice.slice<StepResult>(['agents', 'agent-1', 'result', 'steps', 0]).update((s) => ({
+        slice.slice('agents', 'agent-1', 'result', 'steps', 0).update((s) => ({
           ...s,
           status: 'failed',
           error: { message: 'blah' },
@@ -122,7 +121,7 @@ describe('result stream', () => {
   describe('assertions', () => {
     describe('marking a assertion as running', () => {
       beforeEach(() => {
-        slice.slice<ResultStatus>(['agents', 'agent-1', 'result', 'assertions', 0, 'status']).set('running');
+        slice.slice('agents', 'agent-1', 'result', 'assertions', 0, 'status').set('running');
       });
 
       it('generates a test event', async () => {
@@ -138,7 +137,7 @@ describe('result stream', () => {
 
     describe('marking a assertion as ok', () => {
       beforeEach(() => {
-        slice.slice<ResultStatus>(['agents', 'agent-1', 'result', 'assertions', 0, 'status']).set('ok');
+        slice.slice('agents', 'agent-1', 'result', 'assertions', 0, 'status').set('ok');
       });
 
       it('generates a test event', async () => {
@@ -155,7 +154,7 @@ describe('result stream', () => {
 
     describe('marking a assertion as failed', () => {
       beforeEach(() => {
-        slice.slice<StepResult>(['agents', 'agent-1', 'result', 'assertions', 0]).update((s) => ({
+        slice.slice('agents', 'agent-1', 'result', 'assertions', 0).update((s) => ({
           ...s,
           status: 'failed',
           error: { message: 'blah' },
@@ -181,7 +180,7 @@ describe('result stream', () => {
   describe('tests', () => {
     describe('marking a test as running', () => {
       beforeEach(() => {
-        slice.slice<ResultStatus>(['agents', 'agent-1', 'result', 'status']).set('running');
+        slice.slice('agents', 'agent-1', 'result', 'status').set('running');
       });
 
       it('generates a test event', async () => {
@@ -197,7 +196,7 @@ describe('result stream', () => {
 
     describe('marking a test as ok', () => {
       beforeEach(() => {
-        slice.slice<ResultStatus>(['agents', 'agent-1', 'result', 'status']).set('ok');
+        slice.slice('agents', 'agent-1', 'result', 'status').set('ok');
       });
 
       it('generates a test event', async () => {
@@ -214,7 +213,7 @@ describe('result stream', () => {
 
     describe('marking a test as failed', () => {
       beforeEach(() => {
-        slice.slice<StepResult>(['agents', 'agent-1', 'result']).update((s) => ({
+        slice.slice('agents', 'agent-1', 'result').update((s) => ({
           ...s,
           status: 'failed',
           error: { message: 'blah' },
@@ -240,7 +239,7 @@ describe('result stream', () => {
   describe('agents', () => {
     describe('marking a agent as running', () => {
       beforeEach(() => {
-        slice.slice<ResultStatus>(['agents', 'agent-1', 'status']).set('running');
+        slice.slice('agents', 'agent-1', 'status').set('running');
       });
 
       it('generates a test event', async () => {
@@ -255,7 +254,7 @@ describe('result stream', () => {
 
     describe('marking a agent as ok', () => {
       beforeEach(() => {
-        slice.slice<ResultStatus>(['agents', 'agent-1', 'status']).set('ok');
+        slice.slice('agents', 'agent-1', 'status').set('ok');
       });
 
       it('generates a test event', async () => {
@@ -271,7 +270,7 @@ describe('result stream', () => {
 
     describe('marking a agent as failed', () => {
       beforeEach(() => {
-        slice.slice<StepResult>(['agents', 'agent-1']).update((s) => ({
+        slice.slice('agents', 'agent-1').update((s) => ({
           ...s,
           status: 'failed',
           error: { message: 'blah' },
@@ -296,7 +295,7 @@ describe('result stream', () => {
   describe('test run', () => {
     describe('marking a test run as running', () => {
       beforeEach(() => {
-        slice.slice<ResultStatus>(['status']).set('running');
+        slice.slice('status').set('running');
       });
 
       it('generates a test event', async () => {
@@ -310,7 +309,7 @@ describe('result stream', () => {
 
     describe('marking a test run as ok', () => {
       beforeEach(() => {
-        slice.slice<ResultStatus>(['status']).set('ok');
+        slice.slice('status').set('ok');
       });
 
       it('generates a test event', async () => {
@@ -348,16 +347,16 @@ describe('result stream', () => {
 
   describe('finishing all items', () => {
     beforeEach(() => {
-      slice.slice<ResultStatus>(['status']).set('ok');
-      slice.slice<ResultStatus>(['agents', 'agent-1', 'status']).set('ok');
-      slice.slice<ResultStatus>(['agents', 'agent-1', 'result', 'status']).set('ok');
-      slice.slice<ResultStatus>(['agents', 'agent-1', 'result', 'steps', 0, 'status']).set('failed');
-      slice.slice<ResultStatus>(['agents', 'agent-1', 'result', 'steps', 1, 'status']).set('disregarded');
-      slice.slice<ResultStatus>(['agents', 'agent-1', 'result', 'assertions', 0, 'status']).set('disregarded');
-      slice.slice<ResultStatus>(['agents', 'agent-1', 'result', 'assertions', 1, 'status']).set('ok');
-      slice.slice<ResultStatus>(['agents', 'agent-1', 'result', 'children', 0, 'status']).set('ok');
-      slice.slice<ResultStatus>(['agents', 'agent-1', 'result', 'children', 0, 'steps', 0, 'status']).set('ok');
-      slice.slice<ResultStatus>(['agents', 'agent-1', 'result', 'children', 0, 'assertions', 0, 'status']).set('ok');
+      slice.slice('status').set('ok');
+      slice.slice('agents', 'agent-1', 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'steps', 0, 'status').set('failed');
+      slice.slice('agents', 'agent-1', 'result', 'steps', 1, 'status').set('disregarded');
+      slice.slice('agents', 'agent-1', 'result', 'assertions', 0, 'status').set('disregarded');
+      slice.slice('agents', 'agent-1', 'result', 'assertions', 1, 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'children', 0, 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'children', 0, 'steps', 0, 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'children', 0, 'assertions', 0, 'status').set('ok');
     });
 
     it('terminates subscription', async() => {

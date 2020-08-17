@@ -1,13 +1,13 @@
 import { Operation } from "effection";
-import { lensPath, view, set, dissoc, over } from "ramda";
+import { lensPath, view, set, dissoc, over, ManualLens } from "ramda";
 import { Atom } from "./atom";
 import { subscribe, Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
+import { Sliceable } from './sliceable';
 
-export class Slice<T, S> implements Subscribable<T, undefined> {
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any
-  lens: any;
+export class Slice<S, A> implements Subscribable<S, undefined> {
+  lens: ManualLens<S, A>;
 
-  constructor(private atom: Atom<S>, public path: Array<string | number>) {
+  constructor(private atom: Atom<A>, public path: Array<string | number>) {
     this.lens = lensPath(path);
   }
 
@@ -15,25 +15,26 @@ export class Slice<T, S> implements Subscribable<T, undefined> {
     return this.atom.get();
   }
 
-  get(): T {
-    return (view(this.lens)(this.state) as unknown) as T;
+  get(): S {
+    return (view(this.lens)(this.state));
   }
 
-  set(value: T): void {
+  set(value: S): void {
     this.atom.update((state) => {
-      return (set(this.lens, value, state) as unknown) as S;
+      return (set(this.lens, value, state));
     });
   }
 
-  update(fn: (value: T) => T): void {
+  update(fn: (value: S) => S): void {
     this.set(fn(this.get()));
   }
 
-  over(fn: (value: T) => T): void {
-    this.atom.update((state) => (over(this.lens, fn, state) as unknown) as S);
+  over(fn: (value: S) => S): void {
+    this.atom.update((state) => (over(this.lens, fn, state)));
   }
 
-  slice<T>(path: Array<string | number>): Slice<T, S> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  slice: Sliceable<S, A>['slice'] =(...path: Array<string | number>): Slice<any, A> => {
     return new Slice(this.atom, this.path.concat(path));
   }
 
@@ -53,7 +54,7 @@ export class Slice<T, S> implements Subscribable<T, undefined> {
           parentLens,
           array.filter((el) => el !== this.get()),
           state
-        ) as unknown) as S;
+        ) as unknown) as A;
       });
     } else {
       let [property] = this.path.slice(-1);
@@ -62,12 +63,12 @@ export class Slice<T, S> implements Subscribable<T, undefined> {
           parentLens,
           dissoc(property, parent as object),
           state
-        ) as unknown) as S;
+        ) as unknown) as A;
       });
     }
   }
 
-  *once(predicate: (state: T) => boolean): Operation<T | undefined> {
+  *once(predicate: (state: S) => boolean): Operation<S | undefined> {
     let currentState = this.get();
     if(predicate(currentState)) {
       return currentState;
@@ -77,7 +78,7 @@ export class Slice<T, S> implements Subscribable<T, undefined> {
     }
   }
 
-  *[SymbolSubscribable](): Operation<Subscription<T, undefined>> {
-    return yield subscribe(Subscribable.from(this.atom).map((state) => view(this.lens)(state) as unknown as T));
+  *[SymbolSubscribable](): Operation<Subscription<S, undefined>> {
+    return yield subscribe(Subscribable.from(this.atom).map((state) => view(this.lens)(state) as unknown as S));
   }
 }

@@ -20,9 +20,11 @@ export function * CLI(argv: string[]): Operation {
     yield;
   } else if (command === 'test') {
     yield runTest(config, lines);
-  } else {
+  } else if (command === 'ci') {
     yield startServer(config);
     yield runTest(config, lines);
+  } else {
+    throw new Error(`unknown command: ${command}`);
   }
 }
 
@@ -34,6 +36,10 @@ function parseOptions(config: ProjectOptions, argv: readonly string[]): Command 
         type: 'array',
         choices: Object.keys(config.drivers),
         default: config.launch,
+      })
+      .option('test-files', {
+        describe: 'file globs which form the test suite',
+        type: 'array'
       })
   };
 
@@ -56,6 +62,9 @@ function parseOptions(config: ProjectOptions, argv: readonly string[]): Command 
 
   if(rawOptions['launch']) {
     config.launch = rawOptions['launch'];
+  }
+  if(rawOptions['testFiles']) {
+    config.testFiles = rawOptions['testFiles'] as string[];
   }
 
   return rawOptions._[0] as Command;
