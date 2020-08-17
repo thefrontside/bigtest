@@ -1,6 +1,6 @@
 ---
 "@bigtest/bundler": minor
-"@bigtest/project": mnor
+"@bigtest/project": minor
 "@bigtest/server": minor
 ---
 
