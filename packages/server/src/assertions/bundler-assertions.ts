@@ -14,15 +14,17 @@ export class BundlerAssertionError extends Error {
 
 // as these are typescript assertions,  they do more than just type check the condition
 // it will type narrow the discriminated union based on the `type` discriminator in this example
-export function assertBundlerState<R extends BundlerTypes>(current: BundlerTypes, ...to: R[]): asserts current is R  {
-  if(to.includes(current as R) === false) {
+export function assertBundlerState<R extends BundlerTypes>(current: BundlerTypes, { is }: { is: R | R[] }): asserts current is R  {
+  let states = Array.isArray(is) ? is : [is];
+  
+  if(states.includes(current as R) === false) {
     throw new BundlerAssertionError(`bundler is not currently at state ${current}`)
   }
 }
 
-export function assertCanTransition<R extends BundlerTypes>(current: BundlerTypes, to: R): asserts current is R  {
-  if(current !== to) {
-    throw new BundlerAssertionError(`invalid transition from ${current} to ${to}`)
+export function assertCanTransition<R extends BundlerTypes>(from: BundlerTypes, {to}: { to: R}): asserts from is R  {
+  if(from !== to) {
+    throw new BundlerAssertionError(`invalid transition from ${from} to ${to}`)
   }
 }
 

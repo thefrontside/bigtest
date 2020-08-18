@@ -154,7 +154,7 @@ describe('manifest builder', () => {
 
       // this could be a custom expect 
       // assert is used to type narrow also and does more than just assert
-      assertBundlerState(bundlerState.type, 'ERRORED')
+      assertBundlerState(bundlerState.type, {is: 'ERRORED'})
       
       let error = bundlerState.error;
 

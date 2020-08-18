@@ -111,9 +111,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
         let path: string = yield processManifest(options);
         
         bundlerSlice.update((previous) => {
-          // as this is a typescript assertion it does more than just check the condition
-          // it will type narrow the discriminated union based on the type discriminator
-          assertCanTransition(previous?.type, 'BUILDING');
+          assertCanTransition(previous?.type, { to: 'BUILDING' });
 
           return { ...previous, type: 'GREEN', path };
         });
@@ -129,7 +127,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
         console.debug("received bundle warning");
         
         bundlerSlice.update((previous) => {
-          assertBundlerState(previous.type, 'BUILDING', 'GREEN');
+          assertBundlerState(previous.type, {is: ['BUILDING', 'GREEN']});
 
           let warnings = !!previous.warnings ? [...previous.warnings, message.warning] : [message.warning];
           
