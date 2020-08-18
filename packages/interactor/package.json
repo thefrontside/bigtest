@@ -26,17 +26,16 @@
     "@bigtest/globals": "^0.6.0"
   },
   "devDependencies": {
-    "@frontside/tsconfig": "*",
+    "@frontside/eslint-config": "^1.1.2",
+    "@frontside/typescript": "^1.0.1",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
     "@types/jsdom": "^16.2.3",
     "dtslint": "^3.5.2",
-    "eslint": "^6.6.0",
     "expect": "^24.9.0",
     "jsdom": "^16.2.2",
     "mocha": "^6.2.2",
-    "ts-node": "*",
-    "typescript": "^3.7.0"
+    "ts-node": "*"
   },
   "volta": {
     "node": "12.16.0",

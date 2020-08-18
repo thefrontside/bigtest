@@ -26,7 +26,8 @@
     "@effection/channel": "^0.6.4",
     "@effection/events": "^0.7.4",
     "@effection/subscription": "^0.9.0",
-    "@frontside/tsconfig": "*",
+    "@frontside/eslint-config": "^1.1.2",
+    "@frontside/typescript": "^1.0.1",
     "@types/capture-console": "1.0.0",
     "@types/json5": "^0.0.30",
     "@types/mocha": "^7.0.1",
@@ -34,12 +35,10 @@
     "@types/yargs": "^15.0.3",
     "@typescript-eslint/eslint-plugin": "^2.3.2",
     "@typescript-eslint/parser": "^2.3.2",
-    "eslint": "^6.6.0",
     "eslint-plugin-prefer-let": "^1.0.1",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
-    "ts-node": "*",
-    "typescript": "^3.7.0"
+    "ts-node": "*"
   },
   "dependencies": {
     "@bigtest/effection": "^0.5.1",
