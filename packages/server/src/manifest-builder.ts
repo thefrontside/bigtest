@@ -8,7 +8,7 @@ import { Atom } from '@bigtest/atom';
 import { createFingerprint } from 'fprint';
 import * as path from 'path';
 import * as fs from 'fs';
-import { OrchestratorState, Manifest } from './orchestrator/state';
+import { OrchestratorState } from './orchestrator/state';
 import { assert } from '@bigtest/project';
 
 
@@ -80,7 +80,7 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
 
   let slice = options.atom.slice('manifest');
   
-  slice.set(manifest as Manifest);
+  slice.update(() => ({ ...manifest }));
 
   return distPath;
 }
