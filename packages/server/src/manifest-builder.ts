@@ -9,7 +9,7 @@ import { createFingerprint } from 'fprint';
 import * as path from 'path';
 import * as fs from 'fs';
 import { OrchestratorState } from './orchestrator/state';
-import { assert } from '@bigtest/project';
+import { assertBundlerState, assertCanTransition } from '../src/assertions/bundler-assertions';
 
 
 const { copyFile, mkdir, stat, appendFile, open } = fs.promises;
@@ -113,7 +113,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
         bundlerSlice.update((previous) => {
           // as this is a typescript assertion it does more than just check the condition
           // it will type narrow the discriminated union based on the type discriminator
-          assert(previous.type === 'BUILDING', `invalid transition from ${previous.type} to 'GREEN'`);
+          assertCanTransition(previous?.type, 'BUILDING');
 
           return { ...previous, type: 'GREEN', path };
         });
@@ -129,7 +129,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
         console.debug("received bundle warning");
         
         bundlerSlice.update((previous) => {
-          assert(previous.type === 'BUILDING', `trying to add warnings to bundler state ${previous.type}`);
+          assertBundlerState(previous.type, 'BUILDING', 'GREEN');
 
           let warnings = !!previous.warnings ? [...previous.warnings, message.warning] : [message.warning];
           
