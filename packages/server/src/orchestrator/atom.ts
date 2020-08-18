@@ -10,6 +10,9 @@ export const createOrchestratorAtom = () => {
       assertions: [],
       children: [],
     },
+    bundler: {
+      type: 'UNBUNDLED'
+    },
     agents: {},
     testRuns: {},
   });

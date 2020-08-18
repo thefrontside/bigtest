@@ -1,21 +1,20 @@
 import { bigtestGlobals } from '@bigtest/globals';
 import { Operation } from 'effection';
+import { Subscribable } from '@effection/subscription';
 import { once } from '@effection/events';
-import { subscribe, ChainableSubscription } from '@effection/subscription';
-import { Mailbox, Deferred } from '@bigtest/effection';
-import { Bundler, BundlerMessage, BundlerError } from '@bigtest/bundler';
+import { Deferred } from '@bigtest/effection';
+import { Bundler } from '@bigtest/bundler';
 import { Atom } from '@bigtest/atom';
 import { createFingerprint } from 'fprint';
-
 import * as path from 'path';
 import * as fs from 'fs';
+import { OrchestratorState } from './orchestrator/state';
+import { assertBundlerState, assertCanTransition } from '../src/assertions/bundler-assertions';
 
-import { OrchestratorState, Manifest } from './orchestrator/state';
 
 const { copyFile, mkdir, stat, appendFile, open } = fs.promises;
 
 interface ManifestBuilderOptions {
-  delegate: Mailbox;
   atom: Atom<OrchestratorState>;
   srcPath: string;
   buildDir: string;
@@ -77,59 +76,64 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
   let manifest = yield import(distPath);
 
   manifest = manifest.default || manifest;
-
   manifest.fileName = fileName;
 
-
   let slice = options.atom.slice('manifest');
-  slice.set(manifest as Manifest);
+  
+  slice.update(() => ({ ...manifest }));
 
   return distPath;
 }
 
-function logBuildError(error: BundlerError) {
-  console.error("[manifest builder] build error:", error.message);
-  if (error.frame) {
-    console.error("[manifest builder] build error frame:\n", error.frame);
-  }
-}
-
-function* waitForSuccessfulBuild(bundlerEvents: ChainableSubscription<BundlerMessage, undefined>, delegate: Mailbox): Operation {
-  let message: BundlerMessage = yield bundlerEvents.expect();
-
-  if (message.type === "error") {
-    logBuildError(message.error);
-    delegate.send({ event: "error" });
-    yield waitForSuccessfulBuild(bundlerEvents, delegate);
-  }
-}
-
 export function* createManifestBuilder(options: ManifestBuilderOptions): Operation {
+  let bundlerSlice = options.atom.slice('bundler');
+
+  bundlerSlice.set({ type: 'UNBUNDLED' });
+  
   let bundler: Bundler = yield Bundler.create(
     [{
       entry: options.srcPath,
       globalName: bigtestGlobals.manifestProperty,
       outFile: path.join(options.buildDir, "manifest.js")
-    }]
+    }],
   );
-  let bundlerEvents: ChainableSubscription<BundlerMessage, undefined> = yield subscribe(bundler);
 
-  yield waitForSuccessfulBuild(bundlerEvents, options.delegate);
+  yield Subscribable.from(bundler).forEach(function* (message) {
+    switch (message.type) {
+      case 'START':
+        console.debug("[manifest builder] received bundler start");
+        
+        bundlerSlice.update(() => ({ type: 'BUILDING', warnings: [] }));
+        break;
+      case 'UPDATE':
+        console.debug("[manifest builder] received bundle update");
+        
+        let path: string = yield processManifest(options);
+        
+        bundlerSlice.update((previous) => {
+          assertCanTransition(previous?.type, { to: 'BUILDING' });
 
-  let distPath: string = yield processManifest(options);
+          return { ...previous, type: 'GREEN', path };
+        });
 
-  console.debug("[manifest builder] manifest ready");
+        console.debug("[manifest builder] manifest ready");
+        break;
+      case 'ERROR':
+        console.debug("[manifest builder] received bundle error");
 
-  options.delegate.send({ status: "ready", path: distPath });
+        bundlerSlice.update(() => ({ type: 'ERRORED', error: message.error }));
+        break; 
+      case 'WARN':
+        console.debug("received bundle warning");
+        
+        bundlerSlice.update((previous) => {
+          assertBundlerState(previous.type, {is: ['BUILDING', 'GREEN']});
 
-  yield bundlerEvents.forEach(function*(message) {
-    if (message.type === 'error') {
-      logBuildError(message.error);
-      options.delegate.send({ event: "error" });
-    } else {
-      let distPath = yield processManifest(options);
-      console.info("[manifest builder] manifest updated");
-      options.delegate.send({ event: "update", path: distPath });
+          let warnings = !!previous.warnings ? [...previous.warnings, message.warning] : [message.warning];
+          
+          return {...previous, warnings };
+        });
+        break;
     }
   });
 }

@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { fork, Operation } from 'effection';
+import { fork, Operation, spawn } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { AgentServerConfig } from '@bigtest/agent';
 import { Atom } from '@bigtest/atom';
@@ -15,7 +15,7 @@ import { createManifestGenerator } from './manifest-generator';
 import { createManifestBuilder } from './manifest-builder';
 import { createManifestServer } from './manifest-server';
 import { OrchestratorState } from './orchestrator/state';
-
+import { createLogger } from './logger';
 
 type OrchestratorOptions = {
   atom: Atom<OrchestratorState>;
@@ -33,7 +33,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   let connectionServerDelegate = new Mailbox();
   let appServerDelegate = new Mailbox();
   let manifestGeneratorDelegate = new Mailbox();
-  let manifestBuilderDelegate = new Mailbox();
   let manifestServerDelegate = new Mailbox();
 
   let agentServerConfig = new AgentServerConfig({ port: options.project.proxy.port, prefix: '/__bigtest/', });
@@ -45,6 +44,8 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   let manifestSrcPath = path.resolve(manifestSrcDir, 'manifest.js');
 
   let connectTo = `ws://localhost:${options.project.connection.port}`;
+
+  yield spawn(createLogger({ atom: options.atom,  out: console.error }));
 
   let browserManager: BrowserManager = yield createBrowserManager({
     atom: options.atom,
@@ -93,44 +94,42 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   }));
 
   console.debug('[orchestrator] wait for manifest generator');
-  // wait for manifest generator before starting manifest builder
   yield manifestGeneratorDelegate.receive({ status: 'ready' });
   console.debug('[orchestrator] manifest generator ready');
 
   yield fork(createManifestBuilder({
-    delegate: manifestBuilderDelegate,
     atom: options.atom,
     srcPath: manifestSrcPath,
     distDir: manifestDistDir,
     buildDir: manifestBuildDir,
   }));
 
-  yield function*() {
-    yield fork(function*() {
+  yield function* () {
+    yield fork(function* () {
       yield proxyServerDelegate.receive({ status: 'ready' });
       console.debug('[orchestrator] proxy server ready');
     });
-    yield fork(function*() {
+    yield fork(function* () {
       yield commandServerDelegate.receive({ status: 'ready' });
       console.debug('[orchestrator] command server ready');
     });
-    yield fork(function*() {
+    yield fork(function* () {
       yield connectionServerDelegate.receive({ status: 'ready' });
       console.debug('[orchestrator] connection server ready');
     });
-    yield fork(function*() {
+    yield fork(function* () {
       yield appServerDelegate.receive({ status: 'ready' });
       console.debug('[orchestrator] app server ready');
     });
-    yield fork(function*() {
-      yield manifestBuilderDelegate.receive({ status: 'ready' });
+    yield fork(function* () {
+      yield options.atom.slice('bundler').once(({ type }) => type === 'GREEN');
       console.debug('[orchestrator] manifest builder ready');
     });
-    yield fork(function*() {
+    yield fork(function* () {
       yield manifestServerDelegate.receive({ status: 'ready' });
       console.debug('[orchestrator] manifest server ready');
     });
-    yield fork(function*() {
+    yield fork(function* () {
       yield browserManager.ready();
       console.debug('[orchestrator] browser manager ready');
     })

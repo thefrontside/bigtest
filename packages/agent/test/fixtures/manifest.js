@@ -705,7 +705,7 @@ inspect.colors = {
   'black': [30, 39],
   'blue': [34, 39],
   'cyan': [36, 39],
-  'green': [32, 39],
+  'GREEN': [32, 39],
   'magenta': [35, 39],
   'red': [31, 39],
   'yellow': [33, 39]
@@ -717,7 +717,7 @@ inspect.styles = {
   'boolean': 'yellow',
   'undefined': 'grey',
   'null': 'bold',
-  'string': 'green',
+  'string': 'GREEN',
   'date': 'magenta',
   // "name": intentionally not styling
   'regexp': 'red'
