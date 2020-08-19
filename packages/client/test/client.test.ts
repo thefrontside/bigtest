@@ -2,7 +2,7 @@ import { describe, it } from 'mocha';
 import * as expect from 'expect';
 import { Mailbox } from '@bigtest/effection';
 import { TestConnection, TestServer, run } from './helpers';
-import { Client, Message, QueryMessage, Response, isQuery } from '../src';
+import { Client, Message, Response, isQuery } from '../src';
 
 describe('@bigtest/client', () => {
   let server: TestServer;
