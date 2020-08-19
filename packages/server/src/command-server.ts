@@ -10,7 +10,7 @@ import { GraphqlContext, SpawnContext } from './schema/context';
 import { Atom } from '@bigtest/atom';
 import { OrchestratorState } from './orchestrator/state';
 
-import { Message, Response, QueryMessage, MutationMessage, SubscriptionMessage, isQuery, isMutation, isSubscription } from './protocol';
+import { Message, Response, QueryMessage, MutationMessage, SubscriptionMessage, isQuery, isMutation, isSubscription } from '@bigtest/client';
 
 export type CommandMessage = { status: "ready" } | { type: "run"; id: string };
 
