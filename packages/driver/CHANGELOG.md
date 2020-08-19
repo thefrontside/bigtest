@@ -1,5 +1,11 @@
 # @bigtest/driver
 
+## 0.5.3
+
+### Patch Changes
+
+- e950715a: Add missing typescript dev dependency to eliminate yarn warnings. Also, upgraded typescript to 3.9.7 to make it consistent.
+
 ## 0.5.2
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @bigtest/agent
 
+## 0.7.3
+
+### Patch Changes
+
+- e950715a: Add missing typescript dev dependency to eliminate yarn warnings. Also, upgraded typescript to 3.9.7 to make it consistent.
+- Updated dependencies [e950715a]
+  - @bigtest/effection@0.5.2
+
 ## 0.7.2
 
 ### Patch Changes

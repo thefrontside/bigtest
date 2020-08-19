@@ -1,5 +1,0 @@
----
-"bigtest": minor
----
-
-Initial publish

@@ -1,5 +1,16 @@
 # @bigtest/atom
 
+## 0.8.0
+
+### Minor Changes
+
+- 3d9d7d64: make Atom#slice and Slice#slice strongly typed and update references.
+
+### Patch Changes
+
+- 1728dda8: add slice overloads into a generic type
+- 5f09e43f: type lens in Slice to the provided Ramda type ManualLens instead of any
+
 ## 0.7.0
 
 ### Minor Changes
