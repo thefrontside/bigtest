@@ -1,5 +1,16 @@
 # @bigtest/project
 
+## 0.6.0
+
+### Minor Changes
+
+- 3be69744: Create a bunlder state and use the atom to broadcast error info.
+
+### Patch Changes
+
+- Updated dependencies [e950715a]
+  - @bigtest/driver@0.5.3
+
 ## 0.5.1
 
 ### Patch Changes
