@@ -39,7 +39,7 @@
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
     "ts-node": "*",
-    "typescript": "^3.7.0"
+    "typescript": "^3.9.7"
   },
   "dependencies": {
     "@bigtest/effection": "^0.5.1",

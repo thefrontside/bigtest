@@ -1903,6 +1903,42 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@bigtest/bundler@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@bigtest/bundler/-/bundler-0.6.1.tgz#07783d82ac02bace4e42431a9f2d24b7755f5754"
+  integrity sha512-ROV5EMxZhvs535W+U+aX7YJLc6WTQw8cKVVev2NV4oJZ5VVEf1vxRS1FCLyxEWmB+N+5oyZgaJPx7JD7ZvjaQQ==
+  dependencies:
+    "@babel/core" "^7.10.4"
+    "@babel/plugin-transform-runtime" "^7.10.4"
+    "@babel/preset-env" "^7.10.4"
+    "@babel/preset-typescript" "^7.10.4"
+    "@babel/runtime" "^7.10.4"
+    "@bigtest/effection" "^0.5.1"
+    "@effection/channel" "^0.6.4"
+    "@effection/events" "^0.7.4"
+    "@effection/node" "^0.6.5"
+    "@rollup/plugin-babel" "^5.0.4"
+    "@rollup/plugin-commonjs" "^13.0.0"
+    "@rollup/plugin-node-resolve" "^8.1.0"
+    effection "^0.7.0"
+    express "^4.17.1"
+    rollup "^2.18.1"
+
+"@bigtest/cli@0.6.3":
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/@bigtest/cli/-/cli-0.6.3.tgz#c09efe0009c86facd0e2f4ac7d8fa0cb3cab7a60"
+  integrity sha512-ZkkXh/LDLOuJESL3c2nQTr763lgEEIiD3eOOJvl7rosAwGDf662SELLCBXQlg3zTUWlzievpIFAoBCZk3KUttg==
+  dependencies:
+    "@bigtest/effection" "^0.5.1"
+    "@bigtest/performance" "^0.5.0"
+    "@bigtest/project" "^0.5.1"
+    "@bigtest/server" "^0.8.0"
+    "@effection/node" "^0.6.5"
+    capture-console "^1.0.1"
+    deepmerge "^4.2.2"
+    effection "^0.7.0"
+    json5 "^2.1.3"
+
 "@bigtest/interactor@^0.13.0":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@bigtest/interactor/-/interactor-0.13.0.tgz#9bc7671395b235040a1b25475bd6f19f89a391a6"
@@ -1922,6 +1958,44 @@
     effection "^0.7.0"
     parcel "^1.12.4"
     parcel-bundler "^1.12.4"
+
+"@bigtest/server@^0.8.0":
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/@bigtest/server/-/server-0.8.1.tgz#92eeaed0bc31b2ce0743388add701ae853a205c5"
+  integrity sha512-J5kgCxviLsfccKYphAQtVS7XwZXy2r8rsYH8BtsIraz9Dlu4eCpvEWHHuo7QO1fTn5Eih0ecENTWzXrEG0WDpw==
+  dependencies:
+    "@babel/core" "^7.10.4"
+    "@babel/plugin-transform-runtime" "^7.10.4"
+    "@babel/preset-env" "^7.10.4"
+    "@bigtest/agent" "^0.7.2"
+    "@bigtest/atom" "^0.7.0"
+    "@bigtest/bundler" "^0.6.1"
+    "@bigtest/driver" "^0.5.1"
+    "@bigtest/effection" "^0.5.1"
+    "@bigtest/effection-express" "^0.6.0"
+    "@bigtest/globals" "^0.6.0"
+    "@bigtest/logging" "^0.5.1"
+    "@bigtest/project" "^0.5.1"
+    "@bigtest/suite" "^0.5.2"
+    "@bigtest/webdriver" "^0.5.4"
+    "@effection/events" "^0.7.4"
+    "@effection/node" "^0.6.5"
+    "@nexus/schema" "^0.13.1"
+    bowser "^2.8.1"
+    chokidar "^3.3.1"
+    effection "^0.7.0"
+    express "^4.17.1"
+    express-graphql "^0.9.0"
+    fprint "^2.0.1"
+    glob "^7.1.6"
+    graphql "^14.5.8"
+    http-proxy "^1.18.0"
+    nexus "^0.12.0"
+    rimraf "^3.0.0"
+    tempy "^0.3.0"
+    trumpet "^1.7.2"
+    websocket "^1.0.30"
+    yargs "^15.0.2"
 
 "@changesets/apply-release-plan@^4.0.0":
   version "4.0.0"
@@ -2140,12 +2214,7 @@
     "@types/parsimmon" "^1.10.1"
     parsimmon "^1.13.0"
 
-"@definitelytyped/typescript-versions@^0.0.34":
-  version "0.0.34"
-  resolved "https://registry.yarnpkg.com/@definitelytyped/typescript-versions/-/typescript-versions-0.0.34.tgz#6167363d378670ad7ef9485b7cff7d198106dcdf"
-  integrity sha512-7IqWcbHKYbfY8Lt7AigXDa29cbz3gynzBHMjwMUCeLnex8D682M6OW8uBLouvVHCr+YENL58tQB3dn0Zos8mFQ==
-
-"@definitelytyped/typescript-versions@^0.0.40", "@definitelytyped/typescript-versions@latest":
+"@definitelytyped/typescript-versions@^0.0.34", "@definitelytyped/typescript-versions@^0.0.40", "@definitelytyped/typescript-versions@latest":
   version "0.0.40"
   resolved "https://registry.yarnpkg.com/@definitelytyped/typescript-versions/-/typescript-versions-0.0.40.tgz#e7888b5bd0355777f78c76c50b13b9b1aa78b18e"
   integrity sha512-bhgrKayF1LRHlWgvsMtH1sa/y3JzJhsEVZiZE3xdoWyv9NjZ76dpGvXTNix2dz5585KgQJLP+cKeIdZbwHnCUA==
@@ -12645,6 +12714,13 @@ rollup-plugin-inject-process-env@^1.3.0:
   dependencies:
     magic-string "^0.25.7"
 
+rollup@^2.18.1:
+  version "2.26.4"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.26.4.tgz#a8350fd6bd56fce9873a7db2bd9547d40de3992b"
+  integrity sha512-6+qsGuP0MXGd7vlYmk72utm1MrgZj5GfXibGL+cRkKQ9+ZL/BnFThDl0D5bcl7AqlzMjAQXRAwZX1HVm22M/4Q==
+  optionalDependencies:
+    fsevents "~2.1.2"
+
 rollup@^2.23.0:
   version "2.23.0"
   resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.23.0.tgz#b7ab1fee0c0e60132fd0553c4df1e9cdacfada9d"
@@ -14092,7 +14168,12 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^3.6.3, typescript@^3.7.0, typescript@^3.9.5:
+typescript@3.9.7, typescript@^3.9.7:
+  version "3.9.7"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.7.tgz#98d600a5ebdc38f40cb277522f12dc800e9e25fa"
+  integrity sha512-BLbiRkiBzAwsjut4x/dsibSTB6yWpwT5qWmC2OfuCg3GgVQCSgMs4vEctYPhsaGtd0AeuuHMkjZ2h2WG8MSzRw==
+
+typescript@^3.9.5:
   version "3.9.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.5.tgz#586f0dba300cde8be52dd1ac4f7e1009c1b13f36"
   integrity sha512-hSAifV3k+i6lEoCJ2k6R2Z/rp/H3+8sdmcn5NrS3/3kE7+RyZXm9aqvxWqjEXHAd8b0pShatpcdMTvEdvAJltQ==

@@ -39,7 +39,7 @@
     "parcel-bundler": "^1.12.4",
     "regenerator-runtime": "^0.13.3",
     "ts-node": "*",
-    "typescript": "^3.7.0"
+    "typescript": "^3.9.7"
   },
   "dependencies": {
     "@bigtest/effection": "^0.5.1",
