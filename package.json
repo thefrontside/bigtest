@@ -47,6 +47,7 @@
     "@frontside/eslint-config": "^1.1.0"
   },
   "resolutions": {
-    "lodash": "4.17.19"
+    "lodash": "4.17.19",
+    "@definitelytyped/typescript-versions": "^0.0.40"
   }
 }
