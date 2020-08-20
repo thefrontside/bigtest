@@ -41,7 +41,6 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
       break;
     } else if(result.event) {
       let status = result.event.status;
-      console.log(result.event);
       if(result.event.type === 'testRun:result') {
         testRunStatus = result.event.status;
       }
