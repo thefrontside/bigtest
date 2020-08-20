@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@effection/events": "^0.7.4",
+    "@effection/subscription": "^0.9.0",
     "@types/express-ws": "^3.0.0",
     "@types/node": "^13.13.4",
     "effection": "^0.7.0",
