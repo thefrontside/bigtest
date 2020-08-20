@@ -9,6 +9,7 @@
   "workspaces": {
     "packages": [
       "packages/effection",
+      "packages/client",
       "packages/effection-express",
       "packages/performance",
       "packages/atom",

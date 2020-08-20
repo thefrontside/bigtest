@@ -1,5 +1,5 @@
+import { Client } from '@bigtest/client';
 import { main } from '@effection/node';
-import { Client } from '../src/client';
 
 main(function* main() {
   let client: Client = yield Client.create('ws://localhost:24002');

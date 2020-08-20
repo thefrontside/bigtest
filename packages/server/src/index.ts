@@ -1,6 +1,5 @@
 export { createOrchestrator } from './orchestrator';
 export { createOrchestratorAtom } from './orchestrator/atom';
-export { Client } from './client';
 
 import { Operation } from 'effection';
 import { createOrchestrator } from './orchestrator';

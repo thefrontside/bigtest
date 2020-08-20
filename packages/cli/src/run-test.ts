@@ -2,7 +2,7 @@ import { Operation } from 'effection';
 import { ProjectOptions } from '@bigtest/project';
 import { performance } from '@bigtest/performance';
 import { ResultStatus } from '@bigtest/suite';
-import { Client } from '@bigtest/server';
+import { Client } from '@bigtest/client';
 import { MainError } from '@effection/node';
 import * as query from './query';
 import { StreamingFormatter } from './format-helpers';

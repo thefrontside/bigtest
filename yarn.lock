@@ -1903,50 +1903,6 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@bigtest/bundler@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@bigtest/bundler/-/bundler-0.6.1.tgz#07783d82ac02bace4e42431a9f2d24b7755f5754"
-  integrity sha512-ROV5EMxZhvs535W+U+aX7YJLc6WTQw8cKVVev2NV4oJZ5VVEf1vxRS1FCLyxEWmB+N+5oyZgaJPx7JD7ZvjaQQ==
-  dependencies:
-    "@babel/core" "^7.10.4"
-    "@babel/plugin-transform-runtime" "^7.10.4"
-    "@babel/preset-env" "^7.10.4"
-    "@babel/preset-typescript" "^7.10.4"
-    "@babel/runtime" "^7.10.4"
-    "@bigtest/effection" "^0.5.1"
-    "@effection/channel" "^0.6.4"
-    "@effection/events" "^0.7.4"
-    "@effection/node" "^0.6.5"
-    "@rollup/plugin-babel" "^5.0.4"
-    "@rollup/plugin-commonjs" "^13.0.0"
-    "@rollup/plugin-node-resolve" "^8.1.0"
-    effection "^0.7.0"
-    express "^4.17.1"
-    rollup "^2.18.1"
-
-"@bigtest/cli@0.6.3":
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/@bigtest/cli/-/cli-0.6.3.tgz#c09efe0009c86facd0e2f4ac7d8fa0cb3cab7a60"
-  integrity sha512-ZkkXh/LDLOuJESL3c2nQTr763lgEEIiD3eOOJvl7rosAwGDf662SELLCBXQlg3zTUWlzievpIFAoBCZk3KUttg==
-  dependencies:
-    "@bigtest/effection" "^0.5.1"
-    "@bigtest/performance" "^0.5.0"
-    "@bigtest/project" "^0.5.1"
-    "@bigtest/server" "^0.8.0"
-    "@effection/node" "^0.6.5"
-    capture-console "^1.0.1"
-    deepmerge "^4.2.2"
-    effection "^0.7.0"
-    json5 "^2.1.3"
-
-"@bigtest/interactor@^0.13.0":
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/@bigtest/interactor/-/interactor-0.13.0.tgz#9bc7671395b235040a1b25475bd6f19f89a391a6"
-  integrity sha512-w0q3CLCm6MOMLKuVXwSUvZgcf2dd+ygMkfQzd6EFXAeGIIQ9NLZUy51N+uIreOCVzf7RvJF6Qa00sa2GCcDHiQ==
-  dependencies:
-    "@bigtest/globals" "^0.6.0"
-    "@bigtest/performance" "^0.5.0"
-
 "@bigtest/parcel@^0.5.2":
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/@bigtest/parcel/-/parcel-0.5.2.tgz#3ed6d0af2e5ffa809063200834720bdae775373c"
@@ -1958,44 +1914,6 @@
     effection "^0.7.0"
     parcel "^1.12.4"
     parcel-bundler "^1.12.4"
-
-"@bigtest/server@^0.8.0":
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/@bigtest/server/-/server-0.8.1.tgz#92eeaed0bc31b2ce0743388add701ae853a205c5"
-  integrity sha512-J5kgCxviLsfccKYphAQtVS7XwZXy2r8rsYH8BtsIraz9Dlu4eCpvEWHHuo7QO1fTn5Eih0ecENTWzXrEG0WDpw==
-  dependencies:
-    "@babel/core" "^7.10.4"
-    "@babel/plugin-transform-runtime" "^7.10.4"
-    "@babel/preset-env" "^7.10.4"
-    "@bigtest/agent" "^0.7.2"
-    "@bigtest/atom" "^0.7.0"
-    "@bigtest/bundler" "^0.6.1"
-    "@bigtest/driver" "^0.5.1"
-    "@bigtest/effection" "^0.5.1"
-    "@bigtest/effection-express" "^0.6.0"
-    "@bigtest/globals" "^0.6.0"
-    "@bigtest/logging" "^0.5.1"
-    "@bigtest/project" "^0.5.1"
-    "@bigtest/suite" "^0.5.2"
-    "@bigtest/webdriver" "^0.5.4"
-    "@effection/events" "^0.7.4"
-    "@effection/node" "^0.6.5"
-    "@nexus/schema" "^0.13.1"
-    bowser "^2.8.1"
-    chokidar "^3.3.1"
-    effection "^0.7.0"
-    express "^4.17.1"
-    express-graphql "^0.9.0"
-    fprint "^2.0.1"
-    glob "^7.1.6"
-    graphql "^14.5.8"
-    http-proxy "^1.18.0"
-    nexus "^0.12.0"
-    rimraf "^3.0.0"
-    tempy "^0.3.0"
-    trumpet "^1.7.2"
-    websocket "^1.0.30"
-    yargs "^15.0.2"
 
 "@changesets/apply-release-plan@^4.0.0":
   version "4.0.0"
@@ -12714,13 +12632,6 @@ rollup-plugin-inject-process-env@^1.3.0:
   dependencies:
     magic-string "^0.25.7"
 
-rollup@^2.18.1:
-  version "2.26.4"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.26.4.tgz#a8350fd6bd56fce9873a7db2bd9547d40de3992b"
-  integrity sha512-6+qsGuP0MXGd7vlYmk72utm1MrgZj5GfXibGL+cRkKQ9+ZL/BnFThDl0D5bcl7AqlzMjAQXRAwZX1HVm22M/4Q==
-  optionalDependencies:
-    fsevents "~2.1.2"
-
 rollup@^2.23.0:
   version "2.23.0"
   resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.23.0.tgz#b7ab1fee0c0e60132fd0553c4df1e9cdacfada9d"
@@ -14690,7 +14601,7 @@ websocket-extensions@>=0.1.1:
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
   integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
-websocket@^1.0.30:
+websocket@^1.0.30, websocket@^1.0.31:
   version "1.0.31"
   resolved "https://registry.yarnpkg.com/websocket/-/websocket-1.0.31.tgz#e5d0f16c3340ed87670e489ecae6144c79358730"
   integrity sha512-VAouplvGKPiKFDTeCCO65vYHsyay8DqoBSlzIO3fayrfOgU94lQN5a1uWVnFrMLceTJw/+fQXR5PGbUVRaHshQ==

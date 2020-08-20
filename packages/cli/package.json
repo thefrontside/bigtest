@@ -42,6 +42,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
+    "@bigtest/client": "^0.1.0",
     "@bigtest/effection": "^0.5.2",
     "@bigtest/performance": "^0.5.0",
     "@bigtest/project": "^0.6.0",
