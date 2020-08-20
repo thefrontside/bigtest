@@ -9,20 +9,21 @@ import { StreamingFormatter } from './format-helpers';
 
 export function* runTest(config: ProjectOptions, formatter: StreamingFormatter): Operation<void> {
 
-  let client: Client;
   let uri = `ws://localhost:${config.port}`;
-
-  try {
-    client = yield Client.create(uri);
-  } catch (e) {
-    if (e.message.includes('websocket server closed connection unexpectedly')) {
-      throw new MainError({ 
-        exitCode: 1,
-        message: `Could not connect to BigTest server on ${uri}. Run "bigtest server" to start the server.`
-      });
-    }
-    throw e;
-  }
+  
+  let client: Client = yield function*() {
+    try {
+      return yield Client.create(uri);
+    } catch (e) {
+      if (e.message.includes('websocket server closed connection unexpectedly')) {
+        throw new MainError({ 
+          exitCode: 1,
+          message: `Could not connect to BigTest server on ${uri}. Run "bigtest server" to start the server.`
+        });
+      }
+      throw e;
+    }  
+  };
 
   let subscription = yield client.subscription(query.run());
 
