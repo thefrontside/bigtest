@@ -1,5 +1,4 @@
-import { Operation, resource } from 'effection';
-import { Mailbox, subscribe } from '@bigtest/effection';
+import { Operation } from 'effection';
 import { bigtestGlobals } from '@bigtest/globals';
 import { once } from '@effection/events';
 
@@ -9,19 +8,14 @@ export class TestFrame {
 
     bigtestGlobals.testFrame = element;
 
-    let mailbox = new Mailbox();
-    let frame = new TestFrame(element, mailbox);
-    return yield resource(frame, subscribe(mailbox, window, 'message'));
+    return new TestFrame(element);
   }
 
-  constructor(private element: HTMLIFrameElement, private mailbox: Mailbox) {}
+  constructor(private element: HTMLIFrameElement) {}
 
-  load(url: string): Operation {
-    return ({ resume, ensure }) => {
-      this.element.src = url;
-      this.element.addEventListener('load', resume);
-      ensure(() => this.element.removeEventListener('load', resume));
-    }
+  *load(url: string) {
+    this.element.src = url;
+    yield once(this.element, 'load');
   }
 
   send(message: unknown) {
@@ -30,13 +24,7 @@ export class TestFrame {
     }
   }
 
-  *receive(): Operation {
-    let { args: [message] } = yield this.mailbox.receive();
-    return JSON.parse(message.data);
-  }
-
-  *clear(): Operation<void> {
-    this.element.src = 'about:blank';
-    yield once(this.element, 'load');
+  clear(): Operation<void> {
+    return this.load('about:blank');
   }
 }
