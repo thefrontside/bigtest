@@ -6,6 +6,7 @@ import {
   subscriptionField,
   stringArg,
   makeSchema,
+  enumType,
 } from "@nexus/schema";
 
 export const schema = makeSchema({
@@ -52,6 +53,10 @@ export const schema = makeSchema({
 
         t.field("manifest", {
           type: "Test",
+        });
+
+        t.field("bundler", {
+          type: "Bundler"
         });
 
         t.list.field("testRuns", {
@@ -165,6 +170,34 @@ export const schema = makeSchema({
         });
         t.list.field("children", {
           type: "Test"
+        })
+      }
+    }),
+    enumType({
+      name: "BundlerType",
+      members: [
+        'UNBUNDLED',
+        'BUILDING',
+        'GREEN',
+        'ERRORED'
+      ]
+    }),
+    objectType({
+      name: "Bundler",
+      definition(t) {
+        t.field("type", {
+          type: 'BundlerType'
+        });
+        t.string("path", {
+          nullable: true
+        }),
+        t.list.field("errors", {
+          type: "Error",
+          nullable: true
+        }),
+        t.list.field("warnings", {
+          type: "Error",
+          nullable: true
         })
       }
     }),
