@@ -1,0 +1,5 @@
+---
+"@bigtest/server": patch
+---
+
+Make bundler a top-level entity
