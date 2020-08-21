@@ -1,12 +1,12 @@
 import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 import { ChildProcess } from '@effection/node'
-
+import * as getPort from 'get-port';
 import { Response } from 'node-fetch';
 
 import { actions } from './helpers';
 
-describe.only('orchestrator', () => {
+describe('orchestrator', () => {
   beforeEach(async function() {
     this.timeout(20000);
     await actions.startOrchestrator();
@@ -28,11 +28,11 @@ describe.only('orchestrator', () => {
       expect(body).toEqual({"data": {"echo": "Hello World"}})
     });
   });
-  
+
   describe('retrieving agent from proxy server', () => {
     let response: Response;
     let body: string;
-    
+
     beforeEach(async () => {
       response = await actions.fetch('http://localhost:24101/__bigtest/index.html');
       body = await response.text();
@@ -121,25 +121,21 @@ describe.only('orchestrator', () => {
   });
 
   describe('an externally managed application', () => {
+    let port: number;
+
     beforeEach(async function() {
-      actions.updateApp({ url: "http://localhost:24100" });
+      port = await getPort();
+
+      actions.updateApp({ url: `http://localhost:${port}` });
 
       await actions.fork(
         actions.atom.slice('appService', 'appStatus').once(status => {
           return ['unstarted', 'unreachable'].includes(status);
         })
       );
-      
+
       await actions.fork(function * () {
-        let child = yield ChildProcess.spawn("yarn test:app:start 24100");
-
-        actions.registerAfterDestroyPromise(
-          new Promise(resolve => {
-            child.on('exit', () => setTimeout(resolve, 100));
-          })
-        );
-
-        return child;
+        return yield ChildProcess.spawn(`yarn test:app:start ${port}`);
       });
 
       await actions.fork(
@@ -153,21 +149,21 @@ describe.only('orchestrator', () => {
       let response: Response;
 
       beforeEach(async () => {
-        response = await actions.fetch('http://localhost:24100/');
+        response = await actions.fetch(`http://localhost:${port}/`);
       });
-  
+
       it('responds successfully', () => {
         expect(response.ok).toEqual(true);
       });
     });
-    
+
     describe('retrieving app via proxy', () => {
       let response: Response;
 
       beforeEach(async () => {
         response = await actions.fetch('http://localhost:24101/');
       });
-  
+
       it('responds successfully', () => {
         expect(response.status).toEqual(200);
       });

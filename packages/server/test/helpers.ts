@@ -8,11 +8,12 @@ import { Agent } from '@bigtest/agent';
 import { World } from './helpers/world';
 
 import { createOrchestrator } from '../src/index';
-import { initialOrchestratorState, createOrchestratorAtom } from '../src/orchestrator/atom';
+import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { AppOptions } from '../src/orchestrator/state';
+import { Manifest } from '../src/orchestrator/state';
 
 let orchestratorPromise: Context;
-let afterDestroyPromises: Promise<any>[];
+let manifest: Manifest;
 
 export const actions = {
   atom: createOrchestratorAtom(),
@@ -27,10 +28,6 @@ export const actions = {
 
   fetch(resource: RequestInfo, init?: RequestInit): PromiseLike<Response> {
     return actions.fork(currentWorld.fetch(resource, init));
-  },
-
-  registerAfterDestroyPromise(promise: Promise<any>) {
-    afterDestroyPromises.push(promise);
   },
 
   async createAgent(agentId: string) {
@@ -84,8 +81,10 @@ export const actions = {
 
       orchestratorPromise = this.receive(delegate, { status: 'ready' });
     }
-
-    return orchestratorPromise;
+    return orchestratorPromise.then(cxt => {
+      manifest = actions.atom.get().manifest;
+      return cxt;
+    });
   }
 }
 
@@ -97,18 +96,12 @@ after(async function() {
 });
 
 beforeEach(() => {
-  actions.atom.update((state) => ({
-    ...state,
-    agents: initialOrchestratorState['agents'],
-    testRuns: initialOrchestratorState['testRuns'],
-  }));
+  actions.atom.reset(initial => ({ ...initial, manifest }));
 
-  afterDestroyPromises = [];
-  
   currentWorld = new World();
 });
 
-afterEach(async () => {
+afterEach(() => {
   if(globalWorld.execution.state === 'errored') {
     throw globalWorld.execution.result;
   }
@@ -116,6 +109,4 @@ afterEach(async () => {
     throw currentWorld.execution.result;
   }
   currentWorld.destroy();
-
-  await Promise.all(afterDestroyPromises);
 });

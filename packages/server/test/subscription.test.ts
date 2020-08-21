@@ -29,7 +29,7 @@ function subscriptionQuery() {
   `;
 }
 
-describe.only('running tests with subscription on an agent', () => {
+describe('running tests with subscription on an agent', () => {
   let client: Client;
   let agent: Agent;
   let agentId = generateAgentId();

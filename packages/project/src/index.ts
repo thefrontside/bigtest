@@ -31,7 +31,6 @@ export type ProjectOptions = {
   app: {
     url: string;
     command?: string;
-    args?: string[];
     env?: Record<string, string>;
     dir?: string;
   };
@@ -53,7 +52,6 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
     port: 24002,
     app: {
       command: "yarn start",
-      args: [],
       env: { PORT: "24000" },
       url: "http://localhost:24000"
     },

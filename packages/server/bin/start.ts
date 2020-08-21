@@ -8,10 +8,9 @@ setLogLevel(process.env.LOG_LEVEL as Levels || 'info');
 main(createServer({
   port: 24002,
   app: {
-    command: "yarn",
-    args: ["test:app:start", "24000"],
+    url: "http://localhost:24000",
+    command: "yarn test:app:start 24000",
     env: {},
-    url: "http://localhost:24000"
   },
   proxy: {
     port: 24001,

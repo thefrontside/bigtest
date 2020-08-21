@@ -1,10 +1,10 @@
-import { timeout, Operation, Context, fork } from 'effection';
+import { timeout, Operation, Context, spawn } from 'effection';
 import { once } from '@effection/events';
-import { Subscribable } from '@effection/subscription';
+import { subscribe, ChainableSubscription } from '@effection/subscription';
 import { fetch } from '@effection/fetch';
 import { ChildProcess } from '@effection/node';
 import * as process from 'process';
-import { OrchestratorState, AppServiceState, AppOptions } from './orchestrator/state';
+import { OrchestratorState, AppServiceState, AppOptions, AppStatus } from './orchestrator/state';
 import { Slice } from '@bigtest/atom';
 
 interface AppServerOptions {
@@ -24,58 +24,59 @@ function* isReachable(url: string) {
   }
 }
 
+function* startApp(appStatus: Slice<AppStatus, OrchestratorState>, options: AppOptions): Operation<void> {
+  appStatus.set('unstarted')
+
+  if (options.command) {
+    let child = yield ChildProcess.spawn(options.command as string, [], {
+      cwd: options.dir,
+      detached: true,
+      env: Object.assign({}, process.env, options.env),
+      shell: true,
+    });
+
+    yield spawn(function* () {
+      yield once(child, 'exit');
+      appStatus.set('crashed');
+    });
+  }
+
+  appStatus.set('started');
+
+  while(true) {
+    yield timeout(100);
+
+    if (yield isReachable(options.url)) {
+      appStatus.set('reachable');
+    } else {
+      appStatus.set('unreachable');
+    }
+  }
+}
+
 export function* createAppServer({ slice, ...options }: AppServerOptions): Operation {
   let appOptions = slice.slice('appOptions');
   let appStatus = slice.slice('appStatus');
-  let current: Context;
+  let current: Context | null = null;
 
-  function* startApp(appOptions: AppOptions): Operation<void> {
+  let subscription: ChainableSubscription<AppOptions, undefined> = yield subscribe(appOptions);
+
+  for(let currentOptions = appOptions.get();;currentOptions = appOptions.get()) {
     if (current) {
       current.halt();
     }
 
-    appStatus.set('unstarted');
+    current = yield spawn(
+      startApp(appStatus, currentOptions ?? options)
+    );
 
-    current = yield fork(function* () {
-      if (appOptions.command) {
-        let child = yield ChildProcess.spawn(appOptions.command as string, [], {
-          cwd: appOptions.dir,
-          detached: true,
-          env: Object.assign({}, process.env, appOptions.env),
-          shell: true,
-        });
+    let next = yield subscription.filter(value => currentOptions !== value).first();
 
-        yield fork(function* () {
-          yield once(child, 'exit');
-          appStatus.set('crashed');
-        })
-      }
-
-      appStatus.set('started');
-
-      while(true) {
-        yield timeout(100);
-
-        if (yield isReachable(appOptions.url)) {
-          appStatus.set('reachable');
-        } else {
-          appStatus.set('unreachable');
-        }
-      }
-    });
+    if (!next) {
+      // Our test helpers reset the atom before each run
+      // This closes the channels, breaking subscriptions
+      // We want the app service to stay alive, so we'll re-subscribe
+      subscription = yield subscribe(appOptions);
+    }
   }
-
-  let currentOptions = appOptions.get();
-  yield fork(
-    Subscribable
-      .from(appOptions)
-      .filter(appOptions => appOptions !== currentOptions)
-      .forEach(options => function* () {
-        if (options) {
-          return yield startApp(options);
-        }
-      })
-  );
-
-  yield startApp(options);
 }
