@@ -38,8 +38,6 @@ describe('@bigtest/cli', function() {
       beforeEach(async () => {
         childApp = await World.spawn(Process.spawn('yarn bigtest-todomvc 36001', [], {}));
         child = await World.spawn(run('server', '--launch', 'chrome.headless', '--app.url', 'http://localhost:36001', '--no-app.command', '--test-files', './test/fixtures/passing.test.ts'));
-
-        await World.spawn(child.stdout?.waitFor("[orchestrator] running!"));
       });
 
       afterEach(async () => {
@@ -54,12 +52,11 @@ describe('@bigtest/cli', function() {
 
     describe('specifying the command via the cli', () => {
       let child: Process;
-  
+
       beforeEach(async () => {
         child = await World.spawn(run('server', '--launch', 'chrome.headless', '--app.url', 'http://localhost:36001', '--app.command', '"yarn bigtest-todomvc 36001"', '--test-files', './test/fixtures/passing.test.ts'));
-        await World.spawn(child.stdout?.waitFor("[orchestrator] running!"));
       });
-  
+
       afterEach(async () => {
         await World.spawn(child.close());
       });
