@@ -14,7 +14,7 @@ type WsOperationRequestHandler = (socket: Socket, req: actualExpress.Request) =>
 export class Socket {
   constructor(public raw: WebSocket) {}
 
-  *send(data: unknown) {
+  *send(data: unknown): Operation<void> {
     if(this.raw.readyState === 1) {
       yield util.promisify(this.raw.send.bind(this.raw))(JSON.stringify(data));
     }
