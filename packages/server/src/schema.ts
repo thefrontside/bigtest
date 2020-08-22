@@ -174,7 +174,7 @@ export const schema = makeSchema({
       }
     }),
     enumType({
-      name: "BundlerType",
+      name: "BundlerStatus",
       members: [
         'UNBUNDLED',
         'BUILDING',
@@ -186,7 +186,7 @@ export const schema = makeSchema({
       name: "Bundler",
       definition(t) {
         t.field("type", {
-          type: 'BundlerType'
+          type: 'BundlerStatus'
         });
         t.string("path", {
           nullable: true
