@@ -27,11 +27,17 @@ export function* runLane(config: LaneConfig) {
   }
 }
 
+const stepTimeout = 60_000;
+
 function *runLaneSegment(testRunId: string, events: TestEvents, test: TestImplementation, context: TestContext, remainingPath: string[], prefix: string[]): Operation<void> {
   let currentPath = prefix.concat(test.description);
 
   console.debug('[agent] running test', currentPath);
   events.send({ testRunId, type: 'test:running', path: currentPath })
+
+  if (bigtestGlobals.defaultInteractorTimeout >= stepTimeout) {
+    console.warn(`[agent] the interactor timeout should be less than, but is greater than or equal to, the step timeout of ${stepTimeout}`);
+  }
 
   for(let step of test.steps) {
     let stepPath = currentPath.concat(step.description);
@@ -39,7 +45,7 @@ function *runLaneSegment(testRunId: string, events: TestEvents, test: TestImplem
       console.debug('[agent] running step', step);
       events.send({ testRunId, type: 'step:running', path: stepPath });
 
-      let result: TestContext | void = yield timebox(step.action(context), 2000)
+      let result: TestContext | void = yield timebox(step.action(context), stepTimeout)
 
       if (result != null) {
         context = {...context, ...result};
@@ -77,7 +83,7 @@ function *runLaneSegment(testRunId: string, events: TestEvents, test: TestImplem
           console.debug('[agent] running assertion', assertion);
           events.send({ testRunId, type: 'assertion:running', path: assertionPath });
 
-          yield timebox(assertion.check(context), 2000)
+          yield timebox(assertion.check(context), stepTimeout)
 
           events.send({ testRunId, type: 'assertion:result', status: 'ok', path: assertionPath });
         } catch(error) {
