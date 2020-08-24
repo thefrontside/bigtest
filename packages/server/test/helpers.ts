@@ -64,6 +64,7 @@ export const actions = {
         atom: this.atom,
         project: {
           port: 24102,
+          showTree: false,
           testFiles: ["test/fixtures/*.t.js"],
           cacheDir: "./tmp/test/orchestrator",
           manifest: {
