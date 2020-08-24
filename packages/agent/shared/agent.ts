@@ -12,7 +12,7 @@ export interface AgentOptions {
 }
 
 export class Agent implements AgentProtocol {
-  constructor(private socket: Socket & EventTarget) {}
+  constructor(private socket: Socket & EventTarget, private options: AgentOptions) {}
 
   /**
    * Produces an Agent resource that is connected to an orchestrator. This resource can be
@@ -21,7 +21,7 @@ export class Agent implements AgentProtocol {
   static *start(options: AgentOptions): Operation<Agent> {
 
     let socket = options.createSocket() as unknown as (Socket & EventTarget);
-    let agent = yield resource(new Agent(socket), function*(): Operation<void> {
+    let agent = yield resource(new Agent(socket, options), function*(): Operation<void> {
       try {
         let [event] = yield once(socket, 'close');
         if(!event.wasClean) {
@@ -58,7 +58,7 @@ export class Agent implements AgentProtocol {
   }
 
   send(message: AgentEvent) {
-    this.socket.send(JSON.stringify(message));
+    this.socket.send(JSON.stringify({ ...message, agentId: this.options.agentId }));
   }
 
   *receive(): Operation<Command> {
