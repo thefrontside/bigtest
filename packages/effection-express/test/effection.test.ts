@@ -2,29 +2,22 @@ import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 import fetch, { Response } from 'node-fetch';
 
-import { main, Context, Controls } from 'effection';
-
+import { run } from './helpers';
 import { Express, express } from '../src/index';
 
 describe('express', () => {
   let app: Express;
-  let world: Context & Controls;
 
   beforeEach(async () => {
-    world = main(undefined) as Context & Controls;
 
     app = express();
 
-    await world.spawn(app.use(function*(req, res) {
+    await run(app.use(function*(req, res) {
       res.send("hello");
       res.end();
     }));
 
-    await world.spawn(app.listen(26000));
-  });
-
-  afterEach(() => {
-    world.halt();
+    await run(app.listen(26000));
   });
 
   describe('sending requests to the express app', () => {
