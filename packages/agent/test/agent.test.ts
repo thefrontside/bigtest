@@ -10,10 +10,9 @@ import * as expect from 'expect';
 import fetch from 'node-fetch';
 import { test as fixtureManifest } from './fixtures/manifest.src';
 
-import { AgentHandler, AgentServerConfig, AgentEvent } from '../src/index';
+import { AgentServerConfig, AgentEvent, createAgentHandler, AgentConnection } from '../src/index';
 
 import { run } from './helpers';
-import { createAgentHandler, AgentConnection } from '../src/agent-handler';
 import { StepResult } from '@bigtest/suite';
 
 function* staticServer(port: number) {
@@ -42,15 +41,13 @@ describe("@bigtest/agent", function() {
   });
 
   describe('starting a new server', () => {
-    let client: AgentHandler;
     let connections: ChainableSubscription<AgentConnection, undefined>;
 
     beforeEach(async () => {
       await run(staticServer(8000));
 
-      client = await run(createAgentHandler(8001));
+      connections = await run(createAgentHandler(8001));
 
-      connections = await run(subscribe(client.connections));
     });
 
     describe('fetching the harness', () => {
@@ -67,7 +64,6 @@ describe("@bigtest/agent", function() {
 
     describe('connecting a browser to the agent URL', () => {
       let browser: WebDriver;
-      let agentId: string | undefined;
       let connection: AgentConnection;
       let events: ChainableSubscription<AgentEvent, undefined>;
 
@@ -77,12 +73,10 @@ describe("@bigtest/agent", function() {
         connection = await run(connections.expect());
         events = await run(subscribe(connection.events));
 
-        let connect = await run(events.expect());
-        agentId = connect.agentId;
       });
 
       it('sends a connection message with an agent id', () => {
-        expect(typeof agentId).toEqual('string');
+        expect(typeof connection.agentId).toEqual('string');
       });
 
       describe('sending a run message', () => {
@@ -111,7 +105,7 @@ describe("@bigtest/agent", function() {
         });
 
         it('receives the run:end event', async () => {
-          expect(await run(events.match({ type: 'run:end', agentId, testRunId }).first())).toBeDefined();
+          expect(await run(events.match({ type: 'run:end', testRunId }).first())).toBeDefined();
         });
 
         it('preserves test context all the way down the entire test run', async () => {
