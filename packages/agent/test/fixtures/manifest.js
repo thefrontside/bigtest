@@ -705,7 +705,7 @@ inspect.colors = {
   'black': [30, 39],
   'blue': [34, 39],
   'cyan': [36, 39],
-  'GREEN': [32, 39],
+  'green': [32, 39],
   'magenta': [35, 39],
   'red': [31, 39],
   'yellow': [33, 39]
@@ -717,7 +717,7 @@ inspect.styles = {
   'boolean': 'yellow',
   'undefined': 'grey',
   'null': 'bold',
-  'string': 'GREEN',
+  'string': 'green',
   'date': 'magenta',
   // "name": intentionally not styling
   'regexp': 'red'
@@ -1625,73 +1625,95 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-},{"object-assign":"yheg","util/":"Enzi"}],"gfOc":[function(require,module,exports) {
+},{"object-assign":"yheg","util/":"Enzi"}],"aZAD":[function(require,module,exports) {
 "use strict";
 /* eslint-disable no-var */
 /* eslint-disable prefer-let/prefer-let */
 
-},{}],"dBXu":[function(require,module,exports) {
+},{}],"HknN":[function(require,module,exports) {
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.bigtestGlobals = void 0;
+
 require("./globals");
+
 const defaultManifest = {
-    description: 'Empty',
-    steps: [],
-    assertions: [],
-    children: [],
-};
-function options() {
-    if (!globalThis.__bigtest) {
-        globalThis.__bigtest = {};
-    }
-    return globalThis.__bigtest;
-}
-exports.bigtestGlobals = {
-    manifestProperty: '__bigtestManifest',
-    get manifest() {
-        return globalThis.__bigtestManifest || defaultManifest;
-    },
-    set manifest(value) {
-        globalThis.__bigtestManifest = value;
-    },
-    get document() {
-        let testFrame = options().testFrame;
-        let doc = options().document || (testFrame && testFrame.contentDocument) || globalThis.document;
-        if (!doc) {
-            throw new Error('no document found');
-        }
-        ;
-        return doc;
-    },
-    set document(value) {
-        options().document = value;
-    },
-    get defaultInteractorTimeout() {
-        return options().defaultInteractorTimeout || 1900;
-    },
-    set defaultInteractorTimeout(value) {
-        options().defaultInteractorTimeout = value;
-    },
-    get testFrame() {
-        return options().testFrame;
-    },
-    set testFrame(value) {
-        options().testFrame = value;
-    },
-    get appUrl() {
-        return options().appUrl;
-    },
-    set appUrl(value) {
-        options().appUrl = value;
-    },
-    reset() {
-        delete globalThis.__bigtest;
-        delete globalThis.__bigtestManifest;
-    }
+  description: 'Empty',
+  steps: [],
+  assertions: [],
+  children: []
 };
 
-},{"./globals":"gfOc"}],"GeQV":[function(require,module,exports) {
+function options() {
+  if (!globalThis.__bigtest) {
+    globalThis.__bigtest = {};
+  }
+
+  return globalThis.__bigtest;
+}
+
+const bigtestGlobals = {
+  manifestProperty: '__bigtestManifest',
+
+  get manifest() {
+    return globalThis.__bigtestManifest || defaultManifest;
+  },
+
+  set manifest(value) {
+    globalThis.__bigtestManifest = value;
+  },
+
+  get document() {
+    let testFrame = options().testFrame;
+    let doc = options().document || testFrame && testFrame.contentDocument || globalThis.document;
+
+    if (!doc) {
+      throw new Error('no document found');
+    }
+
+    ;
+    return doc;
+  },
+
+  set document(value) {
+    options().document = value;
+  },
+
+  get defaultInteractorTimeout() {
+    return options().defaultInteractorTimeout || 1900;
+  },
+
+  set defaultInteractorTimeout(value) {
+    options().defaultInteractorTimeout = value;
+  },
+
+  get testFrame() {
+    return options().testFrame;
+  },
+
+  set testFrame(value) {
+    options().testFrame = value;
+  },
+
+  get appUrl() {
+    return options().appUrl;
+  },
+
+  set appUrl(value) {
+    options().appUrl = value;
+  },
+
+  reset() {
+    delete globalThis.__bigtest;
+    delete globalThis.__bigtestManifest;
+  }
+
+};
+exports.bigtestGlobals = bigtestGlobals;
+},{"./globals":"aZAD"}],"GeQV":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1704,275 +1726,490 @@ const {
 } = globalThis;
 exports.performance = performance;
 exports.PerformanceObserver = PerformanceObserver;
-},{}],"olCW":[function(require,module,exports) {
+},{}],"tXDk":[function(require,module,exports) {
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.converge = void 0;
-const performance_1 = require("@bigtest/performance");
-const globals_1 = require("@bigtest/globals");
-function wait(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
-async function converge(fn) {
-    let startTime = performance_1.performance.now();
-    while (true) {
-        try {
-            return fn();
-        }
-        catch (e) {
-            let diff = performance_1.performance.now() - startTime;
-            if (diff > globals_1.bigtestGlobals.defaultInteractorTimeout) {
-                throw e;
-            }
-            else {
-                await wait(1);
-            }
-        }
-    }
-}
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.converge = converge;
 
-},{"@bigtest/performance":"GeQV","@bigtest/globals":"dBXu"}],"vHG0":[function(require,module,exports) {
+var _performance = require("@bigtest/performance");
+
+var _globals = require("@bigtest/globals");
+
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function converge(fn) {
+  let startTime = _performance.performance.now();
+
+  while (true) {
+    try {
+      return fn();
+    } catch (e) {
+      let diff = _performance.performance.now() - startTime;
+
+      if (diff > _globals.bigtestGlobals.defaultInteractorTimeout) {
+        throw e;
+      } else {
+        await wait(1);
+      }
+    }
+  }
+}
+},{"@bigtest/performance":"GeQV","@bigtest/globals":"HknN"}],"Ne7j":[function(require,module,exports) {
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.NotAbsentError = exports.AmbiguousElementError = exports.NoSuchElementError = void 0;
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Filter = void 0;
+
+class Filter {
+  constructor(specification, filters) {
+    this.specification = specification;
+    this.filters = filters;
+  }
+
+  get description() {
+    let entries = Object.entries(this.filters);
+
+    if (entries.length === 0) {
+      return '';
+    } else {
+      return entries.map(([key, value]) => {
+        if (typeof value === 'boolean') {
+          if (value) {
+            return `which is ${key}`;
+          } else {
+            return `which is not ${key}`;
+          }
+        } else {
+          return `with ${key} ${JSON.stringify(value)}`;
+        }
+      }).join(' and ');
+    }
+  }
+
+  matches(element) {
+    return Object.entries(this.specification.filters || {}).every(([key, definition]) => {
+      let value;
+
+      if (key in this.filters) {
+        value = this.filters[key]; // eslint-disable-line @typescript-eslint/no-explicit-any
+      } else if (typeof definition !== 'function' && 'default' in definition) {
+        value = definition.default;
+      } else {
+        return true;
+      }
+
+      if (typeof definition === 'function') {
+        return definition(element) === value;
+      } else {
+        return definition.apply(element) === value;
+      }
+    });
+  }
+
+}
+
+exports.Filter = Filter;
+},{}],"mN6h":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FilterNotMatchingError = exports.NotAbsentError = exports.AmbiguousElementError = exports.NoSuchElementError = void 0;
+
 class NoSuchElementError extends Error {
-    get name() { return "NoSuchElementError"; }
+  get name() {
+    return "NoSuchElementError";
+  }
+
 }
+
 exports.NoSuchElementError = NoSuchElementError;
+
 class AmbiguousElementError extends Error {
-    get name() { return "AmbiguousElementError"; }
+  get name() {
+    return "AmbiguousElementError";
+  }
+
 }
+
 exports.AmbiguousElementError = AmbiguousElementError;
+
 class NotAbsentError extends Error {
-    get name() { return "NotAbsentError"; }
+  get name() {
+    return "NotAbsentError";
+  }
+
 }
+
 exports.NotAbsentError = NotAbsentError;
 
-},{}],"B6NN":[function(require,module,exports) {
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.interaction = void 0;
-function interaction(description, fn) {
-    let promise;
-    return {
-        description,
-        [Symbol.toStringTag]: `[interaction ${description}]`,
-        then(onFulfill, onReject) {
-            if (!promise) {
-                promise = fn();
-            }
-            return promise.then(onFulfill, onReject);
-        },
-        catch(onReject) {
-            if (!promise) {
-                promise = fn();
-            }
-            return promise.catch(onReject);
-        },
-        finally(handler) {
-            if (!promise) {
-                promise = fn();
-            }
-            return promise.finally(handler);
-        }
-    };
+class FilterNotMatchingError extends Error {
+  get name() {
+    return "FilterNotMatchingError";
+  }
+
 }
+
+exports.FilterNotMatchingError = FilterNotMatchingError;
+},{}],"IDBJ":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.interaction = interaction;
 
-},{}],"rh8g":[function(require,module,exports) {
+function interaction(description, fn) {
+  let promise;
+  return {
+    description,
+    [Symbol.toStringTag]: `[interaction ${description}]`,
+
+    then(onFulfill, onReject) {
+      if (!promise) {
+        promise = fn();
+      }
+
+      return promise.then(onFulfill, onReject);
+    },
+
+    catch(onReject) {
+      if (!promise) {
+        promise = fn();
+      }
+
+      return promise.catch(onReject);
+    },
+
+    finally(handler) {
+      if (!promise) {
+        promise = fn();
+      }
+
+      return promise.finally(handler);
+    }
+
+  };
+}
+},{}],"bw0r":[function(require,module,exports) {
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.Interactor = void 0;
-const globals_1 = require("@bigtest/globals");
-const converge_1 = require("./converge");
-const errors_1 = require("./errors");
-const interaction_1 = require("./interaction");
+
+var _globals = require("@bigtest/globals");
+
+var _converge = require("./converge");
+
+var _filter = require("./filter");
+
+var _errors = require("./errors");
+
+var _interaction = require("./interaction");
+
 const defaultSelector = 'div';
+
 class Interactor {
-    constructor(name, specification, locator) {
-        this.name = name;
-        this.specification = specification;
-        this.locator = locator;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.ancestors = [];
-    }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    find(interactor) {
-        return Object.create(interactor, {
-            ancestors: {
-                value: [...this.ancestors, this, ...interactor.ancestors]
-            }
-        });
-    }
-    get description() {
-        return this.ancestors.slice().reverse().reduce((desc, interactor) => {
-            return `${desc} within ${interactor.name} ${interactor.locator.description}`;
-        }, `${this.name} ${this.locator.description}`);
-    }
-    unsafeSyncResolve() {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let ancestorChain = [...this.ancestors, this];
-        return ancestorChain.reduce((parentElement, interactor) => {
-            let elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector || defaultSelector));
-            let matchingElements = elements.filter((element) => interactor.locator.matches(element));
-            if (matchingElements.length === 1) {
-                return matchingElements[0];
-            }
-            else if (matchingElements.length === 0) {
-                throw new errors_1.NoSuchElementError(`${interactor.description} does not exist`);
-            }
-            else {
-                throw new errors_1.AmbiguousElementError(`${interactor.description} is ambiguous`);
-            }
-        }, globals_1.bigtestGlobals.document.documentElement);
-    }
-    resolve() {
-        return interaction_1.interaction(`${this.description} resolves`, () => {
-            return converge_1.converge(this.unsafeSyncResolve.bind(this));
-        });
-    }
-    exists() {
-        return interaction_1.interaction(`${this.description} exists`, () => {
-            return converge_1.converge(() => {
-                this.unsafeSyncResolve();
-                return true;
-            });
-        });
-    }
-    absent() {
-        return interaction_1.interaction(`${this.description} does not exist`, () => {
-            return converge_1.converge(() => {
-                try {
-                    this.unsafeSyncResolve();
-                }
-                catch (e) {
-                    if (e.name === 'NoSuchElementError') {
-                        return true;
-                    }
-                }
-                throw new errors_1.NotAbsentError(`${this.description} exists but should not`);
-            });
-        });
-    }
+  constructor(name, specification, locator, filter) {
+    this.name = name;
+    this.specification = specification;
+    this.locator = locator;
+    this.filter = filter; // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+    this.ancestors = [];
+  } // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+
+  get ancestorsAndSelf() {
+    return [...this.ancestors, this];
+  } // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+
+  find(interactor) {
+    return Object.create(interactor, {
+      ancestors: {
+        value: [...this.ancestors, this, ...interactor.ancestors]
+      }
+    });
+  }
+
+  get description() {
+    return this.ancestorsAndSelf.reverse().map(interactor => {
+      return `${interactor.name} ${interactor.locator.description} ${interactor.filter.description}`.trim();
+    }).join(' within ');
+  }
+
+  unsafeSyncResolve() {
+    return this.ancestorsAndSelf.reduce((parentElement, interactor) => {
+      let elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector || defaultSelector));
+      let locatedElements = elements.filter(element => interactor.locator.matches(element));
+      let filteredElements = locatedElements.filter(element => interactor.filter.matches(element));
+
+      if (filteredElements.length === 1) {
+        return filteredElements[0];
+      } else if (filteredElements.length === 0) {
+        throw new _errors.NoSuchElementError(`${interactor.description} does not exist`);
+      } else {
+        throw new _errors.AmbiguousElementError(`${interactor.description} is ambiguous`);
+      }
+    }, _globals.bigtestGlobals.document.documentElement);
+  } // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+
+  perform(fn) {
+    return (0, _interaction.interaction)(`${this.description} performs`, () => {
+      return (0, _converge.converge)(() => {
+        fn(this.unsafeSyncResolve());
+      });
+    });
+  }
+
+  exists() {
+    return (0, _interaction.interaction)(`${this.description} exists`, () => {
+      return (0, _converge.converge)(() => {
+        this.unsafeSyncResolve();
+      });
+    });
+  }
+
+  absent() {
+    return (0, _interaction.interaction)(`${this.description} does not exist`, () => {
+      return (0, _converge.converge)(() => {
+        try {
+          this.unsafeSyncResolve();
+        } catch (e) {
+          if (e.name === 'NoSuchElementError') {
+            return;
+          }
+        }
+
+        throw new _errors.NotAbsentError(`${this.description} exists but should not`);
+      });
+    });
+  }
+
+  is(filters) {
+    let filter = new _filter.Filter(this.specification, filters);
+    return (0, _interaction.interaction)(`${this.description} matches filters: ${filter.description}`, () => {
+      return (0, _converge.converge)(() => {
+        let element = this.unsafeSyncResolve();
+
+        if (filter.matches(element)) {
+          return;
+        } else {
+          throw new _errors.FilterNotMatchingError(`${this.description} does not match filters: ${filter.description}`);
+        }
+      });
+    });
+  }
+
+  has(filters) {
+    return this.is(filters);
+  }
+
 }
+
 exports.Interactor = Interactor;
-
-},{"@bigtest/globals":"dBXu","./converge":"olCW","./errors":"vHG0","./interaction":"B6NN"}],"WFKH":[function(require,module,exports) {
+},{"@bigtest/globals":"HknN","./converge":"tXDk","./filter":"Ne7j","./errors":"mN6h","./interaction":"IDBJ"}],"zcSI":[function(require,module,exports) {
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.Locator = void 0;
-class Locator {
-    constructor(locatorFn, value, name) {
-        this.locatorFn = locatorFn;
-        this.value = value;
-        this.name = name;
-    }
-    get description() {
-        if (this.name) {
-            let name = this.name.toString().replace(/^by/, '');
-            name = name.charAt(0).toLowerCase() + name.slice(1);
-            return `with ${name} ${JSON.stringify(this.value)}`;
-        }
-        else {
-            return `${JSON.stringify(this.value)}`;
-        }
-    }
-    matches(element) {
-        return this.locatorFn(element) === this.value;
-    }
-}
-exports.Locator = Locator;
 
-},{}],"Hk1P":[function(require,module,exports) {
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.createInteractor = void 0;
-const locator_1 = require("./locator");
-const interactor_1 = require("./interactor");
-const interaction_1 = require("./interaction");
-const converge_1 = require("./converge");
-const defaultLocator = (element) => element.textContent || "";
-function createInteractor(interactorName) {
-    return function (specification) {
-        let InteractorClass = class extends interactor_1.Interactor {
-        };
-        for (let [actionName, action] of Object.entries(specification.actions || {})) {
-            Object.defineProperty(InteractorClass.prototype, actionName, {
-                value: function (...args) {
-                    let actionDescription = actionName;
-                    if (args.length) {
-                        actionDescription += ` with ` + args.map((a) => JSON.stringify(a)).join(', ');
-                    }
-                    return interaction_1.interaction(`${actionDescription} on ${this.description}`, () => {
-                        return converge_1.converge(() => {
-                            let element = this.unsafeSyncResolve();
-                            return action(element, ...args);
-                        });
-                    });
-                },
-                configurable: true,
-                writable: true,
-                enumerable: false,
-            });
-        }
-        let result = function (value) {
-            let locator = new locator_1.Locator(specification.defaultLocator || defaultLocator, value);
-            let interactor = new InteractorClass(interactorName, specification, locator);
-            return interactor;
-        };
-        for (let [locatorName, locatorFn] of Object.entries(specification.locators || {})) {
-            Object.defineProperty(result, locatorName, {
-                value: function (value) {
-                    let locator = new locator_1.Locator(locatorFn, value, locatorName);
-                    let interactor = new InteractorClass(interactorName, specification, locator);
-                    return interactor;
-                },
-                configurable: true,
-                writable: true,
-                enumerable: false,
-            });
-        }
-        return result;
-    };
+class Locator {
+  constructor(locatorFn, value, name) {
+    this.locatorFn = locatorFn;
+    this.value = value;
+    this.name = name;
+  }
+
+  get description() {
+    if (this.name) {
+      let name = this.name.toString().replace(/^by/, '');
+      name = name.charAt(0).toLowerCase() + name.slice(1);
+      return `with ${name} ${JSON.stringify(this.value)}`;
+    } else {
+      return `${JSON.stringify(this.value)}`;
+    }
+  }
+
+  matches(element) {
+    return this.locatorFn(element) === this.value;
+  }
+
 }
+
+exports.Locator = Locator;
+},{}],"QluO":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.createInteractor = createInteractor;
 
-},{"./locator":"WFKH","./interactor":"rh8g","./interaction":"B6NN","./converge":"olCW"}],"xu16":[function(require,module,exports) {
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.App = void 0;
-const interaction_1 = require("./interaction");
-const globals_1 = require("@bigtest/globals");
-exports.App = {
-    visit(path = '/') {
-        return interaction_1.interaction(`visiting ${JSON.stringify(path)}`, async () => {
-            let appUrl = globals_1.bigtestGlobals.appUrl;
-            if (!appUrl) {
-                throw new Error('no app url defined');
-            }
-            let testFrame = globals_1.bigtestGlobals.testFrame;
-            if (!testFrame) {
-                throw new Error('no test frame defined');
-            }
-            let url = new URL(appUrl);
-            url.pathname = path;
-            testFrame.src = url.toString();
-        });
+var _locator = require("./locator");
+
+var _filter = require("./filter");
+
+var _interactor = require("./interactor");
+
+var _interaction = require("./interaction");
+
+var _converge = require("./converge");
+
+const defaultLocator = element => element.textContent || "";
+
+function createInteractor(interactorName) {
+  return function (specification) {
+    let InteractorClass = class extends _interactor.Interactor {};
+
+    for (let [actionName, action] of Object.entries(specification.actions || {})) {
+      Object.defineProperty(InteractorClass.prototype, actionName, {
+        value: function (...args) {
+          let actionDescription = actionName;
+
+          if (args.length) {
+            actionDescription += ` with ` + args.map(a => JSON.stringify(a)).join(', ');
+          }
+
+          return (0, _interaction.interaction)(`${actionDescription} on ${this.description}`, () => {
+            return (0, _converge.converge)(() => {
+              return action(this, ...args);
+            });
+          });
+        },
+        configurable: true,
+        writable: true,
+        enumerable: false
+      });
     }
-};
 
-},{"./interaction":"B6NN","@bigtest/globals":"dBXu"}],"QmZr":[function(require,module,exports) {
+    let result = function (value, filters) {
+      let locator = new _locator.Locator(specification.defaultLocator || defaultLocator, value);
+      let filter = new _filter.Filter(specification, filters || {});
+      let interactor = new InteractorClass(interactorName, specification, locator, filter);
+      return interactor;
+    };
+
+    for (let [locatorName, locatorFn] of Object.entries(specification.locators || {})) {
+      Object.defineProperty(result, locatorName, {
+        value: function (value, filters) {
+          let locator = new _locator.Locator(locatorFn, value, locatorName);
+          let filter = new _filter.Filter(specification, filters || {});
+          let interactor = new InteractorClass(interactorName, specification, locator, filter);
+          return interactor;
+        },
+        configurable: true,
+        writable: true,
+        enumerable: false
+      });
+    }
+
+    return result;
+  };
+}
+},{"./locator":"zcSI","./filter":"Ne7j","./interactor":"bw0r","./interaction":"IDBJ","./converge":"tXDk"}],"GRJg":[function(require,module,exports) {
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var interactor_1 = require("./interactor");
-Object.defineProperty(exports, "Interactor", { enumerable: true, get: function () { return interactor_1.Interactor; } });
-var create_interactor_1 = require("./create-interactor");
-Object.defineProperty(exports, "createInteractor", { enumerable: true, get: function () { return create_interactor_1.createInteractor; } });
-var app_1 = require("./app");
-Object.defineProperty(exports, "App", { enumerable: true, get: function () { return app_1.App; } });
 
-},{"./interactor":"rh8g","./create-interactor":"Hk1P","./app":"xu16"}],"ZNKF":[function(require,module,exports) {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.App = void 0;
+
+var _interaction = require("./interaction");
+
+var _globals = require("@bigtest/globals");
+
+const App = {
+  visit(path = '/') {
+    return (0, _interaction.interaction)(`visiting ${JSON.stringify(path)}`, async () => {
+      let appUrl = _globals.bigtestGlobals.appUrl;
+
+      if (!appUrl) {
+        throw new Error('no app url defined');
+      }
+
+      let testFrame = _globals.bigtestGlobals.testFrame;
+
+      if (!testFrame) {
+        throw new Error('no test frame defined');
+      }
+
+      let url = new URL(appUrl);
+      url.pathname = path;
+      testFrame.src = url.toString();
+    });
+  }
+
+};
+exports.App = App;
+},{"./interaction":"IDBJ","@bigtest/globals":"HknN"}],"nOmE":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.perform = perform;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function perform(fn) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (interactor, ...args) => interactor.perform(element => {
+    fn(element, ...args);
+  });
+}
+},{}],"n1Gd":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "Interactor", {
+  enumerable: true,
+  get: function () {
+    return _interactor.Interactor;
+  }
+});
+Object.defineProperty(exports, "createInteractor", {
+  enumerable: true,
+  get: function () {
+    return _createInteractor.createInteractor;
+  }
+});
+Object.defineProperty(exports, "App", {
+  enumerable: true,
+  get: function () {
+    return _app.App;
+  }
+});
+Object.defineProperty(exports, "perform", {
+  enumerable: true,
+  get: function () {
+    return _perform.perform;
+  }
+});
+
+var _interactor = require("./interactor");
+
+var _createInteractor = require("./create-interactor");
+
+var _app = require("./app");
+
+var _perform = require("./perform");
+},{"./interactor":"bw0r","./create-interactor":"QluO","./app":"GRJg","./perform":"nOmE"}],"ZNKF":[function(require,module,exports) {
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -2194,5 +2431,5 @@ module.exports = test("tests").step("load the app", /*#__PURE__*/_asyncToGenerat
     }, _callee12);
   })));
 });
-},{"@bigtest/suite":"XUUB","assert":"VpGV","@bigtest/interactor":"QmZr"}]},{},["ZNKF"], "__bigtestManifest")
+},{"@bigtest/suite":"XUUB","assert":"VpGV","@bigtest/interactor":"n1Gd"}]},{},["ZNKF"], "__bigtestManifest")
 //# sourceMappingURL=/manifest.js.map
