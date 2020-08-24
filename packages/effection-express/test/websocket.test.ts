@@ -11,7 +11,7 @@ import { Socket, express } from '../src';
 import { Mailbox } from '@bigtest/effection/dist';
 
 
-describe.only('websocket server', () => {
+describe('websocket server', () => {
   let client: WebSocket;
   let connection: Socket;
 
