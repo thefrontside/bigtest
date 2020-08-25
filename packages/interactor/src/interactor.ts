@@ -12,8 +12,7 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private ancestors: Array<Interactor<any, any>> = [];
 
-  constructor(
-    public name: string,
+  constructor( public name: string,
     private specification: S,
     private locator: Locator<E>,
     private filter: Filter<E, S>
@@ -48,7 +47,7 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
       if(filteredElements.length === 1) {
         return filteredElements[0];
       } else if(filteredElements.length === 0) {
-        throw new NoSuchElementError(`${interactor.description} does not exist`);
+        throw new NoSuchElementError(`did not find ${interactor.description}`);
       } else {
         throw new AmbiguousElementError(`${interactor.description} is ambiguous`);
       }
