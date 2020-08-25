@@ -1,6 +1,6 @@
 import { OrchestratorState } from './orchestrator/state';
 import { Atom } from '@bigtest/atom';
-import { Subscribable } from '@effection/subscription';
+import { subscribe } from '@effection/subscription';
 
 export interface LoggerOptions {
   atom: Atom<OrchestratorState>;
@@ -9,8 +9,8 @@ export interface LoggerOptions {
 
 export function* createLogger({ atom, out }: LoggerOptions) {
   let bundlerState = atom.slice('bundler');
- 
-  yield Subscribable.from(bundlerState).forEach(function* (event) {
+
+  yield subscribe(bundlerState).forEach(function* (event) {
     if(event.type === 'ERRORED'){
       out("[manifest builder] build error:", event.error);
       if (event.error.frame) {

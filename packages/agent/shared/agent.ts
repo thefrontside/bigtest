@@ -1,6 +1,6 @@
 import { Operation, resource, spawn } from 'effection';
 import { on, once } from '@effection/events';
-import { Subscribable, createSubscription } from '@effection/subscription';
+import { subscribe, Subscribable, createSubscription } from '@effection/subscription';
 import { AgentProtocol, AgentEvent, Command } from './protocol';
 
 export * from './protocol';
@@ -45,8 +45,8 @@ export class Agent implements AgentProtocol {
 
   get commands() {
     let { socket } = this;
-    return Subscribable.from(createSubscription<Command, void>(function*(publish) {
-      yield spawn(Subscribable.from(on(socket, 'message'))
+    return subscribe(createSubscription<Command, void>(function*(publish) {
+      yield spawn(subscribe(on(socket, 'message'))
         .map(([event]) => event as MessageEvent)
         .map(event => JSON.parse(event.data) as Command)
         .forEach(function*(command) {

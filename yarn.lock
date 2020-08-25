@@ -2151,38 +2151,21 @@
     tar "^2.2.2"
     tar-stream "1.6.2"
 
-"@effection/channel@^0.6.4":
-  version "0.6.4"
-  resolved "https://registry.yarnpkg.com/@effection/channel/-/channel-0.6.4.tgz#5e0742039d5712c9382b30cf73394ace2faead94"
-  integrity sha512-ySjXoFW6zWXDUumgCBuNtrLvywDjJdPoC+D+nrhSMoGQ8845fqID7KAyK/gbbGSDeK/YVQCtK0E12t+ReLDEVA==
+"@effection/channel@^0.6.6":
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/@effection/channel/-/channel-0.6.6.tgz#c0091b3bb2cc5169f958d1f1f28276080858fa69"
+  integrity sha512-m0RYvUODAgt+W2qLQEjDEKVw98VOe9s3YehqLgRYqfJlPW6ypW/NWZbb11YVWszUdEmQyOnYxO+kDSP/h/CA1w==
   dependencies:
-    "@effection/events" "^0.7.6"
-    "@effection/subscription" "^0.9.0"
+    "@effection/events" "^0.7.7"
+    "@effection/subscription" "^0.10.0"
     effection "^0.7.0"
 
-"@effection/channel@^0.6.5":
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/@effection/channel/-/channel-0.6.5.tgz#92e02160afe50d4a4c48628afed38b7511d53ccc"
-  integrity sha512-poiEeAi1uLVjPJCzM9BUCXkaa8GbwDzbwsmbUlrtapTedW3Ca5T2HoFFeW+3l+o2CxSmXRiU466mEncp36p/rg==
+"@effection/events@^0.7.4", "@effection/events@^0.7.7":
+  version "0.7.7"
+  resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.7.7.tgz#8927b8a827d57b8b377182a47f037cc2085fed89"
+  integrity sha512-84js7W+noYlInnr2IEvqA4MriW/dgIdoxDHHEwfkShqJu+nTiAS1uCZuQnLeJrrDazTf7fvnX5hSUroKUQoWSQ==
   dependencies:
-    "@effection/events" "^0.7.6"
-    "@effection/subscription" "^0.9.0"
-    effection "^0.7.0"
-
-"@effection/events@^0.7.4":
-  version "0.7.5"
-  resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.7.5.tgz#ff391395395b9cbffb3d5afdfcc228e0b6237cce"
-  integrity sha512-WAL8LTuzbogySy9tDgWiIveScVhFy/vvrCxWNgrtN9hph6PwpVKxEg55CoPvjPAz93JuC8qcotAbaWEXp2eoVQ==
-  dependencies:
-    "@effection/subscription" "^0.8.0"
-    effection "^0.7.0"
-
-"@effection/events@^0.7.6":
-  version "0.7.6"
-  resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.7.6.tgz#efa9aefc1b0eb013c225af7c46423b540e759f0b"
-  integrity sha512-pTThApQxFPFpeRqfW3RnZYASGzw80tTIw5IrUjAt9OwCZJ7WOTEOEFX7YTeh0/fw92YGAjZOKdv6PP37qKF8aQ==
-  dependencies:
-    "@effection/subscription" "^0.9.0"
+    "@effection/subscription" "^0.10.0"
     effection "^0.7.0"
 
 "@effection/fetch@^0.1.2":
@@ -2211,17 +2194,10 @@
     "@effection/events" "^0.7.4"
     effection "^0.7.0"
 
-"@effection/subscription@^0.8.0":
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-0.8.1.tgz#aa0286549b2bb833f211010db33c0324f6b59d81"
-  integrity sha512-0e9U1dAfc4vbr/aRy53VG9Qdh4gwFMcnNJYcYzjHfMu0GznaX4UjwuOdq7W29UfNUV/gTqA4ij95kPUfEwtONQ==
-  dependencies:
-    effection "^0.7.0"
-
-"@effection/subscription@^0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-0.9.0.tgz#5a7ec6ab6381b9d0698e64dc1f7f15368593b145"
-  integrity sha512-k6DuSpEnh+PYHcND/g/cGzWG+V49CEiRqlhrGiJbPdptv8DXY52UxHi6fdwmNDSTZ/GvS0JnX8lhsc4ryxmapQ==
+"@effection/subscription@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-0.10.0.tgz#72c31eec3b4e27e1ee84735842272b09c3474df4"
+  integrity sha512-RFKGGjUW96HwpaWSmQ7l26fo1LryRatJdOYLM4VIWzY3uQY7g4HmPrzGQPfxUP2tKlsaCZLiNVo03TIG+Ah8jw==
   dependencies:
     effection "^0.7.0"
 

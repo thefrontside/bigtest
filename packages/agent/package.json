@@ -44,7 +44,7 @@
     "@bigtest/effection": "^0.5.2",
     "@bigtest/effection-express": "^0.6.0",
     "@bigtest/globals": "^0.6.0",
-    "@effection/events": "^0.7.4",
+    "@effection/events": "^0.7.7",
     "bowser": "^2.9.0",
     "effection": "^0.7.0"
   },

@@ -2,7 +2,7 @@ import { describe } from 'mocha';
 import { promises as fs, existsSync } from 'fs';
 import expect from 'expect';
 import rmrf from 'rimraf';
-import { Subscribable } from '@effection/subscription';
+import { subscribe } from '@effection/subscription';
 
 import { spawn } from './world';
 import { Bundler } from '../src/index';
@@ -29,7 +29,7 @@ describe("Bundler", function() {
             globalName: "__bigtestManifest",
           }],
         ));
-        await spawn(Subscribable.from(bundler).filter(f => f.type === 'UPDATE').first());
+        await spawn(subscribe(bundler).filter(f => f.type === 'UPDATE').first());
       });
 
       it('builds the sources into the output directory', () => {
@@ -42,7 +42,7 @@ describe("Bundler", function() {
         });
 
         it('emits an error event', async () => {
-          let message = spawn(Subscribable.from(bundler).filter(f => f.type === 'ERROR').first())
+          let message = spawn(subscribe(bundler).filter(f => f.type === 'ERROR').first())
           await expect(message).resolves.toHaveProperty('type', 'ERROR');
         });
       });
@@ -62,20 +62,20 @@ describe("Bundler", function() {
       });
 
       it('emits an error', async () => {
-        let message = spawn(Subscribable.from(bundler).filter(f => f.type === 'ERROR').first())
-        
+        let message = spawn(subscribe(bundler).filter(f => f.type === 'ERROR').first())
+
         await expect(message).resolves.toHaveProperty('type', 'ERROR');
       });
 
       describe('fixing the error', () => {
         beforeEach(async () => {
-          await spawn(Subscribable.from(bundler).first());
+          await spawn(subscribe(bundler).first());
           await fs.writeFile("./build/test/sources/input.js", "const foo = 'bar';\nexport default foo;\n");
         });
 
         it('emits an update event', async () => {
-          let message = spawn(Subscribable.from(bundler).filter(f => f.type === 'UPDATE').first())
-          
+          let message = spawn(subscribe(bundler).filter(f => f.type === 'UPDATE').first())
+
           await expect(message).resolves.toHaveProperty('type', 'UPDATE');
         });
       });
@@ -94,7 +94,7 @@ describe("Bundler", function() {
             globalName: "__bigtestManifest",
           }],
         ));
-        await spawn(Subscribable.from(bundler).filter(f => f.type === 'UPDATE').first());
+        await spawn(subscribe(bundler).filter(f => f.type === 'UPDATE').first());
       });
 
       it('builds the sources into the output directory', () => {
@@ -116,8 +116,8 @@ describe("Bundler", function() {
       });
 
       it('does not typecheck, just transform', async () => {
-        let message = spawn(Subscribable.from(bundler).filter(f => f.type === 'UPDATE').first())
-        
+        let message = spawn(subscribe(bundler).filter(f => f.type === 'UPDATE').first())
+
         await expect(message).resolves.toHaveProperty('type', 'UPDATE');
       });
     })
@@ -138,8 +138,8 @@ describe("Bundler", function() {
     });
 
     it('notifies that a new build is available', async () => {
-      let message = spawn(Subscribable.from(bundler).filter(f => f.type === 'UPDATE').first())
-      
+      let message = spawn(subscribe(bundler).filter(f => f.type === 'UPDATE').first())
+
       await expect(message).resolves.toHaveProperty('type', 'UPDATE');
     });
   });

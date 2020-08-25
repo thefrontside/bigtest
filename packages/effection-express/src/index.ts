@@ -42,7 +42,7 @@ export class Socket implements Subscribable<any, void> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   *[SymbolSubscribable](): Operation<Subscription<any, void>> {
     let { raw } = this;
-    let messages = Subscribable.from(on<MessageEvent[]>(raw, 'message'))
+    let messages = subscribe(on<MessageEvent[]>(raw, 'message'))
       .map(([event]) => JSON.parse(event.data));
     return yield subscribe(messages);
   }

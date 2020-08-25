@@ -29,7 +29,7 @@
     "@bigtest/atom": "^0.8.0",
     "@bigtest/driver": "^0.5.3",
     "@effection/fetch": "^0.1.2",
-    "@effection/node": "^0.6.5",
+    "@effection/node": "^0.8.0",
     "abort-controller": "^3.0.0",
     "chromedriver": "~83.0.0",
     "effection": "^0.7.0",
