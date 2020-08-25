@@ -1,5 +1,6 @@
 export type LocatorFn<E extends Element> = (element: E) => string;
 import { FilterImplementation, InteractorSpecification } from './specification';
+import { noCase } from 'change-case';
 
 export class Filter<E extends Element, S extends InteractorSpecification<E>> {
   constructor(
@@ -15,12 +16,12 @@ export class Filter<E extends Element, S extends InteractorSpecification<E>> {
       return entries.map(([key, value]) => {
         if(typeof(value) === 'boolean') {
           if(value) {
-            return `which is ${key}`;
+            return `which is ${noCase(key)}`;
           } else {
-            return `which is not ${key}`;
+            return `which is not ${noCase(key)}`;
           }
         } else {
-          return `with ${key} ${JSON.stringify(value)}`
+          return `with ${noCase(key)} ${JSON.stringify(value)}`
         }
       }).join(' and ');
     }
