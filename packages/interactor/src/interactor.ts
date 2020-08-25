@@ -42,14 +42,25 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
     return this.ancestorsAndSelf.reduce((parentElement: Element, interactor) => {
       let elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector || defaultSelector));
       let locatedElements = elements.filter((element) => interactor.locator.matches(element));
+
+
       let filteredElements = locatedElements.filter((element) => interactor.filter.matches(element));
 
       if(filteredElements.length === 1) {
         return filteredElements[0];
-      } else if(filteredElements.length === 0) {
-        throw new NoSuchElementError(`did not find ${interactor.description}`);
-      } else {
+      } else if(filteredElements.length > 1) {
         throw new AmbiguousElementError(`${interactor.description} is ambiguous`);
+      } else if(elements.length === 0) {
+        throw new NoSuchElementError(`did not find ${interactor.description}`);
+      } else if(locatedElements.length === 0) {
+        let alternatives = elements.map((element) => JSON.stringify(interactor.locator.locatorFn(element)));
+        if(alternatives.length === 1) {
+          throw new NoSuchElementError(`did not find ${interactor.description}, did you mean ${alternatives[0]}?`);
+        } else {
+          throw new NoSuchElementError(`did not find ${interactor.description}, did you mean one of ${alternatives.join(', ')}?`);
+        }
+      } else {
+        throw new NoSuchElementError(`did not find ${interactor.description}`);
       }
     }, bigtestGlobals.document.documentElement) as E;
   }

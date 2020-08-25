@@ -79,10 +79,11 @@ describe('@bigtest/interactor', () => {
     it('can determine whether an element exists based on the interactor', async () => {
       dom(`
         <p><a href="/foobar">Foo Bar</a></p>
+        <p><a href="/foobar">Quox</a></p>
       `);
 
       await expect(Link('Foo Bar').exists()).resolves.toBeUndefined();
-      await expect(Link('Blah').exists()).rejects.toHaveProperty('message', 'did not find link "Blah"');
+      await expect(Link('Blah').exists()).rejects.toHaveProperty('message', 'did not find link "Blah", did you mean one of "Foo Bar", "Quox"?');
     });
 
     it('can use locators', async () => {
@@ -91,7 +92,7 @@ describe('@bigtest/interactor', () => {
       `);
 
       await expect(Link.byTitle('Monkey').exists()).resolves.toBeUndefined();
-      await expect(Link.byTitle('Zebra').exists()).rejects.toHaveProperty('message', 'did not find link by title "Zebra"');
+      await expect(Link.byTitle('Zebra').exists()).rejects.toHaveProperty('message', 'did not find link by title "Zebra", did you mean "Monkey"?');
     });
 
     it('can wait for condition to become true', async () => {
@@ -154,8 +155,8 @@ describe('@bigtest/interactor', () => {
       await expect(Div("foo").find(Link("Foo")).exists()).resolves.toBeUndefined();
       await expect(Div("bar").find(Link("Bar")).exists()).resolves.toBeUndefined();
 
-      await expect(Div("foo").find(Link("Bar")).exists()).rejects.toHaveProperty('message', 'did not find link "Bar" within div "foo"');
-      await expect(Div("bar").find(Link("Foo")).exists()).rejects.toHaveProperty('message', 'did not find link "Foo" within div "bar"');
+      await expect(Div("foo").find(Link("Bar")).exists()).rejects.toHaveProperty('message', 'did not find link "Bar" within div "foo", did you mean "Foo"?');
+      await expect(Div("bar").find(Link("Foo")).exists()).rejects.toHaveProperty('message', 'did not find link "Foo" within div "bar", did you mean "Bar"?');
     });
 
     it('is rejected if the parent interactor cannot be found', async () => {
@@ -165,7 +166,7 @@ describe('@bigtest/interactor', () => {
         </div>
       `);
 
-      await expect(Div("blah").find(Link("Foo")).exists()).rejects.toHaveProperty('message', 'did not find div "blah"');
+      await expect(Div("blah").find(Link("Foo")).exists()).rejects.toHaveProperty('message', 'did not find div "blah", did you mean "foo"?');
     });
 
     it('can be used with interactors with disjoint element types', async () => {
@@ -194,10 +195,10 @@ describe('@bigtest/interactor', () => {
       `);
 
       await expect(Div("test").find(Div("foo").find(Link("Foo"))).exists()).resolves.toBeUndefined();
-      await expect(Div("test").find(Div("foo").find(Link("Bar"))).exists()).rejects.toHaveProperty('message', 'did not find link "Bar" within div "foo" within div "test"');
+      await expect(Div("test").find(Div("foo").find(Link("Bar"))).exists()).rejects.toHaveProperty('message', 'did not find link "Bar" within div "foo" within div "test", did you mean "Foo"?');
 
       await expect(Div("test").find(Div("foo")).find(Link("Foo")).exists()).resolves.toBeUndefined();
-      await expect(Div("test").find(Div("foo")).find(Link("Bar")).exists()).rejects.toHaveProperty('message', 'did not find link "Bar" within div "foo" within div "test"');
+      await expect(Div("test").find(Div("foo")).find(Link("Bar")).exists()).rejects.toHaveProperty('message', 'did not find link "Bar" within div "foo" within div "test", did you mean \"Foo\"?');
     });
 
     it('cannot match an element outside of scope', async () => {
