@@ -1,6 +1,6 @@
 import { Operation, resource, main } from 'effection';
 import { Channel } from '@effection/channel';
-import { Subscribable } from '@effection/subscription';
+import { subscribe } from '@effection/subscription';
 import { express, Socket } from '@bigtest/effection-express';
 import { Mailbox } from '@bigtest/effection';
 
@@ -38,7 +38,6 @@ function assertWorldExists(world: World | null): asserts world is World {
 
 export class TestConnection {
   private incoming = new Channel<Message>();
-  private messages = Subscribable.from(this.incoming);
 
   static *create(socket: Socket): Operation<TestConnection> {
     let connection = new TestConnection(socket);
@@ -54,7 +53,7 @@ export class TestConnection {
   constructor(private socket: Socket) {}
 
   receive() {
-    return run(this.messages.first());
+    return run(subscribe(this.incoming).first());
   }
 
   send(response: Response) {
@@ -79,7 +78,7 @@ export class TestServer {
   }
 
   async connection() {
-    let connection = await run(Subscribable.from(this.connections).first());
+    let connection = await run(subscribe(this.connections).first());
     if (!connection) {
       throw new Error(`connection stream closed while still waiting`);
     } else {

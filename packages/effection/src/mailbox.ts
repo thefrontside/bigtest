@@ -5,6 +5,7 @@ import { compile } from './pattern';
 export { any } from './pattern';
 
 import { on } from '@effection/events';
+import { subscribe as subscriptionSubscribe } from '@effection/subscription';
 
 export interface SubscriptionMessage {
   event: string;
@@ -79,8 +80,6 @@ export class Mailbox<T = any> {
   }
 }
 
-import { Subscribable} from '@effection/subscription';
-
 export function *subscribe(
   mailbox: Mailbox<SubscriptionMessage>,
   source: EventEmitter | EventTarget,
@@ -88,7 +87,7 @@ export function *subscribe(
 ): Operation {
   return yield spawn(function*() {
     for (let name of typeof events === 'string' ? [events] : events) {
-      let pipeline = Subscribable.from(on(source, name))
+      let pipeline = subscriptionSubscribe(on(source, name))
         .map(args => ({ event: name, args }))
         .forEach(function*(value) {
           mailbox.send(value);

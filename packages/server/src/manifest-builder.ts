@@ -1,6 +1,6 @@
 import { bigtestGlobals } from '@bigtest/globals';
 import { Operation } from 'effection';
-import { Subscribable } from '@effection/subscription';
+import { subscribe } from '@effection/subscription';
 import { once } from '@effection/events';
 import { Deferred } from '@bigtest/effection';
 import { Bundler } from '@bigtest/bundler';
@@ -79,7 +79,7 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
   manifest.fileName = fileName;
 
   let slice = options.atom.slice('manifest');
-  
+
   slice.update(() => ({ ...manifest }));
 
   return distPath;
@@ -89,7 +89,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
   let bundlerSlice = options.atom.slice('bundler');
 
   bundlerSlice.set({ type: 'UNBUNDLED' });
-  
+
   let bundler: Bundler = yield Bundler.create(
     [{
       entry: options.srcPath,
@@ -98,18 +98,18 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
     }],
   );
 
-  yield Subscribable.from(bundler).forEach(function* (message) {
+  yield subscribe(bundler).forEach(function* (message) {
     switch (message.type) {
       case 'START':
         console.debug("[manifest builder] received bundler start");
-        
+
         bundlerSlice.update(() => ({ type: 'BUILDING', warnings: [] }));
         break;
       case 'UPDATE':
         console.debug("[manifest builder] received bundle update");
-        
+
         let path: string = yield processManifest(options);
-        
+
         bundlerSlice.update((previous) => {
           assertCanTransition(previous?.type, { to: 'BUILDING' });
 
@@ -122,15 +122,15 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
         console.debug("[manifest builder] received bundle error");
 
         bundlerSlice.update(() => ({ type: 'ERRORED', error: message.error }));
-        break; 
+        break;
       case 'WARN':
         console.debug("received bundle warning");
-        
+
         bundlerSlice.update((previous) => {
           assertBundlerState(previous.type, {is: ['BUILDING', 'GREEN']});
 
           let warnings = !!previous.warnings ? [...previous.warnings, message.warning] : [message.warning];
-          
+
           return {...previous, warnings };
         });
         break;

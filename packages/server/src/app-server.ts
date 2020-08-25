@@ -27,6 +27,7 @@ export function* createAppServer(options: AppServerOptions): Operation {
     cwd: options.dir,
     detached: true,
     env: Object.assign({}, process.env, options.env),
+    shell: true
   });
 
   while(!(yield isReachable(options.port))) {

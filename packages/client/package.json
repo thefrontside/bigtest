@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@bigtest/effection": "^0.5.1",
-    "@effection/events": "^0.7.6",
+    "@effection/events": "^0.7.7",
     "effection": "^0.7.0",
     "websocket": "^1.0.31"
   },
