@@ -8,11 +8,13 @@ export function formatTable(options: TableOptions) {
     return Math.max(h.length, ...options.rows.map((r) => r[index].length));
   });
 
-  let result = '';
-  result += '| ' + options.headers.map((h, index) => h.padEnd(columnWidths[index])).join(' | ') + ' |\n';
-  result += '| ' + options.headers.map((h, index) => "".padEnd(columnWidths[index], '-')).join(' | ') + ' |\n';
-  for(let row of options.rows) {
-    result += '| ' + row.map((r, index) => r.padEnd(columnWidths[index])).join(' | ') + ' |\n';
+  let formatRow = (cells: string[], padString = ' ') => {
+    return '| ' + cells.map((c, index) => c.padEnd(columnWidths[index], padString)).join(' | ') + ' |';
   }
-  return result.trim();
+
+  return [
+    formatRow(options.headers),
+    formatRow(options.headers.map(() => ""), '-'),
+    ...options.rows.map((row) => formatRow(row))
+  ].join('\n');
 }
