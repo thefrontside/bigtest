@@ -16,11 +16,17 @@ export type Summary = {
 export function icon(event: RunResultEvent) {
   if(event.type.match(/^:running$/)) {
     return "↻";
-  } else if(event.status === 'ok') {
+  } 
+
+  return statusIcon(event.status || '');
+}
+
+export function statusIcon(status: string) {
+  if(status === 'ok') {
     return "✓";
-  } else if(event.status === 'failed') {
+  } else if(status === 'failed') {
     return "⨯";
-  } else if(event.status === 'disregarded') {
+  } else if(status === 'disregarded') {
     return "⋯";
   }
 }
@@ -29,6 +35,7 @@ export type StreamingFormatter = {
   type: "streaming";
   header(): void;
   event(event: RunResultEvent, config: ProjectOptions): void;
+  ci(tree: any, config: ProjectOptions): void;
   footer(summary: Summary): void;
 }
 

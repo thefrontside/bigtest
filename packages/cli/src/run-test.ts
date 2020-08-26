@@ -60,6 +60,67 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
 
   let endTime = performance.now();
 
+  let treeQuery = yield client.query(`
+  fragment results on TestResult {  
+    description
+    status
+    steps {
+      description
+      status
+      timeout
+      error {
+        message
+        fileName
+        columnNumber
+        stack
+      }
+    }
+    assertions {
+      description
+      status
+    }
+  }
+  
+  {
+    testRuns {
+      agents {
+        agent { agentId }
+        result {
+          ...results
+          children {
+            ...results
+            children {
+              ...results
+              children {
+                ...results
+                children {
+                  ...results
+                  children {
+                    ...results
+                    children {
+                      ...results
+                      children {
+                        ...results
+                        children {
+                          ...results
+                          children {
+                            ...results
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }`);
+
+  formatter.ci(treeQuery.testRuns[treeQuery.testRuns.length - 1], config);
+
   formatter.footer({
     status: testRunStatus || 'failed',
     duration: endTime - startTime,

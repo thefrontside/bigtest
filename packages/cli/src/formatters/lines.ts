@@ -1,5 +1,5 @@
 import { ProjectOptions } from '@bigtest/project';
-import { StreamingFormatter, Counts, RunResultEvent, icon } from '../format-helpers';
+import { StreamingFormatter, Counts, RunResultEvent, icon, statusIcon } from '../format-helpers';
 
 function formatFooterCounts(label: string, counts: Counts): string {
   return [
@@ -39,6 +39,44 @@ function formatEvent(event: RunResultEvent, config: ProjectOptions) {
   return config.showTree ? result : '.';
 }
 
+function recursiveChildrenResults(children: object[], level = 0) {
+  let returnString = '';
+  let indent = 2+ (level * 2);
+
+  children.forEach((child: Record<string, any>) => {
+    let descriptionMaxLength = child.description.length + indent;
+    returnString += `🧪${child.description}\n`.padStart(descriptionMaxLength);
+
+    child.steps.forEach((step: Record<string, any>) => {
+      let stepString = `↪ ${step.description}\n`;
+      let maxLength = stepString.length + indent;
+      returnString += stepString.padStart(maxLength);
+
+      if (step.status === 'failed') {
+        let errorMessage = `${step.error?.message}\n`;
+        let errorMessageMaxLength = errorMessage.length + indent + 2;
+        returnString += `${errorMessage}`.padStart(errorMessageMaxLength);
+
+        let errorStack = `${step.error?.stack}\n`;
+        let errorStackMaxLength = errorStack.length + indent + 2;
+        returnString += `${errorStack}`.padStart(errorStackMaxLength);
+       }
+    });
+
+    child.assertions.forEach((assertion: Record<string, any>) => {
+      let assertionString = `${statusIcon(assertion.status || '')} ${assertion.description}\n`
+      let maxLength = assertionString.length + indent;
+      returnString += assertionString.padStart(maxLength);
+    });
+
+    if (child.children?.length) {
+      returnString += recursiveChildrenResults(child.children, level + 1);
+    }
+  });
+
+  return returnString;
+}
+
 const formatter: StreamingFormatter = {
   type: 'streaming',
 
@@ -50,6 +88,12 @@ const formatter: StreamingFormatter = {
     if(event.type === 'step:result' || event.type === 'assertion:result') {
       console.log(formatEvent(event, config));
     }
+  },
+
+  ci(tree) {
+    let agent = tree.agents[0];
+    let returnString = recursiveChildrenResults(agent.result.children);
+    console.log(returnString);
   },
 
   footer(summary) {
