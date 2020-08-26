@@ -58,6 +58,8 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
     }
   }
 
+  console.log('\n');
+
   let endTime = performance.now();
 
   let treeQuery = yield client.query(`

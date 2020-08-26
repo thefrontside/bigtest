@@ -43,7 +43,11 @@ function formatEvent(event: RunResultEvent, config: ProjectOptions) {
     }
   }
 
-  return config.showTree ? result : '.';
+  if (config.showTree) { 
+    console.log(result);
+  } else {
+    process.stdout.write('.');
+  }
 }
 
 function recursiveChildrenResults(children: object[], level = 0) {
@@ -86,7 +90,7 @@ const formatter: StreamingFormatter = {
 
   event(event, config) {
     if(event.type === 'step:result' || event.type === 'assertion:result') {
-      console.log(formatEvent(event, config));
+      formatEvent(event, config);
     }
   },
 
