@@ -225,7 +225,12 @@ describe('@bigtest/interactor', () => {
       `);
 
       await expect(TextField('Email').is({ value: 'jonas@example.com' })).resolves.toBeUndefined();
-      await expect(TextField('Email').is({ value: 'incorrect@example.com' })).rejects.toHaveProperty('message', 'text field "Email" does not match filters: with value "incorrect@example.com"');
+      await expect(TextField('Email').is({ value: 'incorrect@example.com' })).rejects.toHaveProperty('message', [
+        'text field "Email" does not match filters:', '',
+        '| value: "incorrect@example.com" | enabled: true |',
+        '| ------------------------------ | ------------- |',
+        '| ⨯ "jonas@example.com"          | ✓ true        |',
+      ].join('\n'))
     });
   });
 
@@ -236,7 +241,12 @@ describe('@bigtest/interactor', () => {
       `);
 
       await expect(TextField('Email').has({ value: 'jonas@example.com' })).resolves.toBeUndefined();
-      await expect(TextField('Email').has({ value: 'incorrect@example.com' })).rejects.toHaveProperty('message', 'text field "Email" does not match filters: with value "incorrect@example.com"');
+      await expect(TextField('Email').has({ value: 'incorrect@example.com' })).rejects.toHaveProperty('message', [
+        'text field "Email" does not match filters:', '',
+        '| value: "incorrect@example.com" | enabled: true |',
+        '| ------------------------------ | ------------- |',
+        '| ⨯ "jonas@example.com"          | ✓ true        |',
+      ].join('\n'))
     });
   });
 
@@ -338,7 +348,12 @@ describe('@bigtest/interactor', () => {
 
       await expect(TextField('Email').exists()).resolves.toBeUndefined();
       await expect(TextField('Email', { value: 'jonas@example.com' }).exists()).resolves.toBeUndefined();
-      await expect(TextField('Email', { value: 'incorrect@example.com' }).exists()).rejects.toHaveProperty('message', 'did not find text field "Email" with value "incorrect@example.com"');
+      await expect(TextField('Email', { value: 'incorrect@example.com' }).exists()).rejects.toHaveProperty('message', [
+        'did not find text field "Email" with value "incorrect@example.com", did you mean one of:', '',
+        '| text field | value: "incorrect@example.com" | enabled: true |',
+        '| ---------- | ------------------------------ | ------------- |',
+        '| ✓ "Email"  | ⨯ "jonas@example.com"          | ✓ true        |',
+      ].join('\n'))
     });
 
     it('can apply default values', async () => {
@@ -347,8 +362,20 @@ describe('@bigtest/interactor', () => {
         <input id="Password" disabled="disabled" value='test1234'/>
       `);
 
-      await expect(TextField('Password').exists()).rejects.toHaveProperty('message', 'did not find text field "Password"');
-      await expect(TextField('Password', { enabled: true }).exists()).rejects.toHaveProperty('message', 'did not find text field "Password" which is enabled');
+      await expect(TextField('Password').exists()).rejects.toHaveProperty('message', [
+        'did not find text field "Password", did you mean one of:', '',
+        '| text field   | enabled: true |',
+        '| ------------ | ------------- |',
+        '| ✓ "Password" | ⨯ false       |',
+        '| ⨯ "Email"    | ✓ true        |',
+      ].join('\n'))
+      await expect(TextField('Password', { enabled: true }).exists()).rejects.toHaveProperty('message', [
+        'did not find text field "Password" which is enabled, did you mean one of:', '',
+        '| text field   | enabled: true |',
+        '| ------------ | ------------- |',
+        '| ✓ "Password" | ⨯ false       |',
+        '| ⨯ "Email"    | ✓ true        |',
+      ].join('\n'))
       await expect(TextField('Password', { enabled: false }).exists()).resolves.toBeUndefined();
     });
 
@@ -358,8 +385,20 @@ describe('@bigtest/interactor', () => {
         <input id="Password" disabled="disabled" value='test1234'/>
       `);
 
-      await expect(TextField('Password', { enabled: false, value: 'incorrect' }).exists()).rejects.toHaveProperty('message', 'did not find text field "Password" which is not enabled and with value "incorrect"');
-      await expect(TextField('Password', { enabled: true, value: 'test1234' }).exists()).rejects.toHaveProperty('message', 'did not find text field "Password" which is enabled and with value "test1234"');
+      await expect(TextField('Password', { enabled: false, value: 'incorrect' }).exists()).rejects.toHaveProperty('message', [
+        'did not find text field "Password" which is not enabled and with value "incorrect", did you mean one of:', '',
+        '| text field   | enabled: false | value: "incorrect"    |',
+        '| ------------ | -------------- | --------------------- |',
+        '| ✓ "Password" | ✓ false        | ⨯ "test1234"          |',
+        '| ⨯ "Email"    | ⨯ true         | ⨯ "jonas@example.com" |',
+      ].join('\n'))
+      await expect(TextField('Password', { enabled: true, value: 'test1234' }).exists()).rejects.toHaveProperty('message', [
+        'did not find text field "Password" which is enabled and with value "test1234", did you mean one of:', '',
+        '| text field   | enabled: true | value: "test1234"     |',
+        '| ------------ | ------------- | --------------------- |',
+        '| ✓ "Password" | ⨯ false       | ✓ "test1234"          |',
+        '| ⨯ "Email"    | ✓ true        | ⨯ "jonas@example.com" |',
+      ].join('\n'))
       await expect(TextField('Password', { enabled: false, value: 'test1234' }).exists()).resolves.toBeUndefined();
     });
   });

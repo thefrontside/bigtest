@@ -11,8 +11,4 @@ export class Locator<E extends Element> {
       return `${JSON.stringify(this.value)}`;
     }
   }
-
-  matches(element: E): boolean {
-    return this.locatorFn(element) === this.value;
-  }
 }
