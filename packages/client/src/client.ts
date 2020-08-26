@@ -5,7 +5,7 @@ import { Mailbox } from '@bigtest/effection';
 import { on, once } from '@effection/events';
 
 import { Message, isErrorResponse, isDataResponse, isDoneResponse } from './protocol';
-import { ConnectionAttemptFailed } from './errors';
+import { NoServerError } from './errors';
 
 let responseIds = 0;
 
@@ -20,8 +20,8 @@ export class Client {
     yield spawn(function* detectStartupError(): Operation<void> {
       let [error] = yield once(socket, 'error');
       
-      if (isYaetiError(error)) {
-        throw new ConnectionAttemptFailed(`Could not connect to server at ${url}`);
+      if (isErrorEvent(error)) {
+        throw new NoServerError(`Could not connect to server at ${url}`);
       } else {
         throw error;
       }
@@ -105,10 +105,10 @@ interface Query {
   live?: boolean;
 }
 
-interface YaetiError {
+interface ErrorEvent {
   type: 'error';
 }
 
-function isYaetiError(error: { type?: 'error' }): error is YaetiError {
+function isErrorEvent(error: { type?: 'error' }): error is ErrorEvent {
   return error.type === 'error';
 }

@@ -17,8 +17,8 @@ describe('@bigtest/client', () => {
       }
     });
 
-    it('throws a ConnectionAttemptFailed error', () => {
-      expect(error).toHaveProperty('name', 'ConnectionAttemptFailed');
+    it('throws a NoServerError', () => {
+      expect(error).toHaveProperty('name', 'NoServerError');
     });
 
   });

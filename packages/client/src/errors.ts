@@ -1,3 +1,3 @@
-export class ConnectionAttemptFailed extends Error {
-  get name() { return 'ConnectionAttemptFailed' }
+export class NoServerError extends Error {
+  get name() { return 'NoServerError' }
 }
