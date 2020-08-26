@@ -15,7 +15,7 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
     try {
       return yield Client.create(uri);
     } catch (e) {
-      if (e.message.includes('websocket server closed connection unexpectedly')) {
+      if (e.name === 'ConnectionAttemptFailed') {
         throw new MainError({ 
           exitCode: 1,
           message: `Could not connect to BigTest server on ${uri}. Run "bigtest server" to start the server.`
