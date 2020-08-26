@@ -1,3 +1,4 @@
+import * as chalk from 'chalk';
 import { ProjectOptions } from '@bigtest/project';
 import { ResultStatus } from '@bigtest/suite'
 import { RunResultEvent } from './query'
@@ -23,9 +24,9 @@ export function icon(event: RunResultEvent) {
 
 export function statusIcon(status: string) {
   if(status === 'ok') {
-    return "✓";
+    return chalk.green("✓");
   } else if(status === 'failed') {
-    return "⨯";
+    return chalk.red("⨯");
   } else if(status === 'disregarded') {
     return "⋯";
   }

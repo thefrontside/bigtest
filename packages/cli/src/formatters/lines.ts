@@ -1,5 +1,12 @@
+import * as chalk from 'chalk';
+import * as _log from 'ololog';
 import { ProjectOptions } from '@bigtest/project';
 import { StreamingFormatter, Counts, RunResultEvent, icon, statusIcon } from '../format-helpers';
+
+let log = _log.configure ({ 
+  indent: { pattern: '  ' },
+  locate: false
+});
 
 function formatFooterCounts(label: string, counts: Counts): string {
   return [
@@ -40,41 +47,34 @@ function formatEvent(event: RunResultEvent, config: ProjectOptions) {
 }
 
 function recursiveChildrenResults(children: object[], level = 0) {
-  let returnString = '';
-  let indent = 2+ (level * 2);
+  let indent = 1 + (level * 1);
 
   children.forEach((child: Record<string, any>) => {
-    let descriptionMaxLength = child.description.length + indent;
-    returnString += `🧪${child.description}\n`.padStart(descriptionMaxLength);
+    log.indent(level * 1)(`☲ ${child.description}`);
 
     child.steps.forEach((step: Record<string, any>) => {
-      let stepString = `↪ ${step.description}\n`;
-      let maxLength = stepString.length + indent;
-      returnString += stepString.padStart(maxLength);
+      let icon = step.status === 'failed' ? chalk.red('⨯') : '↪';
+      let stepString = `${icon} ${step.description}`;
+      log.indent(indent)(stepString);
 
       if (step.status === 'failed') {
-        let errorMessage = `${step.error?.message}\n`;
-        let errorMessageMaxLength = errorMessage.length + indent + 2;
-        returnString += `${errorMessage}`.padStart(errorMessageMaxLength);
+        let errorMessage = `${step.error?.message}`;
+        log.indent(indent + 2)(errorMessage);
 
-        let errorStack = `${step.error?.stack}\n`;
-        let errorStackMaxLength = errorStack.length + indent + 2;
-        returnString += `${errorStack}`.padStart(errorStackMaxLength);
+        let errorStack = `${step.error?.stack}`;
+        log.indent(indent + 2).bright.red.error.noLocate(errorStack);
        }
     });
 
     child.assertions.forEach((assertion: Record<string, any>) => {
-      let assertionString = `${statusIcon(assertion.status || '')} ${assertion.description}\n`
-      let maxLength = assertionString.length + indent;
-      returnString += assertionString.padStart(maxLength);
+      let assertionString = `${statusIcon(assertion.status || '')} ${assertion.description}`;
+      log.indent(indent)(assertionString);
     });
 
     if (child.children?.length) {
-      returnString += recursiveChildrenResults(child.children, level + 1);
+      return recursiveChildrenResults(child.children, level + 1);
     }
   });
-
-  return returnString;
 }
 
 const formatter: StreamingFormatter = {
@@ -92,8 +92,7 @@ const formatter: StreamingFormatter = {
 
   ci(tree) {
     let agent = tree.agents[0];
-    let returnString = recursiveChildrenResults(agent.result.children);
-    console.log(returnString);
+    return recursiveChildrenResults(agent.result.children);
   },
 
   footer(summary) {
