@@ -6,7 +6,6 @@ import {
   StreamingFormatter,
   Counts,
   RunResultEvent,
-  icon,
   statusIcon
 } from "../format-helpers";
 
@@ -24,7 +23,7 @@ function formatFooterCounts(label: string, counts: Counts): string {
   ].join(" ");
 }
 
-function formatEvent(event: RunResultEvent, config: ProjectOptions) {
+function formatEvent(event: RunResultEvent) {
   let result = `${icon(event)} [${event.type.split(':')[0]}]`.padEnd(14);
 
   if(event.path) {
@@ -107,9 +106,9 @@ const formatter: StreamingFormatter = {
     // no op
   },
 
-  event(event, config) {
+  event(event) {
     if (event.type === "step:result" || event.type === "assertion:result") {
-      formatEvent(event, config);
+      formatEvent(event);
     }
   },
 

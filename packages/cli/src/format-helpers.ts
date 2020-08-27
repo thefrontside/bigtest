@@ -36,8 +36,8 @@ export type StreamingFormatter = {
   type: "streaming";
   header(): void;
   event(event: RunResultEvent, config: ProjectOptions): void;
-  ci(tree: any, config: ProjectOptions): void;
+  ci(tree: Record<string, any>, config: ProjectOptions): void;
   footer(summary: Summary): void;
-}
+};
 
 export type Formatter = StreamingFormatter;
