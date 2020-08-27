@@ -1,5 +1,6 @@
 export type LocatorFn<E extends Element> = (element: E) => string;
 import { FilterImplementation, InteractorSpecification } from './specification';
+import { noCase } from 'change-case';
 
 export class Filter<E extends Element, S extends InteractorSpecification<E>> {
   constructor(
@@ -15,32 +16,29 @@ export class Filter<E extends Element, S extends InteractorSpecification<E>> {
       return entries.map(([key, value]) => {
         if(typeof(value) === 'boolean') {
           if(value) {
-            return `which is ${key}`;
+            return `which is ${noCase(key)}`;
           } else {
-            return `which is not ${key}`;
+            return `which is not ${noCase(key)}`;
           }
         } else {
-          return `with ${key} ${JSON.stringify(value)}`
+          return `with ${noCase(key)} ${JSON.stringify(value)}`
         }
       }).join(' and ');
     }
   }
 
-  matches(element: E): boolean {
-    return Object.entries(this.specification.filters || {}).every(([key, definition]) => {
-      let value;
-      if(key in this.filters) {
-        value = (this.filters as any)[key]; // eslint-disable-line @typescript-eslint/no-explicit-any
-      } else if(typeof(definition) !== 'function' && 'default' in definition) {
-        value = definition.default;
-      } else {
-        return true;
+  get all(): FilterImplementation<E, S> {
+    let filter: Record<string, unknown> = Object.assign({}, this.filters);
+    for(let key in this.specification.filters) {
+      let definition = this.specification.filters[key];
+      if(!(key in this.filters) && typeof(definition) !== 'function' && 'default' in definition) {
+        filter[key] = definition.default;
       }
-      if(typeof(definition) === 'function') {
-        return definition(element) === value;
-      } else {
-        return definition.apply(element) === value;
-      }
-    });
+    }
+    return filter as FilterImplementation<E, S>;
+  }
+
+  asTableHeader(): string[] {
+    return Object.entries(this.all).map(([key, value]) => `${key}: ${JSON.stringify(value)}`);
   }
 }

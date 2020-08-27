@@ -3,20 +3,20 @@ import { converge } from './converge';
 import { InteractorSpecification, FilterImplementation } from './specification';
 import { Locator } from './locator';
 import { Filter } from './filter';
-import { NoSuchElementError, AmbiguousElementError, NotAbsentError, FilterNotMatchingError } from './errors';
+import { MatchFilter } from './match';
+import { resolve } from './resolve';
+import { formatTable } from './format-table';
+import { NotAbsentError, FilterNotMatchingError } from './errors';
 import { interaction, Interaction } from './interaction';
-
-const defaultSelector = 'div';
 
 export class Interactor<E extends Element, S extends InteractorSpecification<E>> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private ancestors: Array<Interactor<any, any>> = [];
 
-  constructor(
-    public name: string,
-    private specification: S,
-    private locator: Locator<E>,
-    private filter: Filter<E, S>
+  constructor( public name: string,
+    public specification: S,
+    public locator: Locator<E>,
+    public filter: Filter<E, S>
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,19 +40,7 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
   }
 
   private unsafeSyncResolve(): E {
-    return this.ancestorsAndSelf.reduce((parentElement: Element, interactor) => {
-      let elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector || defaultSelector));
-      let locatedElements = elements.filter((element) => interactor.locator.matches(element));
-      let filteredElements = locatedElements.filter((element) => interactor.filter.matches(element));
-
-      if(filteredElements.length === 1) {
-        return filteredElements[0];
-      } else if(filteredElements.length === 0) {
-        throw new NoSuchElementError(`${interactor.description} does not exist`);
-      } else {
-        throw new AmbiguousElementError(`${interactor.description} is ambiguous`);
-      }
-    }, bigtestGlobals.document.documentElement) as E;
+    return this.ancestorsAndSelf.reduce(resolve, bigtestGlobals.document.documentElement) as E;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -92,10 +80,10 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
     return interaction(`${this.description} matches filters: ${filter.description}`, () => {
       return converge(() => {
         let element = this.unsafeSyncResolve();
-        if(filter.matches(element)) {
-          return;
-        } else {
-          throw new FilterNotMatchingError(`${this.description} does not match filters: ${filter.description}`);
+        let match = new MatchFilter(filter, element);
+        if(!match.matches) {
+          let table = formatTable({ headers: filter.asTableHeader(), rows: [match.asTableRow()] });
+          throw new FilterNotMatchingError(`${this.description} does not match filters:\n\n${table}`);
         }
       });
     });
