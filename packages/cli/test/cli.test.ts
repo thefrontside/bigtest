@@ -33,6 +33,24 @@ describe('@bigtest/cli', function() {
   });
 
   describe('test', () => {
+
+    describe('running without server', () => {
+      let runChild: Process;
+
+      beforeEach(async () => {
+        runChild = await World.spawn(run('test'));
+        await World.spawn(runChild.join());
+      });
+
+      afterEach(async () => {
+        await World.spawn(runChild.close());
+      });
+
+      it("provides a nice error with advice to start `bigtest server`", () => {
+        expect(runChild.stderr?.output).toContain('bigtest server');
+      });
+    });
+
     describe('running the suite successfully', () => {
       let startChild: Process;
       let runChild: Process;
