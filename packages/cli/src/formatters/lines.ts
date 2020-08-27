@@ -1,10 +1,17 @@
-import * as chalk from 'chalk';
-import * as _log from 'ololog';
-import { ProjectOptions } from '@bigtest/project';
-import { StreamingFormatter, Counts, RunResultEvent, icon, statusIcon } from '../format-helpers';
+import * as chalk from "chalk";
+import * as _log from "ololog";
+import { ProjectOptions } from "@bigtest/project";
+import { TestResult, StepResult, AssertionResult } from "@bigtest/suite";
+import {
+  StreamingFormatter,
+  Counts,
+  RunResultEvent,
+  icon,
+  statusIcon
+} from "../format-helpers";
 
-let log = _log.configure ({ 
-  indent: { pattern: '  ' },
+let log = _log.configure({
+  indent: { pattern: "  " },
   locate: false
 });
 
@@ -14,7 +21,7 @@ function formatFooterCounts(label: string, counts: Counts): string {
     `${counts.ok.toFixed(0)} ok`.padEnd(8),
     `${counts.failed.toFixed(0)} failed`.padEnd(12),
     `${counts.disregarded.toFixed(0)} disregarded`
-  ].join(' ');
+  ].join(" ");
 }
 
 function formatEvent(event: RunResultEvent, config: ProjectOptions) {
@@ -43,61 +50,65 @@ function formatEvent(event: RunResultEvent, config: ProjectOptions) {
     }
   }
 
-  if (config.showTree) { 
-    console.log(result);
+  if (!event.error) {
+    process.stdout.write(chalk.green("."));
   } else {
-    process.stdout.write('.');
+    process.stdout.write(chalk.red("⨯"));
   }
 }
 
 function recursiveChildrenResults(
-  children: object[],
+  children: TestResult[],
   config: ProjectOptions,
   level = 0
 ) {
-  if (config.showTree) {
-    let indent = 1 + level * 1;
+  let indent = 1 + level * 1;
 
-    children.forEach((child: Record<string, any>) => {
+  children.forEach((child: TestResult) => {
+    if (config.showTree || child.status !== "ok") {
       log.indent(level * 1)(`☲ ${child.description}`);
 
-      child.steps.forEach((step: Record<string, any>) => {
-        let icon = step.status === 'failed' ? chalk.red('⨯') : '↪';
+      child.steps.forEach((step: StepResult) => {
+        let icon = step.status === "failed" ? chalk.red("⨯") : "↪";
         let stepString = `${icon} ${step.description}`;
         log.indent(indent)(stepString);
 
-        if (step.status === 'failed') {
-          let errorMessage = `${step.error?.message}`;
-          log.indent(indent + 2)(errorMessage);
-
+        if (step.status === "failed") {
           let errorStack = `${step.error?.stack}`;
+          let errorMessage = `${step.error?.message}`;
+
+          // If the error message is not included in the stack, print it separately
+          if (!errorStack.includes(errorMessage)) {
+            log.indent(indent + 2)(errorMessage);
+          }
+
           log.indent(indent + 2).bright.red.error.noLocate(errorStack);
         }
       });
 
-      child.assertions.forEach((assertion: Record<string, any>) => {
-        let assertionString = `${statusIcon(assertion.status || '')} ${
+      child.assertions.forEach((assertion: AssertionResult) => {
+        let assertionString = `${statusIcon(assertion.status || "")} ${
           assertion.description
         }`;
         log.indent(indent)(assertionString);
       });
+    }
 
-      if (child.children?.length) {
-        return recursiveChildrenResults(child.children, config, level + 1);
-      }
-    });
-  }
+    if (child.children?.length) {
+      return recursiveChildrenResults(child.children, config, level + 1);
+    }
+  });
 }
 
 const formatter: StreamingFormatter = {
-  type: 'streaming',
+  type: "streaming",
 
   header() {
     // no op
   },
 
   event(event, config) {
-    if(event.type === 'step:result' || event.type === 'assertion:result') {
+    if (event.type === "step:result" || event.type === "assertion:result") {
       formatEvent(event, config);
     }
   },
@@ -108,11 +119,16 @@ const formatter: StreamingFormatter = {
   },
 
   footer(summary) {
-    console.log('');
-    console.log(summary.status === 'ok' ? '✓ SUCCESS' : '⨯ FAILURE', `finished in ${((summary.duration)/1000).toFixed(2)}s`);
-    console.log(formatFooterCounts('Steps', summary.stepCounts));
-    console.log(formatFooterCounts('Assertions', summary.assertionCounts));
+    console.log("");
+    console.log(
+      summary.status === "ok"
+        ? chalk.green("✓ SUCCESS")
+        : chalk.red("⨯ FAILURE"),
+      `finished in ${(summary.duration / 1000).toFixed(2)}s`
+    );
+    console.log(formatFooterCounts("Steps", summary.stepCounts));
+    console.log(formatFooterCounts("Assertions", summary.assertionCounts));
   }
-}
+};
 
 export default formatter;
