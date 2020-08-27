@@ -155,6 +155,14 @@ describe('@bigtest/cli', function() {
         expect(child.stdout?.output).toContain("✓ [assertion]  Passing Test -> check the thing")
         expect(child.stdout?.output).toContain("✓ SUCCESS")
       });
+
+      it('does print the tree', async () => {
+        expect(child.stdout?.output).toContain('☲ Passing Test');
+        expect(child.stdout?.output).toContain('↪ first step');
+        expect(child.stdout?.output).toContain('↪ second step');
+        expect(child.stdout?.output).toContain('↪ third step');
+        expect(child.stdout?.output).toContain('✓ check the thing');
+      });
     });
 
     describe('running the suite without --show-tree', () => {
@@ -175,6 +183,14 @@ describe('@bigtest/cli', function() {
         expect(child.stdout?.output).not.toContain("✓ [step]       Passing Test -> first step")
         expect(child.stdout?.output).not.toContain("✓ [assertion]  Passing Test -> check the thing")
         expect(child.stdout?.output).toContain("✓ SUCCESS")
+      });
+
+      it('does not print the tree', async () => {
+        expect(child.stdout?.output).not.toContain('☲ Passing Test');
+        expect(child.stdout?.output).not.toContain('↪ first step');
+        expect(child.stdout?.output).not.toContain('↪ second step');
+        expect(child.stdout?.output).not.toContain('↪ third step');
+        expect(child.stdout?.output).not.toContain('✓ check the thing');
       });
     });
 

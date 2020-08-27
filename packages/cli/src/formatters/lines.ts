@@ -50,35 +50,43 @@ function formatEvent(event: RunResultEvent, config: ProjectOptions) {
   }
 }
 
-function recursiveChildrenResults(children: object[], level = 0) {
-  let indent = 1 + (level * 1);
+function recursiveChildrenResults(
+  children: object[],
+  config: ProjectOptions,
+  level = 0
+) {
+  if (config.showTree) {
+    let indent = 1 + level * 1;
 
-  children.forEach((child: Record<string, any>) => {
-    log.indent(level * 1)(`☲ ${child.description}`);
+    children.forEach((child: Record<string, any>) => {
+      log.indent(level * 1)(`☲ ${child.description}`);
 
-    child.steps.forEach((step: Record<string, any>) => {
-      let icon = step.status === 'failed' ? chalk.red('⨯') : '↪';
-      let stepString = `${icon} ${step.description}`;
-      log.indent(indent)(stepString);
+      child.steps.forEach((step: Record<string, any>) => {
+        let icon = step.status === 'failed' ? chalk.red('⨯') : '↪';
+        let stepString = `${icon} ${step.description}`;
+        log.indent(indent)(stepString);
 
-      if (step.status === 'failed') {
-        let errorMessage = `${step.error?.message}`;
-        log.indent(indent + 2)(errorMessage);
+        if (step.status === 'failed') {
+          let errorMessage = `${step.error?.message}`;
+          log.indent(indent + 2)(errorMessage);
 
-        let errorStack = `${step.error?.stack}`;
-        log.indent(indent + 2).bright.red.error.noLocate(errorStack);
-       }
+          let errorStack = `${step.error?.stack}`;
+          log.indent(indent + 2).bright.red.error.noLocate(errorStack);
+        }
+      });
+
+      child.assertions.forEach((assertion: Record<string, any>) => {
+        let assertionString = `${statusIcon(assertion.status || '')} ${
+          assertion.description
+        }`;
+        log.indent(indent)(assertionString);
+      });
+
+      if (child.children?.length) {
+        return recursiveChildrenResults(child.children, config, level + 1);
+      }
     });
-
-    child.assertions.forEach((assertion: Record<string, any>) => {
-      let assertionString = `${statusIcon(assertion.status || '')} ${assertion.description}`;
-      log.indent(indent)(assertionString);
-    });
-
-    if (child.children?.length) {
-      return recursiveChildrenResults(child.children, level + 1);
-    }
-  });
+  }
 }
 
 const formatter: StreamingFormatter = {
@@ -94,9 +102,9 @@ const formatter: StreamingFormatter = {
     }
   },
 
-  ci(tree) {
+  ci(tree, config) {
     let agent = tree.agents[0];
-    return recursiveChildrenResults(agent.result.children);
+    return recursiveChildrenResults(agent.result.children, config);
   },
 
   footer(summary) {
