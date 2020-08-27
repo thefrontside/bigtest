@@ -151,8 +151,6 @@ describe('@bigtest/cli', function() {
 
       it('exits successfully', async () => {
         expect(child.code).toEqual(0);
-        expect(child.stdout?.output).toContain("✓ [step]       Passing Test -> first step")
-        expect(child.stdout?.output).toContain("✓ [assertion]  Passing Test -> check the thing")
         expect(child.stdout?.output).toContain("✓ SUCCESS")
       });
 
@@ -180,8 +178,6 @@ describe('@bigtest/cli', function() {
 
       it('prints `.` for passing tests', async () => {
         expect(child.code).toEqual(0);
-        expect(child.stdout?.output).not.toContain("✓ [step]       Passing Test -> first step")
-        expect(child.stdout?.output).not.toContain("✓ [assertion]  Passing Test -> check the thing")
         expect(child.stdout?.output).toContain("✓ SUCCESS")
       });
 
@@ -209,11 +205,21 @@ describe('@bigtest/cli', function() {
 
       it('exits with error code', async () => {
         expect(child.code).toEqual(1);
-        expect(child.stdout?.output).toContain("✓ [step]       Failing Test -> first step")
-        expect(child.stdout?.output).toContain("✓ [assertion]  Failing Test -> check the thing")
-        expect(child.stdout?.output).toContain("⨯ [step]       Failing Test -> child -> child second step")
-        expect(child.stdout?.output).toContain("test/fixtures/failing.test.ts:14")
+        // TODO incorporate source maps into new output
+        // expect(child.stdout?.output).toContain("✓ [step]       Failing Test -> first step")
+        // expect(child.stdout?.output).toContain("✓ [assertion]  Failing Test -> check the thing")
+        // expect(child.stdout?.output).toContain("⨯ [step]       Failing Test -> child -> child second step")
+        // expect(child.stdout?.output).toContain("test/fixtures/failing.test.ts:14")
         expect(child.stdout?.output).toContain("⨯ FAILURE")
+      });
+
+      it('prints the error tree', async () => {
+        expect(child.stdout?.output).toContain('☲ Failing Test');
+        expect(child.stdout?.output).toContain('↪ first step');
+        expect(child.stdout?.output).toContain('↪ second step');
+        expect(child.stdout?.output).toContain('↪ third step');
+        expect(child.stdout?.output).toContain('✓ check the thing');
+        expect(child.stdout?.output).toContain('⨯ child second step');
       });
     });
   });
