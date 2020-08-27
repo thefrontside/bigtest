@@ -110,9 +110,18 @@ export interface AssertionResult extends Node {
 }
 
 export interface ErrorDetails {
+  name?: string;
   message: string;
+  stack?: ErrorStackFrame[];
+}
+
+export interface ErrorStackLocation {
   fileName?: string;
-  lineNumber?: number;
-  columnNumber?: number;
-  stack?: string;
+  line?: number;
+  column?: number;
+}
+
+export interface ErrorStackFrame extends ErrorStackLocation {
+  name?: string;
+  source?: ErrorStackLocation;
 }

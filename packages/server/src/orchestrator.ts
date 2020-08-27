@@ -85,6 +85,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     delegate: manifestServerDelegate,
     dir: manifestDistDir,
     port: options.project.manifest.port,
+    proxyPort: options.project.proxy.port,
   }));
 
   yield fork(createManifestGenerator({

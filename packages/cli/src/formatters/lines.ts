@@ -1,9 +1,5 @@
 import { StreamingFormatter, Counts, RunResultEvent, icon } from '../format-helpers';
 
-function filterStack(text: string): string {
-  return text.split('\n').filter((l) => !l.match(/__bigtest/)).join('\n');
-}
-
 function formatFooterCounts(label: string, counts: Counts): string {
   return [
     `${label}:`.padEnd(14),
@@ -19,16 +15,21 @@ function formatEvent(event: RunResultEvent) {
     result += ' ' + event.path.slice(1).join(' -> ');
   }
   if(event.error) {
-    result += '\n' + prefixLines(event.error.stack ? filterStack(event.error.stack) : `Error: ${event.error.message}`, '|   ')
+    result += ["\n|    ERROR:", event.error.name, event.error.message].filter(e => e).join(' ');
+    if(event.error.stack) {
+      for(let stackFrame of event.error.stack) {
+        let location = stackFrame.source || stackFrame;
+        result += `\n|      `
+        if(location.fileName) {
+          result += `${location.fileName}:${location.line || 0}:${location.column || 0} `;
+        }
+        if(stackFrame.name) {
+          result += `@ ${stackFrame.name}`;
+        }
+      }
+    }
   }
   return result;
-}
-
-function prefixLines(text: string, prefix: string) {
-  return text
-    .split('\n')
-    .map((l) => prefix + l)
-    .join('\n')
 }
 
 const formatter: StreamingFormatter = {

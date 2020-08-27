@@ -46,7 +46,9 @@
     "@bigtest/globals": "^0.6.0",
     "@effection/events": "^0.7.7",
     "bowser": "^2.9.0",
-    "effection": "^0.7.0"
+    "effection": "^0.7.0",
+    "error-stack-parser": "^2.0.6",
+    "get-source": "^2.0.11"
   },
   "volta": {
     "node": "12.16.0",

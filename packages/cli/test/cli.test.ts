@@ -140,6 +140,7 @@ describe('@bigtest/cli', function() {
         expect(child.stdout?.output).toContain("✓ [step]       Failing Test -> first step")
         expect(child.stdout?.output).toContain("✓ [assertion]  Failing Test -> check the thing")
         expect(child.stdout?.output).toContain("⨯ [step]       Failing Test -> child -> child second step")
+        expect(child.stdout?.output).toContain("test/fixtures/failing.test.ts:14")
         expect(child.stdout?.output).toContain("⨯ FAILURE")
       });
     });
