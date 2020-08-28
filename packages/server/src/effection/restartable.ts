@@ -23,8 +23,7 @@ export function *restartable<T>(slice: Slice<T, unknown>, operation: (t: T) => O
         break;
       }
 
-      // Calling .reset on the atom closes the channels, which breaks subscriptions
-      // We want the app service to stay alive, so we'll re-subscribe
+      // Calling .reset on the atom closes the channels, re-subscribe
       subscription = yield subscribe(slice);
     }
   }
