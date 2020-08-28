@@ -3,37 +3,22 @@ import { once } from '@effection/events';
 import { fetch } from '@effection/fetch';
 import { ChildProcess } from '@effection/node';
 import * as process from 'process';
-import { OrchestratorState, AppServiceState, AppOptions, AppStatus } from './orchestrator/state';
-import { Slice } from '@bigtest/atom';
+import { OrchestratorState, AppOptions } from './orchestrator/state';
+import { Atom } from '@bigtest/atom';
 import { restartable } from './effection/restartable'
 
 interface AppServerOptions {
-  slice: Slice<AppServiceState, OrchestratorState>;
-  url: string;
-  command?: string;
-  env?: Record<string, string>;
-  dir?: string;
+  atom: Atom<OrchestratorState>;
 };
 
-export function createAppServer({ slice, ...options }: AppServerOptions): Operation {
-  let appOptions = slice.slice('appOptions');
-  let appStatus = slice.slice('appStatus');
-
-  return restartable(appOptions, (currentOptions) =>
-    startApp(appStatus, currentOptions ?? options)
-  );
+export function createAppServer(options: AppServerOptions): Operation {
+  let appOptions = options.atom.slice('appService', 'appOptions');
+  return restartable(appOptions, startApp(options));
 }
 
-function* isReachable(url: string) {
-  try {
-    let response: Response = yield fetch(url);
-    return response.ok;
-  } catch (error) {
-    return false;
-  }
-}
+const startApp = ({ atom }: AppServerOptions) => function* (options: AppOptions): Operation<void> {
+  let appStatus = atom.slice('appService', 'appStatus');
 
-function* startApp(appStatus: Slice<AppStatus, OrchestratorState>, options: AppOptions): Operation<void> {
   appStatus.set('unstarted')
 
   if (options.command) {
@@ -60,5 +45,14 @@ function* startApp(appStatus: Slice<AppStatus, OrchestratorState>, options: AppO
     } else {
       appStatus.set('unreachable');
     }
+  }
+}
+
+function* isReachable(url: string) {
+  try {
+    let response: Response = yield fetch(url);
+    return response.ok;
+  } catch (error) {
+    return false;
   }
 }

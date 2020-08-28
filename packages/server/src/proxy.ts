@@ -10,28 +10,21 @@ import * as proxy from 'http-proxy';
 import * as http from 'http';
 import * as Trumpet from 'trumpet';
 import * as zlib from 'zlib';
-import { OrchestratorState } from './orchestrator/state';
+import { OrchestratorState, AppOptions } from './orchestrator/state';
 import { Atom } from '@bigtest/atom';
 
 interface ProxyOptions {
   atom: Atom<OrchestratorState>;
   agentServerConfig: AgentServerConfig;
   port: number;
-  targetUrl: string;
 };
 
 export function createProxyServer(options: ProxyOptions): Operation {
   let appOptions = options.atom.slice("appService", "appOptions");
-
-  return restartable(appOptions, (currentOptions) => {
-    return startProxyServer({
-      ...options,
-      targetUrl: currentOptions?.url ?? options.targetUrl
-    })
-  });
+  return restartable(appOptions, startProxyServer(options));
 }
 
-export function* startProxyServer(options: ProxyOptions): Operation {
+export const startProxyServer = (options: ProxyOptions) => function* ({ url: target }: AppOptions): Operation {
   function* handleRequest(proxyRes: http.IncomingMessage, req: http.IncomingMessage, res: http.ServerResponse): Operation {
     console.debug('[proxy]', 'start', req.method, req.url);
     for(let [key, value = ''] of Object.entries(proxyRes.headers)) {
@@ -97,10 +90,7 @@ export function* startProxyServer(options: ProxyOptions): Operation {
 
   proxyStatus.set("starting");
 
-  let proxyServer = proxy.createProxyServer({
-    target: options.targetUrl,
-    selfHandleResponse: true
-  });
+  let proxyServer = proxy.createProxyServer({ target, selfHandleResponse: true });
 
   let events = yield Mailbox.subscribe(proxyServer, ['proxyRes', 'error', 'open', 'close']);
 

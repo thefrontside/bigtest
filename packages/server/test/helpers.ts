@@ -16,7 +16,12 @@ let orchestratorPromise: Context;
 let manifest: Manifest;
 
 export const actions = {
-  atom: createOrchestratorAtom(),
+  atom: createOrchestratorAtom({
+    app: {
+      url: "http://localhost:24100",
+      command: "yarn test:app:start 24100",
+    },
+  }),
 
   fork<T>(operation: Operation<T>): Context<T> {
     return currentWorld.fork(operation);
@@ -61,10 +66,6 @@ export const actions = {
           port: 24102,
           testFiles: ["test/fixtures/*.t.js"],
           cacheDir: "./tmp/test/orchestrator",
-          app: {
-            url: "http://localhost:24100",
-            command: "yarn test:app:start 24100",
-          },
           manifest: {
             port: 24105,
           },

@@ -57,7 +57,7 @@ export type AppOptions = {
 
 export type AppServiceState = {
   appStatus: AppStatus;
-  appOptions?: AppOptions;
+  appOptions: AppOptions;
 }
 
 export type ProxyServiceState = {

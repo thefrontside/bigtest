@@ -21,7 +21,7 @@ import { OrchestratorState } from './orchestrator/state';
 type OrchestratorOptions = {
   atom: Atom<OrchestratorState>;
   delegate?: Mailbox;
-  project: ProjectOptions;
+  project: Omit<ProjectOptions, 'app'>;
 }
 
 export function* createOrchestrator(options: OrchestratorOptions): Operation {
@@ -57,7 +57,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     atom: options.atom,
     agentServerConfig,
     port: options.project.proxy.port,
-    targetUrl: options.project.app.url,
   }));
 
   yield fork(createCommandServer({
@@ -75,10 +74,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     manifestPort: options.project.manifest.port,
   }));
 
-  yield fork(createAppServer({
-    slice: options.atom.slice('appService'),
-    ...options.project.app
-  }));
+  yield fork(createAppServer({ atom: options.atom }));
 
   yield fork(createManifestServer({
     delegate: manifestServerDelegate,
