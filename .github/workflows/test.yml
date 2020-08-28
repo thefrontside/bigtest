@@ -59,7 +59,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - uses: actions/download-artifact@v2
         with:
-          name: ${{ matrix.package }}/bigtest.dist.${{ matrix.platform }}
+          name: bigtest.dist.${{ matrix.platform }}
           path: ./packages
       - name: extract prepack
         working-directory: ./packages
