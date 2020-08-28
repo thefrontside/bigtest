@@ -9,10 +9,12 @@ import * as proxy from 'http-proxy';
 import * as http from 'http';
 import * as Trumpet from 'trumpet';
 import * as zlib from 'zlib';
+import { OrchestratorState } from './orchestrator/state';
+import { Atom } from '@bigtest/atom';
 
 interface ProxyOptions {
+  atom: Atom<OrchestratorState>;
   agentServerConfig: AgentServerConfig;
-  delegate: Mailbox;
   port: number;
   targetUrl: string;
 };
@@ -79,6 +81,10 @@ export function* createProxyServer(options: ProxyOptions): Operation {
     console.debug('[proxy]', 'finish', req.method, req.url);
   };
 
+  let proxyStatus = options.atom.slice("proxyService", "proxyStatus");
+
+  proxyStatus.set("starting");
+
   let proxyServer = proxy.createProxyServer({
     target: options.targetUrl,
     selfHandleResponse: true
@@ -111,7 +117,7 @@ export function* createProxyServer(options: ProxyOptions): Operation {
 
   try {
     yield server.listen(options.port);
-    options.delegate.send({ status: "ready" });
+    proxyStatus.set("started");
 
     while(true) {
       let { event, args } = yield events.receive({ event: any("string") });

@@ -29,7 +29,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   let connectionServerInbox = new Mailbox();
 
-  let proxyServerDelegate = new Mailbox();
   let commandServerDelegate = new Mailbox();
   let connectionServerDelegate = new Mailbox();
   let manifestGeneratorDelegate = new Mailbox();
@@ -55,10 +54,10 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   })
 
   yield fork(createProxyServer({
+    atom: options.atom,
     agentServerConfig,
-    delegate: proxyServerDelegate,
     port: options.project.proxy.port,
-    targetUrl: options.project.app.url
+    targetUrl: options.project.app.url,
   }));
 
   yield fork(createCommandServer({
@@ -107,7 +106,9 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield function* () {
     yield fork(function* () {
-      yield proxyServerDelegate.receive({ status: 'ready' });
+      yield options.atom.slice("proxyService", "proxyStatus").once((status) => {
+        return status === 'started'
+      });
       console.debug('[orchestrator] proxy server ready');
     });
     yield fork(function* () {

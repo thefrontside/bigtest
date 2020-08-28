@@ -34,9 +34,9 @@ export type TestRunAgentState = {
   result: TestResult;
 }
 
-export type BundlerState = 
-  | { type: 'UNBUNDLED' } 
-  | { type: 'BUILDING'; warnings: BundlerWarning[] } 
+export type BundlerState =
+  | { type: 'UNBUNDLED' }
+  | { type: 'BUILDING'; warnings: BundlerWarning[] }
   | { type: 'GREEN'; path: string;  warnings: BundlerWarning[] }
   | { type: 'ERRORED'; error: BundlerError }
 
@@ -60,10 +60,15 @@ export type AppServiceState = {
   appOptions?: AppOptions;
 }
 
+export type ProxyServiceState = {
+  proxyStatus: 'unstarted' | 'starting' | 'started';
+}
+
 export type OrchestratorState = {
   agents: Record<string, AgentState>;
   manifest: Manifest;
   bundler: BundlerState;
   testRuns: Record<string, TestRunState>;
   appService: AppServiceState;
+  proxyService: ProxyServiceState;
 }

@@ -16,6 +16,9 @@ export const createOrchestratorAtom = () => {
     appService: {
       appStatus: 'unstarted'
     },
+    proxyService: {
+      proxyStatus: 'unstarted'
+    },
     agents: {},
     testRuns: {},
   });
