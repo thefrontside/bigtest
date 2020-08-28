@@ -1,16 +1,16 @@
-import { fork, spawn, Context, Operation } from 'effection';
+import { fork, Operation } from 'effection';
 import { Mailbox, any } from '@bigtest/effection';
 import { AgentServerConfig } from '@bigtest/agent';
 import { throwOnErrorEvent, once } from '@effection/events';
-import { subscribe, ChainableSubscription } from '@effection/subscription';
 import { express } from "@bigtest/effection-express";
 import { static as staticMiddleware } from 'express';
+import { restartable } from './effection/restartable'
 
 import * as proxy from 'http-proxy';
 import * as http from 'http';
 import * as Trumpet from 'trumpet';
 import * as zlib from 'zlib';
-import { OrchestratorState, AppOptions } from './orchestrator/state';
+import { OrchestratorState } from './orchestrator/state';
 import { Atom } from '@bigtest/atom';
 
 interface ProxyOptions {
@@ -19,6 +19,17 @@ interface ProxyOptions {
   port: number;
   targetUrl: string;
 };
+
+export function createProxyServer(options: ProxyOptions): Operation {
+  let appOptions = options.atom.slice("appService", "appOptions");
+
+  return restartable(appOptions, (currentOptions) => {
+    return startProxyServer({
+      ...options,
+      targetUrl: currentOptions?.url ?? options.targetUrl
+    })
+  });
+}
 
 export function* startProxyServer(options: ProxyOptions): Operation {
   function* handleRequest(proxyRes: http.IncomingMessage, req: http.IncomingMessage, res: http.ServerResponse): Operation {
@@ -149,37 +160,3 @@ export function* startProxyServer(options: ProxyOptions): Operation {
   }
 };
 
-export function* createProxyServer(options: ProxyOptions): Operation {
-  let appOptions = options.atom.slice("appService", "appOptions");
-  let current: Context | null = null;
-
-  let subscription: ChainableSubscription<AppOptions, undefined> = yield subscribe(appOptions);
-
-  for(let currentOptions = appOptions.get();;currentOptions = appOptions.get()) {
-    if (current) {
-      current.halt();
-    }
-
-    current = yield spawn(
-      startProxyServer({
-        ...options,
-        targetUrl: appOptions.get()?.url ?? options.targetUrl
-      })
-    );
-
-    while(true) {
-      let next = yield subscription
-        .filter(value => currentOptions !== value)
-        .first();
-
-      if (next) {
-        break;
-      }
-
-      // Our test helpers reset the atom before each run
-      // This closes the channels, breaking subscriptions
-      // We want the app service to stay alive, so we'll re-subscribe
-      subscription = yield subscribe(appOptions);
-    }
-  }
-}

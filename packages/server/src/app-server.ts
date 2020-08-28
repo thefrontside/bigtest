@@ -1,11 +1,11 @@
-import { timeout, Operation, Context, spawn } from 'effection';
+import { timeout, Operation, spawn } from 'effection';
 import { once } from '@effection/events';
-import { subscribe, ChainableSubscription } from '@effection/subscription';
 import { fetch } from '@effection/fetch';
 import { ChildProcess } from '@effection/node';
 import * as process from 'process';
 import { OrchestratorState, AppServiceState, AppOptions, AppStatus } from './orchestrator/state';
 import { Slice } from '@bigtest/atom';
+import { restartable } from './effection/restartable'
 
 interface AppServerOptions {
   slice: Slice<AppServiceState, OrchestratorState>;
@@ -14,6 +14,15 @@ interface AppServerOptions {
   env?: Record<string, string>;
   dir?: string;
 };
+
+export function createAppServer({ slice, ...options }: AppServerOptions): Operation {
+  let appOptions = slice.slice('appOptions');
+  let appStatus = slice.slice('appStatus');
+
+  return restartable(appOptions, (currentOptions) =>
+    startApp(appStatus, currentOptions ?? options)
+  );
+}
 
 function* isReachable(url: string) {
   try {
@@ -50,39 +59,6 @@ function* startApp(appStatus: Slice<AppStatus, OrchestratorState>, options: AppO
       appStatus.set('reachable');
     } else {
       appStatus.set('unreachable');
-    }
-  }
-}
-
-export function* createAppServer({ slice, ...options }: AppServerOptions): Operation {
-  let appOptions = slice.slice('appOptions');
-  let appStatus = slice.slice('appStatus');
-  let current: Context | null = null;
-
-  let subscription: ChainableSubscription<AppOptions, undefined> = yield subscribe(appOptions);
-
-  for(let currentOptions = appOptions.get();;currentOptions = appOptions.get()) {
-    if (current) {
-      current.halt();
-    }
-
-    current = yield spawn(
-      startApp(appStatus, currentOptions ?? options)
-    );
-
-    while(true) {
-      let next = yield subscription
-        .filter(value => currentOptions !== value)
-        .first();
-
-      if (next) {
-        break;
-      }
-
-      // Our test helpers reset the atom before each run
-      // This closes the channels, breaking subscriptions
-      // We want the app service to stay alive, so we'll re-subscribe
-      subscription = yield subscribe(appOptions);
     }
   }
 }
