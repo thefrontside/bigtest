@@ -70,9 +70,15 @@ export function* createAppServer({ slice, ...options }: AppServerOptions): Opera
       startApp(appStatus, currentOptions ?? options)
     );
 
-    let next = yield subscription.filter(value => currentOptions !== value).first();
+    while(true) {
+      let next = yield subscription
+        .filter(value => currentOptions !== value)
+        .first();
 
-    if (!next) {
+      if (next) {
+        break;
+      }
+
       // Our test helpers reset the atom before each run
       // This closes the channels, breaking subscriptions
       // We want the app service to stay alive, so we'll re-subscribe
