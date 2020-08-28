@@ -60,10 +60,10 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: ${{ matrix.package }}/bigtest.dist.${{ matrix.platform }}
-          path: ./packages/${{ matrix.package }}
+          path: ./packages
       - name: extract prepack
-        working-directory: ./packages/${{ matrix.package }}
-        run: tar -xvf bigtest.dist.${{ matrix.platform }}.tgz/bigtest.dist.${{ matrix.platform }}
+        working-directory: ./packages
+        run: tar -xvf bigtest.dist.${{ matrix.platform }}.zip/bigtest.dist.${{ matrix.platform }}
       - name: Install dependencies
         run: yarn
       - name: Run tests
