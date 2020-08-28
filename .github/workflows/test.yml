@@ -12,7 +12,7 @@ jobs:
     name: Prepack
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-latest, windows-latest]
+        platform: [ubuntu-latest, macos-latest]
         # switch to [ubuntu-latest, macos-latest, windows-latest]
         # when ready to test on windows as well
     steps:
@@ -42,7 +42,7 @@ jobs:
     needs: prepack
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-latest, windows-latest]
+        platform: [ubuntu-latest, macos-latest]
         # switch to [ubuntu-latest, macos-latest, windows-latest]
         # when ready to test on windows as well
         package: [agent, cli, effection, logging, bundler, project, server, suite, interactor, todomvc, atom, webdriver]
