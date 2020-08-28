@@ -62,7 +62,7 @@ jobs:
           name: ${{ matrix.package }}/bigtest.dist.${{ matrix.platform }}
           path: ./packages/${{ matrix.package }}
       - name: extract prepack
-        working-dir: ./packages/${{ matrix.package }}
+        working-directory: ./packages/${{ matrix.package }}
         run: tar -xvf bigtest.dist.${{ matrix.platform }}.tgz/bigtest.dist.${{ matrix.platform }}
       - name: Install dependencies
         run: yarn
