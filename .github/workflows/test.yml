@@ -58,12 +58,10 @@ jobs:
           path: '**/node_modules'
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - uses: actions/download-artifact@v2
+        # this action will also unpack them for us
         with:
           name: bigtest.dist.${{ matrix.platform }}
           path: ./packages
-      - name: extract prepack
-        working-directory: ./packages
-        run: tar -xvf bigtest.dist.${{ matrix.platform }}.zip/bigtest.dist.${{ matrix.platform }}
       - name: Install dependencies
         run: yarn
       - name: Run tests
