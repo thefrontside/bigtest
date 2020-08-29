@@ -1,0 +1,22 @@
+{
+  "name": "@bigtest/eslint-plugin-bigtest",
+  "version": "0.1.0",
+  "description": "eslint rules for bigtest",
+  "main": "index.js",
+  "author": "Frontside Engineering <engineering@frontside.com>",
+  "license": "MIT",
+  "private": false,
+  "keywords": [
+    "eslint"
+  ],
+  "devDependencies": {
+    "@frontside/tsconfig": "*",
+    "@types/mocha": "^7.0.1",
+    "@types/node": "^13.13.4",
+    "mocha": "^6.2.2",
+    "ts-node": "*"
+  },
+  "scripts": {
+    "test": "mocha -r ts-node/register 'test/{,!(fixtures)/**}/*.test.ts'"
+  }
+}
