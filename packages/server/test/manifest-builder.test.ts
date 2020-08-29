@@ -99,7 +99,7 @@ describe('manifest builder', () => {
     });
 
     it('copies over the *.js.map file to dist/', () => {
-      expect(fs.existsSync(`${DIST_DIR}/${atom.get().manifest.fileName}.map`)).toBeTruthy();
+      expect(fs.existsSync(path.join(DIST_DIR, `${atom.get().manifest.fileName}.map`))).toBeTruthy();
     });
     it('contains the sourcemapURL at the bottom of the manifest', () => {
       expect(buildMapURL).toEqual("sourceMappingURL=manifest.js.map");
@@ -114,7 +114,7 @@ describe('manifest builder', () => {
     let emptyFilePath: string;
 
     beforeEach(async () => {
-      emptyFilePath = `${TEST_DIR}/empty.t.js`;
+      emptyFilePath = path.resolve(TEST_DIR, 'empty.t.js');
 
       await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), emptyFilePath);
       await actions.fork(function* (){
