@@ -13,9 +13,8 @@ export default createRule({
       recommended: 'error',
     },
     messages: {
-      exportIsNotTest: `The default export is not a test implementation`,
-      noDefaultExport: `No default bigtest test has been exported.`,
-      namedExport: `Only default test implementations are allowed`
+      exportIsNotTest: 'The default export is not a test implementation',
+      namedExport: 'Only default test implementations are allowed'
     },
     type: 'problem',
     schema: [],

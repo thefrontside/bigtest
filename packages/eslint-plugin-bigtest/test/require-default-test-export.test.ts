@@ -34,14 +34,14 @@ export const NoDefaultExportTest = test('Failing Test')
       parserOptions: { sourceType: 'module' },
       errors: [{ messageId: 'namedExport' }],
     },
-//     {
-//       code: `
-// function test() {}
+    {
+      code: `
+function test() {}
 
-// export default test();
-// `,
-//       parserOptions: { sourceType: 'module' },
-//       errors: [{ endColumn: 29, column: 1, messageId: 'noDefaultExport' }],
-//     },
+export default test();
+`,
+      parserOptions: { sourceType: 'module' },
+      errors: [{ messageId: 'exportIsNotTest' }],
+    },
   ],
 });  
