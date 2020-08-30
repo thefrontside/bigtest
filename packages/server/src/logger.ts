@@ -12,8 +12,11 @@ export function* createLogger({ atom, out }: LoggerOptions) {
 
   yield subscribe(bundlerState).forEach(function* (event) {
     if(event.type === 'ERRORED'){
-      // TODO: proper error handling
-      out("[manifest builder] build error:", event.errors.map(e => e).join('\n'));
+      // TODO: proper error reporting
+      out("[manifest builder] build error:");
+      for(let error of event.errors) {
+        out(error);
+      }
     }
   })
 }
