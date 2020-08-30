@@ -3,9 +3,11 @@ import {
   ESLintUtils,
   TSESTree,
 } from '@typescript-eslint/experimental-utils';
-import { version } from '../../package.json';
 import { BigtestFunctionCallExpression, BigtestTopLevelFunctionName, BigtestToplevelName } from '../types'
 import * as path from 'path';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { version } = require('../../package.json');
 
 const REPO_URL = 'https://github.com/thefrontside/bigtest/eslint-plugin-plugin';
 

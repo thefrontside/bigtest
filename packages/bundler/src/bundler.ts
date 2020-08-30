@@ -6,7 +6,7 @@ import { watch, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'ro
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
-import { BundlerMessage, BundleOptions, BundlerOptions, ValidatorState, ValidationWarning, ValidationError } from './types';
+import { BundlerMessage, BundleOptions, BundlerOptions, ValidatorState, ValidationWarning, ValidationError, Validator } from './types';
 import { EslintValidator } from './validators/eslint';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
@@ -55,15 +55,20 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
   private channel = new Channel<BundlerMessage>();
 
   *validate(bundles: BundleOptions[]) {
-    this.channel.send({ type: 'VALIDATING' });
     let warnings: ValidationWarning[] = [];
     let errors: ValidationError[] = [];
+
+    
+    this.channel.send({ type: 'VALIDATING' });
+
     let validators = bundles.flatMap(bundle => Validators.map(V => new V(bundle)));
     
     for (let validator of validators) {
-      let validatorEvents: ChainableSubscription<ValidatorState, void> = yield subscribe(validator);
+      let validatorEvents: ChainableSubscription<ValidatorState, Validator> = yield subscribe(validator);
 
-      validatorEvents.forEach(function* (state) {
+      yield validator.validate();
+
+      yield validatorEvents.forEach(function* (state) {
         if(state.type === 'INVALID') {
           warnings.push(...state.warnings);
           errors.push(...state.errors);
@@ -83,6 +88,17 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
     let bundler = new Bundler();
 
     return yield resource(bundler, function* () {
+      let validationState: ValidatorState = yield bundler.validate(bundles);
+
+      if(validationState.type === 'INVALID') {
+        console.error('we are bad');
+        throw new Error('foo')
+      }
+
+      console.error('we are good');
+
+      bundler.channel.send({ type: 'VALID' });
+      
       let rollup: RollupWatcher = watch(prepareRollupOptions(bundles, bundler.channel));
 
       try {

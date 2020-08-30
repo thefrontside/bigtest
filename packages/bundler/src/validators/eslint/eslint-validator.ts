@@ -8,8 +8,12 @@ import { CLIEngine } from 'eslint';
 const { writeFile } = fs.promises;
 
 const config = {
-  extends: "@frontside",
-  plugins: ['@bigtest/eslint-plugin-bigtest']
+  root: true,
+  extends: [],
+  plugins: ['bigtest'],
+  rules: {
+    'bigtest/require-default-test-export': 'error'
+  }
 } as const;
 
 export class EslintValidator implements Validator, Subscribable<ValidatorState, undefined> {
@@ -47,7 +51,7 @@ export class EslintValidator implements Validator, Subscribable<ValidatorState, 
   *validate() {
     this.state = { type: 'VALIDATING' };
     this.channel.send(this.state);
-    
+
     // don't think this is necessary
     // yield this.writeEslintConfig(); 
 
@@ -60,9 +64,10 @@ export class EslintValidator implements Validator, Subscribable<ValidatorState, 
 
     let report = cli.executeOnFiles(this.options.testFiles);
 
-    console.log(cli.getFormatter()(report.results));
+    // console.error(cli.getFormatter()(report.results));
 
     if(report.errorCount || report.warningCount){
+      console.error('errors');
       let warnings: ValidationWarning[] = [];
       let errors: ValidationError[] = [];
       
@@ -74,8 +79,12 @@ export class EslintValidator implements Validator, Subscribable<ValidatorState, 
         result.severity === 1 ? warnings.push(result.message) : errors.push(result.message);
       }
 
-      this.state ={ type: 'INVALID', warnings, errors };
+
+      this.state = { type: 'INVALID', warnings, errors };
+      console.error(this.state)
+      
       this.channel.send(this.state);
+      
       return;
     }
 

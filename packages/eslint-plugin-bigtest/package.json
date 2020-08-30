@@ -1,8 +1,8 @@
 {
-  "name": "@bigtest/eslint-plugin-bigtest",
+  "name": "eslint-plugin-bigtest",
   "version": "0.1.0",
   "description": "eslint rules for bigtest",
-  "main": "index.js",
+  "main": "dist/index.js",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "private": false,
@@ -18,7 +18,11 @@
   },
   "scripts": {
     "lint": "eslint '{src,test}/**/*.ts'",
-    "prepack": "tsc --outdir dist --declaration --sourcemap",
+    "prepack": "tsc --declaration --sourcemap",
     "test": "mocha -r ts-node/register 'test/{,!(fixtures)/**}/*.test.ts'"
-  }
+  },
+  "files": [
+    "docs",
+    "dist"
+  ]
 }
