@@ -4,7 +4,7 @@ import {
 } from '@typescript-eslint/experimental-utils';
 import { createRule, isTopLevelTest } from './utils';
 
-export default createRule({
+export const requireDefaultTextExport = createRule({
   name: __filename,
   meta: {
     docs: {

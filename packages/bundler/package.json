@@ -23,7 +23,7 @@
     "@babel/preset-typescript": "^7.10.4",
     "@babel/runtime": "^7.10.4",
     "@bigtest/effection": "^0.5.2",
-    "@bigtest/eslint-plugin-bigtest": "^0.1.0",
+    "eslint-plugin-bigtest": "^0.1.0",
     "@bigtest/project": "^0.6.0",
     "@effection/channel": "^0.6.6",
     "@effection/events": "^0.7.7",
