@@ -6,7 +6,7 @@ import { watch, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'ro
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
-import { BundlerMessage, BundleOptions, BundlerOptions, ValidatorState } from './types';
+import { BundlerMessage, BundleOptions, BundlerOptions, ValidatorState, ValidationWarning, ValidationError } from './types';
 import { EslintValidator } from './validators/eslint';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
@@ -56,19 +56,27 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
 
   *validate(bundles: BundleOptions[]) {
     this.channel.send({ type: 'VALIDATING' });
+    let warnings: ValidationWarning[] = [];
+    let errors: ValidationError[] = [];
     let validators = bundles.flatMap(bundle => Validators.map(V => new V(bundle)));
     
     for (let validator of validators) {
       let validatorEvents: ChainableSubscription<ValidatorState, void> = yield subscribe(validator);
 
       validatorEvents.forEach(function* (state) {
-        console.log(state);
+        if(state.type === 'INVALID') {
+          warnings.push(...state.warnings);
+          errors.push(...state.errors);
+        }
       })
     }
 
-    let isValid = validators.every(v => v.state.type === 'VALID');
+    // TODO: do we fail on warnings also
+    if(errors.length === 0) {
+      return { type: 'VALID'};
+    }
 
-    console.log({ isValid });
+    return { type: 'INVALID', warnings, errors };
   }
 
   static *create(bundles: BundleOptions[]): Operation<Bundler> {
