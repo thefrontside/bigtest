@@ -77,28 +77,25 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
 
     // TODO: do we fail on warnings also
     if(errors.length === 0) {
-      return { type: 'VALID'};
+      return { type: 'VALID', warnings };
     }
 
     return { type: 'INVALID', warnings, errors };
   }
 
-  static *create(bundles: BundleOptions[]): Operation<Bundler> {
+  static *create(bundles: BundleOptions[]):  Operation<Bundler> {
     let bundler = new Bundler();
 
     return yield resource(bundler, function* () {
       let validationState: ValidatorState = yield bundler.validate(bundles);
 
-      console.error('returned from validate')
-
       if(validationState.type === 'INVALID') {
-        console.error('we are bad');
         bundler.channel.send({ type: 'ERROR', errors: validationState.errors });
         bundler.channel.close();
         return;
       }
 
-      console.error('we are good');
+      console.debug('[bunder] is valid');
 
       bundler.channel.send({ type: 'VALID' });
       
