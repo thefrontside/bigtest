@@ -11,24 +11,19 @@ export type BundlerMessage =
   | { type: 'START' }
   | { type: 'UPDATE' }
   | { type: 'WARN'; warning: BundlerWarning }
-  | { type: 'ERROR'; error: BundlerError }
-
-// TODO: expand on this
-export type ValidationError = string;
-export type ValidationWarning = string;
+  | { type: 'ERROR'; errors: BundlerError[] }
 
 export type ValidatorState = 
 | { type: 'IDLE' }
 | { type: 'VALIDATING' }
-| { type: 'INVALID'; errors: ValidationError[]; warnings: ValidationWarning[] }
-| { type: 'VALID' }
+| { type: 'INVALID'; errors: BundlerError[]; warnings: BundlerWarning[] }
+| { type: 'VALID'; warnings: BundlerWarning[] }
 
 export type BundleOptions = {
   entry: string;
   outFile: string;
   globalName?: string;
   testFiles: string[];
-  dir: string;
 } & Pick<ProjectOptions, 'testFiles'>
 
 

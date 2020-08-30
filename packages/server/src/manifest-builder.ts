@@ -19,7 +19,6 @@ type ManifestBuilderOptions = {
   srcPath: string;
   buildDir: string;
   distDir: string;
-  dir: string;
 } & Pick<ProjectOptions, 'testFiles'>
 
 function* ftruncate(fd: number, len: number): Operation<void> {
@@ -97,7 +96,6 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
       globalName: bigtestGlobals.manifestProperty,
       outFile: path.join(options.buildDir, "manifest.js"),
       testFiles: options.testFiles,
-      dir: options.dir
     }],
   );
 
@@ -126,7 +124,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
       case 'ERROR':
         console.debug("[manifest builder] received bundle error");
 
-        bundlerSlice.update(() => ({ type: 'ERRORED', error: message.error }));
+        bundlerSlice.update(() => ({ type: 'ERRORED', errors: message.errors }));
         break;
       
       case 'WARN':
