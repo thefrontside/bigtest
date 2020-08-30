@@ -8,3 +8,8 @@ export type BundlerMessage =
   | { type: 'UPDATE' }
   | { type: 'WARN'; warning: BundlerWarning }
   | { type: 'ERROR'; error: BundlerError }
+
+export type EslintValidatorState = 
+| { type: 'IDLE' }
+| { type: 'VALIDATING' }
+| { type: 'ERROR'; error: BundlerError }

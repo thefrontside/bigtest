@@ -4,9 +4,8 @@ import {
   TSESTree,
 } from '@typescript-eslint/experimental-utils';
 import { version } from '../../package.json';
-import {BigtestFunctionCallExpression, BigtestTopLevelFunctionName } from '../types'
+import { BigtestFunctionCallExpression, BigtestTopLevelFunctionName, BigtestToplevelName } from '../types'
 import * as path from 'path';
-import { BigtestToplevelName } from '../constants';
 
 const REPO_URL = 'https://github.com/thefrontside/bigtest/eslint-plugin-plugin';
 
@@ -19,15 +18,11 @@ export const createRule = ESLintUtils.RuleCreator(name => {
 export const isTopLevelTest = (
   node: TSESTree.CallExpression,
 ): node is BigtestFunctionCallExpression<BigtestTopLevelFunctionName> => {
-    if(node.callee.type === AST_NODE_TYPES.MemberExpression 
-      && node.callee.property.type === AST_NODE_TYPES.Identifier
-      && node.callee.object.type === AST_NODE_TYPES.CallExpression
-      && node.callee.object.callee.type === AST_NODE_TYPES.MemberExpression
-      && node.callee.object.callee.object.type === AST_NODE_TYPES.CallExpression
-      && node.callee.object.callee.object.callee.type === AST_NODE_TYPES.Identifier
-      && node.callee.object.callee.object.callee.name === BigtestToplevelName) {
-      return true;
-    }
-
-    return false;
-  }
+  return node.callee.type === AST_NODE_TYPES.MemberExpression 
+    && node.callee.property.type === AST_NODE_TYPES.Identifier
+    && node.callee.object.type === AST_NODE_TYPES.CallExpression
+    && node.callee.object.callee.type === AST_NODE_TYPES.MemberExpression
+    && node.callee.object.callee.object.type === AST_NODE_TYPES.CallExpression
+    && node.callee.object.callee.object.callee.type === AST_NODE_TYPES.Identifier
+    &&  BigtestToplevelName.hasOwnProperty(node.callee.object.callee.object.callee.name)
+}

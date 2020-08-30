@@ -18,10 +18,10 @@ interface BundleOptions {
 };
 
 interface BundlerOptions {
-  mainFields: Array<"browser" | "main" | "module">;
+  mainFields: ("browser" | "main" | "module")[];
 };
 
-function prepareRollupOptions(bundles: Array<BundleOptions>, channel: Channel<BundlerMessage>, { mainFields }: BundlerOptions = { mainFields: ["browser", "module", "main"] }): Array<RollupWatchOptions> {
+function prepareRollupOptions(bundles: BundleOptions[], channel: Channel<BundlerMessage>, { mainFields }: BundlerOptions = { mainFields: ["browser", "module", "main"] }): RollupWatchOptions[] {
   return bundles.map<RollupWatchOptions>(bundle => {
     return {
       input: bundle.entry,
@@ -61,7 +61,7 @@ function prepareRollupOptions(bundles: Array<BundleOptions>, channel: Channel<Bu
 export class Bundler implements Subscribable<BundlerMessage, undefined> {
   private channel = new Channel<BundlerMessage>();
 
-  static *create(bundles: Array<BundleOptions>): Operation<Bundler> {
+  static *create(bundles: BundleOptions[]): Operation<Bundler> {
     let bundler = new Bundler();
 
     return yield resource(bundler, function* () {
