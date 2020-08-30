@@ -1,15 +1,89 @@
-import { subscribe, Subscribable, SymbolSubscribable, ChainableSubscription } from '@effection/subscription';
+import { subscribe, Subscribable, SymbolSubscribable } from '@effection/subscription';
 import { Channel } from '@effection/channel';
-import { EslintValidatorState } from '../../types';
+import { ValidatorState, Validator, BundleOptions, ValidationWarning, ValidationError } from '../../types';
+import * as fs from 'fs';
+import * as path from 'path';
+import { CLIEngine } from 'eslint';
 
-export class EslintValidator implements Subscribable<EslintValidatorState, void> {
-  private channel = new Channel<EslintValidatorState>();
+const { writeFile } = fs.promises;
 
-  *validate() {
+const config = {
+  extends: "@frontside",
+  plugins: ['@bigtest/eslint-plugin-bigtest']
+} as const;
 
+export class EslintValidator implements Validator, Subscribable<ValidatorState, undefined> {
+  private channel = new Channel<ValidatorState>();
+  public state: ValidatorState = { type: 'IDLE'};
+
+  constructor(private options: BundleOptions) {
+    this.options = options;
   }
   
-  [SymbolSubscribable]() {
-    return this.channel[SymbolSubscribable]();
+  // don't think this is necessary
+  *writeEslintConfig() {
+    let file = path.join(this.options.dir, '.eslintrc.js');
+
+    try {
+      yield writeFile(
+        file,
+        `module.exports = ${JSON.stringify(config, null, 2)}`,
+        { flag: 'wx' }
+      );
+    } catch (e) {
+      if (e.code === 'EEXIST') {
+        console.error(
+          'Error trying to save the Eslint configuration file:',
+          `${file} already exists.`
+        );
+      } else {
+        console.error(e);
+      }
+  
+      return config;
+    }
+  }
+
+  *validate() {
+    this.state = { type: 'VALIDATING' };
+    this.channel.send(this.state);
+    
+    // don't think this is necessary
+    // yield this.writeEslintConfig(); 
+
+    let cli = new CLIEngine({
+      baseConfig: {
+        ...config
+      },
+      extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    });
+
+    let report = cli.executeOnFiles(this.options.testFiles);
+
+    console.log(cli.getFormatter()(report.results));
+
+    if(report.errorCount || report.warningCount){
+      let warnings: ValidationWarning[] = [];
+      let errors: ValidationError[] = [];
+      
+      for(let result of report.results.flatMap(result => result.messages)) {
+        if(result.severity === 0) {
+          continue;
+        }
+
+        result.severity === 1 ? warnings.push(result.message) : errors.push(result.message);
+      }
+
+      this.state ={ type: 'INVALID', warnings, errors };
+      this.channel.send(this.state);
+      return;
+    }
+
+    this.state = { type: 'VALID' };
+    this.channel.send(this.state);
+  }
+  
+  *[SymbolSubscribable]() {
+    return yield subscribe(this.channel);
   }
 }
