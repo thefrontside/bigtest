@@ -6,20 +6,11 @@ import { watch, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'ro
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
+import { BundlerMessage, BundleOptions, BundlerOptions, ValidatorState } from './types';
+import { EslintValidator } from './validators/eslint';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import babel from '@rollup/plugin-babel';
-import { BundlerMessage } from './types';
-
-interface BundleOptions {
-  entry: string;
-  outFile: string;
-  globalName?: string;
-};
-
-interface BundlerOptions {
-  mainFields: ("browser" | "main" | "module")[];
-};
 
 function prepareRollupOptions(bundles: BundleOptions[], channel: Channel<BundlerMessage>, { mainFields }: BundlerOptions = { mainFields: ["browser", "module", "main"] }): RollupWatchOptions[] {
   return bundles.map<RollupWatchOptions>(bundle => {
@@ -58,8 +49,27 @@ function prepareRollupOptions(bundles: BundleOptions[], channel: Channel<Bundler
   });
 }
 
+const Validators = [EslintValidator];
+
 export class Bundler implements Subscribable<BundlerMessage, undefined> {
   private channel = new Channel<BundlerMessage>();
+
+  *validate(bundles: BundleOptions[]) {
+    this.channel.send({ type: 'VALIDATING' });
+    let validators = bundles.flatMap(bundle => Validators.map(V => new V(bundle)));
+    
+    for (let validator of validators) {
+      let validatorEvents: ChainableSubscription<ValidatorState, void> = yield subscribe(validator);
+
+      validatorEvents.forEach(function* (state) {
+        console.log(state);
+      })
+    }
+
+    let isValid = validators.every(v => v.state.type === 'VALID');
+
+    console.log({ isValid });
+  }
 
   static *create(bundles: BundleOptions[]): Operation<Bundler> {
     let bundler = new Bundler();

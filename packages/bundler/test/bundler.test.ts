@@ -7,6 +7,8 @@ import { subscribe } from '@effection/subscription';
 import { spawn } from './world';
 import { Bundler } from '../src/index';
 
+const CWD = process.cwd();
+
 describe("Bundler", function() {
   this.timeout(5000);
   let bundler: Bundler;
@@ -27,6 +29,8 @@ describe("Bundler", function() {
             entry: "./build/test/sources/input.js",
             outFile: "./build/test/output/manifest.js",
             globalName: "__bigtestManifest",
+            testFiles: ["./test/**/*.test.{ts,js}"],
+            dir: CWD
           }],
         ));
         await spawn(subscribe(bundler).filter(f => f.type === 'UPDATE').first());
@@ -57,6 +61,8 @@ describe("Bundler", function() {
             entry: "./build/test/sources/input.js",
             outFile: "./build/test/output/manifest.js",
             globalName: "__bigtestManifest",
+            testFiles: ["./test/**/*.test.{ts,js}"],
+            dir: CWD
           }],
         ));
       });
@@ -92,6 +98,9 @@ describe("Bundler", function() {
             entry: "./build/test/sources/input.ts",
             outFile: "./build/test/output/manifest.js",
             globalName: "__bigtestManifest",
+            testFiles: ["./test/**/*.test.{ts,js}"],
+            dir: CWD
+
           }],
         ));
         await spawn(subscribe(bundler).filter(f => f.type === 'UPDATE').first());
@@ -111,6 +120,8 @@ describe("Bundler", function() {
             entry: "./build/test/sources/input.ts",
             outFile: "./build/test/output/manifest.js",
             globalName: "__bigtestManifest",
+            testFiles: ["./test/**/*.test.{ts,js}"],
+            dir: CWD
           }],
         ));
       });
@@ -132,6 +143,8 @@ describe("Bundler", function() {
           entry: "./build/test/sources/input.ts",
           outFile: "./build/test/output/manifest.js",
           globalName: "__bigtestManifest",
+          testFiles: ["./test/**/*.test.{ts,js}"],
+          dir: CWD
         }],
       ));
       await fs.writeFile("./build/test/sources/input.ts", "export default {hello: 'world'}\n");

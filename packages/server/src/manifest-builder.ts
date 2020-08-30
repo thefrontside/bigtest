@@ -10,16 +10,17 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { OrchestratorState } from './orchestrator/state';
 import { assertBundlerState, assertCanTransition } from '../src/assertions/bundler-assertions';
-
+import { ProjectOptions } from '@bigtest/project';
 
 const { copyFile, mkdir, stat, appendFile, open } = fs.promises;
 
-interface ManifestBuilderOptions {
+type ManifestBuilderOptions = {
   atom: Atom<OrchestratorState>;
   srcPath: string;
   buildDir: string;
   distDir: string;
-};
+  dir: string;
+} & Pick<ProjectOptions, 'testFiles'>
 
 function* ftruncate(fd: number, len: number): Operation<void> {
   let { resolve, reject, promise } = Deferred<void>();
@@ -94,7 +95,9 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
     [{
       entry: options.srcPath,
       globalName: bigtestGlobals.manifestProperty,
-      outFile: path.join(options.buildDir, "manifest.js")
+      outFile: path.join(options.buildDir, "manifest.js"),
+      testFiles: options.testFiles,
+      dir: options.dir
     }],
   );
 
@@ -105,6 +108,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
 
         bundlerSlice.update(() => ({ type: 'BUILDING', warnings: [] }));
         break;
+      
       case 'UPDATE':
         console.debug("[manifest builder] received bundle update");
 
@@ -118,11 +122,13 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
 
         console.debug("[manifest builder] manifest ready");
         break;
+      
       case 'ERROR':
         console.debug("[manifest builder] received bundle error");
 
         bundlerSlice.update(() => ({ type: 'ERRORED', error: message.error }));
         break;
+      
       case 'WARN':
         console.debug("received bundle warning");
 

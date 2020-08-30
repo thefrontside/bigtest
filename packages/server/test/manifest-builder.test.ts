@@ -39,6 +39,8 @@ describe('manifest builder', () => {
         srcPath: MANIFEST_PATH,
         buildDir: BUILD_DIR,
         distDir: DIST_DIR,
+        testFiles: ["./test/**/*.test.{ts,js}"],
+        dir: process.cwd()
       });
     });
 
