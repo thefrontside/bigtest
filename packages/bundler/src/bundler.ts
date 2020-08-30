@@ -6,7 +6,7 @@ import { watch, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'ro
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
-import { BundlerMessage, BundleOptions, BundlerOptions, ValidatorState, ValidationWarning, ValidationError, Validator } from './types';
+import { BundlerMessage, BundleOptions, BundlerOptions, ValidatorState, Validator, BundlerWarning, BundlerError } from './types';
 import { EslintValidator } from './validators/eslint';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
@@ -55,10 +55,9 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
   private channel = new Channel<BundlerMessage>();
 
   *validate(bundles: BundleOptions[]) {
-    let warnings: ValidationWarning[] = [];
-    let errors: ValidationError[] = [];
+    let warnings: BundlerWarning[] = [];
+    let errors: BundlerError[] = [];
 
-    
     this.channel.send({ type: 'VALIDATING' });
 
     let validators = bundles.flatMap(bundle => Validators.map(V => new V(bundle)));
@@ -73,7 +72,7 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
           warnings.push(...state.warnings);
           errors.push(...state.errors);
         }
-      })
+      });
     }
 
     // TODO: do we fail on warnings also
@@ -90,9 +89,13 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
     return yield resource(bundler, function* () {
       let validationState: ValidatorState = yield bundler.validate(bundles);
 
+      console.error('returned from validate')
+
       if(validationState.type === 'INVALID') {
         console.error('we are bad');
-        throw new Error('foo')
+        bundler.channel.send({ type: 'ERROR', errors: validationState.errors });
+        bundler.channel.close();
+        return;
       }
 
       console.error('we are good');
@@ -114,7 +117,7 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
               case 'END':
                 return { type: 'UPDATE' } as const;
               case 'ERROR':
-                return { type: 'ERROR', error: event.error } as const;
+                return { type: 'ERROR', errors: [event.error] as BundlerError[] } as const;
               default: 
                 throw new Error(`unexpect event ${event.code}`);
             }
@@ -125,6 +128,7 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
         });
       } finally {
         console.debug('[bundler] shutting down');
+        
         rollup.close();
       }
     });

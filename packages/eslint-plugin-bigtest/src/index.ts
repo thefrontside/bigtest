@@ -2,11 +2,14 @@ import { requireDefaultTextExport } from './rules/require-default-test-export';
 export * from './types';
 
 export const rules = {
-  'bigtest/require-default-test-export': requireDefaultTextExport
+  'require-default-test-export': requireDefaultTextExport
 };
 
 export const configs = {
-  rules
+  root: true,
+  recommended: {
+    rules: {
+      'bigtest/require-default-test-export': 2
+    }
+  }
 }
-
-console.error(configs)

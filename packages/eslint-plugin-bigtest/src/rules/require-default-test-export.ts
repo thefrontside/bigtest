@@ -36,12 +36,12 @@ export const requireDefaultTextExport = createRule({
           return;
         }
         
-        if(defaultExport) {
-          context.report({ node:defaultExport, messageId: 'exportIsNotTest' });
+        if (defaultExport || namedExport) {
+          context.report({ node: defaultExport || namedExport, messageId: 'exportIsNotTest' });
           return;
         }
-        
-        context.report({ node: namedExport, messageId: 'namedExport'  });
+
+        context.report({ node: context.getSourceCode().ast, messageId: 'exportIsNotTest' })
       },
 
       'ExportNamedDeclaration'(

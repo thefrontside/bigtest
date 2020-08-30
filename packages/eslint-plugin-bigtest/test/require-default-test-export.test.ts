@@ -1,5 +1,5 @@
 import { TSESLint } from '@typescript-eslint/experimental-utils';
-import rule from '../src/rules/require-default-test-export';
+import { requireDefaultTextExport } from '../src/rules/require-default-test-export';
 
 const ruleTester = new TSESLint.RuleTester({
   parser: require.resolve('@typescript-eslint/parser'),
@@ -9,7 +9,7 @@ const ruleTester = new TSESLint.RuleTester({
   },
 });
 
-ruleTester.run('require-default-export', rule, {
+ruleTester.run('require-default-export', requireDefaultTextExport, {
   valid: [`
 import { test } from '@bigtest/suite';
 
@@ -18,7 +18,23 @@ const delay = (time = 50) =>
 
 export default test('Failing Test')
   .step("first step", delay())
-  .assertion("check the thing", delay(3))`
+  .assertion("check the thing", delay(3))`,
+`
+export default {
+  description: "Signing In",
+  steps: [
+    {
+      description: "given a user",
+      action: async (context) => ({ ...context, user: { username: "cowboyd" } })
+    },
+  ],
+  assertions: [
+    {
+      description: "then I am logged in",
+      check: async () => true
+    },
+  ]
+`
   ],
   invalid: [
     {
