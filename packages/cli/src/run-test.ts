@@ -25,7 +25,7 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
     }
   };
 
-  let subscription = yield client.subscription(query.run(), { showDependencies: false, showInternal: false });
+  let subscription = yield client.subscription(query.run(), { showDependenciesStackTrace: false, showInternalStackTrace: false });
   let stepCounts = { ok: 0, failed: 0, disregarded: 0 };
   let assertionCounts = { ok: 0, failed: 0, disregarded: 0 };
   let testRunStatus: ResultStatus | undefined;
