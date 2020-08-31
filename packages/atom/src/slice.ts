@@ -79,6 +79,6 @@ export class Slice<S, A> implements Subscribable<S, undefined> {
   }
 
   *[SymbolSubscribable](): Operation<Subscription<S, undefined>> {
-    return yield subscribe(Subscribable.from(this.atom).map((state) => view(this.lens)(state) as unknown as S));
+    return yield subscribe(this.atom).map((state) => view(this.lens)(state) as unknown as S);
   }
 }

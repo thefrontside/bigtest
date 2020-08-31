@@ -2,4 +2,4 @@
 "@bigtest/server": patch
 ---
 
-replace glob with globby
+make Bundler a top level entity

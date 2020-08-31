@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.10.0
+
+### Minor Changes
+
+- 3be69744: Create a bunlder state and use the atom to broadcast error info.
+- 3d9d7d64: make Atom#slice and Slice#slice strongly typed and update references.
+
+### Patch Changes
+
+- a6332db3: replace glob with globby
+- e950715a: Add missing typescript dev dependency to eliminate yarn warnings. Also, upgraded typescript to 3.9.7 to make it consistent.
+- Updated dependencies [3be69744]
+- Updated dependencies [1728dda8]
+- Updated dependencies [3d9d7d64]
+- Updated dependencies [5f09e43f]
+- Updated dependencies [e950715a]
+  - @bigtest/bundler@0.8.0
+  - @bigtest/project@0.6.0
+  - @bigtest/atom@0.8.0
+  - @bigtest/webdriver@0.6.0
+  - @bigtest/agent@0.7.3
+  - @bigtest/driver@0.5.3
+  - @bigtest/effection@0.5.2
+  - @bigtest/suite@0.5.3
+
 ## 0.9.1
 
 ### Patch Changes

@@ -10,7 +10,7 @@ import { GraphqlContext, SpawnContext } from './schema/context';
 import { Atom } from '@bigtest/atom';
 import { OrchestratorState } from './orchestrator/state';
 
-import { Message, Response, QueryMessage, MutationMessage, SubscriptionMessage, isQuery, isMutation, isSubscription } from './protocol';
+import { Variables, Message, Response, QueryMessage, MutationMessage, SubscriptionMessage, isQuery, isMutation, isSubscription } from '@bigtest/client';
 
 export type CommandMessage = { status: "ready" } | { type: "run"; id: string };
 
@@ -47,10 +47,10 @@ export function* createCommandServer(options: CommandServerOptions): Operation {
  * Run the query or mutation in `source` against the orchestrator
  * state contained in `state`
  */
-function* graphql(source: string, options: CommandServerOptions, state: OrchestratorState): Operation {
+function* graphql(source: string, variables: Variables | undefined, options: CommandServerOptions, state: OrchestratorState): Operation {
   let context: SpawnContext = yield spawn(undefined);
   let opts = graphqlOptions(context, options, state);
-  return yield executeGraphql({...opts, contextValue: opts.context, source });
+  return yield executeGraphql({...opts, contextValue: opts.context, source, variableValues: variables });
 }
 
 /**
@@ -76,7 +76,7 @@ function handleMessage(options: CommandServerOptions): (socket: Socket) => Opera
   }
 
   function* handleMutation(message: MutationMessage, socket: Socket): Operation {
-    let result: Response = yield graphql(message.mutation, options, options.atom.get());
+    let result: Response = yield graphql(message.mutation, message.variables, options, options.atom.get());
     result.responseId = message.responseId;
     yield socket.send(result);
   }
@@ -87,7 +87,8 @@ function handleMessage(options: CommandServerOptions): (socket: Socket) => Opera
     let result = yield executeGraphqlSubscription({
       schema,
       document: parseGraphql(message.subscription),
-      contextValue: new GraphqlContext(context, options.atom, options.delegate)
+      contextValue: new GraphqlContext(context, options.atom, options.delegate),
+      variableValues: message.variables
     });
 
     if(isAsyncIterator(result)) {
@@ -113,7 +114,7 @@ function handleMessage(options: CommandServerOptions): (socket: Socket) => Opera
   }
 
   function* publishQueryResult(message: QueryMessage, state: OrchestratorState, socket: Socket): Operation {
-    let result: Response = yield graphql(message.query, options, state);
+    let result: Response = yield graphql(message.query, message.variables, options, state);
     result.responseId = message.responseId;
     yield socket.send(result);
   }

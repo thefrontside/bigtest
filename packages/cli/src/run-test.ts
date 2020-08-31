@@ -2,15 +2,34 @@ import { Operation } from 'effection';
 import { ProjectOptions } from '@bigtest/project';
 import { performance } from '@bigtest/performance';
 import { ResultStatus } from '@bigtest/suite';
-import { Client } from '@bigtest/server';
+import { Client } from '@bigtest/client';
 import { MainError } from '@effection/node';
 import * as query from './query';
 import { StreamingFormatter } from './format-helpers';
 
 export function* runTest(config: ProjectOptions, formatter: StreamingFormatter): Operation<void> {
-  let client: Client = yield Client.create(`ws://localhost:${config.port}`);
 
-  let subscription = yield client.subscription(query.run());
+  let uri = `ws://localhost:${config.port}`;
+
+  let client: Client = yield function*() {
+    try {
+      return yield Client.create(uri);
+    } catch (e) {
+      if (e.name === 'NoServerError') {
+        throw new MainError({
+          exitCode: 1,
+          message: `Could not connect to BigTest server on ${uri}. Run "bigtest server" to start the server.`
+        });
+      }
+      throw e;
+    }
+  };
+
+  let subscription = yield client.subscription(query.run(), {
+    showDependenciesStackTrace: false,
+    showInternalStackTrace: false,
+    showStackTraceCode: false
+  });
   let stepCounts = { ok: 0, failed: 0, disregarded: 0 };
   let assertionCounts = { ok: 0, failed: 0, disregarded: 0 };
   let testRunStatus: ResultStatus | undefined;

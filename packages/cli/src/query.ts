@@ -1,8 +1,8 @@
-import { ResultStatus } from '@bigtest/suite';
+import { ResultStatus, ErrorDetails } from '@bigtest/suite';
 
 export function run() {
   return `
-    subscription {
+    subscription($showInternalStackTrace: Boolean! = true, $showDependenciesStackTrace: Boolean! = true, $showStackTraceCode: Boolean! = true) {
       event: run {
         type
         status
@@ -11,10 +11,18 @@ export function run() {
         path
         error {
           message
-          fileName
-          lineNumber
-          columnNumber
-          stack
+          stack(showInternal: $showInternalStackTrace, showDependencies: $showDependenciesStackTrace) {
+            name
+            fileName
+            code @include(if: $showStackTraceCode)
+            line
+            column
+            source {
+              fileName
+              line
+              column
+            }
+          }
         }
         timeout
       }
@@ -27,13 +35,7 @@ export type RunResultEvent = {
   testRunId: string;
   status?: ResultStatus;
   path?: string[];
-  error?: {
-    message: string;
-    fileName?: string;
-    lineNumber?: string;
-    columnNumber?: string;
-    stack?: string;
-  };
+  error?: ErrorDetails;
   timeout?: boolean;
 }
 

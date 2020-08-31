@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/suite",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Test data structures ",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -28,7 +28,8 @@
     "dtslint": "^3.5.2",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
-    "ts-node": "*"
+    "ts-node": "*",
+    "typescript": "3.9.7"
   },
   "volta": {
     "node": "12.16.0",

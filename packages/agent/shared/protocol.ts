@@ -14,40 +14,47 @@ export interface Connect {
 
 export interface RunBegin {
   type: 'run:begin';
+  agentId?: string;
   testRunId: string;
 }
 
 export interface RunEnd {
   type: 'run:end';
+  agentId?: string;
   testRunId: string;
 }
 
 export interface LaneBegin {
   type: 'lane:begin';
+  agentId?: string;
   testRunId: string;
   path: string[];
 }
 
 export interface LaneEnd {
   type: 'lane:end';
+  agentId?: string;
   testRunId: string;
   path: string[];
 }
 
 export interface TestRunning {
   type: 'test:running';
+  agentId?: string;
   testRunId: string;
   path: string[];
 }
 
 export interface StepRunning {
   type: 'step:running';
+  agentId?: string;
   testRunId: string;
   path: string[];
 }
 
 export interface StepResult {
   type: 'step:result';
+  agentId?: string;
   status: ResultStatus;
   testRunId: string;
   path: string[];
@@ -57,12 +64,14 @@ export interface StepResult {
 
 export interface AssertionRunning {
   type: 'assertion:running';
+  agentId?: string;
   testRunId: string;
   path: string[];
 }
 
 export interface AssertionResult {
   type: 'assertion:result';
+  agentId?: string;
   status: ResultStatus;
   testRunId: string;
   path: string[];

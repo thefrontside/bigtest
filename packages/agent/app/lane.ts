@@ -1,16 +1,9 @@
-import { timebox } from './timebox';
-
-import { Agent } from '../shared/agent';
-import { TestImplementation, ErrorDetails, Context as TestContext } from '@bigtest/suite';
 import { Operation, fork } from 'effection';
+import { TestImplementation, Context as TestContext } from '@bigtest/suite';
 
-const serializeError: (error: ErrorDetails) => ErrorDetails = ({ message, fileName, lineNumber, columnNumber, stack }) => ({
-  message,
-  fileName,
-  lineNumber,
-  columnNumber,
-  stack
-});
+import { timebox } from './timebox';
+import { serializeError } from './serialize-error';
+import { Agent } from '../shared/agent';
 
 export function *runLane(testRunId: string, agent: Agent, test: TestImplementation, path: string[]): Operation<void> {
   return yield runLaneSegment(testRunId, agent, test, {}, path.slice(1), []);
@@ -50,7 +43,7 @@ function *runLaneSegment(testRunId: string, agent: Agent, test: TestImplementati
           type: 'step:result',
           status: 'failed',
           timeout: false,
-          error: serializeError(error),
+          error: yield serializeError(error),
           path: stepPath
         });
       }
@@ -71,7 +64,7 @@ function *runLaneSegment(testRunId: string, agent: Agent, test: TestImplementati
           agent.send({ testRunId, type: 'assertion:result', status: 'ok', path: assertionPath });
         } catch(error) {
           console.error('[agent] assertion failed', assertion, error);
-          agent.send({ testRunId, type: 'assertion:result', status: 'failed', error: serializeError(error), path: assertionPath });
+          agent.send({ testRunId, type: 'assertion:result', status: 'failed', error: yield serializeError(error), path: assertionPath });
         }
       });
     }

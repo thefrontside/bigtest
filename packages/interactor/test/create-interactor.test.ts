@@ -4,7 +4,7 @@ import * as expect from 'expect'
 import { bigtestGlobals } from '@bigtest/globals';
 import { JSDOM } from 'jsdom';
 
-import { createInteractor } from '../src/index';
+import { createInteractor, perform } from '../src/index';
 
 const Link = createInteractor<HTMLLinkElement>('link')({
   selector: 'a',
@@ -13,8 +13,8 @@ const Link = createInteractor<HTMLLinkElement>('link')({
     byTitle: (element) => element.title
   },
   actions: {
-    click: (element) => { element.click() },
-    setHref: (element, value: string) => { element.href = value }
+    click: perform(element => { element.click() }),
+    setHref: perform((element, value: string) => { element.href = value })
   }
 });
 
@@ -34,6 +34,9 @@ const Details = createInteractor<HTMLDetailsElement>('details')({
 const TextField = createInteractor<HTMLInputElement>('text field')({
   selector: 'input',
   defaultLocator: (element) => element.id,
+  locators: {
+    byPlaceholder: element => element.placeholder
+  },
   filters: {
     enabled: {
       apply: (element) => !element.disabled,
@@ -42,7 +45,22 @@ const TextField = createInteractor<HTMLInputElement>('text field')({
     value: (element) => element.value
   },
   actions: {
-    fillIn: (element, value: string) => { element.value = value }
+    fillIn: perform((element, value: string) => { element.value = value }),
+    click: perform(element => { element.click() })
+  }
+});
+
+const Datepicker = createInteractor<HTMLDivElement>("datepicker")({
+  selector: "div.datepicker",
+  defaultLocator: element => element.querySelector("label")?.textContent || "",
+  filters: {
+    open: element => !!element.querySelector("div.calendar"),
+    month: element => element.querySelector("div.calendar h4")?.textContent
+  },
+  actions: {
+    toggle: async interactor => {
+      await interactor.find(TextField.byPlaceholder("YYYY-MM-DD")).click();
+    }
   }
 });
 
@@ -61,10 +79,11 @@ describe('@bigtest/interactor', () => {
     it('can determine whether an element exists based on the interactor', async () => {
       dom(`
         <p><a href="/foobar">Foo Bar</a></p>
+        <p><a href="/foobar">Quox</a></p>
       `);
 
       await expect(Link('Foo Bar').exists()).resolves.toBeUndefined();
-      await expect(Link('Blah').exists()).rejects.toHaveProperty('message', 'link "Blah" does not exist');
+      await expect(Link('Blah').exists()).rejects.toHaveProperty('message', 'did not find link "Blah", did you mean one of "Foo Bar", "Quox"?');
     });
 
     it('can use locators', async () => {
@@ -73,7 +92,7 @@ describe('@bigtest/interactor', () => {
       `);
 
       await expect(Link.byTitle('Monkey').exists()).resolves.toBeUndefined();
-      await expect(Link.byTitle('Zebra').exists()).rejects.toHaveProperty('message', 'link with title "Zebra" does not exist');
+      await expect(Link.byTitle('Zebra').exists()).rejects.toHaveProperty('message', 'did not find link by title "Zebra", did you mean "Monkey"?');
     });
 
     it('can wait for condition to become true', async () => {
@@ -136,8 +155,8 @@ describe('@bigtest/interactor', () => {
       await expect(Div("foo").find(Link("Foo")).exists()).resolves.toBeUndefined();
       await expect(Div("bar").find(Link("Bar")).exists()).resolves.toBeUndefined();
 
-      await expect(Div("foo").find(Link("Bar")).exists()).rejects.toHaveProperty('message', 'link "Bar" within div "foo" does not exist');
-      await expect(Div("bar").find(Link("Foo")).exists()).rejects.toHaveProperty('message', 'link "Foo" within div "bar" does not exist');
+      await expect(Div("foo").find(Link("Bar")).exists()).rejects.toHaveProperty('message', 'did not find link "Bar" within div "foo", did you mean "Foo"?');
+      await expect(Div("bar").find(Link("Foo")).exists()).rejects.toHaveProperty('message', 'did not find link "Foo" within div "bar", did you mean "Bar"?');
     });
 
     it('is rejected if the parent interactor cannot be found', async () => {
@@ -147,7 +166,7 @@ describe('@bigtest/interactor', () => {
         </div>
       `);
 
-      await expect(Div("blah").find(Link("Foo")).exists()).rejects.toHaveProperty('message', 'div "blah" does not exist');
+      await expect(Div("blah").find(Link("Foo")).exists()).rejects.toHaveProperty('message', 'did not find div "blah", did you mean "foo"?');
     });
 
     it('can be used with interactors with disjoint element types', async () => {
@@ -176,10 +195,26 @@ describe('@bigtest/interactor', () => {
       `);
 
       await expect(Div("test").find(Div("foo").find(Link("Foo"))).exists()).resolves.toBeUndefined();
-      await expect(Div("test").find(Div("foo").find(Link("Bar"))).exists()).rejects.toHaveProperty('message', 'link "Bar" within div "foo" within div "test" does not exist');
+      await expect(Div("test").find(Div("foo").find(Link("Bar"))).exists()).rejects.toHaveProperty('message', 'did not find link "Bar" within div "foo" within div "test", did you mean "Foo"?');
 
       await expect(Div("test").find(Div("foo")).find(Link("Foo")).exists()).resolves.toBeUndefined();
-      await expect(Div("test").find(Div("foo")).find(Link("Bar")).exists()).rejects.toHaveProperty('message', 'link "Bar" within div "foo" within div "test" does not exist');
+      await expect(Div("test").find(Div("foo")).find(Link("Bar")).exists()).rejects.toHaveProperty('message', 'did not find link "Bar" within div "foo" within div "test", did you mean \"Foo\"?');
+    });
+
+    it('cannot match an element outside of scope', async () => {
+      dom(`
+        <div id="test">
+          <div id="foo">
+            <a href="/foo">Foo</a>
+          </div>
+          <div id="bar">
+            <a href="/Bar">Bar</a>
+          </div>
+        </div>
+        <a href="/foo">Foo</a>
+      `);
+
+      await expect(Div("foo").find(Div("bar")).exists()).rejects.toHaveProperty('message', 'did not find div "bar" within div "foo"');
     });
   });
 
@@ -190,7 +225,12 @@ describe('@bigtest/interactor', () => {
       `);
 
       await expect(TextField('Email').is({ value: 'jonas@example.com' })).resolves.toBeUndefined();
-      await expect(TextField('Email').is({ value: 'incorrect@example.com' })).rejects.toHaveProperty('message', 'text field "Email" does not match filters: with value "incorrect@example.com"');
+      await expect(TextField('Email').is({ value: 'incorrect@example.com' })).rejects.toHaveProperty('message', [
+        'text field "Email" does not match filters:', '',
+        '| value: "incorrect@example.com" | enabled: true |',
+        '| ------------------------------ | ------------- |',
+        '| ⨯ "jonas@example.com"          | ✓ true        |',
+      ].join('\n'))
     });
   });
 
@@ -201,7 +241,12 @@ describe('@bigtest/interactor', () => {
       `);
 
       await expect(TextField('Email').has({ value: 'jonas@example.com' })).resolves.toBeUndefined();
-      await expect(TextField('Email').has({ value: 'incorrect@example.com' })).rejects.toHaveProperty('message', 'text field "Email" does not match filters: with value "incorrect@example.com"');
+      await expect(TextField('Email').has({ value: 'incorrect@example.com' })).rejects.toHaveProperty('message', [
+        'text field "Email" does not match filters:', '',
+        '| value: "incorrect@example.com" | enabled: true |',
+        '| ------------------------------ | ------------- |',
+        '| ⨯ "jonas@example.com"          | ✓ true        |',
+      ].join('\n'))
     });
   });
 
@@ -267,6 +312,32 @@ describe('@bigtest/interactor', () => {
     it('can return description of interaction with argument', () => {
       expect(Link('Foo Bar').setHref('/monkey').description).toEqual('setHref with "/monkey" on link "Foo Bar"');
     });
+
+    it('can use interactors within actions', async () => {
+      dom(`
+        <div class="datepicker">
+          <label for="start-date">Start Date</label>
+          <input type="text" id="start-date" placeholder="YYYY-MM-DD" />
+        </div>
+        <script>
+          let startDateInput = document.getElementById("start-date");
+          let datepicker = document.querySelector(".datepicker");
+          startDateInput.onclick = () => {
+            let calendar = document.createElement("div");
+            let calendarMonth = document.createElement("h4");
+            calendarMonth.appendChild(document.createTextNode("January"));
+            calendar.classList.add("calendar");
+            calendar.appendChild(calendarMonth);
+            datepicker.appendChild(calendar);
+          };
+        </script>
+      `);
+
+      await expect(Datepicker("Start Date").has({ open: false })).resolves.toBeUndefined();
+      await Datepicker("Start Date").toggle();
+      await expect(Datepicker("Start Date").has({ open: true })).resolves.toBeUndefined();
+      await expect(Datepicker("Start Date").has({ month: "January" })).resolves.toBeUndefined();
+    });
   });
 
   describe('filters', () => {
@@ -277,7 +348,12 @@ describe('@bigtest/interactor', () => {
 
       await expect(TextField('Email').exists()).resolves.toBeUndefined();
       await expect(TextField('Email', { value: 'jonas@example.com' }).exists()).resolves.toBeUndefined();
-      await expect(TextField('Email', { value: 'incorrect@example.com' }).exists()).rejects.toHaveProperty('message', 'text field "Email" with value "incorrect@example.com" does not exist');
+      await expect(TextField('Email', { value: 'incorrect@example.com' }).exists()).rejects.toHaveProperty('message', [
+        'did not find text field "Email" with value "incorrect@example.com", did you mean one of:', '',
+        '| text field | value: "incorrect@example.com" | enabled: true |',
+        '| ---------- | ------------------------------ | ------------- |',
+        '| ✓ "Email"  | ⨯ "jonas@example.com"          | ✓ true        |',
+      ].join('\n'))
     });
 
     it('can apply default values', async () => {
@@ -286,8 +362,20 @@ describe('@bigtest/interactor', () => {
         <input id="Password" disabled="disabled" value='test1234'/>
       `);
 
-      await expect(TextField('Password').exists()).rejects.toHaveProperty('message', 'text field "Password" does not exist');
-      await expect(TextField('Password', { enabled: true }).exists()).rejects.toHaveProperty('message', 'text field "Password" which is enabled does not exist');
+      await expect(TextField('Password').exists()).rejects.toHaveProperty('message', [
+        'did not find text field "Password", did you mean one of:', '',
+        '| text field   | enabled: true |',
+        '| ------------ | ------------- |',
+        '| ✓ "Password" | ⨯ false       |',
+        '| ⨯ "Email"    | ✓ true        |',
+      ].join('\n'))
+      await expect(TextField('Password', { enabled: true }).exists()).rejects.toHaveProperty('message', [
+        'did not find text field "Password" which is enabled, did you mean one of:', '',
+        '| text field   | enabled: true |',
+        '| ------------ | ------------- |',
+        '| ✓ "Password" | ⨯ false       |',
+        '| ⨯ "Email"    | ✓ true        |',
+      ].join('\n'))
       await expect(TextField('Password', { enabled: false }).exists()).resolves.toBeUndefined();
     });
 
@@ -297,9 +385,21 @@ describe('@bigtest/interactor', () => {
         <input id="Password" disabled="disabled" value='test1234'/>
       `);
 
-      await expect(TextField('Password', { enabled: false, value: 'incorrect' }).exists()).rejects.toHaveProperty('message', 'text field "Password" which is not enabled and with value "incorrect" does not exist');
-      await expect(TextField('Password', { enabled: true, value: 'test1234' }).exists()).rejects.toHaveProperty('message', 'text field "Password" which is enabled and with value "test1234" does not exist');
+      await expect(TextField('Password', { enabled: false, value: 'incorrect' }).exists()).rejects.toHaveProperty('message', [
+        'did not find text field "Password" which is not enabled and with value "incorrect", did you mean one of:', '',
+        '| text field   | enabled: false | value: "incorrect"    |',
+        '| ------------ | -------------- | --------------------- |',
+        '| ✓ "Password" | ✓ false        | ⨯ "test1234"          |',
+        '| ⨯ "Email"    | ⨯ true         | ⨯ "jonas@example.com" |',
+      ].join('\n'))
+      await expect(TextField('Password', { enabled: true, value: 'test1234' }).exists()).rejects.toHaveProperty('message', [
+        'did not find text field "Password" which is enabled and with value "test1234", did you mean one of:', '',
+        '| text field   | enabled: true | value: "test1234"     |',
+        '| ------------ | ------------- | --------------------- |',
+        '| ✓ "Password" | ⨯ false       | ✓ "test1234"          |',
+        '| ⨯ "Email"    | ✓ true        | ⨯ "jonas@example.com" |',
+      ].join('\n'))
       await expect(TextField('Password', { enabled: false, value: 'test1234' }).exists()).resolves.toBeUndefined();
     });
   });
-})
+});

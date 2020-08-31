@@ -4,8 +4,8 @@ import * as expect from 'expect';
 import { Mailbox } from '@bigtest/effection';
 import { Slice } from '@bigtest/atom';
 import { Test } from '@bigtest/suite';
+import { Client } from '@bigtest/client';
 
-import { Client } from '../src/client';
 import { actions } from './helpers';
 import { createCommandServer } from '../src/command-server';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';

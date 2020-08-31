@@ -5,8 +5,11 @@ import {
   mutationType,
   subscriptionField,
   stringArg,
+  booleanArg,
   makeSchema,
+  enumType,
 } from "@nexus/schema";
+import { ErrorStackFrame } from '@bigtest/suite';
 
 export const schema = makeSchema({
   typegenAutoConfig: {
@@ -52,6 +55,10 @@ export const schema = makeSchema({
 
         t.field("manifest", {
           type: "Test",
+        });
+
+        t.field("bundler", {
+          type: "Bundler"
         });
 
         t.list.field("testRuns", {
@@ -168,6 +175,34 @@ export const schema = makeSchema({
         })
       }
     }),
+    enumType({
+      name: "BundlerStatus",
+      members: [
+        'UNBUNDLED',
+        'BUILDING',
+        'GREEN',
+        'ERRORED'
+      ]
+    }),
+    objectType({
+      name: "Bundler",
+      definition(t) {
+        t.field("type", {
+          type: 'BundlerStatus'
+        });
+        t.string("path", {
+          nullable: true
+        }),
+        t.list.field("errors", {
+          type: "Error",
+          nullable: true
+        }),
+        t.list.field("warnings", {
+          type: "Error",
+          nullable: true
+        })
+      }
+    }),
     objectType({
       name: "Step",
       definition(t) {
@@ -255,12 +290,54 @@ export const schema = makeSchema({
     }),
     objectType({
       name: "Error",
+      rootTyping: {
+        name: "ErrorDetails",
+        path: "@bigtest/suite"
+      },
       definition(t) {
         t.string("message");
+        t.list.field("stack", {
+          type: "ErrorStackFrame",
+          nullable: true,
+          args: {
+            showInternal: booleanArg({ required: false, default: true }),
+            showDependencies: booleanArg({ required: false, default: true }),
+          },
+          async resolve({ stack }, { showInternal, showDependencies }) {
+            if(stack) {
+              return stack.filter((frame: ErrorStackFrame) => {
+                if(!showInternal && frame.fileName?.match(/__bigtest/)) {
+                  return false;
+                }
+                if(!showDependencies && frame.source?.fileName?.match(/node_modules/)) {
+                  return false;
+                }
+                return true;
+              });
+            } else {
+              return null;
+            }
+          }
+        });
+      }
+    }),
+    objectType({
+      name: "ErrorStackFrame",
+      definition(t) {
+        t.string("name", { nullable: true });
         t.string("fileName", { nullable: true });
-        t.int("lineNumber", { nullable: true });
-        t.int("columnNumber", { nullable: true });
-        t.string("stack", { nullable: true });
+        t.string("code", { nullable: true });
+        t.int("line", { nullable: true });
+        t.int("column", { nullable: true });
+        t.field("source", { type: "ErrorStackFrameSource", nullable: true });
+      }
+    }),
+    objectType({
+      name: "ErrorStackFrameSource",
+      definition(t) {
+        t.string("fileName", { nullable: true });
+        t.int("line", { nullable: true });
+        t.int("column", { nullable: true });
       }
     })
   ]

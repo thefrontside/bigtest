@@ -1,7 +1,10 @@
+export type Variables = Record<string, unknown>;
+
 export interface Message {
   query?: string;
   mutation?: string;
   subscription?: string;
+  variables?: Variables;
   responseId?: string;
 }
 

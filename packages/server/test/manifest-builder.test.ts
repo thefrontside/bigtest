@@ -4,38 +4,37 @@ import * as path from 'path';
 import * as rmrf from 'rimraf';
 import * as fs from 'fs';
 
-import { Mailbox } from '@bigtest/effection';
 import { Atom } from '@bigtest/atom';
 
 import { actions } from './helpers';
 import { createManifestBuilder, updateSourceMapURL } from '../src/manifest-builder';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { OrchestratorState } from '../src/orchestrator/state';
+import { assertBundlerState } from '../src/assertions/bundler-assertions';
 
-const TEST_DIR = "./tmp/manifest-builder"
-const SRC_DIR = `${TEST_DIR}/src`
-const BUILD_DIR = `${TEST_DIR}/build`
-const DIST_DIR = `${TEST_DIR}/dist`
-const MANIFEST_PATH = `${SRC_DIR}/manifest.js`
+// be nice to windows
+const TEST_DIR = path.resolve('tmp', 'manifest-builder');
+const SRC_DIR = path.resolve(TEST_DIR, 'src');
+const BUILD_DIR = path.resolve(TEST_DIR, 'build');
+const DIST_DIR = path.resolve(TEST_DIR, 'dist');
+const MANIFEST_PATH = path.resolve(SRC_DIR, 'manifest.js');
+const FIXTURES_DIR = path.resolve('test', 'fixtures');
 
 const { mkdir, copyFile, readFile } = fs.promises;
 
 describe('manifest builder', () => {
   let atom: Atom<OrchestratorState>;
-  let delegate: Mailbox;
   let resultPath: string;
 
   beforeEach((done) => rmrf(TEST_DIR, done));
   beforeEach(async () => {
     await mkdir(SRC_DIR, { recursive: true });
-    await copyFile('./test/fixtures/raw-tree-format.t.js', MANIFEST_PATH);
+    await copyFile(path.join(FIXTURES_DIR, 'raw-tree-format.t.js'), MANIFEST_PATH);
 
     atom = createOrchestratorAtom();
-    delegate = new Mailbox();
 
     actions.fork(function*() {
       yield createManifestBuilder({
-        delegate,
         atom,
         srcPath: MANIFEST_PATH,
         buildDir: BUILD_DIR,
@@ -43,7 +42,11 @@ describe('manifest builder', () => {
       });
     });
 
-    resultPath = (await actions.receive(delegate, { status: 'ready' }))['path'];
+    let bundlerState = await actions.fork(atom.slice('bundler').once(({ type }) => type === 'GREEN'));
+
+    resultPath = (bundlerState?.type === 'GREEN' && bundlerState.path) as string;
+
+    atom.slice('bundler').update(() => ({ type: 'BUILDING', warnings: []}));
   });
 
   describe('retrieving test file manifest from disk', () => {
@@ -61,8 +64,12 @@ describe('manifest builder', () => {
     let body: string;
 
     beforeEach(async () => {
-      await copyFile('./test/fixtures/empty.t.js', MANIFEST_PATH);
-      resultPath = (await actions.receive(delegate, { event: 'update' }))['path'];
+      await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
+      
+      let bundle = await actions.fork(atom.slice('bundler').once(({ type }) => type === 'GREEN'));
+
+      resultPath = (!!bundle && bundle.type === 'GREEN' && bundle.path) as string;
+
       body = await readFile(path.resolve(DIST_DIR, resultPath), 'utf8')
     });
 
@@ -109,7 +116,7 @@ describe('manifest builder', () => {
     beforeEach(async () => {
       emptyFilePath = `${TEST_DIR}/empty.t.js`;
 
-      await copyFile('./test/fixtures/empty.t.js', emptyFilePath);
+      await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), emptyFilePath);
       await actions.fork(function* (){
         try {
           yield updateSourceMapURL(emptyFilePath, '');
@@ -126,8 +133,8 @@ describe('manifest builder', () => {
 
   describe('updating the manifest and then reading it', () => {
     beforeEach(async () => {
-      await copyFile('./test/fixtures/empty.t.js', MANIFEST_PATH);
-      await actions.receive(delegate, { event: "update" });
+      await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
+      await actions.fork(atom.slice('bundler').once(({ type }) => type === 'GREEN'))
     });
 
     it('returns the updated manifest from the state', () => {
@@ -135,4 +142,23 @@ describe('manifest builder', () => {
       expect(atom.get().manifest.description).toEqual('An empty test with no steps and no children');
     });
   });
+
+  describe('importing the manifest with an error adds the error to the state', () => {
+    beforeEach(async () => {
+      await copyFile(path.join(FIXTURES_DIR, 'exceptions', 'error.t.js'), MANIFEST_PATH);
+      await actions.fork(atom.slice('bundler').once(({ type }) => type === 'ERRORED'));
+    });
+
+    it('should update the global state with the error detail', () => {
+      let bundlerState = atom.get().bundler;
+
+      // this could be a custom expect 
+      // assert is used to type narrow also and does more than just assert
+      assertBundlerState(bundlerState.type, {is: 'ERRORED'})
+      
+      let error = bundlerState.error;
+
+      expect(error.frame).toBeTruthy();
+    });
+  })
 });

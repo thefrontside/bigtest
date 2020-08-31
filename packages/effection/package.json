@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/effection",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Collection of handly utilities for working with effection. May find a different home later",
   "main": "dist/index.js",
   "typings": "dist/index.d.js",
@@ -24,10 +24,11 @@
     "@types/node": "^13.13.4",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
-    "ts-node": "*"
+    "ts-node": "*",
+    "typescript": "3.9.7"
   },
   "dependencies": {
-    "@effection/events": "^0.7.4",
+    "@effection/events": "^0.7.7",
     "@types/node": "^13.13.4",
     "effection": "^0.7.0"
   },

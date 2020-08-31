@@ -1,6 +1,6 @@
 import { Operation, resource, spawn } from 'effection';
 import { on, once } from '@effection/events';
-import { Subscribable, createSubscription } from '@effection/subscription';
+import { subscribe, Subscribable, createSubscription } from '@effection/subscription';
 import { AgentProtocol, AgentEvent, Command } from './protocol';
 
 export * from './protocol';
@@ -12,7 +12,7 @@ export interface AgentOptions {
 }
 
 export class Agent implements AgentProtocol {
-  constructor(private socket: Socket & EventTarget) {}
+  constructor(private socket: Socket & EventTarget, private options: AgentOptions) {}
 
   /**
    * Produces an Agent resource that is connected to an orchestrator. This resource can be
@@ -21,7 +21,7 @@ export class Agent implements AgentProtocol {
   static *start(options: AgentOptions): Operation<Agent> {
 
     let socket = options.createSocket() as unknown as (Socket & EventTarget);
-    let agent = yield resource(new Agent(socket), function*(): Operation<void> {
+    let agent = yield resource(new Agent(socket, options), function*(): Operation<void> {
       try {
         let [event] = yield once(socket, 'close');
         if(!event.wasClean) {
@@ -45,8 +45,8 @@ export class Agent implements AgentProtocol {
 
   get commands() {
     let { socket } = this;
-    return Subscribable.from(createSubscription<Command, void>(function*(publish) {
-      yield spawn(Subscribable.from(on(socket, 'message'))
+    return subscribe(createSubscription<Command, void>(function*(publish) {
+      yield spawn(subscribe(on(socket, 'message'))
         .map(([event]) => event as MessageEvent)
         .map(event => JSON.parse(event.data) as Command)
         .forEach(function*(command) {
@@ -58,7 +58,7 @@ export class Agent implements AgentProtocol {
   }
 
   send(message: AgentEvent) {
-    this.socket.send(JSON.stringify(message));
+    this.socket.send(JSON.stringify({ ...message, agentId: this.options.agentId }));
   }
 
   *receive(): Operation<Command> {

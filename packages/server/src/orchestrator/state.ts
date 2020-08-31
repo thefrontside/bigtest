@@ -1,4 +1,5 @@
 import { Test, TestResult, ResultStatus } from '@bigtest/suite';
+import { BundlerError, BundlerWarning } from '@bigtest/bundler';
 
 export type AgentState = {
   agentId: string;
@@ -33,12 +34,21 @@ export type TestRunAgentState = {
   result: TestResult;
 }
 
-export type OrchestratorState = {
-  agents: Record<string, AgentState>;
-  manifest: Manifest;
-  testRuns: Record<string, TestRunState>;
-}
+export type BundlerState = 
+  | { type: 'UNBUNDLED' } 
+  | { type: 'BUILDING'; warnings: BundlerWarning[] } 
+  | { type: 'GREEN'; path: string;  warnings: BundlerWarning[] }
+  | { type: 'ERRORED'; error: BundlerError }
+
+  export type BundlerTypes = Pick<BundlerState, 'type'>['type'];
 
 export interface Manifest extends Test {
   fileName: string;
+}
+
+export type OrchestratorState = {
+  agents: Record<string, AgentState>;
+  manifest: Manifest;
+  bundler: BundlerState;
+  testRuns: Record<string, TestRunState>;
 }

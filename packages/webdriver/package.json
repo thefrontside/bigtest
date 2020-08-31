@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/webdriver",
-  "version": "0.5.5",
+  "version": "0.6.0",
   "description": "Control Webdriver instances",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -28,12 +28,12 @@
     "ts-node": "*"
   },
   "dependencies": {
-    "@bigtest/atom": "^0.7.0",
-    "@bigtest/driver": "^0.5.1",
+    "@bigtest/atom": "^0.8.0",
+    "@bigtest/driver": "^0.5.3",
     "@effection/fetch": "^0.1.2",
-    "@effection/node": "^0.6.5",
+    "@effection/node": "^0.8.0",
     "abort-controller": "^3.0.0",
-    "chromedriver": "~83.0.0",
+    "chromedriver": "~85.0.0",
     "effection": "^0.7.0",
     "geckodriver": "^1.19.1",
     "node-fetch": "^2.6.0"

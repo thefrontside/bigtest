@@ -1,4 +1,4 @@
-import { createInteractor } from '../src/index';
+import { createInteractor, perform } from '../src/index';
 
 const Link = createInteractor<HTMLLinkElement>('link')({
   selector: 'a',
@@ -7,8 +7,8 @@ const Link = createInteractor<HTMLLinkElement>('link')({
     byTitle: (element) => element.title
   },
   actions: {
-    click: (element) => { element.click() },
-    setHref: (element, value: string) => { element.href = value }
+    click: perform(element => { element.click() }),
+    setHref: perform((element, value: string) => { element.href = value })
   }
 });
 

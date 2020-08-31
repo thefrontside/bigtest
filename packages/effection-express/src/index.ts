@@ -6,15 +6,19 @@ import * as util from 'util';
 import { Server } from 'http';
 
 import { throwOnErrorEvent, once, on } from '@effection/events';
+import { Subscribable, SymbolSubscribable, Subscription, subscribe } from '@effection/subscription';
 import { Mailbox, ensure } from '@bigtest/effection';
 
 type OperationRequestHandler = (req: actualExpress.Request, res: actualExpress.Response) => Operation<void>;
 type WsOperationRequestHandler = (socket: Socket, req: actualExpress.Request) => Operation<void>;
 
-export class Socket {
+// JSON.parse return type is `any`, so that's the type
+// of the subscription
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export class Socket implements Subscribable<any, void> {
   constructor(public raw: WebSocket) {}
 
-  *send(data: unknown) {
+  *send(data: unknown): Operation<void> {
     if(this.raw.readyState === 1) {
       yield util.promisify(this.raw.send.bind(this.raw))(JSON.stringify(data));
     }
@@ -31,6 +35,16 @@ export class Socket {
         mailbox.send(JSON.parse(message.data));
       }
     });
+  }
+
+  // JSON.parse return type is `any`, so that's the type
+  // of the subscription
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  *[SymbolSubscribable](): Operation<Subscription<any, void>> {
+    let { raw } = this;
+    let messages = subscribe(on<MessageEvent[]>(raw, 'message'))
+      .map(([event]) => JSON.parse(event.data));
+    return yield subscribe(messages);
   }
 }
 

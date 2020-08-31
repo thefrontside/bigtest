@@ -9,6 +9,7 @@
   "workspaces": {
     "packages": [
       "packages/effection",
+      "packages/client",
       "packages/effection-express",
       "packages/performance",
       "packages/atom",
@@ -18,13 +19,14 @@
       "packages/agent",
       "packages/driver",
       "packages/webdriver",
-      "packages/bundler",
       "packages/project",
+      "packages/bundler",
       "packages/todomvc",
       "packages/convergence",
       "packages/logging",
       "packages/server",
-      "packages/cli"
+      "packages/cli",
+      "packages/bigtest"
     ],
     "nohoist": [
       "@bigtest/server/@types/node"
@@ -45,6 +47,7 @@
     "@types/node": "^12"
   },
   "resolutions": {
-    "lodash": "4.17.19"
+    "lodash": "4.17.19",
+    "@definitelytyped/typescript-versions": "^0.0.40"
   }
 }

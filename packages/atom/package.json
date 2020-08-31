@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/atom",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "State atom used by BigTest",
   "main": "dist/index.js",
   "typings": "dist/index.d.js",
@@ -29,9 +29,9 @@
     "ts-node": "*"
   },
   "dependencies": {
-    "@effection/channel": "^0.6.5",
-    "@effection/events": "^0.7.4",
-    "@effection/subscription": "^0.9.0",
+    "@effection/channel": "^0.6.6",
+    "@effection/events": "^0.7.7",
+    "@effection/subscription": "^0.10.0",
     "effection": "0.7.0",
     "ramda": "0.27.0"
   },

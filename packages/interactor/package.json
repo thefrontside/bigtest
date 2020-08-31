@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/interactor",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "description": "Interactors for working with applications",
   "main": "dist/cjs/index.js",
   "browser": "dist/esm/index.js",
@@ -22,15 +22,16 @@
     "prepack": "tsc --outdir dist/esm --sourcemap --module es2015 && tsc --outdir dist/cjs --sourcemap --module commonjs && tsc --outdir dist/types --emitDeclarationOnly"
   },
   "dependencies": {
+    "@bigtest/globals": "^0.6.0",
     "@bigtest/performance": "^0.5.0",
-    "@bigtest/globals": "^0.6.0"
+    "change-case": "^4.1.1"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^1.1.2",
     "@frontside/typescript": "^1.0.1",
+    "@types/jsdom": "^16.2.3",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
-    "@types/jsdom": "^16.2.3",
     "dtslint": "^3.5.2",
     "expect": "^24.9.0",
     "jsdom": "^16.2.2",

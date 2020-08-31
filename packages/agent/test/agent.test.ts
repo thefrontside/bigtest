@@ -1,18 +1,19 @@
 import { Local, WebDriver } from '@bigtest/webdriver';
 import { readyResource } from '@bigtest/effection';
 import { express } from '@bigtest/effection-express';
+
+import { ChainableSubscription, subscribe } from '@effection/subscription';
 import { static as staticMiddleware } from 'express';
 
-import { describe, it } from 'mocha';
+import { describe, it, beforeEach } from 'mocha';
 import * as expect from 'expect';
 import fetch from 'node-fetch';
-import * as fixtureManifest from './fixtures/manifest.src';
+import { test as fixtureManifest } from './fixtures/manifest.src';
 
-import { AgentConnectionServer, AgentServerConfig, AssertionResult, StepResult } from '../src/index';
+import { AgentServerConfig, AgentEvent, createAgentHandler, AgentConnection } from '../src/index';
 
-import { Mailbox } from '@bigtest/effection';
-
-import { main } from './helpers';
+import { run } from './helpers';
+import { StepResult } from '@bigtest/suite';
 
 function* staticServer(port: number) {
   let app = express();
@@ -40,20 +41,13 @@ describe("@bigtest/agent", function() {
   });
 
   describe('starting a new server', () => {
-    let client: AgentConnectionServer;
-    let delegate: Mailbox;
-    let inbox: Mailbox;
+    let connections: ChainableSubscription<AgentConnection, undefined>;
 
     beforeEach(async () => {
-      await main(staticServer(8000));
+      await run(staticServer(8000));
 
-      client = new AgentConnectionServer({
-        port: 8001,
-        inbox: inbox = new Mailbox(),
-        delegate: delegate = new Mailbox()
-      });
+      connections = await run(createAgentHandler(8001));
 
-      await main(client.listen());
     });
 
     describe('fetching the harness', () => {
@@ -70,98 +64,83 @@ describe("@bigtest/agent", function() {
 
     describe('connecting a browser to the agent URL', () => {
       let browser: WebDriver;
-      let message: { agentId: string };
-      let agentId: string;
+      let connection: AgentConnection;
+      let events: ChainableSubscription<AgentEvent, undefined>;
 
       beforeEach(async function() {
-        browser = await main(Local({ browserName: 'chrome', headless: true }));
-        await main(browser.navigateTo(config.agentUrl(`ws://localhost:8001`)));
-        message = await main(delegate.receive({ status: 'connected' })) as typeof message;
-        agentId = message.agentId;
+        browser = await run(Local({ browserName: 'chrome', headless: true }));
+        await run(browser.navigateTo(config.agentUrl(`ws://localhost:8001`)));
+        connection = await run(connections.expect());
+        events = await run(subscribe(connection.events));
+
       });
 
       it('sends a connection message with an agent id', () => {
-        expect(typeof message.agentId).toEqual('string');
+        expect(typeof connection.agentId).toEqual('string');
       });
 
       describe('sending a run message', () => {
-        let success: AssertionResult;
-        let failure: AssertionResult;
-        let checkContext: AssertionResult;
         let testRunId = 'test-run-1';
 
         beforeEach(async () => {
           let manifestUrl = 'http://localhost:8000/test/fixtures/manifest.js';
           let appUrl = 'http://localhost:8000/test/fixtures';
-          inbox.send({ type: 'run', testRunId, agentId, manifestUrl, appUrl, tree: fixtureManifest });
 
-          await main(delegate.receive({ type: 'run:end', agentId, testRunId }));
+          connection.send({ type: 'run', testRunId, manifestUrl, appUrl, tree: fixtureManifest });
 
-          // we're receiving many more of these, but just checking some of them
-          success = await main(delegate.receive({
-            agentId,
-            testRunId,
+        });
+
+        it('receives success results', async () => {
+          expect(await run(events.match({
             type: 'assertion:result',
-            path: ['tests', 'test with failing assertion', 'successful assertion'],
-          }));
+            path: ['tests', 'test with failing assertion', 'successful assertion']
+          }).first())).toBeDefined()
+        });
 
-          failure = await main(delegate.receive({
-            agentId,
-            testRunId,
+        it('receives failure results', async () => {
+          expect(await run(events.match({
             type: 'assertion:result',
-            path: ['tests', 'test with failing assertion', 'failing assertion'],
-          }));
+            path: ['tests', 'test with failing assertion', 'failing assertion']
+          }).first())).toBeDefined()
+        });
 
-          checkContext = await main(delegate.receive({
-            agentId,
-            testRunId,
+        it('receives the run:end event', async () => {
+          expect(await run(events.match({ type: 'run:end', testRunId }).first())).toBeDefined();
+        });
+
+        it('preserves test context all the way down the entire test run', async () => {
+          let checkContext = await run(events.match({
             type: 'assertion:result',
             path: ['tests', 'tests that track context', 'contains entire context from all steps']
-          }));
-        });
+          }).first());
 
-        it('reports success and failure results', () => {
-          expect(success.status).toEqual('ok');
-          expect(failure.status).toEqual('failed');
-          expect(failure.error && failure.error.message).toEqual('boom!');
-        });
-
-        it('preserves test context all the way down the entire test run', () => {
-          if (checkContext.status !== "ok") {
-            if (checkContext.error) {
-              throw new Error(checkContext.error.message);
-            } else {
-              expect(checkContext.error).toBeDefined();
-            }
-          }
+          expect(checkContext).toMatchObject({ status: 'ok' });
         });
 
         describe('steps that timeout', () => {
           let longStep: StepResult;
           beforeEach(async () => {
-            longStep = await main(delegate.receive({
-              agentId,
-              testRunId,
+            longStep = await run(events.match({
               type: 'step:result',
               path: ['tests', 'test step timeouts', 'this takes literally forever']
-            }));
+            }).first()) as unknown as StepResult;
           });
 
           it('cuts off steps that dont return within the given time period', () => {
-            expect(longStep.status).toEqual('failed');
-            expect(longStep.timeout).toEqual(true);
+            expect(longStep).toMatchObject({
+              status: 'failed',
+              timeout: true
+            });
           });
         });
 
         describe('steps that mock fetch', () => {
           let step: StepResult;
           beforeEach(async () => {
-            step = await main(delegate.receive({
-              agentId,
-              testRunId,
+            step = await run(events.match({
               type: 'step:result',
               path: ['tests', 'test fetch', 'fetch is mocked']
-            }));
+            }).first()) as unknown as StepResult;
           });
 
           it('succeeds', async () => {
@@ -171,14 +150,16 @@ describe("@bigtest/agent", function() {
       });
 
       describe('closing browser connection', () => {
-        let message: string;
+        let closed: boolean;
         beforeEach(async () => {
-          await main(browser.navigateTo('about:blank'));
-          message = await main(delegate.receive({ status: 'disconnected', agentId }))
+          closed = false;
+          await run(browser.navigateTo('about:blank'));
+          await run(events.forEach(function*() { yield Promise.resolve()}));
+          closed = true;
         });
 
         it('sends a disconnect message', () => {
-          expect(message).toBeDefined();
+          expect(closed).toEqual(true);
         });
       });
     });

@@ -1,4 +1,4 @@
 export { AgentServerConfig } from './server-config';
-export { AgentConnectionServer } from './connection-server';
+export { createAgentHandler, AgentConnection } from './agent-handler';
 export { Agent, Socket } from '../shared/agent';
 export * from '../shared/protocol';
