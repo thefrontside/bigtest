@@ -31,7 +31,7 @@
     "@effection/fetch": "^0.1.2",
     "@effection/node": "^0.8.0",
     "abort-controller": "^3.0.0",
-    "chromedriver": "~83.0.0",
+    "chromedriver": "~85.0.0",
     "effection": "^0.7.0",
     "geckodriver": "^1.19.1",
     "node-fetch": "^2.6.0"

@@ -4,7 +4,7 @@ import { resource, Operation, spawn } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { on, once } from '@effection/events';
 
-import { Message, isErrorResponse, isDataResponse, isDoneResponse } from './protocol';
+import { Variables, Message, isErrorResponse, isDataResponse, isDoneResponse } from './protocol';
 import { NoServerError } from './errors';
 
 let responseIds = 0;
@@ -19,7 +19,7 @@ export class Client {
 
     yield spawn(function* detectStartupError(): Operation<void> {
       let [error] = yield once(socket, 'error');
-      
+
       if (isErrorEvent(error)) {
         throw new NoServerError(`Could not connect to server at ${url}`);
       } else {
@@ -44,25 +44,25 @@ export class Client {
     return res;
   }
 
-  *query(source: string): Operation {
-    let subscription = yield this.send("query", source, false);
+  *query(source: string, variables?: Variables): Operation {
+    let subscription = yield this.send("query", source, false, variables);
     return yield subscription.receive();
   }
 
-  *mutation(source: string): Operation {
-    let subscription = yield this.send("mutation", source);
+  *mutation(source: string, variables?: Variables): Operation {
+    let subscription = yield this.send("mutation", source, false, variables);
     return yield subscription.receive();
   }
 
-  *liveQuery(source: string): Operation<Mailbox> {
-    return yield this.send("query", source, true);
+  *liveQuery(source: string, variables?: Variables): Operation<Mailbox> {
+    return yield this.send("query", source, true, variables);
   }
 
-  *subscription(source: string): Operation<Mailbox> {
-    return yield this.send("subscription", source);
+  *subscription(source: string, variables?: Variables): Operation<Mailbox> {
+    return yield this.send("subscription", source, false, variables);
   }
 
-  private *send(type: string, source: string, live = false): Operation<Mailbox> {
+  private *send(type: string, source: string, live = false, variables?: Variables): Operation<Mailbox> {
     let mailbox = new Mailbox();
     let { socket } = this;
 
@@ -71,7 +71,7 @@ export class Client {
 
       let responseId = `${responseIds++}`; //we'd want a UUID to avoid hijacking?
 
-      socket.send(JSON.stringify({ [type]: source, live, responseId}));
+      socket.send(JSON.stringify({ [type]: source, live, responseId, variables }));
 
       while (true) {
         let { value: [event] } = yield messages.next();
