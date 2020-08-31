@@ -338,6 +338,19 @@ describe('@bigtest/interactor', () => {
       await expect(Datepicker("Start Date").has({ open: true })).resolves.toBeUndefined();
       await expect(Datepicker("Start Date").has({ month: "January" })).resolves.toBeUndefined();
     });
+
+    it('throws an error if ambiguous', async () => {
+      dom(`
+        <p><a href="/foo">Foo</a></p>
+        <p><a href="/bar">Foo</a></p>
+      `);
+
+      await expect(Link('Foo').click()).rejects.toHaveProperty('message', [
+        'link "Foo" matches multiple elements:', '',
+        '- <a href="/foo">',
+        '- <a href="/bar">',
+      ].join('\n'))
+    });
   });
 
   describe('filters', () => {

@@ -26,6 +26,14 @@ export class Match<E extends Element, S extends InteractorSpecification<E>> {
   get sortWeight(): number {
     return this.matchLocator.sortWeight + this.matchFilter.sortWeight;
   }
+
+  elementDescription(): string {
+    let tag = this.element.tagName.toLowerCase();
+    let attrs = Array.from(this.element.attributes).map((attr) => {
+      return `${attr.name}="${attr.value}"`
+    });
+    return `<${[tag, ...attrs].join(' ')}>`;
+  }
 }
 
 export class MatchLocator<E extends Element> {
