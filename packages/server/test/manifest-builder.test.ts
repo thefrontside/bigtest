@@ -40,7 +40,6 @@ describe('manifest builder', () => {
         buildDir: BUILD_DIR,
         distDir: DIST_DIR,
         testFiles: ["./test/**/*.test.{ts,js}"],
-        dir: process.cwd()
       });
     });
 
@@ -158,9 +157,7 @@ describe('manifest builder', () => {
       // assert is used to type narrow also and does more than just assert
       assertBundlerState(bundlerState.type, {is: 'ERRORED'})
       
-      let error = bundlerState.error;
-
-      expect(error.frame).toBeTruthy();
+      expect(bundlerState.errors).toHaveLength(1);
     });
   })
 });

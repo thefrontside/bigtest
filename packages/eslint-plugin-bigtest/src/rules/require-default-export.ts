@@ -2,7 +2,7 @@ import {
   TSESTree,
   AST_NODE_TYPES
 } from '@typescript-eslint/experimental-utils';
-import { createRule, isTopLevelTest } from './utils';
+import { createRule } from './utils';
 
 export const requireDefaultTextExport = createRule({
   name: __filename,
@@ -14,7 +14,7 @@ export const requireDefaultTextExport = createRule({
     },
     messages: {
       exportIsNotTest: 'The default export is not a test implementation',
-      namedExport: 'Only default test implementations are allowed'
+      namedExport: 'Only default test implementations can be exported'
     },
     type: 'problem',
     schema: [],
@@ -36,26 +36,40 @@ export const requireDefaultTextExport = createRule({
           return;
         }
         
-        if (defaultExport || namedExport) {
+        if (defaultExport) {
           context.report({ node: defaultExport || namedExport, messageId: 'exportIsNotTest' });
           return;
         }
 
-        context.report({ node: context.getSourceCode().ast, messageId: 'exportIsNotTest' })
+        context.report({ node: context.getSourceCode().ast, messageId: 'namedExport' })
       },
 
-      'ExportNamedDeclaration'(
+      ExportNamedDeclaration(
         node: TSESTree.ExportNamedDeclaration
       ) {
         namedExport = node;
       },
-      'ExportDefaultDeclaration'(
+      // commonjs
+      // module.exports =
+      MemberExpression(node) {
+        if (node.type === AST_NODE_TYPES.MemberExpression 
+            && node.object.type === AST_NODE_TYPES.Identifier
+            && node.object.name === 'module'
+            && node.property.type === AST_NODE_TYPES.Identifier 
+            && node.property.name === 'exports'
+            && node.parent?.type === AST_NODE_TYPES.AssignmentExpression
+            && node.parent.operator === '=') {
+           hasDefaultTestDeclaration = true;
+        }
+      },
+      ExportDefaultDeclaration(
         node: TSESTree.ExportDefaultDeclaration,
       ) {
-        defaultExport = node;
-        
-        if(node.declaration.type === AST_NODE_TYPES.CallExpression) {
-          hasDefaultTestDeclaration = isTopLevelTest(node.declaration);
+
+        if( [AST_NODE_TYPES.CallExpression, AST_NODE_TYPES.ObjectExpression].includes(node.declaration.type)) {
+          hasDefaultTestDeclaration = true;
+        } else {
+          defaultExport = node;
         }
       },
     };
