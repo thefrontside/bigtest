@@ -26,6 +26,9 @@ function formatEvent(event: RunResultEvent) {
         if(stackFrame.name) {
           result += `@ ${stackFrame.name}`;
         }
+        if(stackFrame.code) {
+          result += `\n|        > ${stackFrame.code.trim()}`
+        }
       }
     }
   }

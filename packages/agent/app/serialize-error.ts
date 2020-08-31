@@ -8,6 +8,7 @@ interface SourceLocation {
   name?: string;
   line?: number;
   column?: number;
+  sourceLine?: string;
   sourceFile: {
     path: string;
   };
@@ -24,6 +25,7 @@ export function *resolveStackFrames(stackFrames: StackFrame[]): Operation<ErrorS
         return {
           name: location.name || stackFrame.functionName,
           fileName: stackFrame.fileName,
+          code: location.sourceLine,
           line: stackFrame.lineNumber,
           column: stackFrame.columnNumber,
           source: {

@@ -2,7 +2,7 @@ import { ResultStatus, ErrorDetails } from '@bigtest/suite';
 
 export function run() {
   return `
-    subscription($showInternalStackTrace: Boolean! = true, $showDependenciesStackTrace: Boolean! = true) {
+    subscription($showInternalStackTrace: Boolean! = true, $showDependenciesStackTrace: Boolean! = true, $showStackTraceCode: Boolean! = true) {
       event: run {
         type
         status
@@ -14,6 +14,7 @@ export function run() {
           stack(showInternal: $showInternalStackTrace, showDependencies: $showDependenciesStackTrace) {
             name
             fileName
+            code @include(if: $showStackTraceCode)
             line
             column
             source {

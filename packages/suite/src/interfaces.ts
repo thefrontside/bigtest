@@ -123,5 +123,6 @@ export interface ErrorStackLocation {
 
 export interface ErrorStackFrame extends ErrorStackLocation {
   name?: string;
+  code?: string;
   source?: ErrorStackLocation;
 }

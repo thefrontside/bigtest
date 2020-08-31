@@ -326,6 +326,7 @@ export const schema = makeSchema({
       definition(t) {
         t.string("name", { nullable: true });
         t.string("fileName", { nullable: true });
+        t.string("code", { nullable: true });
         t.int("line", { nullable: true });
         t.int("column", { nullable: true });
         t.field("source", { type: "ErrorStackFrameSource", nullable: true });
