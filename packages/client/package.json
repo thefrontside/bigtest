@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/client",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Communicate with a BigTest Orchestrator",
   "main": "dist/cjs/index.js",
   "browser": "dist/esm/index.js",
@@ -19,13 +19,13 @@
     "prepack": "tsc --outdir dist/esm --sourcemap --module es2015 && tsc --outdir dist/cjs --sourcemap --module commonjs && tsc --outdir dist/types --emitDeclarationOnly"
   },
   "dependencies": {
-    "@bigtest/effection": "^0.5.1",
+    "@bigtest/effection": "^0.5.3",
     "@effection/events": "^0.7.7",
     "effection": "^0.7.0",
     "websocket": "^1.0.31"
   },
   "devDependencies": {
-    "@bigtest/effection-express": "^0.6.0",
+    "@bigtest/effection-express": "^0.7.0",
     "@frontside/tsconfig": "*",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",

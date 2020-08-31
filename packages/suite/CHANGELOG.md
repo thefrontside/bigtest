@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.0
+
+### Minor Changes
+
+- d4e7046c: Resolve source maps in error stack traces for better debugging
+
 ## 0.5.3
 
 ### Patch Changes

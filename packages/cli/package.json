@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/cli",
-  "version": "0.7.3",
+  "version": "0.8.0",
   "description": "Use BigTest",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
@@ -22,7 +22,7 @@
     "bigtest": "dist/bin/bigtest.js"
   },
   "devDependencies": {
-    "@bigtest/todomvc": "^0.5.2",
+    "@bigtest/todomvc": "^0.5.3",
     "@frontside/eslint-config": "^1.1.2",
     "@frontside/typescript": "^1.0.1",
     "@effection/channel": "^0.6.6",
@@ -41,11 +41,11 @@
     "ts-node": "*"
   },
   "dependencies": {
-    "@bigtest/client": "^0.1.0",
-    "@bigtest/effection": "^0.5.2",
+    "@bigtest/client": "^0.2.0",
+    "@bigtest/effection": "^0.5.3",
     "@bigtest/performance": "^0.5.0",
     "@bigtest/project": "^0.6.0",
-    "@bigtest/server": "^0.10.0",
+    "@bigtest/server": "^0.11.0",
     "@effection/node": "^0.8.0",
     "capture-console": "^1.0.1",
     "deepmerge": "^4.2.2",

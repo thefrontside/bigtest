@@ -1,5 +1,24 @@
 # @bigtest/agent
 
+## 0.8.0
+
+### Minor Changes
+
+- d4e7046c: Resolve source maps in error stack traces for better debugging
+
+### Patch Changes
+
+- 736acf52: provide new channel-based `AgentHandler` class for managing a set of
+  agents from within any JavaScript process.
+- b2c5597f: Remove Mailbox interface that weren't being used in the agent
+- 83153e3f: Upgrade effection dependencies to latest versions, upgrade to new style of subscriptions
+- Updated dependencies [3e95a130]
+- Updated dependencies [8afb1cee]
+- Updated dependencies [83153e3f]
+  - @bigtest/effection-express@0.7.0
+  - @bigtest/effection@0.5.3
+  - @bigtest/globals@0.6.1
+
 ## 0.7.3
 
 ### Patch Changes

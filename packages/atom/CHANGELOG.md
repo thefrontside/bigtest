@@ -1,5 +1,11 @@
 # @bigtest/atom
 
+## 0.8.1
+
+### Patch Changes
+
+- 83153e3f: Upgrade effection dependencies to latest versions, upgrade to new style of subscriptions
+
 ## 0.8.0
 
 ### Minor Changes

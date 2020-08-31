@@ -1,5 +1,27 @@
 # @bigtest/cli
 
+## 0.8.0
+
+### Minor Changes
+
+- 46bee8bc: extract `@bigtest/client` out so that any javascript environment can
+  connect to a bigtest orchestrator
+- d4e7046c: Resolve source maps in error stack traces for better debugging
+
+### Patch Changes
+
+- 62252502: Provide a nice error message when running tests without a server
+- 83153e3f: Upgrade effection dependencies to latest versions, upgrade to new style of subscriptions
+- Updated dependencies [7a9c43d1]
+- Updated dependencies [46bee8bc]
+- Updated dependencies [62252502]
+- Updated dependencies [d4e7046c]
+- Updated dependencies [83153e3f]
+- Updated dependencies [f5092973]
+  - @bigtest/server@0.11.0
+  - @bigtest/client@0.2.0
+  - @bigtest/effection@0.5.3
+
 ## 0.7.3
 
 ### Patch Changes
