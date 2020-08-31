@@ -89,9 +89,9 @@ describe("@bigtest/agent", function() {
         beforeEach(async () => {
           let manifestUrl = 'http://localhost:8000/test/fixtures/manifest.js';
           let appUrl = 'http://localhost:8000/test/fixtures';
+          let stepTimeout = 500;
 
-          connection.send({ type: 'run', testRunId, manifestUrl, appUrl, tree: fixtureManifest });
-
+          connection.send({ type: 'run', testRunId, manifestUrl, appUrl, tree: fixtureManifest, stepTimeout });
         });
 
         it('receives success results', async () => {

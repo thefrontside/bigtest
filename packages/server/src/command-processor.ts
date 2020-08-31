@@ -19,6 +19,7 @@ interface CommandProcessorOptions {
 function* run(testRunId: string, options: CommandProcessorOptions): Operation {
   console.debug('[command processor] running test', testRunId);
 
+  let stepTimeout = 60_000;
   let testRunSlice = options.atom.slice('testRuns', testRunId);
   let manifest = options.atom.get().manifest;
 
@@ -41,7 +42,7 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
     let { agentId } = agent;
 
     console.debug(`[command processor] starting test run ${testRunId} on agent ${agentId}`);
-    options.delegate.send({ type: 'run', agentId, appUrl, manifestUrl, testRunId, tree: manifest });
+    options.delegate.send({ type: 'run', agentId, appUrl, manifestUrl, testRunId, tree: manifest, stepTimeout });
   }
 
   let aggregator = new TestRunAggregator(testRunSlice, { testRunId, ...options });

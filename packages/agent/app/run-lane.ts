@@ -17,19 +17,25 @@ interface TestEvents {
 export function* runLane(config: LaneConfig) {
   let { events, command, path } = config;
   try {
-    let { testRunId, manifestUrl, appUrl } = command;
+    let { testRunId, manifestUrl, appUrl, stepTimeout } = command;
     bigtestGlobals.appUrl = appUrl;
     bigtestGlobals.testFrame = findIFrame('app-frame');
     let test: TestImplementation = yield loadManifest(manifestUrl);
-    yield runLaneSegment(testRunId, events, test, {}, path.slice(1), [])
+    yield runLaneSegment(testRunId, events, test, {}, path.slice(1), [], stepTimeout)
   } finally {
     events.close();
   }
 }
 
-const stepTimeout = 60_000;
-
-function *runLaneSegment(testRunId: string, events: TestEvents, test: TestImplementation, context: TestContext, remainingPath: string[], prefix: string[]): Operation<void> {
+function *runLaneSegment(
+  testRunId: string,
+  events: TestEvents,
+  test: TestImplementation,
+  context: TestContext,
+  remainingPath: string[],
+  prefix: string[],
+  stepTimeout: number
+): Operation<void> {
   let currentPath = prefix.concat(test.description);
 
   console.debug('[agent] running test', currentPath);
@@ -97,7 +103,7 @@ function *runLaneSegment(testRunId: string, events: TestEvents, test: TestImplem
   if (remainingPath.length > 0) {
     for (let child of test.children) {
       if (child.description === remainingPath[0]) {
-        yield runLaneSegment(testRunId, events, child, context, remainingPath.slice(1), currentPath);
+        yield runLaneSegment(testRunId, events, child, context, remainingPath.slice(1), currentPath, stepTimeout);
       }
     }
   }
