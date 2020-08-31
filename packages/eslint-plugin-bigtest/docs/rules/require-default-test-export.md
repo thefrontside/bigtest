@@ -1,6 +1,6 @@
-# Require all test files to have a bigtest test default export (`require-default-test-export`)
+# Require all test files to have a default export (`require-default-export`)
 
-Bigtest must find a default export of a test implementation.
+Bigtest must find a default export
 
 ## Rule Details
 
