@@ -21,7 +21,8 @@
     "prepack": "tsc --outDir dist --declaration --sourcemap"
   },
   "devDependencies": {
-    "@frontside/tsconfig": "*",
+    "@frontside/eslint-config": "^1.1.2",
+    "@frontside/typescript": "^1.0.1",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
     "dtslint": "^3.5.2",

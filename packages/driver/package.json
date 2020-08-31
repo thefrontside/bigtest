@@ -17,13 +17,13 @@
     "prepack": "tsc --outdir dist"
   },
   "devDependencies": {
-    "@frontside/tsconfig": "^0.0.1",
+    "@frontside/eslint-config": "^1.1.2",
+    "@frontside/typescript": "^1.0.1",
     "@types/mocha": "^7.0.1",
     "@types/node": "^14.0.11",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
-    "ts-node": "*",
-    "typescript": "^3.9.7"
+    "ts-node": "*"
   },
   "dependencies": {
     "effection": "^0.7.0"

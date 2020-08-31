@@ -22,9 +22,10 @@
   "devDependencies": {
     "@bigtest/interactor": "^0.15.0",
     "@bigtest/parcel": "^0.5.2",
+    "@frontside/eslint-config": "^1.1.2",
+    "@frontside/typescript": "^1.0.1",
     "@bigtest/suite": "^0.5.3",
     "@bigtest/webdriver": "^0.6.0",
-    "@frontside/tsconfig": "*",
     "@types/express": "^4.17.2",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
@@ -37,8 +38,7 @@
     "node-fetch": "^2.6.0",
     "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.4",
-    "ts-node": "*",
-    "typescript": "^3.9.7"
+    "ts-node": "*"
   },
   "dependencies": {
     "@bigtest/effection": "^0.5.2",
