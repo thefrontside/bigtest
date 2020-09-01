@@ -1,6 +1,7 @@
 import { Locator } from './locator';
 import { Filter } from './filter';
 import { InteractorSpecification } from './specification';
+import { escapeHtml } from './escape-html';
 
 const check = (value: unknown): string => value ? "✓" : "⨯";
 
@@ -30,7 +31,7 @@ export class Match<E extends Element, S extends InteractorSpecification<E>> {
   elementDescription(): string {
     let tag = this.element.tagName.toLowerCase();
     let attrs = Array.from(this.element.attributes).map((attr) => {
-      return `${attr.name}="${attr.value}"`
+      return `${attr.name}="${escapeHtml(attr.value)}"`
     });
     return `<${[tag, ...attrs].join(' ')}>`;
   }

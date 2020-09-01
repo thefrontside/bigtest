@@ -342,13 +342,13 @@ describe('@bigtest/interactor', () => {
     it('throws an error if ambiguous', async () => {
       dom(`
         <p><a href="/foo">Foo</a></p>
-        <p><a href="/bar">Foo</a></p>
+        <p><a href="/bar&quot;">Foo</a></p>
       `);
 
       await expect(Link('Foo').click()).rejects.toHaveProperty('message', [
         'link "Foo" matches multiple elements:', '',
         '- <a href="/foo">',
-        '- <a href="/bar">',
+        '- <a href="/bar&quot;">',
       ].join('\n'))
     });
   });
