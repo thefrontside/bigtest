@@ -36,6 +36,7 @@
     "@types/websocket": "^1.0.0",
     "abort-controller": "^3.0.0",
     "expect": "^24.9.0",
+    "get-port": "^5.1.1",
     "mocha": "^6.2.2",
     "node-fetch": "^2.6.0",
     "ts-node": "^8.9.1"
@@ -75,5 +76,9 @@
     "trumpet": "^1.7.2",
     "websocket": "^1.0.30",
     "yargs": "^15.0.2"
+  },
+  "volta": {
+    "node": "12.16.0",
+    "yarn": "1.19.1"
   }
 }

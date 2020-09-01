@@ -41,6 +41,18 @@ function parseOptions(config: ProjectOptions, argv: readonly string[]): Command 
         describe: 'file globs which form the test suite',
         type: 'array'
       })
+      .option('app.url', {
+        describe: 'url of the target application',
+        type: 'string',
+      })
+      .option('app.command', {
+        describe: 'command to start the target application',
+        type: 'string'
+      })
+      .option('no-app.command', {
+        describe: 'tells the cli to ignore the app.command in the config',
+        type: 'boolean'
+      })
   };
 
   let rawOptions = yargs({})
@@ -63,8 +75,13 @@ function parseOptions(config: ProjectOptions, argv: readonly string[]): Command 
   if(rawOptions['launch']) {
     config.launch = rawOptions['launch'];
   }
+
   if(rawOptions['testFiles']) {
     config.testFiles = rawOptions['testFiles'] as string[];
+  }
+
+  if(rawOptions['app']) {
+    config.app = { ...config.app, ...(rawOptions['app'] as object) };
   }
 
   return rawOptions._[0] as Command;

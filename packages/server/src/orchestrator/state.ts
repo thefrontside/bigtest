@@ -34,9 +34,9 @@ export type TestRunAgentState = {
   result: TestResult;
 }
 
-export type BundlerState = 
-  | { type: 'UNBUNDLED' } 
-  | { type: 'BUILDING'; warnings: BundlerWarning[] } 
+export type BundlerState =
+  | { type: 'UNBUNDLED' }
+  | { type: 'BUILDING'; warnings: BundlerWarning[] }
   | { type: 'GREEN'; path: string;  warnings: BundlerWarning[] }
   | { type: 'ERRORED'; error: BundlerError }
 
@@ -46,9 +46,29 @@ export interface Manifest extends Test {
   fileName: string;
 }
 
+export type AppStatus = 'unstarted' | 'started' | 'reachable' | 'unreachable' | 'crashed'
+
+export type AppOptions = {
+  url: string;
+  command?: string;
+  env?: Record<string, string>;
+  dir?: string;
+}
+
+export type AppServiceState = {
+  appStatus: AppStatus;
+  appOptions: AppOptions;
+}
+
+export type ProxyServiceState = {
+  proxyStatus: 'unstarted' | 'starting' | 'started';
+}
+
 export type OrchestratorState = {
   agents: Record<string, AgentState>;
   manifest: Manifest;
   bundler: BundlerState;
   testRuns: Record<string, TestRunState>;
+  appService: AppServiceState;
+  proxyService: ProxyServiceState;
 }

@@ -1,7 +1,12 @@
 import { Atom } from "@bigtest/atom";
-import { OrchestratorState } from "./state";
+import { defaultApp } from '@bigtest/project'
+import { AppOptions, OrchestratorState } from "./state";
 
-export const createOrchestratorAtom = () => {
+interface OrchestratorAtomOptions {
+  app?: AppOptions;
+}
+
+export const createOrchestratorAtom = (options?: OrchestratorAtomOptions) => {
   let atom = new Atom<OrchestratorState>({
     manifest: {
       description: "None",
@@ -12,6 +17,13 @@ export const createOrchestratorAtom = () => {
     },
     bundler: {
       type: 'UNBUNDLED'
+    },
+    appService: {
+      appStatus: 'unstarted',
+      appOptions: options?.app ?? defaultApp,
+    },
+    proxyService: {
+      proxyStatus: 'unstarted'
     },
     agents: {},
     testRuns: {},

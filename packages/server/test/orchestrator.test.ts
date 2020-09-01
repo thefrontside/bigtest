@@ -1,6 +1,7 @@
 import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
-
+import { ChildProcess } from '@effection/node'
+import * as getPort from 'get-port';
 import { Response } from 'node-fetch';
 
 import { actions } from './helpers';
@@ -31,6 +32,7 @@ describe('orchestrator', () => {
   describe('retrieving agent from proxy server', () => {
     let response: Response;
     let body: string;
+
     beforeEach(async () => {
       response = await actions.fetch('http://localhost:24101/__bigtest/index.html');
       body = await response.text();
@@ -115,6 +117,58 @@ describe('orchestrator', () => {
 
     it('serves the application', () => {
       expect(body).toContain('Signing In');
+    });
+  });
+
+  describe('an externally managed application', () => {
+    let port: number;
+
+    beforeEach(async function() {
+      port = await getPort();
+
+      actions.updateApp({ url: `http://localhost:${port}` });
+
+      await actions.fork(
+        actions.atom.slice('appService', 'appStatus').once(status => {
+          return ['unstarted', 'unreachable'].includes(status);
+        })
+      );
+
+      await actions.fork(function * () {
+        return yield ChildProcess.spawn(`yarn test:app:start ${port}`, [], {
+          shell: true,
+        });
+      });
+
+      await actions.fork(
+        actions.atom.slice('appService', 'appStatus').once(status => {
+          return status === 'reachable'
+        })
+      );
+    });
+
+    describe('retrieving app', () => {
+      let response: Response;
+
+      beforeEach(async () => {
+        response = await actions.fetch(`http://localhost:${port}/`);
+      });
+
+      it('responds successfully', () => {
+        expect(response.ok).toEqual(true);
+      });
+    });
+
+    describe('retrieving app via proxy', () => {
+      let response: Response;
+
+      beforeEach(async () => {
+        response = await actions.fetch('http://localhost:24101/');
+      });
+
+      it('responds successfully', () => {
+        expect(response.status).toEqual(200);
+      });
     });
   });
 });

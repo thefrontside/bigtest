@@ -4,20 +4,27 @@ import { AgentServerConfig } from '@bigtest/agent';
 import { throwOnErrorEvent, once } from '@effection/events';
 import { express } from "@bigtest/effection-express";
 import { static as staticMiddleware } from 'express';
+import { restartable } from './effection/restartable'
 
 import * as proxy from 'http-proxy';
 import * as http from 'http';
 import * as Trumpet from 'trumpet';
 import * as zlib from 'zlib';
+import { OrchestratorState, AppOptions } from './orchestrator/state';
+import { Atom } from '@bigtest/atom';
 
 interface ProxyOptions {
+  atom: Atom<OrchestratorState>;
   agentServerConfig: AgentServerConfig;
-  delegate: Mailbox;
   port: number;
-  targetPort: number;
 };
 
-export function* createProxyServer(options: ProxyOptions): Operation {
+export function createProxyServer(options: ProxyOptions): Operation {
+  let appOptions = options.atom.slice("appService", "appOptions");
+  return restartable(appOptions, startProxyServer(options));
+}
+
+export const startProxyServer = (options: ProxyOptions) => function* ({ url: target }: AppOptions): Operation {
   function* handleRequest(proxyRes: http.IncomingMessage, req: http.IncomingMessage, res: http.ServerResponse): Operation {
     console.debug('[proxy]', 'start', req.method, req.url);
     for(let [key, value = ''] of Object.entries(proxyRes.headers)) {
@@ -79,10 +86,11 @@ export function* createProxyServer(options: ProxyOptions): Operation {
     console.debug('[proxy]', 'finish', req.method, req.url);
   };
 
-  let proxyServer = proxy.createProxyServer({
-    target: `http://localhost:${options.targetPort}`,
-    selfHandleResponse: true
-  });
+  let proxyStatus = options.atom.slice("proxyService", "proxyStatus");
+
+  proxyStatus.set("starting");
+
+  let proxyServer = proxy.createProxyServer({ target, selfHandleResponse: true });
 
   let events = yield Mailbox.subscribe(proxyServer, ['proxyRes', 'error', 'open', 'close']);
 
@@ -111,7 +119,7 @@ export function* createProxyServer(options: ProxyOptions): Operation {
 
   try {
     yield server.listen(options.port);
-    options.delegate.send({ status: "ready" });
+    proxyStatus.set("started");
 
     while(true) {
       let { event, args } = yield events.receive({ event: any("string") });
@@ -141,3 +149,4 @@ export function* createProxyServer(options: ProxyOptions): Operation {
     proxyServer.close();
   }
 };
+
