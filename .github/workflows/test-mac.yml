@@ -43,6 +43,7 @@ jobs:
     # if prepack runs on matrix of multiple OSes then it waits for all of them to complete
     # this delays ubuntu from fully running so we copy this workflow to separate out the chain of waiting into three
     strategy:
+      fail-fast: false
       matrix:
         platform: [macos-latest]
         # keeping platform as a single item so test-*.yml files can be identical except for this value
