@@ -15,7 +15,8 @@ export function resolve(parentElement: Element, interactor: Interactor<any, any>
   if(matching.length === 1) {
     return matching[0].element;
   } else if(matching.length > 1) {
-    throw new AmbiguousElementError(`${interactor.description} is ambiguous`);
+    let alternatives = matching.map((m) => '- ' + m.elementDescription());
+    throw new AmbiguousElementError(`${interactor.description} matches multiple elements:\n\n${alternatives.join('\n')}`);
   } else if(elements.length === 0) {
     throw new NoSuchElementError(`did not find ${interactor.description}`);
   } else {
