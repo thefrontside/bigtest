@@ -1,6 +1,6 @@
 import { Operation, resource, spawn } from 'effection';
 import { on, once } from '@effection/events';
-import { subscribe, Subscribable, createSubscription } from '@effection/subscription';
+import { subscribe, createSubscription } from '@effection/subscription';
 import { AgentProtocol, AgentEvent, Command } from './protocol';
 
 export * from './protocol';

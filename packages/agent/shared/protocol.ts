@@ -91,4 +91,5 @@ export interface Run {
   manifestUrl: string;
   testRunId: string;
   tree: Test;
+  stepTimeout: number;
 }
