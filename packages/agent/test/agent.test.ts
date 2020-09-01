@@ -6,9 +6,9 @@ import { ChainableSubscription, subscribe } from '@effection/subscription';
 import { static as staticMiddleware } from 'express';
 
 import { describe, it, beforeEach } from 'mocha';
-import * as expect from 'expect';
+import expect from 'expect';
 import fetch from 'node-fetch';
-import { test as fixtureManifest } from './fixtures/manifest.src';
+import fixtureManifest from './fixtures/manifest.src';
 
 import { AgentServerConfig, AgentEvent, createAgentHandler, AgentConnection } from '../src/index';
 
@@ -28,6 +28,10 @@ function* staticServer(port: number) {
 let config = new AgentServerConfig({ port: 8000, prefix: 'dist/app/' });
 
 describe("@bigtest/agent", function() {
+  beforeEach(() => {
+    expect(fixtureManifest).toBeDefined();
+  });
+
   this.timeout(process.env.CI ? 60000 : 10000);
 
   describe('config', () => {

@@ -6,6 +6,7 @@
     "src/**/*.ts",
   ],
   "compilerOptions": {
-    "target": "esnext"
+    "target": "esnext",
+    "esModuleInterop": true
   }
 }

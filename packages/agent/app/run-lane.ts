@@ -1,36 +1,54 @@
 import { Operation, fork } from 'effection';
+import { bigtestGlobals } from '@bigtest/globals';
 import { TestImplementation, Context as TestContext } from '@bigtest/suite';
 
+import { TestEvent } from '../shared/protocol';
+
+import { findIFrame } from './find-iframe';
+import { LaneConfig } from './lane-config';
+import { loadManifest } from './manifest';
 import { timebox } from './timebox';
 import { serializeError } from './serialize-error';
-import { Agent } from '../shared/agent';
 
-export function *runLane(testRunId: string, agent: Agent, test: TestImplementation, path: string[]): Operation<void> {
-  return yield runLaneSegment(testRunId, agent, test, {}, path.slice(1), []);
+interface TestEvents {
+  send(event: TestEvent): void;
 }
 
-function *runLaneSegment(testRunId: string, agent: Agent, test: TestImplementation, context: TestContext, remainingPath: string[], prefix: string[]): Operation<void> {
+export function* runLane(config: LaneConfig) {
+  let { events, command, path } = config;
+  try {
+    let { testRunId, manifestUrl, appUrl } = command;
+    bigtestGlobals.appUrl = appUrl;
+    bigtestGlobals.testFrame = findIFrame('app-frame');
+    let test: TestImplementation = yield loadManifest(manifestUrl);
+    yield runLaneSegment(testRunId, events, test, {}, path.slice(1), [])
+  } finally {
+    events.close();
+  }
+}
+
+function *runLaneSegment(testRunId: string, events: TestEvents, test: TestImplementation, context: TestContext, remainingPath: string[], prefix: string[]): Operation<void> {
   let currentPath = prefix.concat(test.description);
 
   console.debug('[agent] running test', currentPath);
-  agent.send({ testRunId, type: 'test:running', path: currentPath })
+  events.send({ testRunId, type: 'test:running', path: currentPath })
 
   for(let step of test.steps) {
     let stepPath = currentPath.concat(step.description);
     try {
       console.debug('[agent] running step', step);
-      agent.send({ testRunId, type: 'step:running', path: stepPath });
+      events.send({ testRunId, type: 'step:running', path: stepPath });
 
       let result: TestContext | void = yield timebox(step.action(context), 2000)
 
       if (result != null) {
         context = {...context, ...result};
       }
-      agent.send({ testRunId, type: 'step:result', status: 'ok', path: stepPath });
+      events.send({ testRunId, type: 'step:result', status: 'ok', path: stepPath });
     } catch(error) {
       console.error('[agent] step failed', step, error);
       if (error.name === 'TimeoutError') {
-        agent.send({
+        events.send({
           testRunId,
           type: 'step:result',
           status: 'failed',
@@ -38,7 +56,7 @@ function *runLaneSegment(testRunId: string, agent: Agent, test: TestImplementati
           path: stepPath
         })
       } else {
-        agent.send({
+        events.send({
           testRunId,
           type: 'step:result',
           status: 'failed',
@@ -57,14 +75,14 @@ function *runLaneSegment(testRunId: string, agent: Agent, test: TestImplementati
         let assertionPath = currentPath.concat(assertion.description);
         try {
           console.debug('[agent] running assertion', assertion);
-          agent.send({ testRunId, type: 'assertion:running', path: assertionPath });
+          events.send({ testRunId, type: 'assertion:running', path: assertionPath });
 
           yield timebox(assertion.check(context), 2000)
 
-          agent.send({ testRunId, type: 'assertion:result', status: 'ok', path: assertionPath });
+          events.send({ testRunId, type: 'assertion:result', status: 'ok', path: assertionPath });
         } catch(error) {
           console.error('[agent] assertion failed', assertion, error);
-          agent.send({ testRunId, type: 'assertion:result', status: 'failed', error: yield serializeError(error), path: assertionPath });
+          events.send({ testRunId, type: 'assertion:result', status: 'failed', error: yield serializeError(error), path: assertionPath });
         }
       });
     }
@@ -73,7 +91,7 @@ function *runLaneSegment(testRunId: string, agent: Agent, test: TestImplementati
   if (remainingPath.length > 0) {
     for (let child of test.children) {
       if (child.description === remainingPath[0]) {
-        yield runLaneSegment(testRunId, agent, child, context, remainingPath.slice(1), currentPath);
+        yield runLaneSegment(testRunId, events, child, context, remainingPath.slice(1), currentPath);
       }
     }
   }

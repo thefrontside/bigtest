@@ -1,0 +1,28 @@
+<!doctype html>
+<!-- Each lane is run inside a fresh version of this frame -->
+<html>
+  <head>
+    <title>BigTest: Test Frame</title>
+    <style>
+     body, html {
+       margin: 0;
+       padding: 0;
+       height: 100%;
+     }
+
+     #app-frame {
+       margin: 0;
+       padding: 0;
+       border: 0;
+       height: 100%;
+       width: 100%;
+     }
+
+    </style>
+  </head>
+  <body>
+    <!-- app will be loaded into this frame -->
+    <iframe id="app-frame"></iframe>
+    <script src="./test-frame.main.ts"></script>
+  </body>
+</html>

@@ -2,7 +2,7 @@ import { Operation, spawn } from 'effection';
 import { express, Socket } from '@bigtest/effection-express';
 
 import { Channel } from '@effection/channel';
-import { forEach, createSubscription, subscribe, ChainableSubscription } from '@effection/subscription';
+import { createSubscription, subscribe, ChainableSubscription } from '@effection/subscription';
 
 import { AgentEvent, Command, Connect } from '../shared/protocol';
 
@@ -36,7 +36,7 @@ export function* createAgentHandler(port: number): Operation<ChainableSubscripti
     yield app.ws('*', function*(socket: Socket): Operation<void> {
 
       let commands = new Channel<Command>();
-      yield spawn(forEach(commands, command => socket.send(command)));
+      yield spawn(subscribe(commands).forEach(command => socket.send(command)));
 
 
       let events = new Channel<AgentEvent>();
