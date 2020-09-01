@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/effection",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Collection of handly utilities for working with effection. May find a different home later",
   "main": "dist/index.js",
   "typings": "dist/index.d.js",

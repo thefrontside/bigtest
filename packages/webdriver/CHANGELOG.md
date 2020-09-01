@@ -1,5 +1,13 @@
 # @bigtest/webdriver
 
+## 0.6.1
+
+### Patch Changes
+
+- 83153e3f: Upgrade effection dependencies to latest versions, upgrade to new style of subscriptions
+- Updated dependencies [83153e3f]
+  - @bigtest/atom@0.8.1
+
 ## 0.6.0
 
 ### Minor Changes
