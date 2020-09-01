@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.3
+
+### Patch Changes
+
+- 83153e3f: Upgrade effection dependencies to latest versions, upgrade to new style of subscriptions
+
 ## 0.5.2
 
 ### Patch Changes

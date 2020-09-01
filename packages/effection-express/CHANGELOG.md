@@ -1,5 +1,17 @@
 # @bigtest/effection-express
 
+## 0.7.0
+
+### Minor Changes
+
+- 8afb1cee: add ability to consume websockets as a subscription alongside the
+  Mailbox based API
+
+### Patch Changes
+
+- 3e95a130: Annotate type declaration of `Socket.send()` as `Operation<void>`
+- 83153e3f: Upgrade effection dependencies to latest versions, upgrade to new style of subscriptions
+
 ## 0.6.0
 
 ### Minor Changes

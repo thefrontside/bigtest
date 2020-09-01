@@ -1,5 +1,11 @@
 # @bigtest/project
 
+## 0.7.0
+
+### Minor Changes
+
+- 1ea83ac4: Add ability to load app from any url, not just a locally managed server
+
 ## 0.6.0
 
 ### Minor Changes

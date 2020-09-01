@@ -1,5 +1,41 @@
 # Changelog
 
+## 0.11.0
+
+### Minor Changes
+
+- 1ea83ac4: Add ability to load app from any url, not just a locally managed server
+- 46bee8bc: extract `@bigtest/client` out so that any javascript environment can
+  connect to a bigtest orchestrator
+- d4e7046c: Resolve source maps in error stack traces for better debugging
+
+### Patch Changes
+
+- 7a9c43d1: make Bundler a top level entity
+- 83153e3f: Upgrade effection dependencies to latest versions, upgrade to new style of subscriptions
+- Updated dependencies [3e95a130]
+- Updated dependencies [1ea83ac4]
+- Updated dependencies [736acf52]
+- Updated dependencies [73d1b0b5]
+- Updated dependencies [46bee8bc]
+- Updated dependencies [931a91fd]
+- Updated dependencies [62252502]
+- Updated dependencies [b2c5597f]
+- Updated dependencies [d4e7046c]
+- Updated dependencies [8afb1cee]
+- Updated dependencies [83153e3f]
+- Updated dependencies [f5092973]
+  - @bigtest/effection-express@0.7.0
+  - @bigtest/project@0.7.0
+  - @bigtest/agent@0.8.0
+  - @bigtest/client@0.2.0
+  - @bigtest/suite@0.6.0
+  - @bigtest/atom@0.8.1
+  - @bigtest/bundler@0.8.1
+  - @bigtest/effection@0.5.3
+  - @bigtest/webdriver@0.6.1
+  - @bigtest/globals@0.6.1
+
 ## 0.10.0
 
 ### Minor Changes
