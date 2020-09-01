@@ -12,6 +12,9 @@ export function test<C extends Context>(description: string): TestBuilder<C> {
 type ActionArgument<R extends Context | void, C extends Context> = Promise<R> | ((context: C) => Promise<R>);
 type CheckArgument<C extends Context> = ActionArgument<void, C>;
 
+type StepUnit<R extends Context | void, C extends Context> = ActionArgument<R, C> & { description: string };
+type AssertionUnit<C extends Context> = CheckArgument<C> & { description: string };
+
 export class TestBuilder<C extends Context> implements TestImplementation {
   public description: string;
   public steps: Step[];
@@ -25,6 +28,8 @@ export class TestBuilder<C extends Context> implements TestImplementation {
     this.children = test.children;
   }
 
+  step<R extends Context | void>(description: string, action: ActionArgument<R, C>): TestBuilder<R extends void ? C : C & R>
+  step<R extends Context | void>(unit: StepUnit<R, C>): TestBuilder<R extends void ? C : C & R>
   step<R extends Context | void>(
     ...args: [string, ActionArgument<R, C>] | [ActionArgument<R, C> & { description: string }]
   ): TestBuilder<R extends void ? C : C & R> {
@@ -37,6 +42,8 @@ export class TestBuilder<C extends Context> implements TestImplementation {
     });
   }
 
+  assertion(description: string, check: CheckArgument<C>): TestBuilder<C>;
+  assertion(unit: AssertionUnit<C>): TestBuilder<C>;
   assertion(
     ...args: [string, CheckArgument<C>] | [CheckArgument<C> & { description: string }]
   ): TestBuilder<C> {
