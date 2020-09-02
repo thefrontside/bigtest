@@ -45,16 +45,18 @@ export class Agent implements AgentProtocol {
 
   get commands() {
     let { socket } = this;
-    return subscribe(createSubscription<Command, void>(function*(publish) {
-      yield spawn(subscribe(on(socket, 'message'))
-        .map(([event]) => event as MessageEvent)
-        .map(event => JSON.parse(event.data) as Command)
-        .forEach(function*(command) {
-          publish(command);
-        }));
+    return createSubscription<Command, void>(function*(publish) {
+      yield spawn(
+        on(socket, 'message')
+          .map(([event]) => event as MessageEvent)
+          .map(event => JSON.parse(event.data) as Command)
+          .forEach(function*(command) {
+            publish(command);
+          })
+      );
 
       yield once(socket, 'close');
-    }));
+    });
   }
 
   send(message: AgentEvent) {
