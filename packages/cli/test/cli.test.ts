@@ -153,14 +153,6 @@ describe('@bigtest/cli', function() {
         expect(child.code).toEqual(0);
         expect(child.stdout?.output).toContain("✓ SUCCESS")
       });
-
-      it('does print the tree', async () => {
-        expect(child.stdout?.output).toContain('☲ Passing Test');
-        expect(child.stdout?.output).toContain('↪ first step');
-        expect(child.stdout?.output).toContain('↪ second step');
-        expect(child.stdout?.output).toContain('↪ third step');
-        expect(child.stdout?.output).toContain('✓ check the thing');
-      });
     });
 
     describe('running the suite with failures', () => {
@@ -178,11 +170,7 @@ describe('@bigtest/cli', function() {
 
       it('exits with error code', async () => {
         expect(child.code).toEqual(1);
-        // TODO incorporate source maps into new output
-        // expect(child.stdout?.output).toContain("✓ [step]       Failing Test -> first step")
-        // expect(child.stdout?.output).toContain("✓ [assertion]  Failing Test -> check the thing")
-        // expect(child.stdout?.output).toContain("⨯ [step]       Failing Test -> child -> child second step")
-        // expect(child.stdout?.output).toContain("test/fixtures/failing.test.ts:14")
+        expect(child.stdout?.output).toContain("test/fixtures/failing.test.ts:14")
         expect(child.stdout?.output).toContain("⨯ FAILURE")
       });
 
