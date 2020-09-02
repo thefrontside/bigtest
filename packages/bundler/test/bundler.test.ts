@@ -22,13 +22,12 @@ describe("Bundler", function() {
       beforeEach(async () => {
         await fs.writeFile("./build/test/sources/input.js", "const foo = 'bar';\nexport default foo;\n");
 
-        bundler = await spawn(Bundler.create(
-          [{
-            entry: "./build/test/sources/input.js",
-            outFile: "./build/test/output/manifest.js",
-            globalName: "__bigtestManifest",
-          }],
-        ));
+        bundler = await spawn(Bundler.create({
+          entry: "./build/test/sources/input.js",
+          outFile: "./build/test/output/manifest.js",
+          globalName: "__bigtestManifest",
+        }));
+        
         await spawn(subscribe(bundler).match({ type: 'UPDATE' }).first());
       });
 
@@ -52,13 +51,11 @@ describe("Bundler", function() {
       beforeEach(async () => {
         await fs.writeFile("./build/test/sources/input.js", "const foo - 'bar';\nexport default foo;\n");
 
-        bundler = await spawn(Bundler.create(
-          [{
-            entry: "./build/test/sources/input.js",
-            outFile: "./build/test/output/manifest.js",
-            globalName: "__bigtestManifest",
-          }],
-        ));
+        bundler = await spawn(Bundler.create({
+          entry: "./build/test/sources/input.js",
+          outFile: "./build/test/output/manifest.js",
+          globalName: "__bigtestManifest",
+        }));
       });
 
       it('emits an error', async () => {
@@ -87,13 +84,12 @@ describe("Bundler", function() {
       beforeEach(async () => {
         await fs.writeFile("./build/test/sources/input.ts", "const foo: string = 'bar';\nexport default foo;\n");
 
-        bundler = await spawn(Bundler.create(
-          [{
-            entry: "./build/test/sources/input.ts",
-            outFile: "./build/test/output/manifest.js",
-            globalName: "__bigtestManifest",
-          }],
-        ));
+        bundler = await spawn(Bundler.create({
+          entry: "./build/test/sources/input.ts",
+          outFile: "./build/test/output/manifest.js",
+          globalName: "__bigtestManifest",
+        }));
+        
         await spawn(subscribe(bundler).match({ type: 'UPDATE' }).first());
       });
 
@@ -106,13 +102,11 @@ describe("Bundler", function() {
       beforeEach(async () => {
         await fs.writeFile("./build/test/sources/input.ts", "const foo: number = 'bar';\nexport default foo;\n");
 
-        bundler = await spawn(Bundler.create(
-          [{
-            entry: "./build/test/sources/input.ts",
-            outFile: "./build/test/output/manifest.js",
-            globalName: "__bigtestManifest",
-          }],
-        ));
+        bundler = await spawn(Bundler.create({
+          entry: "./build/test/sources/input.ts",
+          outFile: "./build/test/output/manifest.js",
+          globalName: "__bigtestManifest",
+        }));
       });
 
       it('does not typecheck, just transform', async () => {
@@ -127,13 +121,12 @@ describe("Bundler", function() {
     beforeEach(async () => {
       await fs.writeFile("./build/test/sources/input.ts", "const foo: string = 'bar';\nexport default foo;\n");
 
-      bundler = await spawn(Bundler.create(
-        [{
-          entry: "./build/test/sources/input.ts",
-          outFile: "./build/test/output/manifest.js",
-          globalName: "__bigtestManifest",
-        }],
-      ));
+      bundler = await spawn(Bundler.create({
+        entry: "./build/test/sources/input.ts",
+        outFile: "./build/test/output/manifest.js",
+        globalName: "__bigtestManifest"
+      }));
+      
       await fs.writeFile("./build/test/sources/input.ts", "export default {hello: 'world'}\n");
     });
 
