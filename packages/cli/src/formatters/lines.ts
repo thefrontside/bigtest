@@ -24,30 +24,31 @@ function formatFooterCounts(label: string, counts: Counts): string {
 }
 
 function formatEvent(event: RunResultEvent) {
-  let result = `${icon(event)} [${event.type.split(':')[0]}]`.padEnd(14);
+  // TODO incorporate this in to the new tree
+  // let result = `${icon(event)} [${event.type.split(':')[0]}]`.padEnd(14);
 
-  if(event.path) {
-    result += ' ' + event.path.slice(1).join(' -> ');
-  }
+  // if(event.path) {
+  //   result += ' ' + event.path.slice(1).join(' -> ');
+  // }
 
-  if(event.error) {
-    result += ["\n|    ERROR:", event.error.name, event.error.message].filter(e => e).join(' ');
-    if(event.error.stack) {
-      for(let stackFrame of event.error.stack) {
-        let location = stackFrame.source || stackFrame;
-        result += `\n|      `
-        if(location.fileName) {
-          result += `${location.fileName}:${location.line || 0}:${location.column || 0} `;
-        }
-        if(stackFrame.name) {
-          result += `@ ${stackFrame.name}`;
-        }
-        if(stackFrame.code) {
-          result += `\n|        > ${stackFrame.code.trim()}`
-        }
-      }
-    }
-  }
+  // if(event.error) {
+  //   result += ["\n|    ERROR:", event.error.name, event.error.message].filter(e => e).join(' ');
+  //   if(event.error.stack) {
+  //     for(let stackFrame of event.error.stack) {
+  //       let location = stackFrame.source || stackFrame;
+  //       result += `\n|      `
+  //       if(location.fileName) {
+  //         result += `${location.fileName}:${location.line || 0}:${location.column || 0} `;
+  //       }
+  //       if(stackFrame.name) {
+  //         result += `@ ${stackFrame.name}`;
+  //       }
+  //       if(stackFrame.code) {
+  //         result += `\n|        > ${stackFrame.code.trim()}`
+  //       }
+  //     }
+  //   }
+  // }
 
   if (!event.error) {
     process.stdout.write(chalk.green("."));
