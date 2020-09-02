@@ -19,12 +19,12 @@ export function icon(event: RunResultEvent) {
     return "↻";
   } 
 
-  return statusIcon(event.status || '');
+  return statusIcon(event.status || '', chalk.green("✓"));
 }
 
-export function statusIcon(status: string) {
+export function statusIcon(status: string , okayIcon: string) {
   if(status === 'ok') {
-    return chalk.green("✓");
+    return okayIcon;
   } else if(status === 'failed') {
     return chalk.red("⨯");
   } else if(status === 'disregarded') {
@@ -36,7 +36,7 @@ export type StreamingFormatter = {
   type: "streaming";
   header(): void;
   event(event: RunResultEvent, config: ProjectOptions): void;
-  ci(tree: Record<string, any>, config: ProjectOptions): void;
+  ci(tree: Record<string, any>): void;
   footer(summary: Summary): void;
 };
 

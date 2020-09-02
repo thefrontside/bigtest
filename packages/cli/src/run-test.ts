@@ -37,6 +37,7 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
   formatter.header();
 
   let startTime = performance.now();
+  let testRunId;
 
   while(true) {
     let next: IteratorResult<query.RunResult> = yield subscription.next();
@@ -45,6 +46,7 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
     } else if (!query.isDoneResult(next.value)) {
       let result = next.value;
       let status = result.event.status;
+      testRunId = result.event.testRunId
       if(result.event.type === 'testRun:result') {
         testRunStatus = result.event.status;
       }
@@ -63,7 +65,7 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
   let endTime = performance.now();
 
   let treeQuery = yield client.query(`
-  fragment results on TestResult {  
+  fragment results on TestResult {
     description
     status
     steps {
@@ -72,9 +74,17 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
       timeout
       error {
         message
-        fileName
-        columnNumber
-        stack
+        stack(showInternal: false, showDependencies: false) {
+          code
+          column
+          fileName
+          line
+          source {
+            column
+            fileName
+            line
+          }
+        }
       }
     }
     assertions {
@@ -82,11 +92,16 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
       status
     }
   }
-  
-  {
-    testRuns {
+
+  query TestRun($testRunId: String!) {
+    testRun(id: $testRunId) {
       agents {
-        agent { agentId }
+        agent {
+          agentId
+          browser {
+            name
+          }
+        }
         result {
           ...results
           children {
@@ -119,9 +134,9 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
         }
       }
     }
-  }`);
+  }`, { testRunId });
 
-  formatter.ci(treeQuery.testRuns[treeQuery.testRuns.length - 1], config);
+  formatter.ci(treeQuery.testRun);
 
   formatter.footer({
     status: testRunStatus || 'failed',
