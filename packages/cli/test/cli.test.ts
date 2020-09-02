@@ -163,33 +163,6 @@ describe('@bigtest/cli', function() {
       });
     });
 
-    describe('running the suite without --show-tree', () => {
-      let child: Process;
-
-      beforeEach(async () => {
-        child = await World.spawn(run('ci', '--launch', 'chrome.headless', '--test-files', './test/fixtures/passing.test.ts'));
-        await World.spawn(child.stdout?.waitFor("[orchestrator] running!"));
-        await World.spawn(child.join());
-      });
-
-      afterEach(async () => {
-        await World.spawn(child.close());
-      });
-
-      it('prints `.` for passing tests', async () => {
-        expect(child.code).toEqual(0);
-        expect(child.stdout?.output).toContain("✓ SUCCESS")
-      });
-
-      it('does not print the tree', async () => {
-        expect(child.stdout?.output).not.toContain('☲ Passing Test');
-        expect(child.stdout?.output).not.toContain('↪ first step');
-        expect(child.stdout?.output).not.toContain('↪ second step');
-        expect(child.stdout?.output).not.toContain('↪ third step');
-        expect(child.stdout?.output).not.toContain('✓ check the thing');
-      });
-    });
-
     describe('running the suite with failures', () => {
       let child: Process;
 
