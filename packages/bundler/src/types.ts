@@ -24,8 +24,7 @@ export type BundleOptions = {
   outFile: string;
   globalName?: string;
   testFiles: string[];
-} & Pick<ProjectOptions, 'testFiles'>
-
+} & Pick<ProjectOptions, 'testFiles'>;
 
 export interface BundlerOptions {
   mainFields: ("browser" | "main" | "module")[];

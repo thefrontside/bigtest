@@ -7,7 +7,6 @@ import { subscribe } from '@effection/subscription';
 import { spawn } from './world';
 import { Bundler } from '../src/index';
 
-const CWD = process.cwd();
 
 describe("Bundler", function() {
   this.timeout(5000);
@@ -30,7 +29,6 @@ describe("Bundler", function() {
             outFile: "./build/test/output/manifest.js",
             globalName: "__bigtestManifest",
             testFiles: ["./test/**/*.test.{ts,js}"],
-            dir: CWD
           }],
         ));
         await spawn(subscribe(bundler).filter(f => f.type === 'UPDATE').first());

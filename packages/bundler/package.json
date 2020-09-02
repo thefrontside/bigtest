@@ -44,13 +44,14 @@
   },
   "devDependencies": {
     "@frontside/eslint-config": "^1.1.2",
-    "@frontside/typescript": "^1.0.1",
     "@frontside/tsconfig": "*",
+    "@frontside/typescript": "^1.0.1",
     "@types/chalk": "^2.2.0",
     "@types/eslint": "^7.2.2",
     "@types/node": "^13.13.4",
     "@types/parcel-bundler": "^1.12.1",
     "expect": "^25.1.0",
+    "rollup-pluginutils": "^2.8.2",
     "yargs": "^15.3.0"
   }
 }

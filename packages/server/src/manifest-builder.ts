@@ -90,14 +90,12 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
 
   bundlerSlice.set({ type: 'UNBUNDLED' });
 
-  let bundler: Bundler = yield Bundler.create(
-    [{
+  let bundler: Bundler = yield Bundler.create({
       entry: options.srcPath,
       globalName: bigtestGlobals.manifestProperty,
       outFile: path.join(options.buildDir, "manifest.js"),
       testFiles: options.testFiles,
-    }],
-  );
+    });
 
   yield subscribe(bundler).forEach(function* (message) {
     switch (message.type) {

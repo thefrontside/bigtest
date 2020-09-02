@@ -6,10 +6,29 @@ import chalk from 'chalk';
 
 export class EslintValidator implements Validator, Subscribable<ValidatorState, undefined> {
   private channel = new Channel<ValidatorState>();
+  private cliEngine: CLIEngine;
   public state: ValidatorState = { type: 'IDLE'};
 
   constructor(private options: BundleOptions) {
     this.options = options;
+
+    this.cliEngine = new CLIEngine({
+      useEslintrc: false,
+      allowInlineConfig: true,
+      parserOptions: {
+        sourceType: 'module',
+        ecmaVersion: 9,
+        
+      },
+      baseConfig: {
+        root: true,
+        plugins: ['bigtest'],
+        rules: {
+          'bigtest/require-default-export': 'error',
+        },
+      },
+      extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    });
   }
 
   getErrorsAndWarnings(report: CLIEngine.LintReport) {
@@ -53,30 +72,22 @@ export class EslintValidator implements Validator, Subscribable<ValidatorState, 
     return { errors, warnings };
   }
 
+  executeOnText(code: string, filePath: string){
+    let report = this.cliEngine.executeOnText(code, filePath);
+
+    return this.getErrorsAndWarnings(report);
+  }
+
+  close() {
+    this.channel.close()
+  }
+
   *validate() {
     try {
       this.state = { type: 'VALIDATING' };
       this.channel.send(this.state);
-  
-      let cli = new CLIEngine({
-        useEslintrc: false,
-        allowInlineConfig: true,
-        parserOptions: {
-          sourceType: 'module',
-          ecmaVersion: 9,
-          
-        },
-        baseConfig: {
-          root: true,
-          plugins: ['bigtest'],
-          rules: {
-            'bigtest/require-default-export': 'error',
-          },
-        },
-        extensions: ['.ts', '.tsx', '.js', '.jsx'],
-      });
-  
-      let report = cli.executeOnFiles(this.options.testFiles);
+      
+      let report = this.cliEngine.executeOnFiles(this.options.testFiles);
 
       let { errors, warnings } = this.getErrorsAndWarnings(report);
   
@@ -91,7 +102,7 @@ export class EslintValidator implements Validator, Subscribable<ValidatorState, 
     } finally {
       console.debug(`Eslint validator finished with ${this.state.type}`)
 
-      this.channel.close();
+      this.close();
     }
   }
   
