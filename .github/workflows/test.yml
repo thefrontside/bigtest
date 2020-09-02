@@ -19,7 +19,7 @@ jobs:
         # which does not effect the node_modules themselves
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          key: cachekey-v1-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: yarn
       - name: Run prepack
