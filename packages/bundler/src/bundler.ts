@@ -21,51 +21,49 @@ interface BundlerOptions {
   mainFields: Array<"browser" | "main" | "module">;
 };
 
-function prepareRollupOptions(bundles: Array<BundleOptions>, channel: Channel<BundlerMessage>, { mainFields }: BundlerOptions = { mainFields: ["browser", "module", "main"] }): Array<RollupWatchOptions> {
-  return bundles.map<RollupWatchOptions>(bundle => {
-    return {
-      input: bundle.entry,
-      output: {
-        file: bundle.outFile,
-        name: bundle.globalName || undefined,
-        sourcemap: true,
-        format: 'umd',
-      },
-      onwarn(warning){
-        channel.send({ type: 'WARN', warning })
-      },
-      watch: {
-        // Rollup types are wrong; `watch.exclude` allows RegExp[]
-        exclude: [/node_modules/ as unknown as string]
-      },
-      plugins: [
-        resolve({
-          mainFields,
-          extensions: ['.js', '.ts']
-        }),
-        commonjs(),
-        babel({
-          babelHelpers: 'runtime',
-          extensions: ['.js', '.ts'],
-          presets: ['@babel/preset-env', '@babel/preset-typescript'],
-          plugins: ['@babel/plugin-transform-runtime']
-        }),
-        injectProcessEnv({
-          NODE_ENV: 'production'
-        }),
-      ]
-    }
-  });
+function prepareRollupOptions(bundle: BundleOptions, channel: Channel<BundlerMessage>, { mainFields }: BundlerOptions = { mainFields: ["browser", "module", "main"] }): RollupWatchOptions {
+  return {
+    input: bundle.entry,
+    output: {
+      file: bundle.outFile,
+      name: bundle.globalName || undefined,
+      sourcemap: true,
+      format: 'umd',
+    },
+    onwarn(warning){
+      channel.send({ type: 'WARN', warning })
+    },
+    watch: {
+      // Rollup types are wrong; `watch.exclude` allows RegExp[]
+      exclude: [/node_modules/ as unknown as string]
+    },
+    plugins: [
+      resolve({
+        mainFields,
+        extensions: ['.js', '.ts']
+      }),
+      commonjs(),
+      babel({
+        babelHelpers: 'runtime',
+        extensions: ['.js', '.ts'],
+        presets: ['@babel/preset-env', '@babel/preset-typescript'],
+        plugins: ['@babel/plugin-transform-runtime']
+      }),
+      injectProcessEnv({
+        NODE_ENV: 'production'
+      }),
+    ]
+  }
 }
 
 export class Bundler implements Subscribable<BundlerMessage, undefined> {
   private channel = new Channel<BundlerMessage>();
 
-  static *create(bundles: Array<BundleOptions>): Operation<Bundler> {
+  static *create(bundle: BundleOptions): Operation<Bundler> {
     let bundler = new Bundler();
 
     return yield resource(bundler, function* () {
-      let rollup: RollupWatcher = watch(prepareRollupOptions(bundles, bundler.channel));
+      let rollup: RollupWatcher = watch(prepareRollupOptions(bundle, bundler.channel));
 
       try {
         let events: ChainableSubscription<RollupWatcherEvent[], BundlerMessage> = yield subscribe(on(rollup, 'event'));
