@@ -65,7 +65,8 @@ function recursiveChildrenResults(
   let indent = 1 + level * 1;
 
   children.forEach((child: TestResult) => {
-    if (config.showTree || child.status !== "ok") {
+    // TODO add showTree/verbose check here
+    if (child.status !== "ok") {
       log.indent(level * 1)(`☲ ${child.description}`);
 
       child.steps.forEach((step: StepResult) => {

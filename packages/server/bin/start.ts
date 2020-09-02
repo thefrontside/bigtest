@@ -7,7 +7,6 @@ setLogLevel(process.env.LOG_LEVEL as Levels || 'info');
 
 main(createServer({
   port: 24002,
-  showTree: false,
   app: {
     url: "http://localhost:24000",
     command: "yarn test:app:start 24000",
