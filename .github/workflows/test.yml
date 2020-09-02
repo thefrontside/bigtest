@@ -8,13 +8,18 @@ on:
 jobs:
   prepack:
     runs-on: ubuntu-18.04
-    name: Prepack
+    name: prepack
     steps:
       - uses: actions/checkout@v1
-      - uses: actions/cache@v1
+      - name: cache node_modules
+        uses: actions/cache@v2
+        # cache node_modules based on lockfile which can change
+        # when there is no explicit change in package.json
+        # and prevents cache bust when scripts or metadata is changed
+        # which does not effect the node_modules themselves
         with:
-          path: /home/runner/.cache/yarn/v6
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: '**/node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: yarn
       - name: Run prepack
@@ -35,10 +40,15 @@ jobs:
         package: [agent, cli, effection, logging, bundler, project, server, suite, interactor, todomvc, atom, webdriver]
     steps:
       - uses: actions/checkout@v1
-      - uses: actions/cache@v1
+      - name: cache node_modules
+        uses: actions/cache@v2
+        # cache node_modules based on lockfile which can change
+        # when there is no explicit change in package.json
+        # and prevents cache bust when scripts or metadata is changed
+        # which does not effect the node_modules themselves
         with:
-          path: /home/runner/.cache/yarn/v6
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: '**/node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - uses: actions/download-artifact@v1
         with:
           name: bigtest.dist.tgz
