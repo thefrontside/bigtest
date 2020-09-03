@@ -37,6 +37,7 @@
     "@types/websocket": "^1.0.0",
     "abort-controller": "^3.0.0",
     "eslint": "6.8.0",
+    "eslint-plugin-bigtest": "^0.1.0",
     "expect": "^24.9.0",
     "get-port": "^5.1.1",
     "mocha": "^6.2.2",

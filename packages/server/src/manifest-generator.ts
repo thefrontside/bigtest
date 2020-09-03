@@ -26,21 +26,21 @@ function* writeManifest({ validSlice, destinationPath, ...options }: ManifestGen
   validSlice.update(() => ({ type: 'VALIDATING' }));
 
   for(let file of files) {
-    // path.posix.join is really the only thing that returns the real posix correctly
+        // path.posix.join is really the only thing that returns the real posix correctly
     // so we join with OS specific, split based on OS path separator and then rejoin it with
     // the path.posix.join method to get the real relative path in posix
     let filePath = "./" + path.posix.join(...path.relative(path.dirname(destinationPath), file).split(path.sep));
-    let validState = options.validator.validate([filePath]);
+    let validState = options.validator.validate([path.basename(filePath)]);
 
     validSlice.update(() => ({...validState}));
 
     if(validState.type === 'VALID') {
       validFiles.push(`  Object.assign({}, load(require(${JSON.stringify(filePath)})), { path: ${JSON.stringify(file)} })`);
+    } else {
+      invalidFiles.push(`  { path: ${JSON.stringify(file)} }`);
     }
-
-    invalidFiles.push(`  { path: ${JSON.stringify(file)} }`);
   }
-  
+
   let manifest = `
 let load = (res) => res.default || res;
   
@@ -68,7 +68,10 @@ module.exports = {
 export function* createManifestGenerator(options: ManifestGeneratorOptions): Operation {
   let validSlice = options.atom.slice('manifest', 'validState');
   let watcher = chokidar.watch(options.files, { ignoreInitial: true });
-  let validator = new EslintValidator();
+
+  let cwd = path.resolve(path.dirname(options.files[0]));
+
+  let validator = new EslintValidator(cwd);
 
   yield ensure(() => watcher.close());
 

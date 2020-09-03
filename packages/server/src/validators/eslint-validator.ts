@@ -23,8 +23,8 @@ const EslintOptions: CLIEngine.Options = {
 export class EslintValidator implements Validator {
   private cliEngine: CLIEngine;
 
-  constructor() {
-    this.cliEngine = new CLIEngine(EslintOptions);
+  constructor(cwd: string) {
+    this.cliEngine = new CLIEngine({ ...EslintOptions, cwd });
   }
 
   getErrorsAndWarnings(report: CLIEngine.LintReport) {
@@ -64,7 +64,7 @@ export class EslintValidator implements Validator {
         },
       };
 
-      message.severity === 1 ? warnings.push(error) : errors.push({...error, stack: Error().stack });
+      message.severity === 1 ? warnings.push(error) : errors.push({ ...error, stack: Error().stack });
     }
 
     return { errors, warnings };
@@ -78,7 +78,7 @@ export class EslintValidator implements Validator {
     if (errors.length > 0) {
       return { type: 'INVALID', warnings, errors } as const;
     } else {
-      return { type: 'VALID', warnings, errors: [] } as const;
+      return { type: 'VALID', warnings } as const;
     }
   }
 }
