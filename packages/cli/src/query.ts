@@ -2,7 +2,29 @@ import { ResultStatus, ErrorDetails } from '@bigtest/suite';
 
 export function run() {
   return `
-    subscription($showInternalStackTrace: Boolean! = true, $showDependenciesStackTrace: Boolean! = true, $showStackTraceCode: Boolean! = true) {
+    fragment ErrorDetails on Error {
+      message
+      stack(showInternal: $showInternalStackTrace, showDependencies: $showDependenciesStackTrace) {
+        name
+        fileName
+        code @include(if: $showStackTraceCode)
+        line
+        column
+        source {
+          fileName
+          line
+          column
+        }
+      }
+    }
+
+    subscription(
+      $showInternalStackTrace: Boolean! = true,
+      $showDependenciesStackTrace: Boolean! = true,
+      $showStackTraceCode: Boolean! = true,
+      $showUncaughtErrors: Boolean! = true,
+      $showConsoleMessages: Boolean! = true
+    ) {
       event: run {
         type
         status
@@ -10,19 +32,14 @@ export function run() {
         testRunId
         path
         error {
+          ...ErrorDetails
+        }
+        consoleMessages @include(if: $showConsoleMessages) {
+          level
           message
-          stack(showInternal: $showInternalStackTrace, showDependencies: $showDependenciesStackTrace) {
-            name
-            fileName
-            code @include(if: $showStackTraceCode)
-            line
-            column
-            source {
-              fileName
-              line
-              column
-            }
-          }
+        }
+        uncaughtErrors @include(if: $showUncaughtErrors) {
+          ...ErrorDetails
         }
         timeout
       }

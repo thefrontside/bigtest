@@ -1,9 +1,9 @@
 import { Operation, fork, spawn } from 'effection';
 import { on } from '@effection/events';
 import { bigtestGlobals } from '@bigtest/globals';
-import { TestImplementation, Context as TestContext, ErrorDetails } from '@bigtest/suite';
+import { TestImplementation, Context as TestContext, ErrorDetails, ConsoleMessage } from '@bigtest/suite';
 
-import { TestEvent, ConsoleMessage } from '../shared/protocol';
+import { TestEvent } from '../shared/protocol';
 
 import { findIFrame } from './find-iframe';
 import { LaneConfig } from './lane-config';

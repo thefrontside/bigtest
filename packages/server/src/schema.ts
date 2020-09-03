@@ -98,6 +98,8 @@ export const schema = makeSchema({
         t.id('agentId', { nullable: true });
         t.list.string("path", { nullable: true });
         t.field("error", { type: "Error", nullable: true });
+        t.list.field("consoleMessages", { type: "ConsoleMessage", nullable: true });
+        t.list.field("uncaughtErrors", { type: "Error", nullable: true });
         t.boolean("timeout", { nullable: true });
       }
     }),
@@ -274,6 +276,8 @@ export const schema = makeSchema({
           type: "Error",
           nullable: true
         })
+        t.list.field("consoleMessages", { type: "ConsoleMessage", nullable: true });
+        t.list.field("uncaughtErrors", { type: "Error", nullable: true });
         t.boolean("timeout", { nullable: true });
       }
     }),
@@ -285,7 +289,17 @@ export const schema = makeSchema({
         t.field("error", {
           type: "Error",
           nullable: true
-        })
+        });
+        t.list.field("consoleMessages", { type: "ConsoleMessage", nullable: true });
+        t.list.field("uncaughtErrors", { type: "Error", nullable: true });
+        t.boolean("timeout", { nullable: true });
+      }
+    }),
+    objectType({
+      name: "ConsoleMessage",
+      definition(t) {
+        t.string("level");
+        t.string("text");
       }
     }),
     objectType({

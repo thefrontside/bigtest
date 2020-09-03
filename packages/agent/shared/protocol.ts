@@ -1,12 +1,5 @@
 import { Operation } from 'effection';
-import { Test, ResultStatus, ErrorDetails } from '@bigtest/suite';
-
-export type ConsoleLevel = 'log' | 'info' | 'debug' | 'warn' | 'error';
-
-export interface ConsoleMessage {
-  level: ConsoleLevel;
-  text: string;
-}
+import { Test, ResultStatus, ErrorDetails, ConsoleMessage } from '@bigtest/suite';
 
 export interface AgentProtocol {
   send(event: AgentEvent): void;

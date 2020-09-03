@@ -97,6 +97,8 @@ export interface StepResult extends Node {
   status: ResultStatus;
   error?: ErrorDetails;
   timeout?: boolean;
+  consoleMessages?: ConsoleMessage[];
+  uncaughtErrors?: ErrorDetails[];
 }
 
 /**
@@ -107,6 +109,15 @@ export interface AssertionResult extends Node {
   status: ResultStatus;
   error?: ErrorDetails;
   timeout?: boolean;
+  consoleMessages?: ConsoleMessage[];
+  uncaughtErrors?: ErrorDetails[];
+}
+
+export type ConsoleLevel = 'log' | 'info' | 'debug' | 'warn' | 'error';
+
+export interface ConsoleMessage {
+  level: ConsoleLevel;
+  text: string;
 }
 
 export interface ErrorDetails {

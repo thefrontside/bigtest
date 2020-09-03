@@ -1,4 +1,4 @@
-import { ConsoleLevel, ConsoleMessage } from '../shared/protocol';
+import { ConsoleLevel, ConsoleMessage } from '@bigtest/suite';
 
 type CallbackFn = (message: ConsoleMessage) => void
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

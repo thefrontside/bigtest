@@ -1,5 +1,4 @@
-import { ErrorDetails } from '@bigtest/suite';
-import { ConsoleMessage } from '../shared/protocol';
+import { ErrorDetails, ConsoleMessage } from '@bigtest/suite';
 
 export type HarnessMessage =
   { type: 'console'; message: ConsoleMessage } |
