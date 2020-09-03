@@ -8,9 +8,9 @@ import { static as staticMiddleware } from 'express';
 import { describe, it, beforeEach } from 'mocha';
 import expect from 'expect';
 import fetch from 'node-fetch';
-import fixtureManifest from './fixtures/manifest.src';
+import fixtureManifest from './fixtures/manifest';
 
-import { AgentServerConfig, AgentEvent, createAgentHandler, AgentConnection } from '../src/index';
+import { AgentServerConfig, AgentEvent, createAgentHandler, AgentConnection, AssertionResult } from '../src/index';
 
 import { run } from './helpers';
 import { StepResult } from '@bigtest/suite';
@@ -18,14 +18,14 @@ import { StepResult } from '@bigtest/suite';
 function* staticServer(port: number) {
   let app = express();
   return yield readyResource(app, function*(ready) {
-    app.raw.use(staticMiddleware("./"));
+    app.raw.use(staticMiddleware("./tmp/test"));
     yield app.listen(port);
     ready();
     yield;
   });
 }
 
-let config = new AgentServerConfig({ port: 8000, prefix: 'dist/app/' });
+let config = new AgentServerConfig({ port: 8000 });
 
 describe("@bigtest/agent", function() {
   beforeEach(() => {
@@ -87,8 +87,8 @@ describe("@bigtest/agent", function() {
         let testRunId = 'test-run-1';
 
         beforeEach(async () => {
-          let manifestUrl = 'http://localhost:8000/test/fixtures/manifest.js';
-          let appUrl = 'http://localhost:8000/test/fixtures';
+          let manifestUrl = 'http://localhost:8000/manifest.js';
+          let appUrl = 'http://localhost:8000/';
           let stepTimeout = 500;
 
           connection.send({ type: 'run', testRunId, manifestUrl, appUrl, tree: fixtureManifest, stepTimeout });
@@ -102,10 +102,21 @@ describe("@bigtest/agent", function() {
         });
 
         it('receives failure results', async () => {
-          expect(await run(events.match({
+          let result = await run(events.match({
             type: 'assertion:result',
             path: ['tests', 'test with failing assertion', 'failing assertion']
-          }).first())).toBeDefined()
+          }).first()) as AssertionResult;
+
+          expect(result.status).toEqual('failed');
+          let error = result.error;
+          let stack = error && error.stack;
+          if(error && stack) {
+            expect(error.name).toEqual('Error');
+            expect(error.message).toEqual('boom!');
+            expect(stack[0].source && stack[0].source.fileName).toContain('/test/fixtures/manifest.js');
+          } else {
+            throw new Error("error and stack must be defined");
+          }
         });
 
         it('receives the run:end event', async () => {
