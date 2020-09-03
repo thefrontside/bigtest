@@ -2132,7 +2132,12 @@
     "@types/parsimmon" "^1.10.1"
     parsimmon "^1.13.0"
 
-"@definitelytyped/typescript-versions@^0.0.34", "@definitelytyped/typescript-versions@^0.0.40", "@definitelytyped/typescript-versions@latest":
+"@definitelytyped/typescript-versions@^0.0.34":
+  version "0.0.34"
+  resolved "https://registry.yarnpkg.com/@definitelytyped/typescript-versions/-/typescript-versions-0.0.34.tgz#6167363d378670ad7ef9485b7cff7d198106dcdf"
+  integrity sha512-7IqWcbHKYbfY8Lt7AigXDa29cbz3gynzBHMjwMUCeLnex8D682M6OW8uBLouvVHCr+YENL58tQB3dn0Zos8mFQ==
+
+"@definitelytyped/typescript-versions@^0.0.40", "@definitelytyped/typescript-versions@latest":
   version "0.0.40"
   resolved "https://registry.yarnpkg.com/@definitelytyped/typescript-versions/-/typescript-versions-0.0.40.tgz#e7888b5bd0355777f78c76c50b13b9b1aa78b18e"
   integrity sha512-bhgrKayF1LRHlWgvsMtH1sa/y3JzJhsEVZiZE3xdoWyv9NjZ76dpGvXTNix2dz5585KgQJLP+cKeIdZbwHnCUA==
@@ -2151,21 +2156,29 @@
     tar "^2.2.2"
     tar-stream "1.6.2"
 
-"@effection/channel@^0.6.6":
-  version "0.6.6"
-  resolved "https://registry.yarnpkg.com/@effection/channel/-/channel-0.6.6.tgz#c0091b3bb2cc5169f958d1f1f28276080858fa69"
-  integrity sha512-m0RYvUODAgt+W2qLQEjDEKVw98VOe9s3YehqLgRYqfJlPW6ypW/NWZbb11YVWszUdEmQyOnYxO+kDSP/h/CA1w==
+"@effection/channel@^0.6.7":
+  version "0.6.7"
+  resolved "https://registry.yarnpkg.com/@effection/channel/-/channel-0.6.7.tgz#c6341d72ca9a7726215eb6acb2172dcea00a6735"
+  integrity sha512-NMV2xDuxLYoskfpucAVh5EyFmiEILEUbIYmGsuo0SCgeQrdiaYm3w3v9p0ufMJyKk5jsYJJiHI8FJL8vMbK5hg==
   dependencies:
-    "@effection/events" "^0.7.7"
-    "@effection/subscription" "^0.10.0"
+    "@effection/events" "^0.7.8"
+    "@effection/subscription" "^0.11.0"
     effection "^0.7.0"
 
-"@effection/events@^0.7.4", "@effection/events@^0.7.7":
+"@effection/events@^0.7.4":
   version "0.7.7"
   resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.7.7.tgz#8927b8a827d57b8b377182a47f037cc2085fed89"
   integrity sha512-84js7W+noYlInnr2IEvqA4MriW/dgIdoxDHHEwfkShqJu+nTiAS1uCZuQnLeJrrDazTf7fvnX5hSUroKUQoWSQ==
   dependencies:
     "@effection/subscription" "^0.10.0"
+    effection "^0.7.0"
+
+"@effection/events@^0.7.8":
+  version "0.7.8"
+  resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.7.8.tgz#3cb8ec5e96b0ad7719e82a2163975cf7d6a77d7d"
+  integrity sha512-JLeWRlGFCmFCrXtdGMHVB+8xX94fclfhPXxZscUptDlyGJaJ5aHEfNY7AqK667jlaE6m/043zf4WUKpvNViZyg==
+  dependencies:
+    "@effection/subscription" "^0.11.0"
     effection "^0.7.0"
 
 "@effection/fetch@^0.1.2":
@@ -2198,6 +2211,13 @@
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-0.10.0.tgz#72c31eec3b4e27e1ee84735842272b09c3474df4"
   integrity sha512-RFKGGjUW96HwpaWSmQ7l26fo1LryRatJdOYLM4VIWzY3uQY7g4HmPrzGQPfxUP2tKlsaCZLiNVo03TIG+Ah8jw==
+  dependencies:
+    effection "^0.7.0"
+
+"@effection/subscription@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-0.11.0.tgz#15919010b22df481f45cc366ac7f08b9a826444e"
+  integrity sha512-kKSPGbHN8csSR7loeJLJ8R8w443MlA7QGA48KTn86ex22yOUvF7QLFnpKKcmyixt8dv4MSEXiPM7cYVeiICLRw==
   dependencies:
     effection "^0.7.0"
 
@@ -9465,7 +9485,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@4.17.19, "lodash@>=3.5 <5", lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@^4.17.5:
+"lodash@>=3.5 <5", lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@^4.17.5:
   version "4.17.19"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
   integrity sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==
