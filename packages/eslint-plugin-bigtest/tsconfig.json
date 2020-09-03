@@ -1,0 +1,12 @@
+{
+  "extends": "@frontside/tsconfig",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "bin/*.ts"
+  ]
+}

@@ -5,6 +5,9 @@ import { throwOnErrorEvent } from '@effection/events';
 import * as fs from 'fs';
 import * as globby from 'globby';
 import * as path from 'path';
+import { EslintValidator } from './validators/eslint-validator';
+import { Validator, OrchestratorState, ValidatorState } from './orchestrator/state';
+import { Atom, Slice } from '@bigtest/atom';
 
 const { writeFile, mkdir } = fs.promises;
 
@@ -12,39 +15,60 @@ interface ManifestGeneratorOptions {
   delegate: Mailbox;
   files: string[]; 
   destinationPath: string;
+  atom: Atom<OrchestratorState>;
 };
 
-function* writeManifest(options: ManifestGeneratorOptions) {
-  let files = yield globby(options.files);
+function* writeManifest({ validSlice, destinationPath, ...options }: ManifestGeneratorOptions & { validator: Validator; validSlice: Slice<ValidatorState, OrchestratorState> }) {
+  let files: string[] = yield globby(options.files);
+  let validFiles: string[] = [];
+  let invalidFiles: string[] = [];
 
-  let manifest = 'let load = (res) => res.default || res;\n';
-  manifest += 'const children = [\n';
+  validSlice.update(() => ({ type: 'VALIDATING' }));
 
   for(let file of files) {
     // path.posix.join is really the only thing that returns the real posix correctly
     // so we join with OS specific, split based on OS path separator and then rejoin it with
     // the path.posix.join method to get the real relative path in posix
-    let filePath = "./" + path.posix.join(...path.relative(path.dirname(options.destinationPath), file).split(path.sep));
-    manifest += `  Object.assign({}, load(require(${JSON.stringify(filePath)})), { path: ${JSON.stringify(file)} }),\n`;
-  }
+    let filePath = "./" + path.posix.join(...path.relative(path.dirname(destinationPath), file).split(path.sep));
+    let validState = options.validator.validate([filePath]);
 
-  manifest += "];\n";
-  manifest +=
-`
+    validSlice.update(() => ({...validState}));
+
+    if(validState.type === 'VALID') {
+      validFiles.push(`  Object.assign({}, load(require(${JSON.stringify(filePath)})), { path: ${JSON.stringify(file)} })`);
+    }
+
+    invalidFiles.push(`  { path: ${JSON.stringify(file)} }`);
+  }
+  
+  let manifest = `
+let load = (res) => res.default || res;
+  
+const children = [
+  ${validFiles.join(', \n')}
+];
+
+const errors = [
+  ${invalidFiles.join(', \n')}
+];`
+
+  manifest += `
 module.exports = {
   description: "All tests",
   steps: [],
   assertions: [],
   children: children,
+  errors: errors,
 }
 `
-
-  yield mkdir(path.dirname(options.destinationPath), { recursive: true });
-  yield writeFile(options.destinationPath, manifest);
+  yield mkdir(path.dirname(destinationPath), { recursive: true });
+  yield writeFile(destinationPath, manifest);
 }
 
 export function* createManifestGenerator(options: ManifestGeneratorOptions): Operation {
+  let validSlice = options.atom.slice('manifest', 'validState');
   let watcher = chokidar.watch(options.files, { ignoreInitial: true });
+  let validator = new EslintValidator();
 
   yield ensure(() => watcher.close());
 
@@ -53,14 +77,17 @@ export function* createManifestGenerator(options: ManifestGeneratorOptions): Ope
   yield throwOnErrorEvent(watcher);
 
   yield events.receive({ event: 'ready' });
-  yield writeManifest(options);
+
+  let writeOptions = { ...options, validator, validSlice };
+  
+  yield writeManifest(writeOptions);
 
   console.debug("[manifest generator] manifest ready");
   options.delegate.send({ status: 'ready' });
 
   while(true) {
     yield events.receive();
-    yield writeManifest(options);
+    yield writeManifest(writeOptions);
 
     console.debug("[manifest generator] manifest updated");
     options.delegate.send({ event: 'update' });

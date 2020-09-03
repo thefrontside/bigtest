@@ -150,7 +150,8 @@ describe('command server', () => {
         description: "All Tests",
         steps: [],
         assertions: [],
-        children: [test1, test2]
+        children: [test1, test2],
+        validState: { type: 'IDLE' },
       });
     });
 

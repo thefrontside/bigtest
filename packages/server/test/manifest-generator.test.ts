@@ -10,6 +10,9 @@ import { actions } from './helpers';
 
 import { createManifestGenerator } from '../src/manifest-generator';
 import { Mailbox } from '@bigtest/effection';
+import { createOrchestratorAtom } from '../src/orchestrator/atom';
+import { OrchestratorState } from '../src/orchestrator/state';
+import { Atom } from '@bigtest/atom';
 
 const { mkdir, writeFile, unlink } = fs.promises;
 import { join } from 'path';
@@ -25,6 +28,7 @@ async function loadManifest() {
 
 describe('manifest-generator', () => {
   let delegate: Mailbox;
+  let atom: Atom<OrchestratorState>;
 
   beforeEach((done) => rmrf(TEST_DIR, done));
   beforeEach(async () => {
@@ -34,10 +38,13 @@ describe('manifest-generator', () => {
 
     delegate = new Mailbox();
 
+    atom = createOrchestratorAtom();
+
     actions.fork(createManifestGenerator({
       delegate,
       files: [TEST_DIR + "/*.t.{js,ts}"],
       destinationPath: MANIFEST_PATH,
+      atom 
     }));
 
     await actions.receive(delegate, { status: 'ready' });

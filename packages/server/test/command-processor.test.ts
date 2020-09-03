@@ -37,6 +37,7 @@ describe('command processor', () => {
       steps: [],
       assertions: [],
       children: [],
+      validState: { type: 'VALID', warnings: [] }
     });
     actions.fork(createCommandProcessor({
       atom,
