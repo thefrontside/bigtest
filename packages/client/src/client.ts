@@ -1,10 +1,9 @@
 import { w3cwebsocket } from 'websocket';
 import { resource, Operation, spawn } from 'effection';
-
-import { Mailbox } from '@bigtest/effection';
 import { on, once } from '@effection/events';
+import { createSubscription } from '@effection/subscription';
 
-import { Variables, Message, isErrorResponse, isDataResponse, isDoneResponse } from './protocol';
+import { Variables, Response, isErrorResponse, isDataResponse, isDoneResponse } from './protocol';
 import { NoServerError } from './errors';
 
 let responseIds = 0;
@@ -32,7 +31,7 @@ export class Client {
       try {
         let [{ reason, code }] = yield once(socket, 'close');
         if(code !== 1000) {
-        throw new Error(`websocket server closed connection unexpectedly: [${code}] ${reason}`);
+          throw new Error(`websocket server closed connection unexpectedly: [${code}] ${reason}`);
         }
       } finally {
         socket.close();
@@ -44,65 +43,53 @@ export class Client {
     return res;
   }
 
-  *query(source: string, variables?: Variables): Operation {
-    let subscription = yield this.send("query", source, false, variables);
-    return yield subscription.receive();
+  query<T>(source: string, variables?: Variables): Operation {
+    return this.send<T>("query", source, false, variables).expect();
   }
 
-  *mutation(source: string, variables?: Variables): Operation {
-    let subscription = yield this.send("mutation", source, false, variables);
-    return yield subscription.receive();
+  mutation<T>(source: string, variables?: Variables): Operation {
+    return this.send<T>("mutation", source, false, variables).expect();
   }
 
-  *liveQuery(source: string, variables?: Variables): Operation<Mailbox> {
-    return yield this.send("query", source, true, variables);
+  liveQuery<T>(source: string, variables?: Variables) {
+    return this.send<T>("query", source, true, variables);
   }
 
-  *subscription(source: string, variables?: Variables): Operation<Mailbox> {
-    return yield this.send("subscription", source, false, variables);
+  subscription<T, TReturn>(source: string, variables?: Variables) {
+    return this.send<T, TReturn>("subscription", source, false, variables);
   }
 
-  private *send(type: string, source: string, live = false, variables?: Variables): Operation<Mailbox> {
-    let mailbox = new Mailbox();
+  private send<T = unknown,TReturn = unknown>(type: string, source: string, live = false, variables?: Variables) {
     let { socket } = this;
 
-    return yield resource(mailbox, function*(): Operation<void> {
-      let messages = yield on(socket, "message");
+    return createSubscription<T, TReturn>(function*(publish) {
+      let messages = yield on<[MessageEvent]>(socket, "message")
+        .map(([event]) => JSON.parse(event.data) as Response)
+
 
       let responseId = `${responseIds++}`; //we'd want a UUID to avoid hijacking?
 
       socket.send(JSON.stringify({ [type]: source, live, responseId, variables }));
 
       while (true) {
-        let { value: [event] } = yield messages.next();
-        let message: Message = JSON.parse(event.data);
+        let next: IteratorResult<Response> = yield messages.next();
 
-        if(message.responseId === responseId) {
-          if (isErrorResponse(message)) {
-            let messages = message.errors.map(error => error.message);
+        if (!next.done && next.value.responseId === responseId) {
+          let response = next.value;
+          if (isErrorResponse(response)) {
+            let messages = response.errors.map(error => error.message);
             throw new Error(messages.join("\n"));;
           }
-          if (isDataResponse(message)) {
-            mailbox.send(message.data);
-          } else if (isDoneResponse(message)) {
-            mailbox.send({done: true});
-            break;
-          } else {
-            throw new Error("unknown response format");;
+          if (isDataResponse(response)) {
+            publish(response.data as T)
+          }
+          if (isDoneResponse(response)) {
+            return response.data as TReturn;
           }
         }
       }
     });
   }
-}
-
-interface HandleResponse {
-  (next: () => Operation): Operation;
-}
-
-interface Query {
-  query: string;
-  live?: boolean;
 }
 
 interface ErrorEvent {

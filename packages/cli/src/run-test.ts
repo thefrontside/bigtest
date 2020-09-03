@@ -39,10 +39,11 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
   let startTime = performance.now();
 
   while(true) {
-    let result: query.RunResult = yield subscription.receive();
-    if(query.isDoneResult(result)) {
+    let next: IteratorResult<query.RunResult> = yield subscription.next();
+    if (next.done) {
       break;
-    } else if(result.event) {
+    } else if (!query.isDoneResult(next.value)) {
+      let result = next.value;
       let status = result.event.status;
       if(result.event.type === 'testRun:result') {
         testRunStatus = result.event.status;

@@ -6,6 +6,8 @@ import { Slice } from '@bigtest/atom';
 import { Test } from '@bigtest/suite';
 import { Client } from '@bigtest/client';
 
+import { ChainableSubscription } from '@effection/subscription';
+
 import { actions } from './helpers';
 import { createCommandServer } from '../src/command-server';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
@@ -187,13 +189,13 @@ describe('command server', () => {
 
   describe('subscribing to a live query', () => {
     let client: Client;
-    let subscription: Mailbox;
+    let subscription: ChainableSubscription<unknown, unknown>;
     let initial: unknown;
 
     beforeEach(async () => {
       client = await actions.fork(Client.create(`ws://localhost:${COMMAND_PORT}`));
       subscription = await actions.fork(client.liveQuery('{ agents { browser { name } } }'));
-      initial = await actions.fork(subscription.receive());
+      initial = await actions.fork(subscription.expect());
     });
 
     it('contains the initial result of the query', () => {
@@ -226,7 +228,7 @@ describe('command server', () => {
             }
           }
         });
-        second = await actions.fork(subscription.receive());
+        second = await actions.fork(subscription.first());
       });
 
       it('publishes the new state', () => {
