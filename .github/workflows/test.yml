@@ -50,4 +50,10 @@ jobs:
         run: yarn
       - name: Run tests
         run: yarn workspace @bigtest/${{ matrix.package }} test
+
+  fail:
+    runs-on: ubuntu-18.04
+    name: ${{ matrix.package }}
+    needs: test
+    steps:
       - run: boop to fail
