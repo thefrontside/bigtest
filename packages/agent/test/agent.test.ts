@@ -110,8 +110,9 @@ describe("@bigtest/agent", function() {
           expect(result.status).toEqual('failed');
           let error = result.error;
           let stack = error && error.stack;
-          let consoleMessages = result.console;
-          if(error && stack && consoleMessages) {
+          let consoleMessages = result.consoleMessages;
+          let uncaughtErrors = result.uncaughtErrors;
+          if(error && stack && consoleMessages && uncaughtErrors) {
             expect(error.name).toEqual('Error');
             expect(error.message).toEqual('boom!');
             expect(stack[0].source && stack[0].source.fileName).toContain('/test/fixtures/manifest.js');
@@ -120,6 +121,10 @@ describe("@bigtest/agent", function() {
               { level: 'log', text: 'some log message here' },
               { level: 'log', text: 'another log message' },
               { level: 'error', text: 'I am going to fail' },
+            ]));
+            expect(uncaughtErrors.map((e) => e.message)).toEqual(expect.arrayContaining([
+              'uncaught error from test',
+              'uncaught error from app',
             ]));
           } else {
             throw new Error("error and stack must be defined");

@@ -24,7 +24,7 @@ module.exports = test("tests")
         // the result of this step, but should be caught and forwarded to the
         // agent.
         setTimeout(() => {
-          throw new Error('uncaught error');
+          throw new Error('uncaught error from test');
         }, 5);
         await new Promise((resolve) => setTimeout(resolve, 10));
       })

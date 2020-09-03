@@ -67,7 +67,8 @@ export interface StepResult {
   path: string[];
   error?: ErrorDetails;
   timeout?: boolean;
-  console?: ConsoleMessage[];
+  consoleMessages?: ConsoleMessage[];
+  uncaughtErrors?: ErrorDetails[];
 }
 
 export interface AssertionRunning {
@@ -85,7 +86,8 @@ export interface AssertionResult {
   path: string[];
   error?: ErrorDetails;
   timeout?: boolean;
-  console?: ConsoleMessage[];
+  consoleMessages?: ConsoleMessage[];
+  uncaughtErrors?: ErrorDetails[];
 }
 
 export type TestEvent = RunBegin | RunEnd | LaneBegin | LaneEnd | TestRunning | StepRunning | StepResult | AssertionRunning | AssertionResult;

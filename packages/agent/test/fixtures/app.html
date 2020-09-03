@@ -15,6 +15,7 @@
         console.log('another log message');
         document.querySelector('h2').textContent = data.greeting;
       });
+      throw new Error('uncaught error from app');
     </script>
   </body>
 </html>

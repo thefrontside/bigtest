@@ -1,8 +1,7 @@
 import { Operation, fork, spawn } from 'effection';
-import { subscribe } from '@effection/subscription';
 import { on } from '@effection/events';
 import { bigtestGlobals } from '@bigtest/globals';
-import { TestImplementation, Context as TestContext } from '@bigtest/suite';
+import { TestImplementation, Context as TestContext, ErrorDetails } from '@bigtest/suite';
 
 import { TestEvent, ConsoleMessage } from '../shared/protocol';
 
@@ -23,16 +22,25 @@ export function* runLane(config: LaneConfig) {
 
   let context: TestContext = {};
   let consoleMessages: ConsoleMessage[] = [];
+  let uncaughtErrors: ErrorDetails[] = [];
 
   let originalConsole = wrapConsole((message) => consoleMessages.push(message))
 
   try {
     yield spawn(
-      subscribe(on(window, 'message')).forEach(function*([rawMessage]) {
+      on(window, 'message').forEach(function*([rawMessage]) {
         let message: HarnessMessage = JSON.parse((rawMessage as { data: string }).data);
         if(message.type === 'console') {
           consoleMessages.push(message.message);
+        } else if(message.type === 'error') {
+          uncaughtErrors.push(message.error);
         }
+      })
+    );
+
+    yield spawn(
+      on(window, 'error').map(([e]) => e as ErrorEvent).forEach(function*(event) {
+        uncaughtErrors.push(yield serializeError(event.error));
       })
     );
 
@@ -70,7 +78,12 @@ export function* runLane(config: LaneConfig) {
         if (result != null) {
           context = {...context, ...result};
         }
-        events.send({ testRunId, type: 'step:result', status: 'ok', path: stepPath });
+        events.send({
+          testRunId,
+          type: 'step:result',
+          status: 'ok',
+          path: stepPath
+        });
       } catch(error) {
         originalConsole.error('[agent] step failed', step, error);
         if (error.name === 'TimeoutError') {
@@ -80,7 +93,8 @@ export function* runLane(config: LaneConfig) {
             status: 'failed',
             timeout: true,
             path: stepPath,
-            console: consoleMessages
+            consoleMessages,
+            uncaughtErrors
           })
         } else {
           events.send({
@@ -90,7 +104,8 @@ export function* runLane(config: LaneConfig) {
             timeout: false,
             error: yield serializeError(error),
             path: stepPath,
-            console: consoleMessages
+            consoleMessages,
+            uncaughtErrors
           });
         }
         return;
@@ -121,7 +136,8 @@ export function* runLane(config: LaneConfig) {
               status: 'failed',
               error: yield serializeError(error),
               path: assertionPath,
-              console: consoleMessages
+              consoleMessages,
+              uncaughtErrors
             });
           }
         });
