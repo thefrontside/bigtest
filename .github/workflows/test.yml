@@ -11,14 +11,10 @@ jobs:
     name: prepack
     steps:
       - uses: actions/checkout@v1
-      - name: cache node_modules
+      - name: cache
         uses: actions/cache@v2
-        # cache node_modules based on lockfile which can change
-        # when there is no explicit change in package.json
-        # and prevents cache bust when scripts or metadata is changed
-        # which does not effect the node_modules themselves
         with:
-          path: '**/node_modules'
+          path: /home/runner/.cache/yarn/v6
           key: cachekey-v1-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: yarn
@@ -36,19 +32,16 @@ jobs:
     name: ${{ matrix.package }}
     needs: prepack
     strategy:
+      fail-fast: false
       matrix:
         package: [agent, cli, effection, logging, bundler, project, server, suite, interactor, todomvc, atom, webdriver]
     steps:
       - uses: actions/checkout@v1
-      - name: cache node_modules
+      - name: cache
         uses: actions/cache@v2
-        # cache node_modules based on lockfile which can change
-        # when there is no explicit change in package.json
-        # and prevents cache bust when scripts or metadata is changed
-        # which does not effect the node_modules themselves
         with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          path: /home/runner/.cache/yarn/v6
+          key: cachekey-v1-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - uses: actions/download-artifact@v1
         with:
           name: bigtest.dist.tgz
@@ -57,3 +50,4 @@ jobs:
         run: yarn
       - name: Run tests
         run: yarn workspace @bigtest/${{ matrix.package }} test
+      - run: boop to fail
