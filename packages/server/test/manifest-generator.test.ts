@@ -11,7 +11,7 @@ import { actions } from './helpers';
 import { createManifestGenerator } from '../src/manifest-generator';
 import { Mailbox } from '@bigtest/effection';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
-import { OrchestratorState } from '../src/orchestrator/state';
+import { OrchestratorState, Manifest } from '../src/orchestrator/state';
 import { Atom } from '@bigtest/atom';
 
 const { mkdir, writeFile, unlink } = fs.promises;
@@ -95,4 +95,14 @@ describe('manifest-generator', () => {
       expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
     });
   });
+
+  describe('no default export specs', () => {
+    let manifest: Manifest;
+
+    beforeEach(async () => {
+      await writeFile(path.join(TEST_DIR , "/test4.t.js"), "module.exports = { namedExport: { description: 'test' } };");
+      await actions.receive(delegate, { event: "update" });
+      manifest = await loadManifest();
+    });
+  })
 });

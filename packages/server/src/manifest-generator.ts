@@ -20,40 +20,34 @@ interface ManifestGeneratorOptions {
 
 function* writeManifest({ validSlice, destinationPath, ...options }: ManifestGeneratorOptions & { validator: Validator; validSlice: Slice<ValidatorState, OrchestratorState> }) {
   validSlice.update(() => ({ type: 'VALIDATING' }));
-  let validFiles: string[] = [];
-  let invalidFiles: string[] = [];
   let files: string[] = yield globby(options.files);
 
   let validState = options.validator.validate(options.files);
+  
   let errors = validState.type === 'INVALID' ? validState.errors : [];
 
   validSlice.update(() => ({...validState}));
 
-  for(let file of files) {
-        // path.posix.join is really the only thing that returns the real posix correctly
+  let validFiles = files.flatMap(file => {
+    // path.posix.join is really the only thing that returns the real posix correctly
     // so we join with OS specific, split based on OS path separator and then rejoin it with
     // the path.posix.join method to get the real relative path in posix
     let filePath = "./" + path.posix.join(...path.relative(path.dirname(destinationPath), file).split(path.sep));
 
-    let fileIsInvalid = !!errors.find(f => path.basename(f.fileName) === path.basename(file));
-
-
-    if(fileIsInvalid) {
-      invalidFiles.push(`  { path: ${JSON.stringify(file)} }`);
-    } else {
-      validFiles.push(`  Object.assign({}, load(require(${JSON.stringify(filePath)})), { path: ${JSON.stringify(file)} })`);
-    }
-  }
+    return !!errors.find(error => path.basename(error.fileName) === path.basename(file))
+    ? [] 
+    : [`Object.assign({}, load(require(${JSON.stringify(filePath)})), { path: ${JSON.stringify(file)} })`];
+  });
 
   let manifest = `
 let load = (res) => res.default || res;
-  
+
 const children = [
   ${validFiles.join(', \n')}
 ];
 
 const errors = [
-  ${invalidFiles.join(', \n')}
+  ${errors.join(', \n')}
 ];`
 
   manifest += `
@@ -64,7 +58,8 @@ module.exports = {
   children: children,
   errors: errors,
 }
-`
+`;
+  
   yield mkdir(path.dirname(destinationPath), { recursive: true });
   yield writeFile(destinationPath, manifest);
 }
