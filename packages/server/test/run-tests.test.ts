@@ -387,7 +387,7 @@ describe('running tests on an agent', () => {
     let secondAgentId = generateAgentId();
     let secondAgent: Agent;
     let agentResults: ChainableSubscription<QueryResult, unknown>;
-    let secondAgentResults:ChainableSubscription<QueryResult, unknown>;
+    let secondAgentResults: ChainableSubscription<QueryResult, unknown>;
 
     beforeEach(async () => {
       secondAgent = await actions.createAgent(secondAgentId);
