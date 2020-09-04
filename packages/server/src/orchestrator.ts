@@ -14,7 +14,7 @@ import { createAppServer } from './app-server';
 import { createManifestGenerator } from './manifest-generator';
 import { createManifestBuilder } from './manifest-builder';
 import { createManifestServer } from './manifest-server';
-import { createBundlerLogger, createManifestLogger } from './logger';
+import { createBundlerLogger } from './logger';
 import { OrchestratorState } from './orchestrator/state';
 
 
@@ -45,8 +45,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   let connectTo = `ws://localhost:${options.project.connection.port}`;
 
   yield spawn(createBundlerLogger({ atom: options.atom,  out: console.error }));
-
-  yield spawn(createManifestLogger({ atom: options.atom,  out: console.error }));
 
   let browserManager: BrowserManager = yield createBrowserManager({
     atom: options.atom,

@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as globby from 'globby';
 import * as path from 'path';
 import { EslintValidator } from './validators/eslint-validator';
-import { Validator, OrchestratorState, ValidatorState } from './orchestrator/state';
+import { Validator, OrchestratorState, BundlerState } from './orchestrator/state';
 import { Atom, Slice } from '@bigtest/atom';
 
 const { writeFile, mkdir } = fs.promises;
@@ -18,16 +18,16 @@ interface ManifestGeneratorOptions {
   atom: Atom<OrchestratorState>;
 };
 
-function* writeManifest({ validSlice, destinationPath, ...options }: ManifestGeneratorOptions & { validator: Validator; validSlice: Slice<ValidatorState, OrchestratorState> }) {
-  validSlice.update(() => ({ type: 'VALIDATING' }));
+function* writeManifest({ bundlerSlice, destinationPath, ...options }: ManifestGeneratorOptions & { validator: Validator; bundlerSlice: Slice<BundlerState, OrchestratorState> }) {
+  bundlerSlice.update(() => ({ type: 'VALIDATING' }));
 
   let files: string[] = yield globby(options.files);
 
   let validState = options.validator.validate(options.files);
+
+  bundlerSlice.update(() => ({...validState}));
   
   let errors = validState.type === 'INVALID' ? validState.errors : [];
-
-  validSlice.update(() => ({...validState}));
 
   let validFiles = files.flatMap(file => {
     // path.posix.join is really the only thing that returns the real posix correctly
@@ -65,7 +65,7 @@ module.exports = {
 }
 
 export function* createManifestGenerator(options: ManifestGeneratorOptions): Operation {
-  let validSlice = options.atom.slice('manifest', 'validState');
+  let bundlerSlice = options.atom.slice('bundler');
   let watcher = chokidar.watch(options.files, { ignoreInitial: true });
 
   let validator = new EslintValidator();
@@ -78,7 +78,7 @@ export function* createManifestGenerator(options: ManifestGeneratorOptions): Ope
 
   yield events.receive({ event: 'ready' });
 
-  let writeOptions = { ...options, validator, validSlice };
+  let writeOptions = { ...options, validator, bundlerSlice };
   
   yield writeManifest(writeOptions);
 

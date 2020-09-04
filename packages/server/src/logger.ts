@@ -19,21 +19,3 @@ export function* createBundlerLogger({ atom, out }: LoggerOptions) {
     }
   });
 }
-
-
-export function* createManifestLogger({ atom, out }: LoggerOptions) {
-  let validState = atom.slice('manifest', 'validState');
-
-  yield subscribe(validState).forEach(function* (event) {
-    console.log(event);
-    if(!event) {
-      console.trace(event);
-      return;
-    }
-    if(event.type === 'INVALID'){
-      for(let error in event.errors) {
-        out("[manifest generator] build error:", error);
-      }
-    }
-  });
-}

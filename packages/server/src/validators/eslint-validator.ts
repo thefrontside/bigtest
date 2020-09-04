@@ -1,6 +1,7 @@
 import { CLIEngine } from 'eslint';
 import chalk from 'chalk';
-import { Validator, ValidationWarning, ValidationError } from '../orchestrator/state';
+import { Validator } from '../orchestrator/state';
+import { ValidationWarning, ValidationError } from '@bigtest/bundler';
 
 const EslintOptions: CLIEngine.Options = {
   useEslintrc: false,

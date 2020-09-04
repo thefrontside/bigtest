@@ -15,14 +15,3 @@ export type ValidationWarning = ValidationException;
 export type ValidationError = ValidationException & {
   stack?: string;
 }
-
-export type ValidatorState = 
-| { type: 'IDLE' }
-| { type: 'VALIDATING' }
-| { type: 'INVALID'; errors: ValidationException[]; warnings: ValidationException[] }
-| { type: 'VALID'; warnings: ValidationException[] }
-
-export interface Validator {
-  validate(): void;
-  state: ValidatorState;
-}
