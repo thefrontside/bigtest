@@ -3,7 +3,6 @@ import { RollupWarning, RollupError } from 'rollup';
 export type BundlerError = RollupError;
 export type BundlerWarning = RollupWarning;
 
-// TODO: All errors could implement at least these fields?
 export type ValidationException = {
   fileName: string;
   message: string;
