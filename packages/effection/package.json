@@ -28,7 +28,7 @@
     "typescript": "3.9.7"
   },
   "dependencies": {
-    "@effection/events": "^0.7.7",
+    "@effection/events": "^0.7.8",
     "@types/node": "^13.13.4",
     "effection": "^0.7.0"
   },

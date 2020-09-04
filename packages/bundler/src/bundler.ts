@@ -1,6 +1,6 @@
 import { Operation, resource } from 'effection';
 import { on } from '@effection/events';
-import { subscribe, Subscribable, SymbolSubscribable, ChainableSubscription } from '@effection/subscription';
+import { Subscribable, SymbolSubscribable } from '@effection/subscription';
 import { Channel } from '@effection/channel';
 import { watch, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'rollup';
 import resolve from '@rollup/plugin-node-resolve';
@@ -66,10 +66,8 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
       let rollup: RollupWatcher = watch(prepareRollupOptions(bundle, bundler.channel));
 
       try {
-        let events: ChainableSubscription<RollupWatcherEvent[], BundlerMessage> = yield subscribe(on(rollup, 'event'));
-   
-        let messages = events
-          .map(([event]) => event)
+        let messages = on(rollup, 'event')
+          .map(([event]) => event as RollupWatcherEvent)
           .filter(event => ['START', 'END', 'ERROR'].includes(event.code))
           .map(event => {
             switch (event.code) {
@@ -79,11 +77,11 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
                 return { type: 'UPDATE' } as const;
               case 'ERROR':
                 return { type: 'ERROR', error: event.error } as const;
-              default: 
+              default:
                 throw new Error(`unexpect event ${event.code}`);
             }
           });
-          
+
         yield messages.forEach(function* (message) {
           bundler.channel.send(message);
         });

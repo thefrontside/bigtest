@@ -2156,21 +2156,29 @@
     tar "^2.2.2"
     tar-stream "1.6.2"
 
-"@effection/channel@^0.6.6":
-  version "0.6.6"
-  resolved "https://registry.yarnpkg.com/@effection/channel/-/channel-0.6.6.tgz#c0091b3bb2cc5169f958d1f1f28276080858fa69"
-  integrity sha512-m0RYvUODAgt+W2qLQEjDEKVw98VOe9s3YehqLgRYqfJlPW6ypW/NWZbb11YVWszUdEmQyOnYxO+kDSP/h/CA1w==
+"@effection/channel@^0.6.7":
+  version "0.6.7"
+  resolved "https://registry.yarnpkg.com/@effection/channel/-/channel-0.6.7.tgz#c6341d72ca9a7726215eb6acb2172dcea00a6735"
+  integrity sha512-NMV2xDuxLYoskfpucAVh5EyFmiEILEUbIYmGsuo0SCgeQrdiaYm3w3v9p0ufMJyKk5jsYJJiHI8FJL8vMbK5hg==
   dependencies:
-    "@effection/events" "^0.7.7"
-    "@effection/subscription" "^0.10.0"
+    "@effection/events" "^0.7.8"
+    "@effection/subscription" "^0.11.0"
     effection "^0.7.0"
 
-"@effection/events@^0.7.4", "@effection/events@^0.7.7":
+"@effection/events@^0.7.4":
   version "0.7.7"
   resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.7.7.tgz#8927b8a827d57b8b377182a47f037cc2085fed89"
   integrity sha512-84js7W+noYlInnr2IEvqA4MriW/dgIdoxDHHEwfkShqJu+nTiAS1uCZuQnLeJrrDazTf7fvnX5hSUroKUQoWSQ==
   dependencies:
     "@effection/subscription" "^0.10.0"
+    effection "^0.7.0"
+
+"@effection/events@^0.7.8":
+  version "0.7.8"
+  resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.7.8.tgz#3cb8ec5e96b0ad7719e82a2163975cf7d6a77d7d"
+  integrity sha512-JLeWRlGFCmFCrXtdGMHVB+8xX94fclfhPXxZscUptDlyGJaJ5aHEfNY7AqK667jlaE6m/043zf4WUKpvNViZyg==
+  dependencies:
+    "@effection/subscription" "^0.11.0"
     effection "^0.7.0"
 
 "@effection/fetch@^0.1.2":
@@ -2203,6 +2211,13 @@
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-0.10.0.tgz#72c31eec3b4e27e1ee84735842272b09c3474df4"
   integrity sha512-RFKGGjUW96HwpaWSmQ7l26fo1LryRatJdOYLM4VIWzY3uQY7g4HmPrzGQPfxUP2tKlsaCZLiNVo03TIG+Ah8jw==
+  dependencies:
+    effection "^0.7.0"
+
+"@effection/subscription@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-0.11.0.tgz#15919010b22df481f45cc366ac7f08b9a826444e"
+  integrity sha512-kKSPGbHN8csSR7loeJLJ8R8w443MlA7QGA48KTn86ex22yOUvF7QLFnpKKcmyixt8dv4MSEXiPM7cYVeiICLRw==
   dependencies:
     effection "^0.7.0"
 

@@ -57,7 +57,7 @@
     "@bigtest/project": "^0.7.0",
     "@bigtest/suite": "^0.6.0",
     "@bigtest/webdriver": "^0.6.1",
-    "@effection/events": "^0.7.7",
+    "@effection/events": "^0.7.8",
     "@effection/fetch": "^0.1.2",
     "@effection/node": "^0.8.0",
     "@nexus/schema": "^0.13.1",
