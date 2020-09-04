@@ -9,7 +9,7 @@ export const requireDefaultTextExport = createRule({
   meta: {
     docs: {
       category: 'Possible Errors',
-      description: 'Require a bigtest test to have only 1 default export',
+      description: 'Require a BigTest test file to have a default export',
       recommended: 'error',
     },
     messages: {
