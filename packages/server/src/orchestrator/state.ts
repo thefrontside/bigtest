@@ -45,16 +45,9 @@ export type BundlerState =
 
 export type BundlerTypes = Pick<BundlerState, 'type'>['type'];
 
-export type ValidatorState = 
-| { type: 'VALIDATING' }
-| { type: 'VALID';  warnings: ValidationWarning[] }
-| { type: 'INVALID'; errors: ValidationError[]; warnings: ValidationWarning[] }
-
 export interface Validator {
   validate(files: string[]): BundlerState;
 }
-
-export type ValidatorStates = Pick<ValidatorState, 'type'>['type'];
 
 export interface Validator {
   validate(files: string[]): BundlerState;
