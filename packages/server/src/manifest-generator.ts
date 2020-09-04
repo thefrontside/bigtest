@@ -20,6 +20,7 @@ interface ManifestGeneratorOptions {
 
 function* writeManifest({ validSlice, destinationPath, ...options }: ManifestGeneratorOptions & { validator: Validator; validSlice: Slice<ValidatorState, OrchestratorState> }) {
   validSlice.update(() => ({ type: 'VALIDATING' }));
+
   let files: string[] = yield globby(options.files);
 
   let validState = options.validator.validate(options.files);
@@ -39,18 +40,17 @@ function* writeManifest({ validSlice, destinationPath, ...options }: ManifestGen
     : [`Object.assign({}, load(require(${JSON.stringify(filePath)})), { path: ${JSON.stringify(file)} })`];
   });
 
-  let manifest = `
-let load = (res) => res.default || res;
+  let manifest = 
+`let load = (res) => res.default || res;
 
 const children = [
-  ${validFiles.join(', \n')}
+  ${validFiles.join(', \n\t')}
 ];
 
-const errors = [
-  ${errors.join(', \n')}
-];`
+const errors = ${errors.length > 0 ? `[\n\t${errors.map(e => {
+  return `{ message: ${JSON.stringify(e.message)}, fileName: ${JSON.stringify(e.fileName)} }`;  
+}).join('\n')}\n];\n` : `[];`}
 
-  manifest += `
 module.exports = {
   description: "All tests",
   steps: [],
