@@ -43,11 +43,11 @@ export class Client {
     return res;
   }
 
-  query<T>(source: string, variables?: Variables): Operation {
+  query<T>(source: string, variables?: Variables): Operation<T> {
     return this.send<T>("query", source, false, variables).expect();
   }
 
-  mutation<T>(source: string, variables?: Variables): Operation {
+  mutation<T>(source: string, variables?: Variables): Operation<T> {
     return this.send<T>("mutation", source, false, variables).expect();
   }
 
