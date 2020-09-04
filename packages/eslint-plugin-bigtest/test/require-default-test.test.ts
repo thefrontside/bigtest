@@ -62,15 +62,5 @@ export const NoDefaultExportTest = test('Failing Test')
       parserOptions: { sourceType: 'module' },
       errors: [{ messageId: 'namedExport' }],
     },
-// TODO: can we safely test for this condition?
-//     {
-//       code: `
-// function test() {}
-
-// export default test();
-// `,
-//       parserOptions: { sourceType: 'module' },
-//       errors: [{ messageId: 'exportIsNotTest' }],
-//     },
   ],
 });  
