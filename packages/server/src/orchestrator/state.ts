@@ -36,10 +36,10 @@ export type TestRunAgentState = {
 
 export type BundlerState =
   | { type: 'UNBUNDLED' }
-  | { type: 'BUILDING'; warnings: BundlerWarning[] }
   | { type: 'VALIDATING' }
   | { type: 'INVALID'; errors: ValidationError[]; warnings: ValidationWarning[] }
   | { type: 'VALID'; warnings: ValidationWarning[] }
+  | { type: 'BUILDING'; warnings: BundlerWarning[] }
   | { type: 'GREEN'; path: string;  warnings: BundlerWarning[] }
   | { type: 'ERRORED'; error: BundlerError }
 
