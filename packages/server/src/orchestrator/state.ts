@@ -49,10 +49,6 @@ export interface Validator {
   validate(files: string[]): BundlerState;
 }
 
-export interface Validator {
-  validate(files: string[]): BundlerState;
-}
-
 export interface Manifest extends Test {
   fileName: string;
   errors: ValidationError[];
