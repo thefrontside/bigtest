@@ -109,12 +109,11 @@ describe('manifest-generator', () => {
     it('adds errors to the manifest', () => {
       expect(manifest.children.length).toEqual(2);
       expect(manifest.errors).toHaveLength(1);
-      expect(manifest.errors).toEqual([
-        {
-          message: 'Test files must have 1 default export',
-          fileName: '/Users/developer15/projects/bigtest/packages/server/tmp/manifest-generator/test4.t.js'
-        }
-      ]);
+      
+      let error = manifest.errors[0];
+
+      expect(error.message).toBe('Test files must have 1 default export');
+      expect(error.fileName).toContain('test4.t.js');
     })
   })
 });
