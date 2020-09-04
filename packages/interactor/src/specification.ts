@@ -30,7 +30,7 @@ export interface InteractorSpecification<E extends Element> {
 
 export type ActionImplementation<E extends Element, S extends InteractorSpecification<E>> = {
   [P in keyof S['actions']]: S['actions'][P] extends ((interactor: InteractorInstance<E, S>, ...args: infer TArgs) => infer TReturn)
-    ? ((...args: TArgs) => Interaction<TReturn>)
+    ? ((...args: TArgs) => TReturn)
     : never;
 }
 
