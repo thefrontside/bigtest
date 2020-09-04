@@ -1,6 +1,6 @@
 ---
 "@bigtest/bundler": minor
-"eslint-plugin-bigtest": minor
+"@bigtest/eslint-plugin": minor
 ---
 
-add eslint-plugin-bigtest and validate test files have a default export
+add @bigtest/eslint-plugin and validate test files have a default export
