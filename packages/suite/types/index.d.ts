@@ -1,1 +1,2 @@
-export * from '../dist/index.d.ts'
+// no-op for dtslint
+// see the paths in tsconfig.json
