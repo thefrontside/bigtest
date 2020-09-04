@@ -2,7 +2,6 @@ import { Operation, resource, main } from 'effection';
 import { Channel } from '@effection/channel';
 import { subscribe } from '@effection/subscription';
 import { express, Socket } from '@bigtest/effection-express';
-import { Mailbox } from '@bigtest/effection';
 
 import { beforeEach } from 'mocha';
 
@@ -42,11 +41,9 @@ export class TestConnection {
   static *create(socket: Socket): Operation<TestConnection> {
     let connection = new TestConnection(socket);
     return yield resource(connection, function*() {
-      let incoming: Mailbox<Message> = yield socket.subscribe();
-      while (true) {
-        let message: Message = yield incoming.receive();
+      yield subscribe(socket).forEach(function*(message) {
         connection.incoming.send(message);
-      }
+      })
     });
   }
 

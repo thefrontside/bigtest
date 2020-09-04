@@ -1,7 +1,7 @@
 import * as expect from 'expect';
-import { Mailbox } from '@bigtest/effection';
 import { Agent, Command } from '@bigtest/agent';
 import { Client } from '@bigtest/client';
+import { ChainableSubscription } from '@effection/subscription';
 import { actions } from './helpers';
 import { generateAgentId } from '../src/connection-server';
 
@@ -33,22 +33,22 @@ describe('running tests with subscription on an agent', () => {
   let client: Client;
   let agent: Agent;
   let agentId = generateAgentId();
-  let agentsSubscription: Mailbox;
+  let agentsSubscription: ChainableSubscription<AgentsQuery, unknown>;;
 
   beforeEach(async () => {
     await actions.startOrchestrator();
     agent = await actions.createAgent(agentId);
     client = await actions.fork(Client.create(`http://localhost:24102`));
 
-    agentsSubscription = await actions.fork(client.liveQuery(`{ agents { agentId } }`));
+    agentsSubscription = await actions.fork(client.liveQuery<AgentsQuery>(`{ agents { agentId } }`));
 
-    let match: (params: AgentsQuery) => boolean = ({ agents }) => agents && agents.length === 1;
-
-    await actions.fork(agentsSubscription.receive(match));
+    await actions.fork(agentsSubscription.filter(({ agents }) => {
+      return agents && agents.length === 1;
+    }).first());
   });
 
   describe('with the fixture tree', () => {
-    let results: Mailbox;
+    let results: ChainableSubscription<unknown, unknown>;
     let runCommand: Command;
     let testRunId: string;
 
@@ -68,7 +68,8 @@ describe('running tests with subscription on an agent', () => {
       });
 
       it('sends a running event', async () => {
-        let event = await actions.fork(results.receive());
+
+        let event = await actions.fork(results.expect());
         expect(event).toMatchObject({ event: { type: 'testRunAgent:running', agentId, testRunId } });
       });
     });
@@ -84,7 +85,7 @@ describe('running tests with subscription on an agent', () => {
       });
 
       it('sends an event for that step', async () => {
-        let event = await actions.fork(results.receive());
+        let event = await actions.fork(results.first());
         expect(event).toMatchObject({
           event: {
             type: 'step:result',
@@ -111,7 +112,7 @@ describe('running tests with subscription on an agent', () => {
       });
 
       it('sends an event for that step', async () => {
-        await actions.fork(results.receive({
+        await actions.fork(results.match({
           event: {
             type: 'step:result',
             status: 'failed',
@@ -120,42 +121,49 @@ describe('running tests with subscription on an agent', () => {
               message: 'this step failed',
             }
           }
-        }));
+        }).first());
       });
 
       it('sends a failed event for the entire test', async () => {
-        await actions.fork(results.receive({
+        await actions.fork(results.match({
           event: {
             type: 'test:result',
             status: 'failed',
             path: ['All tests', 'Signing In'],
           }
-        }));
+        }).first());
       });
 
-      it('sends a disregarded event for the remaining steps, assertions and children', async() => {
-        await actions.fork(results.receive({
+      it('sends a disregarded event for the remaining steps', async () => {
+        await actions.fork(results.match({
           event: {
             type: 'step:result',
             status: 'disregarded',
             path: ['All tests', 'Signing In', 'when I press the submit button'],
           }
-        }));
-        await actions.fork(results.receive({
+        }).first());
+      });
+
+      it('sends a disregarded event for the remaining assertions', async () => {
+        await actions.fork(results.match({
           event: {
             type: 'assertion:result',
             status: 'disregarded',
             path: ['All tests', 'Signing In', 'then I am logged in'],
           }
-        }));
-        await actions.fork(results.receive({
+        }).first());
+      });
+
+      it('sends a disregarded event for the remaining children', async () => {
+        await actions.fork(results.match({
           event: {
             type: 'test:result',
             status: 'disregarded',
             path: ['All tests', 'Signing In', 'when I log out'],
           }
-        }));
-      });
+        }).first());
+      })
+
     });
   });
 });

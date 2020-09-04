@@ -9,7 +9,7 @@ main(function* main() {
   let subscription = yield client.liveQuery(source);
 
   while (true) {
-    let data = yield subscription.receive();
+    let { value: data } = yield subscription.next();
     console.log('==== new subscription result ==== ');
     console.log(JSON.stringify(data, null, 2));
   }
