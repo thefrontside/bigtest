@@ -7,7 +7,7 @@ export interface LoggerOptions {
   out: <A extends unknown[]>(...args: A) => void;
 }
 
-export function* createLogger({ atom, out }: LoggerOptions) {
+export function* createBundlerLogger({ atom, out }: LoggerOptions) {
   let bundlerState = atom.slice('bundler');
 
   yield subscribe(bundlerState).forEach(function* (event) {
@@ -18,18 +18,22 @@ export function* createLogger({ atom, out }: LoggerOptions) {
       }
     }
   });
+}
 
+
+export function* createManifestLogger({ atom, out }: LoggerOptions) {
   let validState = atom.slice('manifest', 'validState');
 
-  console.debug('hooors')
-
   yield subscribe(validState).forEach(function* (event) {
-    console.debug(event);
-    // if(event.type === 'ERRORED'){
-    //   out("[manifest builder] build error:", event.error);
-    //   if (event.error.frame) {
-    //     out("[manifest builder] build error frame:\n", event.error.frame);
-    //   }
-    // }
+    console.log(event);
+    if(!event) {
+      console.trace(event);
+      return;
+    }
+    if(event.type === 'INVALID'){
+      for(let error in event.errors) {
+        out("[manifest generator] build error:", error);
+      }
+    }
   });
 }

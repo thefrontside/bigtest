@@ -19,25 +19,29 @@ interface ManifestGeneratorOptions {
 };
 
 function* writeManifest({ validSlice, destinationPath, ...options }: ManifestGeneratorOptions & { validator: Validator; validSlice: Slice<ValidatorState, OrchestratorState> }) {
-  let files: string[] = yield globby(options.files);
+  validSlice.update(() => ({ type: 'VALIDATING' }));
   let validFiles: string[] = [];
   let invalidFiles: string[] = [];
+  let files: string[] = yield globby(options.files);
 
-  validSlice.update(() => ({ type: 'VALIDATING' }));
+  let validState = options.validator.validate(options.files);
+  let errors = validState.type === 'INVALID' ? validState.errors : [];
+
+  validSlice.update(() => ({...validState}));
 
   for(let file of files) {
         // path.posix.join is really the only thing that returns the real posix correctly
     // so we join with OS specific, split based on OS path separator and then rejoin it with
     // the path.posix.join method to get the real relative path in posix
     let filePath = "./" + path.posix.join(...path.relative(path.dirname(destinationPath), file).split(path.sep));
-    let validState = options.validator.validate([path.basename(filePath)]);
 
-    validSlice.update(() => ({...validState}));
+    let fileIsInvalid = !!errors.find(f => path.basename(f.fileName) === path.basename(file));
 
-    if(validState.type === 'VALID') {
-      validFiles.push(`  Object.assign({}, load(require(${JSON.stringify(filePath)})), { path: ${JSON.stringify(file)} })`);
-    } else {
+
+    if(fileIsInvalid) {
       invalidFiles.push(`  { path: ${JSON.stringify(file)} }`);
+    } else {
+      validFiles.push(`  Object.assign({}, load(require(${JSON.stringify(filePath)})), { path: ${JSON.stringify(file)} })`);
     }
   }
 
@@ -69,9 +73,7 @@ export function* createManifestGenerator(options: ManifestGeneratorOptions): Ope
   let validSlice = options.atom.slice('manifest', 'validState');
   let watcher = chokidar.watch(options.files, { ignoreInitial: true });
 
-  let cwd = path.resolve(path.dirname(options.files[0]));
-
-  let validator = new EslintValidator(cwd);
+  let validator = new EslintValidator();
 
   yield ensure(() => watcher.close());
 

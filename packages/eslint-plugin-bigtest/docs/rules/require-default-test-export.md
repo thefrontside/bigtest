@@ -4,8 +4,7 @@ Bigtest must find a default export
 
 ## Rule Details
 
-This rule triggers a warning if a test file does not export a
-top-level default bigtest `test`.
+This rule triggers a warning if a test file does not have a default export.
 
 ```typescript
 import { test } from '@bigtest/suite';
@@ -17,7 +16,7 @@ export default test('Passing Test')
   .step("first step", delay())
 ```
 
-Named exports are not allowed:
+Named exports will not be exported:
 
 ```typescript
 import { test } from '@bigtest/suite';

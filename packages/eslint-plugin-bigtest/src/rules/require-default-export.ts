@@ -9,12 +9,12 @@ export const requireDefaultTextExport = createRule({
   meta: {
     docs: {
       category: 'Possible Errors',
-      description: 'Require a bigtest test to have 1 default export',
+      description: 'Require a bigtest test to have only 1 default export',
       recommended: 'error',
     },
     messages: {
-      exportIsNotTest: 'The default export is not a test implementation',
-      namedExport: 'Only default test implementations can be exported'
+      exportIsNotTest: 'The test file does not have a default export',
+      namedExport: 'Test files must have 1 default export'
     },
     type: 'problem',
     schema: [],
@@ -37,7 +37,7 @@ export const requireDefaultTextExport = createRule({
         }
         
         if (defaultExport) {
-          context.report({ node: defaultExport || namedExport, messageId: 'exportIsNotTest' });
+          context.report({ node: defaultExport || namedExport, messageId: 'exportIsNotTest'});
           return;
         }
 
@@ -51,16 +51,26 @@ export const requireDefaultTextExport = createRule({
       },
       // commonjs
       // module.exports =
+      // exports =
       MemberExpression(node) {
-        if (node.type === AST_NODE_TYPES.MemberExpression 
-            && node.object.type === AST_NODE_TYPES.Identifier
-            && node.object.name === 'module'
-            && node.property.type === AST_NODE_TYPES.Identifier 
-            && node.property.name === 'exports'
-            && node.parent?.type === AST_NODE_TYPES.AssignmentExpression
-            && node.parent.operator === '=') {
-           hasDefaultTestDeclaration = true;
+        if (node.type !== AST_NODE_TYPES.MemberExpression ||
+            node.object.type !== AST_NODE_TYPES.Identifier) {
+          return;
         }
+
+        if (node.object.name !== 'module' && node.object.name !== 'exports' || !node.parent) {
+          return;
+        }
+
+        if(node.parent.type !== AST_NODE_TYPES.AssignmentExpression) {
+          return;
+        }
+        
+        if(node.parent.operator !== '=') {
+          return;
+        }
+
+        hasDefaultTestDeclaration = true;
       },
       ExportDefaultDeclaration(
         node: TSESTree.ExportDefaultDeclaration,

@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect';
 import { actions } from './helpers';
-import { createLogger } from '../src/logger';
+import { createBundlerLogger } from '../src/logger';
 import { createOrchestratorAtom } from '../src';
 import { OrchestratorState } from '../src/orchestrator/state';
 import { Atom } from '@bigtest/atom/dist';
@@ -16,7 +16,7 @@ describe('logger', () => {
 
     atom = createOrchestratorAtom();
     
-    actions.fork(createLogger({ atom, out: logger }));
+    actions.fork(createBundlerLogger({ atom, out: logger }));
     
     atom.slice('bundler').update(() => ({ status: 'ERRORED', error: 'blah' } as any));
   });

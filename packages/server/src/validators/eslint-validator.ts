@@ -23,8 +23,8 @@ const EslintOptions: CLIEngine.Options = {
 export class EslintValidator implements Validator {
   private cliEngine: CLIEngine;
 
-  constructor(cwd: string) {
-    this.cliEngine = new CLIEngine({ ...EslintOptions, cwd });
+  constructor() {
+    this.cliEngine = new CLIEngine(EslintOptions);
   }
 
   getErrorsAndWarnings(report: CLIEngine.LintReport) {
@@ -54,13 +54,13 @@ export class EslintValidator implements Validator {
 
       let error: ValidationError | ValidationWarning = {
         message: message.message,
-        displayMessage: msg,
+        displayMessage: firstLine,
         code: sourceCode,
         fileName: message.filePath,
         loc: {
           column: message.column,
           line: message.line,
-          file: firstLine
+          file: message.filePath
         },
       };
 

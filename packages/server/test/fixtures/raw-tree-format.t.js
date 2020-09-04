@@ -1,4 +1,4 @@
-export const n = {
+export default {
   description: "Signing In",
   steps: [
     {
