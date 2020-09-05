@@ -80,21 +80,11 @@ export class Client {
             let messages = response.errors.map(error => error.message);
             throw new Error(messages.join("\n"));;
           }
-<<<<<<< HEAD
           if (isDataResponse(response)) {
             publish(response.data as T)
           }
           if (isDoneResponse(response)) {
             return response.data as TReturn;
-=======
-          if (isDataResponse(message)) {
-            mailbox.send(message.data);
-          } else if (isDoneResponse(message)) {
-            mailbox.send({done: true});
-            break;
-          } else {
-            throw new Error("unknown response format");
->>>>>>> make validation an async operation
           }
         }
       }
