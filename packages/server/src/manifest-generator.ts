@@ -21,7 +21,10 @@ function* writeManifest(options: ManifestGeneratorOptions) {
   manifest += 'const children = [\n';
 
   for(let file of files) {
-    let filePath = "./" + path.relative(path.dirname(options.destinationPath), file);
+    // path.posix.join is really the only thing that returns the real posix correctly
+    // so we join with OS specific, split based on OS path separator and then rejoin it with
+    // the path.posix.join method to get the real relative path in posix
+    let filePath = "./" + path.posix.join(...path.relative(path.dirname(options.destinationPath), file).split(path.sep));
     manifest += `  Object.assign({}, load(require(${JSON.stringify(filePath)})), { path: ${JSON.stringify(file)} }),\n`;
   }
 

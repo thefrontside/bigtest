@@ -12,6 +12,7 @@ import { createManifestGenerator } from '../src/manifest-generator';
 import { Mailbox } from '@bigtest/effection';
 
 const { mkdir, writeFile, unlink } = fs.promises;
+import { join } from 'path';
 
 const TEST_DIR = "./tmp/manifest-generator"
 const MANIFEST_PATH = "./tmp/manifest-generator/manifest.js"
@@ -28,8 +29,8 @@ describe('manifest-generator', () => {
   beforeEach((done) => rmrf(TEST_DIR, done));
   beforeEach(async () => {
     await mkdir(TEST_DIR, { recursive: true });
-    await writeFile(TEST_DIR + "/test1.t.js", "module.exports = { default: { description: 'hello' }};");
-    await writeFile(TEST_DIR + "/test2.t.js", "module.exports = { default: { description: 'monkey' }};");
+    await writeFile(join(TEST_DIR, "/test1.t.js"), "module.exports = { default: { description: 'hello' }};");
+    await writeFile(join(TEST_DIR, "/test2.t.js"), "module.exports = { default: { description: 'monkey' }};");
 
     delegate = new Mailbox();
 
@@ -60,7 +61,7 @@ describe('manifest-generator', () => {
     let manifest: Test;
 
     beforeEach(async () => {
-      await writeFile(TEST_DIR + "/test3.t.js", "module.exports = { default: { description: 'test' } };");
+      await writeFile(join(TEST_DIR, "/test3.t.js"), "module.exports = { default: { description: 'test' } };");
       await actions.receive(delegate, { event: "update" });
       manifest = await loadManifest();
     });
@@ -77,7 +78,7 @@ describe('manifest-generator', () => {
     let manifest: Test;
 
     beforeEach(async () => {
-      await unlink(TEST_DIR + "/test2.t.js");
+      await unlink(join(TEST_DIR, "/test2.t.js"));
       await actions.receive(delegate, { event: 'update' });
       manifest = await loadManifest();
     });
