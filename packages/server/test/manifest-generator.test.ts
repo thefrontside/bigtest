@@ -114,7 +114,7 @@ describe('manifest-generator', () => {
       
       let error = bundlerState.errors[0];
 
-      expect(error.message).toBe('Test files must have 1 default export');
+      expect(error.message).toBe('Test files must have a default export');
       expect(error.fileName).toContain('test4.t.js');
     })
   })

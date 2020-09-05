@@ -1,5 +1,6 @@
 import { Test, TestResult, ResultStatus } from '@bigtest/suite';
 import { BundlerError, BundlerWarning, ValidationWarning, ValidationError } from '@bigtest/bundler';
+import { Operation } from 'effection';
 
 export type AgentState = {
   agentId: string;
@@ -45,8 +46,8 @@ export type BundlerState =
 
 export type BundlerTypes = Pick<BundlerState, 'type'>['type'];
 
-export interface Validator {
-  validate(files: string[]): BundlerState;
+export interface Validator<R> {
+  validate(files: string[]): Operation<R>;
 }
 
 export interface Manifest extends Test {

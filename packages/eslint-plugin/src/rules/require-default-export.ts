@@ -14,7 +14,7 @@ export const requireDefaultTextExport = createRule({
     },
     messages: {
       exportIsNotTest: 'The test file does not have a default export',
-      namedExport: 'Test files must have 1 default export'
+      namedExport: 'Test files must have a default export'
     },
     type: 'problem',
     schema: [],

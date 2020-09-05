@@ -1,12 +1,12 @@
 import * as chokidar from 'chokidar';
-import { Operation } from 'effection';
+import { Operation, spawn } from 'effection';
 import { Mailbox, ensure } from '@bigtest/effection';
 import { throwOnErrorEvent } from '@effection/events';
 import * as fs from 'fs';
 import * as globby from 'globby';
 import * as path from 'path';
 import { EslintValidator } from './validators/eslint-validator';
-import { Validator, OrchestratorState, BundlerState } from './orchestrator/state';
+import { OrchestratorState, BundlerState } from './orchestrator/state';
 import { Atom, Slice } from '@bigtest/atom';
 
 const { writeFile, mkdir } = fs.promises;
@@ -19,23 +19,47 @@ interface ManifestGeneratorOptions {
 };
 
 type WriteManifestOptions = Omit<ManifestGeneratorOptions, 'atom' | 'delegate'> & { 
-  validator: Validator;
   bundlerSlice: Slice<BundlerState, OrchestratorState>; 
 };
 
-function* writeManifest(options: WriteManifestOptions) {
-  let { bundlerSlice, validator, destinationPath } = options;
+const Validators = [EslintValidator];
+
+function *runValidations(files: string[]): Operation<BundlerState> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let validations: any[] = []
+
+  for (let validator of Validators.map(V => new V())) {
+    validations.push(yield spawn(validator.validate(files)));
+  }
+
+  let results: BundlerState[] = yield Promise.all(validations);
   
+  let [warnings, errors] = results.flatMap(v =>
+    v.type === 'VALID' 
+    ? [v.warnings ?? [], []]
+    : v.type === 'INVALID'
+    ? [v.warnings ?? [], v.errors] 
+    : []
+  );
+
+  return errors.length === 0 
+    ? { type: 'VALID', warnings } as const
+    : { type: 'INVALID', errors, warnings } as const;
+}
+
+function* writeManifest(options: WriteManifestOptions) {
+  let { bundlerSlice, destinationPath } = options;
+
   bundlerSlice.update(() => ({ type: 'VALIDATING' }));
 
+  let nextBundlerState: BundlerState = yield runValidations(options.files);
+
+  bundlerSlice.update(() => ({...nextBundlerState}));
+ 
   let files: string[] = yield globby(options.files);
 
-  let validState = validator.validate(options.files);
-  
-  bundlerSlice.update(() => ({...validState}));
-  
-  let errors = validState.type === 'INVALID' ? validState.errors : [];
-
+  let errors = nextBundlerState.type === 'INVALID' ? nextBundlerState.errors : [];
+ 
   let validFiles = files.flatMap(file => {
     // path.posix.join is really the only thing that returns the real posix correctly
     // so we join with OS specific, split based on OS path separator and then rejoin it with
@@ -70,8 +94,6 @@ export function* createManifestGenerator(options: ManifestGeneratorOptions): Ope
   let bundlerSlice = options.atom.slice('bundler');
   let watcher = chokidar.watch(options.files, { ignoreInitial: true });
 
-  let validator = new EslintValidator();
-
   yield ensure(() => watcher.close());
 
   let events: Mailbox = yield Mailbox.subscribe(watcher, ['ready', 'add', 'unlink']);
@@ -80,7 +102,7 @@ export function* createManifestGenerator(options: ManifestGeneratorOptions): Ope
 
   yield events.receive({ event: 'ready' });
 
-  let writeOptions = { ...options, validator, bundlerSlice };
+  let writeOptions = { ...options, bundlerSlice };
   
   yield writeManifest(writeOptions);
 

@@ -1,7 +1,8 @@
 import { CLIEngine } from 'eslint';
 import chalk from 'chalk';
-import { Validator } from '../orchestrator/state';
+import { Validator, BundlerState } from '../orchestrator/state';
 import { ValidationWarning, ValidationError } from '@bigtest/bundler';
+import { Operation } from 'effection';
 
 const EslintOptions: CLIEngine.Options = {
   useEslintrc: false,
@@ -21,7 +22,7 @@ const EslintOptions: CLIEngine.Options = {
   extensions: ['.ts', '.tsx', '.js', '.jsx'],
 };
 
-export class EslintValidator implements Validator {
+export class EslintValidator implements Validator<BundlerState> {
   private cliEngine: CLIEngine;
 
   constructor() {
@@ -71,7 +72,7 @@ export class EslintValidator implements Validator {
     return { errors, warnings };
   }
 
-  validate(files: string[]) {
+  *validate(files: string[]): Operation<BundlerState> {
     let report = this.cliEngine.executeOnFiles(files);
 
     let { errors, warnings } = this.getErrorsAndWarnings(report);
