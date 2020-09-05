@@ -18,7 +18,7 @@ interface ManifestGeneratorOptions {
   atom: Atom<OrchestratorState>;
 };
 
-type WriteManifestOptions = ManifestGeneratorOptions & { 
+type WriteManifestOptions = Omit<ManifestGeneratorOptions, 'atom' | 'delegate'> & { 
   validator: Validator;
   bundlerSlice: Slice<BundlerState, OrchestratorState>; 
 };
