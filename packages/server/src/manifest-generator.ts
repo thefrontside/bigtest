@@ -18,13 +18,20 @@ interface ManifestGeneratorOptions {
   atom: Atom<OrchestratorState>;
 };
 
-function* writeManifest({ bundlerSlice, destinationPath, ...options }: ManifestGeneratorOptions & { validator: Validator; bundlerSlice: Slice<BundlerState, OrchestratorState> }) {
+type WriteManifestOptions = ManifestGeneratorOptions & { 
+  validator: Validator;
+  bundlerSlice: Slice<BundlerState, OrchestratorState>; 
+};
+
+function* writeManifest(options: WriteManifestOptions) {
+  let { bundlerSlice, validator, destinationPath } = options;
+  
   bundlerSlice.update(() => ({ type: 'VALIDATING' }));
 
   let files: string[] = yield globby(options.files);
 
-  let validState = options.validator.validate(options.files);
-
+  let validState = validator.validate(options.files);
+  
   bundlerSlice.update(() => ({...validState}));
   
   let errors = validState.type === 'INVALID' ? validState.errors : [];
