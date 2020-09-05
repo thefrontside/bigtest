@@ -25,8 +25,7 @@ type WriteManifestOptions = Omit<ManifestGeneratorOptions, 'atom' | 'delegate'> 
 const Validators = [EslintValidator];
 
 function *runValidations(files: string[]): Operation<BundlerState> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let validations: any[] = []
+  let validations: BundlerState[] = []
 
   for (let validator of Validators.map(V => new V())) {
     validations.push(yield spawn(validator.validate(files)));
