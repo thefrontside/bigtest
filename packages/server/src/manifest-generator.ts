@@ -8,11 +8,11 @@ import * as path from 'path';
 import { EslintValidator } from './validators/eslint-validator';
 import { OrchestratorState, BundlerState } from './orchestrator/state';
 import { Atom, Slice } from '@bigtest/atom';
+import { assertBundlerState } from './assertions/bundler-assertions';
 
 const { writeFile, mkdir } = fs.promises;
 
 interface ManifestGeneratorOptions {
-  delegate: Mailbox;
   files: string[]; 
   destinationPath: string;
   atom: Atom<OrchestratorState>;
@@ -53,8 +53,6 @@ function* writeManifest(options: WriteManifestOptions) {
   bundlerSlice.update(() => ({ type: 'VALIDATING' }));
 
   let nextBundlerState: BundlerState = yield runValidations(options.files);
-
-  bundlerSlice.update(() => ({...nextBundlerState}));
  
   let files: string[] = yield globby(options.files);
 
@@ -88,6 +86,8 @@ module.exports = {
   
   yield mkdir(path.dirname(destinationPath), { recursive: true });
   yield writeFile(destinationPath, manifest);
+
+  bundlerSlice.update(() => ({...nextBundlerState}));
 }
 
 export function* createManifestGenerator(options: ManifestGeneratorOptions): Operation {
@@ -106,14 +106,34 @@ export function* createManifestGenerator(options: ManifestGeneratorOptions): Ope
   
   yield writeManifest(writeOptions);
 
+  if(bundlerSlice.get().type === 'INVALID') {
+    bundlerSlice.update(() => ({...bundlerSlice.get()}));
+    // TODO: what do we do in an INVALID state
+    return;
+  }
+
   console.debug("[manifest generator] manifest ready");
-  options.delegate.send({ status: 'ready' });
+  bundlerSlice.update((prev) => {
+    assertBundlerState(prev.type, { is: [ 'INVALID', 'VALID' ] });
+
+    return { type: 'BUILDING', warnings: prev.warnings };
+  });
 
   while(true) {
     yield events.receive();
     yield writeManifest(writeOptions);
 
+    if(bundlerSlice.get().type === 'INVALID') {
+      bundlerSlice.update(() => ({...bundlerSlice.get()}));
+      // TODO: what do we do in an INVALID state
+      return;
+    }
+
     console.debug("[manifest generator] manifest updated");
-    options.delegate.send({ event: 'update' });
+    bundlerSlice.update((prev) => {
+      assertBundlerState(prev.type, { is: [ 'VALID', 'BUILDING', 'GREEN' ] });
+  
+      return { type: 'UPDATE', warnings: prev.warnings };
+    });
   }
 }

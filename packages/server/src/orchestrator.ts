@@ -31,7 +31,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   let commandServerDelegate = new Mailbox();
   let connectionServerDelegate = new Mailbox();
-  let manifestGeneratorDelegate = new Mailbox();
   let manifestServerDelegate = new Mailbox();
 
   let agentServerConfig = new AgentServerConfig({ port: options.project.proxy.port, prefix: '/__bigtest/', });
@@ -84,14 +83,13 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   }));
 
   yield fork(createManifestGenerator({
-    delegate: manifestGeneratorDelegate,
     files: options.project.testFiles,
     destinationPath: manifestSrcPath,
     atom: options.atom,
   }));
 
   console.debug('[orchestrator] wait for manifest generator');
-  yield manifestGeneratorDelegate.receive({ status: 'ready' });
+  yield options.atom.slice('bundler').once(({ type }) => type === 'BUILDING');
   console.debug('[orchestrator] manifest generator ready');
 
   yield fork(createManifestBuilder({

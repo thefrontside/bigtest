@@ -41,6 +41,7 @@ export type BundlerState =
   | { type: 'INVALID'; errors: ValidationError[]; warnings: ValidationWarning[] }
   | { type: 'VALID'; warnings: ValidationWarning[] }
   | { type: 'BUILDING'; warnings: BundlerWarning[] }
+  | { type: 'UPDATE'; warnings: BundlerWarning[] }
   | { type: 'GREEN'; path: string;  warnings: BundlerWarning[] }
   | { type: 'ERRORED'; error: BundlerError }
 

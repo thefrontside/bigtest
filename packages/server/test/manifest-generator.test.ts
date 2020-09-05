@@ -7,7 +7,6 @@ import * as rmrf from 'rimraf';
 import { actions } from './helpers';
 
 import { createManifestGenerator } from '../src/manifest-generator';
-import { Mailbox } from '@bigtest/effection';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { OrchestratorState, Manifest } from '../src/orchestrator/state';
 import { Atom } from '@bigtest/atom';
@@ -26,7 +25,6 @@ async function loadManifest() {
 }
 
 describe('manifest-generator', () => {
-  let delegate: Mailbox;
   let atom: Atom<OrchestratorState>;
 
   beforeEach((done) => rmrf(TEST_DIR, done));
@@ -35,18 +33,15 @@ describe('manifest-generator', () => {
     await writeFile(join(TEST_DIR, "/test1.t.js"), "module.exports = { default: { description: 'hello' }};");
     await writeFile(join(TEST_DIR, "/test2.t.js"), "module.exports = { default: { description: 'monkey' }};");
 
-    delegate = new Mailbox();
-
     atom = createOrchestratorAtom();
 
     actions.fork(createManifestGenerator({
-      delegate,
       files: [TEST_DIR + "/*.t.{js,ts}"],
       destinationPath: MANIFEST_PATH,
       atom 
     }));
 
-    await actions.receive(delegate, { status: 'ready' });
+    await actions.fork(atom.slice('bundler').once(({ type }) => type === 'BUILDING'));
   });
 
   describe('starting', () => {
@@ -68,7 +63,7 @@ describe('manifest-generator', () => {
 
     beforeEach(async () => {
       await writeFile(join(TEST_DIR, "/test3.t.js"), "module.exports = { default: { description: 'test' } };");
-      await actions.receive(delegate, { event: "update" });
+      await actions.fork(atom.slice('bundler').once(({ type }) => type === 'UPDATE'));
       manifest = await loadManifest();
     });
 
@@ -85,7 +80,7 @@ describe('manifest-generator', () => {
 
     beforeEach(async () => {
       await unlink(join(TEST_DIR, "/test2.t.js"));
-      await actions.receive(delegate, { event: 'update' });
+      await actions.fork(atom.slice('bundler').once(({ type }) => type === 'UPDATE'));
       manifest = await loadManifest();
     });
 
@@ -99,12 +94,13 @@ describe('manifest-generator', () => {
     let manifest: Manifest;
 
     beforeEach(async () => {
-      await writeFile(path.join(TEST_DIR , "/test4.t.js"), "module.exports.namedExport = { description: 'test' };");
-      await actions.receive(delegate, { event: "update" });
+      await writeFile(join(TEST_DIR , "/test4.t.js"), "module.exports.namedExport = { description: 'test' };");
       manifest = await loadManifest();
     });
 
-    it('adds errors to the manifest', () => {
+    it('adds errors to the manifest', async () => {
+      await actions.fork(atom.slice('bundler').once(({ type }) => type === 'INVALID'));
+      
       let bundlerState = atom.get().bundler;
 
       assertBundlerState(bundlerState.type, { is: 'INVALID' });
