@@ -151,7 +151,6 @@ describe('command server', () => {
         steps: [],
         assertions: [],
         children: [test1, test2],
-        errors: [],
       });
     });
 

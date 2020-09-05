@@ -1,4 +1,3 @@
-// TODO: All errors could implement at least these fields?
 export type ValidationException = {
   code?: string;
   frame?: string;

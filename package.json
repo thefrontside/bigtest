@@ -8,7 +8,7 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "packages/eslint-plugin-bigtest",
+      "packages/eslint-plugin",
       "packages/effection",
       "packages/client",
       "packages/effection-express",

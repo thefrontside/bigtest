@@ -11,6 +11,7 @@ import { Mailbox } from '@bigtest/effection';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { OrchestratorState, Manifest } from '../src/orchestrator/state';
 import { Atom } from '@bigtest/atom';
+import { assertBundlerState } from '../src/assertions/bundler-assertions';
 
 const { mkdir, writeFile, unlink } = fs.promises;
 import { join } from 'path';
@@ -59,7 +60,6 @@ describe('manifest-generator', () => {
       expect(manifest.children.length).toEqual(2)
       expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
       expect(manifest.children[1]).toEqual({ path: './tmp/manifest-generator/test2.t.js', description: 'monkey' });
-      expect(manifest.errors).toHaveLength(0);
     });
   });
 
@@ -77,7 +77,6 @@ describe('manifest-generator', () => {
       expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
       expect(manifest.children[1]).toEqual({ path: './tmp/manifest-generator/test2.t.js', description: 'monkey' });
       expect(manifest.children[2]).toEqual({ path: './tmp/manifest-generator/test3.t.js', description: 'test' });
-      expect(manifest.errors).toHaveLength(0);
     });
   });
 
@@ -93,7 +92,6 @@ describe('manifest-generator', () => {
     it('rewrites the manifest', () => {
       expect(manifest.children.length).toEqual(1)
       expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
-      expect(manifest.errors).toHaveLength(0);
     });
   });
 
@@ -107,10 +105,14 @@ describe('manifest-generator', () => {
     });
 
     it('adds errors to the manifest', () => {
+      let bundlerState = atom.get().bundler;
+
+      assertBundlerState(bundlerState.type, { is: 'INVALID' });
+
       expect(manifest.children.length).toEqual(2);
-      expect(manifest.errors).toHaveLength(1);
+      expect(bundlerState.errors).toHaveLength(1);
       
-      let error = manifest.errors[0];
+      let error = bundlerState.errors[0];
 
       expect(error.message).toBe('Test files must have 1 default export');
       expect(error.fileName).toContain('test4.t.js');

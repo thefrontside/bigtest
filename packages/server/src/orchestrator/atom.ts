@@ -14,7 +14,6 @@ export const createOrchestratorAtom = (options?: OrchestratorAtomOptions) => {
       steps: [],
       assertions: [],
       children: [],
-      errors: [],
     },
     bundler: {
       type: 'UNBUNDLED'

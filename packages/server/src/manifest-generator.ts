@@ -47,16 +47,11 @@ const children = [
   ${validFiles.join(', \n\t')}
 ];
 
-const errors = ${errors.length > 0 ? `[\n\t${errors.map(e => {
-  return `{ message: ${JSON.stringify(e.message)}, fileName: ${JSON.stringify(e.fileName)} }`;  
-}).join('\n')}\n];\n` : `[];`}
-
 module.exports = {
   description: "All tests",
   steps: [],
   assertions: [],
   children: children,
-  errors: errors,
 }
 `;
   

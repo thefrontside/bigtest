@@ -13,9 +13,9 @@ const EslintOptions: CLIEngine.Options = {
   },
   baseConfig: {
     root: true,
-    plugins: ['bigtest'],
+    plugins: ['@bigtest'],
     rules: {
-      'bigtest/require-default-export': 'error',
+      '@bigtest/require-default-export': 'error',
     },
   },
   extensions: ['.ts', '.tsx', '.js', '.jsx'],

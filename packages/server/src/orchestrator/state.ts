@@ -51,7 +51,6 @@ export interface Validator {
 
 export interface Manifest extends Test {
   fileName: string;
-  errors: ValidationError[];
 }
 
 export type AppStatus = 'unstarted' | 'started' | 'reachable' | 'unreachable' | 'crashed'
