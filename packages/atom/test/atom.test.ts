@@ -162,5 +162,21 @@ describe('@bigtest/atom', () => {
         await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'quox' });
       });
     });
+
+    describe('idempotent set', () => {
+      let subscription: Subscription<string, undefined>;
+
+      beforeEach(async () => {
+        subscription = await spawn(subscribe(subject));
+
+        subject.update(() => 'bar');
+        subject.update(() => 'bar');
+      });
+
+      it('iterates over emitted states', async () => {
+        await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'bar' });
+        await expect(spawn(subscription.next())).rejects;
+      });
+    })
   });
 });

@@ -3,6 +3,7 @@ import { Channel } from '@effection/channel';
 import { subscribe, Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
 import { Slice } from "./slice";
 import { Sliceable } from './sliceable';
+import { equals } from 'ramda';
 
 export class Atom<S> implements Subscribable<S,undefined> {
   private readonly initial: S;
@@ -22,6 +23,13 @@ export class Atom<S> implements Subscribable<S,undefined> {
   }
 
   set(value: S) {
+    // need to use a deep equality check on the object's values
+    // because this.state and value
+    // will always be 2 different objects but will often have the 
+    // same values
+    if (equals(this.state, value)) {
+      return;
+    }
     this.state = value;
     this.states.send(value);
   }
