@@ -98,7 +98,7 @@ describe('manifest-generator', () => {
       manifest = await loadManifest();
     });
 
-    it('adds errors to the manifest', async () => {
+    it('transitions bundler state to INVALID and adds the errors', async () => {
       await actions.fork(atom.slice('bundler').once(({ type }) => type === 'INVALID'));
       
       let bundlerState = atom.get().bundler;

@@ -18,7 +18,7 @@ interface ManifestGeneratorOptions {
   atom: Atom<OrchestratorState>;
 };
 
-type WriteManifestOptions = Omit<ManifestGeneratorOptions, 'atom' | 'delegate'> & { 
+type WriteManifestOptions = Omit<ManifestGeneratorOptions, 'atom'> & { 
   bundlerSlice: Slice<BundlerState, OrchestratorState>; 
 };
 
@@ -113,7 +113,7 @@ export function* createManifestGenerator(options: ManifestGeneratorOptions): Ope
 
   console.debug("[manifest generator] manifest ready");
   bundlerSlice.update((prev) => {
-    assertBundlerState(prev.type, { is: [ 'INVALID', 'VALID' ] });
+    assertBundlerState(prev.type, { is: [ 'VALID' ] });
 
     return { type: 'BUILDING', warnings: prev.warnings };
   });
