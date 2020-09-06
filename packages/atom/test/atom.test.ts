@@ -163,7 +163,7 @@ describe('@bigtest/atom', () => {
       });
     });
 
-    describe('idempotent set', () => {
+    describe('prevent identitcal state notifications', () => {
       let subscription: Subscription<string, undefined>;
 
       beforeEach(async () => {
@@ -173,7 +173,7 @@ describe('@bigtest/atom', () => {
         subject.update(() => 'bar');
       });
 
-      it('iterates over emitted states', async () => {
+      it('only one notification for identical states', async () => {
         await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'bar' });
         await expect(spawn(subscription.next())).rejects;
       });
