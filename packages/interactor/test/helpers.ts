@@ -2,8 +2,10 @@ import { beforeEach } from 'mocha';
 import { bigtestGlobals } from '@bigtest/globals';
 import { JSDOM } from 'jsdom';
 
+let jsdom: JSDOM;
+
 export function dom(html: string) {
-  let jsdom = new JSDOM(`<!doctype html><html><body>${html}</body></html>`, { runScripts: "dangerously" });
+  jsdom = new JSDOM(`<!doctype html><html><body>${html}</body></html>`, { runScripts: "dangerously" });
   bigtestGlobals.document = jsdom.window.document;
 }
 
@@ -12,3 +14,6 @@ beforeEach(() => {
   bigtestGlobals.defaultInteractorTimeout = 20;
 });
 
+afterEach(() => {
+  jsdom?.window?.close();
+});
