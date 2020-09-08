@@ -2,6 +2,7 @@ import { Operation } from 'effection';
 import { defaultConfig, getConfigFilePath, loadConfigFile, ProjectOptions } from '@bigtest/project';
 import * as merge from 'deepmerge';
 import { CLIArguments } from './cli';
+import { MainError } from '@effection/node';
 
 export function *loadConfig(args: CLIArguments): Operation<ProjectOptions> {
   let configFilePath = getConfigFilePath();
@@ -28,7 +29,11 @@ export function *loadConfig(args: CLIArguments): Operation<ProjectOptions> {
 export function *validateConfig(config: ProjectOptions) {
   for (let key of config.launch) {
     if (!config.drivers[key]) {
-      throw new Error(`Could not find launch key ${key} in the set of drivers: ${JSON.stringify(Object.keys(config.drivers))}`);
+      let alternatives = Object.keys(config.drivers).map((d) => JSON.stringify(d));
+      throw new MainError({
+        exitCode: 1,
+        message: `Unable to launch agent with driver ${JSON.stringify(key)}, did you mean one of: ${alternatives.join(', ')}`
+      });
     }
   }
 }
