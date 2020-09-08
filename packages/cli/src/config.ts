@@ -1,8 +1,9 @@
 import { Operation } from 'effection';
 import { defaultConfig, getConfigFilePath, loadConfigFile, ProjectOptions } from '@bigtest/project';
 import * as merge from 'deepmerge';
+import { CLIArguments } from './cli';
 
-export function *loadConfig(): Operation<ProjectOptions> {
+export function *loadConfig(args: CLIArguments): Operation<ProjectOptions> {
   let configFilePath = getConfigFilePath();
   if(!configFilePath) { throw new Error("config file not found"); }
 
@@ -11,6 +12,13 @@ export function *loadConfig(): Operation<ProjectOptions> {
   let config = merge(defaultConfig(configFilePath), projectConfig, {
     arrayMerge: (_a, b) => b
   });
+
+  if(args.launch) {
+    config.launch = args.launch;
+  }
+  if(args.testFiles) {
+    config.testFiles = args.testFiles;
+  }
 
   yield validateConfig(config);
 

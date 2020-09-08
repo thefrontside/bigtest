@@ -47,16 +47,12 @@ export type ProjectOptions = {
   launch: string[];
 }
 
-export const defaultApp = {
-  command: "yarn start",
-  env: { PORT: "24000" },
-  url: "http://localhost:24000"
-};
-
 export function defaultConfig(configFilePath: string): ProjectOptions {
   return {
     port: 24002,
-    app: defaultApp,
+    app: {
+      url: "about:blank"
+    },
     proxy: {
       port: 24001,
     },
