@@ -39,8 +39,8 @@ export class Match<E extends Element, S extends InteractorSpecification<E>> {
 
 export class MatchLocator<E extends Element> {
   public matches: boolean;
-  public expected: string;
-  public actual: string;
+  public expected: string | null;
+  public actual: string | null;
 
   constructor(
     public locator: Locator<E>,

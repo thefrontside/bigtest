@@ -35,6 +35,9 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
 
   get description(): string {
     return this.ancestorsAndSelf.reverse().map((interactor) => {
+      if (interactor.locator.isNull) {
+        return `${interactor.name} ${interactor.filter.description}`.trim();
+      }
       return `${interactor.name} ${interactor.locator.description} ${interactor.filter.description}`.trim();
     }).join(' within ');
   }

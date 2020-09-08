@@ -1,4 +1,4 @@
-import { InteractorSpecification, FilterImplementation, InteractorInstance, InteractorType, LocatorFn } from './specification';
+import { InteractorSpecification, FilterImplementation, InteractorInstance, InteractorType, LocatorFn, InteractorConstructor } from './specification';
 import { Locator } from './locator';
 import { Filter } from './filter';
 import { Interactor } from './interactor';
@@ -30,8 +30,8 @@ export function createInteractor<E extends Element>(interactorName: string) {
       });
     }
 
-    let result = function(value: string, filters?: FilterImplementation<E, S>): InteractorInstance<E, S> {
-      let locator = new Locator(specification.defaultLocator || defaultLocator, value);
+    let result: InteractorConstructor<E, S> = function(value?: string, filters?: FilterImplementation<E, S>): InteractorInstance<E, S> {
+      let locator = value ? new Locator(specification.defaultLocator || defaultLocator, value) : new Locator();
       let filter = new Filter(specification, filters || {});
       let interactor = new InteractorClass(interactorName, specification, locator, filter);
       return interactor as InteractorInstance<E, S>;
