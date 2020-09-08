@@ -9,7 +9,7 @@ export interface AgentProtocol {
 export interface Connect {
   type: 'connected';
   agentId?: string;
-  data: unknown;
+  data: Record<string, unknown>;
 }
 
 export interface RunBegin {

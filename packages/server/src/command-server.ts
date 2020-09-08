@@ -27,7 +27,7 @@ function isAsyncIterator(value: AsyncIterableIterator<unknown> | ExecutionResult
 export function* createCommandServer(options: CommandServerOptions): Operation {
   let app = express();
 
-  yield app.ws('*', handleMessage(options));
+  yield app.ws('*', handleSocketConnection(options));
 
   let outerContext: SpawnContext = yield spawn(undefined);
 
@@ -66,7 +66,7 @@ function graphqlOptions(context: SpawnContext, options: CommandServerOptions, st
   };
 }
 
-function handleMessage(options: CommandServerOptions): (socket: Socket) => Operation {
+function handleSocketConnection(options: CommandServerOptions): (socket: Socket) => Operation {
   function* handleQuery(message: QueryMessage, socket: Socket): Operation {
     yield publishQueryResult(message, options.atom.get(), socket);
 
@@ -120,19 +120,22 @@ function handleMessage(options: CommandServerOptions): (socket: Socket) => Opera
   }
 
   return function*(socket) {
-    let messages: Mailbox = yield socket.subscribe();
-
-    while (true) {
-      let message: Message = yield messages.receive();
-
-      if (isQuery(message)) {
-        yield fork(handleQuery(message, socket));
-      }
-      if (isSubscription(message)) {
-        yield fork(handleSubscription(message, socket));
-      }
-      if (isMutation(message)) {
-        yield fork(handleMutation(message, socket));
+    let subscription = yield subscribe(socket);
+    while(true) {
+      let item: IteratorResult<Message> = yield subscription.next();
+      if(item.done) {
+        break;
+      } else {
+        let message = item.value;
+        if (isQuery(message)) {
+          yield fork(handleQuery(message, socket));
+        }
+        if (isSubscription(message)) {
+          yield fork(handleSubscription(message, socket));
+        }
+        if (isMutation(message)) {
+          yield fork(handleMutation(message, socket));
+        }
       }
     }
   }

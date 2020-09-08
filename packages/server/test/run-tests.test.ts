@@ -1,10 +1,9 @@
 import * as expect from 'expect';
-import { Agent, Command } from '@bigtest/agent';
+import { Agent, Command, generateAgentId } from '@bigtest/agent';
 import { Client } from '@bigtest/client';
 import { ResultStatus } from '@bigtest/suite';
 import { ChainableSubscription } from '@effection/subscription';
 import { actions } from './helpers';
-import { generateAgentId } from '../src/connection-server';
 
 interface QueryResult {
   testRun: {
@@ -103,9 +102,7 @@ describe('running tests on an agent', () => {
 
     beforeEach(async () => {
       await actions.fork(client.query(`mutation { run }`));
-
       runCommand = await actions.fork(agent.receive());
-
 
       results = await actions.fork(client.liveQuery(resultsQuery(runCommand.testRunId, agentId)));
     });
