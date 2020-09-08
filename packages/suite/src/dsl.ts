@@ -40,7 +40,7 @@ export class TestBuilder<C extends Context> implements TestImplementation {
   step<R extends Context | void>(descriptionOrStep: StepDefinition<C,R> | string, action?: Action<C,R>): TestBuilder<R extends void ? C : C & R> {
     let step = typeof descriptionOrStep !== 'string' ? descriptionOrStep : {
       description: descriptionOrStep,
-      action: action ? action : async () => {}
+      action: action ? action : async () => undefined
     };
 
     return new TestBuilder({
@@ -54,7 +54,7 @@ export class TestBuilder<C extends Context> implements TestImplementation {
   assertion(descriptionOrAssertion: string | AssertionDefinition<C>, check?: Check<C>): TestBuilder<C> {
     let assertion = typeof descriptionOrAssertion !== 'string' ? descriptionOrAssertion : {
       description: descriptionOrAssertion,
-      check: check ? check : async () => {}
+      check: check ? check : async () => undefined
     };
 
     return new TestBuilder({

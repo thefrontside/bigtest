@@ -1,5 +1,4 @@
 import { Interactor } from './interactor';
-import { Interaction } from './interaction';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ActionFn<E extends Element, S extends InteractorSpecification<E>> = (interactor: InteractorInstance<E, S>, ...args: any[]) => unknown;
