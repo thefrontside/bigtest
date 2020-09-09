@@ -1,3 +1,5 @@
+import * as chalk from 'chalk';
+import { ProjectOptions } from '@bigtest/project';
 import { ResultStatus } from '@bigtest/suite'
 import { RunResultEvent } from './query'
 
@@ -15,11 +17,17 @@ export type Summary = {
 export function icon(event: RunResultEvent) {
   if(event.type.match(/^:running$/)) {
     return "↻";
-  } else if(event.status === 'ok') {
-    return "✓";
-  } else if(event.status === 'failed') {
-    return "⨯";
-  } else if(event.status === 'disregarded') {
+  } 
+
+  return statusIcon(event.status || '', chalk.green("✓"));
+}
+
+export function statusIcon(status: string , okayIcon: string) {
+  if(status === 'ok') {
+    return okayIcon;
+  } else if(status === 'failed') {
+    return chalk.red("⨯");
+  } else if(status === 'disregarded') {
     return "⋯";
   }
 }
@@ -27,8 +35,9 @@ export function icon(event: RunResultEvent) {
 export type StreamingFormatter = {
   type: "streaming";
   header(): void;
-  event(event: RunResultEvent): void;
+  event(event: RunResultEvent, config: ProjectOptions): void;
+  ci(tree: Record<string, any>): void;
   footer(summary: Summary): void;
-}
+};
 
 export type Formatter = StreamingFormatter;
