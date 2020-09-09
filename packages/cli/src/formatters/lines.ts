@@ -79,7 +79,7 @@ function recursiveChildrenResults(
               }
             }
 
-            log.indent(indent + 1).bright.red.error.noLocate(errorString);
+            log.indent(indent + 1).bright.red.noLocate(errorString);
           } else {
             log
               .indent(indent + 1)
