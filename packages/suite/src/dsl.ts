@@ -1,4 +1,4 @@
-import { TestImplementation, Context, Step, Assertion, Check, Action } from './interfaces';
+import { TestImplementation, Context, Step, Assertion } from './interfaces';
 
 export function test<C extends Context>(description: string): TestBuilder<C> {
   return new TestBuilder<C>({
@@ -7,6 +7,19 @@ export function test<C extends Context>(description: string): TestBuilder<C> {
     assertions: [],
     children: []
   });
+}
+
+export type Action<C extends Context, R extends Context | void> = (context: C) => Promise<R>;
+export type Check<C extends Context> = (context: C) => Promise<void>;
+
+export interface StepDefinition<C extends Context, R extends Context | void> {
+  description: string;
+  action: Action<C,R>;
+}
+
+export interface AssertionDefinition<C extends Context> {
+  description: string;
+  check: Check<C>;
 }
 
 export class TestBuilder<C extends Context> implements TestImplementation {
@@ -22,23 +35,31 @@ export class TestBuilder<C extends Context> implements TestImplementation {
     this.children = test.children;
   }
 
-  step<R extends Context | void>(description: string, action: (context: C) => Promise<R>): TestBuilder<R extends void ? C : C & R> {
+  step<R extends Context | void>(step: StepDefinition<C,R>): TestBuilder<R extends void ? C : C & R>;
+  step<R extends Context | void>(description: string, action: Action<C,R>): TestBuilder<R extends void ? C : C & R>;
+  step<R extends Context | void>(descriptionOrStep: StepDefinition<C,R> | string, action?: Action<C,R>): TestBuilder<R extends void ? C : C & R> {
+    let step = typeof descriptionOrStep !== 'string' ? descriptionOrStep : {
+      description: descriptionOrStep,
+      action: action ? action : async () => undefined
+    };
+
     return new TestBuilder({
       ...this,
-      steps: this.steps.concat({
-        description,
-        action: action as Action
-      }),
+      steps: this.steps.concat(step as Step),
     });
   }
 
-  assertion(description: string, check: (context: C) => Promise<void>): TestBuilder<C> {
+  assertion(assertion: AssertionDefinition<C>): TestBuilder<C>;
+  assertion(description: string, check: Check<C>): TestBuilder<C>;
+  assertion(descriptionOrAssertion: string | AssertionDefinition<C>, check?: Check<C>): TestBuilder<C> {
+    let assertion = typeof descriptionOrAssertion !== 'string' ? descriptionOrAssertion : {
+      description: descriptionOrAssertion,
+      check: check ? check : async () => undefined
+    };
+
     return new TestBuilder({
       ...this,
-      assertions: this.assertions.concat({
-        description,
-        check: check as Check
-      }),
+      assertions: this.assertions.concat(assertion as Assertion),
     });
   }
 

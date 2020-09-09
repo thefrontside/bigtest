@@ -7,7 +7,7 @@ import { MatchFilter } from './match';
 import { resolve } from './resolve';
 import { formatTable } from './format-table';
 import { NotAbsentError, FilterNotMatchingError } from './errors';
-import { interaction, Interaction } from './interaction';
+import { interaction, check, Interaction, ReadonlyInteraction } from './interaction';
 
 export class Interactor<E extends Element, S extends InteractorSpecification<E>> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -55,16 +55,16 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
     });
   }
 
-  exists(): Interaction<void> {
-    return interaction(`${this.description} exists`, () => {
+  exists(): ReadonlyInteraction<void> {
+    return check(`${this.description} exists`, () => {
       return converge(() => {
         this.unsafeSyncResolve();
       });
     });
   }
 
-  absent(): Interaction<void> {
-    return interaction(`${this.description} does not exist`, () => {
+  absent(): ReadonlyInteraction<void> {
+    return check(`${this.description} does not exist`, () => {
       return converge(() => {
         try {
           this.unsafeSyncResolve();
@@ -78,9 +78,9 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
     });
   }
 
-  is(filters: FilterImplementation<E, S>): Interaction<void> {
+  is(filters: FilterImplementation<E, S>): ReadonlyInteraction<void> {
     let filter = new Filter(this.specification, filters);
-    return interaction(`${this.description} matches filters: ${filter.description}`, () => {
+    return check(`${this.description} matches filters: ${filter.description}`, () => {
       return converge(() => {
         let element = this.unsafeSyncResolve();
         let match = new MatchFilter(filter, element);

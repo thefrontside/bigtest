@@ -43,3 +43,10 @@ test('a test')
   .step('return nonsense', async () => {
     return "foo";
   })
+
+test('a test')
+  .step({ description: "a description", action: async () => {} })
+  .step('add to context', async () => ({ hello: "world" }))
+  // $ExpectError
+  .step('consume from context', async({ helloX: string }) => { goodbye: helloX })
+  .step({ description: "consume from context", action: async () => {} })

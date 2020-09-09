@@ -14,7 +14,7 @@ globalThis.fetch = async function(url) {
 const H2 = createInteractor('h2')({ selector: 'h2' });
 
 module.exports = test("tests")
-  .step("load the app", async () => { await App.visit('/app.html') })
+  .step(App.visit('/app.html'))
   .child(
     "test with failing assertion", test => test
       .step("successful step", async () => {
