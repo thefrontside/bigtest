@@ -1,5 +1,5 @@
 ---
-"@bigtest/eslint-plugin": major
+"@bigtest/eslint-plugin": minor
 ---
 
 add @bigtest/eslint-plugin
