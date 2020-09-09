@@ -6,6 +6,8 @@ export type ActionFn<E extends Element, S extends InteractorSpecification<E>> = 
 
 export type LocatorFn<E extends Element> = (element: E) => string;
 
+export type NullLocatorFn = () => null;
+
 export type FilterFn<T, E extends Element> = (element: E) => T;
 
 export interface FilterObject<T, E extends Element> {
@@ -50,6 +52,6 @@ export type LocatorImplementation<E extends Element, S extends InteractorSpecifi
 export type InteractorInstance<E extends Element, S extends InteractorSpecification<E>> = Interactor<E, S> & ActionImplementation<E, S>;
 
 export type InteractorConstructor<E extends Element, S extends InteractorSpecification<E>> =
-  (value: string, filters?: FilterImplementation<E, S>) => InteractorInstance<E, S>;
+  (value?: string, filters?: FilterImplementation<E, S>) => InteractorInstance<E, S>;
 
 export type InteractorType<E extends Element, S extends InteractorSpecification<E>> = InteractorConstructor<E, S> & LocatorImplementation<E, S>;

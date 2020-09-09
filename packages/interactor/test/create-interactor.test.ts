@@ -75,6 +75,36 @@ describe('@bigtest/interactor', () => {
     bigtestGlobals.defaultInteractorTimeout = 20;
   });
 
+  describe('instantiation', () => {
+    describe('no arguments', () => {
+      let MainNav = createInteractor('main nav')({
+        selector: 'nav'
+      });
+
+      it('just uses the selector to locate', async () => {
+        dom(`
+          <nav id="main-nav"></nav>
+        `);
+
+        await expect(MainNav().exists()).resolves.toBeUndefined();
+      });
+
+      it('throws an AmbiguousElementError if necessary', async () => {
+        dom(`
+          <nav id="main-nav"></nav>
+          <nav id="secondary-nav"></nav>
+        `);
+
+        await expect(MainNav().exists()).rejects.toHaveProperty('message', [
+          'main nav matches multiple elements:',
+          '',
+          '- <nav id="main-nav">',
+          '- <nav id="secondary-nav">'
+        ].join('\n'));
+      });
+    });
+  });
+
   describe('.exists', () => {
     it('can determine whether an element exists based on the interactor', async () => {
       dom(`
