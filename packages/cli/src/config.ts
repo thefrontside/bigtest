@@ -27,12 +27,18 @@ export function *loadConfig(args: CLIArguments): Operation<ProjectOptions> {
 }
 
 export function *validateConfig(config: ProjectOptions) {
+  if (!config.app?.url) {
+    throw new MainError({
+      exitCode: 1,
+      message: 'CONFIGURATION ERROR: App url is not set. BigTest needs to know how to reach your application, please set `"app": { "url": ... }` in your configuration file'
+    });
+  }
   for (let key of config.launch) {
     if (!config.drivers[key]) {
       let alternatives = Object.keys(config.drivers).map((d) => JSON.stringify(d));
       throw new MainError({
         exitCode: 1,
-        message: `Unable to launch agent with driver ${JSON.stringify(key)}, did you mean one of: ${alternatives.join(', ')}`
+        message: `CONFIGURATION ERROR: Unable to launch agent with driver ${JSON.stringify(key)}, did you mean one of: ${alternatives.join(', ')}`
       });
     }
   }

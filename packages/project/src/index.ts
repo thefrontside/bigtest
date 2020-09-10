@@ -29,7 +29,7 @@ export type ProjectOptions = {
   testFiles: string[];
   cacheDir: string;
   app: {
-    url: string;
+    url?: string;
     command?: string;
     env?: Record<string, string>;
     dir?: string;
@@ -51,7 +51,6 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
   return {
     port: 24002,
     app: {
-      url: "about:blank"
     },
     proxy: {
       port: 24001,
