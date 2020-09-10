@@ -1,5 +1,4 @@
 import { Atom } from "@bigtest/atom";
-import { defaultApp } from '@bigtest/project'
 import { AppOptions, OrchestratorState } from "./state";
 
 interface OrchestratorAtomOptions {
@@ -20,7 +19,7 @@ export const createOrchestratorAtom = (options?: OrchestratorAtomOptions) => {
     },
     appService: {
       appStatus: 'unstarted',
-      appOptions: options?.app ?? defaultApp,
+      appOptions: options?.app || {},
     },
     proxyService: {
       proxyStatus: 'unstarted'

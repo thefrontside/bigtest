@@ -49,7 +49,7 @@ export interface Manifest extends Test {
 export type AppStatus = 'unstarted' | 'started' | 'reachable' | 'unreachable' | 'crashed'
 
 export type AppOptions = {
-  url: string;
+  url?: string;
   command?: string;
   env?: Record<string, string>;
   dir?: string;

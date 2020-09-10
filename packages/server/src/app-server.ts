@@ -17,6 +17,10 @@ export function createAppServer(options: AppServerOptions): Operation {
 }
 
 const startApp = ({ atom }: AppServerOptions) => function* (options: AppOptions): Operation<void> {
+  if(!options.url) {
+    throw new Error('no app url given');
+  }
+
   let appStatus = atom.slice('appService', 'appStatus');
 
   appStatus.set('unstarted')

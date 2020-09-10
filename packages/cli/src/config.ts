@@ -1,8 +1,10 @@
 import { Operation } from 'effection';
 import { defaultConfig, getConfigFilePath, loadConfigFile, ProjectOptions } from '@bigtest/project';
 import * as merge from 'deepmerge';
+import { CLIArguments } from './cli';
+import { MainError } from '@effection/node';
 
-export function *loadConfig(): Operation<ProjectOptions> {
+export function *loadConfig(args: CLIArguments): Operation<ProjectOptions> {
   let configFilePath = getConfigFilePath();
   if(!configFilePath) { throw new Error("config file not found"); }
 
@@ -12,15 +14,32 @@ export function *loadConfig(): Operation<ProjectOptions> {
     arrayMerge: (_a, b) => b
   });
 
+  if(args.launch) {
+    config.launch = args.launch;
+  }
+  if(args.testFiles) {
+    config.testFiles = args.testFiles;
+  }
+
   yield validateConfig(config);
 
   return config;
 }
 
 export function *validateConfig(config: ProjectOptions) {
+  if (!config.app?.url) {
+    throw new MainError({
+      exitCode: 1,
+      message: 'CONFIGURATION ERROR: App url is not set. BigTest needs to know how to reach your application, please set `"app": { "url": ... }` in your configuration file'
+    });
+  }
   for (let key of config.launch) {
     if (!config.drivers[key]) {
-      throw new Error(`Could not find launch key ${key} in the set of drivers: ${JSON.stringify(Object.keys(config.drivers))}`);
+      let alternatives = Object.keys(config.drivers).map((d) => JSON.stringify(d));
+      throw new MainError({
+        exitCode: 1,
+        message: `CONFIGURATION ERROR: Unable to launch agent with driver ${JSON.stringify(key)}, did you mean one of: ${alternatives.join(', ')}`
+      });
     }
   }
 }
