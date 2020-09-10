@@ -1,8 +1,6 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect'
-
-import { bigtestGlobals } from '@bigtest/globals';
-import { JSDOM } from 'jsdom';
+import * as expect from 'expect';
+import { dom } from './helpers';
 
 import { createInteractor, perform } from '../src/index';
 
@@ -64,17 +62,7 @@ const Datepicker = createInteractor<HTMLDivElement>("datepicker")({
   }
 });
 
-function dom(html: string) {
-  let jsdom = new JSDOM(`<!doctype html><html><body>${html}</body></html>`, { runScripts: "dangerously" });
-  bigtestGlobals.document = jsdom.window.document;
-}
-
 describe('@bigtest/interactor', () => {
-  beforeEach(() => {
-    bigtestGlobals.reset();
-    bigtestGlobals.defaultInteractorTimeout = 20;
-  });
-
   describe('instantiation', () => {
     describe('no arguments', () => {
       let MainNav = createInteractor('main nav')({
