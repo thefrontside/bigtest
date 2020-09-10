@@ -66,7 +66,7 @@ Add a `bigtest.json` file in the root of your project with a base configuration 
 {
   "app": {
     "command": "yarn start",
-    "env": { PORT: 36000 },
+    "env": { "PORT": 36000 },
     "url": "http://localhost:36000"
   },
   "launch": ["chrome.headless"]
