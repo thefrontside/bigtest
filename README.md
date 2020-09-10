@@ -7,6 +7,9 @@
   <a href="https://discord.gg/r6AvtnU">
     <img alt="Chat on Discord" src="https://img.shields.io/discord/700803887132704931?Label=Discord)](https://discord.gg/r6AvtnU" />
   </a>
+  <a href="https://frontside.com">
+    <img alt="created by Frontside" src="https://img.shields.io/badge/created%20by-frontside-26abe8.svg" />
+  </a>
 </p>
 
 <p align="center">
