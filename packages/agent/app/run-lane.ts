@@ -1,7 +1,7 @@
 import { Operation, fork, spawn } from 'effection';
 import { on } from '@effection/events';
 import { bigtestGlobals } from '@bigtest/globals';
-import { TestImplementation, Context as TestContext, LogEvent } from '@bigtest/suite';
+import { TestImplementation, Context as TestContext } from '@bigtest/suite';
 
 import { TestEvent } from '../shared/protocol';
 
@@ -10,34 +10,27 @@ import { LaneConfig } from './lane-config';
 import { loadManifest } from './manifest';
 import { timebox } from './timebox';
 import { serializeError } from './serialize-error';
-import { HarnessMessage } from './harness-protocol';
 import { wrapConsole } from './wrap-console';
+import { setLogConfig, getLogConfig } from './log-config';
 
 interface TestEvents {
   send(event: TestEvent): void;
 }
+
 export function* runLane(config: LaneConfig) {
+  setLogConfig({ events: [] });
+
   let { events, command, path } = config;
   let { testRunId, manifestUrl, appUrl, stepTimeout } = command;
 
   let context: TestContext = {};
-  let logEvents: LogEvent[] = [];
 
-  let originalConsole = wrapConsole((message) => logEvents.push({ type: 'message', occurredAt: new Date().toString(), message }))
+  let originalConsole = wrapConsole((message) => getLogConfig()?.events.push({ type: 'message', occurredAt: new Date().toString(), message }))
 
   try {
     yield spawn(
-      on(window, 'message').forEach(function*([rawMessage]) {
-        let message: HarnessMessage = JSON.parse((rawMessage as { data: string }).data);
-        if(message.type === 'message' || message.type === 'error') {
-          logEvents.push(message);
-        }
-      })
-    );
-
-    yield spawn(
       on(window, 'error').map(([e]) => e as ErrorEvent).forEach(function*(event) {
-        logEvents.push({ type: 'error', occurredAt: new Date().toString(), error: yield serializeError(event.error) });
+        getLogConfig()?.events.push({ type: 'error', occurredAt: new Date().toString(), error: yield serializeError(event.error) });
       })
     );
 
@@ -90,7 +83,7 @@ export function* runLane(config: LaneConfig) {
             status: 'failed',
             timeout: true,
             path: stepPath,
-            logEvents,
+            logEvents: getLogConfig()?.events,
           })
         } else {
           events.send({
@@ -100,7 +93,7 @@ export function* runLane(config: LaneConfig) {
             timeout: false,
             error: yield serializeError(error),
             path: stepPath,
-            logEvents,
+            logEvents: getLogConfig()?.events,
           });
         }
         return;
@@ -131,7 +124,7 @@ export function* runLane(config: LaneConfig) {
               status: 'failed',
               error: yield serializeError(error),
               path: assertionPath,
-              logEvents,
+              logEvents: getLogConfig()?.events,
             });
           }
         });

@@ -1,13 +1,10 @@
 import 'regenerator-runtime/runtime';
 import { wrapConsole } from './wrap-console';
-import { HarnessMessage } from './harness-protocol';
 import { main, spawn } from 'effection';
 import { on } from '@effection/events';
 import { serializeError } from './serialize-error';
+import { getLogConfigFromAppFrame } from './log-config';
 
-function postToParent(message: HarnessMessage) {
-  window.parent.postMessage(JSON.stringify(message), "*");
-}
 
 // proxy fetch and XMLHttpRequest requests through the parent frame
 if(window.parent !== window) {
@@ -20,13 +17,13 @@ if(window.parent !== window) {
 }
 
 wrapConsole((message) => {
-  postToParent({ type: 'message', occurredAt: new Date().toString(), message: message })
+  getLogConfigFromAppFrame()?.events.push({ type: 'message', occurredAt: new Date().toString(), message: message })
 });
 
 main(function*() {
   yield spawn(
     on(window, 'error').map(([e]) => e as ErrorEvent).forEach(function*(event) {
-      postToParent({ type: 'error', occurredAt: new Date().toString(), error: yield serializeError(event.error) });
+      getLogConfigFromAppFrame()?.events.push({ type: 'error', occurredAt: new Date().toString(), error: yield serializeError(event.error) });
     })
   );
   yield;

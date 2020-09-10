@@ -113,7 +113,7 @@ export interface AssertionResult extends Node {
 
 export type ConsoleLevel = 'log' | 'info' | 'debug' | 'warn' | 'error';
 
-export type LogEvent = { type: "error", occurredAt: string, error: ErrorDetails } | { type: "message", occurredAt: string, message: ConsoleMessage };
+export type LogEvent = { type: "error"; occurredAt: string; error: ErrorDetails } | { type: "message"; occurredAt: string; message: ConsoleMessage };
 
 export interface ConsoleMessage {
   level: ConsoleLevel;

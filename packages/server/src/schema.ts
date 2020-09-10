@@ -10,7 +10,7 @@ import {
   makeSchema,
   enumType,
 } from "@nexus/schema";
-import { ErrorStackFrame, LogEvent } from '@bigtest/suite';
+import { ErrorStackFrame } from '@bigtest/suite';
 
 export const schema = makeSchema({
   typegenAutoConfig: {
