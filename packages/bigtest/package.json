@@ -3,6 +3,7 @@
   "version": "0.1.1",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
+  "license": "MIT",
   "scripts": {
     "test": "echo no-op",
     "lint": "echo no-op",
