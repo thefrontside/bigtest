@@ -110,21 +110,18 @@ describe("@bigtest/agent", function() {
           expect(result.status).toEqual('failed');
           let error = result.error;
           let stack = error && error.stack;
-          let consoleMessages = result.consoleMessages;
-          let uncaughtErrors = result.uncaughtErrors;
-          if(error && stack && consoleMessages && uncaughtErrors) {
+          let logEvents = result.logEvents;
+          if(error && stack && logEvents) {
             expect(error.name).toEqual('Error');
             expect(error.message).toEqual('boom!');
             expect(stack[0].source && stack[0].source.fileName).toContain('/test/fixtures/manifest.js');
-            expect(consoleMessages).toEqual(expect.arrayContaining([
-              { level: 'log', text: 'this is a good step' },
-              { level: 'log', text: 'some log message here' },
-              { level: 'log', text: 'another log message' },
-              { level: 'error', text: 'I am going to fail' },
-            ]));
-            expect(uncaughtErrors.map((e) => e.message)).toEqual(expect.arrayContaining([
-              'uncaught error from test',
-              'uncaught error from app',
+            expect(logEvents).toEqual(expect.arrayContaining([
+              expect.objectContaining({ type: "message", message: { level: 'log', text: 'this is a good step' } }),
+              expect.objectContaining({ type: "message", message: { level: 'log', text: 'some log message here' } }),
+              expect.objectContaining({ type: "message", message: { level: 'log', text: 'another log message' } }),
+              expect.objectContaining({ type: "message", message: { level: 'error', text: 'I am going to fail' } }),
+              expect.objectContaining({ type: "error", error: expect.objectContaining({ message: 'uncaught error from test' }) }),
+              expect.objectContaining({ type: "error", error: expect.objectContaining({ message: 'uncaught error from app' }) }),
             ]));
           } else {
             throw new Error("error and stack must be defined");

@@ -20,13 +20,13 @@ if(window.parent !== window) {
 }
 
 wrapConsole((message) => {
-  postToParent({ type: 'console', message: message })
+  postToParent({ type: 'message', occurredAt: new Date().toString(), message: message })
 });
 
 main(function*() {
   yield spawn(
     on(window, 'error').map(([e]) => e as ErrorEvent).forEach(function*(event) {
-      postToParent({ type: 'error', error: yield serializeError(event.error) });
+      postToParent({ type: 'error', occurredAt: new Date().toString(), error: yield serializeError(event.error) });
     })
   );
   yield;

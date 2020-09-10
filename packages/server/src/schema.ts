@@ -1,6 +1,7 @@
 import * as path  from 'path';
 import {
   objectType,
+  unionType,
   queryType,
   mutationType,
   subscriptionField,
@@ -9,7 +10,7 @@ import {
   makeSchema,
   enumType,
 } from "@nexus/schema";
-import { ErrorStackFrame } from '@bigtest/suite';
+import { ErrorStackFrame, LogEvent } from '@bigtest/suite';
 
 export const schema = makeSchema({
   typegenAutoConfig: {
@@ -98,8 +99,7 @@ export const schema = makeSchema({
         t.id('agentId', { nullable: true });
         t.list.string("path", { nullable: true });
         t.field("error", { type: "Error", nullable: true });
-        t.list.field("consoleMessages", { type: "ConsoleMessage", nullable: true });
-        t.list.field("uncaughtErrors", { type: "Error", nullable: true });
+        t.list.field("logEvents", { type: "LogEvent", nullable: true });
         t.boolean("timeout", { nullable: true });
       }
     }),
@@ -276,8 +276,7 @@ export const schema = makeSchema({
           type: "Error",
           nullable: true
         })
-        t.list.field("consoleMessages", { type: "ConsoleMessage", nullable: true });
-        t.list.field("uncaughtErrors", { type: "Error", nullable: true });
+        t.list.field("logEvents", { type: "LogEvent", nullable: true });
         t.boolean("timeout", { nullable: true });
       }
     }),
@@ -290,8 +289,7 @@ export const schema = makeSchema({
           type: "Error",
           nullable: true
         });
-        t.list.field("consoleMessages", { type: "ConsoleMessage", nullable: true });
-        t.list.field("uncaughtErrors", { type: "Error", nullable: true });
+        t.list.field("logEvents", { type: "LogEvent", nullable: true });
         t.boolean("timeout", { nullable: true });
       }
     }),
@@ -300,6 +298,35 @@ export const schema = makeSchema({
       definition(t) {
         t.string("level");
         t.string("text");
+      }
+    }),
+    objectType({
+      name: "LogEventMessage",
+      definition(t) {
+        t.string("type");
+        t.string("occurredAt");
+        t.field("message", { type: "ConsoleMessage" });
+      }
+    }),
+    objectType({
+      name: "LogEventError",
+      definition(t) {
+        t.string("type");
+        t.string("occurredAt");
+        t.field("error", { type: "Error" });
+      }
+    }),
+    unionType({
+      name: "LogEvent",
+      definition(t) {
+        t.members("LogEventMessage", "LogEventError");
+        t.resolveType((item) => {
+          switch(item.type) {
+            case "error": return "LogEventError";
+            case "message": return "LogEventMessage";
+            default: throw new Error("unknown type");
+          }
+        });
       }
     }),
     objectType({

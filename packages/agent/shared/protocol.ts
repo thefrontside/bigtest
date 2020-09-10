@@ -1,5 +1,5 @@
 import { Operation } from 'effection';
-import { Test, ResultStatus, ErrorDetails, ConsoleMessage } from '@bigtest/suite';
+import { Test, ResultStatus, ErrorDetails, LogEvent } from '@bigtest/suite';
 
 export interface AgentProtocol {
   send(event: AgentEvent): void;
@@ -60,8 +60,7 @@ export interface StepResult {
   path: string[];
   error?: ErrorDetails;
   timeout?: boolean;
-  consoleMessages?: ConsoleMessage[];
-  uncaughtErrors?: ErrorDetails[];
+  logEvents?: LogEvent[];
 }
 
 export interface AssertionRunning {
@@ -79,8 +78,7 @@ export interface AssertionResult {
   path: string[];
   error?: ErrorDetails;
   timeout?: boolean;
-  consoleMessages?: ConsoleMessage[];
-  uncaughtErrors?: ErrorDetails[];
+  logEvents?: LogEvent[];
 }
 
 export type TestEvent = RunBegin | RunEnd | LaneBegin | LaneEnd | TestRunning | StepRunning | StepResult | AssertionRunning | AssertionResult;

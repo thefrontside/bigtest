@@ -1,7 +1,7 @@
 import { Operation, fork, spawn } from 'effection';
 import { on } from '@effection/events';
 import { bigtestGlobals } from '@bigtest/globals';
-import { TestImplementation, Context as TestContext, ErrorDetails, ConsoleMessage } from '@bigtest/suite';
+import { TestImplementation, Context as TestContext, LogEvent } from '@bigtest/suite';
 
 import { TestEvent } from '../shared/protocol';
 
@@ -21,26 +21,23 @@ export function* runLane(config: LaneConfig) {
   let { testRunId, manifestUrl, appUrl, stepTimeout } = command;
 
   let context: TestContext = {};
-  let consoleMessages: ConsoleMessage[] = [];
-  let uncaughtErrors: ErrorDetails[] = [];
+  let logEvents: LogEvent[] = [];
 
-  let originalConsole = wrapConsole((message) => consoleMessages.push(message))
+  let originalConsole = wrapConsole((message) => logEvents.push({ type: 'message', occurredAt: new Date().toString(), message }))
 
   try {
     yield spawn(
       on(window, 'message').forEach(function*([rawMessage]) {
         let message: HarnessMessage = JSON.parse((rawMessage as { data: string }).data);
-        if(message.type === 'console') {
-          consoleMessages.push(message.message);
-        } else if(message.type === 'error') {
-          uncaughtErrors.push(message.error);
+        if(message.type === 'message' || message.type === 'error') {
+          logEvents.push(message);
         }
       })
     );
 
     yield spawn(
       on(window, 'error').map(([e]) => e as ErrorEvent).forEach(function*(event) {
-        uncaughtErrors.push(yield serializeError(event.error));
+        logEvents.push({ type: 'error', occurredAt: new Date().toString(), error: yield serializeError(event.error) });
       })
     );
 
@@ -93,8 +90,7 @@ export function* runLane(config: LaneConfig) {
             status: 'failed',
             timeout: true,
             path: stepPath,
-            consoleMessages,
-            uncaughtErrors
+            logEvents,
           })
         } else {
           events.send({
@@ -104,8 +100,7 @@ export function* runLane(config: LaneConfig) {
             timeout: false,
             error: yield serializeError(error),
             path: stepPath,
-            consoleMessages,
-            uncaughtErrors
+            logEvents,
           });
         }
         return;
@@ -136,8 +131,7 @@ export function* runLane(config: LaneConfig) {
               status: 'failed',
               error: yield serializeError(error),
               path: assertionPath,
-              consoleMessages,
-              uncaughtErrors
+              logEvents,
             });
           }
         });

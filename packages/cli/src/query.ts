@@ -1,4 +1,4 @@
-import { ResultStatus, ErrorDetails } from '@bigtest/suite';
+import { ResultStatus, ErrorDetails, LogEvent } from '@bigtest/suite';
 
 export function run() {
   return `
@@ -23,7 +23,7 @@ export function run() {
       $showDependenciesStackTrace: Boolean! = true,
       $showStackTraceCode: Boolean! = true,
       $showUncaughtErrors: Boolean! = true,
-      $showConsoleMessages: Boolean! = true
+      $showLog: Boolean! = true
     ) {
       event: run {
         type
@@ -34,14 +34,18 @@ export function run() {
         error {
           ...ErrorDetails
         }
-        consoleMessages @include(if: $showConsoleMessages) {
-          level
-          message
+        logEvents @include(if: $showLog) {
+          ... on LogEventMessage {
+            type
+            occurredAt
+            message
+          }
+          ... on LogEventError {
+            type
+            occurredAt
+            error
+          }
         }
-        uncaughtErrors @include(if: $showUncaughtErrors) {
-          ...ErrorDetails
-        }
-        timeout
       }
     }`
 }
@@ -55,6 +59,7 @@ export type RunResultEvent = {
   path?: string[];
   error?: ErrorDetails;
   timeout?: boolean;
+  logEvents?: LogEvent[];
 }
 
 export type Done = { done: true };
