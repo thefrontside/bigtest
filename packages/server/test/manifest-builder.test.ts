@@ -3,6 +3,7 @@ import * as expect from 'expect';
 import * as path from 'path';
 import * as rmrf from 'rimraf';
 import * as fs from 'fs';
+import { assertBundlerState } from '@bigtest/bundler';
 
 import { Atom } from '@bigtest/atom';
 
@@ -10,7 +11,6 @@ import { actions } from './helpers';
 import { createManifestBuilder, updateSourceMapURL } from '../src/manifest-builder';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { OrchestratorState } from '../src/orchestrator/state';
-import { assertBundlerState } from '../src/assertions/bundler-assertions';
 
 // be nice to windows
 const TEST_DIR = path.resolve('tmp', 'manifest-builder');
@@ -40,6 +40,7 @@ describe('manifest builder', () => {
         srcPath: MANIFEST_PATH,
         buildDir: BUILD_DIR,
         distDir: DIST_DIR,
+        testFiles: ["test/fixtures/*.t.js"]
       });
     });
 

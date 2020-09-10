@@ -45,6 +45,10 @@ module.exports = {
   assertions: [],
   children: []
 }
+`,
+`
+const foo = { description: 'hello' };
+export default foo;
 `
   ],
 

@@ -6,6 +6,7 @@ import { watch, rollup, OutputOptions, InputOptions, RollupWatchOptions, RollupW
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
+import { eslintPlugin } from './plugins/eslint/eslint-plugin';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import babel from '@rollup/plugin-babel';
@@ -30,6 +31,7 @@ function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMess
         extensions: ['.js', '.ts']
       }),
       commonjs(),
+      eslintPlugin({ testFiles  }),
       babel({
         babelHelpers: 'runtime',
         extensions: ['.js', '.ts'],

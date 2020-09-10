@@ -1,4 +1,4 @@
-import { BundlerTypes } from '../orchestrator/state';
+import { BundlerTypes } from '../types';
 
 export class BundlerAssertionError extends Error {
   constructor(message: string) {

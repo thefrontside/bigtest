@@ -1,5 +1,5 @@
 import { assertBundlerState, assertCanTransition } from '../src/assertions/bundler-assertions';
-import * as expect from 'expect';
+import expect from 'expect';
 
 describe('bundler state assertions', () => {
   describe('assertBundlerState', () => {

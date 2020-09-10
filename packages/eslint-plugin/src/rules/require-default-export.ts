@@ -75,7 +75,11 @@ export const requireDefaultTextExport = createRule({
       ExportDefaultDeclaration(
         node: TSESTree.ExportDefaultDeclaration,
       ) {
-        if( [AST_NODE_TYPES.CallExpression, AST_NODE_TYPES.ObjectExpression].includes(node.declaration.type)) {
+        if( [
+              AST_NODE_TYPES.CallExpression,
+              AST_NODE_TYPES.ObjectExpression,
+              AST_NODE_TYPES.Identifier
+            ].includes(node.declaration.type)) {
           hasDefaultTestDeclaration = true;
         } else {
           defaultExport = node;
