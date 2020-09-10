@@ -7,8 +7,12 @@ on:
 
 jobs:
   prepack:
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.platform }}
     name: prepack
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+        # keeping platform as a single item so test-*.yml files can be identical except for this value
     steps:
       - uses: actions/checkout@v1
       - name: cache
@@ -20,20 +24,20 @@ jobs:
         run: yarn
       - name: Run prepack
         run: yarn prepack
-      - name: Tarball prepacked dist
-        run: tar czvf bigtest.dist.tgz ./packages/*/dist
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v2
         with:
-          name: bigtest.dist.tgz
-          path: bigtest.dist.tgz
+          name: bigtest.dist.${{ matrix.platform }}
+          path: ./packages/*/dist
 
   test:
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.platform }}
     name: ${{ matrix.package }}
     needs: prepack
     strategy:
       fail-fast: false
       matrix:
+        platform: [ubuntu-latest]
+        # keeping platform as a single item so test-*.yml files can be identical except for this value
         package: [agent, cli, effection, logging, bundler, project, server, suite, interactor, todomvc, atom, webdriver]
     steps:
       - uses: actions/checkout@v1
@@ -42,10 +46,11 @@ jobs:
         with:
           path: /home/runner/.cache/yarn/v6
           key: cachekey-v1-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
-      - uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v2
+        # this action will also unpack them for us
         with:
-          name: bigtest.dist.tgz
-      - run: tar -xvf bigtest.dist.tgz/bigtest.dist.tgz
+          name: bigtest.dist.${{ matrix.platform }}
+          path: ./packages
       - name: Install dependencies
         run: yarn
       - name: Run tests
