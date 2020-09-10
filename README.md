@@ -78,7 +78,7 @@ future there will be an `init` command to set up this file.
 
 Add a test file in `test/my-test.test.js`:
 
-```
+``` javascript
 import { App, Headline } from '@bigtest/interactor';
 import { test } from '@bigtest/suite';
 
