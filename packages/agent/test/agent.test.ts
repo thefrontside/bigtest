@@ -10,7 +10,7 @@ import expect from 'expect';
 import fetch from 'node-fetch';
 import fixtureManifest from './fixtures/manifest';
 
-import { AgentServerConfig, AgentEvent, createAgentHandler, AgentConnection, AssertionResult } from '../src/index';
+import { AgentServerConfig, TestEvent, createAgentHandler, AgentConnection, AssertionResult } from '../src/index';
 
 import { run } from './helpers';
 import { StepResult } from '@bigtest/suite';
@@ -69,7 +69,7 @@ describe("@bigtest/agent", function() {
     describe('connecting a browser to the agent URL', () => {
       let browser: WebDriver;
       let connection: AgentConnection;
-      let events: ChainableSubscription<AgentEvent, undefined>;
+      let events: ChainableSubscription<TestEvent, undefined>;
 
       beforeEach(async function() {
         browser = await run(Local({ browserName: 'chrome', headless: true }));

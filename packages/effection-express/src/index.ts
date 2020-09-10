@@ -7,7 +7,7 @@ import { Server } from 'http';
 
 import { throwOnErrorEvent, once, on } from '@effection/events';
 import { Subscribable, SymbolSubscribable, Subscription, subscribe } from '@effection/subscription';
-import { Mailbox, ensure } from '@bigtest/effection';
+import { ensure } from '@bigtest/effection';
 
 type OperationRequestHandler = (req: actualExpress.Request, res: actualExpress.Response) => Operation<void>;
 type WsOperationRequestHandler = (socket: Socket, req: actualExpress.Request) => Operation<void>;
@@ -22,19 +22,6 @@ export class Socket implements Subscribable<any, void> {
     if(this.raw.readyState === 1) {
       yield util.promisify(this.raw.send.bind(this.raw))(JSON.stringify(data));
     }
-  }
-
-  *subscribe(): Operation<Mailbox> {
-    let { raw } = this;
-    let mailbox = new Mailbox();
-    return yield resource(mailbox, function*(): Operation<void> {
-      let subscription = yield on(raw, 'message');
-
-      while(true) {
-        let { value: [message] } = yield subscription.next();
-        mailbox.send(JSON.parse(message.data));
-      }
-    });
   }
 
   // JSON.parse return type is `any`, so that's the type

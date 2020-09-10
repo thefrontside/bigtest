@@ -1,9 +1,8 @@
 import * as expect from 'expect';
-import { Agent, Command } from '@bigtest/agent';
+import { Agent, Command, generateAgentId } from '@bigtest/agent';
 import { Client } from '@bigtest/client';
 import { ChainableSubscription } from '@effection/subscription';
 import { actions } from './helpers';
-import { generateAgentId } from '../src/connection-server';
 
 interface AgentsQuery {
   agents: {

@@ -4,7 +4,7 @@ import { express, Socket } from '@bigtest/effection-express';
 import { Channel } from '@effection/channel';
 import { createSubscription, subscribe, ChainableSubscription } from '@effection/subscription';
 
-import { AgentEvent, Command, Connect } from '../shared/protocol';
+import { TestEvent, AgentEvent, Command, Connect } from '../shared/protocol';
 
 export interface AgentConnection {
   /**
@@ -21,7 +21,18 @@ export interface AgentConnection {
    * events raised by the agent will be published
    * to this channel.
    */
-  events: Channel<AgentEvent>;
+  events: Channel<TestEvent>;
+
+  /**
+   * Additional metadata about the agent
+   */
+  data: Record<string, unknown>;
+}
+
+let agentIdCounter = 1;
+
+export function generateAgentId(): string {
+  return `agent.${agentIdCounter++}`;
 }
 
 /**
@@ -29,7 +40,6 @@ export interface AgentConnection {
  * connections on `port`
  */
 export function* createAgentHandler(port: number): Operation<ChainableSubscription<AgentConnection, undefined>> {
-  let ids = 1;
   let app = express();
 
   return yield subscribe(createSubscription<AgentConnection, void>(function* (publish) {
@@ -38,22 +48,23 @@ export function* createAgentHandler(port: number): Operation<ChainableSubscripti
       let commands = new Channel<Command>();
       yield spawn(subscribe(commands).forEach(command => socket.send(command)));
 
-
-      let events = new Channel<AgentEvent>();
+      let events = new Channel<TestEvent>();
       let send = (command: Command) => commands.send(command);
 
       let incoming: ChainableSubscription<AgentEvent, undefined> = yield subscribe(socket);
 
       let connect: Connect = yield incoming.expect();
 
-      let agentId = connect.agentId || `agent.${ids++}`;
+      let agentId = connect.agentId || generateAgentId();
 
-      publish({ agentId, send, events });
+      publish({ agentId, send, events, data: connect.data });
 
       // forward commands to the socket
       try {
         yield incoming.forEach(function*(data) {
-          events.send({ agentId, ...data });
+          if(data.type != 'connected') {
+            events.send({ agentId, ...data });
+          }
         });
       } finally {
         events.close();

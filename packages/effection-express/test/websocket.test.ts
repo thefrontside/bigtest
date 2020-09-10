@@ -8,8 +8,6 @@ import * as WebSocket from 'ws';
 
 import { run } from './helpers';
 import { Socket, express } from '../src';
-import { Mailbox } from '@bigtest/effection/dist';
-
 
 describe('websocket server', () => {
   let client: WebSocket;
@@ -33,30 +31,6 @@ describe('websocket server', () => {
 
   it('accepts connections', () => {
     expect(connection).toBeDefined();
-  });
-
-  describe('when receiving messages with the depraced mailbox API', () => {
-    let messages: Mailbox;
-
-    beforeEach(async () => {
-      messages = await run(connection.subscribe());
-
-      // we can't send messages until the client is connected
-      await run(function*() {
-        while (client.readyState !== client.OPEN) {
-          expect(client.readyState).toEqual(client.CONNECTING);
-          yield timeout(10);
-        }
-      })
-
-      client.send(JSON.stringify({ message: "Hello World!" }));
-      client.send(JSON.stringify({ message: "Goodbye World!" }));
-    });
-
-    it('publishes them on the server', async () => {
-      expect(await run(messages.receive())).toEqual({ message: "Hello World!" });
-      expect(await run(messages.receive())).toEqual({ message: "Goodbye World!" });
-    });
   });
 
   describe('when receiving messages via subscription', () => {
