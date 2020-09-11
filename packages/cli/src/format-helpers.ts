@@ -14,7 +14,7 @@ export function statusIcon(status: ResultStatus, okayIcon = '✓'): string {
   if(status === 'ok') {
     return chalk.green(okayIcon);
   } else if(status === 'disregarded') {
-    return chalk.yellow('◦');
+    return chalk.grey('◦');
   } else {
     return chalk.red('⨯');
   }
