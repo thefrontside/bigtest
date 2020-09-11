@@ -1,5 +1,15 @@
 # @bigtest/effection-express
 
+## 0.8.0
+
+### Minor Changes
+
+- 837a4630: Remove Mailbox based API from effection-express and use agent handler in server
+
+### Patch Changes
+
+- 804210f6: Upgraded @effection/subscription and applied new chainability
+
 ## 0.7.0
 
 ### Minor Changes

@@ -1,5 +1,16 @@
 # @bigtest/client
 
+## 0.3.0
+
+### Minor Changes
+
+- 0604464c: update Client.subscription() and Client.liveQuery() methods to return
+  an effection `Subscription` instead of a Mailbox
+
+### Patch Changes
+
+- 804210f6: Upgraded @effection/subscription and applied new chainability
+
 ## 0.2.0
 
 ### Minor Changes

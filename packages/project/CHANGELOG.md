@@ -1,5 +1,11 @@
 # @bigtest/project
 
+## 0.8.0
+
+### Minor Changes
+
+- b5ec3cb6: Remove default app and `--no-app.command` option. If no app is provided, none will be launched.
+
 ## 0.7.0
 
 ### Minor Changes

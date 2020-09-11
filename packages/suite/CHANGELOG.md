@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.7.0
+
+### Minor Changes
+
+- ffd9be8b: Allow passing any fully-formed step into the `step()` method of the
+  DSL. For example:
+
+  ```ts
+  .step({ description: 'visit /users', action: () => App.visit('/users')})
+  ```
+
+  Interactions implement this natively, so you can now use them
+  directly:
+
+  ```ts
+  .step(App.visit('/users'))
+  ```
+
 ## 0.6.0
 
 ### Minor Changes

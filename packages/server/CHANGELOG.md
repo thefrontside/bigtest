@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.12.0
+
+### Minor Changes
+
+- 837a4630: Remove Mailbox based API from effection-express and use agent handler in server
+
+### Patch Changes
+
+- 804210f6: Upgraded @effection/subscription and applied new chainability
+- 83a68db6: Fix path issues on windows in the manifest generator.
+- Updated dependencies [804210f6]
+- Updated dependencies [ffd9be8b]
+- Updated dependencies [837a4630]
+- Updated dependencies [b5ec3cb6]
+- Updated dependencies [150f131b]
+- Updated dependencies [4012b814]
+- Updated dependencies [0604464c]
+  - @bigtest/agent@0.9.0
+  - @bigtest/atom@0.8.2
+  - @bigtest/bundler@0.9.0
+  - @bigtest/client@0.3.0
+  - @bigtest/effection@0.5.4
+  - @bigtest/effection-express@0.8.0
+  - @bigtest/suite@0.7.0
+  - @bigtest/project@0.8.0
+  - @bigtest/globals@0.6.2
+
 ## 0.11.0
 
 ### Minor Changes
