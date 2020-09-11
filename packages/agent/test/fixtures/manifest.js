@@ -13,6 +13,22 @@ globalThis.fetch = async function(url) {
 
 const H2 = createInteractor('h2')({ selector: 'h2' });
 
+function storageTest(test) {
+  return test
+    .assertion("nothing starts in local storage", async () => {
+      assert.equal(localStorage.getItem('hello'), null)
+      assert.equal(sessionStorage.getItem('hello'), null)
+    })
+    .child(
+      "dirty the storage", test => test
+        .step("add keys to storages", async() => {
+          localStorage.setItem('hello', 'world');
+          sessionStorage.setItem('hello', 'world');
+
+        })
+    )
+}
+
 module.exports = test("tests")
   .step(App.visit('/app.html'))
   .child(
@@ -46,4 +62,6 @@ module.exports = test("tests")
       .step("this takes literally forever", async () => await new Promise(() => {})))
   .child(
     "test fetch", test => test
-      .step("fetch is mocked", async () => await H2('hello from mocked fetch').exists()));
+      .step("fetch is mocked", async () => await H2('hello from mocked fetch').exists()))
+  .child("local storage and session storage 1", storageTest)
+  .child("local storage and session storage 2", storageTest)
