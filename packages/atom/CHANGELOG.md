@@ -1,5 +1,11 @@
 # @bigtest/atom
 
+## 0.8.2
+
+### Patch Changes
+
+- 804210f6: Upgraded @effection/subscription and applied new chainability
+
 ## 0.8.1
 
 ### Patch Changes

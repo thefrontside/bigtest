@@ -1,5 +1,17 @@
 # bigtest
 
+## 0.1.2
+
+### Patch Changes
+
+- 604b4dce: Add license to package
+- Updated dependencies [804210f6]
+- Updated dependencies [b5ec3cb6]
+- Updated dependencies [969532b6]
+- Updated dependencies [b5ec3cb6]
+- Updated dependencies [fb882344]
+  - @bigtest/cli@0.9.0
+
 ## 0.1.1
 
 ### Patch Changes

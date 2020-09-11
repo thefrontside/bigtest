@@ -1,5 +1,28 @@
 # @bigtest/cli
 
+## 0.9.0
+
+### Minor Changes
+
+- b5ec3cb6: Change format of CLI arguments from --app.url to --app-url, etc...
+- b5ec3cb6: Remove default app and `--no-app.command` option. If no app is provided, none will be launched.
+
+### Patch Changes
+
+- 804210f6: Upgraded @effection/subscription and applied new chainability
+- 969532b6: Improve error format when trying to launch driver which doesn't exist
+- fb882344: default test output for CLI now shows dots for progress, and then the
+  path to the failure (if any) as a tree.
+- Updated dependencies [804210f6]
+- Updated dependencies [837a4630]
+- Updated dependencies [83a68db6]
+- Updated dependencies [b5ec3cb6]
+- Updated dependencies [0604464c]
+  - @bigtest/client@0.3.0
+  - @bigtest/effection@0.5.4
+  - @bigtest/server@0.12.0
+  - @bigtest/project@0.8.0
+
 ## 0.8.0
 
 ### Minor Changes

@@ -1,5 +1,38 @@
 # @bigtest/interactor
 
+## 0.16.0
+
+### Minor Changes
+
+- ffd9be8b: Allow passing any fully-formed step into the `step()` method of the
+  DSL. For example:
+
+  ```ts
+  .step({ description: 'visit /users', action: () => App.visit('/users')})
+  ```
+
+  Interactions implement this natively, so you can now use them
+  directly:
+
+  ```ts
+  .step(App.visit('/users'))
+  ```
+
+- 48fde34e: Add built in interactors `Link` and `Heading`.
+- 821991d6: Support nullary interactors for singleton elements:
+
+  ```
+  const MainNav = createInteractor('button')({
+    selector: '#main-nav'
+  });
+
+  MainNav().click('Widgets');
+  ```
+
+### Patch Changes
+
+- @bigtest/globals@0.6.2
+
 ## 0.15.1
 
 ### Patch Changes

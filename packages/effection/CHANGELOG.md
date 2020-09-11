@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.4
+
+### Patch Changes
+
+- 804210f6: Upgraded @effection/subscription and applied new chainability
+
 ## 0.5.3
 
 ### Patch Changes

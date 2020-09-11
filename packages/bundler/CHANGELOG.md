@@ -1,5 +1,20 @@
 # @bigtest/bundler
 
+## 0.9.0
+
+### Minor Changes
+
+- 150f131b: pass bundle and not array of bundles from manifest-builder to bundler
+- 4012b814: pass unwrapped bundle from manifest-builder to bundler
+
+### Patch Changes
+
+- 804210f6: Upgraded @effection/subscription and applied new chainability
+- Updated dependencies [804210f6]
+- Updated dependencies [b5ec3cb6]
+  - @bigtest/effection@0.5.4
+  - @bigtest/project@0.8.0
+
 ## 0.8.1
 
 ### Patch Changes
