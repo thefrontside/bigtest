@@ -1,8 +1,30 @@
-import { ResultStatus, ErrorDetails } from '@bigtest/suite';
+import { ResultStatus, ErrorDetails, LogEvent } from '@bigtest/suite';
 
 export function run() {
   return `
-    subscription($showInternalStackTrace: Boolean! = true, $showDependenciesStackTrace: Boolean! = true, $showStackTraceCode: Boolean! = true) {
+    fragment ErrorDetails on Error {
+      message
+      stack(showInternal: $showInternalStackTrace, showDependencies: $showDependenciesStackTrace) {
+        name
+        fileName
+        code @include(if: $showStackTraceCode)
+        line
+        column
+        source {
+          fileName
+          line
+          column
+        }
+      }
+    }
+
+    subscription(
+      $showInternalStackTrace: Boolean! = true,
+      $showDependenciesStackTrace: Boolean! = true,
+      $showStackTraceCode: Boolean! = true,
+      $showUncaughtErrors: Boolean! = true,
+      $showLog: Boolean! = true
+    ) {
       event: run {
         type
         status
@@ -10,21 +32,20 @@ export function run() {
         testRunId
         path
         error {
-          message
-          stack(showInternal: $showInternalStackTrace, showDependencies: $showDependenciesStackTrace) {
-            name
-            fileName
-            code @include(if: $showStackTraceCode)
-            line
-            column
-            source {
-              fileName
-              line
-              column
-            }
+          ...ErrorDetails
+        }
+        logEvents @include(if: $showLog) {
+          ... on LogEventMessage {
+            type
+            occurredAt
+            message
+          }
+          ... on LogEventError {
+            type
+            occurredAt
+            error
           }
         }
-        timeout
       }
     }`
 }
@@ -38,6 +59,7 @@ export type RunResultEvent = {
   path?: string[];
   error?: ErrorDetails;
   timeout?: boolean;
+  logEvents?: LogEvent[];
 }
 
 export type Done = { done: true };

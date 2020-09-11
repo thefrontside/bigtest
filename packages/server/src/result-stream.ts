@@ -47,9 +47,7 @@ function* streamResults(type: string, slice: Slice<any, OrchestratorState>, publ
       } else {
         publish({
           type: `${type}:result`,
-          status: status,
-          error: slice.get().error,
-          timeout: slice.get().timeout,
+          ...slice.get(),
           ...options,
         } as TestEvent);
         return;

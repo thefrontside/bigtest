@@ -42,7 +42,7 @@ export function generateAgentId(): string {
 export function* createAgentHandler(port: number): Operation<ChainableSubscription<AgentConnection, undefined>> {
   let app = express();
 
-  return yield subscribe(createSubscription<AgentConnection, void>(function* (publish) {
+  return yield createSubscription<AgentConnection, void>(function* (publish) {
     yield app.ws('*', function*(socket: Socket): Operation<void> {
 
       let commands = new Channel<Command>();
@@ -74,5 +74,5 @@ export function* createAgentHandler(port: number): Operation<ChainableSubscripti
     yield app.listen(port);
 
     yield;
-  }));
+  });
 }

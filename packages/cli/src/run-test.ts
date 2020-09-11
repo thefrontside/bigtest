@@ -28,7 +28,8 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
   let subscription = yield client.subscription(query.run(), {
     showDependenciesStackTrace: false,
     showInternalStackTrace: false,
-    showStackTraceCode: false
+    showStackTraceCode: false,
+    showLog: false,
   });
   let stepCounts = { ok: 0, failed: 0, disregarded: 0 };
   let assertionCounts = { ok: 0, failed: 0, disregarded: 0 };

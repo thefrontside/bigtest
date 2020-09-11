@@ -27,7 +27,7 @@ export class AssertionAggregator extends Aggregator<AssertionResult, AggregatorT
   *perform(): Operation<ResultStatus> {
     let result: AssertionResultEvent = yield this.receiveResult();
 
-    this.slice.update((s) => ({ ...s, status: result.status, error: result.error, timeout: result.timeout }));
+    this.slice.update((s) => ({ ...s, ...result }));
 
     return result.status;
   }
