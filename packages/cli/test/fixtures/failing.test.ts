@@ -8,6 +8,7 @@ export default test('Failing Test')
   .step("second step", delay())
   .step("third step", delay())
   .assertion("check the thing", delay(3))
+  .assertion("failed assertion", async () => { throw new Error('moo') })
   .child(
     "child", test => test
       .step("child first step", delay())

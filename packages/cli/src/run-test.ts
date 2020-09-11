@@ -1,7 +1,6 @@
 import { Operation } from 'effection';
 import { ProjectOptions } from '@bigtest/project';
 import { performance } from '@bigtest/performance';
-import { ResultStatus } from '@bigtest/suite';
 import { Client } from '@bigtest/client';
 import { MainError } from '@effection/node';
 import * as query from './query';
@@ -31,13 +30,9 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
     showStackTraceCode: false,
     showLog: false,
   });
-  let stepCounts = { ok: 0, failed: 0, disregarded: 0 };
-  let assertionCounts = { ok: 0, failed: 0, disregarded: 0 };
-  let testRunStatus: ResultStatus | undefined;
 
   formatter.header();
 
-  let startTime = performance.now();
   let testRunId;
 
   while(true) {
@@ -45,44 +40,24 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
     if (next.done) {
       break;
     } else {
-      let event = next.value.event;
-      let status = event.status;
-      testRunId = event.testRunId
-      if(event.type === 'testRun:result') {
-        testRunStatus = event.status;
-      }
-      if(event.type === 'step:result' && status && status !== 'pending' && status !== 'running') {
-        stepCounts[status] += 1;
-      }
-      if(event.type === 'assertion:result' && status && status !== 'pending' && status !== 'running') {
-        assertionCounts[status] += 1;
-      }
-      formatter.event(event, config);
+      testRunId = next.value.event.testRunId;
+      formatter.event(next.value.event);
     }
   }
 
   console.log('\n');
 
-  let endTime = performance.now();
-
   let treeQuery: query.TestResults = yield client.query(query.test(), {
     testRunId,
     showDependenciesStackTrace: false,
     showInternalStackTrace: false,
-    showStackTraceCode: false,
+    showStackTraceCode: true,
     showLog: false,
   });
 
-  formatter.ci(treeQuery.testRun);
+  formatter.footer(treeQuery);
 
-  formatter.footer({
-    status: testRunStatus || 'failed',
-    duration: endTime - startTime,
-    stepCounts,
-    assertionCounts,
-  });
-
-  if(testRunStatus !== 'ok') {
+  if(treeQuery.testRun.status !== 'ok') {
     throw new MainError({ exitCode: 1 });
   }
 }

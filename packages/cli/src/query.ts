@@ -90,6 +90,10 @@ export function test() {
               name
             }
           }
+          summary {
+            stepCounts { ok, failed, disregarded }
+            assertionCounts { ok, failed, disregarded }
+          }
           result {
             ...TestDetails
             children {
@@ -142,6 +146,9 @@ export type RunResult = {
   event: RunResultEvent;
 }
 
+export type ResultCounts = { ok: number, failed: number, disregarded: number };
+export type ResultSummary = { stepCounts: ResultCounts, assertionCounts: ResultCounts };
+
 export type TestResults = {
   testRun: {
     status: ResultStatus;
@@ -153,6 +160,7 @@ export type TestResults = {
           name: string | undefined;
         };
       };
+      summary: ResultSummary;
       result: TestResult;
     }[];
   };
