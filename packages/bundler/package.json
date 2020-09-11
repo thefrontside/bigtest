@@ -12,7 +12,7 @@
     "README.md"
   ],
   "scripts": {
-    "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
+    "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\"",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "prepack": "tsc --outDir dist --declaration --sourcemap --module commonjs"
   },

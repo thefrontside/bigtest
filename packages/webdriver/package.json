@@ -12,7 +12,7 @@
     "README.md"
   ],
   "scripts": {
-    "lint": "eslint '{src,test}/**/*.ts'",
+    "lint": "eslint \"{src,test}/**/*.ts\"",
     "test": "mocha --timeout 60000 -r ts-node/register test/**/*.test.ts",
     "prepack": "tsc --outdir dist --declaration --sourcemap"
   },

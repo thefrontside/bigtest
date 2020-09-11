@@ -14,7 +14,7 @@
     "README.md"
   ],
   "scripts": {
-    "lint": "eslint '{src,test}/**/*.ts'",
+    "lint": "eslint \"{src,test}/**/*.ts\"",
     "test:unit": "mocha -r ts-node/register test/**/*.test.ts",
     "test:types": "dtslint types --localTs ../../node_modules/typescript/lib --expectOnly",
     "test": "yarn test:unit && yarn test:types",
