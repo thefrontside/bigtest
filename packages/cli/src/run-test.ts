@@ -10,9 +10,9 @@ import checks from './formatters/checks';
 import lines from './formatters/lines';
 
 interface Options {
-  formatterName?: string,
-  showFullStack: boolean,
-  showLog: boolean,
+  formatterName?: string;
+  showFullStack: boolean;
+  showLog: boolean;
 }
 
 const BUILTIN_FORMATTERS: Record<string, Formatter> = { checks, lines };

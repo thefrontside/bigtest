@@ -146,8 +146,8 @@ export type RunResult = {
   event: RunResultEvent;
 }
 
-export type ResultCounts = { ok: number, failed: number, disregarded: number };
-export type ResultSummary = { stepCounts: ResultCounts, assertionCounts: ResultCounts };
+export type ResultCounts = { ok: number; failed: number; disregarded: number };
+export type ResultSummary = { stepCounts: ResultCounts; assertionCounts: ResultCounts };
 
 export type TestResults = {
   testRun: {
