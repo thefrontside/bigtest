@@ -2,6 +2,8 @@ const { test } = require('@bigtest/suite');
 const { strict: assert } = require('assert');
 const { createInteractor, App } = require('@bigtest/interactor');
 
+const localforage = require('localforage');
+
 globalThis.fetch = async function(url) {
   assert.equal(url, '/greeting');
   return {
@@ -25,6 +27,25 @@ function storageTest(test) {
           localStorage.setItem('hello', 'world');
           sessionStorage.setItem('hello', 'world');
 
+        })
+    )
+}
+
+function indexedDBTest(test) {
+  return test
+    .step("setup db", async () => ({
+      store: localforage.createInstance({
+        name: 'test',
+        driver: localforage.INDEXEDDB
+      })
+    }))
+    .assertion("nothing starts in indexedDB", async ({ store }) => {
+      assert.equal(await store.getItem('hello'), null)
+    })
+    .child(
+      "dirty the storage", test => test
+        .step("add keys to storages", async({ store }) => {
+          await store.setItem('hello', 'world');
         })
     )
 }
@@ -65,3 +86,5 @@ module.exports = test("tests")
       .step("fetch is mocked", async () => await H2('hello from mocked fetch').exists()))
   .child("local storage and session storage 1", storageTest)
   .child("local storage and session storage 2", storageTest)
+  .child("indexedDB 1", indexedDBTest)
+  .child("indexedDB 2", indexedDBTest)

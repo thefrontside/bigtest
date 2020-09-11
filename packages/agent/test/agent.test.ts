@@ -172,27 +172,48 @@ describe("@bigtest/agent", function() {
           });
         });
 
-        describe('local storage', () => {
-          let one: AssertionResult;
-          let two: AssertionResult;
+        describe('persistent storage', () => {
+          describe('local and session storage', () => {
+            let one: AssertionResult;
+            let two: AssertionResult;
 
-          beforeEach(async () => {
-            one = await run(events.match({
-              type: 'assertion:result',
-              path: ['tests', 'local storage and session storage 1']
-            }).first()) as unknown as AssertionResult;
-            two = await run(events.match({
-              type: 'assertion:result',
-              path: ['tests', 'local storage and session storage 2']
-            }).first()) as unknown as AssertionResult;
+            beforeEach(async () => {
+              one = await run(events.match({
+                type: 'assertion:result',
+                path: ['tests', 'local storage and session storage 1']
+              }).first()) as unknown as AssertionResult;
+              two = await run(events.match({
+                type: 'assertion:result',
+                path: ['tests', 'local storage and session storage 2']
+              }).first()) as unknown as AssertionResult;
+            });
+
+            it('is clean before every sequence of steps', () => {
+              expect(one.status).toEqual('ok');
+              expect(two.status).toEqual('ok');
+            });
           });
+          describe('indexedDB', () => {
+            let one: AssertionResult;
+            let two: AssertionResult;
 
-          it('is clean before every sequence of steps', () => {
-            expect(one.status).toEqual('ok');
-            expect(two.status).toEqual('ok');
+            beforeEach(async() => {
+              one = await run(events.match({
+                type: 'assertion:result',
+                path: ['tests', 'indexedDB 1']
+              }).first()) as unknown as AssertionResult;
+              two = await run(events.match({
+                type: 'assertion:result',
+                path: ['tests', 'indexedDB 2']
+              }).first()) as unknown as AssertionResult;
+            });
+
+            it('is clean before every sequence of steps', () => {
+              expect(one.status).toEqual('ok');
+              expect(two.status).toEqual('ok');
+            });
           });
         });
-
       });
 
       describe('closing browser connection', () => {
