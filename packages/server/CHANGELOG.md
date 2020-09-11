@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.13.0
+
+### Minor Changes
+
+- 375ec663: Track console messages and uncaught errors and make them available via the API
+
+### Patch Changes
+
+- Updated dependencies [375ec663]
+  - @bigtest/agent@0.10.0
+  - @bigtest/suite@0.8.0
+  - @bigtest/globals@0.6.3
+
 ## 0.12.0
 
 ### Minor Changes

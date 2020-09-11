@@ -1,5 +1,12 @@
 # @bigtest/globals
 
+## 0.6.3
+
+### Patch Changes
+
+- Updated dependencies [375ec663]
+  - @bigtest/suite@0.8.0
+
 ## 0.6.2
 
 ### Patch Changes

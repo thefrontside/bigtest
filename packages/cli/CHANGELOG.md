@@ -1,5 +1,16 @@
 # @bigtest/cli
 
+## 0.10.0
+
+### Minor Changes
+
+- 375ec663: Track console messages and uncaught errors and make them available via the API
+
+### Patch Changes
+
+- Updated dependencies [375ec663]
+  - @bigtest/server@0.13.0
+
 ## 0.9.0
 
 ### Minor Changes
