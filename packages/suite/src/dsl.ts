@@ -22,6 +22,37 @@ export interface AssertionDefinition<C extends Context> {
   check: Check<C>;
 }
 
+type StepArgs<C extends Context, R extends Context | void> = [StepDefinition<C,R>] | [string, Action<C,R>];
+
+function normalizeStepArgs<C extends Context, R extends Context | void>(stepArgs: StepArgs<C, R>): Step {
+  if(typeof(stepArgs[0]) === 'string') {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    let action = stepArgs[1] || ((async () => {}) as () => Promise<R>);
+
+    return { description: stepArgs[0], action } as Step;
+  } else {
+    return stepArgs[0] as Step;
+  }
+}
+
+type AssertionArgs<C extends Context> = [AssertionDefinition<C>] | [string, Check<C>];
+
+function normalizeAssertionArgs<C extends Context>(stepArgs: AssertionArgs<C>): Assertion {
+  if(typeof(stepArgs[0]) === 'string') {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    let check = stepArgs[1] || (async () => {});
+
+    return { description: stepArgs[0], check } as Assertion;
+  } else {
+    return stepArgs[0] as Assertion;
+  }
+}
+
+function editDescription<Q extends { description: string }>(input: Q, cb: (value: string) => string): Q {
+  input.description = cb(input.description);
+  return input;
+}
+
 export class TestBuilder<C extends Context> implements TestImplementation {
   public description: string;
   public steps: Step[];
@@ -35,31 +66,38 @@ export class TestBuilder<C extends Context> implements TestImplementation {
     this.children = test.children;
   }
 
-  step<R extends Context | void>(step: StepDefinition<C,R>): TestBuilder<R extends void ? C : C & R>;
-  step<R extends Context | void>(description: string, action: Action<C,R>): TestBuilder<R extends void ? C : C & R>;
-  step<R extends Context | void>(descriptionOrStep: StepDefinition<C,R> | string, action?: Action<C,R>): TestBuilder<R extends void ? C : C & R> {
-    let step = typeof descriptionOrStep !== 'string' ? descriptionOrStep : {
-      description: descriptionOrStep,
-      action: action ? action : async () => undefined
-    };
-
+  step<R extends Context | void>(...args: StepArgs<C,R>): TestBuilder<R extends void ? C : C & R> {
     return new TestBuilder({
       ...this,
-      steps: this.steps.concat(step as Step),
+      steps: this.steps.concat(normalizeStepArgs(args)),
     });
   }
 
-  assertion(assertion: AssertionDefinition<C>): TestBuilder<C>;
-  assertion(description: string, check: Check<C>): TestBuilder<C>;
-  assertion(descriptionOrAssertion: string | AssertionDefinition<C>, check?: Check<C>): TestBuilder<C> {
-    let assertion = typeof descriptionOrAssertion !== 'string' ? descriptionOrAssertion : {
-      description: descriptionOrAssertion,
-      check: check ? check : async () => undefined
-    };
-
+  given<R extends Context | void>(...args: StepArgs<C,R>): TestBuilder<R extends void ? C : C & R> {
     return new TestBuilder({
       ...this,
-      assertions: this.assertions.concat(assertion as Assertion),
+      steps: this.steps.concat(editDescription(normalizeStepArgs(args), (d) => `given ${d}`)),
+    });
+  }
+
+  when<R extends Context | void>(...args: StepArgs<C,R>): TestBuilder<R extends void ? C : C & R> {
+    return new TestBuilder({
+      ...this,
+      steps: this.steps.concat(editDescription(normalizeStepArgs(args), (d) => `when ${d}`)),
+    });
+  }
+
+  assertion(...args: AssertionArgs<C>): TestBuilder<C> {
+    return new TestBuilder({
+      ...this,
+      assertions: this.assertions.concat(normalizeAssertionArgs(args)),
+    });
+  }
+
+  then(...args: AssertionArgs<C>): TestBuilder<C> {
+    return new TestBuilder({
+      ...this,
+      assertions: this.assertions.concat(editDescription(normalizeAssertionArgs(args), (d) => `then ${d}`)),
     });
   }
 
@@ -69,5 +107,9 @@ export class TestBuilder<C extends Context> implements TestImplementation {
       ...this,
       children: this.children.concat(child)
     });
+  }
+
+  test(description: string, childFn: (inner: TestBuilder<C>) => TestBuilder<Context>): TestBuilder<C> {
+    return this.child(description, childFn);
   }
 }
