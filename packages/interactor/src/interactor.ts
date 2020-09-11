@@ -92,7 +92,7 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
     });
   }
 
-  has(filters: FilterImplementation<E, S>): Interaction<void> {
+  has(filters: FilterImplementation<E, S>): ReadonlyInteraction<void> {
     return this.is(filters);
   }
 }
