@@ -44,20 +44,20 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
     let next: IteratorResult<query.RunResult> = yield subscription.next();
     if (next.done) {
       break;
-    } else if (!query.isDoneResult(next.value)) {
-      let result = next.value;
-      let status = result.event.status;
-      testRunId = result.event.testRunId
-      if(result.event.type === 'testRun:result') {
-        testRunStatus = result.event.status;
+    } else {
+      let event = next.value.event;
+      let status = event.status;
+      testRunId = event.testRunId
+      if(event.type === 'testRun:result') {
+        testRunStatus = event.status;
       }
-      if(result.event.type === 'step:result' && status && status !== 'pending' && status !== 'running') {
+      if(event.type === 'step:result' && status && status !== 'pending' && status !== 'running') {
         stepCounts[status] += 1;
       }
-      if(result.event.type === 'assertion:result' && status && status !== 'pending' && status !== 'running') {
+      if(event.type === 'assertion:result' && status && status !== 'pending' && status !== 'running') {
         assertionCounts[status] += 1;
       }
-      formatter.event(result.event, config);
+      formatter.event(event, config);
     }
   }
 
@@ -65,77 +65,13 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
 
   let endTime = performance.now();
 
-  let treeQuery = yield client.query(`
-  fragment results on TestResult {
-    description
-    status
-    steps {
-      description
-      status
-      timeout
-      error {
-        message
-        stack(showInternal: false, showDependencies: false) {
-          code
-          column
-          fileName
-          line
-          source {
-            column
-            fileName
-            line
-          }
-        }
-      }
-    }
-    assertions {
-      description
-      status
-    }
-  }
-
-  query TestRun($testRunId: String!) {
-    testRun(id: $testRunId) {
-      agents {
-        agent {
-          agentId
-          browser {
-            name
-          }
-        }
-        result {
-          ...results
-          children {
-            ...results
-            children {
-              ...results
-              children {
-                ...results
-                children {
-                  ...results
-                  children {
-                    ...results
-                    children {
-                      ...results
-                      children {
-                        ...results
-                        children {
-                          ...results
-                          children {
-                            ...results
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }`, { testRunId });
+  let treeQuery: query.TestResults = yield client.query(query.test(), {
+    testRunId,
+    showDependenciesStackTrace: false,
+    showInternalStackTrace: false,
+    showStackTraceCode: false,
+    showLog: false,
+  });
 
   formatter.ci(treeQuery.testRun);
 
