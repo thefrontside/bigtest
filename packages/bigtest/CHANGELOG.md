@@ -1,5 +1,12 @@
 # bigtest
 
+## 0.1.3
+
+### Patch Changes
+
+- Updated dependencies [375ec663]
+  - @bigtest/cli@0.10.0
+
 ## 0.1.2
 
 ### Patch Changes

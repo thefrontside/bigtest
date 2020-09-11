@@ -1,5 +1,15 @@
 # @bigtest/agent
 
+## 0.10.0
+
+### Minor Changes
+
+- 375ec663: Track console messages and uncaught errors and make them available via the API
+
+### Patch Changes
+
+- @bigtest/globals@0.6.3
+
 ## 0.9.0
 
 ### Minor Changes

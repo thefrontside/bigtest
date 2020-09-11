@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.0
+
+### Minor Changes
+
+- 375ec663: Track console messages and uncaught errors and make them available via the API
+
 ## 0.7.0
 
 ### Minor Changes

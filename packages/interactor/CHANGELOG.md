@@ -1,5 +1,12 @@
 # @bigtest/interactor
 
+## 0.16.1
+
+### Patch Changes
+
+- 502508c5: Update return type of Interactor#has to match Interactor#is.
+  - @bigtest/globals@0.6.3
+
 ## 0.16.0
 
 ### Minor Changes
