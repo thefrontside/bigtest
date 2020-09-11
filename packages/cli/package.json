@@ -12,7 +12,7 @@
     "README.md"
   ],
   "scripts": {
-    "lint": "eslint '{src,test,bin}/**/*.ts'",
+    "lint": "eslint \"{src,test,bin}/**/*.ts\"",
     "test": "mocha -r ts-node/register \"test/{,!(fixtures)/**}/*.test.ts\"",
     "mocha": "mocha -r ts-node/register",
     "bigtest": "ts-node src/index.ts",

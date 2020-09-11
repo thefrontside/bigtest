@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "start": "yarn prepack && ts-node dist/start.js",
-    "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
+    "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\"",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "build": "yarn prepack",
     "prepack": "rm -rf dist && yarn mkdirp dist -p && cd app && cp app.package.json package.json && react-scripts build && cd .. && mv app/build dist/app && tsc --outdir dist --module commonjs --declaration --sourcemap && chmod a+x dist/start.js"

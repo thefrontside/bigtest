@@ -50,9 +50,9 @@
   "license": "MIT",
   "scripts": {
     "develop": "gatsby develop",
-    "format:ts": "prettier --write '**/*.{json,ts,tsx}'",
-    "lint:ts": "eslint '**/*.{ts,tsx}'",
-    "lint:styles": "stylelint './src/**/*.{ts,tsx}'",
+    "format:ts": "prettier --write \"**/*.{json,ts,tsx}\"",
+    "lint:ts": "eslint \"**/*.{ts,tsx}\"",
+    "lint:styles": "stylelint \"./src/**/*.{ts,tsx}\"",
     "lint": "yarn lint:ts && yarn lint:styles",
     "start": "npm run develop",
     "serve": "gatsby serve",

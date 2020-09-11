@@ -17,9 +17,9 @@
     "ts-node": "*"
   },
   "scripts": {
-    "lint": "eslint '{src,test}/**/*.ts'",
+    "lint": "eslint \"{src,test}/**/*.ts\"",
     "prepack": "tsc --declaration --sourcemap",
-    "test": "mocha -r ts-node/register 'test/{,!(fixtures)/**}/*.test.ts'"
+    "test": "mocha -r ts-node/register \"test/{,!(fixtures)/**}/*.test.ts\""
   },
   "files": [
     "docs",
