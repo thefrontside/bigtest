@@ -121,11 +121,8 @@ export function standardFooter() {
   }
 }
 
-export type StreamingFormatter = {
-  type: 'streaming';
+export type Formatter = {
   header(): void;
   event(event: RunResultEvent): void;
   footer(result: TestResults): void;
 };
-
-export type Formatter = StreamingFormatter;

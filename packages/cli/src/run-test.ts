@@ -1,13 +1,40 @@
+import * as chalk from 'chalk';
 import { Operation } from 'effection';
 import { ProjectOptions } from '@bigtest/project';
-import { performance } from '@bigtest/performance';
 import { Client } from '@bigtest/client';
 import { MainError } from '@effection/node';
 import * as query from './query';
-import { StreamingFormatter } from './format-helpers';
+import { Formatter } from './format-helpers';
 
-export function* runTest(config: ProjectOptions, formatter: StreamingFormatter): Operation<void> {
+import checks from './formatters/checks';
+import lines from './formatters/lines';
 
+interface Options {
+  formatterName?: string,
+  showFullStack: boolean,
+  showLog: boolean,
+}
+
+const BUILTIN_FORMATTERS: Record<string, Formatter> = { checks, lines };
+
+function *resolveFormatter(name?: string): Operation<Formatter> {
+  if(!name) {
+    return checks;
+  }
+  let builtin = BUILTIN_FORMATTERS[name];
+  if(builtin) {
+    return builtin;
+  } else {
+    try {
+      return yield import(name);
+    } catch {
+      throw new MainError({ exitCode: 1, message: chalk.red(`ERROR: Formatter with module name ${JSON.stringify(name)} not found.`) });
+    }
+  }
+}
+
+export function* runTest(config: ProjectOptions, options: Options): Operation<void> {
+  let formatter = yield resolveFormatter(options.formatterName);
   let uri = `ws://localhost:${config.port}`;
 
   let client: Client = yield function*() {
@@ -25,10 +52,10 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
   };
 
   let subscription = yield client.subscription(query.run(), {
-    showDependenciesStackTrace: false,
-    showInternalStackTrace: false,
-    showStackTraceCode: false,
-    showLog: false,
+    showDependenciesStackTrace: options.showFullStack,
+    showInternalStackTrace: options.showFullStack,
+    showStackTraceCode: options.showFullStack,
+    showLog: options.showLog,
   });
 
   formatter.header();
@@ -45,14 +72,12 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
     }
   }
 
-  console.log('\n');
-
   let treeQuery: query.TestResults = yield client.query(query.test(), {
     testRunId,
-    showDependenciesStackTrace: false,
-    showInternalStackTrace: false,
-    showStackTraceCode: true,
-    showLog: false,
+    showDependenciesStackTrace: options.showFullStack,
+    showInternalStackTrace: options.showFullStack,
+    showStackTraceCode: options.showFullStack,
+    showLog: options.showLog,
   });
 
   formatter.footer(treeQuery);
