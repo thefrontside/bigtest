@@ -31,7 +31,7 @@ function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMess
         extensions: ['.js', '.ts']
       }),
       commonjs(),
-      eslintPlugin({ testFiles  }),
+      eslintPlugin({ testFiles: bundle.testFiles  }),
       babel({
         babelHelpers: 'runtime',
         extensions: ['.js', '.ts'],
