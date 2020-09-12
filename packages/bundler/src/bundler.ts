@@ -1,6 +1,6 @@
 import { Operation, resource, timeout } from 'effection';
 import { on } from '@effection/events';
-import { Subscribable, SymbolSubscribable } from '@effection/subscription';
+import { subscribe, Subscribable, SymbolSubscribable, ChainableSubscription } from '@effection/subscription';
 import { Channel } from '@effection/channel';
 import { watch, rollup, OutputOptions, InputOptions, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'rollup';
 import resolve from '@rollup/plugin-node-resolve';

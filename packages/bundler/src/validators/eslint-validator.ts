@@ -24,7 +24,7 @@ export class EslintValidator implements Validator<BundlerState, EslintValidatorO
 
     let formatter = await this.getFormatter(options);
     
-    let lintResults = reports.flatMap(report => 
+    let lintResults = reports.flatMap(report =>
         report.messages.map(message => 
                               ({ ...message, filePath: report.filePath, report })));
 
