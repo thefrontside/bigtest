@@ -1,5 +1,16 @@
 # @bigtest/cli
 
+## 0.11.0
+
+### Minor Changes
+
+- 0da756c5: Improve CLI output and enable swappable formatters
+
+### Patch Changes
+
+- Updated dependencies [0da756c5]
+  - @bigtest/server@0.14.0
+
 ## 0.10.0
 
 ### Minor Changes
