@@ -1,43 +1,128 @@
 import * as chalk from 'chalk';
-import { ProjectOptions } from '@bigtest/project';
-import { ResultStatus } from '@bigtest/suite'
-import { RunResultEvent } from './query'
+import { RunResultEvent, TestResults, ResultCounts } from './query'
+import { ErrorDetails, ResultStatus, TestResult, StepResult, AssertionResult } from '@bigtest/suite'
 
-export { ResultStatus } from '@bigtest/suite'
-export { RunResultEvent } from './query'
-export type Counts = { ok: number; failed: number; disregarded: number };
+export { RunResultEvent, TestResults, ResultSummary, ResultCounts } from './query'
 
-export type Summary = {
-  status: ResultStatus;
-  duration: number;
-  stepCounts: Counts;
-  assertionCounts: Counts;
+export const UNKNOWN_ERROR = 'Unknown error occurred: This is likely a bug in BigTest and should be reported at https://github.com/thefrontside/bigtest/issues.'
+
+export function formatCounts(counts: ResultCounts): string {
+  return `${chalk.green(`${counts.ok.toFixed(0)} ok,`)} ${chalk.red(`${counts.failed.toFixed(0)} failed,`)} ${counts.disregarded.toFixed(0)} disregarded`;
 }
 
-export function icon(event: RunResultEvent) {
-  if(event.type.match(/^:running$/)) {
-    return "↻";
-  } 
-
-  return statusIcon(event.status || '', chalk.green("✓"));
-}
-
-export function statusIcon(status: string , okayIcon: string) {
+export function statusIcon(status: ResultStatus, okayIcon = '✓'): string {
   if(status === 'ok') {
-    return okayIcon;
-  } else if(status === 'failed') {
-    return chalk.red("⨯");
+    return chalk.green(okayIcon);
   } else if(status === 'disregarded') {
-    return "⋯";
+    return chalk.grey('◦');
+  } else {
+    return chalk.red('⨯');
   }
 }
 
-export type StreamingFormatter = {
-  type: "streaming";
-  header(): void;
-  event(event: RunResultEvent, config: ProjectOptions): void;
-  ci(tree: Record<string, any>): void;
-  footer(summary: Summary): void;
-};
+export const stepStatusIcon = (status: ResultStatus): string => statusIcon(status, '↪');
+export const assertionStatusIcon = (status: ResultStatus): string => statusIcon(status, '✓');
 
-export type Formatter = StreamingFormatter;
+export function errorLines(error: ErrorDetails): string[] {
+  let title = ['ERROR'];
+  if(error.name) {
+    title.push(error.name)
+  }
+  if(error.message) {
+    title.push(error.message);
+  }
+  let errorLines = [title.join(' ')];
+
+  if(error.stack) {
+    for(let stackFrame of error.stack) {
+      let location = stackFrame.source || stackFrame;
+      let stackLine = '  '
+      if(location.fileName) {
+        stackLine += location.fileName;
+      }
+      if(location.line) {
+        stackLine += `:${location.line}`
+        if(location.column) {
+          stackLine += `:${location.column}`;
+        }
+      }
+      if(stackFrame.name) {
+        stackLine += ` @ ${stackFrame.name}`;
+      }
+      errorLines.push(stackLine);
+      if(stackFrame.code) {
+        errorLines.push('  > ' + stackFrame.code.trim());
+      }
+    }
+  }
+
+  return errorLines;
+}
+
+function recursiveChildrenResults(result: TestResult, level = 0) {
+  let prefix = ' '.repeat(level * 2);
+  if(result.status !== 'ok') {
+    console.log(prefix + `☲ ${result.description}`);
+
+    result.steps.forEach((step: StepResult) => {
+      console.log(prefix + `  ${stepStatusIcon(step.status)} ${step.description}`);
+
+      if(step.status === 'failed') {
+        if(step.error) {
+          errorLines(step.error).forEach((line) => {
+            console.log(chalk.redBright(prefix + '    │ ' + line));
+          });
+        } else {
+          console.log(chalk.redBright(prefix + '    │ ' + UNKNOWN_ERROR));
+        }
+      }
+    });
+
+    result.assertions.forEach((assertion: AssertionResult) => {
+      console.log(prefix + `  ${assertionStatusIcon(assertion.status)} ${assertion.description}`);
+
+      if(assertion.status === 'failed') {
+        if(assertion.error) {
+          errorLines(assertion.error).forEach((line) => {
+            console.log(chalk.redBright(prefix + '    │ ' + line));
+          });
+        } else {
+          console.log(chalk.redBright(prefix + '    │ ' + UNKNOWN_ERROR));
+        }
+      }
+    });
+
+    result.children.forEach((child) => {
+      recursiveChildrenResults(child, level + 1);
+    });
+  }
+}
+
+
+export function standardFooter() {
+  return function({ testRun }: TestResults) {
+    testRun.agents.forEach(({ agent, summary, result }) => {
+      console.log(chalk.grey('────────────────────────────────────────────────────────────────────────────────'));
+      console.log(`${agent.agentId}`);
+      console.log(`Steps:      ${formatCounts(summary.stepCounts)}`);
+      console.log(`Assertions: ${formatCounts(summary.stepCounts)}`);
+
+      if(result.status !== 'ok') {
+        console.log('');
+        recursiveChildrenResults(result);
+      }
+    });
+    console.log(chalk.grey('────────────────────────────────────────────────────────────────────────────────'));
+    console.log(
+      testRun.status === 'ok'
+        ? chalk.green('✓ SUCCESS')
+        : chalk.red('⨯ FAILURE')
+    );
+  }
+}
+
+export type Formatter = {
+  header(): void;
+  event(event: RunResultEvent): void;
+  footer(result: TestResults): void;
+};

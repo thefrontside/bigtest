@@ -10,6 +10,7 @@ import {
   makeSchema,
   enumType,
 } from "@nexus/schema";
+import { resultSummary } from './result-summary';
 import { ErrorStackFrame } from '@bigtest/suite';
 
 export const schema = makeSchema({
@@ -241,6 +242,10 @@ export const schema = makeSchema({
     }),
     objectType({
       name: "TestRunAgent",
+      rootTyping: {
+        name: "TestRunAgentState",
+        path: path.join(__dirname, 'orchestrator', 'state.ts')
+      },
       definition(t) {
         t.string("status");
         t.field("agent", {
@@ -249,6 +254,7 @@ export const schema = makeSchema({
         t.field("result", {
           type: "TestResult"
         });
+        t.field("summary", { type: "ResultSummary", resolve: (agent) => resultSummary(agent.result) });
       }
     }),
     objectType({
@@ -291,6 +297,21 @@ export const schema = makeSchema({
         });
         t.list.field("logEvents", { type: "LogEvent", nullable: true });
         t.boolean("timeout", { nullable: true });
+      }
+    }),
+    objectType({
+      name: "ResultSummary",
+      definition(t) {
+        t.field("stepCounts", { type: "ResultCounts" });
+        t.field("assertionCounts", { type: "ResultCounts" });
+      }
+    }),
+    objectType({
+      name: "ResultCounts",
+      definition(t) {
+        t.int("ok");
+        t.int("failed");
+        t.int("disregarded");
       }
     }),
     objectType({

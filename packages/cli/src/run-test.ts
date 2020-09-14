@@ -1,14 +1,40 @@
+import * as chalk from 'chalk';
 import { Operation } from 'effection';
 import { ProjectOptions } from '@bigtest/project';
-import { performance } from '@bigtest/performance';
-import { ResultStatus } from '@bigtest/suite';
 import { Client } from '@bigtest/client';
 import { MainError } from '@effection/node';
 import * as query from './query';
-import { StreamingFormatter } from './format-helpers';
+import { Formatter } from './format-helpers';
 
-export function* runTest(config: ProjectOptions, formatter: StreamingFormatter): Operation<void> {
+import checks from './formatters/checks';
+import lines from './formatters/lines';
 
+interface Options {
+  formatterName?: string;
+  showFullStack: boolean;
+  showLog: boolean;
+}
+
+const BUILTIN_FORMATTERS: Record<string, Formatter> = { checks, lines };
+
+function *resolveFormatter(name?: string): Operation<Formatter> {
+  if(!name) {
+    return checks;
+  }
+  let builtin = BUILTIN_FORMATTERS[name];
+  if(builtin) {
+    return builtin;
+  } else {
+    try {
+      return yield import(name);
+    } catch {
+      throw new MainError({ exitCode: 1, message: chalk.red(`ERROR: Formatter with module name ${JSON.stringify(name)} not found.`) });
+    }
+  }
+}
+
+export function* runTest(config: ProjectOptions, options: Options): Operation<void> {
+  let formatter = yield resolveFormatter(options.formatterName);
   let uri = `ws://localhost:${config.port}`;
 
   let client: Client = yield function*() {
@@ -26,127 +52,37 @@ export function* runTest(config: ProjectOptions, formatter: StreamingFormatter):
   };
 
   let subscription = yield client.subscription(query.run(), {
-    showDependenciesStackTrace: false,
-    showInternalStackTrace: false,
-    showStackTraceCode: false,
-    showLog: false,
+    showDependenciesStackTrace: options.showFullStack,
+    showInternalStackTrace: options.showFullStack,
+    showStackTraceCode: options.showFullStack,
+    showLog: options.showLog,
   });
-  let stepCounts = { ok: 0, failed: 0, disregarded: 0 };
-  let assertionCounts = { ok: 0, failed: 0, disregarded: 0 };
-  let testRunStatus: ResultStatus | undefined;
 
   formatter.header();
 
-  let startTime = performance.now();
   let testRunId;
 
   while(true) {
     let next: IteratorResult<query.RunResult> = yield subscription.next();
     if (next.done) {
       break;
-    } else if (!query.isDoneResult(next.value)) {
-      let result = next.value;
-      let status = result.event.status;
-      testRunId = result.event.testRunId
-      if(result.event.type === 'testRun:result') {
-        testRunStatus = result.event.status;
-      }
-      if(result.event.type === 'step:result' && status && status !== 'pending' && status !== 'running') {
-        stepCounts[status] += 1;
-      }
-      if(result.event.type === 'assertion:result' && status && status !== 'pending' && status !== 'running') {
-        assertionCounts[status] += 1;
-      }
-      formatter.event(result.event, config);
+    } else {
+      testRunId = next.value.event.testRunId;
+      formatter.event(next.value.event);
     }
   }
 
-  console.log('\n');
-
-  let endTime = performance.now();
-
-  let treeQuery = yield client.query(`
-  fragment results on TestResult {
-    description
-    status
-    steps {
-      description
-      status
-      timeout
-      error {
-        message
-        stack(showInternal: false, showDependencies: false) {
-          code
-          column
-          fileName
-          line
-          source {
-            column
-            fileName
-            line
-          }
-        }
-      }
-    }
-    assertions {
-      description
-      status
-    }
-  }
-
-  query TestRun($testRunId: String!) {
-    testRun(id: $testRunId) {
-      agents {
-        agent {
-          agentId
-          browser {
-            name
-          }
-        }
-        result {
-          ...results
-          children {
-            ...results
-            children {
-              ...results
-              children {
-                ...results
-                children {
-                  ...results
-                  children {
-                    ...results
-                    children {
-                      ...results
-                      children {
-                        ...results
-                        children {
-                          ...results
-                          children {
-                            ...results
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }`, { testRunId });
-
-  formatter.ci(treeQuery.testRun);
-
-  formatter.footer({
-    status: testRunStatus || 'failed',
-    duration: endTime - startTime,
-    stepCounts,
-    assertionCounts,
+  let treeQuery: query.TestResults = yield client.query(query.test(), {
+    testRunId,
+    showDependenciesStackTrace: options.showFullStack,
+    showInternalStackTrace: options.showFullStack,
+    showStackTraceCode: options.showFullStack,
+    showLog: options.showLog,
   });
 
-  if(testRunStatus !== 'ok') {
+  formatter.footer(treeQuery);
+
+  if(treeQuery.testRun.status !== 'ok') {
     throw new MainError({ exitCode: 1 });
   }
 }

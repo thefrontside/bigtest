@@ -170,7 +170,7 @@ describe('@bigtest/cli', function() {
 
       it('exits with error code', async () => {
         expect(child.code).toEqual(1);
-        expect(child.stdout?.output).toContain("test/fixtures/failing.test.ts:14")
+        expect(child.stdout?.output).toContain("test/fixtures/failing.test.ts:15")
         expect(child.stdout?.output).toContain("⨯ FAILURE")
       });
 
