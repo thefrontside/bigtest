@@ -1,3 +1,5 @@
+import { getIndexedDBConfig } from './indexed-db-config';
+
 export function* clearPersistentStorage() {
   localStorage.clear();
   sessionStorage.clear();
@@ -6,13 +8,21 @@ export function* clearPersistentStorage() {
 }
 
 function* clearIndexedDB() {
-  let indexedDB = window.indexedDB;
-  if (isEnumerableIndexedDB(indexedDB)) {
-    let databases: DBInfo[] = yield indexedDB.databases();
-    for (let database of databases) {
-      let request: IDBRequest = indexedDB.deleteDatabase(database.name);
-      yield idbRequest(request);
-    }
+  let { openedDBNames } = getIndexedDBConfig();
+
+  // delete any database that were opened in previous lanes
+  for (let dbName of openedDBNames) {
+    let request: IDBRequest = window.indexedDB.deleteDatabase(dbName);
+    yield idbRequest(request);
+  }
+  openedDBNames.clear();
+
+
+  // anytime an indexed DB is opened, stash the name so we can clear it later
+  let originalOpen = window.indexedDB.open;
+  window.indexedDB.open = function open(name: string, version?: number) {
+    openedDBNames.add(name);
+    return originalOpen.call(window.indexedDB, name, version);
   }
 }
 
@@ -21,18 +31,4 @@ function idbRequest<T>(request: IDBRequest<T>): Promise<T> {
     request.onerror = () => reject(request.error);
     request.onsuccess = () => resolve(request.result);
   })
-}
-
-interface DBInfo {
-  name: string;
-  version: number;
-}
-
-interface EnumerableIDBFactory extends IDBFactory {
-  databases(): Promise<DBInfo[]>;
-}
-
-function isEnumerableIndexedDB(indexedDB?: IDBFactory): indexedDB is EnumerableIDBFactory {
-  return !!indexedDB &&
-    (typeof (indexedDB as unknown as Record<string,unknown>).databases !== 'undefined')
 }
