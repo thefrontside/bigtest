@@ -1,3 +1,4 @@
+import { fork } from 'effection';
 import { getIndexedDBConfig } from './indexed-db-config';
 
 export function* clearPersistentStorage() {
@@ -13,7 +14,7 @@ function* clearIndexedDB() {
   // delete any database that were opened in previous lanes
   for (let dbName of openedDBNames) {
     let request: IDBRequest = window.indexedDB.deleteDatabase(dbName);
-    yield idbRequest(request);
+    yield fork(idbRequest(request));
   }
   openedDBNames.clear();
 
