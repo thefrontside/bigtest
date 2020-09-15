@@ -12,6 +12,7 @@ import { timebox } from './timebox';
 import { serializeError } from './serialize-error';
 import { wrapConsole } from './wrap-console';
 import { setLogConfig, getLogConfig } from './log-config';
+import { clearPersistentStorage } from './clear-persistent-storage';
 
 interface TestEvents {
   send(event: TestEvent): void;
@@ -36,6 +37,9 @@ export function* runLane(config: LaneConfig) {
 
     bigtestGlobals.appUrl = appUrl;
     bigtestGlobals.testFrame = findIFrame('app-frame');
+
+    yield clearPersistentStorage();
+
     let test: TestImplementation = yield loadManifest(manifestUrl);
     yield runLaneSegment(test, path.slice(1), [], stepTimeout)
   } finally {

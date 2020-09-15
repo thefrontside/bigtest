@@ -5,7 +5,6 @@ import { on } from '@effection/events';
 import { serializeError } from './serialize-error';
 import { getLogConfigFromAppFrame } from './log-config';
 
-
 // proxy fetch and XMLHttpRequest requests through the parent frame
 if(window.parent !== window) {
   window.fetch = (input: RequestInfo, init?: RequestInit): Promise<Response> => {
@@ -14,6 +13,10 @@ if(window.parent !== window) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (window as any).XMLHttpRequest = () => new window.parent.window.XMLHttpRequest();
+
+  window.indexedDB.open = function open(this: typeof window.indexedDB, name: string, version?: number) {
+    return window.parent.window.indexedDB.open(name, version);
+  }
 }
 
 wrapConsole((message) => {
