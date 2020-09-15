@@ -8,13 +8,14 @@ on:
 jobs:
   prepack:
     runs-on: ${{ matrix.platform }}
+    timeout-minutes: 30
     name: prepack
     strategy:
       matrix:
         platform: [ubuntu-latest]
         # keeping platform as a single item so test-*.yml files can be identical except for this value
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: cache
         uses: actions/cache@v2
         with:
@@ -31,6 +32,7 @@ jobs:
 
   test:
     runs-on: ${{ matrix.platform }}
+    timeout-minutes: 30
     name: ${{ matrix.package }}
     needs: prepack
     strategy:
@@ -40,7 +42,7 @@ jobs:
         # keeping platform as a single item so test-*.yml files can be identical except for this value
         package: [agent, cli, effection, logging, bundler, project, server, suite, interactor, todomvc, atom, webdriver]
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: cache
         uses: actions/cache@v2
         with:
