@@ -1,5 +1,11 @@
 # @bigtest/agent
 
+## 0.11.0
+
+### Minor Changes
+
+- f803d9ed: Exclude 'app/' sources from the typescript build which was causing a corrupted harness.js to be distributed.
+
 ## 0.10.0
 
 ### Minor Changes

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.14.0
+
+### Minor Changes
+
+- 0da756c5: Improve CLI output and enable swappable formatters
+
+### Patch Changes
+
+- Updated dependencies [f803d9ed]
+  - @bigtest/agent@0.11.0
+
 ## 0.13.0
 
 ### Minor Changes
