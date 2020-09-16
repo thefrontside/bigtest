@@ -11,6 +11,7 @@ import lines from './formatters/lines';
 
 interface Options {
   formatterName: string;
+  files: string[];
   showFullStack: boolean;
   showLog: boolean;
 }
@@ -49,6 +50,7 @@ export function* runTest(config: ProjectOptions, options: Options): Operation<vo
   };
 
   let subscription = yield client.subscription(query.run(), {
+    files: options.files,
     showDependenciesStackTrace: options.showFullStack,
     showInternalStackTrace: options.showFullStack,
     showStackTraceCode: options.showFullStack,

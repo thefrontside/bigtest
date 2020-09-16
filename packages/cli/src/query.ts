@@ -36,12 +36,13 @@ const fragments = `
 export function run() {
   return fragments + `
     subscription(
+      $files: [String!]! = [],
       $showInternalStackTrace: Boolean! = true,
       $showDependenciesStackTrace: Boolean! = true,
       $showStackTraceCode: Boolean! = true,
       $showLog: Boolean! = true
     ) {
-      event: run {
+      event: run(files: $files) {
         type
         status
         agentId

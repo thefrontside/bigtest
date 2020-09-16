@@ -22,6 +22,7 @@ export function * CLI(argv: string[]): Operation {
   } else if (args.command === 'test') {
     let config: ProjectOptions = yield loadConfig(args);
     yield runTest(config, {
+      files: args.files,
       formatterName: args.formatter,
       showFullStack: false,
       showLog: false,
@@ -32,6 +33,7 @@ export function * CLI(argv: string[]): Operation {
       timeout: args.startTimeout,
     });
     yield runTest(config, {
+      files: args.files,
       formatterName: args.formatter,
       showFullStack: false,
       showLog: false,
@@ -49,6 +51,7 @@ interface StartOptions {
 
 interface RunOptions {
   formatter: string;
+  files: string[];
 }
 
 interface GlobalOptions {
@@ -89,6 +92,9 @@ function parseOptions(argv: readonly string[]): Options {
 
   function runOptions(yargs: Argv) {
     return yargs
+      .positional('files', {
+        describe: 'the test files you would like to run',
+      })
       .option('formatter', {
         alias: 'f',
         describe: 'specify the formatter which is used to format the output',
@@ -106,8 +112,8 @@ function parseOptions(argv: readonly string[]): Options {
       desc: 'increase or decrease the amount of logging information printed to the console'
     })
     .command('server', 'start a bigtest server', startOptions)
-    .command('test', 'run tests against server', runOptions)
-    .command('ci', 'start a server and run the test suite', (yargs) => runOptions(startOptions(yargs)))
+    .command('test [files...]', 'run tests against server', runOptions)
+    .command('ci [files...]', 'start a server and run the test suite', (yargs) => runOptions(startOptions(yargs)))
     .demandCommand()
     .help()
     .parse(argv)
