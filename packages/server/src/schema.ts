@@ -81,8 +81,11 @@ export const schema = makeSchema({
     mutationType({
       definition(t) {
         t.string("run", {
-          resolve(_source, _args, cxt) {
-            return cxt.runTest();
+          args: {
+            files: stringArg({ required: false, list: true }),
+          },
+          resolve(_source, args, cxt) {
+            return cxt.runTest(args);
           }
         })
       }
@@ -106,7 +109,12 @@ export const schema = makeSchema({
     }),
     subscriptionField('run', {
       type: 'TestEvent',
-      subscribe: (_root, _args, cxt) => cxt.runTestSubscribe(),
+      args: {
+        files: stringArg({ required: false, list: true }),
+      },
+      subscribe(_root, args, cxt) {
+        return cxt.runTestSubscribe(args);
+      },
       resolve: payload => payload
     }),
     objectType({

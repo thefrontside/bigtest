@@ -18,21 +18,25 @@ export interface Spawner {
 
 export type SpawnContext = Context<unknown> & Spawner;
 
+export interface RunTestOptions {
+  files?: string[];
+}
+
 export class GraphqlContext {
   public testRunIds = testRunIds;
 
   constructor(private context: SpawnContext, private atom: Atom<OrchestratorState>, private delegate: Mailbox<CommandMessage>) {}
 
-  runTest(): string {
+  runTest(options: RunTestOptions): string {
     let { value: id } = this.testRunIds.next();
 
-    this.delegate.send({ type: "run", id });
+    this.delegate.send({ type: "run", id, options });
 
     return id;
   }
 
-  async *runTestSubscribe(): AsyncIterator<TestEvent> {
-    let id = this.runTest();
+  async *runTestSubscribe(options: RunTestOptions): AsyncIterator<TestEvent> {
+    let id = this.runTest(options);
 
     let slice = this.atom.slice('testRuns', id);
 
