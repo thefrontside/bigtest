@@ -1,5 +1,12 @@
 # @bigtest/agent
 
+## 0.12.0
+
+### Minor Changes
+
+- f1ed2b61: remove all sessionStorage, localStorage, and indexedDB data before
+  each and every test run in order to enforce test isolation.
+
 ## 0.11.0
 
 ### Minor Changes

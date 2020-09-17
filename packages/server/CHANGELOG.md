@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.14.1
+
+### Patch Changes
+
+- 8449c220: Don't spam the console when build errors happen
+- Updated dependencies [f1ed2b61]
+  - @bigtest/agent@0.12.0
+
 ## 0.14.0
 
 ### Minor Changes
