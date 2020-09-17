@@ -122,7 +122,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       console.debug('[orchestrator] app server ready');
     });
     yield fork(function* () {
-      yield options.atom.slice('bundler').once(({ type }) => type === 'GREEN');
+      yield options.atom.slice('bundler').once(({ type }) => type === 'GREEN' || type === 'ERRORED');
       console.debug('[orchestrator] manifest builder ready');
     });
     yield fork(function* () {
