@@ -227,6 +227,7 @@ export const schema = makeSchema({
       definition(t) {
         t.id("testRunId");
         t.string("status");
+        t.field("error", { type: "Error", nullable: true });
         t.list.field("agents", {
           type: "TestRunAgent",
           resolve: (testRun) => Object.values(testRun.agents)

@@ -83,6 +83,7 @@ export function test() {
     ) {
       testRun(id: $testRunId) {
         status
+        error { ...ErrorDetails }
         agents {
           agent {
             agentId
@@ -152,6 +153,7 @@ export type ResultSummary = { stepCounts: ResultCounts; assertionCounts: ResultC
 export type TestResults = {
   testRun: {
     status: ResultStatus;
+    error?: ErrorDetails;
     agents: {
       status: ResultStatus;
       agent: {

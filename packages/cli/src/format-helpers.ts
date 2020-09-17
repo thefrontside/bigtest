@@ -112,7 +112,13 @@ export function standardFooter() {
         recursiveChildrenResults(result);
       }
     });
-    console.log(chalk.grey('────────────────────────────────────────────────────────────────────────────────'));
+    if(testRun.agents.length) {
+      console.log(chalk.grey('────────────────────────────────────────────────────────────────────────────────'));
+    }
+    if(testRun.status === 'failed' && testRun.error) {
+      errorLines(testRun.error).forEach((line) => console.log(chalk.red(line)));
+      console.log('');
+    }
     console.log(
       testRun.status === 'ok'
         ? chalk.green('✓ SUCCESS')
