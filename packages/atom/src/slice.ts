@@ -68,13 +68,13 @@ export class Slice<S, A> implements Subscribable<S, undefined> {
     }
   }
 
-  *once(predicate: (state: S) => boolean): Operation<S | undefined> {
+  *once(predicate: (state: S) => boolean): Operation<S> {
     let currentState = this.get();
     if(predicate(currentState)) {
       return currentState;
     } else {
       let subscription = yield subscribe(this);
-      return yield subscription.filter(predicate).first();
+      return yield subscription.filter(predicate).expect();
     }
   }
 
