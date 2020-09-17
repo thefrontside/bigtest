@@ -1,6 +1,7 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect'
 
+import { test }from '../src';
 import example from './fixtures/example';
 
 describe('dsl', () => {
@@ -16,5 +17,22 @@ describe('dsl', () => {
     expect(example.children[0].assertions[0].description).toEqual('a child assertion');
 
     await expect(example.steps[0].action({})).resolves.toHaveProperty('foo', 'foo');
+  });
+
+  it('can have multiple steps', () => {
+    let { steps } = test('a test')
+      .step(
+        { description: "hello", action() {} },
+        { description: "world", action() {} });
+
+    expect(steps.map(step => step.description)).toEqual(['hello', 'world']);
+  });
+  it('can have multiple assertions', () => {
+    let { assertions } = test('an assertion').
+      assertion(
+        { description: "hello", check() {} },
+        { description: "world", check() {} });
+
+    expect(assertions.map(assertion => assertion.description)).toEqual(['hello', 'world']);
   });
 })
