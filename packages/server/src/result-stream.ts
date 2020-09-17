@@ -1,15 +1,15 @@
 import { Operation, fork } from 'effection';
 import { Slice } from '@bigtest/atom';
-import { subscribe, Subscription, createSubscription } from '@effection/subscription';
-import { TestResult, StepResult, AssertionResult } from '@bigtest/suite';
+import { subscribe, ChainableSubscription, createSubscription } from '@effection/subscription';
+import { TestResult, StepResult, AssertionResult, ResultStatus } from '@bigtest/suite';
 import { OrchestratorState, TestRunState, TestRunAgentState } from './orchestrator/state';
 import { TestEvent } from './schema/test-event';
 
 type Publish = (event: TestEvent) => void;
 
-export function* resultStream(testRunId: string, slice: Slice<TestRunState, OrchestratorState>): Operation<Subscription<TestEvent, void>> {
+export function* resultStream(testRunId: string, slice: Slice<TestRunState, OrchestratorState>): Operation<ChainableSubscription<TestEvent, void>> {
   return yield createSubscription(function*(publish) {
-    yield slice.once((state) => state?.status === 'pending');
+    yield slice.once((state) => !!state);
     yield streamTestRun(slice, publish, { testRunId });
   });
 }
@@ -29,17 +29,16 @@ export interface StreamerTestOptions extends StreamerAgentOptions {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function* streamResults(type: string, slice: Slice<any, OrchestratorState>, publish: Publish, options: StreamerOptions): Operation<void> {
   let statusSlice = slice.slice('status');
-  let previousStatus = statusSlice.get();
+  let previousStatus = undefined;
+  let currentStatus = statusSlice.get();
 
   let subscription = yield subscribe(statusSlice);
-  while(true) {
-    let { done, value: status } = yield subscription.next();
-    if(done) {
-      return;
-    } else if(status !== previousStatus) {
-      if(status === 'pending') {
+  let next: IteratorResult<ResultStatus>;
+  do {
+    if(currentStatus !== previousStatus) {
+      if(currentStatus === 'pending') {
         // do nothing
-      } else if(status === 'running') {
+      } else if(currentStatus === 'running') {
         publish({
           type: `${type}:running`,
           ...options,
@@ -52,9 +51,11 @@ function* streamResults(type: string, slice: Slice<any, OrchestratorState>, publ
         } as TestEvent);
         return;
       }
-      previousStatus = status;
+      previousStatus = currentStatus;
     }
-  };
+    next = yield subscription.next();
+    currentStatus = next.value;
+  } while(!next.done);
 }
 
 function* streamTestRun(slice: Slice<TestRunState, OrchestratorState>, publish: Publish, options: StreamerOptions): Operation<void> {
