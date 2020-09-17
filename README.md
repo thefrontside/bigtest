@@ -60,7 +60,7 @@ already want to give it a go, here is how you can get going:
 Install bigtest in your application:
 
 ```
-yarn add bigtest @bigtest/suite @bigtest/interactor
+yarn add bigtest @bigtest/cli @bigtest/suite @bigtest/interactor
 ```
 
 Add a `bigtest.json` file in the root of your project with a base configuration like this:
