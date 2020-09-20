@@ -32,14 +32,22 @@ export class WebDriver implements Driver<WDSession> {
  * handing out a `WebDriver` resource to the public.
  */
 export function* connect(driver: WebDriver, options: Options): Operation<void> {
-
   let capabilities = new Atom(Capabilities);
 
-  if (options.headless) {
+  if ('headless' in options) {
     capabilities.slice('alwaysMatch', 'goog:chromeOptions', 'args')
       .over(args => args.concat(['--headless']))
     capabilities.slice('alwaysMatch', 'moz:firefoxOptions', 'args')
       .over(args => args.concat(['--headless']))
+  }
+
+  if ('driverUrl' in options) {
+    capabilities.slice('alwaysMatch', 'goog:chromeOptions', 'args')
+      .over(args => args.concat([
+        '--disable-gpu',
+        '--remote-debugging-address=0.0.0.0',
+        '--remote-debugging-port=9222'
+      ]))
   }
 
   driver.session = yield request(`${driver.serverURL}/session`, {
@@ -68,8 +76,17 @@ function* request(url: string, init: RequestInit): Operation<WDResponse> {
   return json.value;
 }
 
-export interface Options {
+export type LocalOptions = {
   browserName: 'chrome' | 'firefox' | 'safari';
+} & CommonOptions;
+
+export type RemoteOptions = {
+  driverUrl: string;
+} & CommonOptions;
+
+export type Options = LocalOptions | RemoteOptions;
+
+interface CommonOptions {
   headless: boolean;
 }
 
@@ -85,6 +102,7 @@ interface WDResponse {
 
 const Capabilities = {
   alwaysMatch: {
+    acceptInsecureCerts: true,
     'goog:chromeOptions': {
       args: []
     },

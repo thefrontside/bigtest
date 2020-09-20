@@ -7,7 +7,7 @@ import { once } from '@effection/events';
 
 import { findAvailablePortNumber } from './find-available-port-number';
 import { untilURLAvailable } from './until-url-available';
-import { WebDriver, Options, connect } from './web-driver';
+import { WebDriver, connect, LocalOptions } from './web-driver';
 
 /**
  * Create a local `WebDriver` resource based on `driverName` (either 'geckodriver' or
@@ -22,8 +22,7 @@ import { WebDriver, Options, connect } from './web-driver';
  * suopports a single Firefox session per driver process, we spawn a
  * new process for each local driver.
  */
-export function * Local(options: Options): Operation<WebDriver> {
-
+export function * Local(options: LocalOptions): Operation<WebDriver> {
   let driverName = driverNameFor(options.browserName);
 
   let port: number = yield findAvailablePortNumber();
@@ -41,7 +40,7 @@ export function * Local(options: Options): Operation<WebDriver> {
   return driver;
 }
 
-function driverNameFor(browserName: Options["browserName"]) {
+function driverNameFor(browserName: LocalOptions["browserName"]) {
   if (browserName == 'firefox') {
     return 'geckodriver';
   } else {
