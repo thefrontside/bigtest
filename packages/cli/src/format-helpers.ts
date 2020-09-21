@@ -105,7 +105,7 @@ export function standardFooter() {
       console.log(chalk.grey('────────────────────────────────────────────────────────────────────────────────'));
       console.log(`${agent.agentId}`);
       console.log(`Steps:      ${formatCounts(summary.stepCounts)}`);
-      console.log(`Assertions: ${formatCounts(summary.stepCounts)}`);
+      console.log(`Assertions: ${formatCounts(summary.assertionCounts)}`);
 
       if(result.status !== 'ok') {
         console.log('');
