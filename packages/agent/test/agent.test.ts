@@ -235,10 +235,7 @@ describe("@bigtest/agent", function() {
           it('is reported with the run:end event', () => {
             expect(end).toMatchObject({
               type: 'run:end',
-              coverage: {
-                'one.js': { data: {} },
-                'two.js': { data: {} }
-              }
+              coverage: require('./fixtures/coverage-data').coverageData
             })
           });
         });

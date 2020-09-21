@@ -4,7 +4,8 @@ const { strict: assert } = require('assert');
 const { createInteractor, App } = require('@bigtest/interactor');
 
 const localforage = require('localforage');
-const libCoverage = require('istanbul-lib-coverage');
+
+const { coverageData } = require('./coverage-data');
 
 globalThis.fetch = async function(url) {
   assert.equal(url, '/greeting');
@@ -52,12 +53,13 @@ function indexedDBTest(test) {
     )
 }
 
-function coverageTest(filename) {
+function coverageTest(filepath) {
   return test => test
-    .step(`add coverage data from ${filename}`, async () => {
-      let map = libCoverage.createCoverageMap();
-      map.addFileCoverage(filename);
-      bigtestGlobals.testFrame.contentWindow.window.__coverage__ = map.toJSON();
+    .step(`add coverage data from ${filepath}`, async () => {
+      if (!coverageData[filepath]) {
+        throw new Error(`bad test! no fixture coverage data for filepath ${filepath}`);
+      }
+      bigtestGlobals.testFrame.contentWindow.window.__coverage__ = { [filepath]: coverageData[filepath]};
     })
 }
 
@@ -109,5 +111,5 @@ module.exports = test("tests")
   .child("local storage and session storage 2", storageTest)
   .child("indexedDB 1", indexedDBTest)
   .child("indexedDB 2", indexedDBTest)
-  .child("add coverage 1", coverageTest('one.js'))
-  .child("add coverage 2", coverageTest('two.js'))
+  .child("add coverage 1", coverageTest("src/Signin.js"))
+  .child("add coverage 2", coverageTest("src/index.js"))
