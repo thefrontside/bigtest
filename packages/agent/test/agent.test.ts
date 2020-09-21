@@ -14,7 +14,6 @@ import { AgentServerConfig, TestEvent, createAgentHandler, AgentConnection, Asse
 
 import { run } from './helpers';
 import { StepResult } from '@bigtest/suite';
-import { resource } from 'effection';
 
 function* staticServer(port: number) {
   let app = express();
