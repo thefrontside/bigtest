@@ -8,12 +8,14 @@ import { Agent } from '../shared/agent';
 import { Run, TestEvent } from '../shared/protocol';
 
 import { setLaneConfigFromAgentFrame } from './lane-config';
+import { setCoverageMap, getCoverageMap } from './coverage';
 import { findIFrame } from './find-iframe';
 
 export function* run(agent: Agent, command: Run): Operation<void> {
   let { testRunId, tree } = command;
 
   try {
+    setCoverageMap(window, undefined);
     agent.send({ type: 'run:begin', testRunId });
     for (let lanePath of lanePaths(tree)) {
       console.log('[agent] running lane', lanePath);
@@ -24,7 +26,7 @@ export function* run(agent: Agent, command: Run): Operation<void> {
     }
   } finally {
     console.log('[agent] test run completed', testRunId);
-    agent.send({ type: 'run:end', testRunId });
+    agent.send({ type: 'run:end', testRunId, coverage: getCoverageMap(window)?.toJSON() });
   }
 }
 

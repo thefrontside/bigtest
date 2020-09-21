@@ -22,6 +22,8 @@ export interface RunEnd {
   type: 'run:end';
   agentId?: string;
   testRunId: string;
+  coverage?: Record<string, unknown>;
+
 }
 
 export interface LaneBegin {
