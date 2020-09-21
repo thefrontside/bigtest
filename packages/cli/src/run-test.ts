@@ -10,17 +10,14 @@ import checks from './formatters/checks';
 import lines from './formatters/lines';
 
 interface Options {
-  formatterName?: string;
+  formatterName: string;
   showFullStack: boolean;
   showLog: boolean;
 }
 
 const BUILTIN_FORMATTERS: Record<string, Formatter> = { checks, lines };
 
-function *resolveFormatter(name?: string): Operation<Formatter> {
-  if(!name) {
-    return checks;
-  }
+function *resolveFormatter(name: string): Operation<Formatter> {
   let builtin = BUILTIN_FORMATTERS[name];
   if(builtin) {
     return builtin;
