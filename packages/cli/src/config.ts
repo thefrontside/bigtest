@@ -21,6 +21,12 @@ export function *loadConfig(args: Options): Operation<ProjectOptions> {
     if(args.testFiles) {
       config.testFiles = args.testFiles;
     }
+    if(args.appCommand) {
+      config.app.command = args.appCommand;
+    }
+    if(args.appUrl) {
+      config.app.url = args.appUrl;
+    }
   }
 
   yield validateConfig(config);
