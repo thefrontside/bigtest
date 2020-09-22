@@ -98,7 +98,7 @@ describe('command processor', () => {
 
     it('marks test run as failed', () => {
       expect(testRun.status).toEqual('failed');
-      expect(testRun.error?.message).toEqual('it broke');
+      expect(testRun.error?.message).toEqual('Cannot run tests due to build errors in the test suite:\nit broke');
       expect(Object.values(testRun.agents).length).toEqual(0);
     });
   });

@@ -60,7 +60,7 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
       testRunId: testRunId,
       status: 'failed',
       agents: {},
-      error: { name: "BundlerError", message: bundler.error.message }
+      error: { name: 'BundlerError', message: 'Cannot run tests due to build errors in the test suite:\n' + bundler.error.message }
     });
   }
 }
