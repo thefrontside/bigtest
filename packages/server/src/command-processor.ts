@@ -3,7 +3,7 @@ import { Mailbox } from '@bigtest/effection';
 import { Test, TestResult } from '@bigtest/suite';
 import { Atom } from '@bigtest/atom';
 import { AgentEvent, Command as AgentCommand } from '@bigtest/agent';
-import { AgentState, OrchestratorState } from './orchestrator/state';
+import { AgentState, OrchestratorState, BundlerState } from './orchestrator/state';
 import { TestRunAggregator } from './result-aggregator/test-run';
 import { CommandMessage } from './command-server';
 
@@ -21,33 +21,48 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
 
   let stepTimeout = 60_000;
   let testRunSlice = options.atom.slice('testRuns', testRunId);
-  let manifest = options.atom.get().manifest;
 
-  let appUrl = `http://localhost:${options.proxyPort}`;
-  let manifestUrl = `http://localhost:${options.manifestPort}/${manifest.fileName}`;
+  let bundlerSlice = options.atom.slice('bundler');
 
-  // todo: we should perform filtering of the agents here
-  let agents: AgentState[] = Object.values(options.atom.get().agents);
+  let bundler: BundlerState = yield bundlerSlice.once((state) => state.type === 'GREEN' || state.type === 'ERRORED');
 
-  // todo: we should perform filtering of the manifest here
-  let result = resultsFor(manifest);
+  if(bundler.type === 'GREEN') {
+    let manifest = options.atom.get().manifest;
 
-  testRunSlice.set({
-    testRunId: testRunId,
-    status: 'pending',
-    agents: Object.fromEntries(agents.map((agent) => [agent.agentId, { agent, result, status: 'pending' }])),
-  });
+    let appUrl = `http://localhost:${options.proxyPort}`;
+    let manifestUrl = `http://localhost:${options.manifestPort}/${manifest.fileName}`;
 
-  for (let agent of agents) {
-    let { agentId } = agent;
+    // todo: we should perform filtering of the agents here
+    let agents: AgentState[] = Object.values(options.atom.get().agents);
 
-    console.debug(`[command processor] starting test run ${testRunId} on agent ${agentId}`);
-    options.delegate.send({ type: 'run', agentId, appUrl, manifestUrl, testRunId, tree: manifest, stepTimeout });
+    // todo: we should perform filtering of the manifest here
+    let result = resultsFor(manifest);
+
+    testRunSlice.set({
+      testRunId: testRunId,
+      status: 'pending',
+      agents: Object.fromEntries(agents.map((agent) => [agent.agentId, { agent, result, status: 'pending' }])),
+    });
+
+    for (let agent of agents) {
+      let { agentId } = agent;
+
+      console.debug(`[command processor] starting test run ${testRunId} on agent ${agentId}`);
+      options.delegate.send({ type: 'run', agentId, appUrl, manifestUrl, testRunId, tree: manifest, stepTimeout });
+    }
+
+    let aggregator = new TestRunAggregator(testRunSlice, { testRunId, ...options });
+
+    yield aggregator.run();
   }
-
-  let aggregator = new TestRunAggregator(testRunSlice, { testRunId, ...options });
-
-  yield aggregator.run();
+  if(bundler.type === 'ERRORED') {
+    testRunSlice.set({
+      testRunId: testRunId,
+      status: 'failed',
+      agents: {},
+      error: { name: 'BundlerError', message: 'Cannot run tests due to build errors in the test suite:\n' + bundler.error.message }
+    });
+  }
 }
 
 export function* createCommandProcessor(options: CommandProcessorOptions): Operation {

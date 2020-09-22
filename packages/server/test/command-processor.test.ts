@@ -11,7 +11,7 @@ import { createCommandProcessor } from '../src/command-processor';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { CommandMessage } from '../src/command-server';
 
-import { OrchestratorState } from '../src/orchestrator/state';
+import { OrchestratorState, TestRunState } from '../src/orchestrator/state';
 
 describe('command processor', () => {
   let delegate: Mailbox<AgentCommand & { agentId: string }>;
@@ -48,11 +48,15 @@ describe('command processor', () => {
     }));
   });
 
-  describe('when sent a `run` message', () => {
+  describe('when sent a `run` message with a valid manifest', () => {
     let pendingMessage: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+    let testRun: TestRunState;
+
     beforeEach(async () => {
+      atom.slice('bundler', 'type').set('GREEN');
       commands.send({ type: 'run', id: 'test-id-1' });
       pendingMessage = await actions.fork(delegate.receive({ type: 'run' }));
+      testRun = await actions.fork(atom.slice('testRuns', 'test-id-1').once((testRun) => testRun?.status === 'ok'));
     });
 
     it('runs on the available agents', () => {
@@ -76,10 +80,26 @@ describe('command processor', () => {
     });
 
     it('adds agent and test tree to manifest', () => {
-      let testRun = atom.slice('testRuns', 'test-id-1').get();
+      expect(testRun.status).toEqual('ok');
       expect(Object.values(testRun.agents).length).toEqual(1);
       expect(testRun.agents['agent-1'].agent.agentId).toEqual('agent-1');
       expect(testRun.agents['agent-1'].result.description).toEqual('the manifest');
+    });
+  });
+
+  describe('when sent a `run` message with a broken manifest', () => {
+    let testRun: TestRunState;
+
+    beforeEach(async () => {
+      atom.slice('bundler').set({ type: 'ERRORED', error: { message: 'it broke' }});
+      commands.send({ type: 'run', id: 'test-id-1' });
+      testRun = await actions.fork(atom.slice('testRuns', 'test-id-1').once((testRun) => testRun?.status === 'failed'));
+    });
+
+    it('marks test run as failed', () => {
+      expect(testRun.status).toEqual('failed');
+      expect(testRun.error?.message).toEqual('Cannot run tests due to build errors in the test suite:\nit broke');
+      expect(Object.values(testRun.agents).length).toEqual(0);
     });
   });
 });

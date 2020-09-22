@@ -67,8 +67,7 @@ describe('running tests with subscription on an agent', () => {
       });
 
       it('sends a running event', async () => {
-
-        let event = await actions.fork(results.expect());
+        let event = await actions.fork(results.match({ event: { type: 'testRunAgent:running' } }).expect());
         expect(event).toMatchObject({ event: { type: 'testRunAgent:running', agentId, testRunId } });
       });
     });
@@ -84,7 +83,7 @@ describe('running tests with subscription on an agent', () => {
       });
 
       it('sends an event for that step', async () => {
-        let event = await actions.fork(results.first());
+        let event = await actions.fork(results.match({ event: { type: 'step:result' } }).expect());
         expect(event).toMatchObject({
           event: {
             type: 'step:result',

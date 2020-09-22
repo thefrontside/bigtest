@@ -1,7 +1,7 @@
 import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 
-import { Subscription } from '@effection/subscription';
+import { ChainableSubscription } from '@effection/subscription';
 
 import { Atom, Slice } from '@bigtest/atom';
 
@@ -15,7 +15,7 @@ import { actions } from './helpers';
 describe('result stream', () => {
   let atom: Atom<OrchestratorState>;
   let slice: Slice<TestRunState, OrchestratorState>;
-  let subscription: Subscription<TestEvent, void>;
+  let subscription: ChainableSubscription<TestEvent, void>;
 
   beforeEach(async () => {
     atom = createOrchestratorAtom();
@@ -364,6 +364,39 @@ describe('result stream', () => {
         let { done } = await actions.fork(subscription.next());
         if(done) break;
       }
+    });
+  });
+
+  describe('on an already finished run', () => {
+    beforeEach(async () => {
+      slice.slice('status').set('ok');
+      slice.slice('agents', 'agent-1', 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'steps', 0, 'status').set('failed');
+      slice.slice('agents', 'agent-1', 'result', 'steps', 1, 'status').set('disregarded');
+      slice.slice('agents', 'agent-1', 'result', 'assertions', 0, 'status').set('disregarded');
+      slice.slice('agents', 'agent-1', 'result', 'assertions', 1, 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'children', 0, 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'children', 0, 'steps', 0, 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'children', 0, 'assertions', 0, 'status').set('ok');
+      subscription = await actions.fork(resultStream('test-run-1', slice));
+    });
+
+    it('terminates subscription', async() => {
+      while(true) {
+        let { done } = await actions.fork(subscription.next());
+        if(done) break;
+      }
+    });
+
+    it('generates a result event for each result', async () => {
+      await actions.fork(subscription.match({
+        type: 'step:result',
+        status: 'failed',
+        agentId: 'agent-1',
+        testRunId: 'test-run-1',
+        path: ['some test', 'step one'],
+      }).expect());
     });
   });
 });

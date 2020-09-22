@@ -30,12 +30,12 @@ export class Atom<S> implements Subscribable<S,undefined> {
     this.set(fn(this.get()));
   }
 
-  *once(predicate: (state: S) => boolean): Operation<S | undefined> {
+  *once(predicate: (state: S) => boolean): Operation<S> {
     if(predicate(this.state)) {
       return this.state;
     } else {
       let subscription = yield subscribe(this.states);
-      return yield subscription.filter(predicate).first();
+      return yield subscription.filter(predicate).expect();
     }
   }
 

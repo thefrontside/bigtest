@@ -1,4 +1,4 @@
-import { Test, TestResult, ResultStatus } from '@bigtest/suite';
+import { Test, TestResult, ResultStatus, ErrorDetails } from '@bigtest/suite';
 import { BundlerError, BundlerWarning } from '@bigtest/bundler';
 
 export type AgentState = {
@@ -26,6 +26,7 @@ export type TestRunState = {
   testRunId: string;
   status: ResultStatus;
   agents: Record<string, TestRunAgentState>;
+  error?: ErrorDetails;
 }
 
 export type TestRunAgentState = {
