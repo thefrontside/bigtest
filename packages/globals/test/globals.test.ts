@@ -78,6 +78,17 @@ describe('@bigtest/globals', () => {
     });
   });
 
+  describe('defaultAppTimeout', () => {
+    it('returns 20000 by default', () => {
+      expect(bigtestGlobals.defaultAppTimeout).toEqual(20000);
+    });
+
+    it('can assign a number', () => {
+      bigtestGlobals.defaultAppTimeout = 3000;
+      expect(bigtestGlobals.defaultAppTimeout).toEqual(3000);
+    });
+  });
+
   describe('testFrame', () => {
     it('returns undefined if there is not test frame', () => {
       expect(bigtestGlobals.testFrame).toEqual(undefined);

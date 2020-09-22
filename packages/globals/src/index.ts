@@ -5,6 +5,7 @@ interface BigtestOptions {
   testFrame?: HTMLIFrameElement;
   document?: Document;
   defaultInteractorTimeout?: number;
+  defaultAppTimeout?: number;
   appUrl?: string;
 }
 
@@ -50,6 +51,14 @@ export const bigtestGlobals = {
 
   set defaultInteractorTimeout(value: number) {
     options().defaultInteractorTimeout = value;
+  },
+
+  get defaultAppTimeout(): number {
+    return options().defaultAppTimeout || 20000;
+  },
+
+  set defaultAppTimeout(value: number) {
+    options().defaultAppTimeout = value;
   },
 
   get testFrame(): HTMLIFrameElement | undefined {
