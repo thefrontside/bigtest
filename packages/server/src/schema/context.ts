@@ -19,7 +19,7 @@ export interface Spawner {
 export type SpawnContext = Context<unknown> & Spawner;
 
 export interface RunTestOptions {
-  files?: string[];
+  files: string[];
 }
 
 export class GraphqlContext {
@@ -30,7 +30,7 @@ export class GraphqlContext {
   runTest(options: RunTestOptions): string {
     let { value: id } = this.testRunIds.next();
 
-    this.delegate.send({ type: "run", id, options });
+    this.delegate.send({ type: "run", id: id, files: options.files });
 
     return id;
   }

@@ -84,8 +84,8 @@ export const schema = makeSchema({
           args: {
             files: stringArg({ required: false, list: true }),
           },
-          resolve(_source, args, cxt) {
-            return cxt.runTest(args);
+          resolve(_source, { files }, cxt) {
+            return cxt.runTest({ files: files || [] });
           }
         })
       }
@@ -112,8 +112,8 @@ export const schema = makeSchema({
       args: {
         files: stringArg({ required: false, list: true }),
       },
-      subscribe(_root, args, cxt) {
-        return cxt.runTestSubscribe(args);
+      subscribe(_root, { files }, cxt) {
+        return cxt.runTestSubscribe({ files: files || [] });
       },
       resolve: payload => payload
     }),

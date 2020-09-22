@@ -12,7 +12,8 @@ import { OrchestratorState } from './orchestrator/state';
 
 import { Variables, Message, Response, QueryMessage, MutationMessage, SubscriptionMessage, isQuery, isMutation, isSubscription } from '@bigtest/client';
 
-export type CommandMessage = { status: "ready" } | { type: "run"; id: string };
+export type RunMessage = { type: "run"; id: string; files: string[] };
+export type CommandMessage = { status: "ready" } | RunMessage;
 
 interface CommandServerOptions {
   delegate: Mailbox<CommandMessage>;

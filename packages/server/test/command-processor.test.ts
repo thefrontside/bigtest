@@ -54,7 +54,7 @@ describe('command processor', () => {
 
     beforeEach(async () => {
       atom.slice('bundler', 'type').set('GREEN');
-      commands.send({ type: 'run', id: 'test-id-1' });
+      commands.send({ type: 'run', id: 'test-id-1', files: [] });
       pendingMessage = await actions.fork(delegate.receive({ type: 'run' }));
       testRun = await actions.fork(atom.slice('testRuns', 'test-id-1').once((testRun) => testRun?.status === 'ok'));
     });
@@ -92,7 +92,7 @@ describe('command processor', () => {
 
     beforeEach(async () => {
       atom.slice('bundler').set({ type: 'ERRORED', error: { message: 'it broke' }});
-      commands.send({ type: 'run', id: 'test-id-1' });
+      commands.send({ type: 'run', id: 'test-id-1', files: [] });
       testRun = await actions.fork(atom.slice('testRuns', 'test-id-1').once((testRun) => testRun?.status === 'failed'));
     });
 

@@ -5,7 +5,8 @@ import { Atom } from '@bigtest/atom';
 import { AgentEvent, Command as AgentCommand } from '@bigtest/agent';
 import { AgentState, OrchestratorState, BundlerState } from './orchestrator/state';
 import { TestRunAggregator } from './result-aggregator/test-run';
-import { CommandMessage } from './command-server';
+import { CommandMessage, RunMessage } from './command-server';
+import { filterTest } from './filter-test';
 
 interface CommandProcessorOptions {
   atom: Atom<OrchestratorState>;
@@ -16,7 +17,7 @@ interface CommandProcessorOptions {
   manifestPort: number;
 };
 
-function* run(testRunId: string, options: CommandProcessorOptions): Operation {
+function* run({ id: testRunId, files }: RunMessage, options: CommandProcessorOptions): Operation {
   console.debug('[command processor] running test', testRunId);
 
   let stepTimeout = 60_000;
@@ -32,11 +33,23 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
     let appUrl = `http://localhost:${options.proxyPort}`;
     let manifestUrl = `http://localhost:${options.manifestPort}/${manifest.fileName}`;
 
+    let test;
+    try {
+      test = filterTest(manifest, { files });
+    } catch(error) {
+      testRunSlice.set({
+        testRunId: testRunId,
+        status: 'failed',
+        error: { name: 'FilterError', message: error.message },
+        agents: {}
+      });
+      return;
+    }
+
     // todo: we should perform filtering of the agents here
     let agents: AgentState[] = Object.values(options.atom.get().agents);
 
-    // todo: we should perform filtering of the manifest here
-    let result = resultsFor(manifest);
+    let result = resultsFor(test);
 
     testRunSlice.set({
       testRunId: testRunId,
@@ -48,7 +61,7 @@ function* run(testRunId: string, options: CommandProcessorOptions): Operation {
       let { agentId } = agent;
 
       console.debug(`[command processor] starting test run ${testRunId} on agent ${agentId}`);
-      options.delegate.send({ type: 'run', agentId, appUrl, manifestUrl, testRunId, tree: manifest, stepTimeout });
+      options.delegate.send({ type: 'run', agentId, appUrl, manifestUrl, testRunId, tree: test, stepTimeout });
     }
 
     let aggregator = new TestRunAggregator(testRunSlice, { testRunId, ...options });
@@ -71,7 +84,7 @@ export function* createCommandProcessor(options: CommandProcessorOptions): Opera
 
     console.debug('[command processor] received message', message);
 
-    yield fork(run(message.id, options));
+    yield fork(run(message, options));
   }
 }
 
