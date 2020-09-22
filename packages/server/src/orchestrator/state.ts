@@ -1,4 +1,5 @@
 import { Test, TestResult, ResultStatus, ErrorDetails } from '@bigtest/suite';
+import { BundlerState } from '@bigtest/bundler';
 
 export type AgentState = {
   agentId: string;
