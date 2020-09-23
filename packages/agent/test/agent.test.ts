@@ -141,6 +141,15 @@ describe("@bigtest/agent", function() {
           expect(checkContext).toMatchObject({ status: 'ok' });
         });
 
+        it('preserves test context all the way down the entire test run without async', async () => {
+          let checkContext = await run(events.match({
+            type: 'assertion:result',
+            path: ['tests', 'tests that track context without async', 'contains entire context from all steps']
+          }).first());
+
+          expect(checkContext).toMatchObject({ status: 'ok' });
+        });
+
         describe('steps that timeout', () => {
           let longStep: StepResult;
           beforeEach(async () => {
