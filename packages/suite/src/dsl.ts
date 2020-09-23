@@ -9,8 +9,8 @@ export function test<C extends Context>(description: string): TestBuilder<C> {
   });
 }
 
-export type Action<C extends Context, R extends Context | void> = (context: C) => Promise<R>;
-export type Check<C extends Context> = (context: C) => Promise<void>;
+export type Action<C extends Context, R extends Context | void> = (context: C) => Promise<R> | R;
+export type Check<C extends Context> = (context: C) => Promise<void> | void;
 
 export interface StepDefinition<C extends Context, R extends Context | void> {
   description: string;

@@ -37,6 +37,7 @@ test('a test')
     Math.abs(foo);
   })
 
+// Context Async
 test('a test')
   // should not be able to return non-object
   // $ExpectError
@@ -50,3 +51,18 @@ test('a test')
   // $ExpectError
   .step('consume from context', async({ helloX: string }) => { goodbye: helloX })
   .step({ description: "consume from context", action: async () => {} })
+
+// Context Sync
+test('a test')
+  // should not be able to return non-object
+  // $ExpectError
+  .step('return nonsense', () => {
+    return "foo";
+  })
+
+test('a test')
+  .step({ description: "a description", action: () => {} })
+  .step('add to context', () => ({ hello: "world" }))
+  // $ExpectError
+  .step('consume from context', ({ helloX: string }) => { goodbye: helloX })
+  .step({ description: "consume from context", action: () => {} })

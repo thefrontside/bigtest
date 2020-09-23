@@ -67,7 +67,7 @@ export function* runLane(config: LaneConfig) {
         originalConsole.debug('[agent] running step', step);
         events.send({ testRunId, type: 'step:running', path: stepPath });
 
-        let result: TestContext | void = yield timebox(step.action(context), stepTimeout)
+        let result: TestContext | void = yield timebox(Promise.resolve(step.action(context)), stepTimeout)
 
         if (result != null) {
           context = {...context, ...result};
@@ -112,7 +112,7 @@ export function* runLane(config: LaneConfig) {
             originalConsole.debug('[agent] running assertion', assertion);
             events.send({ testRunId, type: 'assertion:running', path: assertionPath });
 
-            yield timebox(assertion.check(context), stepTimeout)
+            yield timebox(Promise.resolve(assertion.check(context)), stepTimeout)
 
             events.send({
               testRunId,
