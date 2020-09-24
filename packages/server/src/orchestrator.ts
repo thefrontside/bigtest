@@ -160,6 +160,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       events: commandProcessorEvents,
       commands: commandProcessorCommands,
       delegate: connectionServerInbox,
+      testFiles: options.project.testFiles,
     });
   } finally {
     console.log("[orchestrator] shutting down!");

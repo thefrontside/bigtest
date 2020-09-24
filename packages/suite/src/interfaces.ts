@@ -8,6 +8,7 @@
  */
 export interface Test extends Node {
   description: string;
+  path?: string;
   steps: Node[];
   assertions: Node[];
   children: Test[];
@@ -25,6 +26,7 @@ export interface Test extends Node {
  */
 export interface TestImplementation extends Test {
   description: string;
+  path?: string;
   steps: Step[];
   assertions: Assertion[];
   children: TestImplementation[];
@@ -83,6 +85,7 @@ export type ResultStatus = 'pending' | 'running' | 'failed' | 'ok' | 'disregarde
  */
 export interface TestResult extends Test {
   description: string;
+  path?: string;
   steps: StepResult[];
   assertions: AssertionResult[];
   children: TestResult[];
