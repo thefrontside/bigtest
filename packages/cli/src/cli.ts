@@ -29,6 +29,7 @@ export function * CLI(argv: string[]): Operation {
     });
   } else if (args.command === 'ci') {
     let config: ProjectOptions = yield loadConfig(args);
+    config.watchTestFiles = false;
     yield startServer(config, {
       timeout: args.startTimeout,
     });

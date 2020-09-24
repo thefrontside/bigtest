@@ -28,6 +28,7 @@ export type ProjectOptions = {
   port: number;
   testFiles: string[];
   cacheDir: string;
+  watchTestFiles: boolean;
   app: {
     url?: string;
     command?: string;
@@ -63,6 +64,7 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
     },
     testFiles: ["./test/**/*.test.{ts,js}"],
     cacheDir: path.resolve(path.dirname(configFilePath), '.bigtest'),
+    watchTestFiles: true,
     drivers: {
       chrome: {
         module: "@bigtest/webdriver",

@@ -36,6 +36,7 @@ describe('manifest builder', () => {
     actions.fork(function*() {
       yield createManifestBuilder({
         atom,
+        watch: true,
         srcPath: MANIFEST_PATH,
         buildDir: BUILD_DIR,
         distDir: DIST_DIR,
@@ -65,7 +66,7 @@ describe('manifest builder', () => {
 
     beforeEach(async () => {
       await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
-      
+
       let bundle = await actions.fork(atom.slice('bundler').once(({ type }) => type === 'GREEN'));
 
       resultPath = (!!bundle && bundle.type === 'GREEN' && bundle.path) as string;
@@ -108,7 +109,7 @@ describe('manifest builder', () => {
       expect(distMapURL).toMatch(/manifest-[0-9a-f]+\.js.map/);
     });
   });
-  
+
   describe('when manifest is generated in a different format', () => {
     let error: Error;
     let emptyFilePath: string;
@@ -152,10 +153,10 @@ describe('manifest builder', () => {
     it('should update the global state with the error detail', () => {
       let bundlerState = atom.get().bundler;
 
-      // this could be a custom expect 
+      // this could be a custom expect
       // assert is used to type narrow also and does more than just assert
       assertBundlerState(bundlerState.type, {is: 'ERRORED'})
-      
+
       let error = bundlerState.error;
 
       expect(error.frame).toBeTruthy();

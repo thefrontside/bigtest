@@ -23,6 +23,7 @@ main(createServer({
   },
   testFiles: ["./test/fixtures/*.t.js"],
   cacheDir: "./tmp/start",
+  watchTestFiles: true,
   drivers: {
       chrome: {
         module: "@bigtest/webdriver",

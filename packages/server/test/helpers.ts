@@ -67,6 +67,7 @@ export const actions = {
           port: 24102,
           testFiles: ["test/fixtures/*.t.js"],
           cacheDir: "./tmp/test/orchestrator",
+          watchTestFiles: true,
           manifest: {
             port: 24105,
           },
