@@ -1,5 +1,18 @@
 # @bigtest/interactor
 
+## 0.17.0
+
+### Minor Changes
+
+- d97038a8: App interactor waits for application to load
+- 7a727c86: Prevent interactor actions from being run in assertions
+
+### Patch Changes
+
+- Updated dependencies [d97038a8]
+- Updated dependencies [7a727c86]
+  - @bigtest/globals@0.7.0
+
 ## 0.16.1
 
 ### Patch Changes

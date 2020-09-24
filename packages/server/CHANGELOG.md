@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.15.0
+
+### Minor Changes
+
+- c5952202: Don't watch test files when running CI command
+- abc69ff6: Filter test run by file path
+- 934cfa72: Fail test run if there are errors in the test files
+
+### Patch Changes
+
+- f1846f07: Prevent race conditions in result stream by always streaming results even if the test run is already complete.
+- 22145f61: Start orchestrator even if bundle has errors.
+- Updated dependencies [c5952202]
+- Updated dependencies [d97038a8]
+- Updated dependencies [c7bed38b]
+- Updated dependencies [abc69ff6]
+- Updated dependencies [dcc12ea2]
+- Updated dependencies [7a727c86]
+- Updated dependencies [eae589f0]
+  - @bigtest/bundler@0.10.0
+  - @bigtest/project@0.9.0
+  - @bigtest/globals@0.7.0
+  - @bigtest/suite@0.9.0
+  - @bigtest/agent@0.13.0
+  - @bigtest/atom@0.9.0
+  - @bigtest/webdriver@0.6.2
+
 ## 0.14.1
 
 ### Patch Changes

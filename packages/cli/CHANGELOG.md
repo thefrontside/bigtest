@@ -1,5 +1,27 @@
 # @bigtest/cli
 
+## 0.12.0
+
+### Minor Changes
+
+- c5952202: Don't watch test files when running CI command
+- ee45f0bd: Formatters can be functions in addition to objects
+- abc69ff6: Filter test run by file path
+- fbc7b237: Add --start-timeout option, if server start takes too long, eventually time out
+- 934cfa72: Fail test run if there are errors in the test files
+
+### Patch Changes
+
+- 5d1a0806: Show correct assertion counts
+- 1e643719: App command and app url are passed down into options
+- Updated dependencies [c5952202]
+- Updated dependencies [abc69ff6]
+- Updated dependencies [f1846f07]
+- Updated dependencies [22145f61]
+- Updated dependencies [934cfa72]
+  - @bigtest/project@0.9.0
+  - @bigtest/server@0.15.0
+
 ## 0.11.0
 
 ### Minor Changes

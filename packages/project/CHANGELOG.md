@@ -1,5 +1,11 @@
 # @bigtest/project
 
+## 0.9.0
+
+### Minor Changes
+
+- c5952202: Don't watch test files when running CI command
+
 ## 0.8.0
 
 ### Minor Changes

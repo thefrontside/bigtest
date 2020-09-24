@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.9.0
+
+### Minor Changes
+
+- c7bed38b: Allow step actions and assertion checks to return values synchronously
+- abc69ff6: Filter test run by file path
+
 ## 0.8.0
 
 ### Minor Changes

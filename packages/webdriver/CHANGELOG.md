@@ -1,5 +1,12 @@
 # @bigtest/webdriver
 
+## 0.6.2
+
+### Patch Changes
+
+- Updated dependencies [dcc12ea2]
+  - @bigtest/atom@0.9.0
+
 ## 0.6.1
 
 ### Patch Changes

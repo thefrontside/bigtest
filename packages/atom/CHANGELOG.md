@@ -1,5 +1,11 @@
 # @bigtest/atom
 
+## 0.9.0
+
+### Minor Changes
+
+- dcc12ea2: Atom and Slice's `once` never returns undefined. The subscription never terminates, so an undefined value will never happen in practice.
+
 ## 0.8.2
 
 ### Patch Changes
