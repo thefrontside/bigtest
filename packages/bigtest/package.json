@@ -1,6 +1,6 @@
 {
   "name": "bigtest",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
@@ -10,6 +10,6 @@
     "prepack": "echo no-op"
   },
   "dependencies": {
-    "@bigtest/cli": "0.11.0"
+    "@bigtest/cli": "0.12.0"
   }
 }

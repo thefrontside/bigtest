@@ -1,5 +1,19 @@
 # @bigtest/agent
 
+## 0.13.0
+
+### Minor Changes
+
+- c7bed38b: Allow step actions and assertion checks to return values synchronously
+- 7a727c86: Prevent interactor actions from being run in assertions
+
+### Patch Changes
+
+- eae589f0: Hide splash page when app frame is active
+- Updated dependencies [d97038a8]
+- Updated dependencies [7a727c86]
+  - @bigtest/globals@0.7.0
+
 ## 0.12.0
 
 ### Minor Changes

@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/globals",
-  "version": "0.6.3",
+  "version": "0.7.0",
   "description": "Global variable accesors for bigtest",
   "main": "dist/cjs/index.js",
   "browser": "dist/esm/index.js",
@@ -19,7 +19,7 @@
     "prepack": "tsc --outdir dist/esm --sourcemap --module es2015 && tsc --outdir dist/cjs --sourcemap --module commonjs && tsc --outdir dist/types --emitDeclarationOnly"
   },
   "dependencies": {
-    "@bigtest/suite": "^0.8.0",
+    "@bigtest/suite": "^0.9.0",
     "effection": "^0.7.0"
   },
   "devDependencies": {
