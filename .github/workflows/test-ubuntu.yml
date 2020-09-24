@@ -16,11 +16,15 @@ jobs:
         # keeping platform as a single item so test-*.yml files can be identical except for this value
     steps:
       - uses: actions/checkout@v2
-      - name: cache
-        uses: actions/cache@v2
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v2
         with:
-          path: /home/runner/.cache/yarn/v6
-          key: cachekey-v1-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: cachekey-v1-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            cachekey-v1-${{ runner.os }}-yarn-
       - name: Install dependencies
         run: yarn
       - name: Run prepack
@@ -43,11 +47,15 @@ jobs:
         package: [agent, cli, effection, logging, bundler, project, server, suite, interactor, todomvc, atom, webdriver]
     steps:
       - uses: actions/checkout@v2
-      - name: cache
-        uses: actions/cache@v2
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v2
         with:
-          path: /home/runner/.cache/yarn/v6
-          key: cachekey-v1-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: cachekey-v1-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            cachekey-v1-${{ runner.os }}-yarn-
       - uses: actions/download-artifact@v2
         # this action will also unpack them for us
         with:
