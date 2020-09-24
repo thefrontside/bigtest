@@ -1,3 +1,4 @@
+import { timeout } from 'effection';
 import { describe } from 'mocha';
 import { promises as fs, existsSync } from 'fs';
 import expect from 'expect';
@@ -23,11 +24,12 @@ describe("Bundler", function() {
         await fs.writeFile("./build/test/sources/input.js", "const foo = 'bar';\nexport default foo;\n");
 
         bundler = await spawn(Bundler.create({
+          watch: true,
           entry: "./build/test/sources/input.js",
           outFile: "./build/test/output/manifest.js",
           globalName: "__bigtestManifest",
         }));
-        
+
         await spawn(subscribe(bundler).match({ type: 'UPDATE' }).first());
       });
 
@@ -52,6 +54,7 @@ describe("Bundler", function() {
         await fs.writeFile("./build/test/sources/input.js", "const foo - 'bar';\nexport default foo;\n");
 
         bundler = await spawn(Bundler.create({
+          watch: true,
           entry: "./build/test/sources/input.js",
           outFile: "./build/test/output/manifest.js",
           globalName: "__bigtestManifest",
@@ -66,7 +69,8 @@ describe("Bundler", function() {
 
       describe('fixing the error', () => {
         beforeEach(async () => {
-          await spawn(subscribe(bundler).first());
+          await spawn(subscribe(bundler).match({ type: 'ERROR' }).first());
+          await spawn(timeout(10));
           await fs.writeFile("./build/test/sources/input.js", "const foo = 'bar';\nexport default foo;\n");
         });
 
@@ -85,11 +89,12 @@ describe("Bundler", function() {
         await fs.writeFile("./build/test/sources/input.ts", "const foo: string = 'bar';\nexport default foo;\n");
 
         bundler = await spawn(Bundler.create({
+          watch: true,
           entry: "./build/test/sources/input.ts",
           outFile: "./build/test/output/manifest.js",
           globalName: "__bigtestManifest",
         }));
-        
+
         await spawn(subscribe(bundler).match({ type: 'UPDATE' }).first());
       });
 
@@ -103,6 +108,7 @@ describe("Bundler", function() {
         await fs.writeFile("./build/test/sources/input.ts", "const foo: number = 'bar';\nexport default foo;\n");
 
         bundler = await spawn(Bundler.create({
+          watch: true,
           entry: "./build/test/sources/input.ts",
           outFile: "./build/test/output/manifest.js",
           globalName: "__bigtestManifest",
@@ -122,11 +128,12 @@ describe("Bundler", function() {
       await fs.writeFile("./build/test/sources/input.ts", "const foo: string = 'bar';\nexport default foo;\n");
 
       bundler = await spawn(Bundler.create({
+        watch: true,
         entry: "./build/test/sources/input.ts",
         outFile: "./build/test/output/manifest.js",
         globalName: "__bigtestManifest"
       }));
-      
+
       await fs.writeFile("./build/test/sources/input.ts", "export default {hello: 'world'}\n");
     });
 
@@ -134,6 +141,45 @@ describe("Bundler", function() {
       let message = spawn(subscribe(bundler).match({ type: 'UPDATE' }).first())
 
       await expect(message).resolves.toHaveProperty('type', 'UPDATE');
+    });
+  });
+
+  describe("with watch: false", () => {
+    describe('success', () => {
+      beforeEach(async () => {
+        await fs.writeFile("./build/test/sources/input.js", "const foo = 'bar';\nexport default foo;\n");
+
+        bundler = await spawn(Bundler.create({
+          watch: false,
+          entry: "./build/test/sources/input.js",
+          outFile: "./build/test/output/manifest.js",
+          globalName: "__bigtestManifest",
+        }));
+
+        await spawn(subscribe(bundler).match({ type: 'UPDATE' }).first());
+      });
+
+      it('builds the sources into the output directory', () => {
+        expect(existsSync("./build/test/output/manifest.js")).toEqual(true);
+      });
+    });
+
+    describe('error', () => {
+      beforeEach(async () => {
+        await fs.writeFile("./build/test/sources/input.js", "const foo - 'bar';\nexport default foo;\n");
+
+        bundler = await spawn(Bundler.create({
+          watch: false,
+          entry: "./build/test/sources/input.js",
+          outFile: "./build/test/output/manifest.js",
+          globalName: "__bigtestManifest",
+        }));
+      });
+
+      it('emits an error event', async () => {
+        let message = spawn(subscribe(bundler).match({ type: 'ERROR' }).first())
+        await expect(message).resolves.toHaveProperty('type', 'ERROR');
+      });
     });
   });
 })

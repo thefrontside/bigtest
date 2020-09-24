@@ -94,6 +94,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   console.debug('[orchestrator] manifest generator ready');
 
   yield fork(createManifestBuilder({
+    watch: options.project.watchTestFiles,
     atom: options.atom,
     srcPath: manifestSrcPath,
     distDir: manifestDistDir,

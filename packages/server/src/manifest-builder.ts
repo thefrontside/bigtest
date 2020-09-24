@@ -15,6 +15,7 @@ import { assertBundlerState, assertCanTransition } from '../src/assertions/bundl
 const { copyFile, mkdir, stat, appendFile, open } = fs.promises;
 
 interface ManifestBuilderOptions {
+  watch: boolean;
   atom: Atom<OrchestratorState>;
   srcPath: string;
   buildDir: string;
@@ -91,6 +92,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
   bundlerSlice.set({ type: 'UNBUNDLED' });
 
   let bundler: Bundler = yield Bundler.create({
+    watch: options.watch,
     entry: options.srcPath,
     globalName: bigtestGlobals.manifestProperty,
     outFile: path.join(options.buildDir, "manifest.js")
@@ -122,7 +124,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
         bundlerSlice.update(() => ({ type: 'ERRORED', error: message.error }));
         break;
       case 'WARN':
-        console.debug("received bundle warning");
+        console.debug("received bundle warning", message.warning);
 
         bundlerSlice.update((previous) => {
           assertBundlerState(previous.type, {is: ['BUILDING', 'GREEN']});
