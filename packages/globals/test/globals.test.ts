@@ -101,4 +101,15 @@ describe('@bigtest/globals', () => {
       expect(bigtestGlobals.testFrame).toEqual(frameElement);
     });
   });
+
+  describe('runnerState', () => {
+    it('returns undefined by default', () => {
+      expect(bigtestGlobals.runnerState).toEqual(undefined);
+    });
+
+    it('can assign a runner state', () => {
+      bigtestGlobals.runnerState = 'step';
+      expect(bigtestGlobals.runnerState).toEqual('step');
+    });
+  });
 })

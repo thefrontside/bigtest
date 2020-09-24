@@ -1,12 +1,15 @@
 import './globals';
 import { TestImplementation } from '@bigtest/suite';
 
+export type RunnerState = 'pending' | 'step' | 'assertion';
+
 interface BigtestOptions {
   testFrame?: HTMLIFrameElement;
   document?: Document;
   defaultInteractorTimeout?: number;
   defaultAppTimeout?: number;
   appUrl?: string;
+  runnerState?: RunnerState;
 }
 
 const defaultManifest: TestImplementation = {
@@ -67,6 +70,14 @@ export const bigtestGlobals = {
 
   set testFrame(value: HTMLIFrameElement | undefined) {
     options().testFrame = value;
+  },
+
+  get runnerState(): RunnerState | undefined {
+    return options().runnerState;
+  },
+
+  set runnerState(value: RunnerState | undefined) {
+    options().runnerState = value;
   },
 
   get appUrl(): string | undefined {

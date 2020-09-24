@@ -35,6 +35,7 @@ export function* runLane(config: LaneConfig) {
       })
     );
 
+    bigtestGlobals.runnerState = 'pending';
     bigtestGlobals.appUrl = appUrl;
     bigtestGlobals.testFrame = findIFrame('app-frame');
 
@@ -67,7 +68,9 @@ export function* runLane(config: LaneConfig) {
         originalConsole.debug('[agent] running step', step);
         events.send({ testRunId, type: 'step:running', path: stepPath });
 
+        bigtestGlobals.runnerState = 'step';
         let result: TestContext | void = yield timebox(Promise.resolve(step.action(context)), stepTimeout)
+        bigtestGlobals.runnerState = 'pending';
 
         if (result != null) {
           context = {...context, ...result};
@@ -112,7 +115,9 @@ export function* runLane(config: LaneConfig) {
             originalConsole.debug('[agent] running assertion', assertion);
             events.send({ testRunId, type: 'assertion:running', path: assertionPath });
 
+            bigtestGlobals.runnerState = 'assertion';
             yield timebox(Promise.resolve(assertion.check(context)), stepTimeout)
+            bigtestGlobals.runnerState = 'pending';
 
             events.send({
               testRunId,

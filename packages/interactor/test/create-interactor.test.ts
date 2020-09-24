@@ -1,6 +1,7 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect';
 import { dom } from './helpers';
+import { bigtestGlobals } from '@bigtest/globals';
 
 import { createInteractor, perform } from '../src/index';
 
@@ -368,6 +369,18 @@ describe('@bigtest/interactor', () => {
         '- <a href="/foo">',
         '- <a href="/bar&quot;">',
       ].join('\n'))
+    });
+
+    it('throws an error if runner is currently in assertion state', async () => {
+      dom(`
+        <p><a href="/foo">Foo</a></p>
+      `);
+
+      bigtestGlobals.runnerState = 'assertion';
+
+      await expect(Link('Foo').click()).rejects.toHaveProperty('message',
+        'tried to click on link "Foo" in an assertion, actions should only be performed in steps'
+      );
     });
   });
 
