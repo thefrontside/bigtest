@@ -132,3 +132,5 @@ export type Formatter = {
   event(event: RunResultEvent): void;
   footer(result: TestResults): void;
 };
+
+export type FormatterConstructor = () => Formatter;

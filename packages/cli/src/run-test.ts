@@ -4,7 +4,7 @@ import { ProjectOptions } from '@bigtest/project';
 import { Client } from '@bigtest/client';
 import { MainError } from '@effection/node';
 import * as query from './query';
-import { Formatter } from './format-helpers';
+import { Formatter, FormatterConstructor } from './format-helpers';
 
 import checks from './formatters/checks';
 import lines from './formatters/lines';
@@ -15,15 +15,24 @@ interface Options {
   showLog: boolean;
 }
 
-const BUILTIN_FORMATTERS: Record<string, Formatter> = { checks, lines };
+const BUILTIN_FORMATTERS: Record<string, Formatter | FormatterConstructor> = { checks, lines };
+
+function initFormatter(input: Formatter | FormatterConstructor): Formatter {
+  if(typeof(input) === 'function') {
+    return input();
+  } else {
+    return input;
+  }
+}
 
 function *resolveFormatter(name: string): Operation<Formatter> {
   let builtin = BUILTIN_FORMATTERS[name];
   if(builtin) {
-    return builtin;
+    return initFormatter(builtin);
   } else {
     try {
-      return yield import(name);
+      let imported: Formatter | FormatterConstructor = yield import(name);
+      return initFormatter(imported);
     } catch {
       throw new MainError({ exitCode: 1, message: chalk.red(`ERROR: Formatter with module name ${JSON.stringify(name)} not found.`) });
     }
