@@ -1,3 +1,4 @@
+import { bigtestGlobals } from '@bigtest/globals';
 import { InteractorSpecification, FilterImplementation, InteractorInstance, InteractorType, LocatorFn, InteractorConstructor } from './specification';
 import { Locator } from './locator';
 import { Filter } from './filter';
@@ -18,8 +19,11 @@ export function createInteractor<E extends Element>(interactorName: string) {
           if(args.length) {
             actionDescription += ` with ` + args.map((a) => JSON.stringify(a)).join(', ');
           }
-          return interaction(`${actionDescription} on ${this.description}`, () => {
-            return converge(() => {
+          return interaction(`${actionDescription} on ${this.description}`, async () => {
+            if(bigtestGlobals.runnerState === 'assertion') {
+              throw new Error(`tried to ${actionDescription} on ${this.description} in an assertion, actions should only be performed in steps`);
+            }
+            return await converge(() => {
               return action(this, ...args);
             });
           });
