@@ -4,6 +4,7 @@ import * as fs from 'fs';
 
 interface Options {
   files: string[];
+  testFiles?: string[];
 }
 
 function comparePaths(a: string, b: string) {
@@ -20,9 +21,11 @@ export function filterTest(test: Test, options: Options): Test {
       if(child) {
         children.push(child);
       } else if(fs.existsSync(file)) {
-        throw new Error(`file with path '${path.resolve(file)}' exists, but is not part of your test files, if you want to run this test, adjust the 'testFiles' setting in 'bigtest.json'`)
+        let patterns = options.testFiles?.map((p) => JSON.stringify(p)).join(', ') || '';
+        throw new Error(`file with path ${JSON.stringify(path.resolve(file))} exists but does not match the \`testFiles\` pattern(s) ${patterns}`.trim() +
+          '. If you want to include this file in your test suite you can adjust the `testFiles` setting in `bigtest.json`.')
       } else {
-        throw new Error(`file with path '${path.resolve(file)}' does not exist`);
+        throw new Error(`file with path ${JSON.stringify(path.resolve(file))} does not exist`);
       }
     };
   } else {

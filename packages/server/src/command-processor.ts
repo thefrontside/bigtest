@@ -15,6 +15,7 @@ interface CommandProcessorOptions {
   delegate: Mailbox<AgentCommand & { agentId: string }>;
   proxyPort: number;
   manifestPort: number;
+  testFiles?: string[];
 };
 
 function* run({ id: testRunId, files }: RunMessage, options: CommandProcessorOptions): Operation {
@@ -35,7 +36,7 @@ function* run({ id: testRunId, files }: RunMessage, options: CommandProcessorOpt
 
     let test;
     try {
-      test = filterTest(manifest, { files });
+      test = filterTest(manifest, { files, testFiles: options.testFiles });
     } catch(error) {
       testRunSlice.set({
         testRunId: testRunId,

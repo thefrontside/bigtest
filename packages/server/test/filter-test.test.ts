@@ -33,13 +33,13 @@ describe('filter test', () => {
     it('throws an error if the given file does not exist', async () => {
       expect(() => {
         filterTest(test, { files: ['does-not-exist.ts'] });
-      }).toThrowError(`file with path '${path.resolve('does-not-exist.ts')}' does not exist`);
+      }).toThrowError('does not exist');
     });
 
     it('throws an error if the given file exists but is not part of the test', async () => {
       expect(() => {
         filterTest(test, { files: ['src/index.ts'] });
-      }).toThrowError(`file with path '${path.resolve('src/index.ts')}' exists, but is not part of your test files`);
+      }).toThrowError('exists but does not match the `testFiles` pattern(s)');
     });
   });
 });
