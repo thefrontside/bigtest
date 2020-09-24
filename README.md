@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img alt="Test Status" src="https://github.com/thefrontside/bigtest/workflows/Test/badge.svg" />
+  <img alt="Test Status" src="https://github.com/thefrontside/bigtest/workflows/Test%20Ubuntu/badge.svg" />
   <a href="https://discord.gg/r6AvtnU">
     <img alt="Chat on Discord" src="https://img.shields.io/discord/700803887132704931?Label=Discord)](https://discord.gg/r6AvtnU" />
   </a>
