@@ -1,9 +1,12 @@
 import { Operation } from 'effection';
 import { ProjectOptions } from '@bigtest/project';
-import { promises as fs } from 'fs';
+import { promises as fs, existsSync } from 'fs';
 import * as path from 'path';
+import * as chalk from 'chalk';
 
 import { Prompt } from './prompt';
+
+const GIT_IGNORE = '.gitignore';
 
 export function* init(configFile: string): Operation<void> {
   let prompt = yield Prompt.create();
@@ -59,6 +62,19 @@ export function* init(configFile: string): Operation<void> {
     });
   }
 
+  process.stdout.write(chalk.white('\nSetting up project\n'));
+
+  process.stdout.write(chalk.grey(`- adding ignore to ${GIT_IGNORE} ... `));
+  if(existsSync(GIT_IGNORE) && (yield fs.readFile(GIT_IGNORE)).toString().includes('.bigtest')) {
+    process.stdout.write(chalk.grey('skipped\n'));
+  } else {
+    yield fs.writeFile(GIT_IGNORE, '.bigtest\n', { flag: 'a' });
+    process.stdout.write(chalk.grey('done\n'));
+  }
+
+  process.stdout.write(chalk.grey(`- writing config file ${configFile} ... `));
   yield fs.mkdir(path.dirname(configFile), { recursive: true });
   yield fs.writeFile(configFile, JSON.stringify(options, null, 2) + '\n');
+  process.stdout.write(chalk.grey('done\n'));
+  process.stdout.write(chalk.white('\nSetup complete!\n'));
 }
