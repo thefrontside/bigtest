@@ -42,7 +42,7 @@
     "eslint-plugin-react": "^7.19.0",
     "prettier": "^1.19.1",
     "typedoc": "^0.16.9",
-    "typescript": "^3.7.5"
+    "typescript": "^3.9.7"
   },
   "keywords": [
     "gatsby"
