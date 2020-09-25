@@ -10,7 +10,7 @@ import expect from 'expect';
 import fetch from 'node-fetch';
 import fixtureManifest from './fixtures/manifest';
 
-import { AgentServerConfig, TestEvent, createAgentHandler, AgentConnection, AssertionResult } from '../src/index';
+import { AgentServerConfig, TestEvent, createAgentHandler, AgentConnection, AssertionResult, RunEnd } from '../src/index';
 
 import { run } from './helpers';
 import { StepResult } from '@bigtest/suite';
@@ -223,6 +223,23 @@ describe("@bigtest/agent", function() {
             });
           });
         });
+
+        describe('coverage', () => {
+          let end: RunEnd;
+          beforeEach(async () => {
+            end = await run(events.match({
+              type: 'run:end'
+            }).expect()) as RunEnd;
+          });
+
+          it('is reported with the run:end event', () => {
+            expect(end).toMatchObject({
+              type: 'run:end',
+              coverage: require('./fixtures/coverage-data').coverageData
+            })
+          });
+        });
+
       });
 
       describe('closing browser connection', () => {

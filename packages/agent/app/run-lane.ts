@@ -13,6 +13,7 @@ import { serializeError } from './serialize-error';
 import { wrapConsole } from './wrap-console';
 import { setLogConfig, getLogConfig } from './log-config';
 import { clearPersistentStorage } from './clear-persistent-storage';
+import { addCoverageMap } from './coverage';
 
 interface TestEvents {
   send(event: TestEvent): void;
@@ -44,6 +45,7 @@ export function* runLane(config: LaneConfig) {
     let test: TestImplementation = yield loadManifest(manifestUrl);
     yield runLaneSegment(test, path.slice(1), [], stepTimeout)
   } finally {
+    addCoverageMap(bigtestGlobals.testFrame);
     events.close();
   }
 
