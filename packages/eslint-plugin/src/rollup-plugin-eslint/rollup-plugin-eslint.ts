@@ -1,6 +1,6 @@
 import { createFilter } from "rollup-pluginutils";
 import { PluginImpl } from 'rollup';
-import { EslintValidator } from '../../validators/eslint-validator';
+import { EslintValidator } from '../eslint-validator/eslint-validator';
 
 export type EslintValidatorOptions =  {
   testFiles: string[];
@@ -10,7 +10,7 @@ export type EslintValidatorOptions =  {
 
 const eslintValidator = new EslintValidator();
 
-export const eslintPlugin: PluginImpl<EslintValidatorOptions> = (options) => {
+export const rollupEslintPlugin: PluginImpl<EslintValidatorOptions> = (options) => {
   if(!options) {
     throw new Error('no options supplied to eslintPlugin');
   }
@@ -53,13 +53,14 @@ export const eslintPlugin: PluginImpl<EslintValidatorOptions> = (options) => {
       }
 
       if (throwOnErrors === false) {
-        return
+        return null;
       }
 
       if (bundlerState.type !== 'INVALID') {
         return null;
       }
 
+      // TODO: remove
       console.log(bundlerState.errors[0].displayMessage)
 
       this.error(bundlerState.errors[0]);

@@ -6,7 +6,7 @@ import { watch, rollup, OutputOptions, InputOptions, RollupWatchOptions, RollupW
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
-import { eslintPlugin } from './plugins/eslint/eslint-plugin';
+import { eslintPlugin } from '@bigtest/eslint-plugin';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import babel from '@rollup/plugin-babel';
@@ -17,6 +17,7 @@ interface BundleOptions {
   outFile: string;
   globalName?: string;
   watch?: boolean;
+  testFiles: string[];
 };
 
 function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMessage>): InputOptions {
@@ -59,8 +60,7 @@ function prepareWatchOptions(bundle: BundleOptions, channel: Channel<BundlerMess
     ...prepareInputOptions(bundle, channel),
     output: prepareOutputOptions(bundle),
     watch: {
-      // Rollup types are wrong; `watch.exclude` allows RegExp[]
-      exclude: [/node_modules/ as unknown as string]
+      exclude: [/node_modules/]
     },
   }
 }

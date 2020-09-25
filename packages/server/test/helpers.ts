@@ -10,7 +10,8 @@ import { World } from './helpers/world';
 import { createOrchestrator } from '../src/index';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { AppOptions } from '../src/orchestrator/state';
-import { Manifest, BundlerState } from '../src/orchestrator/state';
+import { Manifest } from '../src/orchestrator/state';
+import { BundlerState } from '@bigtest/bundler';
 
 let orchestratorPromise: Context;
 let manifest: Manifest;

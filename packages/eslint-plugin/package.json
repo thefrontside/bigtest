@@ -9,6 +9,9 @@
   "keywords": [
     "eslint"
   ],
+  "dependencies": {
+    "eslint": "^7.8.1"
+  },
   "devDependencies": {
     "@frontside/tsconfig": "*",
     "@types/mocha": "^7.0.1",

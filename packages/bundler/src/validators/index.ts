@@ -1,1 +1,0 @@
-export { EslintValidator, EslintValidatorOptions } from './eslint-validator';

@@ -12,3 +12,6 @@ export const configs = {
     }
   }
 }
+
+export { EslintValidator, EslintValidatorOptions } from './eslint-validator/eslint-validator';
+export { rollupEslintPlugin as eslintPlugin } from './rollup-plugin-eslint/rollup-plugin-eslint';

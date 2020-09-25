@@ -159,6 +159,7 @@ describe("Bundler", function() {
           entry: "./build/test/sources/input.js",
           outFile: "./build/test/output/manifest.js",
           globalName: "__bigtestManifest",
+          testFiles: []
         }));
 
         await spawn(subscribe(bundler).match({ type: 'UPDATE' }).first());
@@ -178,6 +179,7 @@ describe("Bundler", function() {
           entry: "./build/test/sources/input.js",
           outFile: "./build/test/output/manifest.js",
           globalName: "__bigtestManifest",
+          testFiles: []
         }));
       });
 

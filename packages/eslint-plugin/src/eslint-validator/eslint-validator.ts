@@ -1,12 +1,12 @@
 import { ESLint } from 'eslint';
-import { Validator, BundlerState, ValidationWarning, ValidationError } from '../types';
+import { ValidationWarning, ValidationError, Validator, ValidationState } from '../types';
 import { EslintOptions } from './eslint-options';
 
 export type EslintValidatorOptions = {
   format: 'stylish' | 'codeframe';
 }
 
-export class EslintValidator implements Validator<BundlerState, EslintValidatorOptions> {
+export class EslintValidator implements Validator<ValidationState, EslintValidatorOptions> {
   private eslintCli: ESLint;
   private formatter?: ESLint.Formatter;
 
@@ -18,7 +18,7 @@ export class EslintValidator implements Validator<BundlerState, EslintValidatorO
     return this.formatter ?? this.eslintCli.loadFormatter(options.format)
   }
 
-  async getLintBundlerState(reports: ESLint.LintResult[], options: EslintValidatorOptions): Promise<BundlerState> {
+  async getLintBundlerState(reports: ESLint.LintResult[], options: EslintValidatorOptions): Promise<ValidationState> {
     let warnings: ValidationWarning[] = [];
     let errors: ValidationError[] = [];
 
@@ -60,7 +60,7 @@ export class EslintValidator implements Validator<BundlerState, EslintValidatorO
     }
   }
 
-  async validate(files: string | string[], options: EslintValidatorOptions = { format: 'codeframe' }): Promise<BundlerState> {
+  async validate(files: string | string[], options: EslintValidatorOptions = { format: 'codeframe' }): Promise<ValidationState> {
     let reports: ESLint.LintResult[] = await this.eslintCli.lintFiles(files);
 
     return this.getLintBundlerState(reports, options);

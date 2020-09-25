@@ -35,10 +35,6 @@ export type BundlerState =
 
 export type BundlerTypes = Pick<BundlerState, 'type'>['type'];
 
-export interface Validator<R, O extends Record<string, unknown> = {}> {
-  validate(files: string | readonly string[], options?: O): Promise<R>;
-}
-
 export type BundleOptions = {
   entry: string;
   outFile: string;
