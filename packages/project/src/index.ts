@@ -100,6 +100,6 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
         }
       },
     },
-    launch: []
+    launch: ['chrome.headless']
   }
 };
