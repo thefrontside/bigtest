@@ -1,7 +1,7 @@
 import * as Path from 'path';
 
 interface Options {
-  port: number;
+  url: string;
   prefix?: string;
 }
 
@@ -9,8 +9,7 @@ export class AgentServerConfig {
   constructor(public options: Options) {}
 
   url() {
-    let url = new URL('http://localhost');
-    url.port = this.options.port.toString();
+    let url = new URL(this.options.url);
     url.pathname = this.options.prefix || '/';
     return url.toString();
   }

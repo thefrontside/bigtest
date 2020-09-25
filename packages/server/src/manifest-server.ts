@@ -7,7 +7,7 @@ interface ManifestServerOptions {
   delegate: Mailbox;
   dir: string;
   port: number;
-  proxyPort: number;
+  proxyUrl: string;
 };
 
 export function* createManifestServer(options: ManifestServerOptions): Operation {
@@ -15,7 +15,7 @@ export function* createManifestServer(options: ManifestServerOptions): Operation
 
   app.raw.use(staticMiddleware(options.dir, {
     setHeaders(res) {
-      res.setHeader('Access-Control-Allow-Origin', `http://localhost:${options.proxyPort}`);
+      res.setHeader('Access-Control-Allow-Origin', options.proxyUrl);
     }
   }));
 

@@ -13,8 +13,8 @@ interface CommandProcessorOptions {
   commands: Mailbox<CommandMessage>;
   events: Mailbox<AgentEvent>;
   delegate: Mailbox<AgentCommand & { agentId: string }>;
-  proxyPort: number;
-  manifestPort: number;
+  proxyUrl: string;
+  manifestUrl: string;
   testFiles?: string[];
 };
 
@@ -31,8 +31,8 @@ function* run({ id: testRunId, files }: RunMessage, options: CommandProcessorOpt
   if(bundler.type === 'GREEN') {
     let manifest = options.atom.get().manifest;
 
-    let appUrl = `http://localhost:${options.proxyPort}`;
-    let manifestUrl = `http://localhost:${options.manifestPort}/${manifest.fileName}`;
+  let appUrl = options.proxyUrl;
+  let manifestUrl = `${options.manifestUrl}/${manifest.fileName}`;
 
     let test;
     try {

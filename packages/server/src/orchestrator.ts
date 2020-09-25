@@ -34,7 +34,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   let manifestGeneratorDelegate = new Mailbox();
   let manifestServerDelegate = new Mailbox();
 
-  let agentServerConfig = new AgentServerConfig({ port: options.project.proxy.port, prefix: '/__bigtest/', });
+  let agentServerConfig = new AgentServerConfig({ url: options.project.proxy.externalUrl, prefix: '/__bigtest/', });
 
   let manifestSrcDir = path.resolve(options.project.cacheDir, 'manifest/src');
   let manifestBuildDir = path.resolve(options.project.cacheDir, 'manifest/build');
@@ -42,7 +42,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   let manifestSrcPath = path.resolve(manifestSrcDir, 'manifest.js');
 
-  let connectTo = `ws://localhost:${options.project.connection.port}`;
+  let connectTo = options.project.connection.externalUrl;
 
   yield spawn(createLogger({ atom: options.atom,  out: console.error }));
 
@@ -80,7 +80,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     delegate: manifestServerDelegate,
     dir: manifestDistDir,
     port: options.project.manifest.port,
-    proxyPort: options.project.proxy.port,
+    proxyUrl: options.project.proxy.externalUrl,
   }));
 
   yield fork(createManifestGenerator({
@@ -155,8 +155,8 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   try {
     yield createCommandProcessor({
-      proxyPort: options.project.proxy.port,
-      manifestPort: options.project.manifest.port,
+      proxyUrl: options.project.proxy.externalUrl,
+      manifestUrl: options.project.manifest.externalUrl,
       atom: options.atom,
       events: commandProcessorEvents,
       commands: commandProcessorCommands,

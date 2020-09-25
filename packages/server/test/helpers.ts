@@ -69,12 +69,15 @@ export const actions = {
           cacheDir: "./tmp/test/orchestrator",
           watchTestFiles: true,
           manifest: {
+            externalUrl: 'http://localhost:24105',
             port: 24105,
           },
           proxy: {
+            externalUrl: 'http://localhost:24101',
             port: 24101,
           },
           connection: {
+            externalUrl: 'http://localhost:24103',
             port: 24103,
           },
           drivers: {},

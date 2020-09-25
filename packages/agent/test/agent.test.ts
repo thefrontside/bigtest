@@ -25,7 +25,7 @@ function* staticServer(port: number) {
   });
 }
 
-let config = new AgentServerConfig({ port: 8000 });
+let config = new AgentServerConfig({ url: 'http://localhost:8000' });
 
 describe("@bigtest/agent", function() {
   beforeEach(() => {

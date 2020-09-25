@@ -13,12 +13,15 @@ main(createServer({
     env: {},
   },
   proxy: {
+    externalUrl: "http://localhost:24001",
     port: 24001,
   },
   connection: {
+    externalUrl: "ws://localhost:24003",
     port: 24003,
   },
   manifest: {
+    externalUrl: "http://localhost:24005",
     port: 24005,
   },
   testFiles: ["./test/fixtures/*.t.js"],

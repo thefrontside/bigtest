@@ -1,6 +1,3 @@
-import 'chromedriver';
-import 'geckodriver';
-
 import { Operation } from 'effection';
 import { untilURLAvailable } from './until-url-available';
 import { WebDriver, RemoteOptions, connect } from './web-driver';

@@ -43,8 +43,8 @@ describe('command processor', () => {
       events,
       commands,
       delegate,
-      proxyPort: 24201,
-      manifestPort: 24202,
+      proxyUrl: 'http://localhost:24201',
+      manifestUrl: 'http://localhost:24202',
     }));
   });
 
