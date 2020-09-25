@@ -58,9 +58,9 @@ export type ProjectOptions = {
   drivers: Record<string, DriverSpec>;
   launch: string[];
   coverage: {
-    reports: CoverageReportName[]
+    reports: CoverageReportName[];
     directory: string;
-  }
+  };
 }
 
 export function defaultConfig(configFilePath: string): ProjectOptions {
