@@ -4,14 +4,12 @@ import * as path from 'path';
 import { existsSync } from 'fs';
 import * as fs from 'fs';
 
-const CONFIG_FILE_NAME = 'bigtest.json';
-
 const { readFile } = fs.promises;
 
-export function getConfigFilePath(): string | undefined {
+export function getConfigFilePath(fileName = 'bigtest.json'): string | undefined {
   let dir = process.cwd();
   do {
-    let configFilePath = path.resolve(dir, CONFIG_FILE_NAME);
+    let configFilePath = path.resolve(dir, fileName);
     if(existsSync(configFilePath)) {
       return configFilePath;
     }

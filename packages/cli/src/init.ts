@@ -1,5 +1,5 @@
 import { Operation } from 'effection';
-import { ProjectOptions } from '@bigtest/project';
+import { ProjectOptions, getConfigFilePath } from '@bigtest/project';
 import { promises as fs, existsSync } from 'fs';
 import * as path from 'path';
 import * as chalk from 'chalk';
@@ -10,6 +10,8 @@ const GIT_IGNORE = '.gitignore';
 
 export function* init(configFile: string): Operation<void> {
   let prompt = yield Prompt.create();
+
+  let isYarn = !!getConfigFilePath('yarn.lock');
 
   let options: Partial<ProjectOptions>;
 
@@ -39,7 +41,7 @@ export function* init(configFile: string): Operation<void> {
   if(yield prompt.boolean('Do you want BigTest to start your application for you?', { defaultValue: true })) {
     options.app.command = yield prompt.string('What command do you run to start your application?', {
       name: 'app.command',
-      defaultValue: options.app.command || 'yarn start',
+      defaultValue: options.app.command || (isYarn ? 'yarn start' : 'npm start'),
     })
     options.app.env = {
       PORT: yield prompt.number('Which port would you like to run your application on?', {

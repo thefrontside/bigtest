@@ -1,4 +1,5 @@
 ---
+"@bigtest/project": minor
 "@bigtest/cli": minor
 ---
 
