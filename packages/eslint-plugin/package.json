@@ -17,6 +17,7 @@
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
     "mocha": "^6.2.2",
+    "rollup": "^2.28.0",
     "ts-node": "*"
   },
   "scripts": {

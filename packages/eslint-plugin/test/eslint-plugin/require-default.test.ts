@@ -1,5 +1,5 @@
 import { TSESLint } from '@typescript-eslint/experimental-utils';
-import { requireDefaultTextExport } from '../src/rules/require-default-export';
+import { requireDefaultTextExport } from '../../src/rules/require-default-export';
 
 const ruleTester = new TSESLint.RuleTester({
   parser: require.resolve('@typescript-eslint/parser'),

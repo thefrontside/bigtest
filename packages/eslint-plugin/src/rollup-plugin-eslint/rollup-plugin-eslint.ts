@@ -60,9 +60,6 @@ export const rollupEslintPlugin: PluginImpl<EslintValidatorOptions> = (options) 
         return null;
       }
 
-      // TODO: remove
-      console.log(bundlerState.errors[0].displayMessage)
-
       this.error(bundlerState.errors[0]);
     },
   };
