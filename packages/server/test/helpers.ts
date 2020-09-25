@@ -78,7 +78,8 @@ export const actions = {
             port: 24103,
           },
           drivers: {},
-          launch: []
+          launch: [],
+          coverage: { reports: [], directory: "" }
         }
       }));
 

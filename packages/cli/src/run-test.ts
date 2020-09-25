@@ -5,6 +5,7 @@ import { Client } from '@bigtest/client';
 import { MainError } from '@effection/node';
 import * as query from './query';
 import { Formatter, FormatterConstructor } from './format-helpers';
+import { reportCoverage } from './report-coverage';
 
 import checks from './formatters/checks';
 import lines from './formatters/lines';
@@ -14,6 +15,7 @@ interface Options {
   files: string[];
   showFullStack: boolean;
   showLog: boolean;
+  coverage: boolean;
 }
 
 const BUILTIN_FORMATTERS: Record<string, Formatter | FormatterConstructor> = { checks, lines };
@@ -86,9 +88,15 @@ export function* runTest(config: ProjectOptions, options: Options): Operation<vo
     showInternalStackTrace: options.showFullStack,
     showStackTraceCode: options.showFullStack,
     showLog: options.showLog,
+    coverage: options.coverage
   });
 
+
   formatter.footer(treeQuery);
+
+  if (options.coverage) {
+    yield reportCoverage(config, treeQuery);
+  }
 
   if(treeQuery.testRun.status !== 'ok') {
     throw new MainError({ exitCode: 1 });

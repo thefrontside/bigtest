@@ -1,6 +1,7 @@
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import * as expect from 'expect';
 import * as process from 'process';
+import { promises as fs }  from 'fs';
 
 import { Process } from './helpers/process';
 import { World } from './helpers/world';
@@ -227,6 +228,52 @@ describe('@bigtest/cli', function() {
         expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite')
         expect(child.stdout?.output).toContain('test/fixtures/bad.broken.ts')
         expect(child.stdout?.output).toContain('⨯ FAILURE')
+      });
+    });
+  });
+
+  describe('coverage', () => {
+    beforeEach( async() => {
+      await fs.rmdir('./tmp/coverage', { recursive: true });
+    });
+
+    describe('when coverage output is requested', () => {
+      let child: Process;
+      beforeEach(async () => {
+        child = await World.spawn(run('ci', '--coverage', './test/fixtures/coverage.test.ts'));
+        await World.spawn(child.join());
+      });
+
+      it('outputs the coverage reports', async () => {
+        await expect((fs.access('tmp/coverage/lcov/lcov.info'))).resolves.toBeUndefined();
+        expect(child.stdout?.output).toContain('reported to -> ./tmp/coverage');
+      });
+    });
+
+    describe('when requested, but there is no coverage data in the test run', () => {
+      let child: Process;
+      beforeEach(async () => {
+        child = await World.spawn(run('ci', '--coverage', './test/fixtures/passing.test.ts'));
+        await World.spawn(child.join());
+      });
+
+      it('warns the user that there is no coverage data', () => {
+        expect(child.stderr?.output).toContain('no coverage metrics were present');
+      });
+    });
+
+    describe('when coverage data is present, but coverage output is not requested', () => {
+      let child: Process;
+      beforeEach(async () => {
+        child = await World.spawn(run('ci', './test/fixtures/coverage.test.ts'));
+        await World.spawn(child.join());
+      });
+
+      it('does nothing', async () => {
+        expect(child.stdout?.output).not.toContain('@bigtest/coverage');
+        await expect((fs.access('tmp/coverage/lcov/lcov.info'))).rejects.toMatchObject({
+          message: expect.stringContaining('no such file or directory')
+        });
       });
     });
   });

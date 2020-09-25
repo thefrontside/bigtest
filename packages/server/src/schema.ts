@@ -236,6 +236,10 @@ export const schema = makeSchema({
         t.id("testRunId");
         t.string("status");
         t.field("error", { type: "Error", nullable: true });
+        t.string("coverage", {
+          nullable: true,
+          resolve: testRun => JSON.stringify(testRun.coverage)
+        })
         t.list.field("agents", {
           type: "TestRunAgent",
           resolve: (testRun) => Object.values(testRun.agents)
