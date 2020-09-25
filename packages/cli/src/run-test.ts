@@ -1,6 +1,5 @@
 import * as chalk from 'chalk';
 import { Operation } from 'effection';
-import { ProjectOptions } from '@bigtest/project';
 import { Client } from '@bigtest/client';
 import { MainError } from '@effection/node';
 import * as query from './query';
@@ -42,9 +41,9 @@ function *resolveFormatter(name: string): Operation<Formatter> {
   }
 }
 
-export function* runTest(config: ProjectOptions, options: Options): Operation<void> {
+export function* runTest(port: number, options: Options): Operation<void> {
   let formatter = yield resolveFormatter(options.formatterName);
-  let uri = `ws://localhost:${config.port}`;
+  let uri = `ws://localhost:${port}`;
 
   let client: Client = yield function*() {
     try {
