@@ -8,7 +8,7 @@ export type ValidationException = {
   code?: string;
   frame?: string;
   message: string;
-  displayMessage: string;
+  formattedMessage: string;
 	loc?: {
 		column: number;
 		file?: string;

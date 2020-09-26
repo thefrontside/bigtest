@@ -1,10 +1,8 @@
 export { Bundler } from './bundler';
-export {
+
+export type {
   BundlerError,
   BundlerWarning,
-  ValidationError,
-  ValidationException,
-  ValidationWarning,
   BundlerState,
   BundlerTypes,
 } from './types';

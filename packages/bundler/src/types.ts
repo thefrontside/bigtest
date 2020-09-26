@@ -1,27 +1,9 @@
 import { RollupWarning, RollupError } from 'rollup';
 import { ProjectOptions } from '@bigtest/project';
+import type { ValidationError, ValidationWarning } from '@bigtest/eslint-plugin';
 
 export type BundlerError = RollupError;
 export type BundlerWarning = RollupWarning;
-
-export type ValidationException = {
-  name: string;
-  fileName: string;
-  message: string;
-  displayMessage?: string;
-  code?: string;
-  frame?: string;
-  loc?: {
-    column: number;
-	  file?: string;
-	  line: number;
-  };
-}
-
-export type ValidationWarning = ValidationException;
-export type ValidationError = ValidationException & {
-  stack?: string;
-}
 
 export type BundlerState =
   | { type: 'UNBUNDLED' }

@@ -14,4 +14,6 @@ export const configs = {
 }
 
 export { EslintValidator, EslintValidatorOptions } from './eslint-validator/eslint-validator';
-export { rollupEslintPlugin as eslintPlugin } from './rollup-plugin-eslint/rollup-plugin-eslint';
+export { rollupEslintPlugin as eslint } from './rollup-plugin-eslint/rollup-plugin-eslint';
+
+export type { Validator, ValidationError, ValidationWarning, ValidationState } from './types';

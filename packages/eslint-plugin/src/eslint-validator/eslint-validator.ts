@@ -1,6 +1,6 @@
 import { ESLint } from 'eslint';
-import { ValidationWarning, ValidationError, Validator, ValidationState } from '../types';
 import { EslintOptions } from './eslint-options';
+import type { ValidationWarning, ValidationError, Validator, ValidationState } from '../types';
 
 export type EslintValidatorOptions = {
   format: 'stylish' | 'codeframe';
@@ -40,7 +40,7 @@ export class EslintValidator implements Validator<ValidationState, EslintValidat
       let error: ValidationError | ValidationWarning = {
         name: lintResult.ruleId as string,
         message: lintResult.message,
-        displayMessage: output,
+        formattedMessage: output,
         code: sourceCode,
         fileName: lintResult.filePath,
         loc: {
