@@ -3,6 +3,7 @@ import { lensPath, view, set, dissoc, over, ManualLens } from "ramda";
 import { Atom } from "./atom";
 import { subscribe, Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
 import { Sliceable } from './sliceable';
+import { unique } from './unique';
 
 export class Slice<S, A> implements Subscribable<S, undefined> {
   lens: ManualLens<S, A>;
@@ -54,7 +55,7 @@ export class Slice<S, A> implements Subscribable<S, undefined> {
           parentLens,
           array.filter((el) => el !== this.get()),
           state
-        ) as unknown) as A;
+        )) as A;
       });
     } else {
       let [property] = this.path.slice(-1);
@@ -63,7 +64,7 @@ export class Slice<S, A> implements Subscribable<S, undefined> {
           parentLens,
           dissoc(property, parent as object),
           state
-        ) as unknown) as A;
+        )) as A;
       });
     }
   }
@@ -79,6 +80,8 @@ export class Slice<S, A> implements Subscribable<S, undefined> {
   }
 
   *[SymbolSubscribable](): Operation<Subscription<S, undefined>> {
-    return yield subscribe(this.atom).map((state) => view(this.lens)(state) as unknown as S);
+    return yield subscribe(this.atom)
+    .map((state) => view(this.lens)(state))
+    .filter(unique(this.get()));
   }
 }

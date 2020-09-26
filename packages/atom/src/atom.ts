@@ -3,6 +3,7 @@ import { Channel } from '@effection/channel';
 import { subscribe, Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
 import { Slice } from "./slice";
 import { Sliceable } from './sliceable';
+import { unique } from './unique';
 
 export class Atom<S> implements Subscribable<S,undefined> {
   private readonly initial: S;
@@ -53,6 +54,6 @@ export class Atom<S> implements Subscribable<S,undefined> {
   }
 
   *[SymbolSubscribable](): Operation<Subscription<S,undefined>> {
-    return yield subscribe(this.states);
+    return yield subscribe(this.states).filter(unique(this.initial));
   }
 }

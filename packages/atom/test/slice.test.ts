@@ -1,13 +1,13 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect';
 import { Atom } from '../src/atom';
-import { spawn } from './helpers';
+import { spawn, when } from './helpers';
 import { Slice } from '../src/slice';
-import { Subscription, subscribe } from '@effection/subscription';
+import { Subscription, subscribe, ChainableSubscription } from '@effection/subscription';
 
 type Data = { data: string };
 
-describe('@bigtest/atom', () => {
+describe('@bigtest/atom Slice', () => {
   describe('Slice', () => {
     let atom: Atom<Data>;
     let slice: Slice<string, Data>;
@@ -121,6 +121,37 @@ describe('@bigtest/atom', () => {
         await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'bar' });
         await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'baz' });
         await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'quox' });
+      });
+    });
+
+    describe('subscribe - unique state publish', () => {
+      let result: string[];
+      let subscription: ChainableSubscription<string, undefined>;
+
+      beforeEach(async () => {
+        result = [];
+
+        subscription = await spawn(subscribe(slice));
+        spawn(subscription.forEach(function*(state) { 
+          result.push(state); 
+        }));
+
+        // foo is the initial value
+        // should not appear as element 1 in the result
+        slice.update(() => 'foo');
+        slice.update(() => 'bar');
+        slice.update(() => 'bar');
+        slice.update(() => 'baz');
+        slice.update(() => 'baz');
+        // back to foo, should exist in the result
+        slice.update(() => 'foo');
+      });
+
+      it('should only publish unique state changes', async () => {
+        await when(() => {
+          expect(result).toHaveLength(3);
+          expect(result).toEqual(['bar', 'baz', 'foo']);
+        });
       });
     });
   });
