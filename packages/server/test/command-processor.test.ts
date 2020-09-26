@@ -48,7 +48,7 @@ describe('command processor', () => {
     }));
   });
 
-  describe.only('when sent a `run` message with a valid manifest', () => {
+  describe('when sent a `run` message with a valid manifest', () => {
     let pendingMessage: any; // eslint-disable-line @typescript-eslint/no-explicit-any
     let testRun: TestRunState;
 
