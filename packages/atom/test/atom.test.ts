@@ -3,7 +3,7 @@ import * as expect from 'expect';
 import { Atom } from '../src/atom';
 import { spawn, when, never } from './helpers';
 import { Slice } from '../src/slice';
-import { Subscription, subscribe } from '@effection/subscription';
+import { Subscription, subscribe, ChainableSubscription } from '@effection/subscription';
 
 describe('@bigtest/atom', () => {
   describe('Atom', () => {
@@ -160,6 +160,37 @@ describe('@bigtest/atom', () => {
         await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'bar' });
         await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'baz' });
         await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'quox' });
+      });
+    });
+
+    describe('subscribe - unique state publish', () => {
+      let result: string[];
+      let subscription: ChainableSubscription<string, undefined>;
+
+      beforeEach(async () => {
+        result = [];
+
+        subscription = await spawn(subscribe(subject));
+        spawn(subscription.forEach(function*(state) { 
+          result.push(state); 
+        }));
+
+        // foo is the initial value
+        // should not appear as element 1 in the result
+        subject.update(() => 'foo');
+        subject.update(() => 'bar');
+        subject.update(() => 'bar');
+        subject.update(() => 'baz');
+        subject.update(() => 'baz');
+        // back to foo, should exist in the result
+        subject.update(() => 'foo');
+      });
+
+      it('should only publish unique state changes', async () => {
+        await when(() => {
+          expect(result).toHaveLength(3);
+          expect(result).toEqual(['bar', 'baz', 'foo']);
+        });
       });
     });
   });
