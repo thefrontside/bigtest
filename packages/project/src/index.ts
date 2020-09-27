@@ -36,15 +36,15 @@ export type ProjectOptions = {
     dir?: string;
   };
   proxy: {
-    externalUrl: string;
+    publicUrl: string;
     port: number;
   };
   connection: {
-    externalUrl: string;
+    publicUrl: string;
     port: number;
   };
   manifest: {
-    externalUrl: string;
+    publicUrl: string;
     port: number;
   };
   drivers: Record<string, DriverSpec>;
@@ -57,15 +57,15 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
     app: {
     },
     proxy: {
-      externalUrl: "http://localhost:24001",
+      publicUrl: "http://localhost:24001",
       port: 24001,
     },
     connection: {
-      externalUrl: "ws://localhost:24003",
+      publicUrl: "ws://localhost:24003",
       port: 24003,
     },
     manifest: {
-      externalUrl: "http://localhost:24005",
+      publicUrl: "http://localhost:24005",
       port: 24005,
     },
     testFiles: ["./test/**/*.test.{ts,js}"],

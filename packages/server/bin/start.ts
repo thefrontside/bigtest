@@ -13,56 +13,56 @@ main(createServer({
     env: {},
   },
   proxy: {
-    externalUrl: "http://localhost:24001",
+    publicUrl: "http://localhost:24001",
     port: 24001,
   },
   connection: {
-    externalUrl: "ws://localhost:24003",
+    publicUrl: "ws://localhost:24003",
     port: 24003,
   },
   manifest: {
-    externalUrl: "http://localhost:24005",
+    publicUrl: "http://localhost:24005",
     port: 24005,
   },
   testFiles: ["./test/fixtures/*.t.js"],
   cacheDir: "./tmp/start",
   watchTestFiles: true,
   drivers: {
-      chrome: {
-        module: "@bigtest/webdriver",
-        options: {
-          browserName: "chrome",
-          headless: false
-        }
-      },
-      "chrome.headless": {
-        module: "@bigtest/webdriver",
-        options: {
-          browserName: "chrome",
-          headless: true
-        }
-      },
-      firefox: {
-        module: "@bigtest/webdriver",
-        options: {
-          browserName: "firefox",
-          headless: false
-        }
-      },
-      "firefox.headless": {
-        module: "@bigtest/webdriver",
-        options: {
-          browserName: "firefox",
-          headless: true
-        }
-      },
-      "safari": {
-        module: "@bigtest/webdriver",
-        options: {
-          browserName: "safari",
-          headless: false
-        }
+    chrome: {
+      module: "@bigtest/webdriver",
+      options: {
+        browserName: "chrome",
+        headless: false
       }
+    },
+    "chrome.headless": {
+      module: "@bigtest/webdriver",
+      options: {
+        browserName: "chrome",
+        headless: true
+      }
+    },
+    firefox: {
+      module: "@bigtest/webdriver",
+      options: {
+        browserName: "firefox",
+        headless: false
+      }
+    },
+    "firefox.headless": {
+      module: "@bigtest/webdriver",
+      options: {
+        browserName: "firefox",
+        headless: true
+      }
+    },
+    "safari": {
+      module: "@bigtest/webdriver",
+      options: {
+        browserName: "safari",
+        headless: false
+      }
+    }
   },
   launch: ['chrome.headless', 'firefox.headless']
 }));
