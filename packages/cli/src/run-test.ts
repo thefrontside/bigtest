@@ -42,7 +42,7 @@ function *resolveFormatter(name: string): Operation<Formatter> {
 
 export function* runTest(config: ProjectOptions, options: Options): Operation<void> {
   let formatter = yield resolveFormatter(options.formatterName);
-  let uri = `ws://localhost:${config.port}`;
+  let uri = config.publicUrl;
 
   let client: Client = yield function*() {
     try {

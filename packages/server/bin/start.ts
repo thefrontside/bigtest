@@ -6,6 +6,7 @@ import { createServer } from '../src/index';
 setLogLevel(process.env.LOG_LEVEL as Levels || 'info');
 
 main(createServer({
+  publicUrl: "ws://localhost:24002",
   port: 24002,
   app: {
     url: "http://localhost:24000",

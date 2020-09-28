@@ -25,6 +25,7 @@ export function *loadConfigFile(configFilePath: string): Operation<ProjectOption
 }
 
 export type ProjectOptions = {
+  publicUrl: string;
   port: number;
   testFiles: string[];
   cacheDir: string;
@@ -53,6 +54,7 @@ export type ProjectOptions = {
 
 export function defaultConfig(configFilePath: string): ProjectOptions {
   return {
+    publicUrl: "ws://localhost:24002",
     port: 24002,
     app: {
     },
