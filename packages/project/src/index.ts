@@ -24,6 +24,17 @@ export function *loadConfigFile(configFilePath: string): Operation<ProjectOption
   return JSON.parse(contents) as ProjectOptions;
 }
 
+export type CoverageReportName =
+  'clover' |
+  'cobertura' |
+  'html-spa' |
+  'html' |
+  'json' |
+  'json-summary' |
+  'lcov'|
+  'lcovonly' |
+  'teamcity';
+
 export type ProjectOptions = {
   port: number;
   testFiles: string[];
@@ -46,6 +57,10 @@ export type ProjectOptions = {
   };
   drivers: Record<string, DriverSpec>;
   launch: string[];
+  coverage: {
+    reports: CoverageReportName[];
+    directory: string;
+  };
 }
 
 export function defaultConfig(configFilePath: string): ProjectOptions {
@@ -102,6 +117,10 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
         }
       },
     },
-    launch: []
+    launch: [],
+    coverage: {
+      reports: [],
+      directory: "./coverage"
+    }
   }
 };

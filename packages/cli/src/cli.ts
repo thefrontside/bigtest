@@ -26,6 +26,7 @@ export function * CLI(argv: string[]): Operation {
       formatterName: args.formatter,
       showFullStack: false,
       showLog: false,
+      coverage: args.coverage
     });
   } else if (args.command === 'ci') {
     let config: ProjectOptions = yield loadConfig(args);
@@ -38,6 +39,7 @@ export function * CLI(argv: string[]): Operation {
       formatterName: args.formatter,
       showFullStack: false,
       showLog: false,
+      coverage: args.coverage
     });
   }
 }
@@ -51,6 +53,7 @@ interface StartOptions {
 }
 
 interface RunOptions {
+  coverage: boolean;
   formatter: string;
   files: string[];
 }
@@ -102,6 +105,11 @@ function parseOptions(argv: readonly string[]): Options {
         type: 'string',
         default: 'checks'
       })
+      .option('coverage', {
+        describe: 'output coverage reports for the test run',
+        type: 'boolean',
+        default: false
+      });
   };
 
   let parsed = yargs({})

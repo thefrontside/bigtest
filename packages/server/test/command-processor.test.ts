@@ -56,6 +56,7 @@ describe('command processor', () => {
       atom.slice('bundler', 'type').set('GREEN');
       commands.send({ type: 'run', id: 'test-id-1', files: [] });
       pendingMessage = await actions.fork(delegate.receive({ type: 'run' }));
+      events.send({type: 'run:end', testRunId: 'test-id-1', agentId: 'agent-1' });
       testRun = await actions.fork(atom.slice('testRuns', 'test-id-1').once((testRun) => testRun?.status === 'ok'));
     });
 
