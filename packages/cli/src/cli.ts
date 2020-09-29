@@ -18,13 +18,7 @@ export function * CLI(argv: string[]): Operation {
     yield init(args.configFile || './bigtest.json');
   } else if (args.command === 'test') {
     let options: ProjectOptions = yield loadOptions(args.configFile);
-    yield runTest(options.port, {
-      files: args.files,
-      formatterName: args.formatter,
-      showFullStack: false,
-      showLog: false,
-      coverage: args.coverage
-    });
+    yield runTest(options, args);
   } else if (args.command === 'server') {
     let options: ProjectOptions = yield loadOptions(args.configFile);
     applyStartArgs(options, args);
@@ -41,13 +35,7 @@ export function * CLI(argv: string[]): Operation {
     yield startServer(options, {
       timeout: args.startTimeout,
     });
-    yield runTest(options.port, {
-      files: args.files,
-      formatterName: args.formatter,
-      showFullStack: false,
-      showLog: false,
-      coverage: args.coverage
-    });
+    yield runTest(options, args);
   }
 }
 
@@ -63,6 +51,8 @@ export interface RunArgs {
   coverage: boolean;
   formatter: string;
   files: string[];
+  showFullStack: boolean;
+  showLog: boolean;
 }
 
 export interface GlobalArgs {
@@ -118,6 +108,18 @@ function parseArgs(argv: readonly string[]): Args {
         describe: 'output coverage reports for the test run',
         type: 'boolean',
         default: false
+      })
+      .option('show-full-stack', {
+        alias: 'b',
+        describe: 'show the full stack including internals and source annotations',
+        type: 'boolean',
+        default: false
+      })
+      .option('show-log', {
+        alias: 'l',
+        describe: 'show console output from the application and tests',
+        type: 'boolean',
+        default: false
       });
   };
 
@@ -130,6 +132,7 @@ function parseArgs(argv: readonly string[]): Args {
       desc: 'increase or decrease the amount of logging information printed to the console'
     })
     .option('config-file', {
+      alias: 'c',
       global: true,
       desc: 'the config file to use for bigtest'
     })
