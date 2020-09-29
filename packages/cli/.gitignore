@@ -4,3 +4,4 @@
 .node-version
 .cache
 .bigtest
+tmp
