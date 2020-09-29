@@ -1,4 +1,4 @@
-import { createInteractor, perform } from '../index';
+import { createInteractor, perform, fillIn } from '../index';
 
 export const TextField = createInteractor<HTMLInputElement>('text field')({
   selector: 'input:not([type]),input[type=text]',
@@ -10,6 +10,7 @@ export const TextField = createInteractor<HTMLInputElement>('text field')({
   filters: {
     title: (element) => element.title,
     id: (element) => element.id,
+    value: (element) => element.value,
     disabled: {
       apply: (element) => element.disabled,
       default: false
@@ -19,5 +20,6 @@ export const TextField = createInteractor<HTMLInputElement>('text field')({
     click: perform((element) => { element.click(); }),
     focus: perform((element) => { element.focus(); }),
     blur: perform((element) => { element.blur(); }),
+    fillIn: perform(fillIn),
   },
 });

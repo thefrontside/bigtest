@@ -62,14 +62,10 @@ describe('@bigtest/interactor', () => {
           <p>
             <label for="nameField">Name</label>
             <input type="text" id="nameField"/>
+            <h1 id="target"></h1>
           </p>
           <script>
-            nameField.addEventListener('click', (event) => {
-              event.preventDefault();
-              let h1 = document.createElement('h1')
-              h1.textContent = 'Success';
-              document.body.appendChild(h1);
-            });
+            nameField.addEventListener('click', (event) => target.textContent = 'Success');
           </script>
         `);
 
@@ -84,14 +80,10 @@ describe('@bigtest/interactor', () => {
           <p>
             <label for="nameField">Name</label>
             <input type="text" id="nameField"/>
+            <h1 id="target"></h1>
           </p>
           <script>
-            nameField.addEventListener('focus', (event) => {
-              event.preventDefault();
-              let h1 = document.createElement('h1')
-              h1.textContent = 'Success';
-              document.body.appendChild(h1);
-            });
+            nameField.addEventListener('focus', (event) => target.textContent = 'Success');
           </script>
         `);
 
@@ -106,20 +98,30 @@ describe('@bigtest/interactor', () => {
           <p>
             <label for="nameField">Name</label>
             <input type="text" id="nameField"/>
+            <h1 id="target"></h1>
           </p>
           <script>
-            nameField.addEventListener('blur', (event) => {
-              event.preventDefault();
-              let h1 = document.createElement('h1')
-              h1.textContent = 'Success';
-              document.body.appendChild(h1);
-            });
+            nameField.addEventListener('blur', (event) => target.textContent = 'Success');
           </script>
         `);
 
         await TextField('Name').focus();
         await TextField('Name').blur();
         await Heading('Success').exists();
+      });
+    });
+
+    describe('.fillIn', () => {
+      it('fills in the field', async () => {
+        dom(`
+          <p>
+            <label for="nameField">Name</label>
+            <input type="text" id="nameField"/>
+          </p>
+        `);
+
+        await TextField('Name').fillIn('John');
+        await TextField('Name').has({ value: 'John' });
       });
     });
 
@@ -172,6 +174,20 @@ describe('@bigtest/interactor', () => {
 
         await expect(TextField('Name', { id: 'name-field' }).exists()).resolves.toBeUndefined();
         await expect(TextField('Name', { id: 'does-not-exist' }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+      });
+    });
+
+    describe('filter `value`', () => {
+      it('filters `input` tags by value', async () => {
+        dom(`
+          <p>
+            <label for="name-field">Name</label>
+            <input id="name-field" value="John"/>
+          </p>
+        `);
+
+        await expect(TextField('Name', { value: 'John' }).exists()).resolves.toBeUndefined();
+        await expect(TextField('Name', { value: 'Does not Exist' }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
       });
     });
   });
