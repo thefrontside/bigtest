@@ -4,6 +4,8 @@ import * as expect from 'expect'
 import { test }from '../src';
 import example from './fixtures/example';
 
+const noop = () => undefined;
+
 describe('dsl', () => {
   it('returns a serialized test suite', async () => {
     expect(example.description).toEqual('a test');
@@ -22,16 +24,16 @@ describe('dsl', () => {
   it('can have multiple steps', () => {
     let { steps } = test('a test')
       .step(
-        { description: "hello", action() {} },
-        { description: "world", action() {} });
+        { description: "hello", action: noop },
+        { description: "world", action: noop });
 
     expect(steps.map(step => step.description)).toEqual(['hello', 'world']);
   });
   it('can have multiple assertions', () => {
     let { assertions } = test('an assertion').
       assertion(
-        { description: "hello", check() {} },
-        { description: "world", check() {} });
+        { description: "hello", check: noop },
+        { description: "world", check: noop });
 
     expect(assertions.map(assertion => assertion.description)).toEqual(['hello', 'world']);
   });
