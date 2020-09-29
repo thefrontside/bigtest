@@ -1,5 +1,11 @@
 # @bigtest/project
 
+## 0.11.0
+
+### Minor Changes
+
+- 4b54d9f9: Add an interactive `init` command
+
 ## 0.10.0
 
 ### Minor Changes
