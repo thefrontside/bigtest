@@ -6,11 +6,14 @@ export const TextField = createInteractor<HTMLInputElement>('text field')({
   locators: {
     byId: (element) => element.id,
     byTitle: (element) => element.title,
+    byPlaceholder: (element) => element.placeholder,
   },
   filters: {
     title: (element) => element.title,
     id: (element) => element.id,
     value: (element) => element.value,
+    placeholder: (element) => element.placeholder,
+    valid: (element) => element.validity.valid,
     disabled: {
       apply: (element) => element.disabled,
       default: false

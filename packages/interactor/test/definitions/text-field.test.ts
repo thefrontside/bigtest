@@ -56,6 +56,17 @@ describe('@bigtest/interactor', () => {
       });
     });
 
+    describe('.byPlaceholder', () => {
+      it('finds `input` tags by their placeholder', async () => {
+        dom(`
+          <p><input type="text" placeholder="My Name Field" value="Bar"/></p>
+        `);
+
+        await expect(TextField.byPlaceholder('My Name Field').exists()).resolves.toBeUndefined();
+        await expect(TextField.byPlaceholder('Does not exist').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+      });
+    });
+
     describe('.click', () => {
       it('clicks on field', async () => {
         dom(`
@@ -188,6 +199,36 @@ describe('@bigtest/interactor', () => {
 
         await expect(TextField('Name', { value: 'John' }).exists()).resolves.toBeUndefined();
         await expect(TextField('Name', { value: 'Does not Exist' }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+      });
+    });
+
+    describe('filter `placeholder`', () => {
+      it('filters `input` tags by placeholder', async () => {
+        dom(`
+          <p>
+            <label for="name-field">Name</label>
+            <input id="name-field" placeholder="Your Name"/>
+          </p>
+        `);
+
+        await expect(TextField('Name', { placeholder: 'Your Name' }).exists()).resolves.toBeUndefined();
+        await expect(TextField('Name', { placeholder: 'Does not Exist' }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+      });
+    });
+
+    describe('filter `valid`', () => {
+      it('filters `input` tags by their validity state', async () => {
+        dom(`
+          <p>
+            <input required id="name-field" value="John"/>
+            <input required id="address-field"/>
+          </p>
+        `);
+
+        await expect(TextField.byId('name-field', { valid: true }).exists()).resolves.toBeUndefined();
+        await expect(TextField.byId('address-field', { valid: false }).exists()).resolves.toBeUndefined();
+        await expect(TextField.byId('name-field', { valid: false }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+        await expect(TextField.byId('address-field', { valid: true }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
       });
     });
   });
