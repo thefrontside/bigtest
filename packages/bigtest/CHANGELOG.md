@@ -1,5 +1,16 @@
 # bigtest
 
+## 0.2.0
+
+### Minor Changes
+
+- 6290d711: Reexport @bigtest/interactor and @bigtest/suite from bigtest package
+
+### Patch Changes
+
+- Updated dependencies [248d6ddc]
+  - @bigtest/cli@0.13.0
+
 ## 0.1.5
 
 ### Patch Changes

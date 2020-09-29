@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.16.0
+
+### Minor Changes
+
+- 248d6ddc: produce coverage reports by passing the `--coverage` option to the
+  `test` and `ci` commands
+
+### Patch Changes
+
+- Updated dependencies [248d6ddc]
+- Updated dependencies [4486733a]
+- Updated dependencies [f51c9933]
+  - @bigtest/project@0.10.0
+  - @bigtest/agent@0.14.0
+  - @bigtest/atom@0.10.0
+  - @bigtest/bundler@0.10.1
+  - @bigtest/webdriver@0.6.3
+
 ## 0.15.0
 
 ### Minor Changes

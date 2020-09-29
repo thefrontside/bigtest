@@ -1,5 +1,12 @@
 # @bigtest/bundler
 
+## 0.10.1
+
+### Patch Changes
+
+- Updated dependencies [248d6ddc]
+  - @bigtest/project@0.10.0
+
 ## 0.10.0
 
 ### Minor Changes

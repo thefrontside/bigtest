@@ -1,5 +1,18 @@
 # @bigtest/cli
 
+## 0.13.0
+
+### Minor Changes
+
+- 248d6ddc: produce coverage reports by passing the `--coverage` option to the
+  `test` and `ci` commands
+
+### Patch Changes
+
+- Updated dependencies [248d6ddc]
+  - @bigtest/server@0.16.0
+  - @bigtest/project@0.10.0
+
 ## 0.12.0
 
 ### Minor Changes

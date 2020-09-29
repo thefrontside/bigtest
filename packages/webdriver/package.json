@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/webdriver",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Control Webdriver instances",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -28,7 +28,7 @@
     "ts-node": "*"
   },
   "dependencies": {
-    "@bigtest/atom": "^0.9.0",
+    "@bigtest/atom": "^0.10.0",
     "@bigtest/driver": "^0.5.3",
     "@effection/fetch": "^0.1.2",
     "@effection/node": "^0.8.0",
