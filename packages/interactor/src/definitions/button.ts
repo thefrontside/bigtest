@@ -1,4 +1,5 @@
 import { createInteractor, perform } from '../index';
+import { isVisible } from 'element-is-visible';
 
 function isButtonElement(element: HTMLInputElement | HTMLButtonElement): element is HTMLButtonElement {
   return element.tagName === 'BUTTON';
@@ -22,6 +23,7 @@ export const Button = createInteractor<HTMLInputElement | HTMLButtonElement>('bu
   filters: {
     title: (element) => element.title,
     id: (element) => element.id,
+    visible: { apply: isVisible, default: true },
     disabled: {
       apply: (element) => element.disabled,
       default: false
