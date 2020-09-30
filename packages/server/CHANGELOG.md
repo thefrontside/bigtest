@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.16.1
+
+### Patch Changes
+
+- Updated dependencies [4b54d9f9]
+  - @bigtest/project@0.11.0
+  - @bigtest/bundler@0.10.2
+
 ## 0.16.0
 
 ### Minor Changes
