@@ -55,6 +55,7 @@
     "@bigtest/globals": "^0.7.0",
     "@bigtest/logging": "^0.5.1",
     "@bigtest/project": "^0.9.0",
+    "@bigtest/reporter": "^0.1.0",
     "@bigtest/suite": "^0.9.0",
     "@bigtest/webdriver": "^0.6.2",
     "@effection/events": "^0.7.8",

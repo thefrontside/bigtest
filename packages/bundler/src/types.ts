@@ -1,7 +1,4 @@
-import { RollupWarning, RollupError } from 'rollup';
-
-export type BundlerError = RollupError;
-export type BundlerWarning = RollupWarning;
+import type { BundlerError, BundlerWarning } from '@bigtest/reporter';
 
 export type BundlerMessage =
   | { type: 'START' }

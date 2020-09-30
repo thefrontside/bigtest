@@ -16,7 +16,7 @@ import { createManifestBuilder } from './manifest-builder';
 import { createManifestServer } from './manifest-server';
 import { createLogger } from './logger';
 import { OrchestratorState } from './orchestrator/state';
-
+import { consoleReporter } from '@bigtest/reporter';
 
 type OrchestratorOptions = {
   atom: Atom<OrchestratorState>;
@@ -25,7 +25,8 @@ type OrchestratorOptions = {
 }
 
 export function* createOrchestrator(options: OrchestratorOptions): Operation {
-  console.log('[orchestrator] starting');
+  let reporter = consoleReporter({ prefix: '[orchestrator]' });
+  reporter.info('starting');
 
   let connectionServerInbox = new Mailbox();
 
@@ -44,7 +45,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   let connectTo = `ws://localhost:${options.project.connection.port}`;
 
-  yield spawn(createLogger({ atom: options.atom,  out: console.error }));
+  yield spawn(createLogger({ atom: options.atom, reporter: consoleReporter({ prefix: '[manifest builder]' }) }));
 
   let browserManager: BrowserManager = yield createBrowserManager({
     atom: options.atom,
@@ -89,9 +90,9 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     destinationPath: manifestSrcPath,
   }));
 
-  console.debug('[orchestrator] wait for manifest generator');
+  reporter.debug('wait for manifest generator');
   yield manifestGeneratorDelegate.receive({ status: 'ready' });
-  console.debug('[orchestrator] manifest generator ready');
+  reporter.debug('manifest generator ready');
 
   yield fork(createManifestBuilder({
     watch: options.project.watchTestFiles,
@@ -106,43 +107,43 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       yield options.atom.slice("proxyService", "proxyStatus").once((status) => {
         return status === 'started'
       });
-      console.debug('[orchestrator] proxy server ready');
+      reporter.debug('proxy server ready');
     });
     yield fork(function* () {
       yield commandServerDelegate.receive({ status: 'ready' });
-      console.debug('[orchestrator] command server ready');
+      reporter.debug('command server ready');
     });
     yield fork(function* () {
       yield connectionServerDelegate.receive({ status: 'ready' });
-      console.debug('[orchestrator] connection server ready');
+      reporter.debug('connection server ready');
     });
     yield fork(function*() {
       yield options.atom.slice('appService', 'appStatus').once((status) => {
-        return status === 'reachable'
+        return status === 'reachable';
       });
-      console.debug('[orchestrator] app server ready');
+      reporter.debug('app server ready');
     });
     yield fork(function* () {
       yield options.atom.slice('bundler').once(({ type }) => type === 'GREEN' || type === 'ERRORED');
-      console.debug('[orchestrator] manifest builder ready');
+      reporter.debug('manifest builder ready');
     });
     yield fork(function* () {
       yield manifestServerDelegate.receive({ status: 'ready' });
-      console.debug('[orchestrator] manifest server ready');
+      reporter.debug('manifest server ready');
     });
     yield fork(function* () {
       yield browserManager.ready();
-      console.debug('[orchestrator] browser manager ready');
+      reporter.debug('browser manager ready');
     })
   }
 
-  console.log("[orchestrator] running!");
+  reporter.info("running!");
 
   let commandUrl = `http://localhost:${options.project.port}`;
   let connectURL = agentServerConfig.agentUrl(connectTo);
 
-  console.log(`[orchestrator] launch agents via: ${connectURL}`);
-  console.log(`[orchestrator] show GraphQL dashboard via: ${commandUrl}`);
+  reporter.info(`launch agents via: ${connectURL}`);
+  reporter.info(`show GraphQL dashboard via: ${commandUrl}`);
 
   options.delegate && options.delegate.send({ status: 'ready' });
 
@@ -164,6 +165,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       testFiles: options.project.testFiles,
     });
   } finally {
-    console.log("[orchestrator] shutting down!");
+    reporter.info("[orchestrator] shutting down!");
   }
 }

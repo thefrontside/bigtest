@@ -5,6 +5,7 @@ import { throwOnErrorEvent } from '@effection/events';
 import * as fs from 'fs';
 import * as globby from 'globby';
 import * as path from 'path';
+import { consoleReporter } from '@bigtest/reporter';
 
 const { writeFile, mkdir } = fs.promises;
 
@@ -44,6 +45,8 @@ module.exports = {
 }
 
 export function* createManifestGenerator(options: ManifestGeneratorOptions): Operation {
+  let reporter = consoleReporter({ prefix: '[manifest generator]' });
+
   let watcher = chokidar.watch(options.files, { ignoreInitial: true });
 
   yield ensure(() => watcher.close());
@@ -55,14 +58,14 @@ export function* createManifestGenerator(options: ManifestGeneratorOptions): Ope
   yield events.receive({ event: 'ready' });
   yield writeManifest(options);
 
-  console.debug("[manifest generator] manifest ready");
+  reporter.debug("manifest ready");
   options.delegate.send({ status: 'ready' });
 
   while(true) {
     yield events.receive();
     yield writeManifest(options);
 
-    console.debug("[manifest generator] manifest updated");
+    reporter.debug("manifest updated");
     options.delegate.send({ event: 'update' });
   }
 }

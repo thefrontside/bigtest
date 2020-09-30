@@ -10,7 +10,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { OrchestratorState } from './orchestrator/state';
 import { assertBundlerState, assertCanTransition } from '../src/assertions/bundler-assertions';
-
+import { consoleReporter } from '@bigtest/reporter';
 
 const { copyFile, mkdir, stat, appendFile, open } = fs.promises;
 
@@ -88,6 +88,7 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
 
 export function* createManifestBuilder(options: ManifestBuilderOptions): Operation {
   let bundlerSlice = options.atom.slice('bundler');
+  let reporter = consoleReporter({ prefix: '[manifest builder]' });
 
   bundlerSlice.set({ type: 'UNBUNDLED' });
 
@@ -101,31 +102,31 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
   yield subscribe(bundler).forEach(function* (message) {
     switch (message.type) {
       case 'START':
-        console.debug("[manifest builder] received bundler start");
-
+        reporter.debug("received bundler start");
         bundlerSlice.update(() => ({ type: 'BUILDING', warnings: [] }));
         break;
       case 'UPDATE':
-        console.debug("[manifest builder] received bundle update");
-
-        let path: string = yield processManifest(options);
+        reporter.debug("received bundle update");
+        let path: string;
+        
+        try {
+          path = yield processManifest(options);
+        } catch (error) {
+          bundlerSlice.update(() => ({ type: 'ERRORED', error }));
+          break;
+        }
 
         bundlerSlice.update((previous) => {
           assertCanTransition(previous?.type, { to: 'BUILDING' });
 
           return { ...previous, type: 'GREEN', path };
         });
-
-        console.debug("[manifest builder] manifest ready");
         break;
       case 'ERROR':
-        console.debug("[manifest builder] received bundle error");
-
         bundlerSlice.update(() => ({ type: 'ERRORED', error: message.error }));
         break;
       case 'WARN':
-        console.debug("received bundle warning", message.warning);
-
+        reporter.debug("received bundle warning", message.warning);
         bundlerSlice.update((previous) => {
           assertBundlerState(previous.type, {is: ['BUILDING', 'GREEN']});
 

@@ -8,6 +8,7 @@
   "private": true,
   "workspaces": {
     "packages": [
+      "packages/reporter",
       "packages/eslint-plugin",
       "packages/effection",
       "packages/client",

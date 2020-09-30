@@ -1,22 +1,24 @@
 import { OrchestratorState } from './orchestrator/state';
 import { Atom } from '@bigtest/atom';
 import { subscribe } from '@effection/subscription';
+import { Reporter } from '@bigtest/reporter';
 
 export interface LoggerOptions {
   atom: Atom<OrchestratorState>;
-  out: <A extends unknown[]>(...args: A) => void;
+  reporter: Reporter;
 }
 
-export function* createLogger({ atom, out }: LoggerOptions) {
+export function* createLogger({ atom, reporter }: LoggerOptions) {
   let bundlerState = atom.slice('bundler');
 
   yield subscribe(bundlerState).forEach(function* (event) {
     if(event.type === 'ERRORED'){
-      out("[manifest builder] build error:");
-      out(event.error.message);
+      reporter.clear();
+      reporter.error("build error:");
+      reporter.error(event.error);
     }
-    if(event.type === 'GREEN'){
-      out("[manifest builder] build successful!");
+    if(event.type === 'GREEN') {
+      reporter.success("build successful!");
     }
   })
 }

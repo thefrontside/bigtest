@@ -1,5 +1,5 @@
 import { Test, TestResult, ResultStatus, ErrorDetails } from '@bigtest/suite';
-import { BundlerError, BundlerWarning } from '@bigtest/bundler';
+import type { BundlerError, BundlerWarning } from '@bigtest/reporter';
 
 export type AgentState = {
   agentId: string;

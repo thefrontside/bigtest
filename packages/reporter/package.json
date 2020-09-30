@@ -1,0 +1,33 @@
+{
+  "name": "@bigtest/reporter",
+  "version": "0.1.0",
+  "description": "expressive logger for bigtest",
+  "main": "dist/index.js",
+  "author": "Frontside Engineering <engineering@frontside.com>",
+  "license": "MIT",
+  "private": false,
+  "keywords": [
+    "logger"
+  ],
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "rollup": "^2.28.2"
+  },
+  "devDependencies": {
+    "@frontside/tsconfig": "*",
+    "@types/mocha": "^7.0.1",
+    "@types/node": "^13.13.4",
+    "mocha": "^6.2.2",
+    "ts-node": "*",
+    "typescript": "3.9.7"
+  },
+  "scripts": {
+    "lint": "eslint \"{src,test}/**/*.ts\"",
+    "prepack": "tsc --declaration --sourcemap",
+    "test": "mocha -r ts-node/register \"test/{,!(fixtures)/**}/*.test.ts\""
+  },
+  "files": [
+    "docs",
+    "dist"
+  ]
+}
