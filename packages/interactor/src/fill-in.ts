@@ -9,6 +9,8 @@ function guessCode(letter: string): string | undefined {
 }
 
 function clearText(element: HTMLInputElement) {
+  let InputEvent = element.ownerDocument.defaultView?.InputEvent || window.InputEvent;
+
   if(element.value.length) {
     element.value = ""
     element.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: false, inputType: 'deleteContentBackward', data: null }));
