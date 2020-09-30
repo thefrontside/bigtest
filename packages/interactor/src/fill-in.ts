@@ -36,13 +36,16 @@ function enterText(element: HTMLInputElement, value: string) {
 
 export function fillIn(element: HTMLInputElement, value: string) {
   let Event = element.ownerDocument.defaultView?.Event || window.Event;
+  let originalValue = element.value;
 
   element.focus();
 
   clearText(element);
   enterText(element, value);
 
-  element.dispatchEvent(new Event('change', { bubbles: true, cancelable: false }));
+  if(originalValue !== value) {
+    element.dispatchEvent(new Event('change', { bubbles: true, cancelable: false }));
+  }
 
   element.blur();
 }

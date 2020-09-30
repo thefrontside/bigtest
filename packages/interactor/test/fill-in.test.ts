@@ -21,6 +21,24 @@ describe('fillIn', () => {
     await Heading('success changed').exists();
   });
 
+  it('does not trigger a change event if value is identical', async () => {
+    dom(`
+      <p>
+        <label for="nameField">Name</label>
+        <input value="initial" type="text" id="nameField"/>
+        <h1 id="target"></h1>
+      </p>
+      <script>
+        nameField.addEventListener('change', (event) => {
+          target.textContent = 'success ' + event.target.value;
+        });
+      </script>
+    `);
+
+    await TextField('Name').fillIn('initial');
+    await Heading('success initial').absent();
+  });
+
   it('focuses field before changing value', async () => {
     dom(`
       <p>
