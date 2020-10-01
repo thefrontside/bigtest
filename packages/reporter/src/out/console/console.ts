@@ -4,7 +4,6 @@ import chalk from 'chalk';
 import os from 'os';
 import { isBundlerError, hasFields } from '../../utils';
 
-
 export class ConsoleOut implements Out {
   out: Std;
   err: Std;
@@ -19,7 +18,9 @@ export class ConsoleOut implements Out {
   }
 
   clear() {
-    this.out.write("\u001b[2J\u001b[0;0H");
+    this.out.write(
+      process.platform === 'win32' ? '\x1B[2J\x1B[0f' : '\x1B[2J\x1B[3J\x1B[H'
+    );
   }
 
   write(category: LogCategory, ...args: unknown[]) {

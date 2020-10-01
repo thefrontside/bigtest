@@ -41,7 +41,7 @@ export type BundlerState =
   | { type: 'GREEN'; path: string;  warnings: BundlerWarning[] }
   | { type: 'ERRORED'; error: BundlerError }
 
-  export type BundlerTypes = Pick<BundlerState, 'type'>['type'];
+export type BundlerTypes = Pick<BundlerState, 'type'>['type'];
 
 export interface Manifest extends Test {
   fileName: string;
