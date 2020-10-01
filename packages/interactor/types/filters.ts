@@ -72,5 +72,5 @@ TextField('foo').has({ value: 123 });
 TextField('foo').has({ blah: 'thing' });
 
 // cannot use filter on interactor which has no filters
-// FIXME: this should be disallowed!
+// $ExpectError
 Div('foo').has({ blah: 'thing' });

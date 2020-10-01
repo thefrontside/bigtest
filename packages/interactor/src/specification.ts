@@ -30,7 +30,7 @@ export type ActionMethods<E extends Element, A extends Actions<E>> = {
     : never;
 }
 
-export type FilterParams<E extends Element, F extends Filters<E>> = {
+export type FilterParams<E extends Element, F extends Filters<E>> = keyof F extends never ? never : {
   [P in keyof F]?:
     F[P] extends FilterFn<infer TArg, E> ?
     TArg :
