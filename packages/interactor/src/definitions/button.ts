@@ -6,7 +6,7 @@ function isButtonElement(element: HTMLInputElement | HTMLButtonElement): element
 
 export const Button = createInteractor<HTMLInputElement | HTMLButtonElement>('button')({
   selector: 'button,input[type=button],input[type=submit],input[type=reset],input[type=image]',
-  defaultLocator(element) {
+  locator(element) {
     if(isButtonElement(element)) {
       return element.textContent || '';
     } else if(element.type === 'image') {
@@ -14,10 +14,6 @@ export const Button = createInteractor<HTMLInputElement | HTMLButtonElement>('bu
     } else {
       return element.value;
     }
-  },
-  locators: {
-    byId: (element) => element.id,
-    byTitle: (element) => element.title,
   },
   filters: {
     title: (element) => element.title,

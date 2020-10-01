@@ -2,7 +2,7 @@ import { createInteractor, perform } from '../src/index';
 
 const TextField = createInteractor<HTMLInputElement>('text field')({
   selector: 'input',
-  defaultLocator: (element) => element.id,
+  locator: (element) => element.id,
   filters: {
     enabled: {
       apply: (element) => !element.disabled,
@@ -13,6 +13,10 @@ const TextField = createInteractor<HTMLInputElement>('text field')({
   actions: {
     fillIn: perform((element, value: string) => { element.value = value })
   }
+});
+
+const Div = createInteractor('div')({
+  locator: (element) => element.id || "",
 });
 
 TextField('foo', { enabled: true, value: 'thing' });
@@ -35,6 +39,9 @@ TextField('foo', { value: 123 });
 
 // $ExpectError
 TextField('foo', { blah: 'thing' });
+
+// $ExpectError
+TextField({ blah: 'thing' });
 
 // cannot use wrong type of filter with is
 
@@ -63,3 +70,7 @@ TextField('foo').has({ value: 123 });
 
 // $ExpectError
 TextField('foo').has({ blah: 'thing' });
+
+// cannot use filter on interactor which has no filters
+// FIXME: this should be disallowed!
+Div('foo').has({ blah: 'thing' });

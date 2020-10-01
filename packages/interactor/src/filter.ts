@@ -1,11 +1,11 @@
 export type LocatorFn<E extends Element> = (element: E) => string;
-import { FilterImplementation, InteractorSpecification } from './specification';
+import { Filters, FilterFn, FilterObject, Actions, FilterParams, InteractorSpecification } from './specification';
 import { noCase } from 'change-case';
 
-export class Filter<E extends Element, S extends InteractorSpecification<E>> {
+export class Filter<E extends Element, F extends Filters<E>, A extends Actions<E>> {
   constructor(
-    public specification: S,
-    public filters: FilterImplementation<E, S>
+    public specification: InteractorSpecification<E, F, A>,
+    public filters: FilterParams<E, F>,
   ) {};
 
   get description(): string {
@@ -27,15 +27,15 @@ export class Filter<E extends Element, S extends InteractorSpecification<E>> {
     }
   }
 
-  get all(): FilterImplementation<E, S> {
+  get all(): FilterParams<E, F> {
     let filter: Record<string, unknown> = Object.assign({}, this.filters);
     for(let key in this.specification.filters) {
-      let definition = this.specification.filters[key];
+      let definition = this.specification.filters[key] as FilterFn<unknown, E> | FilterObject<unknown, E>;
       if(!(key in this.filters) && typeof(definition) !== 'function' && 'default' in definition) {
         filter[key] = definition.default;
       }
     }
-    return filter as FilterImplementation<E, S>;
+    return filter as FilterParams<E, F>;
   }
 
   asTableHeader(): string[] {

@@ -1,5 +1,5 @@
 import { bigtestGlobals } from '@bigtest/globals';
-import { InteractorSpecification, FilterImplementation, InteractorInstance, InteractorType, LocatorFn, InteractorConstructor } from './specification';
+import { InteractorSpecification, FilterParams, Filters, Actions, InteractorInstance, LocatorFn } from './specification';
 import { Locator } from './locator';
 import { Filter } from './filter';
 import { Interactor } from './interactor';
@@ -9,8 +9,8 @@ import { converge } from './converge';
 const defaultLocator: LocatorFn<Element> = (element) => element.textContent || "";
 
 export function createInteractor<E extends Element>(interactorName: string) {
-  return function<S extends InteractorSpecification<E>>(specification: S): InteractorType<E, S> {
-    let InteractorClass = class extends Interactor<E, S> {};
+  return function<F extends Filters<E> = {}, A extends Actions<E> = {}>(specification: InteractorSpecification<E, F, A>) {
+    let InteractorClass = class extends Interactor<E, F, A> {};
 
     for(let [actionName, action] of Object.entries(specification.actions || {})) {
       Object.defineProperty(InteractorClass.prototype, actionName, {
@@ -34,27 +34,20 @@ export function createInteractor<E extends Element>(interactorName: string) {
       });
     }
 
-    let result: InteractorConstructor<E, S> = function(value?: string, filters?: FilterImplementation<E, S>): InteractorInstance<E, S> {
-      let locator = value ? new Locator(specification.defaultLocator || defaultLocator, value) : new Locator();
-      let filter = new Filter(specification, filters || {});
-      let interactor = new InteractorClass(interactorName, specification, locator, filter);
-      return interactor as InteractorInstance<E, S>;
+    function initInteractor(filters?: FilterParams<E, F>): InteractorInstance<E, F, A>;
+    function initInteractor(value: string, filters?: FilterParams<E, F>): InteractorInstance<E, F, A>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function initInteractor(...args: any[]) {
+      let locator, filter;
+      if(typeof(args[0]) === 'string') {
+        locator = new Locator(specification.locator || defaultLocator, args[0]);
+        filter = new Filter(specification, args[1] || {});
+      } else {
+        filter = new Filter(specification, args[0] || {});
+      }
+      return new InteractorClass(interactorName, specification, filter, locator) as InteractorInstance<E, F, A>;
     }
 
-    for(let [locatorName, locatorFn] of Object.entries(specification.locators || {})) {
-      Object.defineProperty(result, locatorName, {
-        value: function(value: string, filters?: FilterImplementation<E, S>): InteractorInstance<E, S> {
-          let locator = new Locator(locatorFn, value, locatorName);
-          let filter = new Filter(specification, filters || {});
-          let interactor = new InteractorClass(interactorName, specification, locator, filter);
-          return interactor as InteractorInstance<E, S>;
-        },
-        configurable: true,
-        writable: true,
-        enumerable: false,
-      });
-    }
-
-    return result as InteractorType<E, S>;
+    return initInteractor;
   }
 }

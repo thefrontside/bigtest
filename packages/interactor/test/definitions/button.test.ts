@@ -55,31 +55,6 @@ describe('@bigtest/interactor', () => {
       await expect(Button('Does not Exist').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
     });
 
-    describe('.byId', () => {
-      it('finds `button` and `input` tags by id', async () => {
-        dom(`
-          <p><button id="foo-button">Foo</a></p>
-          <p><input type="button" id="bar-button" value="bar"/></p>
-        `);
-
-        await expect(Button.byId('foo-button').exists()).resolves.toBeUndefined();
-        await expect(Button.byId('bar-button').exists()).resolves.toBeUndefined();
-        await expect(Button.byId('does-not-exist').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
-      });
-    });
-
-    describe('.byTitle', () => {
-      it('finds `button` tags by their title', async () => {
-        dom(`
-          <p><button title="My Foo Button">Foo</button></p>
-          <p><input type="button" title="My Bar Button" value="Bar"/></p>
-        `);
-
-        await expect(Button.byTitle('My Foo Button').exists()).resolves.toBeUndefined();
-        await expect(Button.byTitle('Does not exist').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
-      });
-    });
-
     describe('.click', () => {
       it('clicks on button', async () => {
         dom(`

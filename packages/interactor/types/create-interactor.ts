@@ -2,10 +2,6 @@ import { createInteractor, perform } from '../src/index';
 
 const Link = createInteractor<HTMLLinkElement>('link')({
   selector: 'a',
-  locators: {
-    byHref: (element) => element.href,
-    byTitle: (element) => element.title
-  },
   actions: {
     click: perform(element => { element.click() }),
     setHref: perform((element, value: string) => { element.href = value })
@@ -13,8 +9,12 @@ const Link = createInteractor<HTMLLinkElement>('link')({
 });
 
 const Div = createInteractor('div')({
-  defaultLocator: (element) => element.id || "",
+  locator: (element) => element.id || "",
 });
+
+// cannot pass invalid options
+// $ExpectError
+createInteractor<HTMLLinkElement>('whatever')({ foo: "bar" });
 
 Link('foo').click();
 
@@ -29,17 +29,7 @@ Link('foo').setHref(123);
 Div('foo').click();
 
 // $ExpectError
+Link('foo').blah();
+
+// $ExpectError
 Div('foo').blah();
-
-Link.byHref('foobar');
-
-// cannot use wrong type argument on locator
-// $ExpectError
-Link.byHref(123);
-
-// cannot use locator which is not defined
-// $ExpectError
-Div.byHref('foobar');
-
-// $ExpectError
-Div.moo('foobar');

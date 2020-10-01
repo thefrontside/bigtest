@@ -23,30 +23,6 @@ describe('@bigtest/interactor', () => {
       await expect(Link('Foo').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
     });
 
-    describe('.byId', () => {
-      it('finds `a` tags by id', async () => {
-        dom(`
-          <p><a href="/foo" id="foo-link">Foo</a></p>
-          <p><a href="/bar" id="bar-link">Bar</a></p>
-        `);
-
-        await expect(Link.byId('foo-link').exists()).resolves.toBeUndefined();
-        await expect(Link.byId('does-not-exist').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
-      });
-    });
-
-    describe('.byTitle', () => {
-      it('finds `a` tags by their title', async () => {
-        dom(`
-          <p><a href="/foo" title="My Foo Link">Foo</a></p>
-          <p><a href="/bar" title="My Bar Link">Bar</a></p>
-        `);
-
-        await expect(Link.byTitle('My Foo Link').exists()).resolves.toBeUndefined();
-        await expect(Link.byTitle('Does not exist').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
-      });
-    });
-
     describe('.click', () => {
       it('clicks on link', async () => {
         dom(`

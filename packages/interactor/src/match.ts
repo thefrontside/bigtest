@@ -1,31 +1,43 @@
 import { Locator } from './locator';
 import { Filter } from './filter';
-import { InteractorSpecification } from './specification';
+import { Filters, Actions } from './specification';
 import { escapeHtml } from './escape-html';
 
 const check = (value: unknown): string => value ? "✓" : "⨯";
 
-export class Match<E extends Element, S extends InteractorSpecification<E>> {
-  public matchLocator: MatchLocator<E>;
-  public matchFilter: MatchFilter<E, S>;
+export class Match<E extends Element, F extends Filters<E>, A extends Actions<E>> {
+  public matchLocator?: MatchLocator<E>;
+  public matchFilter: MatchFilter<E, F, A>;
   public matches: boolean;
 
   constructor(
-    public locator: Locator<E>,
-    public filter: Filter<E, S>,
-    public element: E
+    public element: E,
+    public filter: Filter<E, F, A>,
+    public locator?: Locator<E>,
   ) {
-    this.matchLocator = new MatchLocator(locator, element);
-    this.matchFilter = new MatchFilter(filter, element);
-    this.matches = this.matchLocator.matches && this.matchFilter.matches;
+    this.matchLocator = locator && new MatchLocator(element, locator);
+    this.matchFilter = new MatchFilter(element, filter);
+    this.matches = (this.matchLocator ? this.matchLocator.matches : true) && this.matchFilter.matches;
+  }
+
+  asTableHeader(name: string): string[] {
+    if(this.matchLocator) {
+      return [name, ...this.filter.asTableHeader()];
+    } else {
+      return this.filter.asTableHeader();
+    }
   }
 
   asTableRow(): string[] {
-    return [this.matchLocator.format(), ...this.matchFilter.asTableRow()]
+    if(this.matchLocator) {
+      return [this.matchLocator.format(), ...this.matchFilter.asTableRow()]
+    } else {
+      return this.matchFilter.asTableRow();
+    }
   }
 
   get sortWeight(): number {
-    return this.matchLocator.sortWeight + this.matchFilter.sortWeight;
+    return (this.matchLocator?.sortWeight || 0) + this.matchFilter.sortWeight;
   }
 
   elementDescription(): string {
@@ -43,8 +55,8 @@ export class MatchLocator<E extends Element> {
   public actual: string | null;
 
   constructor(
+    public element: E,
     public locator: Locator<E>,
-    public element: E
   ) {
     this.expected = locator.value;
     this.actual = locator.locatorFn(element);
@@ -64,16 +76,16 @@ export class MatchLocator<E extends Element> {
   }
 }
 
-export class MatchFilter<E extends Element, S extends InteractorSpecification<E>> {
+export class MatchFilter<E extends Element, F extends Filters<E>, A extends Actions<E>> {
   public matches: boolean;
-  public items: MatchFilterItem<E, S>[];
+  public items: MatchFilterItem<E, F, A>[];
 
   constructor(
-    public filter: Filter<E, S>,
     public element: E,
+    public filter: Filter<E, F, A>,
   ) {
     this.items = Object.entries(filter.all).map(([key, expected]) => {
-      return new MatchFilterItem(filter, element, key, expected)
+      return new MatchFilterItem(element, filter, key, expected)
     });
     this.matches = this.items.every((match) => match.matches)
   }
@@ -87,23 +99,27 @@ export class MatchFilter<E extends Element, S extends InteractorSpecification<E>
   }
 }
 
-export class MatchFilterItem<E extends Element, S extends InteractorSpecification<E>> {
+export class MatchFilterItem<E extends Element, F extends Filters<E>, A extends Actions<E>> {
   public actual: unknown;
   public matches: boolean;
 
   constructor(
-    public filter: Filter<E, S>,
     public element: E,
+    public filter: Filter<E, F, A>,
     public key: string,
     public expected: unknown
   ) {
-    let definition = (this.filter.specification.filters || {})[this.key];
-    if(typeof(definition) === 'function') {
-      this.actual = definition(this.element);
+    if(this.filter.specification.filters && this.filter.specification.filters[this.key]) {
+      let definition = this.filter.specification.filters[this.key];
+      if(typeof(definition) === 'function') {
+        this.actual = definition(this.element);
+      } else {
+        this.actual = definition.apply(this.element);
+      }
+      this.matches = this.actual === this.expected;
     } else {
-      this.actual = definition.apply(this.element);
+      throw new Error(`interactor does not define a filter named ${JSON.stringify(this.key)}`);
     }
-    this.matches = this.actual === this.expected;
   }
 
   formatActual(): string {
