@@ -1,5 +1,23 @@
 # bigtest
 
+## 0.2.2
+
+### Patch Changes
+
+- cdf3ee9a: Improve formatting of stack traces
+- Updated dependencies [e6cdf046]
+- Updated dependencies [215f72ae]
+- Updated dependencies [215f72ae]
+- Updated dependencies [54707a71]
+- Updated dependencies [215f72ae]
+- Updated dependencies [215f72ae]
+- Updated dependencies [cdf3ee9a]
+- Updated dependencies [eddc1517]
+- Updated dependencies [215f72ae]
+  - @bigtest/interactor@0.18.0
+  - @bigtest/cli@0.14.1
+  - @bigtest/suite@0.10.0
+
 ## 0.2.1
 
 ### Patch Changes

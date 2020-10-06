@@ -1,5 +1,12 @@
 # @bigtest/cli
 
+## 0.14.1
+
+### Patch Changes
+
+- cdf3ee9a: Improve formatting of stack traces
+  - @bigtest/server@0.16.2
+
 ## 0.14.0
 
 ### Minor Changes

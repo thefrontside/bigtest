@@ -1,5 +1,21 @@
 # @bigtest/interactor
 
+## 0.18.0
+
+### Minor Changes
+
+- e6cdf046: Add `Button` and `TextField` interactors
+- 215f72ae: Remove support for custom locators
+- 54707a71: Add visibility filter to interactors using element-is-visible
+- 215f72ae: Filters can be passed to interactor even if locator is omitted, e.g. Button({ id: "foo" })
+- 215f72ae: InteractorSpecification is a concrete type, parameterized over its actions and filters, rather than an interface, disallows incorrect options in interactor definition
+- 215f72ae: Rename defaultLocator to locator
+
+### Patch Changes
+
+- 215f72ae: "did you mean" suggestions always render as a table, rather than an inline comma separated list
+  - @bigtest/globals@0.7.1
+
 ## 0.17.0
 
 ### Minor Changes

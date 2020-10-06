@@ -1,5 +1,12 @@
 # @bigtest/globals
 
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies [eddc1517]
+  - @bigtest/suite@0.10.0
+
 ## 0.7.0
 
 ### Minor Changes
