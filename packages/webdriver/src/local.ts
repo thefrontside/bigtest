@@ -2,8 +2,7 @@ import 'chromedriver';
 import 'geckodriver';
 
 import { Operation, resource } from 'effection';
-import { ChildProcess } from '@effection/node';
-import { once } from '@effection/events';
+import { daemon } from '@effection/node';
 
 import { findAvailablePortNumber } from './find-available-port-number';
 import { untilURLAvailable } from './until-url-available';
@@ -30,8 +29,9 @@ export function * Local(options: Options): Operation<WebDriver> {
   let driverURL = `http://localhost:${port}`;
 
   let driver = yield resource(new WebDriver(driverURL), function*() {
-    let child = yield ChildProcess.spawn(driverName, [`--port=${port}`]);
-    yield once(child, 'exit');
+    yield daemon(`${driverName} --port=${port}`);
+
+    yield;
   });
 
   yield untilURLAvailable(`${driverURL}/status`, 5000);

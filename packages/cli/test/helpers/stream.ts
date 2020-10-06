@@ -1,36 +1,41 @@
-import { resource } from 'effection';
-import { on } from '@effection/events';
+import { resource, Operation } from 'effection';
 import { subscribe } from '@effection/subscription';
 import { Channel } from '@effection/channel';
-import { Readable } from 'stream';
+
+import { World } from './world';
 
 export class Stream {
   public output = "";
   private semaphore = new Channel<true>();
 
-  static *of(value: Readable, verbose = false) {
-    let testStream = new Stream(value, verbose);
+  static *of(channel: Channel<string>, verbose = false): Operation<Stream> {
+    let testStream = new Stream(channel, verbose);
     return yield resource(testStream, testStream.run());
   }
 
-  constructor(private stream: Readable, private verbose = false) {};
+  constructor(private channel: Channel<string>, private verbose = false) {};
 
-  *run() {
-    let events = yield on(this.stream, "data");
-    while(true) {
-      let { value: chunk } = yield events.next();
-      this.output += chunk;
-      this.semaphore.send(true);
-      if(this.verbose) {
-        console.debug(chunk.toString());
+  *run(): Operation<void> {
+    let { semaphore, verbose } = this;
+    let stream = this;
+    yield subscribe(this.channel).forEach(function*(chunk) {
+      stream.output += chunk;
+      semaphore.send(true);
+      if (verbose) {
+        process.stdout.write(chunk);
       }
-    }
+    });
   }
 
-  *waitFor(text: string) {
+  *waitFor(text: string): Operation<void> {
     let subscription = yield subscribe(this.semaphore);
     while(!this.output.includes(text)) {
       yield subscription.next();
     }
+    return;
+  }
+
+  detect(text: string) {
+    return World.spawn(this.waitFor(text));
   }
 }

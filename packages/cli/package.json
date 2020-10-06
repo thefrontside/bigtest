@@ -49,7 +49,7 @@
     "@bigtest/performance": "^0.5.0",
     "@bigtest/project": "^0.11.0",
     "@bigtest/server": "^0.16.2",
-    "@effection/node": "^0.8.0",
+    "@effection/node": "^0.9.0",
     "capture-console": "^1.0.1",
     "chalk": "^4.1.0",
     "deepmerge": "^4.2.2",

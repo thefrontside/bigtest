@@ -1,7 +1,6 @@
 import { timeout, Operation, spawn } from 'effection';
-import { once } from '@effection/events';
 import { fetch } from '@effection/fetch';
-import { ChildProcess } from '@effection/node';
+import { exec, Process } from '@effection/node';
 import * as process from 'process';
 import { OrchestratorState, AppOptions } from './orchestrator/state';
 import { Atom } from '@bigtest/atom';
@@ -26,15 +25,14 @@ const startApp = ({ atom }: AppServerOptions) => function* (options: AppOptions)
   appStatus.set('unstarted')
 
   if (options.command) {
-    let child = yield ChildProcess.spawn(options.command as string, [], {
+
+    let child: Process = yield exec(options.command as string, {
       cwd: options.dir,
-      detached: true,
       env: Object.assign({}, process.env, options.env),
-      shell: true,
     });
 
     yield spawn(function* () {
-      yield once(child, 'exit');
+      yield child.join();
       appStatus.set('crashed');
     });
   }
