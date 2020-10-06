@@ -1,6 +1,6 @@
-import { FormatterConstructor, statusIcon, standardFooter } from '../format-helpers';
+import { FormatterConstructor, statusIcon, printStandardFooter } from '../format-helpers';
 
-const formatter: FormatterConstructor = () => {
+const formatter: FormatterConstructor = (printer) => {
   let didGetResult = false;
   return {
     header() {
@@ -10,14 +10,17 @@ const formatter: FormatterConstructor = () => {
     event(event) {
       if((event.type === 'step:result' || event.type === 'assertion:result') && event.status) {
         didGetResult = true;
-        process.stdout.write(statusIcon(event.status));
+        printer.write(statusIcon(event.status));
       }
       if(event.type === 'testRun:result' && didGetResult) {
-        process.stdout.write('\n\n');
+        printer.line();
+        printer.line();
       }
     },
 
-    footer: standardFooter()
+    footer(results) {
+      printStandardFooter(printer, results);
+    }
   }
 };
 

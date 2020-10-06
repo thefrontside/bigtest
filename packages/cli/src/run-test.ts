@@ -4,6 +4,7 @@ import { ProjectOptions } from '@bigtest/project';
 import { Client } from '@bigtest/client';
 import { MainError } from '@effection/node';
 import * as query from './query';
+import { Printer } from './printer';
 import { Formatter, FormatterConstructor } from './format-helpers';
 import { reportCoverage } from './report-coverage';
 import { RunArgs } from './cli';
@@ -23,7 +24,8 @@ const BUILTIN_FORMATTERS: Record<string, Formatter | FormatterConstructor> = { c
 
 function initFormatter(input: Formatter | FormatterConstructor): Formatter {
   if(typeof(input) === 'function') {
-    return input();
+    let printer = new Printer(process.stdout);
+    return input(printer);
   } else {
     return input;
   }

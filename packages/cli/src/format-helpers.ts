@@ -1,4 +1,5 @@
 import * as chalk from 'chalk';
+import { Printer } from './printer';
 import { RunResultEvent, TestResults, ResultCounts } from './query'
 import { ErrorDetails, ResultStatus, TestResult, StepResult, AssertionResult } from '@bigtest/suite'
 
@@ -7,7 +8,11 @@ export { RunResultEvent, TestResults, ResultSummary, ResultCounts } from './quer
 export const UNKNOWN_ERROR = 'Unknown error occurred: This is likely a bug in BigTest and should be reported at https://github.com/thefrontside/bigtest/issues.'
 
 export function formatCounts(counts: ResultCounts): string {
-  return `${chalk.green(`${counts.ok.toFixed(0)} ok,`)} ${chalk.red(`${counts.failed.toFixed(0)} failed,`)} ${counts.disregarded.toFixed(0)} disregarded`;
+  return [
+    chalk.green(`${counts.ok.toFixed(0)} ok,`),
+    chalk.red(`${counts.failed.toFixed(0)} failed,`),
+    `${counts.disregarded.toFixed(0)} disregarded`,
+  ].join(' ');
 }
 
 export function statusIcon(status: ResultStatus, okayIcon = '✓'): string {
@@ -23,20 +28,11 @@ export function statusIcon(status: ResultStatus, okayIcon = '✓'): string {
 export const stepStatusIcon = (status: ResultStatus): string => statusIcon(status, '↪');
 export const assertionStatusIcon = (status: ResultStatus): string => statusIcon(status, '✓');
 
-export function errorLines(error: ErrorDetails): string[] {
-  let title = ['ERROR'];
-  if(error.name) {
-    title.push(error.name)
-  }
-  if(error.message) {
-    title.push(error.message);
-  }
-  let errorLines = [title.join(' ')];
-
+export function printStackTrace(printer: Printer, error: ErrorDetails) {
   if(error.stack) {
     for(let stackFrame of error.stack) {
       let location = stackFrame.source || stackFrame;
-      let stackLine = '  '
+      let stackLine = '';
       if(location.fileName) {
         stackLine += location.fileName;
       }
@@ -49,81 +45,81 @@ export function errorLines(error: ErrorDetails): string[] {
       if(stackFrame.name) {
         stackLine += ` @ ${stackFrame.name}`;
       }
-      errorLines.push(chalk.grey(stackLine));
+      printer.grey.line(stackLine);
       if(stackFrame.code) {
-        errorLines.push(chalk.white('    ' + stackFrame.code.trim()));
+        printer.indent().white.line(stackFrame.code.trim());
       }
     }
   }
-
-  return errorLines;
 }
 
-function recursiveChildrenResults(result: TestResult, level = 0) {
-  let prefix = ' '.repeat(level * 2);
+export function printError(printer: Printer, error?: ErrorDetails) {
+  if(error) {
+    printer.red.words('ERROR', error.name, error.message);
+
+    printStackTrace(printer.indent(), error);
+  } else {
+    printer.line(UNKNOWN_ERROR);
+  }
+}
+
+export function printStepResult(printer: Printer, step: StepResult) {
+  printer.words(stepStatusIcon(step.status), step.description);
+
+  if(step.status === 'failed') {
+    printError(printer.indent().prefix(chalk.red('│ ')), step.error);
+  }
+}
+
+export function printAssertionResult(printer: Printer, assertion: AssertionResult) {
+  printer.words(assertionStatusIcon(assertion.status), assertion.description);
+
+  if(assertion.status === 'failed') {
+    printError(printer.indent().prefix(chalk.red('│ ')), assertion.error);
+  }
+}
+
+export function printResults(printer: Printer, result: TestResult) {
   if(result.status !== 'ok') {
-    console.log(prefix + `☲ ${result.description}`);
+    printer.line(`☲ ${result.description}`);
 
     result.steps.forEach((step: StepResult) => {
-      console.log(prefix + `  ${stepStatusIcon(step.status)} ${step.description}`);
-
-      if(step.status === 'failed') {
-        if(step.error) {
-          errorLines(step.error).forEach((line) => {
-            console.log(chalk.redBright(prefix + '    │ ' + line));
-          });
-        } else {
-          console.log(chalk.redBright(prefix + '    │ ' + UNKNOWN_ERROR));
-        }
-      }
+      printStepResult(printer.indent(), step);
     });
 
     result.assertions.forEach((assertion: AssertionResult) => {
-      console.log(prefix + `  ${assertionStatusIcon(assertion.status)} ${assertion.description}`);
-
-      if(assertion.status === 'failed') {
-        if(assertion.error) {
-          errorLines(assertion.error).forEach((line) => {
-            console.log(chalk.redBright(prefix + '    │ ' + line));
-          });
-        } else {
-          console.log(chalk.redBright(prefix + '    │ ' + UNKNOWN_ERROR));
-        }
-      }
+      printAssertionResult(printer.indent(), assertion);
     });
 
     result.children.forEach((child) => {
-      recursiveChildrenResults(child, level + 1);
+      printResults(printer.indent(), child);
     });
   }
 }
 
+export function printStandardFooter(printer: Printer, { testRun }: TestResults) {
+  testRun.agents.forEach(({ agent, summary, result }) => {
+    printer.grey.line('────────────────────────────────────────────────────────────────────────────────');
+    printer.line(`${agent.agentId}`);
+    printer.line(`Steps:      ${formatCounts(summary.stepCounts)}`);
+    printer.line(`Assertions: ${formatCounts(summary.assertionCounts)}`);
 
-export function standardFooter() {
-  return function({ testRun }: TestResults) {
-    testRun.agents.forEach(({ agent, summary, result }) => {
-      console.log(chalk.grey('────────────────────────────────────────────────────────────────────────────────'));
-      console.log(`${agent.agentId}`);
-      console.log(`Steps:      ${formatCounts(summary.stepCounts)}`);
-      console.log(`Assertions: ${formatCounts(summary.assertionCounts)}`);
-
-      if(result.status !== 'ok') {
-        console.log('');
-        recursiveChildrenResults(result);
-      }
-    });
-    if(testRun.agents.length) {
-      console.log(chalk.grey('────────────────────────────────────────────────────────────────────────────────'));
+    if(result.status !== 'ok') {
+      printer.line();
+      printResults(printer, result);
     }
-    if(testRun.status === 'failed' && testRun.error) {
-      errorLines(testRun.error).forEach((line) => console.log(chalk.red(line)));
-      console.log('');
-    }
-    console.log(
-      testRun.status === 'ok'
-        ? chalk.green('✓ SUCCESS')
-        : chalk.red('⨯ FAILURE')
-    );
+  });
+  if(testRun.agents.length) {
+    printer.grey.line('────────────────────────────────────────────────────────────────────────────────');
+  }
+  if(testRun.status === 'failed' && testRun.error) {
+    printError(printer, testRun.error);
+    printer.line();
+  }
+  if(testRun.status === 'ok') {
+    printer.green.line('✓ SUCCESS');
+  } else {
+    printer.red.line('⨯ FAILURE')
   }
 }
 
@@ -133,4 +129,4 @@ export type Formatter = {
   footer(result: TestResults): void;
 };
 
-export type FormatterConstructor = () => Formatter;
+export type FormatterConstructor = (printer: Printer) => Formatter;
