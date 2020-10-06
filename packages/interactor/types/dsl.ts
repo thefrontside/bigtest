@@ -3,7 +3,7 @@ import { createInteractor, perform } from '../src/index';
 
 const TextField = createInteractor<HTMLInputElement>('text field')({
   selector: 'input',
-  defaultLocator: (element) => element.id,
+  locator: (element) => element.id,
   filters: {
     enabled: {
       apply: (element) => !element.disabled,

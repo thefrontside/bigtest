@@ -7,9 +7,9 @@ import { createInteractor, perform } from '../src/index';
 
 const Link = createInteractor<HTMLLinkElement>('link')({
   selector: 'a',
-  locators: {
-    byHref: (element) => element.href,
-    byTitle: (element) => element.title
+  filters: {
+    href: (element) => element.href,
+    title: (element) => element.title,
   },
   actions: {
     click: perform(element => { element.click() }),
@@ -22,21 +22,19 @@ const Header = createInteractor('header')({
 });
 
 const Div = createInteractor('div')({
-  defaultLocator: (element) => element.id || "",
+  locator: (element) => element.id || "",
 });
 
 const Details = createInteractor<HTMLDetailsElement>('details')({
   selector: 'details',
-  defaultLocator: (element) => element.querySelector('summary')?.textContent || ''
+  locator: (element) => element.querySelector('summary')?.textContent || ''
 });
 
 const TextField = createInteractor<HTMLInputElement>('text field')({
   selector: 'input',
-  defaultLocator: (element) => element.id,
-  locators: {
-    byPlaceholder: element => element.placeholder
-  },
+  locator: (element) => element.id,
   filters: {
+    placeholder: element => element.placeholder,
     enabled: {
       apply: (element) => !element.disabled,
       default: true
@@ -51,14 +49,14 @@ const TextField = createInteractor<HTMLInputElement>('text field')({
 
 const Datepicker = createInteractor<HTMLDivElement>("datepicker")({
   selector: "div.datepicker",
-  defaultLocator: element => element.querySelector("label")?.textContent || "",
+  locator: element => element.querySelector("label")?.textContent || "",
   filters: {
     open: element => !!element.querySelector("div.calendar"),
     month: element => element.querySelector("div.calendar h4")?.textContent
   },
   actions: {
     toggle: async interactor => {
-      await interactor.find(TextField.byPlaceholder("YYYY-MM-DD")).click();
+      await interactor.find(TextField({ placeholder: "YYYY-MM-DD" })).click();
     }
   }
 });
@@ -102,16 +100,27 @@ describe('@bigtest/interactor', () => {
       `);
 
       await expect(Link('Foo Bar').exists()).resolves.toBeUndefined();
-      await expect(Link('Blah').exists()).rejects.toHaveProperty('message', 'did not find link "Blah", did you mean one of "Foo Bar", "Quox"?');
+      await expect(Link('Blah').exists()).rejects.toHaveProperty('message', [
+        'did not find link "Blah", did you mean one of:', '',
+        '| link        |',
+        '| ----------- |',
+        '| ⨯ "Foo Bar" |',
+        '| ⨯ "Quox"    |',
+      ].join('\n'));
     });
 
-    it('can use locators', async () => {
+    it('can use filters', async () => {
       dom(`
         <p><a title="Monkey" href="/foobar">Foo Bar</a></p>
       `);
 
-      await expect(Link.byTitle('Monkey').exists()).resolves.toBeUndefined();
-      await expect(Link.byTitle('Zebra').exists()).rejects.toHaveProperty('message', 'did not find link by title "Zebra", did you mean "Monkey"?');
+      await expect(Link({ title: 'Monkey' }).exists()).resolves.toBeUndefined();
+      await expect(Link({ title: 'Zebra' }).exists()).rejects.toHaveProperty('message', [
+        'did not find link with title "Zebra", did you mean one of:', '',
+        '| title: "Zebra" |',
+        '| -------------- |',
+        '| ⨯ "Monkey"     |',
+      ].join('\n'));
     });
 
     it('can wait for condition to become true', async () => {
@@ -173,9 +182,18 @@ describe('@bigtest/interactor', () => {
 
       await expect(Div("foo").find(Link("Foo")).exists()).resolves.toBeUndefined();
       await expect(Div("bar").find(Link("Bar")).exists()).resolves.toBeUndefined();
-
-      await expect(Div("foo").find(Link("Bar")).exists()).rejects.toHaveProperty('message', 'did not find link "Bar" within div "foo", did you mean "Foo"?');
-      await expect(Div("bar").find(Link("Foo")).exists()).rejects.toHaveProperty('message', 'did not find link "Foo" within div "bar", did you mean "Bar"?');
+      await expect(Div("foo").find(Link("Bar")).exists()).rejects.toHaveProperty('message', [
+        'did not find link "Bar" within div "foo", did you mean one of:', '',
+        '| link    |',
+        '| ------- |',
+        '| ⨯ "Foo" |',
+      ].join('\n'));
+      await expect(Div("bar").find(Link("Foo")).exists()).rejects.toHaveProperty('message', [
+        'did not find link "Foo" within div "bar", did you mean one of:', '',
+        '| link    |',
+        '| ------- |',
+        '| ⨯ "Bar" |',
+      ].join('\n'));
     });
 
     it('is rejected if the parent interactor cannot be found', async () => {
@@ -185,7 +203,12 @@ describe('@bigtest/interactor', () => {
         </div>
       `);
 
-      await expect(Div("blah").find(Link("Foo")).exists()).rejects.toHaveProperty('message', 'did not find div "blah", did you mean "foo"?');
+      await expect(Div("blah").find(Link("Foo")).exists()).rejects.toHaveProperty('message', [
+        'did not find div "blah", did you mean one of:', '',
+        '| div     |',
+        '| ------- |',
+        '| ⨯ "foo" |',
+      ].join('\n'));
     });
 
     it('can be used with interactors with disjoint element types', async () => {
@@ -214,10 +237,21 @@ describe('@bigtest/interactor', () => {
       `);
 
       await expect(Div("test").find(Div("foo").find(Link("Foo"))).exists()).resolves.toBeUndefined();
-      await expect(Div("test").find(Div("foo").find(Link("Bar"))).exists()).rejects.toHaveProperty('message', 'did not find link "Bar" within div "foo" within div "test", did you mean "Foo"?');
+
+      await expect(Div("test").find(Div("foo").find(Link("Bar"))).exists()).rejects.toHaveProperty('message', [
+        'did not find link "Bar" within div "foo" within div "test", did you mean one of:', '',
+        '| link    |',
+        '| ------- |',
+        '| ⨯ "Foo" |',
+      ].join('\n'));
 
       await expect(Div("test").find(Div("foo")).find(Link("Foo")).exists()).resolves.toBeUndefined();
-      await expect(Div("test").find(Div("foo")).find(Link("Bar")).exists()).rejects.toHaveProperty('message', 'did not find link "Bar" within div "foo" within div "test", did you mean \"Foo\"?');
+      await expect(Div("test").find(Div("foo")).find(Link("Bar")).exists()).rejects.toHaveProperty('message', [
+        'did not find link "Bar" within div "foo" within div "test", did you mean one of:', '',
+        '| link    |',
+        '| ------- |',
+        '| ⨯ "Foo" |',
+      ].join('\n'));
     });
 
     it('cannot match an element outside of scope', async () => {
@@ -291,7 +325,7 @@ describe('@bigtest/interactor', () => {
       `);
 
       await Link('Foo Bar').setHref('/monkey');
-      await Link.byHref('/monkey').exists();
+      await Link({ href: '/monkey' }).exists();
     });
 
     it('does nothing unless awaited', async () => {

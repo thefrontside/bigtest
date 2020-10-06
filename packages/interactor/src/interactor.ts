@@ -1,31 +1,32 @@
 import { bigtestGlobals } from '@bigtest/globals';
 import { converge } from './converge';
-import { InteractorSpecification, FilterImplementation } from './specification';
-import { Locator } from './locator';
+import { Filters, Actions, FilterParams, InteractorSpecification } from './specification';
 import { Filter } from './filter';
+import { Locator } from './locator';
 import { MatchFilter } from './match';
 import { resolve } from './resolve';
 import { formatTable } from './format-table';
 import { NotAbsentError, FilterNotMatchingError } from './errors';
 import { interaction, check, Interaction, ReadonlyInteraction } from './interaction';
 
-export class Interactor<E extends Element, S extends InteractorSpecification<E>> {
+export class Interactor<E extends Element, F extends Filters<E>, A extends Actions<E>> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private ancestors: Array<Interactor<any, any>> = [];
+  private ancestors: Array<Interactor<any, any, any>> = [];
 
-  constructor( public name: string,
-    public specification: S,
-    public locator: Locator<E>,
-    public filter: Filter<E, S>
+  constructor(
+    public name: string,
+    public specification: InteractorSpecification<E, F, A>,
+    public filter: Filter<E, F, A>,
+    public locator?: Locator<E>,
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private get ancestorsAndSelf(): Array<Interactor<any, any>> {
+  private get ancestorsAndSelf(): Array<Interactor<any, any, any>> {
     return [...this.ancestors, this];
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  find<T extends Interactor<any, any>>(interactor: T): T {
+  find<T extends Interactor<any, any, any>>(interactor: T): T {
     return Object.create(interactor, {
       ancestors: {
         value: [...this.ancestors, this, ...interactor.ancestors]
@@ -33,13 +34,16 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
     });
   }
 
+  private get ownDescription(): string {
+    if(this.locator) {
+      return `${this.name} ${this.locator.description} ${this.filter.description}`.trim();
+    } else {
+      return `${this.name} ${this.filter.description}`.trim();
+    }
+  }
+
   get description(): string {
-    return this.ancestorsAndSelf.reverse().map((interactor) => {
-      if (interactor.locator.isNull) {
-        return `${interactor.name} ${interactor.filter.description}`.trim();
-      }
-      return `${interactor.name} ${interactor.locator.description} ${interactor.filter.description}`.trim();
-    }).join(' within ');
+    return this.ancestorsAndSelf.reverse().map((interactor) => interactor.ownDescription).join(' within ');
   }
 
   private unsafeSyncResolve(): E {
@@ -78,12 +82,12 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
     });
   }
 
-  is(filters: FilterImplementation<E, S>): ReadonlyInteraction<void> {
+  is(filters: FilterParams<E, F>): ReadonlyInteraction<void> {
     let filter = new Filter(this.specification, filters);
     return check(`${this.description} matches filters: ${filter.description}`, () => {
       return converge(() => {
         let element = this.unsafeSyncResolve();
-        let match = new MatchFilter(filter, element);
+        let match = new MatchFilter(element, filter);
         if(!match.matches) {
           let table = formatTable({ headers: filter.asTableHeader(), rows: [match.asTableRow()] });
           throw new FilterNotMatchingError(`${this.description} does not match filters:\n\n${table}`);
@@ -92,7 +96,7 @@ export class Interactor<E extends Element, S extends InteractorSpecification<E>>
     });
   }
 
-  has(filters: FilterImplementation<E, S>): ReadonlyInteraction<void> {
+  has(filters: FilterParams<E, F>): ReadonlyInteraction<void> {
     return this.is(filters);
   }
 }

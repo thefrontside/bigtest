@@ -3,10 +3,6 @@ import { isVisible } from 'element-is-visible';
 
 export const Link = createInteractor<HTMLLinkElement>('link')({
   selector: 'a[href]',
-  locators: {
-    byId: (element) => element.id,
-    byTitle: (element) => element.title,
-  },
   filters: {
     title: (element) => element.title,
     href: (element) => element.href,

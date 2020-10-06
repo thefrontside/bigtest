@@ -34,39 +34,6 @@ describe('@bigtest/interactor', () => {
       await expect(TextField('Designation').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
     });
 
-    describe('.byId', () => {
-      it('finds `input` tags by id', async () => {
-        dom(`
-          <p><input type="text" id="name-field"/></p>
-        `);
-
-        await expect(TextField.byId('name-field').exists()).resolves.toBeUndefined();
-        await expect(TextField.byId('does-not-exist').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
-      });
-    });
-
-    describe('.byTitle', () => {
-      it('finds `input` tags by their title', async () => {
-        dom(`
-          <p><input type="text" title="My Name Field" value="Bar"/></p>
-        `);
-
-        await expect(TextField.byTitle('My Name Field').exists()).resolves.toBeUndefined();
-        await expect(TextField.byTitle('Does not exist').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
-      });
-    });
-
-    describe('.byPlaceholder', () => {
-      it('finds `input` tags by their placeholder', async () => {
-        dom(`
-          <p><input type="text" placeholder="My Name Field" value="Bar"/></p>
-        `);
-
-        await expect(TextField.byPlaceholder('My Name Field').exists()).resolves.toBeUndefined();
-        await expect(TextField.byPlaceholder('Does not exist').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
-      });
-    });
-
     describe('.click', () => {
       it('clicks on field', async () => {
         dom(`
@@ -157,10 +124,10 @@ describe('@bigtest/interactor', () => {
           <p><input id="address-field"/></p>
         `);
 
-        await expect(TextField.byId('name-field', { disabled: true }).exists()).resolves.toBeUndefined();
-        await expect(TextField.byId('address-field', { disabled: false }).exists()).resolves.toBeUndefined();
-        await expect(TextField.byId('name-field', { disabled: false }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
-        await expect(TextField.byId('address-field', { disabled: true }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+        await expect(TextField({ id: 'name-field', disabled: true }).exists()).resolves.toBeUndefined();
+        await expect(TextField({ id: 'address-field', disabled: false }).exists()).resolves.toBeUndefined();
+        await expect(TextField({ id: 'name-field', disabled: false }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+        await expect(TextField({ id: 'address-field', disabled: true }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
       });
 
       it('defaults to only enabled', async () => {
@@ -169,8 +136,8 @@ describe('@bigtest/interactor', () => {
           <p><input id="address-field"/></p>
         `);
 
-        await expect(TextField.byId('address-field').exists()).resolves.toBeUndefined();
-        await expect(TextField.byId('name-field').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+        await expect(TextField({ id: 'address-field' }).exists()).resolves.toBeUndefined();
+        await expect(TextField({ id: 'name-field' }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
       });
     });
 
@@ -225,10 +192,10 @@ describe('@bigtest/interactor', () => {
           </p>
         `);
 
-        await expect(TextField.byId('name-field', { valid: true }).exists()).resolves.toBeUndefined();
-        await expect(TextField.byId('address-field', { valid: false }).exists()).resolves.toBeUndefined();
-        await expect(TextField.byId('name-field', { valid: false }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
-        await expect(TextField.byId('address-field', { valid: true }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+        await expect(TextField({ id: 'name-field', valid: true }).exists()).resolves.toBeUndefined();
+        await expect(TextField({ id: 'address-field', valid: false }).exists()).resolves.toBeUndefined();
+        await expect(TextField({ id: 'name-field', valid: false }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+        await expect(TextField({ id: 'address-field', valid: true }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
       });
     });
   });
