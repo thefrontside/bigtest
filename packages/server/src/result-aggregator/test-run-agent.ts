@@ -1,4 +1,5 @@
 import { spawn, Operation } from 'effection';
+import { RunEnd } from '@bigtest/agent';
 import { ResultStatus } from '@bigtest/suite';
 import { TestRunAgentState } from '../orchestrator/state';
 import { Aggregator, AggregatorAgentOptions } from './aggregator';
@@ -24,10 +25,15 @@ export class TestRunAgentAggregator extends Aggregator<TestRunAgentState, Aggreg
 
     yield spawn(this.markRunning());
 
-    let result = yield aggregator.run();
+    let status: ResultStatus = yield aggregator.run();
+    let end: RunEnd = yield this.events.receive({
+      type: 'run:end',
+      agentId: this.options.agentId,
+      testRunId: this.options.testRunId
+    });
 
-    this.statusSlice.set(result);
+    this.slice.update(state => ({ ...state, status, coverage: end.coverage }))
 
-    return result;
+    return status;
   }
 }

@@ -49,9 +49,9 @@ export function errorLines(error: ErrorDetails): string[] {
       if(stackFrame.name) {
         stackLine += ` @ ${stackFrame.name}`;
       }
-      errorLines.push(stackLine);
+      errorLines.push(chalk.grey(stackLine));
       if(stackFrame.code) {
-        errorLines.push('  > ' + stackFrame.code.trim());
+        errorLines.push(chalk.white('    ' + stackFrame.code.trim()));
       }
     }
   }

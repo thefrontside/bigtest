@@ -5,6 +5,8 @@ import { Client } from '@bigtest/client';
 import { MainError } from '@effection/node';
 import * as query from './query';
 import { Formatter, FormatterConstructor } from './format-helpers';
+import { reportCoverage } from './report-coverage';
+import { RunArgs } from './cli';
 
 import checks from './formatters/checks';
 import lines from './formatters/lines';
@@ -14,6 +16,7 @@ interface Options {
   files: string[];
   showFullStack: boolean;
   showLog: boolean;
+  coverage: boolean;
 }
 
 const BUILTIN_FORMATTERS: Record<string, Formatter | FormatterConstructor> = { checks, lines };
@@ -40,9 +43,9 @@ function *resolveFormatter(name: string): Operation<Formatter> {
   }
 }
 
-export function* runTest(config: ProjectOptions, options: Options): Operation<void> {
-  let formatter = yield resolveFormatter(options.formatterName);
-  let uri = `ws://localhost:${config.port}`;
+export function* runTest(options: ProjectOptions, args: RunArgs): Operation<void> {
+  let formatter = yield resolveFormatter(args.formatter);
+  let uri = `ws://localhost:${options.port}`;
 
   let client: Client = yield function*() {
     try {
@@ -59,11 +62,11 @@ export function* runTest(config: ProjectOptions, options: Options): Operation<vo
   };
 
   let subscription = yield client.subscription(query.run(), {
-    files: options.files,
-    showDependenciesStackTrace: options.showFullStack,
-    showInternalStackTrace: options.showFullStack,
-    showStackTraceCode: options.showFullStack,
-    showLog: options.showLog,
+    files: args.files,
+    showDependenciesStackTrace: args.showFullStack,
+    showInternalStackTrace: args.showFullStack,
+    showStackTraceCode: args.showFullStack,
+    showLog: args.showLog,
   });
 
   formatter.header();
@@ -82,13 +85,18 @@ export function* runTest(config: ProjectOptions, options: Options): Operation<vo
 
   let treeQuery: query.TestResults = yield client.query(query.test(), {
     testRunId,
-    showDependenciesStackTrace: options.showFullStack,
-    showInternalStackTrace: options.showFullStack,
-    showStackTraceCode: options.showFullStack,
-    showLog: options.showLog,
+    showDependenciesStackTrace: args.showFullStack,
+    showInternalStackTrace: args.showFullStack,
+    showStackTraceCode: args.showFullStack,
+    showLog: args.showLog,
+    coverage: args.coverage,
   });
 
   formatter.footer(treeQuery);
+
+  if (args.coverage) {
+    yield reportCoverage(options, treeQuery);
+  }
 
   if(treeQuery.testRun.status !== 'ok') {
     throw new MainError({ exitCode: 1 });

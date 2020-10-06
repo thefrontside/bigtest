@@ -38,10 +38,10 @@ test('a test')
   })
 
 // Context Async
-test('a test')
+let t1 = test('a test')
   // should not be able to return non-object
   // $ExpectError
-  .step('return nonsense', async () => {
+  t.step('return nonsense', async () => {
     return "foo";
   })
 
@@ -53,10 +53,10 @@ test('a test')
   .step({ description: "consume from context", action: async () => {} })
 
 // Context Sync
-test('a test')
+let t2 = test('a test')
   // should not be able to return non-object
   // $ExpectError
-  .step('return nonsense', () => {
+  t.step('return nonsense', () => {
     return "foo";
   })
 
@@ -66,3 +66,19 @@ test('a test')
   // $ExpectError
   .step('consume from context', ({ helloX: string }) => { goodbye: helloX })
   .step({ description: "consume from context", action: () => {} })
+
+//Add multiple steps
+test('a test')
+  .step("add context", () => ({ hello: 'world' }))
+  .step(
+    { description: "hello", action: async ({ hello }) => { hello.charAt(0) } },
+    { description: "hello", action: ({ hello }) => { hello.charAt(0) } })
+  .step('consume context after multi-step', ({ hello }) => { hello.charAt(0) })
+
+//Add multiple assertions
+test('a test')
+  .step("add context", () => ({ hello: 'world' }))
+  .assertion(
+    { description: "hello", check: async ({ hello }) => { hello.charAt(0) } },
+    { description: "hello", check: ({ hello }) => { hello.charAt(0) } })
+  .assertion('consume context after multi-step', ({ hello }) => { hello.charAt(0) });

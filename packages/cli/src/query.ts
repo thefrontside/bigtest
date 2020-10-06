@@ -80,11 +80,13 @@ export function test() {
       $showInternalStackTrace: Boolean! = true,
       $showDependenciesStackTrace: Boolean! = true,
       $showStackTraceCode: Boolean! = true,
-      $showLog: Boolean! = true
+      $showLog: Boolean! = true,
+      $coverage: Boolean! = false
     ) {
       testRun(id: $testRunId) {
         status
         error { ...ErrorDetails }
+        coverage @include(if: $coverage)
         agents {
           agent {
             agentId
@@ -155,6 +157,7 @@ export type TestResults = {
   testRun: {
     status: ResultStatus;
     error?: ErrorDetails;
+    coverage?: string;
     agents: {
       status: ResultStatus;
       agent: {
@@ -168,4 +171,3 @@ export type TestResults = {
     }[];
   };
 }
-

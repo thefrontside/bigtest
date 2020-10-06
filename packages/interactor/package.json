@@ -24,7 +24,8 @@
   "dependencies": {
     "@bigtest/globals": "^0.7.0",
     "@bigtest/performance": "^0.5.0",
-    "change-case": "^4.1.1"
+    "change-case": "^4.1.1",
+    "element-is-visible": "^1.0.0"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^1.1.2",

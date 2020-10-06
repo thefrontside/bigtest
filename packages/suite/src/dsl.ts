@@ -16,11 +16,14 @@ export interface StepDefinition<C extends Context, R extends Context | void> {
   description: string;
   action: Action<C,R>;
 }
+type StepList<C extends Context> = [StepDefinition<C,void>, ...StepDefinition<C,void>[]];
 
 export interface AssertionDefinition<C extends Context> {
   description: string;
   check: Check<C>;
 }
+
+type AssertionList<C extends Context> = [AssertionDefinition<C>, ...AssertionDefinition<C>[]];
 
 export class TestBuilder<C extends Context> implements TestImplementation {
   public description: string;
@@ -35,31 +38,47 @@ export class TestBuilder<C extends Context> implements TestImplementation {
     this.children = test.children;
   }
 
-  step<R extends Context | void>(step: StepDefinition<C,R>): TestBuilder<R extends void ? C : C & R>;
+  step<R extends Context | void>(...steps: StepList<C>): TestBuilder<C>;
   step<R extends Context | void>(description: string, action: Action<C,R>): TestBuilder<R extends void ? C : C & R>;
-  step<R extends Context | void>(descriptionOrStep: StepDefinition<C,R> | string, action?: Action<C,R>): TestBuilder<R extends void ? C : C & R> {
-    let step = typeof descriptionOrStep !== 'string' ? descriptionOrStep : {
-      description: descriptionOrStep,
-      action: action ? action : async () => undefined
-    };
+  step<R extends Context | void>(...args: [string, Action<C,R>] | StepList<C>): TestBuilder<R extends void ? C : C & R> {
+
+    function getSteps(): Step[] {
+      let [first, second] = args;
+      if (typeof first === 'string') {
+        return [{
+          description: first,
+          action: second ? second : async () => undefined
+        }] as Step[];
+      } else {
+        return args as Step[];
+      }
+    }
 
     return new TestBuilder({
       ...this,
-      steps: this.steps.concat(step as Step),
+      steps: this.steps.concat(getSteps()),
     });
   }
 
-  assertion(assertion: AssertionDefinition<C>): TestBuilder<C>;
+  assertion(...assertions: AssertionList<C>): TestBuilder<C>;
   assertion(description: string, check: Check<C>): TestBuilder<C>;
-  assertion(descriptionOrAssertion: string | AssertionDefinition<C>, check?: Check<C>): TestBuilder<C> {
-    let assertion = typeof descriptionOrAssertion !== 'string' ? descriptionOrAssertion : {
-      description: descriptionOrAssertion,
-      check: check ? check : async () => undefined
-    };
+  assertion(...args: [string, Check<C>] | AssertionList<C>): TestBuilder<C> {
+
+    function getAssertions(): Assertion[] {
+      let [first, second] = args;
+      if (typeof first === 'string') {
+        return [{
+          description: first,
+          check: second ? second : async () => undefined
+        }] as Assertion[]
+      } else {
+        return args as Assertion[];
+      }
+    }
 
     return new TestBuilder({
       ...this,
-      assertions: this.assertions.concat(assertion as Assertion),
+      assertions: this.assertions.concat(getAssertions()),
     });
   }
 

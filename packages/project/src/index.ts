@@ -4,14 +4,12 @@ import * as path from 'path';
 import { existsSync } from 'fs';
 import * as fs from 'fs';
 
-const CONFIG_FILE_NAME = 'bigtest.json';
-
 const { readFile } = fs.promises;
 
-export function getConfigFilePath(): string | undefined {
+export function getConfigFilePath(fileName = 'bigtest.json'): string | undefined {
   let dir = process.cwd();
   do {
-    let configFilePath = path.resolve(dir, CONFIG_FILE_NAME);
+    let configFilePath = path.resolve(dir, fileName);
     if(existsSync(configFilePath)) {
       return configFilePath;
     }
@@ -23,6 +21,17 @@ export function *loadConfigFile(configFilePath: string): Operation<ProjectOption
   let contents = yield readFile(configFilePath);
   return JSON.parse(contents) as ProjectOptions;
 }
+
+export type CoverageReportName =
+  'clover' |
+  'cobertura' |
+  'html-spa' |
+  'html' |
+  'json' |
+  'json-summary' |
+  'lcov'|
+  'lcovonly' |
+  'teamcity';
 
 export type ProjectOptions = {
   port: number;
@@ -46,6 +55,10 @@ export type ProjectOptions = {
   };
   drivers: Record<string, DriverSpec>;
   launch: string[];
+  coverage: {
+    reports: CoverageReportName[];
+    directory: string;
+  };
 }
 
 export function defaultConfig(configFilePath: string): ProjectOptions {
@@ -102,6 +115,10 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
         }
       },
     },
-    launch: []
+    launch: [],
+    coverage: {
+      reports: [],
+      directory: "./coverage"
+    }
   }
 };

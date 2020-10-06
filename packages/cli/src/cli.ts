@@ -5,44 +5,41 @@ import { setLogLevel, Levels } from '@bigtest/logging';
 
 import { startServer } from './start-server';
 import { runTest } from './run-test';
+import { init } from './init';
 
-import { loadConfig } from './config';
+import { loadOptions, applyStartArgs, validateOptions } from './project-options';
 
 export function * CLI(argv: string[]): Operation {
-  let args = parseOptions(argv);
+  let args = parseArgs(argv);
 
   setLogLevel(args.logLevel);
 
-  if (args.command === 'server') {
-    let config: ProjectOptions = yield loadConfig(args);
-    yield startServer(config, {
+  if (args.command === 'init') {
+    yield init(args.configFile || './bigtest.json');
+  } else if (args.command === 'test') {
+    let options: ProjectOptions = yield loadOptions(args.configFile);
+    yield runTest(options, args);
+  } else if (args.command === 'server') {
+    let options: ProjectOptions = yield loadOptions(args.configFile);
+    applyStartArgs(options, args);
+    validateOptions(options);
+    yield startServer(options, {
       timeout: args.startTimeout,
     });
     yield;
-  } else if (args.command === 'test') {
-    let config: ProjectOptions = yield loadConfig(args);
-    yield runTest(config, {
-      files: args.files,
-      formatterName: args.formatter,
-      showFullStack: false,
-      showLog: false,
-    });
   } else if (args.command === 'ci') {
-    let config: ProjectOptions = yield loadConfig(args);
-    config.watchTestFiles = false;
-    yield startServer(config, {
+    let options: ProjectOptions = yield loadOptions(args.configFile);
+    applyStartArgs(options, args);
+    options.watchTestFiles = false;
+    validateOptions(options);
+    yield startServer(options, {
       timeout: args.startTimeout,
     });
-    yield runTest(config, {
-      files: args.files,
-      formatterName: args.formatter,
-      showFullStack: false,
-      showLog: false,
-    });
+    yield runTest(options, args);
   }
 }
 
-interface StartOptions {
+export interface StartArgs {
   testFiles?: string[];
   launch?: string[];
   appUrl?: string;
@@ -50,23 +47,28 @@ interface StartOptions {
   startTimeout: number;
 }
 
-interface RunOptions {
+export interface RunArgs {
+  coverage: boolean;
   formatter: string;
   files: string[];
+  showFullStack: boolean;
+  showLog: boolean;
 }
 
-interface GlobalOptions {
+export interface GlobalArgs {
   logLevel: Levels;
+  configFile?: string;
 }
 
-type ServerCommandOptions = ({ command: 'server' } & StartOptions & GlobalOptions);
-type TestCommandOptions = ({ command: 'test' } & RunOptions & GlobalOptions);
-type CiCommandOptions = ({ command: 'ci' } & StartOptions & RunOptions & GlobalOptions);
+type ServerCommandArgs = { command: 'server' } & StartArgs & GlobalArgs;
+type TestCommandArgs = { command: 'test' } & RunArgs & GlobalArgs;
+type CiCommandArgs = { command: 'ci' } & StartArgs & RunArgs & GlobalArgs;
+type InitCommandArgs = { command: 'init' } & GlobalArgs;
 
-export type Options = ServerCommandOptions | TestCommandOptions | CiCommandOptions;
+export type Args = ServerCommandArgs | TestCommandArgs | CiCommandArgs | InitCommandArgs;
 
-function parseOptions(argv: readonly string[]): Options {
-  function startOptions(yargs: Argv) {
+function parseArgs(argv: readonly string[]): Args {
+  function startArgs(yargs: Argv) {
     return yargs
       .option('launch', {
         describe: 'launch specified driver at server startup',
@@ -91,7 +93,7 @@ function parseOptions(argv: readonly string[]): Options {
       })
   };
 
-  function runOptions(yargs: Argv) {
+  function runArgs(yargs: Argv) {
     return yargs
       .positional('files', {
         describe: 'the test files you would like to run',
@@ -102,6 +104,23 @@ function parseOptions(argv: readonly string[]): Options {
         type: 'string',
         default: 'checks'
       })
+      .option('coverage', {
+        describe: 'output coverage reports for the test run',
+        type: 'boolean',
+        default: false
+      })
+      .option('show-full-stack', {
+        alias: 'b',
+        describe: 'show the full stack including internals and source annotations',
+        type: 'boolean',
+        default: false
+      })
+      .option('show-log', {
+        alias: 'l',
+        describe: 'show console output from the application and tests',
+        type: 'boolean',
+        default: false
+      });
   };
 
   let parsed = yargs({})
@@ -112,12 +131,18 @@ function parseOptions(argv: readonly string[]): Options {
       choices: ['debug', 'info', 'warn', 'error'],
       desc: 'increase or decrease the amount of logging information printed to the console'
     })
-    .command('server', 'start a bigtest server', startOptions)
-    .command('test [files...]', 'run tests against server', runOptions)
-    .command('ci [files...]', 'start a server and run the test suite', (yargs) => runOptions(startOptions(yargs)))
+    .option('config-file', {
+      alias: 'c',
+      global: true,
+      desc: 'the config file to use for bigtest'
+    })
+    .command('server', 'start a bigtest server', startArgs)
+    .command('test [files...]', 'run tests against server', runArgs)
+    .command('ci [files...]', 'start a server and run the test suite', (yargs) => runArgs(startArgs(yargs)))
+    .command('init', 'interactively create a bigtest configuration file', (yargs) => yargs)
     .demandCommand()
     .help()
     .parse(argv)
 
-  return { command: parsed._[0], ...parsed } as unknown as Options // types generated by yargs are inadequate
+  return { command: parsed._[0], ...parsed } as unknown as Args // types generated by yargs are inadequate
 }

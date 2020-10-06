@@ -66,6 +66,30 @@ describe('@bigtest/interactor', () => {
       });
     });
 
+    describe('filter `visible`', () => {
+      it('filters `a` tags by their visibility', async () => {
+        dom(`
+          <p><a href="/foo" style="display:none;">Foo</a></p>
+          <p><a href="/bar">Bar</a></p>
+        `);
+
+        await expect(Link('Foo', { visible: false }).exists()).resolves.toBeUndefined();
+        await expect(Link('Bar', { visible: true }).exists()).resolves.toBeUndefined();
+        await expect(Link('Foo', { visible: true }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+        await expect(Link('Bar', { visible: false }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+      });
+
+      it('defaults to `true`', async () => {
+        dom(`
+          <p><a href="/foo" style="display:none;">Foo</a></p>
+          <p><a href="/bar">Bar</a></p>
+        `);
+
+        await expect(Link('Bar').exists()).resolves.toBeUndefined();
+        await expect(Link('Foo').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+      });
+    });
+
     describe('filter `title`', () => {
       it('filters `a` tags by their title', async () => {
         dom(`

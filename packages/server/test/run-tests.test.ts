@@ -360,6 +360,10 @@ describe('running tests on an agent', () => {
           status: 'ok',
           testRunId: runCommand.testRunId,
           path: ['All tests', 'Signing In', 'when I go to the main navigation page', 'I see my username']
+        });
+        agent.send({
+          type: 'run:end',
+          testRunId: runCommand.testRunId
         })
       });
 

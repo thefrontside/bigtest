@@ -1,5 +1,11 @@
 # @bigtest/atom
 
+## 0.10.0
+
+### Minor Changes
+
+- f51c9933: only publish from atom or slice if the state has changed
+
 ## 0.9.0
 
 ### Minor Changes

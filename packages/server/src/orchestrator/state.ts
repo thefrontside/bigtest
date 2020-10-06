@@ -27,12 +27,14 @@ export type TestRunState = {
   status: ResultStatus;
   agents: Record<string, TestRunAgentState>;
   error?: ErrorDetails;
+  coverage?: unknown;
 }
 
 export type TestRunAgentState = {
   status: ResultStatus;
   agent: AgentState;
   result: TestResult;
+  coverage?: unknown;
 }
 
 export interface Manifest extends Test {
