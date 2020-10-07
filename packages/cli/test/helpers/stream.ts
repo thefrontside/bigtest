@@ -7,6 +7,7 @@ import { World } from './world';
 export class Stream {
   public output = "";
   private semaphore = new Channel<true>();
+  append = (chunk: string) => this.output += chunk;
 
   static *of(channel: Channel<string>, verbose = false): Operation<Stream> {
     let testStream = new Stream(channel, verbose);
@@ -16,10 +17,9 @@ export class Stream {
   constructor(private channel: Channel<string>, private verbose = false) {};
 
   *run(): Operation<void> {
-    let { semaphore, verbose } = this;
-    let stream = this;
+    let { semaphore, verbose, append } = this;
     yield subscribe(this.channel).forEach(function*(chunk) {
-      stream.output += chunk;
+      append(chunk);
       semaphore.send(true);
       if (verbose) {
         process.stdout.write(chunk);

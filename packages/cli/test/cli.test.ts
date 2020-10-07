@@ -9,7 +9,7 @@ import { World } from './helpers/world';
 import { Stream } from './helpers/stream';
 
 export interface TestProcess {
-  stdin: { write(data: string): void; }
+  stdin: { write(data: string): void };
   stdout: Stream;
   stderr: Stream;
   join(): Promise<ExitStatus>;
@@ -35,7 +35,7 @@ describe('@bigtest/cli', function() {
 
   describe('start', () => {
     describe('starting the server', () => {
-      let child: { stdout: Stream, stderr: Stream };
+      let child: { stdout: Stream; stderr: Stream };
 
       beforeEach(async () => {
         child = await run('server');
