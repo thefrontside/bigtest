@@ -1,0 +1,16 @@
+{
+  "port": 1234,
+  "launch": [
+    "chrome.headless"
+  ],
+  "app": {
+    "command": "yarn run-my-app",
+    "env": {
+      "PORT": 9000
+    },
+    "url": "http://localhost:9000"
+  },
+  "testFiles": [
+    "test.ts"
+  ]
+}

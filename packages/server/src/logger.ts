@@ -14,7 +14,6 @@ export function* createLogger({ atom, reporter }: LoggerOptions) {
   yield subscribe(bundlerState).forEach(function* (event) {
     if(event.type === 'ERRORED'){
       reporter.clear();
-      reporter.error("build error:");
       reporter.error(event.error);
     }
     if(event.type === 'GREEN') {

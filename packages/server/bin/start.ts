@@ -61,5 +61,9 @@ main(createServer({
         }
       }
   },
-  launch: ['chrome.headless', 'firefox.headless']
+  launch: ['chrome.headless', 'firefox.headless'],
+  coverage: {
+    reports: ['json'],
+    directory: process.cwd()
+  }
 }));

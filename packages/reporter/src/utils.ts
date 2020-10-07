@@ -6,7 +6,7 @@ export const isNil = <T>(val: T): val is Nullable<T> => {
 }
 
 export const hasFields = <T>(o: T): o is NonNullable<T> & Required<T> => {
-  return isNil(o) === false && Object.values(o).find(isNil) === false;
+  return isNil(o) === false && !Object.values(o).find(isNil);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
