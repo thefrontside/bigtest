@@ -134,7 +134,7 @@ describe('@bigtest/cli', function() {
       let status: ExitStatus;
 
       beforeEach(async () => {
-        startChild = await run('server', '--test-files', './test/fixtures/bad.broken.ts');
+        startChild = await run('server', '--test-files', './test/fixtures/syntax.broken.ts');
 
         await startChild.stdout.detect("[orchestrator] running!");
 
@@ -147,7 +147,7 @@ describe('@bigtest/cli', function() {
       it('exits with error code', async () => {
         expect(status.code).toEqual(1);
         expect(runChild.stdout.output).toContain('Cannot run tests due to build errors in the test suite')
-        expect(runChild.stdout.output).toContain('test/fixtures/bad.broken.ts')
+        expect(runChild.stdout.output).toContain('test/fixtures/syntax.broken.ts')
         expect(runChild.stdout.output).toContain('⨯ FAILURE')
       });
     });
@@ -201,7 +201,7 @@ describe('@bigtest/cli', function() {
       let status: ExitStatus;
 
       beforeEach(async () => {
-        child = await run('ci', '--test-files', './test/fixtures/bad.broken.ts');
+        child = await run('ci', '--test-files', './test/fixtures/syntax.broken.ts');
         await child.stdout.detect("[orchestrator] running!");
         status = await child.join();
       });
@@ -209,7 +209,7 @@ describe('@bigtest/cli', function() {
       it('exits with error code', async () => {
         expect(status.code).toEqual(1);
         expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite')
-        expect(child.stdout?.output).toContain('test/fixtures/bad.broken.ts')
+        expect(child.stdout?.output).toContain('test/fixtures/syntax.broken.ts')
         expect(child.stdout?.output).toContain('⨯ FAILURE')
       });
     });
