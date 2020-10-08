@@ -121,7 +121,14 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
 
       this.channel.send({ type: 'UPDATE' });
     } catch(error) {
-      this.channel.send({ type: 'ERROR', error });
+      let message = error.message
+      if(error.loc) {
+        message += `\n\n${error.loc.file}:${error.loc.line}:${error.loc.column}`;
+      }
+      if(error.frame) {
+        message += error.frame.trimEnd()
+      }
+      this.channel.send({ type: 'ERROR', error: { name: 'BundleError', message } });
     }
   }
 }
