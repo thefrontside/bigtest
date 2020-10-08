@@ -8,12 +8,17 @@ import { Prompt } from './prompt';
 
 const GIT_IGNORE = '.gitignore';
 
+function formatJSON(value: unknown): string {
+  return JSON.stringify(value, null, 2);
+}
+
 export function* init(configFile: string): Operation<void> {
   let prompt = yield Prompt.create();
 
   let isYarn = !!getConfigFilePath('yarn.lock');
 
   let options: Partial<ProjectOptions>;
+  let tsInclude;
 
   try {
     options = JSON.parse(yield fs.readFile(path.resolve(configFile)));
@@ -64,6 +69,18 @@ export function* init(configFile: string): Operation<void> {
     });
   }
 
+  if(yield prompt.boolean('Do you want to set up a separate TypeScript `tsconfig` file for BigTest? (recommended)', { defaultValue: true })) {
+    options.tsconfig = yield prompt.string('Where should the custom `tsconfig` be located?', {
+      name: 'tsconfig',
+      defaultValue: options.tsconfig || './tsconfig.bigtest.ts',
+    })
+
+    tsInclude = yield prompt.string('Which files would you like to include in the TypeScript build?', {
+      name: 'tsconfig.include',
+      defaultValue: 'test/**/*.ts',
+    })
+  }
+
   process.stdout.write(chalk.white('\nSetting up project\n'));
 
   process.stdout.write(chalk.grey(`- adding ignore to ${GIT_IGNORE} ... `));
@@ -74,9 +91,27 @@ export function* init(configFile: string): Operation<void> {
     process.stdout.write(chalk.grey('done\n'));
   }
 
+  if(options.tsconfig) {
+    process.stdout.write(chalk.grey(`- writing custom tsconfig ${options.tsconfig} ... `));
+    if(existsSync(options.tsconfig)) {
+      process.stdout.write(chalk.grey('skipped\n'));
+    } else {
+      yield fs.writeFile(options.tsconfig, formatJSON({
+        "include": [tsInclude],
+        "compilerOptions": {
+          "moduleResolution": "node",
+          "skipLibCheck": true,
+          "target": "es6",
+          "lib": ["esnext", "dom"]
+        }
+      }));
+      process.stdout.write(chalk.grey('done\n'));
+    }
+  }
+
   process.stdout.write(chalk.grey(`- writing config file ${configFile} ... `));
   yield fs.mkdir(path.dirname(configFile), { recursive: true });
-  yield fs.writeFile(configFile, JSON.stringify(options, null, 2) + '\n');
+  yield fs.writeFile(configFile, formatJSON(options) + '\n');
   process.stdout.write(chalk.grey('done\n'));
   process.stdout.write(chalk.white('\nSetup complete!\n'));
 }
