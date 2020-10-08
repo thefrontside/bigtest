@@ -213,6 +213,25 @@ describe('@bigtest/cli', function() {
         expect(child.stdout?.output).toContain('⨯ FAILURE')
       });
     });
+
+    describe('running the suite with type errors', () => {
+      let child: TestProcess;
+      let status: ExitStatus;
+
+      beforeEach(async () => {
+        child = await run('ci', '--test-files', './test/fixtures/typescript.broken.ts', '--tsconfig', './test/fixtures/tsconfig.failing.json');
+        await World.spawn(child.stdout?.waitFor('[orchestrator] running!'));
+        status = await child.join();
+      });
+
+      it('exits with error code', async () => {
+        expect(status.code).toEqual(1);
+        expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite')
+        expect(child.stdout?.output).toContain('test/fixtures/typescript.broken.ts')
+        expect(child.stdout?.output).toContain('Type \'"bar"\' is not assignable to type \'number\'')
+        expect(child.stdout?.output).toContain('⨯ FAILURE')
+      });
+    });
   });
 
   describe('coverage', () => {
