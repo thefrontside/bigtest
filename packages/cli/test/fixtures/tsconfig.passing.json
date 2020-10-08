@@ -1,0 +1,9 @@
+{
+  "extends": "@frontside/tsconfig",
+  "include": [
+    "./**/*.ts"
+  ],
+  "exclude": [
+    "./**/*.broken.ts"
+  ]
+}

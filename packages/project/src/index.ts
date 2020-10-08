@@ -38,6 +38,7 @@ export type ProjectOptions = {
   testFiles: string[];
   cacheDir: string;
   watchTestFiles: boolean;
+  tsconfig?: string;
   app: {
     url?: string;
     command?: string;

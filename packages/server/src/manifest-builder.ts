@@ -20,6 +20,7 @@ interface ManifestBuilderOptions {
   srcPath: string;
   buildDir: string;
   distDir: string;
+  tsconfig?: string;
 };
 
 function* ftruncate(fd: number, len: number): Operation<void> {
@@ -95,7 +96,8 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
     watch: options.watch,
     entry: options.srcPath,
     globalName: bigtestGlobals.manifestProperty,
-    outFile: path.join(options.buildDir, "manifest.js")
+    outFile: path.join(options.buildDir, "manifest.js"),
+    tsconfig: options.tsconfig,
   });
 
   yield subscribe(bundler).forEach(function* (message) {

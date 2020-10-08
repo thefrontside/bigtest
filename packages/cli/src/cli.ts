@@ -45,6 +45,7 @@ export interface StartArgs {
   appUrl?: string;
   appCommand?: string;
   startTimeout: number;
+  tsconfig?: string;
 }
 
 export interface RunArgs {
@@ -84,6 +85,10 @@ function parseArgs(argv: readonly string[]): Args {
       })
       .option('app-command', {
         describe: 'command to start the target application',
+        type: 'string'
+      })
+      .option('tsconfig', {
+        describe: 'the path to a tsconfig file to use for typescript compilation',
         type: 'string'
       })
       .option('start-timeout', {
