@@ -59,7 +59,7 @@
     "@bigtest/webdriver": "^0.6.3",
     "@effection/events": "^0.7.8",
     "@effection/fetch": "^0.1.2",
-    "@effection/node": "^0.8.0",
+    "@effection/node": "^0.9.0",
     "@effection/subscription": "^0.11.0",
     "@nexus/schema": "^0.13.1",
     "bowser": "^2.8.1",

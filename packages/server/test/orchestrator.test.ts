@@ -1,6 +1,6 @@
 import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
-import { ChildProcess } from '@effection/node'
+import { daemon } from '@effection/node'
 import * as getPort from 'get-port';
 import { Response } from 'node-fetch';
 
@@ -134,11 +134,7 @@ describe('orchestrator', () => {
         })
       );
 
-      await actions.fork(function * () {
-        return yield ChildProcess.spawn(`yarn test:app:start ${port}`, [], {
-          shell: true,
-        });
-      });
+      await actions.fork(daemon(`yarn test:app:start ${port}`));
 
       await actions.fork(
         actions.atom.slice('appService', 'appStatus').once(status => {
