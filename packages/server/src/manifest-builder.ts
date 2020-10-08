@@ -108,15 +108,20 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
       case 'UPDATE':
         console.debug("[manifest builder] received bundle update");
 
-        let path: string = yield processManifest(options);
+        try {
+          let path: string = yield processManifest(options);
 
-        bundlerSlice.update((previous) => {
-          assertCanTransition(previous?.type, { to: 'BUILDING' });
+          console.debug("[manifest builder] manifest ready");
+          bundlerSlice.update((previous) => {
+            assertCanTransition(previous?.type, { to: 'BUILDING' });
 
-          return { ...previous, type: 'GREEN', path };
-        });
+            return { ...previous, type: 'GREEN', path };
+          });
+        } catch(error) {
+          console.debug("[manifest builder] error loading manifest");
+          bundlerSlice.update(() => ({ type: 'ERRORED', error }));
+        }
 
-        console.debug("[manifest builder] manifest ready");
         break;
       case 'ERROR':
         console.debug("[manifest builder] received bundle error");

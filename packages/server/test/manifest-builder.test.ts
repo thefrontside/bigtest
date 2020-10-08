@@ -162,4 +162,23 @@ describe('manifest builder', () => {
       expect(error.frame).toBeTruthy();
     });
   })
+
+  describe('importing the manifest with an error adds the error to the state', () => {
+    beforeEach(async () => {
+      await copyFile(path.join(FIXTURES_DIR, 'exceptions', 'throw.t.js'), MANIFEST_PATH);
+      await actions.fork(atom.slice('bundler').once(({ type }) => type === 'ERRORED'));
+    });
+
+    it('should update the global state with the error detail', () => {
+      let bundlerState = atom.get().bundler;
+
+      // this could be a custom expect
+      // assert is used to type narrow also and does more than just assert
+      assertBundlerState(bundlerState.type, {is: 'ERRORED'})
+
+      let error = bundlerState.error;
+
+      expect(error.message).toEqual('bork')
+    });
+  })
 });
