@@ -1,4 +1,4 @@
-export const coverageData = {
+export const coverageData: unknown = {
   "src/Signin.js": {
     "path": "src/Signin.js",
     "statementMap": {
