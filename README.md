@@ -10,7 +10,6 @@
   <a href="https://frontside.com">
     <img alt="created by Frontside" src="https://img.shields.io/badge/created%20by-frontside-26abe8.svg" />
   </a>
-<a href="https://app.fossa.com/projects/git%2Bgithub.com%2Fthefrontside%2Fbigtest?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Fthefrontside%2Fbigtest.svg?type=shield"/></a>
 </p>
 
 <p align="center">
