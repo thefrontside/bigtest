@@ -2,14 +2,14 @@ import * as os from 'os';
 import * as chalk from 'chalk';
 import { Writable } from 'stream';
 
-type Color = 'red' | 'grey' | 'white' | 'yellow' | 'green';
+type Color = 'red' | 'grey' | 'white' | 'yellow' | 'green' | 'blue';
 
 export class Printer {
-  constructor(public stream: Writable, public linePrefix = '', public colorValue?: Color) {
+  constructor(public stream: Writable, public basePrefix = '', public trailingPrefix = basePrefix, public colorValue?: Color) {
   }
 
   write(...text: string[]) {
-    let result = text.join('').split(/\r?\n(?!$)/).map((l) => this.linePrefix + l).join(os.EOL).replace(/\r?\n$/, os.EOL);
+    let result = text.join('').split(/\r?\n(?!$)/).map((l, index) => (index === 0 ? this.basePrefix : this.trailingPrefix) + l).join(os.EOL).replace(/\r?\n$/, os.EOL);
     if(this.colorValue) {
       result = chalk[this.colorValue](result);
     }
@@ -24,8 +24,8 @@ export class Printer {
     this.write(words.filter(Boolean).join(' '), os.EOL);
   }
 
-  prefix(newPrefix: string): Printer {
-    return new Printer(this.stream, this.linePrefix + newPrefix, this.colorValue);
+  prefix(basePrefix: string, trailingPrefix = basePrefix): Printer {
+    return new Printer(this.stream, this.basePrefix + basePrefix, this.trailingPrefix + trailingPrefix, this.colorValue);
   }
 
   indent(count = 1): Printer {
@@ -33,7 +33,7 @@ export class Printer {
   }
 
   color(value: Color): Printer {
-    return new Printer(this.stream, this.linePrefix, value);
+    return new Printer(this.stream, this.basePrefix, this.trailingPrefix, value);
   }
 
   get red() { return this.color('red'); }
@@ -41,4 +41,5 @@ export class Printer {
   get white() { return this.color('white'); }
   get yellow() { return this.color('yellow'); }
   get green() { return this.color('green'); }
+  get blue() { return this.color('blue'); }
 }

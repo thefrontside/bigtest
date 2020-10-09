@@ -64,10 +64,10 @@ export function *serializeError(error: unknown): Operation<ErrorDetails> {
       return { name: error.name, message: error.message, stack: resolvedStackFrames };
     } else {
       return {
-        message: `${error}`
+        message: error ? `${error}` : 'unknown error'
       }
     }
   } catch {
-    return { message: "unknown error" }
+    return { message: 'unknown error' }
   }
 }

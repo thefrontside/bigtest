@@ -1,7 +1,7 @@
 import * as chalk from 'chalk';
 import { Printer } from './printer';
 import { RunResultEvent, TestResults, ResultCounts } from './query'
-import { ErrorDetails, ResultStatus, TestResult, StepResult, AssertionResult } from '@bigtest/suite'
+import { ErrorDetails, ResultStatus, TestResult, StepResult, AssertionResult, LogEvent } from '@bigtest/suite'
 
 export { RunResultEvent, TestResults, ResultSummary, ResultCounts } from './query'
 
@@ -63,11 +63,36 @@ export function printError(printer: Printer, error?: ErrorDetails) {
   }
 }
 
+export function printLogEvent(printer: Printer, event: LogEvent) {
+  if(event.type === 'error') {
+    printError(printer.prefix(chalk.red('⨯ '), chalk.red('│ ')), event.error);
+  } else {
+    let color = {
+      debug: chalk.grey,
+      info: chalk.grey,
+      log: chalk.grey,
+      warn: chalk.yellow,
+      error: chalk.red,
+    }[event.message.level];
+    printer.prefix(color('⌾ '), color('│ ')).line(color(event.message.text));
+  }
+}
+
+export function printLog(printer: Printer, events?: LogEvent[]) {
+  if(!events) return;
+  printer.blue.line(chalk.blue('┌ Console'));
+
+  for(let event of events) {
+    printLogEvent(printer.prefix(chalk.blue('│ ')), event);
+  }
+}
+
 export function printStepResult(printer: Printer, step: StepResult) {
   printer.words(stepStatusIcon(step.status), step.description);
 
   if(step.status === 'failed') {
     printError(printer.indent().prefix(chalk.red('│ ')), step.error);
+    printLog(printer.indent(), step.logEvents);
   }
 }
 
@@ -76,6 +101,7 @@ export function printAssertionResult(printer: Printer, assertion: AssertionResul
 
   if(assertion.status === 'failed') {
     printError(printer.indent().prefix(chalk.red('│ ')), assertion.error);
+    printLog(printer.indent(), assertion.logEvents);
   }
 }
 
