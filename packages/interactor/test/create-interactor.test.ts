@@ -102,10 +102,10 @@ describe('@bigtest/interactor', () => {
       await expect(Link('Foo Bar').exists()).resolves.toBeUndefined();
       await expect(Link('Blah').exists()).rejects.toHaveProperty('message', [
         'did not find link "Blah", did you mean one of:', '',
-        '| link        |',
-        '| ----------- |',
-        '| ⨯ "Foo Bar" |',
-        '| ⨯ "Quox"    |',
+        '┃ link        ┃',
+        '┣━━━━━━━━━━━━━┫',
+        '┃ ⨯ "Foo Bar" ┃',
+        '┃ ⨯ "Quox"    ┃',
       ].join('\n'));
     });
 
@@ -117,9 +117,9 @@ describe('@bigtest/interactor', () => {
       await expect(Link({ title: 'Monkey' }).exists()).resolves.toBeUndefined();
       await expect(Link({ title: 'Zebra' }).exists()).rejects.toHaveProperty('message', [
         'did not find link with title "Zebra", did you mean one of:', '',
-        '| title: "Zebra" |',
-        '| -------------- |',
-        '| ⨯ "Monkey"     |',
+        '┃ title: "Zebra" ┃',
+        '┣━━━━━━━━━━━━━━━━┫',
+        '┃ ⨯ "Monkey"     ┃',
       ].join('\n'));
     });
 
@@ -184,15 +184,15 @@ describe('@bigtest/interactor', () => {
       await expect(Div("bar").find(Link("Bar")).exists()).resolves.toBeUndefined();
       await expect(Div("foo").find(Link("Bar")).exists()).rejects.toHaveProperty('message', [
         'did not find link "Bar" within div "foo", did you mean one of:', '',
-        '| link    |',
-        '| ------- |',
-        '| ⨯ "Foo" |',
+        '┃ link    ┃',
+        '┣━━━━━━━━━┫',
+        '┃ ⨯ "Foo" ┃',
       ].join('\n'));
       await expect(Div("bar").find(Link("Foo")).exists()).rejects.toHaveProperty('message', [
         'did not find link "Foo" within div "bar", did you mean one of:', '',
-        '| link    |',
-        '| ------- |',
-        '| ⨯ "Bar" |',
+        '┃ link    ┃',
+        '┣━━━━━━━━━┫',
+        '┃ ⨯ "Bar" ┃',
       ].join('\n'));
     });
 
@@ -205,9 +205,9 @@ describe('@bigtest/interactor', () => {
 
       await expect(Div("blah").find(Link("Foo")).exists()).rejects.toHaveProperty('message', [
         'did not find div "blah", did you mean one of:', '',
-        '| div     |',
-        '| ------- |',
-        '| ⨯ "foo" |',
+        '┃ div     ┃',
+        '┣━━━━━━━━━┫',
+        '┃ ⨯ "foo" ┃',
       ].join('\n'));
     });
 
@@ -240,17 +240,17 @@ describe('@bigtest/interactor', () => {
 
       await expect(Div("test").find(Div("foo").find(Link("Bar"))).exists()).rejects.toHaveProperty('message', [
         'did not find link "Bar" within div "foo" within div "test", did you mean one of:', '',
-        '| link    |',
-        '| ------- |',
-        '| ⨯ "Foo" |',
+        '┃ link    ┃',
+        '┣━━━━━━━━━┫',
+        '┃ ⨯ "Foo" ┃',
       ].join('\n'));
 
       await expect(Div("test").find(Div("foo")).find(Link("Foo")).exists()).resolves.toBeUndefined();
       await expect(Div("test").find(Div("foo")).find(Link("Bar")).exists()).rejects.toHaveProperty('message', [
         'did not find link "Bar" within div "foo" within div "test", did you mean one of:', '',
-        '| link    |',
-        '| ------- |',
-        '| ⨯ "Foo" |',
+        '┃ link    ┃',
+        '┣━━━━━━━━━┫',
+        '┃ ⨯ "Foo" ┃',
       ].join('\n'));
     });
 
@@ -280,9 +280,9 @@ describe('@bigtest/interactor', () => {
       await expect(TextField('Email').is({ value: 'jonas@example.com' })).resolves.toBeUndefined();
       await expect(TextField('Email').is({ value: 'incorrect@example.com' })).rejects.toHaveProperty('message', [
         'text field "Email" does not match filters:', '',
-        '| value: "incorrect@example.com" | enabled: true |',
-        '| ------------------------------ | ------------- |',
-        '| ⨯ "jonas@example.com"          | ✓ true        |',
+        '┃ value: "incorrect@example.com" ┃ enabled: true ┃',
+        '┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫',
+        '┃ ⨯ "jonas@example.com"          ┃ ✓ true        ┃',
       ].join('\n'))
     });
   });
@@ -296,9 +296,9 @@ describe('@bigtest/interactor', () => {
       await expect(TextField('Email').has({ value: 'jonas@example.com' })).resolves.toBeUndefined();
       await expect(TextField('Email').has({ value: 'incorrect@example.com' })).rejects.toHaveProperty('message', [
         'text field "Email" does not match filters:', '',
-        '| value: "incorrect@example.com" | enabled: true |',
-        '| ------------------------------ | ------------- |',
-        '| ⨯ "jonas@example.com"          | ✓ true        |',
+        '┃ value: "incorrect@example.com" ┃ enabled: true ┃',
+        '┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫',
+        '┃ ⨯ "jonas@example.com"          ┃ ✓ true        ┃',
       ].join('\n'))
     });
   });
@@ -428,9 +428,9 @@ describe('@bigtest/interactor', () => {
       await expect(TextField('Email', { value: 'jonas@example.com' }).exists()).resolves.toBeUndefined();
       await expect(TextField('Email', { value: 'incorrect@example.com' }).exists()).rejects.toHaveProperty('message', [
         'did not find text field "Email" with value "incorrect@example.com", did you mean one of:', '',
-        '| text field | value: "incorrect@example.com" | enabled: true |',
-        '| ---------- | ------------------------------ | ------------- |',
-        '| ✓ "Email"  | ⨯ "jonas@example.com"          | ✓ true        |',
+        '┃ text field ┃ value: "incorrect@example.com" ┃ enabled: true ┃',
+        '┣━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫',
+        '┃ ✓ "Email"  ┃ ⨯ "jonas@example.com"          ┃ ✓ true        ┃',
       ].join('\n'))
     });
 
@@ -442,17 +442,17 @@ describe('@bigtest/interactor', () => {
 
       await expect(TextField('Password').exists()).rejects.toHaveProperty('message', [
         'did not find text field "Password", did you mean one of:', '',
-        '| text field   | enabled: true |',
-        '| ------------ | ------------- |',
-        '| ✓ "Password" | ⨯ false       |',
-        '| ⨯ "Email"    | ✓ true        |',
+        '┃ text field   ┃ enabled: true ┃',
+        '┣━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫',
+        '┃ ✓ "Password" ┃ ⨯ false       ┃',
+        '┃ ⨯ "Email"    ┃ ✓ true        ┃',
       ].join('\n'))
       await expect(TextField('Password', { enabled: true }).exists()).rejects.toHaveProperty('message', [
         'did not find text field "Password" which is enabled, did you mean one of:', '',
-        '| text field   | enabled: true |',
-        '| ------------ | ------------- |',
-        '| ✓ "Password" | ⨯ false       |',
-        '| ⨯ "Email"    | ✓ true        |',
+        '┃ text field   ┃ enabled: true ┃',
+        '┣━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫',
+        '┃ ✓ "Password" ┃ ⨯ false       ┃',
+        '┃ ⨯ "Email"    ┃ ✓ true        ┃',
       ].join('\n'))
       await expect(TextField('Password', { enabled: false }).exists()).resolves.toBeUndefined();
     });
@@ -465,17 +465,17 @@ describe('@bigtest/interactor', () => {
 
       await expect(TextField('Password', { enabled: false, value: 'incorrect' }).exists()).rejects.toHaveProperty('message', [
         'did not find text field "Password" which is not enabled and with value "incorrect", did you mean one of:', '',
-        '| text field   | enabled: false | value: "incorrect"    |',
-        '| ------------ | -------------- | --------------------- |',
-        '| ✓ "Password" | ✓ false        | ⨯ "test1234"          |',
-        '| ⨯ "Email"    | ⨯ true         | ⨯ "jonas@example.com" |',
+        '┃ text field   ┃ enabled: false ┃ value: "incorrect"    ┃',
+        '┣━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━┫',
+        '┃ ✓ "Password" ┃ ✓ false        ┃ ⨯ "test1234"          ┃',
+        '┃ ⨯ "Email"    ┃ ⨯ true         ┃ ⨯ "jonas@example.com" ┃',
       ].join('\n'))
       await expect(TextField('Password', { enabled: true, value: 'test1234' }).exists()).rejects.toHaveProperty('message', [
         'did not find text field "Password" which is enabled and with value "test1234", did you mean one of:', '',
-        '| text field   | enabled: true | value: "test1234"     |',
-        '| ------------ | ------------- | --------------------- |',
-        '| ✓ "Password" | ⨯ false       | ✓ "test1234"          |',
-        '| ⨯ "Email"    | ✓ true        | ⨯ "jonas@example.com" |',
+        '┃ text field   ┃ enabled: true ┃ value: "test1234"     ┃',
+        '┣━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━┫',
+        '┃ ✓ "Password" ┃ ⨯ false       ┃ ✓ "test1234"          ┃',
+        '┃ ⨯ "Email"    ┃ ✓ true        ┃ ⨯ "jonas@example.com" ┃',
       ].join('\n'))
       await expect(TextField('Password', { enabled: false, value: 'test1234' }).exists()).resolves.toBeUndefined();
     });
