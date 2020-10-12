@@ -1,6 +1,7 @@
 import { describe, it } from 'mocha';
 import { TextField, Heading } from '../src/index';
 import { dom } from './helpers';
+import { bigtestGlobals } from '@bigtest/globals';
 
 describe('fillIn', () => {
   it('triggers a change event', async () => {
@@ -17,6 +18,7 @@ describe('fillIn', () => {
       </script>
     `);
 
+    bigtestGlobals.document.getElementById('nameField');
     await TextField('Name').fillIn('changed');
     await Heading('success changed').exists();
   });
@@ -179,5 +181,32 @@ describe('fillIn', () => {
     await TextField('Name').fillIn('cha');
     await Heading('-key:c-key:h-key:a').exists();
   });
-});
 
+  it('fills in the value, even when the input.value property is monkey-patched', async () => {
+    dom(`
+      <p>
+        <label for="nameField">Name</label>
+        <input value="initial" type="text" id="nameField"/>
+        <h1 id="target"></h1>
+      </p>
+      <script>
+        nameField.addEventListener('change', (event) => {
+          target.textContent = 'success ' + event.target.value;
+        });
+      </script>`);
+    let input = bigtestGlobals.document.getElementById('nameField');
+
+    // monkey patch input.value to effectively disable setting it javascript.
+    Object.defineProperty(input, 'value', {
+      //ignore sets,
+      set() { return; },
+      //use the original gets
+      get() {
+        let prop = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(this), 'value');
+        return prop?.get?.call(this);
+      }
+    })
+    await TextField('Name').fillIn('changed');
+    await Heading('success changed').exists();
+  });
+});
