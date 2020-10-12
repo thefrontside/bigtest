@@ -39,6 +39,7 @@ describe("Bundler", function() {
 
       describe('introducing an error', () => {
         beforeEach(async () => {
+          await spawn(timeout(10));
           await fs.writeFile("./build/test/sources/input.js", "const foo - 'bar';\nexport default foo;\n");
         });
 
@@ -89,7 +90,7 @@ describe("Bundler", function() {
         await fs.writeFile("./build/test/sources/input.ts", "const foo: string = 'bar';\nexport default foo;\n");
 
         bundler = await spawn(Bundler.create({
-          watch: true,
+          watch: false,
           entry: "./build/test/sources/input.ts",
           outFile: "./build/test/output/manifest.js",
           globalName: "__bigtestManifest",
@@ -108,33 +109,33 @@ describe("Bundler", function() {
         await fs.writeFile("./build/test/sources/input.ts", "const foo: number = 'bar';\nexport default foo;\n");
 
         bundler = await spawn(Bundler.create({
-          watch: true,
+          watch: false,
           entry: "./build/test/sources/input.ts",
           outFile: "./build/test/output/manifest.js",
           globalName: "__bigtestManifest",
         }));
       });
 
-      it('does not typecheck, just transform', async () => {
-        let message = spawn(subscribe(bundler).match({ type: 'UPDATE' }).first())
+      it('fails on type error', async () => {
+        let message = spawn(subscribe(bundler).match({ type: 'ERROR' }).first())
 
-        await expect(message).resolves.toHaveProperty('type', 'UPDATE');
+        await expect(message).resolves.toHaveProperty('type', 'ERROR');
       });
     })
   });
 
   describe('editing the sources', () => {
     beforeEach(async () => {
-      await fs.writeFile("./build/test/sources/input.ts", "const foo: string = 'bar';\nexport default foo;\n");
+      await fs.writeFile("./build/test/sources/input.js", "const foo = 'bar';\nexport default foo;\n");
 
       bundler = await spawn(Bundler.create({
         watch: true,
-        entry: "./build/test/sources/input.ts",
+        entry: "./build/test/sources/input.js",
         outFile: "./build/test/output/manifest.js",
         globalName: "__bigtestManifest"
       }));
 
-      await fs.writeFile("./build/test/sources/input.ts", "export default {hello: 'world'}\n");
+      await fs.writeFile("./build/test/sources/input.js", "export default {hello: 'world'}\n");
     });
 
     it('notifies that a new build is available', async () => {

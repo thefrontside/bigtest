@@ -5,7 +5,7 @@ import { Channel } from '@effection/channel';
 import { watch, rollup, OutputOptions, InputOptions, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'rollup';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import typescript from '@rollup/plugin-typescript';
+import typescript from 'rollup-plugin-typescript2';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
@@ -34,8 +34,11 @@ function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMess
       commonjs(),
       typescript({
         tsconfig: bundle.tsconfig,
-        declaration: false,
-        noEmitOnError: true,
+        tsconfigOverride: {
+          compilerOptions: {
+            module: "ESNext",
+          }
+        }
       }),
       babel({
         babelHelpers: 'runtime',

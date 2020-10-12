@@ -219,7 +219,7 @@ describe('@bigtest/cli', function() {
       let status: ExitStatus;
 
       beforeEach(async () => {
-        child = await run('ci', '--test-files', './test/fixtures/typescript.broken.ts', '--tsconfig', './test/fixtures/tsconfig.failing.json');
+        child = await run('ci', '--test-files', './test/fixtures/typescript.broken.ts');
         await World.spawn(child.stdout?.waitFor('[orchestrator] running!'));
         status = await child.join();
       });
@@ -228,7 +228,7 @@ describe('@bigtest/cli', function() {
         expect(status.code).toEqual(1);
         expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite')
         expect(child.stdout?.output).toContain('test/fixtures/typescript.broken.ts')
-        expect(child.stdout?.output).toContain('Type \'"bar"\' is not assignable to type \'number\'')
+        expect(child.stdout?.output).toContain('Type \'string\' is not assignable to type \'number\'')
         expect(child.stdout?.output).toContain('⨯ FAILURE')
       });
     });
@@ -308,7 +308,7 @@ describe('@bigtest/cli', function() {
         await child.stdout.detect('Which URL do you use to access your application?');
         child.stdin.write('\n');
 
-        await World.spawn(child.stdout?.waitFor('Do you want to set up a separate TypeScript `tsconfig` file for BigTest? (recommended)'));
+        await World.spawn(child.stdout?.waitFor('Do you want to set up a separate TypeScript `tsconfig` file for BigTest?'));
         child.stdin?.write('no\n');
 
         status = await child.join();

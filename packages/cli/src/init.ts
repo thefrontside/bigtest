@@ -18,7 +18,6 @@ export function* init(configFile: string): Operation<void> {
   let isYarn = !!getConfigFilePath('yarn.lock');
 
   let options: Partial<ProjectOptions>;
-  let tsInclude;
 
   try {
     options = JSON.parse(yield fs.readFile(path.resolve(configFile)));
@@ -69,15 +68,10 @@ export function* init(configFile: string): Operation<void> {
     });
   }
 
-  if(yield prompt.boolean('Do you want to set up a separate TypeScript `tsconfig` file for BigTest? (recommended)', { defaultValue: true })) {
+  if(yield prompt.boolean('Do you want to set up a separate TypeScript `tsconfig` file for BigTest?', { defaultValue: true })) {
     options.tsconfig = yield prompt.string('Where should the custom `tsconfig` be located?', {
       name: 'tsconfig',
       defaultValue: options.tsconfig || './tsconfig.bigtest.ts',
-    })
-
-    tsInclude = yield prompt.string('Which files would you like to include in the TypeScript build?', {
-      name: 'tsconfig.include',
-      defaultValue: 'test/**/*.ts',
     })
   }
 
@@ -97,9 +91,7 @@ export function* init(configFile: string): Operation<void> {
       process.stdout.write(chalk.grey('skipped\n'));
     } else {
       yield fs.writeFile(options.tsconfig, formatJSON({
-        "include": [tsInclude],
         "compilerOptions": {
-          "moduleResolution": "node",
           "skipLibCheck": true,
           "target": "es6",
           "lib": ["esnext", "dom"]

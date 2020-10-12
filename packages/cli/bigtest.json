@@ -5,7 +5,6 @@
   },
   "testFiles": ["./test/fixtures/*.test.{ts,js}"],
   "launch": ["chrome.headless"],
-  "tsconfig": "./test/fixtures/tsconfig.passing.json",
   "coverage": {
     "directory": "./tmp/coverage",
     "reports": ["lcov", "html"]
