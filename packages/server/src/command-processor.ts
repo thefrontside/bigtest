@@ -74,7 +74,21 @@ function* run({ id: testRunId, files }: RunMessage, options: CommandProcessorOpt
       testRunId: testRunId,
       status: 'failed',
       agents: {},
-      error: { name: 'BundlerError', message: 'Cannot run tests due to build errors in the test suite:\n' + bundler.error.message }
+      error: {
+        name: 'BundlerError',
+        message: [
+          'Cannot run tests due to build errors in the test suite:',
+          bundler.error.message,
+          bundler.error.frame,
+        ].filter(Boolean).join('\n'),
+        stack: bundler.error.loc && [
+          {
+            fileName: bundler.error.loc.file,
+            line: bundler.error.loc.line,
+            column: bundler.error.loc.column,
+          }
+        ]
+      }
     });
   }
 }
