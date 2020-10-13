@@ -16,11 +16,28 @@ describe('@bigtest/interactor', () => {
 
     it('finds `input[type=text] tags by label', async () => {
       dom(`
-        <label type="text" for="name-field">Name</label><input id="name-field"/>
+        <label for="name-field">Name</label><input type="text" id="name-field"/>
       `);
 
       await expect(TextField('Name').exists()).resolves.toBeUndefined();
       await expect(TextField('Does not Exist').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+    });
+
+    it('finds inputs with custom type', async () => {
+      dom(`
+        <label for="name-field">Name</label><input type="monkey" id="name-field"/>
+      `);
+
+      await expect(TextField('Name').exists()).resolves.toBeUndefined();
+      await expect(TextField('Does not Exist').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+    });
+
+    it('does not find non text field inputs', async () => {
+      dom(`
+        <label for="name-field">Name</label><input type="range" id="name-field"/>
+      `);
+
+      await expect(TextField('Name').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
     });
 
     it('does not yet support multiple label tags per `input`, only picks the first one', async () => {
