@@ -2,6 +2,7 @@ import { bigtestGlobals } from '@bigtest/globals';
 import { Operation } from 'effection';
 import { subscribe } from '@effection/subscription';
 import { once } from '@effection/events';
+import { validateTest } from '@bigtest/suite';
 import { Deferred } from '@bigtest/effection';
 import { Bundler } from '@bigtest/bundler';
 import { Atom } from '@bigtest/atom';
@@ -78,6 +79,8 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
 
   manifest = manifest.default || manifest;
   manifest.fileName = fileName;
+
+  validateTest(manifest);
 
   let slice = options.atom.slice('manifest');
 
