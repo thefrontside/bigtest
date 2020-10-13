@@ -61,33 +61,19 @@ const Datepicker = createInteractor<HTMLDivElement>("datepicker")({
   }
 });
 
+const MainNav = createInteractor('main nav')({
+  selector: 'nav'
+});
+
 describe('@bigtest/interactor', () => {
   describe('instantiation', () => {
     describe('no arguments', () => {
-      let MainNav = createInteractor('main nav')({
-        selector: 'nav'
-      });
-
       it('just uses the selector to locate', async () => {
         dom(`
           <nav id="main-nav"></nav>
         `);
 
         await expect(MainNav().exists()).resolves.toBeUndefined();
-      });
-
-      it('throws an AmbiguousElementError if necessary', async () => {
-        dom(`
-          <nav id="main-nav"></nav>
-          <nav id="secondary-nav"></nav>
-        `);
-
-        await expect(MainNav().exists()).rejects.toHaveProperty('message', [
-          'main nav matches multiple elements:',
-          '',
-          '- <nav id="main-nav">',
-          '- <nav id="secondary-nav">'
-        ].join('\n'));
       });
     });
   });
@@ -106,6 +92,31 @@ describe('@bigtest/interactor', () => {
         '┣━━━━━━━━━━━━━┫',
         '┃ ⨯ "Foo Bar" ┃',
         '┃ ⨯ "Quox"    ┃',
+      ].join('\n'));
+    });
+
+    it('returns true if multiple matches exist', async () => {
+      dom(`
+        <p><a href="/foo1">Foo</a></p>
+        <p><a href="/foo2">Foo</a></p>
+      `);
+
+      await expect(Link('Foo').exists()).resolves.toBeUndefined();
+    });
+
+    // See this issue for a discussion of and explanation for this behaviour:
+    // https://github.com/thefrontside/bigtest/issues/488
+    it('throws an AmbiguousElementError if parent interactor is ambiguous', async () => {
+      dom(`
+        <nav id="main-nav"></nav>
+        <nav id="secondary-nav"></nav>
+      `);
+
+      await expect(MainNav().find(Link('Foo')).exists()).rejects.toHaveProperty('message', [
+        'main nav matches multiple elements:',
+        '',
+        '- <nav id="main-nav">',
+        '- <nav id="secondary-nav">'
       ].join('\n'));
     });
 
@@ -148,7 +159,31 @@ describe('@bigtest/interactor', () => {
       `);
 
       await expect(Link('Blah').absent()).resolves.toBeUndefined();
-      await expect(Link('Foo Bar').absent()).rejects.toHaveProperty('message', 'link "Foo Bar" exists but should not');
+      await expect(Link('Foo Bar').absent()).rejects.toHaveProperty('message', [
+        'link "Foo Bar" exists but should not:', '',
+        '- <a href="/foobar">',
+      ].join('\n'))
+    });
+
+    it('throws if element exists multiple times', async () => {
+      dom(`
+        <p><a href="/foo1">Foo</a></p>
+        <p><a href="/foo2">Foo</a></p>
+      `);
+
+      await expect(Link('Foo').absent()).rejects.toHaveProperty('message', [
+        'link "Foo" exists but should not:', '',
+        '- <a href="/foo1">',
+        '- <a href="/foo2">',
+      ].join('\n'))
+    });
+
+    // See this issue for a discussion of and explanation for this behaviour:
+    // https://github.com/thefrontside/bigtest/issues/488
+    it('throws if parent interactor does NOT exist', async () => {
+      dom(`<p></p>`);
+
+      await expect(MainNav().find(Link('Foo')).absent()).rejects.toHaveProperty('message', 'did not find main nav');
     });
 
     it('can wait for condition to become true', async () => {
