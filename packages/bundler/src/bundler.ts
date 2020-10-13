@@ -3,6 +3,7 @@ import { on } from '@effection/events';
 import { Subscribable, SymbolSubscribable } from '@effection/subscription';
 import { Channel } from '@effection/channel';
 import { watch, rollup, OutputOptions, InputOptions, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'rollup';
+import { defaultTSConfig } from '@bigtest/project';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
@@ -34,6 +35,7 @@ function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMess
       commonjs(),
       typescript({
         tsconfig: bundle.tsconfig,
+        tsconfigDefaults: defaultTSConfig(),
         tsconfigOverride: {
           compilerOptions: {
             module: "ESNext",

@@ -1,5 +1,5 @@
 import { Operation } from 'effection';
-import { ProjectOptions, getConfigFilePath } from '@bigtest/project';
+import { ProjectOptions, getConfigFilePath, defaultTSConfig } from '@bigtest/project';
 import { promises as fs, existsSync } from 'fs';
 import * as path from 'path';
 import * as chalk from 'chalk';
@@ -90,13 +90,7 @@ export function* init(configFile: string): Operation<void> {
     if(existsSync(options.tsconfig)) {
       process.stdout.write(chalk.grey('skipped\n'));
     } else {
-      yield fs.writeFile(options.tsconfig, formatJSON({
-        "compilerOptions": {
-          "skipLibCheck": true,
-          "target": "es6",
-          "lib": ["esnext", "dom"]
-        }
-      }));
+      yield fs.writeFile(options.tsconfig, formatJSON(defaultTSConfig()));
       process.stdout.write(chalk.grey('done\n'));
     }
   }

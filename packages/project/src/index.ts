@@ -123,3 +123,13 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
     }
   }
 };
+
+export function defaultTSConfig() {
+  return {
+    compilerOptions: {
+      skipLibCheck: true,
+      target: "es6",
+      lib: ["esnext", "dom"]
+    }
+  }
+}
