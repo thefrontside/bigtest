@@ -87,6 +87,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     delegate: manifestGeneratorDelegate,
     files: options.project.testFiles,
     destinationPath: manifestSrcPath,
+    watch: options.project.watchTestFiles,
   }));
 
   console.debug('[orchestrator] wait for manifest generator');

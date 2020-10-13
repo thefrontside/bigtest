@@ -10,8 +10,9 @@ const { writeFile, mkdir } = fs.promises;
 
 interface ManifestGeneratorOptions {
   delegate: Mailbox;
-  files: string[]; 
+  files: string[];
   destinationPath: string;
+  watch: boolean;
 };
 
 function* writeManifest(options: ManifestGeneratorOptions) {
@@ -44,25 +45,31 @@ module.exports = {
 }
 
 export function* createManifestGenerator(options: ManifestGeneratorOptions): Operation {
-  let watcher = chokidar.watch(options.files, { ignoreInitial: true });
+  if(options.watch) {
+    let watcher = chokidar.watch(options.files, { ignoreInitial: true });
 
-  yield ensure(() => watcher.close());
+    yield ensure(() => watcher.close());
 
-  let events: Mailbox = yield Mailbox.subscribe(watcher, ['ready', 'add', 'unlink']);
+    let events: Mailbox = yield Mailbox.subscribe(watcher, ['ready', 'add', 'unlink']);
 
-  yield throwOnErrorEvent(watcher);
+    yield throwOnErrorEvent(watcher);
 
-  yield events.receive({ event: 'ready' });
-  yield writeManifest(options);
-
-  console.debug("[manifest generator] manifest ready");
-  options.delegate.send({ status: 'ready' });
-
-  while(true) {
-    yield events.receive();
+    yield events.receive({ event: 'ready' });
     yield writeManifest(options);
 
-    console.debug("[manifest generator] manifest updated");
-    options.delegate.send({ event: 'update' });
+    console.debug("[manifest generator] manifest ready, watching for updates");
+    options.delegate.send({ status: 'ready' });
+
+    while(true) {
+      yield events.receive();
+      yield writeManifest(options);
+
+      console.debug("[manifest generator] manifest updated");
+      options.delegate.send({ event: 'update' });
+    }
+  } else {
+    yield writeManifest(options);
+    console.debug("[manifest generator] manifest ready");
+    options.delegate.send({ status: 'ready' });
   }
 }
