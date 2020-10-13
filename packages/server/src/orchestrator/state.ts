@@ -1,5 +1,8 @@
-import { Test, TestResult, ResultStatus, ErrorDetails } from '@bigtest/suite';
-import { BundlerError, BundlerWarning } from '@bigtest/bundler';
+import type { Test, TestResult, ResultStatus, ErrorDetails } from '@bigtest/suite';
+import type { BundlerError, BundlerWarning } from '@bigtest/bundler';
+import type { Operation } from 'effection';
+import type { ExitStatus } from '@effection/node';
+import type { Atom } from '@bigtest/atom';
 
 export type AgentState = {
   agentId: string;
@@ -37,19 +40,40 @@ export type TestRunAgentState = {
   coverage?: unknown;
 }
 
+export type Key = string | number | symbol;
+
 export type BundlerState =
   | { type: 'UNBUNDLED' }
   | { type: 'BUILDING'; warnings: BundlerWarning[] }
   | { type: 'GREEN'; path: string;  warnings: BundlerWarning[] }
   | { type: 'ERRORED'; error: BundlerError }
 
-  export type BundlerTypes = Pick<BundlerState, 'type'>['type'];
+export type BundlerTypes = Pick<BundlerState, 'type'>['type'];
 
-export interface Manifest extends Test {
+export type ServiceStatus =
+  | { type: 'unstarted' } 
+  | { type: 'started' }
+  | { type: 'reachable' }
+  | { type: 'unreachable' }
+  | { type: 'crashed'; exitStatus: ExitStatus };
+
+export type ServiceStatuses = ServiceStatus['type'];
+
+export type ServiceState<O> = {
+  id: string;
+  name: string;
+  status: ServiceStatus;
+  // TODO: we need to further constrain this to Slice(s)
+  atom?: Atom<OrchestratorState>;
+} & O;
+
+export type Service<O> = {
+  (options: Partial<Omit<ServiceState<O>, keyof O>> & O): Operation<void>;
+};
+
+export type Manifest = Test & {
   fileName: string;
-}
-
-export type AppStatus = 'unstarted' | 'started' | 'reachable' | 'unreachable' | 'crashed'
+};
 
 export type AppOptions = {
   url?: string;
@@ -59,9 +83,8 @@ export type AppOptions = {
 }
 
 export type AppServiceState = {
-  appStatus: AppStatus;
   appOptions: AppOptions;
-}
+};
 
 export type ProxyServiceState = {
   proxyStatus: 'unstarted' | 'starting' | 'started';
@@ -72,6 +95,6 @@ export type OrchestratorState = {
   manifest: Manifest;
   bundler: BundlerState;
   testRuns: Record<string, TestRunState>;
-  appService: AppServiceState;
+  appService: ServiceState<AppServiceState>;
   proxyService: ProxyServiceState;
 }

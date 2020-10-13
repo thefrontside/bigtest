@@ -6,7 +6,7 @@
  * assertions since they are not serializable, and cannot be shared
  * between processes.
  */
-export interface Test extends Node {
+export type Test =  Node & {
   description: string;
   path?: string;
   steps: Node[];
@@ -65,7 +65,7 @@ export interface Assertion extends Node {
  */
 export type Context = Record<string, unknown>;
 
-interface Node {
+type Node = {
   description: string;
 }
 

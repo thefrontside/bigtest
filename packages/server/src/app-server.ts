@@ -1,8 +1,8 @@
-import { timeout, Operation, spawn } from 'effection';
+import { timeout, spawn } from 'effection';
 import { fetch } from '@effection/fetch';
 import { exec, Process } from '@effection/node';
 import * as process from 'process';
-import { OrchestratorState, AppOptions } from './orchestrator/state';
+import { OrchestratorState, AppOptions, Service } from './orchestrator/state';
 import { Atom } from '@bigtest/atom';
 import { restartable } from './effection/restartable'
 
@@ -10,42 +10,42 @@ interface AppServerOptions {
   atom: Atom<OrchestratorState>;
 };
 
-export function createAppServer(options: AppServerOptions): Operation {
+export const createAppServer: Service<AppServerOptions> = (options) => {
   let appOptions = options.atom.slice('appService', 'appOptions');
   return restartable(appOptions, startApp(options));
 }
 
-const startApp = ({ atom }: AppServerOptions) => function* (options: AppOptions): Operation<void> {
+const startApp = ({ atom }: AppServerOptions): Service<AppOptions> => function* (options) {
   if(!options.url) {
     throw new Error('no app url given');
   }
 
-  let appStatus = atom.slice('appService', 'appStatus');
+  let appStatus = atom.slice('appService', 'status');
 
-  appStatus.set('unstarted')
+  appStatus.set({ type: 'unstarted' });
 
   if (options.command) {
-
     let child: Process = yield exec(options.command as string, {
       cwd: options.dir,
       env: Object.assign({}, process.env, options.env),
     });
 
     yield spawn(function* () {
-      yield child.join();
-      appStatus.set('crashed');
+      let exitStatus = yield child.join();
+
+      appStatus.set({ type: 'crashed', exitStatus });
     });
   }
 
-  appStatus.set('started');
-
+  appStatus.set({ type: 'started' });
+  
   while(true) {
     yield timeout(100);
-
+    
     if (yield isReachable(options.url)) {
-      appStatus.set('reachable');
+      appStatus.set({ type: 'reachable' });
     } else {
-      appStatus.set('unreachable');
+      appStatus.set({ type: 'unreachable' });
     }
   }
 }

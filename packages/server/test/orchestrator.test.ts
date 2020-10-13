@@ -129,16 +129,16 @@ describe('orchestrator', () => {
       actions.updateApp({ url: `http://localhost:${port}` });
 
       await actions.fork(
-        actions.atom.slice('appService', 'appStatus').once(status => {
-          return ['unstarted', 'unreachable'].includes(status);
+        actions.atom.slice('appService', 'status').once(status => {
+          return ['unstarted', 'unreachable'].includes(status.type);
         })
       );
 
       await actions.fork(daemon(`yarn test:app:start ${port}`));
 
       await actions.fork(
-        actions.atom.slice('appService', 'appStatus').once(status => {
-          return status === 'reachable'
+        actions.atom.slice('appService', 'status').once(status => {
+          return status.type === 'reachable'
         })
       );
     });
