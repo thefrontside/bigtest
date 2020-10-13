@@ -5,7 +5,7 @@ interface OrchestratorAtomOptions {
   app?: AppOptions;
 }
 
-export const createOrchestratorAtom = function(options?: OrchestratorAtomOptions) {
+export const createOrchestratorAtom = (options?: OrchestratorAtomOptions) => {
   let atom = new Atom<OrchestratorState>({
     manifest: {
       description: "None",

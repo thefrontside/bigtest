@@ -1,5 +1,4 @@
 ---
-"@bigtest/suite": minor
 "@bigtest/server": minor
 ---
 

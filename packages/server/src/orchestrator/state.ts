@@ -71,7 +71,7 @@ export type Service<O> = {
   (options: Partial<Omit<ServiceState<O>, keyof O>> & O): Operation<void>;
 };
 
-export type Manifest = Test & {
+export interface Manifest extends Test  {
   fileName: string;
 };
 
