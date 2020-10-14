@@ -1,8 +1,13 @@
 import { createInteractor, perform, fillIn } from '../index';
 import { isVisible } from 'element-is-visible';
 
+const selector = 'input' + [
+  'button', 'checkbox', 'color', 'date', 'datetime-local', 'file', 'hidden',
+  'image', 'month', 'radio', 'range', 'reset', 'submit', 'time', 'datetime'
+].map((t) => `:not([type=${t}])`).join('');
+
 export const TextField = createInteractor<HTMLInputElement>('text field')({
-  selector: 'input:not([type]),input[type=text]',
+  selector,
   locator: (element) => element.labels ? (Array.from(element.labels)[0]?.textContent || '') : '',
   filters: {
     title: (element) => element.title,
