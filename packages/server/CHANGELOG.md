@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.17.0
+
+### Minor Changes
+
+- e5606e61: Fail build on TypeScript errors and add support for tsconfig file
+- e0caff7a: create Service<O> type and refactor app-service
+
+### Patch Changes
+
+- eff8120f: Don't watch test files in manifest generator if watchTestFiles is false
+- fe71c944: Use new @effection/node process api internally
+- eac55306: Improve build error formatting
+- 37cd06be: Validate manifest, check duplicate tests and nesting depth
+- ad2ea478: Don't crash server when manifest cannot be imported
+- Updated dependencies [fe71c944]
+- Updated dependencies [2b6f0108]
+- Updated dependencies [e5606e61]
+- Updated dependencies [37cd06be]
+  - @bigtest/webdriver@0.6.4
+  - @bigtest/agent@0.14.1
+  - @bigtest/bundler@0.11.0
+  - @bigtest/project@0.12.0
+  - @bigtest/suite@0.11.0
+  - @bigtest/globals@0.7.2
+
 ## 0.16.2
 
 ### Patch Changes

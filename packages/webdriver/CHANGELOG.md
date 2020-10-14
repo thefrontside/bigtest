@@ -1,5 +1,11 @@
 # @bigtest/webdriver
 
+## 0.6.4
+
+### Patch Changes
+
+- fe71c944: Use new @effection/node process api internally
+
 ## 0.6.3
 
 ### Patch Changes

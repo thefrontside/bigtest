@@ -1,5 +1,11 @@
 # @bigtest/project
 
+## 0.12.0
+
+### Minor Changes
+
+- e5606e61: Fail build on TypeScript errors and add support for tsconfig file
+
 ## 0.11.0
 
 ### Minor Changes

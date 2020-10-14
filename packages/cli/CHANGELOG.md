@@ -1,5 +1,26 @@
 # @bigtest/cli
 
+## 0.15.0
+
+### Minor Changes
+
+- 2b6f0108: Print log output when running with --show-log
+- e5606e61: Fail build on TypeScript errors and add support for tsconfig file
+- 00b424db: Introduce printer to simplify formatting code, formatter constructor takes printer as an argument
+
+### Patch Changes
+
+- fe71c944: Use new @effection/node process api internally
+- Updated dependencies [eff8120f]
+- Updated dependencies [fe71c944]
+- Updated dependencies [eac55306]
+- Updated dependencies [e5606e61]
+- Updated dependencies [e0caff7a]
+- Updated dependencies [37cd06be]
+- Updated dependencies [ad2ea478]
+  - @bigtest/server@0.17.0
+  - @bigtest/project@0.12.0
+
 ## 0.14.1
 
 ### Patch Changes
