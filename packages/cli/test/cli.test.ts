@@ -308,7 +308,7 @@ describe('@bigtest/cli', function() {
         await child.stdout.detect('Which URL do you use to access your application?');
         child.stdin.write('\n');
 
-        await World.spawn(child.stdout?.waitFor('Do you want to set up a separate TypeScript `tsconfig` file for BigTest?'));
+        await World.spawn(child.stdout?.waitFor('Do you want to write your tests in TypeScript?'));
         child.stdin?.write('no\n');
 
         status = await child.join();

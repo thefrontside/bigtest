@@ -63,7 +63,8 @@ export class Prompt {
   *boolean(text: string, options: { name?: string; defaultValue?: boolean } = {}): Operation<boolean> {
     this.writeQuestion(text + ' (yes/no)');
     while(true) {
-      let value = yield this.ask({ name: options.name, defaultValue: options.defaultValue ? 'yes' : 'no' });
+      let defaultValue = (options.defaultValue != null) ? (options.defaultValue ? 'yes' : 'no') : undefined;
+      let value = yield this.ask({ name: options.name, defaultValue });
       if(!value.length && (options.defaultValue != null)) {
         return options.defaultValue;
       } else if(value.toLowerCase() === 'n' || value.toLowerCase() === 'no') {

@@ -68,11 +68,13 @@ export function* init(configFile: string): Operation<void> {
     });
   }
 
-  if(yield prompt.boolean('Do you want to set up a separate TypeScript `tsconfig` file for BigTest?', { defaultValue: true })) {
-    options.tsconfig = yield prompt.string('Where should the custom `tsconfig` be located?', {
-      name: 'tsconfig',
-      defaultValue: options.tsconfig || './tsconfig.bigtest.ts',
-    })
+  if(yield prompt.boolean('Do you want to write your tests in TypeScript?')) {
+    if(yield prompt.boolean('Do you want to set up a separate TypeScript `tsconfig` file for BigTest?', { defaultValue: true })) {
+      options.tsconfig = yield prompt.string('Where should the custom `tsconfig` be located?', {
+        name: 'tsconfig',
+        defaultValue: options.tsconfig || './tsconfig.bigtest.ts',
+      })
+    }
   }
 
   process.stdout.write(chalk.white('\nSetting up project\n'));
