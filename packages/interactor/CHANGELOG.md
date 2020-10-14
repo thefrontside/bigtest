@@ -1,5 +1,22 @@
 # @bigtest/interactor
 
+## 0.19.0
+
+### Minor Changes
+
+- 98f99ba3: Add CheckBox interactor
+- 0dfb3828: Interactor methds exists() and absent() are better behaved when it comes to ambiguity
+- 3a9ff582: TextField interactor matches any input which is not a special input
+
+### Patch Changes
+
+- ca1cba60: Workaround the fact that React > 15.6 monkey-patches the
+  HTMLInputElement `value` property as an optimization causing the
+  `fillIn()` action not to work. See
+  https://github.com/thefrontside/bigtest/issues/596
+- a225fcda: Improve rendering of error table in interactors
+  - @bigtest/globals@0.7.2
+
 ## 0.18.0
 
 ### Minor Changes

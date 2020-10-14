@@ -1,5 +1,16 @@
 # @bigtest/bundler
 
+## 0.11.0
+
+### Minor Changes
+
+- e5606e61: Fail build on TypeScript errors and add support for tsconfig file
+
+### Patch Changes
+
+- Updated dependencies [e5606e61]
+  - @bigtest/project@0.12.0
+
 ## 0.10.2
 
 ### Patch Changes

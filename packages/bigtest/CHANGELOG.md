@@ -1,5 +1,40 @@
 # bigtest
 
+## 0.3.0
+
+### Minor Changes
+
+- 98f99ba3: Add CheckBox interactor
+- 2b6f0108: Print log output when running with --show-log
+- 0dfb3828: Interactor methds exists() and absent() are better behaved when it comes to ambiguity
+- 3a9ff582: TextField interactor matches any input which is not a special input
+- e5606e61: Fail build on TypeScript errors and add support for tsconfig file
+- 37cd06be: Validate manifest, check duplicate tests and nesting depth
+
+### Patch Changes
+
+- eff8120f: Don't watch test files in manifest generator if watchTestFiles is false
+- fe71c944: Use new @effection/node process api internally
+- ca1cba60: Workaround the fact that React > 15.6 monkey-patches the
+  HTMLInputElement `value` property as an optimization causing the
+  `fillIn()` action not to work. See
+  https://github.com/thefrontside/bigtest/issues/596
+- a225fcda: Improve rendering of error table in interactors
+- ad2ea478: Don't crash server when manifest cannot be imported
+- Updated dependencies [98f99ba3]
+- Updated dependencies [fe71c944]
+- Updated dependencies [2b6f0108]
+- Updated dependencies [ca1cba60]
+- Updated dependencies [a225fcda]
+- Updated dependencies [0dfb3828]
+- Updated dependencies [3a9ff582]
+- Updated dependencies [e5606e61]
+- Updated dependencies [00b424db]
+- Updated dependencies [37cd06be]
+  - @bigtest/interactor@0.19.0
+  - @bigtest/cli@0.15.0
+  - @bigtest/suite@0.11.0
+
 ## 0.2.2
 
 ### Patch Changes

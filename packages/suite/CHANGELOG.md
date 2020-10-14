@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.0
+
+### Minor Changes
+
+- 37cd06be: Validate manifest, check duplicate tests and nesting depth
+
 ## 0.10.0
 
 ### Minor Changes
