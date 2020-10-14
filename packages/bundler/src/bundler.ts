@@ -3,8 +3,10 @@ import { on } from '@effection/events';
 import { Subscribable, SymbolSubscribable } from '@effection/subscription';
 import { Channel } from '@effection/channel';
 import { watch, rollup, OutputOptions, InputOptions, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'rollup';
+import { defaultTSConfig } from '@bigtest/project';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import typescript from 'rollup-plugin-typescript2';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
@@ -15,6 +17,7 @@ interface BundleOptions {
   entry: string;
   outFile: string;
   globalName?: string;
+  tsconfig?: string;
   watch?: boolean;
 };
 
@@ -27,9 +30,18 @@ function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMess
     plugins: [
       resolve({
         mainFields: ["browser", "module", "main"],
-        extensions: ['.js', '.ts']
+        extensions: ['.js', '.ts'],
       }),
       commonjs(),
+      typescript({
+        tsconfig: bundle.tsconfig,
+        tsconfigDefaults: defaultTSConfig(),
+        tsconfigOverride: {
+          compilerOptions: {
+            module: "ESNext",
+          }
+        }
+      }),
       babel({
         babelHelpers: 'runtime',
         extensions: ['.js', '.ts'],

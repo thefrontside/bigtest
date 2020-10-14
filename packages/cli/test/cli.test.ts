@@ -134,7 +134,7 @@ describe('@bigtest/cli', function() {
       let status: ExitStatus;
 
       beforeEach(async () => {
-        startChild = await run('server', '--test-files', './test/fixtures/bad.broken.ts');
+        startChild = await run('server', '--test-files', './test/fixtures/syntax.broken.ts');
 
         await startChild.stdout.detect("[orchestrator] running!");
 
@@ -147,7 +147,7 @@ describe('@bigtest/cli', function() {
       it('exits with error code', async () => {
         expect(status.code).toEqual(1);
         expect(runChild.stdout.output).toContain('Cannot run tests due to build errors in the test suite')
-        expect(runChild.stdout.output).toContain('test/fixtures/bad.broken.ts')
+        expect(runChild.stdout.output).toContain('test/fixtures/syntax.broken.ts')
         expect(runChild.stdout.output).toContain('⨯ FAILURE')
       });
     });
@@ -201,7 +201,7 @@ describe('@bigtest/cli', function() {
       let status: ExitStatus;
 
       beforeEach(async () => {
-        child = await run('ci', '--test-files', './test/fixtures/bad.broken.ts');
+        child = await run('ci', '--test-files', './test/fixtures/syntax.broken.ts');
         await child.stdout.detect("[orchestrator] running!");
         status = await child.join();
       });
@@ -209,7 +209,26 @@ describe('@bigtest/cli', function() {
       it('exits with error code', async () => {
         expect(status.code).toEqual(1);
         expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite')
-        expect(child.stdout?.output).toContain('test/fixtures/bad.broken.ts')
+        expect(child.stdout?.output).toContain('test/fixtures/syntax.broken.ts')
+        expect(child.stdout?.output).toContain('⨯ FAILURE')
+      });
+    });
+
+    describe('running the suite with type errors', () => {
+      let child: TestProcess;
+      let status: ExitStatus;
+
+      beforeEach(async () => {
+        child = await run('ci', '--test-files', './test/fixtures/typescript.broken.ts');
+        await World.spawn(child.stdout?.waitFor('[orchestrator] running!'));
+        status = await child.join();
+      });
+
+      it('exits with error code', async () => {
+        expect(status.code).toEqual(1);
+        expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite')
+        expect(child.stdout?.output).toContain('test/fixtures/typescript.broken.ts')
+        expect(child.stdout?.output).toContain('Type \'string\' is not assignable to type \'number\'')
         expect(child.stdout?.output).toContain('⨯ FAILURE')
       });
     });
@@ -324,6 +343,9 @@ describe('@bigtest/cli', function() {
 
         await child.stdout.detect('Which URL do you use to access your application?');
         child.stdin.write('\n');
+
+        await World.spawn(child.stdout?.waitFor('Do you want to write your tests in TypeScript?'));
+        child.stdin?.write('no\n');
 
         status = await child.join();
       });

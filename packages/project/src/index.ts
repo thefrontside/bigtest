@@ -38,6 +38,7 @@ export type ProjectOptions = {
   testFiles: string[];
   cacheDir: string;
   watchTestFiles: boolean;
+  tsconfig?: string;
   app: {
     url?: string;
     command?: string;
@@ -122,3 +123,13 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
     }
   }
 };
+
+export function defaultTSConfig() {
+  return {
+    compilerOptions: {
+      skipLibCheck: true,
+      target: "es6",
+      lib: ["esnext", "dom"]
+    }
+  }
+}

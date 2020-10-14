@@ -40,6 +40,9 @@ export function applyStartArgs(options: ProjectOptions, args: StartArgs) {
   if(args.appUrl) {
     options.app.url = args.appUrl;
   }
+  if(args.tsconfig) {
+    options.tsconfig = args.tsconfig;
+  }
 }
 
 export function validateOptions(options: ProjectOptions) {

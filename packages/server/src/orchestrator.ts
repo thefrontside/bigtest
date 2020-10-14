@@ -100,6 +100,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     srcPath: manifestSrcPath,
     distDir: manifestDistDir,
     buildDir: manifestBuildDir,
+    tsconfig: options.project.tsconfig,
   }));
 
   yield function* () {
