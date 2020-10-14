@@ -33,6 +33,9 @@ function findMatchesNonEmpty(parentElement: Element, interactor: Interactor<any,
   }
 }
 
+// Given a parent element, and an interactor, find exactly one matching element
+// and return it. If no elements match, raise an error. If more than one
+// element matches, raise an error.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function resolveUnique(parentElement: Element, interactor: Interactor<any, any, any>): Element {
   let matching = findMatchesNonEmpty(parentElement, interactor);
@@ -45,11 +48,15 @@ export function resolveUnique(parentElement: Element, interactor: Interactor<any
   }
 }
 
+// Given a parent element, and an interactor, find all matching elements and
+// return them. If no elements match, raise an error.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function resolveNonEmpty(parentElement: Element, interactor: Interactor<any, any, any>): Element[] {
   return findMatchesNonEmpty(parentElement, interactor).map(m => m.element);
 }
 
+// Given a parent element, and an interactor, check if there are any matching
+// elements, and throw an error if there are. Otherwise return undefined.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function resolveEmpty(parentElement: Element, interactor: Interactor<any, any, any>): void {
   let matching = findMatchesMatching(parentElement, interactor);
