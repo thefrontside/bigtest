@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as rmrf from 'rimraf';
 
+import { timeout } from 'effection';
 import { Test } from '@bigtest/suite';
 
 import { actions } from './helpers';
@@ -31,61 +32,111 @@ describe('manifest-generator', () => {
     await mkdir(TEST_DIR, { recursive: true });
     await writeFile(join(TEST_DIR, "/test1.t.js"), "module.exports = { default: { description: 'hello' }};");
     await writeFile(join(TEST_DIR, "/test2.t.js"), "module.exports = { default: { description: 'monkey' }};");
-
-    delegate = new Mailbox();
-
-    actions.fork(createManifestGenerator({
-      delegate,
-      files: [TEST_DIR + "/*.t.{js,ts}"],
-      destinationPath: MANIFEST_PATH,
-    }));
-
-    await actions.receive(delegate, { status: 'ready' });
   });
 
-  describe('starting', () => {
-    let manifest: Test;
+  describe('watching', () => {
+    beforeEach(async() => {
+      delegate = new Mailbox();
 
-    beforeEach(async () => {
-      manifest = await loadManifest();
+      actions.fork(createManifestGenerator({
+        delegate,
+        files: [TEST_DIR + "/*.t.{js,ts}"],
+        destinationPath: MANIFEST_PATH,
+        watch: true,
+      }));
+
+      await actions.receive(delegate, { status: 'ready' });
     });
 
-    it('writes the manifest', () => {
-      expect(manifest.children.length).toEqual(2)
-      expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
-      expect(manifest.children[1]).toEqual({ path: './tmp/manifest-generator/test2.t.js', description: 'monkey' });
+    describe('starting', () => {
+      let manifest: Test;
+
+      beforeEach(async () => {
+        manifest = await loadManifest();
+      });
+
+      it('writes the manifest', () => {
+        expect(manifest.children.length).toEqual(2)
+        expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
+        expect(manifest.children[1]).toEqual({ path: './tmp/manifest-generator/test2.t.js', description: 'monkey' });
+      });
+    });
+
+    describe('adding a test file', () => {
+      let manifest: Test;
+
+      beforeEach(async () => {
+        await writeFile(join(TEST_DIR, "/test3.t.js"), "module.exports = { default: { description: 'test' } };");
+        await actions.receive(delegate, { event: "update" });
+        manifest = await loadManifest();
+      });
+
+      it('rewrites the manifest', () => {
+        expect(manifest.children.length).toEqual(3)
+        expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
+        expect(manifest.children[1]).toEqual({ path: './tmp/manifest-generator/test2.t.js', description: 'monkey' });
+        expect(manifest.children[2]).toEqual({ path: './tmp/manifest-generator/test3.t.js', description: 'test' });
+      });
+    });
+
+    describe('removing a test file', () => {
+      let manifest: Test;
+
+      beforeEach(async () => {
+        await unlink(join(TEST_DIR, "/test2.t.js"));
+        await actions.receive(delegate, { event: 'update' });
+        manifest = await loadManifest();
+      });
+
+      it('rewrites the manifest', () => {
+        expect(manifest.children.length).toEqual(1)
+        expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
+      });
     });
   });
 
-  describe('adding a test file', () => {
-    let manifest: Test;
+  describe('not watching', () => {
+    beforeEach(async() => {
+      delegate = new Mailbox();
 
-    beforeEach(async () => {
-      await writeFile(join(TEST_DIR, "/test3.t.js"), "module.exports = { default: { description: 'test' } };");
-      await actions.receive(delegate, { event: "update" });
-      manifest = await loadManifest();
+      actions.fork(createManifestGenerator({
+        delegate,
+        files: [TEST_DIR + "/*.t.{js,ts}"],
+        destinationPath: MANIFEST_PATH,
+        watch: false,
+      }));
+
+      await actions.receive(delegate, { status: 'ready' });
     });
 
-    it('rewrites the manifest', () => {
-      expect(manifest.children.length).toEqual(3)
-      expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
-      expect(manifest.children[1]).toEqual({ path: './tmp/manifest-generator/test2.t.js', description: 'monkey' });
-      expect(manifest.children[2]).toEqual({ path: './tmp/manifest-generator/test3.t.js', description: 'test' });
-    });
-  });
+    describe('starting', () => {
+      let manifest: Test;
 
-  describe('removing a test file', () => {
-    let manifest: Test;
+      beforeEach(async () => {
+        manifest = await loadManifest();
+      });
 
-    beforeEach(async () => {
-      await unlink(join(TEST_DIR, "/test2.t.js"));
-      await actions.receive(delegate, { event: 'update' });
-      manifest = await loadManifest();
+      it('writes the manifest', () => {
+        expect(manifest.children.length).toEqual(2)
+        expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
+        expect(manifest.children[1]).toEqual({ path: './tmp/manifest-generator/test2.t.js', description: 'monkey' });
+      });
     });
 
-    it('rewrites the manifest', () => {
-      expect(manifest.children.length).toEqual(1)
-      expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
+    describe('adding a test file', () => {
+      let manifest: Test;
+
+      beforeEach(async () => {
+        await writeFile(join(TEST_DIR, "/test3.t.js"), "module.exports = { default: { description: 'test' } };");
+        await actions.fork(timeout(200));
+        manifest = await loadManifest();
+      });
+
+      it('does nothing', () => {
+        expect(manifest.children.length).toEqual(2)
+        expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
+        expect(manifest.children[1]).toEqual({ path: './tmp/manifest-generator/test2.t.js', description: 'monkey' });
+      });
     });
   });
 });
