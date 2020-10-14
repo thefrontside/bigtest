@@ -213,6 +213,42 @@ describe('@bigtest/cli', function() {
         expect(child.stdout?.output).toContain('⨯ FAILURE')
       });
     });
+
+    describe('running the suite with duplicate tests', () => {
+      let child: TestProcess;
+      let status: ExitStatus;
+
+      beforeEach(async () => {
+        child = await run('ci', '--test-files', './test/fixtures/duplicate.broken.ts');
+        status = await child.join();
+      });
+
+      it('exits with error code', async () => {
+        expect(status.code).toEqual(1);
+        expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite')
+        expect(child.stdout?.output).toContain('Invalid Test: contains duplicate test: "duplicate child"')
+        expect(child.stdout?.output).toContain('test/fixtures/duplicate.broken.ts')
+        expect(child.stdout?.output).toContain('⨯ FAILURE')
+      });
+    });
+
+    describe('running the suite with nesting depth exceeded', () => {
+      let child: TestProcess;
+      let status: ExitStatus;
+
+      beforeEach(async () => {
+        child = await run('ci', '--test-files', './test/fixtures/too-deep.broken.ts');
+        status = await child.join();
+      });
+
+      it('exits with error code', async () => {
+        expect(status.code).toEqual(1);
+        expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite')
+        expect(child.stdout?.output).toContain('Invalid Test: is too deeply nested, maximum allowed depth of nesting is 10')
+        expect(child.stdout?.output).toContain('test/fixtures/too-deep.broken.ts')
+        expect(child.stdout?.output).toContain('⨯ FAILURE')
+      });
+    });
   });
 
   describe('coverage', () => {
