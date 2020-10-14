@@ -4,9 +4,9 @@ import { Filters, Actions, FilterParams, InteractorSpecification } from './speci
 import { Filter } from './filter';
 import { Locator } from './locator';
 import { MatchFilter } from './match';
-import { resolve } from './resolve';
+import { resolveUnique, resolveEmpty, resolveNonEmpty } from './resolve';
 import { formatTable } from './format-table';
-import { NotAbsentError, FilterNotMatchingError } from './errors';
+import { FilterNotMatchingError } from './errors';
 import { interaction, check, Interaction, ReadonlyInteraction } from './interaction';
 
 export class Interactor<E extends Element, F extends Filters<E>, A extends Actions<E>> {
@@ -46,15 +46,19 @@ export class Interactor<E extends Element, F extends Filters<E>, A extends Actio
     return this.ancestorsAndSelf.reverse().map((interactor) => interactor.ownDescription).join(' within ');
   }
 
-  private unsafeSyncResolve(): E {
-    return this.ancestorsAndSelf.reduce(resolve, bigtestGlobals.document.documentElement) as E;
+  private unsafeSyncResolveParent(): Element {
+    return this.ancestors.reduce(resolveUnique, bigtestGlobals.document.documentElement);
+  }
+
+  private unsafeSyncResolveUnique(): E {
+    return resolveUnique(this.unsafeSyncResolveParent(), this) as E;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   perform(fn: (element: E) => void): Interaction<void> {
     return interaction(`${this.description} performs`, () => {
       return converge(() => {
-        fn(this.unsafeSyncResolve());
+        fn(this.unsafeSyncResolveUnique());
       });
     });
   }
@@ -62,7 +66,7 @@ export class Interactor<E extends Element, F extends Filters<E>, A extends Actio
   exists(): ReadonlyInteraction<void> {
     return check(`${this.description} exists`, () => {
       return converge(() => {
-        this.unsafeSyncResolve();
+        resolveNonEmpty(this.unsafeSyncResolveParent(), this);
       });
     });
   }
@@ -70,14 +74,7 @@ export class Interactor<E extends Element, F extends Filters<E>, A extends Actio
   absent(): ReadonlyInteraction<void> {
     return check(`${this.description} does not exist`, () => {
       return converge(() => {
-        try {
-          this.unsafeSyncResolve();
-        } catch(e) {
-          if(e.name === 'NoSuchElementError') {
-            return;
-          }
-        }
-        throw new NotAbsentError(`${this.description} exists but should not`);
+        resolveEmpty(this.unsafeSyncResolveParent(), this);
       });
     });
   }
@@ -86,7 +83,7 @@ export class Interactor<E extends Element, F extends Filters<E>, A extends Actio
     let filter = new Filter(this.specification, filters);
     return check(`${this.description} matches filters: ${filter.description}`, () => {
       return converge(() => {
-        let element = this.unsafeSyncResolve();
+        let element = this.unsafeSyncResolveUnique();
         let match = new MatchFilter(element, filter);
         if(!match.matches) {
           let table = formatTable({ headers: filter.asTableHeader(), rows: [match.asTableRow()] });
