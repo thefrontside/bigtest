@@ -18,7 +18,9 @@ export const createOrchestratorAtom = (options?: OrchestratorAtomOptions) => {
       type: 'UNBUNDLED'
     },
     appService: {
-      appStatus: 'unstarted',
+      id: '@bigtest/app-service',
+      name: '[app service]',
+      status: { type: 'unstarted' },
       appOptions: options?.app || {},
     },
     proxyService: {
@@ -28,5 +30,6 @@ export const createOrchestratorAtom = (options?: OrchestratorAtomOptions) => {
     testRuns: {},
   });
   atom.setMaxListeners(100000);
+
   return atom;
 }

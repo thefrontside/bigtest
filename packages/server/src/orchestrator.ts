@@ -119,8 +119,8 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       console.debug('[orchestrator] connection server ready');
     });
     yield fork(function*() {
-      yield options.atom.slice('appService', 'appStatus').once((status) => {
-        return status === 'reachable'
+      yield options.atom.slice('appService', 'status').once((status) => {
+        return status.type === 'reachable'
       });
       console.debug('[orchestrator] app server ready');
     });
