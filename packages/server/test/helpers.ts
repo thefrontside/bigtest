@@ -22,6 +22,7 @@ export const actions = {
       url: "http://localhost:24100",
       command: "yarn test:app:start 24100",
     },
+    port: 24100
   }),
 
   fork<T>(operation: Operation<T>): Context<T> {

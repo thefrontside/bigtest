@@ -7,6 +7,6 @@ import { createOrchestratorAtom } from './orchestrator/atom';
 import { ProjectOptions } from '@bigtest/project';
 
 export function* createServer(project: ProjectOptions): Operation {
-  let atom = createOrchestratorAtom({ app: project.app });
+  let atom = createOrchestratorAtom({ app: project.app, port: project.port });
   yield createOrchestrator({ atom, project });
 }

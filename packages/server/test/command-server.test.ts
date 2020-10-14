@@ -1,7 +1,6 @@
 import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 
-import { Mailbox } from '@bigtest/effection';
 import { Slice } from '@bigtest/atom';
 import { Test } from '@bigtest/suite';
 import { Client } from '@bigtest/client';
@@ -9,7 +8,7 @@ import { Client } from '@bigtest/client';
 import { ChainableSubscription } from '@effection/subscription';
 
 import { actions } from './helpers';
-import { createCommandServer } from '../src/command-server';
+import { commandService } from '../src/command-server';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 
 import { AgentState, OrchestratorState, Manifest } from '../src/orchestrator/state';
@@ -17,22 +16,20 @@ import { AgentState, OrchestratorState, Manifest } from '../src/orchestrator/sta
 let COMMAND_PORT = 24200;
 
 describe('command server', () => {
-  let delegate: Mailbox
   let agents: Slice<Record<string, AgentState>, OrchestratorState>;
   let manifest: Slice<Manifest, OrchestratorState>;
 
   beforeEach(async () => {
-    delegate = new Mailbox();
-    let atom = createOrchestratorAtom();
+    let atom = createOrchestratorAtom({
+      port: COMMAND_PORT,
+    });
     agents = atom.slice('agents');
     manifest = atom.slice('manifest');
-    actions.fork(createCommandServer({
-      delegate,
-      atom,
-      port: COMMAND_PORT,
+    actions.fork(commandService({
+      atom
     }));
 
-    await actions.receive(delegate, { status: 'ready' });
+    await actions.fork(atom.slice('commandService', 'status').once(({ type }) => type === 'reachable'));
   });
 
   describe('fetching the agents at the start', () => {

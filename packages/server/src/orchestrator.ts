@@ -7,7 +7,7 @@ import { ProjectOptions } from '@bigtest/project';
 
 import { createProxyServer } from './proxy';
 import { createBrowserManager, BrowserManager } from './browser-manager';
-import { createCommandServer } from './command-server';
+import { commandService } from './command-server';
 import { createCommandProcessor } from './command-processor';
 import { createConnectionServer } from './connection-server';
 import { createAppServer } from './app-server';
@@ -29,7 +29,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   let connectionServerInbox = new Mailbox();
 
-  let commandServerDelegate = new Mailbox();
   let connectionServerDelegate = new Mailbox();
   let manifestGeneratorDelegate = new Mailbox();
   let manifestServerDelegate = new Mailbox();
@@ -59,8 +58,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     port: options.project.proxy.port,
   }));
 
-  yield fork(createCommandServer({
-    delegate: commandServerDelegate,
+  yield fork(commandService({
     atom: options.atom,
     port: options.project.port,
   }));
@@ -111,7 +109,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       console.debug('[orchestrator] proxy server ready');
     });
     yield fork(function* () {
-      yield commandServerDelegate.receive({ status: 'ready' });
+      yield options.atom.slice('commandService', 'status').once(status => status.type === 'reachable');
       console.debug('[orchestrator] command server ready');
     });
     yield fork(function* () {

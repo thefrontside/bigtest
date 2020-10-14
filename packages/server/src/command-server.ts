@@ -1,45 +1,48 @@
 import { Operation, spawn, fork } from 'effection';
 import { subscribe } from '@effection/subscription';
-import { Mailbox } from '@bigtest/effection';
 import { express, Socket } from '@bigtest/effection-express';
 import * as graphqlHTTP from 'express-graphql';
 import { parse as parseGraphql, graphql as executeGraphql, subscribe as executeGraphqlSubscription, ExecutionResult } from 'graphql';
 
 import { schema } from './schema';
 import { GraphqlContext, SpawnContext } from './schema/context';
-import { Atom } from '@bigtest/atom';
-import { OrchestratorState } from './orchestrator/state';
-
+import { OrchestratorState, Service, CommandServerState } from './orchestrator/state';
 import { Variables, Message, Response, QueryMessage, MutationMessage, SubscriptionMessage, isQuery, isMutation, isSubscription } from '@bigtest/client';
+import { Atom } from '@bigtest/atom';
+import { assert } from './assertions/assertion';
 
 export type RunMessage = { type: "run"; id: string; files: string[] };
-export type CommandMessage = { status: "ready" } | RunMessage;
-
-interface CommandServerOptions {
-  delegate: Mailbox<CommandMessage>;
-  atom: Atom<OrchestratorState>;
-  port: number;
-};
 
 function isAsyncIterator(value: AsyncIterableIterator<unknown> | ExecutionResult<unknown>): value is AsyncIterableIterator<unknown> {
   return value && ("next" in value) && typeof(value["next"]) === 'function';
 }
 
-export function* createCommandServer(options: CommandServerOptions): Operation {
+export const commandService: Service<CommandServerState> = function *(options) {
+  let atom = options.atom;
+  assert(atom, 'no atom in commandService options');
+  
+  let appStatus = atom.slice('commandService', 'status');
+  
+  appStatus.set({ type: 'started' });
+
   let app = express();
 
-  yield app.ws('*', handleSocketConnection(options));
+  yield app.ws('*', handleSocketConnection(atom));
 
   let outerContext: SpawnContext = yield spawn(undefined);
 
-  app.raw.use(graphqlHTTP(async () => await outerContext.spawn(function* getOptionsData() {
+  app.raw.use(graphqlHTTP(async () => await outerContext.spawn(function* getOptionsData() { 
+    assert(atom, 'no atom in commandService graphql middleware');   
     let innerContext = yield spawn(undefined);
-    return { ...graphqlOptions(innerContext, options, options.atom.get()), graphiql: true};
+
+    return { ...graphqlOptions(innerContext, atom, atom.get()), graphiql: true};
   })));
 
-  yield app.listen(options.port);
+  let port = atom.slice('commandService', 'port').get();
 
-  options.delegate.send({ status: "ready" });
+  yield app.listen(port);
+
+  appStatus.set({ type: 'reachable' });
 
   yield;
 }
@@ -48,9 +51,9 @@ export function* createCommandServer(options: CommandServerOptions): Operation {
  * Run the query or mutation in `source` against the orchestrator
  * state contained in `state`
  */
-function* graphql(source: string, variables: Variables | undefined, options: CommandServerOptions, state: OrchestratorState): Operation {
+function* graphql(source: string, variables: Variables | undefined, atom: Atom<OrchestratorState>, state: OrchestratorState): Operation {
   let context: SpawnContext = yield spawn(undefined);
-  let opts = graphqlOptions(context, options, state);
+  let opts = graphqlOptions(context, atom, state);
   return yield executeGraphql({...opts, contextValue: opts.context, source, variableValues: variables });
 }
 
@@ -59,25 +62,25 @@ function* graphql(source: string, variables: Variables | undefined, options: Com
  * because the express graphql server calls the `graphql` function for
  * you based on the .
  */
-function graphqlOptions(context: SpawnContext, options: CommandServerOptions, state: OrchestratorState) {
+function graphqlOptions(context: SpawnContext, atom: Atom<OrchestratorState>, state: OrchestratorState) {
   return {
     schema,
     rootValue: state,
-    context: new GraphqlContext(context, options.atom, options.delegate)
+    context: new GraphqlContext(context, atom)
   };
 }
 
-function handleSocketConnection(options: CommandServerOptions): (socket: Socket) => Operation {
+function handleSocketConnection(atom: Atom<OrchestratorState>): (socket: Socket) => Operation {
   function* handleQuery(message: QueryMessage, socket: Socket): Operation {
-    yield publishQueryResult(message, options.atom.get(), socket);
+    yield publishQueryResult(message, atom.get(), socket);
 
     if (message.live) {
-      yield fork(subscribe(options.atom).forEach((state) => publishQueryResult(message, state, socket)));
+      yield fork(subscribe(atom).forEach((state) => publishQueryResult(message, state, socket)));
     }
   }
 
   function* handleMutation(message: MutationMessage, socket: Socket): Operation {
-    let result: Response = yield graphql(message.mutation, message.variables, options, options.atom.get());
+    let result: Response = yield graphql(message.mutation, message.variables, atom, atom.get());
     result.responseId = message.responseId;
     yield socket.send(result);
   }
@@ -88,7 +91,7 @@ function handleSocketConnection(options: CommandServerOptions): (socket: Socket)
     let result = yield executeGraphqlSubscription({
       schema,
       document: parseGraphql(message.subscription),
-      contextValue: new GraphqlContext(context, options.atom, options.delegate),
+      contextValue: new GraphqlContext(context, atom),
       variableValues: message.variables
     });
 
@@ -115,7 +118,7 @@ function handleSocketConnection(options: CommandServerOptions): (socket: Socket)
   }
 
   function* publishQueryResult(message: QueryMessage, state: OrchestratorState, socket: Socket): Operation {
-    let result: Response = yield graphql(message.query, message.variables, options, state);
+    let result: Response = yield graphql(message.query, message.variables, atom, state);
     result.responseId = message.responseId;
     yield socket.send(result);
   }

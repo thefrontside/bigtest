@@ -1,11 +1,11 @@
 import { Atom } from "@bigtest/atom";
-import { AppOptions, OrchestratorState } from "./state";
+import { AppOptions, OrchestratorState, CommandServerState } from "./state";
 
-interface OrchestratorAtomOptions {
+type OrchestratorAtomOptions = {
   app?: AppOptions;
-}
+} & CommandServerState;
 
-export const createOrchestratorAtom = (options?: OrchestratorAtomOptions) => {
+export const createOrchestratorAtom = (options: OrchestratorAtomOptions) => {
   let atom = new Atom<OrchestratorState>({
     manifest: {
       description: "None",
@@ -22,6 +22,12 @@ export const createOrchestratorAtom = (options?: OrchestratorAtomOptions) => {
       name: '[app service]',
       status: { type: 'unstarted' },
       appOptions: options?.app || {},
+    },
+    commandService: {
+      id: '@bigtest/command-service',
+      name: '[command service]',
+      status: { type: 'unstarted' },
+      port: options.port
     },
     proxyService: {
       proxyStatus: 'unstarted'

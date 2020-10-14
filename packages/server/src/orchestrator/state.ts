@@ -63,12 +63,10 @@ export type ServiceState<O> = {
   id: string;
   name: string;
   status: ServiceStatus;
-  // TODO: we need to further constrain this to Slice(s)
-  atom?: Atom<OrchestratorState>;
 } & O;
 
 export type Service<O> = {
-  (options: Partial<Omit<ServiceState<O>, keyof O>> & O): Operation<void>;
+  (options: Partial<ServiceState<O>> & { atom: Atom<OrchestratorState> }): Operation<void>;
 };
 
 export interface Manifest extends Test  {
@@ -86,6 +84,10 @@ export type AppServiceState = {
   appOptions: AppOptions;
 };
 
+export interface CommandServerState {
+  port: number;
+};
+
 export type ProxyServiceState = {
   proxyStatus: 'unstarted' | 'starting' | 'started';
 }
@@ -95,6 +97,7 @@ export type OrchestratorState = {
   manifest: Manifest;
   bundler: BundlerState;
   testRuns: Record<string, TestRunState>;
+  commandService: ServiceState<CommandServerState>;
   appService: ServiceState<AppServiceState>;
   proxyService: ProxyServiceState;
 }

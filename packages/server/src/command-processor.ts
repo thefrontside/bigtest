@@ -5,12 +5,12 @@ import { Atom } from '@bigtest/atom';
 import { AgentEvent, Command as AgentCommand } from '@bigtest/agent';
 import { AgentState, OrchestratorState, BundlerState } from './orchestrator/state';
 import { TestRunAggregator } from './result-aggregator/test-run';
-import { CommandMessage, RunMessage } from './command-server';
+import { RunMessage } from './command-server';
 import { filterTest } from './filter-test';
 
 interface CommandProcessorOptions {
   atom: Atom<OrchestratorState>;
-  commands: Mailbox<CommandMessage>;
+  commands: Mailbox<RunMessage>;
   events: Mailbox<AgentEvent>;
   delegate: Mailbox<AgentCommand & { agentId: string }>;
   proxyPort: number;

@@ -8,7 +8,6 @@ import { Atom } from '@bigtest/atom';
 
 import { actions } from './helpers';
 import { createManifestBuilder, updateSourceMapURL } from '../src/manifest-builder';
-import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { OrchestratorState } from '../src/orchestrator/state';
 import { assertBundlerState } from '../src/assertions/bundler-assertions';
 
@@ -31,7 +30,7 @@ describe('manifest builder', () => {
     await mkdir(SRC_DIR, { recursive: true });
     await copyFile(path.join(FIXTURES_DIR, 'raw-tree-format.t.js'), MANIFEST_PATH);
 
-    atom = createOrchestratorAtom();
+    atom = actions.atom;
 
     actions.fork(function*() {
       yield createManifestBuilder({

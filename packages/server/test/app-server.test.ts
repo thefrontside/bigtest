@@ -1,6 +1,6 @@
 import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
-import type { OrchestratorState } from '../src/orchestrator/state';
+import { OrchestratorState, ServiceStatus } from '../src/orchestrator/state';
 import type { Atom } from '@bigtest/atom';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { assertAppServiceStatus } from '../src/assertions/app-service-assertions';
@@ -16,7 +16,8 @@ describe('app service', () => {
       atom = createOrchestratorAtom({ app: {
           url: "http://localhost:24000",
           command: "yarn test:app:start 24000",
-        } 
+        },
+        port: 24000
       });
   
       actions.fork(function * () {
@@ -48,7 +49,8 @@ describe('app service', () => {
       atom = createOrchestratorAtom({ app: {
           url: "http://localhost:24000",
           command: "yarn no:such:command",
-        } 
+        },
+        port: 24000
       });
   
       actions.fork(function * () {

@@ -1,10 +1,11 @@
 import { Operation, Context, Controls } from 'effection';
-import { Mailbox } from '@bigtest/effection';
 import { Atom } from '@bigtest/atom';
-import { CommandMessage } from '../command-server';
+import { RunMessage } from '../command-server';
 import { resultStream } from '../result-stream';
 import { TestEvent } from './test-event';
 import { OrchestratorState } from '../orchestrator/state';
+import { Subscribable, SymbolSubscribable } from '@effection/subscription';
+import { Channel } from '@effection/channel';
 
 let testRunIds = (function * () {
   for (let current = 1; ; current++) {
@@ -22,15 +23,20 @@ export interface RunTestOptions {
   files: string[];
 }
 
-export class GraphqlContext {
+export class GraphqlContext implements Subscribable<RunMessage, undefined> {
+  private channel = new Channel<RunMessage>();
   public testRunIds = testRunIds;
 
-  constructor(private context: SpawnContext, private atom: Atom<OrchestratorState>, private delegate: Mailbox<CommandMessage>) {}
+  constructor(private context: SpawnContext, private atom: Atom<OrchestratorState>) {}
+  
+  [SymbolSubscribable]() {
+    return this.channel[SymbolSubscribable]();
+  }
 
   runTest(options: RunTestOptions): string {
     let { value: id } = this.testRunIds.next();
 
-    this.delegate.send({ type: "run", id: id, files: options.files });
+    this.channel.send({ type: "run", id: id, files: options.files });
 
     return id;
   }

@@ -5,6 +5,7 @@ import * as process from 'process';
 import { OrchestratorState, AppOptions, Service } from './orchestrator/state';
 import { Atom } from '@bigtest/atom';
 import { restartable } from './effection/restartable'
+import { assert } from './assertions/assertion';
 
 interface AppServerOptions {
   atom: Atom<OrchestratorState>;
@@ -15,10 +16,8 @@ export const createAppServer: Service<AppServerOptions> = (options) => {
   return restartable(appOptions, startApp(options));
 }
 
-const startApp = ({ atom }: AppServerOptions): Service<AppOptions> => function* (options) {
-  if(!options.url) {
-    throw new Error('no app url given');
-  }
+const startApp = ({ atom }: AppServerOptions) => function* (options: AppOptions) {
+  assert(options.url, 'no app url given');
 
   let appStatus = atom.slice('appService', 'status');
 

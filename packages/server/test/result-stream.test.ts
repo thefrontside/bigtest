@@ -6,7 +6,6 @@ import { ChainableSubscription } from '@effection/subscription';
 import { Atom, Slice } from '@bigtest/atom';
 
 import { resultStream } from '../src/result-stream';
-import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { OrchestratorState, TestRunState } from '../src/orchestrator/state';
 import { TestEvent } from '../src/schema/test-event';
 
@@ -18,7 +17,7 @@ describe('result stream', () => {
   let subscription: ChainableSubscription<TestEvent, void>;
 
   beforeEach(async () => {
-    atom = createOrchestratorAtom();
+    atom = actions.atom;
     slice = atom.slice('testRuns', 'test-run-1');
     slice.set({
       testRunId: 'test-run-1',

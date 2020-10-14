@@ -8,22 +8,21 @@ import { AgentEvent, Command as AgentCommand } from '@bigtest/agent';
 
 import { actions } from './helpers';
 import { createCommandProcessor } from '../src/command-processor';
-import { createOrchestratorAtom } from '../src/orchestrator/atom';
-import { CommandMessage } from '../src/command-server';
+import { RunMessage } from '../src/command-server';
 
 import { OrchestratorState, TestRunState } from '../src/orchestrator/state';
 
 describe('command processor', () => {
   let delegate: Mailbox<AgentCommand & { agentId: string }>;
   let events: Mailbox<AgentEvent>;
-  let commands: Mailbox<CommandMessage>;
+  let commands: Mailbox<RunMessage>;
   let atom: Atom<OrchestratorState>;
 
   beforeEach(async () => {
     delegate = new Mailbox();
     events = new Mailbox();
     commands = new Mailbox();
-    atom = createOrchestratorAtom();
+    atom = actions.atom;
     atom.slice('agents', 'agent-1').set({
       agentId: 'agent-1',
       browser: { name: "Safari", version: "13.0.4" },
