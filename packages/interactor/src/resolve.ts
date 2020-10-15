@@ -6,18 +6,18 @@ import { formatTable } from './format-table';
 const defaultSelector = 'div';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function findMatches(parentElement: Element, interactor: Interactor<any, any, any>): Match<Element, any, any>[] {
+function findMatches(parentElement: Element, interactor: Interactor<any, any, any>): Match<Element, any>[] {
   let elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector || defaultSelector));
   return elements.map((e) => new Match(e, interactor.filter, interactor.locator));
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function findMatchesMatching(parentElement: Element, interactor: Interactor<any, any, any>): Match<Element, any, any>[] {
+function findMatchesMatching(parentElement: Element, interactor: Interactor<any, any, any>): Match<Element, any>[] {
   return findMatches(parentElement, interactor).filter((m) => m.matches);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function findMatchesNonEmpty(parentElement: Element, interactor: Interactor<any, any, any>): Match<Element, any, any>[] {
+function findMatchesNonEmpty(parentElement: Element, interactor: Interactor<any, any, any>): Match<Element, any>[] {
   let matches = findMatches(parentElement, interactor);
   let matching = matches.filter((m) => m.matches);
   if(matching.length > 0) {

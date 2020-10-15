@@ -16,7 +16,7 @@ export class Interactor<E extends Element, F extends Filters<E>, A extends Actio
   constructor(
     public name: string,
     public specification: InteractorSpecification<E, F, A>,
-    public filter: Filter<E, F, A>,
+    public filter: Filter<E, F>,
     public locator?: Locator<E>,
   ) {}
 

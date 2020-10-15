@@ -1,18 +1,18 @@
 import { Locator } from './locator';
 import { Filter } from './filter';
-import { Filters, Actions } from './specification';
+import { Filters } from './specification';
 import { escapeHtml } from './escape-html';
 
 const check = (value: unknown): string => value ? "✓" : "⨯";
 
-export class Match<E extends Element, F extends Filters<E>, A extends Actions<E>> {
+export class Match<E extends Element, F extends Filters<E>> {
   public matchLocator?: MatchLocator<E>;
-  public matchFilter: MatchFilter<E, F, A>;
+  public matchFilter: MatchFilter<E, F>;
   public matches: boolean;
 
   constructor(
     public element: E,
-    public filter: Filter<E, F, A>,
+    public filter: Filter<E, F>,
     public locator?: Locator<E>,
   ) {
     this.matchLocator = locator && new MatchLocator(element, locator);
@@ -76,13 +76,13 @@ export class MatchLocator<E extends Element> {
   }
 }
 
-export class MatchFilter<E extends Element, F extends Filters<E>, A extends Actions<E>> {
+export class MatchFilter<E extends Element, F extends Filters<E>> {
   public matches: boolean;
-  public items: MatchFilterItem<E, F, A>[];
+  public items: MatchFilterItem<E, F>[];
 
   constructor(
     public element: E,
-    public filter: Filter<E, F, A>,
+    public filter: Filter<E, F>,
   ) {
     this.items = Object.entries(filter.all).map(([key, expected]) => {
       return new MatchFilterItem(element, filter, key, expected)
@@ -99,13 +99,13 @@ export class MatchFilter<E extends Element, F extends Filters<E>, A extends Acti
   }
 }
 
-export class MatchFilterItem<E extends Element, F extends Filters<E>, A extends Actions<E>> {
+export class MatchFilterItem<E extends Element, F extends Filters<E>> {
   public actual: unknown;
   public matches: boolean;
 
   constructor(
     public element: E,
-    public filter: Filter<E, F, A>,
+    public filter: Filter<E, F>,
     public key: string,
     public expected: unknown
   ) {
