@@ -65,6 +65,11 @@ const MainNav = createInteractor('main nav')({
   selector: 'nav',
   children: {
     textField: TextField,
+    itemLink: {
+      find(interactor, item: number) {
+        return interactor.find(Link(`Item ${item}`))
+      }
+    }
   }
 });
 
@@ -534,6 +539,22 @@ describe('@bigtest/interactor', () => {
         '┃ text field ┃ enabled: true ┃',
         '┣━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫',
         '┃ ⨯ "Email"  ┃ ✓ true        ┃',
+      ].join('\n'))
+    });
+
+    it('can find child interactors with custom definition', async () => {
+      dom(`
+        <nav>
+          <a href="/moo">Item 4</a>
+        </nav>
+      `);
+
+      await expect(MainNav().itemLink(4).exists()).resolves.toBeUndefined();
+      await expect(MainNav().itemLink(1337).exists()).rejects.toHaveProperty('message', [
+        'did not find link "Item 1337" within main nav, did you mean one of:', '',
+        '┃ link       ┃',
+        '┣━━━━━━━━━━━━┫',
+        '┃ ⨯ "Item 4" ┃',
       ].join('\n'))
     });
   });

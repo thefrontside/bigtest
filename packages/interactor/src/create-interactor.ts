@@ -38,7 +38,12 @@ export function createInteractor<E extends Element>(interactorName: string) {
       Object.defineProperty(InteractorClass.prototype, childName, {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         value: function(...args: any[]) {
-          return this.find(child(...args));
+          if(typeof(child) === 'object') {
+            return child.find(this, ...args);
+
+          } else {
+            return this.find(child(...args));
+          }
         },
         configurable: true,
         writable: true,

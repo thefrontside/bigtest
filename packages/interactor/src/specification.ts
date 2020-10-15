@@ -13,11 +13,15 @@ export type FilterObject<T, E extends Element> = {
   default?: T;
 }
 
+export type ChildObject<T extends Array<any>, E extends Element, F extends Filters<E>, A extends Actions<E>, C extends Children> = {
+  find: (interactor: Interactor<Element, {}, {}, {}>, ...args: T) => InteractorInstance<E, F, A, C>;
+}
+
 export type Filters<E extends Element> = Record<string, FilterFn<unknown, E> | FilterObject<unknown, E>>
 
 export type Actions<E extends Element> = Record<string, ActionFn<E>>;
 
-export type Children = Record<string, InteractorConstructor<any, any, any, any>>;
+export type Children = Record<string, InteractorConstructor<any, any, any, any> | ChildObject<any, any, any, any, any>>;
 
 export type InteractorSpecification<E extends Element, F extends Filters<E>, A extends Actions<E>, C extends Children> = {
   selector?: string;
@@ -34,7 +38,10 @@ export type ActionMethods<E extends Element, A extends Actions<E>> = {
 }
 
 export type ChildrenMethods<C extends Children> = {
-  [P in keyof C]: C[P];
+  [P in keyof C]:
+    C[P] extends ChildObject<infer TArgs, infer TElement, infer TFilters, infer TActions, infer TChildren> ?
+    ((...args: TArgs) => InteractorInstance<TElement, TFilters, TActions, TChildren>) :
+    C[P]
 }
 
 export type FilterParams<E extends Element, F extends Filters<E>> = keyof F extends never ? never : {
