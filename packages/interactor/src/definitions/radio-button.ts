@@ -21,7 +21,5 @@ export const RadioButton = createInteractor<HTMLInputElement>('radio button')({
   actions: {
     click: perform((element) => { element.click(); }),
     choose: perform((element) => { element.click(); }),
-    focus: perform((element) => { element.focus(); }),
-    blur: perform((element) => { element.blur(); }),
   },
 });

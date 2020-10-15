@@ -50,43 +50,6 @@ describe('@bigtest/interactor', () => {
       });
     });
 
-    describe('.focus', () => {
-      it('focuses on field', async () => {
-        dom(`
-          <p>
-            <label for="acceptField">Accept</label>
-            <input type="radio" id="acceptField"/>
-            <h1 id="target"></h1>
-          </p>
-          <script>
-            acceptField.addEventListener('focus', (event) => target.textContent = 'Success');
-          </script>
-        `);
-
-        await RadioButton('Accept').focus();
-        await Heading('Success').exists();
-      });
-    });
-
-    describe('.blur', () => {
-      it('blurs field', async () => {
-        dom(`
-          <p>
-            <label for="acceptField">Accept</label>
-            <input type="radio" id="acceptField"/>
-            <h1 id="target"></h1>
-          </p>
-          <script>
-            acceptField.addEventListener('blur', (event) => target.textContent = 'Success');
-          </script>
-        `);
-
-        await RadioButton('Accept').focus();
-        await RadioButton('Accept').blur();
-        await Heading('Success').exists();
-      });
-    });
-
     describe('filter `title`', () => {
       it('filters `input` tags by their title', async () => {
         dom(`

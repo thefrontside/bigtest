@@ -32,43 +32,6 @@ describe('@bigtest/interactor', () => {
       });
     });
 
-    describe('.focus', () => {
-      it('focuses on field', async () => {
-        dom(`
-          <p>
-            <label for="acceptField">Accept</label>
-            <input type="checkbox" id="acceptField"/>
-            <h1 id="target"></h1>
-          </p>
-          <script>
-            acceptField.addEventListener('focus', (event) => target.textContent = 'Success');
-          </script>
-        `);
-
-        await CheckBox('Accept').focus();
-        await Heading('Success').exists();
-      });
-    });
-
-    describe('.blur', () => {
-      it('blurs field', async () => {
-        dom(`
-          <p>
-            <label for="acceptField">Accept</label>
-            <input type="checkbox" id="acceptField"/>
-            <h1 id="target"></h1>
-          </p>
-          <script>
-            acceptField.addEventListener('blur', (event) => target.textContent = 'Success');
-          </script>
-        `);
-
-        await CheckBox('Accept').focus();
-        await CheckBox('Accept').blur();
-        await Heading('Success').exists();
-      });
-    });
-
     describe('.check', () => {
       it('checks the field if it is unchecked', async () => {
         dom(`
