@@ -1,3 +1,4 @@
+type TextFieldElement = HTMLInputElement | HTMLTextAreaElement;
 
 // do a best effort at determining the key code
 function guessCode(letter: string): string | undefined {
@@ -8,7 +9,7 @@ function guessCode(letter: string): string | undefined {
   }
 }
 
-function clearText(element: HTMLInputElement) {
+function clearText(element: TextFieldElement) {
   let InputEvent = element.ownerDocument.defaultView?.InputEvent || window.InputEvent;
 
   if(element.value.length) {
@@ -17,7 +18,7 @@ function clearText(element: HTMLInputElement) {
   }
 }
 
-function enterText(element: HTMLInputElement, value: string) {
+function enterText(element: TextFieldElement, value: string) {
   let InputEvent = element.ownerDocument.defaultView?.InputEvent || window.InputEvent;
   let KeyboardEvent = element.ownerDocument.defaultView?.KeyboardEvent || window.KeyboardEvent;
 
@@ -44,18 +45,18 @@ function enterText(element: HTMLInputElement, value: string) {
  *
  * See https://github.com/cypress-io/cypress/issues/536
  */
-function setValue(element: HTMLInputElement, value: string): void {
+function setValue(element: TextFieldElement, value: string): void {
   let property = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(element), 'value');
   if (property && property.set) {
     property.set.call(element, value);
   } else {
-    // if the value property on the HTMLInputElement protoype is not present
+    // if the value property on the element protoype is not present
     // then there are worse problems. But this is very typesafe!
     element.value = value;
   }
 }
 
-export function fillIn(element: HTMLInputElement, value: string) {
+export function fillIn(element: TextFieldElement, value: string) {
   let Event = element.ownerDocument.defaultView?.Event || window.Event;
   let originalValue = element.value;
 

@@ -5,7 +5,7 @@ import { dom } from '../helpers';
 
 describe('@bigtest/interactor', () => {
   describe('TextField', () => {
-    it('finds `input` tags by label', async () => {
+    it('finds `input` tags without type by label', async () => {
       dom(`
         <label for="name-field">Name</label><input id="name-field"/>
       `);
@@ -14,7 +14,7 @@ describe('@bigtest/interactor', () => {
       await expect(TextField('Does not Exist').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
     });
 
-    it('finds `input[type=text] tags by label', async () => {
+    it('finds `input[type=text]` tags by label', async () => {
       dom(`
         <label for="name-field">Name</label><input type="text" id="name-field"/>
       `);
@@ -23,7 +23,17 @@ describe('@bigtest/interactor', () => {
       await expect(TextField('Does not Exist').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
     });
 
-    it('finds inputs with custom type', async () => {
+    it('finds `textarea` tags by label', async () => {
+      dom(`
+        <label for="name-field">Name</label>
+        <textarea id="name-field"></textarea>
+      `);
+
+      await expect(TextField('Name').exists()).resolves.toBeUndefined();
+      await expect(TextField('Does not Exist').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+    });
+
+    it('finds `input` tags with custom type', async () => {
       dom(`
         <label for="name-field">Name</label><input type="monkey" id="name-field"/>
       `);
