@@ -1,8 +1,8 @@
 import { createInteractor, perform } from '../index';
 import { isVisible } from 'element-is-visible';
 
-export const CheckBox = createInteractor<HTMLInputElement>('check box')({
-  selector: 'input[type=checkbox]',
+export const RadioButton = createInteractor<HTMLInputElement>('radio button')({
+  selector: 'input[type=radio]',
   locator: (element) => element.labels ? (Array.from(element.labels)[0]?.textContent || '') : '',
   filters: {
     title: (element) => element.title,
@@ -20,8 +20,6 @@ export const CheckBox = createInteractor<HTMLInputElement>('check box')({
   },
   actions: {
     click: perform((element) => { element.click(); }),
-    check: perform((element) => { if(!element.checked) element.click(); }),
-    uncheck: perform((element) => { if(element.checked) element.click(); }),
-    toggle: perform((element) => { element.click(); }),
+    choose: perform((element) => { element.click(); }),
   },
 });
