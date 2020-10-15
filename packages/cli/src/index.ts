@@ -1,4 +1,6 @@
 import { CLI } from './cli';
 import { main } from '@effection/node';
 
-main(CLI(process.argv.slice(2)));
+import { warnUnexpectedExceptions } from './warn-unexpected-exceptions';
+
+main(warnUnexpectedExceptions(CLI)(process.argv.slice(2)));
