@@ -5,7 +5,7 @@ import { noCase } from 'change-case';
 export class Filter<E extends Element, F extends Filters<E>> {
   constructor(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public specification: InteractorSpecification<E, F, any>,
+    public specification: InteractorSpecification<E, F, any, any>,
     public filters: FilterParams<E, F>,
   ) {};
 

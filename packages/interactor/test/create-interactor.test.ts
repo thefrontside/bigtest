@@ -62,7 +62,10 @@ const Datepicker = createInteractor<HTMLDivElement>("datepicker")({
 });
 
 const MainNav = createInteractor('main nav')({
-  selector: 'nav'
+  selector: 'nav',
+  children: {
+    textField: TextField,
+  }
 });
 
 describe('@bigtest/interactor', () => {
@@ -513,6 +516,25 @@ describe('@bigtest/interactor', () => {
         '┃ ⨯ "Email"    ┃ ✓ true        ┃ ⨯ "jonas@example.com" ┃',
       ].join('\n'))
       await expect(TextField('Password', { enabled: false, value: 'test1234' }).exists()).resolves.toBeUndefined();
+    });
+  });
+
+  describe('children', () => {
+    it('can find child interactors', async () => {
+      dom(`
+        <nav>
+          <input id="Email" value='jonas@example.com'/>
+        </nav>
+      `);
+
+      await expect(MainNav().textField('Email').exists()).resolves.toBeUndefined();
+      await expect(MainNav().textField({ value: 'jonas@example.com' }).exists()).resolves.toBeUndefined();
+      await expect(MainNav().textField('Does not exist').exists()).rejects.toHaveProperty('message', [
+        'did not find text field "Does not exist" within main nav, did you mean one of:', '',
+        '┃ text field ┃ enabled: true ┃',
+        '┣━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫',
+        '┃ ⨯ "Email"  ┃ ✓ true        ┃',
+      ].join('\n'))
     });
   });
 });

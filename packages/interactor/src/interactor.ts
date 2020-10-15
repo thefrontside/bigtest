@@ -1,6 +1,6 @@
 import { bigtestGlobals } from '@bigtest/globals';
 import { converge } from './converge';
-import { Filters, Actions, FilterParams, InteractorSpecification } from './specification';
+import { Filters, Actions, Children, FilterParams, InteractorSpecification } from './specification';
 import { Filter } from './filter';
 import { Locator } from './locator';
 import { MatchFilter } from './match';
@@ -9,24 +9,24 @@ import { formatTable } from './format-table';
 import { FilterNotMatchingError } from './errors';
 import { interaction, check, Interaction, ReadonlyInteraction } from './interaction';
 
-export class Interactor<E extends Element, F extends Filters<E>, A extends Actions<E>> {
+export class Interactor<E extends Element, F extends Filters<E>, A extends Actions<E>, C extends Children> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private ancestors: Array<Interactor<any, any, any>> = [];
+  private ancestors: Array<Interactor<any, any, any, any>> = [];
 
   constructor(
     public name: string,
-    public specification: InteractorSpecification<E, F, A>,
+    public specification: InteractorSpecification<E, F, A, C>,
     public filter: Filter<E, F>,
     public locator?: Locator<E>,
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private get ancestorsAndSelf(): Array<Interactor<any, any, any>> {
+  private get ancestorsAndSelf(): Array<Interactor<any, any, any, any>> {
     return [...this.ancestors, this];
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  find<T extends Interactor<any, any, any>>(interactor: T): T {
+  find<T extends Interactor<any, any, any, any>>(interactor: T): T {
     return Object.create(interactor, {
       ancestors: {
         value: [...this.ancestors, this, ...interactor.ancestors]
