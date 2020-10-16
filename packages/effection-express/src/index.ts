@@ -6,7 +6,7 @@ import * as util from 'util';
 import { Server } from 'http';
 
 import { throwOnErrorEvent, once, on } from '@effection/events';
-import { Subscribable, SymbolSubscribable, Subscription, subscribe } from '@effection/subscription';
+import { Subscribable, SymbolSubscribable, Subscription, subscribe, createSubscription } from '@effection/subscription';
 import { ensure } from '@bigtest/effection';
 
 type OperationRequestHandler = (req: actualExpress.Request, res: actualExpress.Response) => Operation<void>;
@@ -15,10 +15,15 @@ type WsOperationRequestHandler = (socket: Socket, req: actualExpress.Request) =>
 export type Response = actualExpress.Response;
 export type Request = actualExpress.Request;
 
+export interface CloseEvent {
+  readonly code: number;
+  readonly reason: string;
+}
+
 // JSON.parse return type is `any`, so that's the type
 // of the subscription
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class Socket implements Subscribable<any, void> {
+export class Socket implements Subscribable<any, CloseEvent> {
   constructor(public raw: WebSocket) {}
 
   *send(data: unknown): Operation<void> {
@@ -30,8 +35,18 @@ export class Socket implements Subscribable<any, void> {
   // JSON.parse return type is `any`, so that's the type
   // of the subscription
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  *[SymbolSubscribable](): Operation<Subscription<any, void>> {
-    return yield subscribe(on<MessageEvent[]>(this.raw, 'message').map(([event]) => JSON.parse(event.data)));
+  *[SymbolSubscribable](): Operation<Subscription<any, CloseEvent>> {
+    let { raw } = this;
+    return yield createSubscription(function*(publish) {
+      yield spawn(subscribe(on<MessageEvent[]>(raw, 'message')
+                            .map(([event]) => JSON.parse(event.data)))
+                  .forEach(function*(message) {
+                    publish(message);
+                  }));
+
+      let [close]: [CloseEvent] = yield once(raw, 'close');
+      return close;
+    });
   }
 }
 
@@ -68,10 +83,7 @@ export class Express {
           yield ensure(() => req.destroy());
           yield spawn(handler(new Socket(socket), req));
 
-          let [{ reason, code }] = yield once(socket, 'close');
-          if(code !== 1000 && code !== 1001) {
-            throw new Error(`websocket client closed connection unexpectedly: [${code}] ${reason}`);
-          }
+          yield once(socket, 'close');
         });
       })
     })

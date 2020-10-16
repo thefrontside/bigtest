@@ -7,7 +7,7 @@ import { subscribe, ChainableSubscription } from '@effection/subscription';
 import * as WebSocket from 'ws';
 
 import { run } from './helpers';
-import { Socket, express } from '../src';
+import { Socket, express, CloseEvent } from '../src';
 
 describe('websocket server', () => {
   let client: WebSocket;
@@ -34,7 +34,7 @@ describe('websocket server', () => {
   });
 
   describe('when receiving messages via subscription', () => {
-    let messages: ChainableSubscription<unknown, void>;
+    let messages: ChainableSubscription<unknown, CloseEvent>;
 
     beforeEach(async () => {
       messages = await run(subscribe(connection));
@@ -55,5 +55,20 @@ describe('websocket server', () => {
       expect(await run(messages.expect())).toEqual({ message: "Hello World!" });
       expect(await run(messages.expect())).toEqual({ message: "Goodbye World!" });
     });
+
+    describe('when the client closes', () => {
+      let close: CloseEvent;
+      beforeEach(async () => {
+        client.close(4000, 'an application defined status code');
+        close = await run(messages.forEach(function*() {}));
+      });
+
+      it('finishes the subscription with the close event', async () => {
+        expect(close.code).toEqual(4000);
+        expect(close.reason).toEqual('an application defined status code')
+      });
+    });
   });
+
+
 })
