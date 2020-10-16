@@ -1,7 +1,16 @@
 import { interaction, Interaction } from './interaction';
 import { bigtestGlobals } from '@bigtest/globals';
+import { createInteractor } from './create-interactor';
 
-export const Page = {
+const PageInteractor = createInteractor('page')({
+  selector: ':root',
+  filters: {
+    title: (element) => element.ownerDocument.title,
+    url: (element) => element.ownerDocument.location.href,
+  }
+});
+
+export const Page = Object.assign(PageInteractor(), {
   visit(path = '/'): Interaction<void> {
     return interaction(`visiting ${JSON.stringify(path)}`, async () => {
       let appUrl = bigtestGlobals.appUrl;
@@ -32,4 +41,4 @@ export const Page = {
       }
     });
   }
-}
+});

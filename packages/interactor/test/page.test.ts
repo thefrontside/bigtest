@@ -6,6 +6,8 @@ import { Server } from 'http';
 import { bigtestGlobals } from '@bigtest/globals';
 import { JSDOM, ResourceLoader } from 'jsdom';
 
+import { dom } from './helpers';
+
 import { Page } from '../src/index';
 
 describe('@bigtest/interactor', function() {
@@ -68,6 +70,36 @@ describe('@bigtest/interactor', function() {
       it('throws an error if test frame is not defined', async () => {
         bigtestGlobals.testFrame = undefined;
         await expect(Page.visit('/foobar')).rejects.toThrow('no test frame defined');
+      });
+    });
+
+    describe('filter `title`', () => {
+      it('can check the page title', async() => {
+        let window = dom('');
+        window.document.title = 'Hello World';
+
+        await expect(Page.has({ title: 'Hello World' })).resolves.toBeUndefined();
+        await expect(Page.has({ title: 'Does Not Exist' })).rejects.toHaveProperty('message', [
+          'page does not match filters:', '',
+          '┃ title: "Does Not Exist" ┃',
+          '┣━━━━━━━━━━━━━━━━━━━━━━━━━┫',
+          '┃ ⨯ "Hello World"         ┃',
+        ].join('\n'))
+
+      });
+    });
+
+    describe('filter `url`', () => {
+      it('can check the page url', async() => {
+        dom('');
+
+        await expect(Page.has({ url: 'about:blank' })).resolves.toBeUndefined();
+        await expect(Page.has({ url: 'does-not-exist' })).rejects.toHaveProperty('message', [
+          'page does not match filters:', '',
+          '┃ url: "does-not-exist" ┃',
+          '┣━━━━━━━━━━━━━━━━━━━━━━━┫',
+          '┃ ⨯ "about:blank"       ┃',
+        ].join('\n'))
       });
     });
   });

@@ -7,7 +7,13 @@ const defaultSelector = 'div';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function findMatches(parentElement: Element, interactor: Interactor<any, any, any>): Match<Element, any>[] {
-  let elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector || defaultSelector));
+  let elements;
+  if(interactor.specification.selector === ':root') {
+    // this is a bit of a hack, because otherwise there isn't a good way of selecting the root element
+    elements = [parentElement.ownerDocument.querySelector(':root')];
+  } else {
+    elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector || defaultSelector));
+  }
   return elements.map((e) => new Match(e, interactor.filter, interactor.locator));
 }
 
