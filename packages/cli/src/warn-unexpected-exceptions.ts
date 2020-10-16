@@ -1,4 +1,5 @@
 import { Operation } from 'effection';
+import * as terminalLink from 'terminal-link';
 
 export function warnUnexpectedExceptions<T>(operation: (argv: string[]) => Operation<T>): (argv: string[]) => Operation<T> {
   return function*(argv: string[]) {
@@ -13,16 +14,17 @@ export function warnUnexpectedExceptions<T>(operation: (argv: string[]) => Opera
   }
 }
 
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
 const unexpectedErrorMessage = (error: any, argv: string[]) =>
   `😱😱😱 OH NO! UNEXPECTED ERROR! 😱😱😱
 It looks like you've encountered a bug in BigTest that triggered an unexpected
 shutdown. And yes, in case you're wondering, this is definitely on us. It would
-help us a lot to improve BigTest if you'd take the time to report the problem at
-the following url:
+help us a lot to improve BigTest if you'd take the time to report the problem.
 
-${newIssueLink(error, argv)}`;
+${terminalLink.stderr('Submit an issue to the BigTest repository', newIssueLink(error, argv))}
+`
 
-
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
 function newIssueLink(error: any, argv: string[]) {
   let message = error && error.message != null ? error.message : 'unknown error';
   let title = `CRASH: ${message}`;
@@ -31,21 +33,26 @@ function newIssueLink(error: any, argv: string[]) {
   return uriEncode`https://github.com/thefrontside/bigtest/issues/new?title=${title}&labels=${labels}&body=${body}`;
 }
 
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getIssueBody = (error: any, argv: string[]) =>
-  `
-<!--
-Thanks for taking the time to submit a bug report. In addition to the information below, please include anything else that you think might be relevant in helping us diagnose the problem. Also, be sure to double check this issue report before submitting it to make sure it doesn't contain any non-public information.
+`
+# Error Report
 
-Again, thank you so much for taking the time to improve BigTest
--->
+> Please fill in your error report here with any details you think may be relevant to why
+> the crash happened. Make sure to double check the diagnostic information to make sure that
+> it doesn't contain anything that shouldn't be public.
 
-Args
+<details><summary>diagnostics</summary>
+
+Argv
 ----
 ${argv.join(',')}
 
 Stack
 -----
 ${error && error.stack ? error.stack : 'none'}
+
+</details>
 `
 
 function uriEncode(strings: TemplateStringsArray, ...values: string[]) {
