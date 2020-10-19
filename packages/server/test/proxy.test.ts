@@ -27,6 +27,10 @@ function* startAppServer(): Operation<void> {
     res.send('<!doctype html><html><head></head><body><h1>Hello world</h1></body></html>');
   });
 
+  yield appServer.get('/redirect', function*(req, res) {
+    res.redirect(`http://localhost:${APP_PORT}/simple`);
+  });
+
   yield appServer.get('/zipped', function*(req, res) {
     res.set({ 'Content-Type': 'text/html', 'Content-Encoding': 'gzip' });
     res.send(zlib.gzipSync('<!doctype html><html><head></head><body><h1>Hello zip world</h1></body></html>'));
@@ -88,6 +92,20 @@ describe('proxy', () => {
         expect(response.status).toEqual(200);
         expect(body).toContain('<h1>Hello zip world</h1>');
         expect(body).toContain('<script src="http://localhost:24203/__bigtest/harness.js"></script>');
+      });
+    });
+
+    describe('hitting a redirect', () => {
+      let response: Response;
+
+      beforeEach(async () => {
+        response = await actions.fork(fetch(`http://localhost:${PROXY_PORT}/redirect`, { redirect: 'manual' }));
+        await actions.fork(response.text());
+      });
+
+      it('rewrites it to stay on the proxy server', () => {
+        expect(response.status).toEqual(302);
+        expect(response.headers.get('Location')).toEqual(`http://localhost:${PROXY_PORT}/simple`);
       });
     });
 
