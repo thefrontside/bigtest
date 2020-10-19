@@ -12,6 +12,9 @@ import { ensure } from '@bigtest/effection';
 type OperationRequestHandler = (req: actualExpress.Request, res: actualExpress.Response) => Operation<void>;
 type WsOperationRequestHandler = (socket: Socket, req: actualExpress.Request) => Operation<void>;
 
+export type Response = actualExpress.Response;
+export type Request = actualExpress.Request;
+
 // JSON.parse return type is `any`, so that's the type
 // of the subscription
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,6 +43,16 @@ export class Express {
   *use(handler: OperationRequestHandler): Operation<{}> {
     return yield resource({}, (controls) => {
       this.raw.use((req, res) => {
+        controls.spawn(function*() {
+          yield handler(req, res);
+        });
+      });
+    });
+  }
+
+  *get(path: string, handler: OperationRequestHandler): Operation<{}> {
+    return yield resource({}, (controls) => {
+      this.raw.get(path, (req, res) => {
         controls.spawn(function*() {
           yield handler(req, res);
         });
