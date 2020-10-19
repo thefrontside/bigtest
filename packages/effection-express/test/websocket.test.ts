@@ -61,7 +61,7 @@ describe('websocket server', () => {
       let close: CloseEvent;
       beforeEach(async () => {
         client.close(4000, 'an application defined status code');
-        close = await run(messages.forEach(function*() {}));
+        close = await run(messages.forEach(function*() { return; }));
       });
 
       it('finishes the subscription with the close event', async () => {
