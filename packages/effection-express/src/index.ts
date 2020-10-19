@@ -45,7 +45,7 @@ export class Socket implements Subscribable<any, CloseEvent> {
                   }));
 
       let [close]: [CloseEvent] = yield once(raw, 'close');
-      return close;
+      return { code: close.code || 1006, reason: close.reason || ''};
     });
   }
 }
@@ -79,11 +79,12 @@ export class Express {
     return yield resource({}, (controls) => {
       this.raw.ws(path, (socket, req) => {
         controls.spawn(function*(): Operation<void> {
-          yield ensure(() => socket.close());
-          yield ensure(() => req.destroy());
-          yield spawn(handler(new Socket(socket), req));
-
-          yield once(socket, 'close');
+          try {
+            yield handler(new Socket(socket), req);
+          } finally {
+            socket.close();
+            req.destroy();
+          }
         });
       })
     })

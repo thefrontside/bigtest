@@ -20,6 +20,7 @@ describe('websocket server', () => {
     let app = express();
     await run(app.ws('*', function*(socket) {
       incoming.send(socket);
+      yield;
     }));
     await run(app.listen(3400));
 

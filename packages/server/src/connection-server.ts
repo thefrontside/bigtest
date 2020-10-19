@@ -35,10 +35,13 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
         }
       });
 
-      yield subscribe(connection.events).forEach(function*(message: TestEvent) {
+      let close: CloseEvent = yield subscribe(connection.events).forEach(function*(message: TestEvent) {
         console.debug('[connection] got message from agent', connection.agentId, message);
         options.delegate.send({ ...message, agentId: connection.agentId });
       });
+
+      let { code, reason } = close;
+      console.debug(`[connection] disconnected ${connection.agentId} [${code}${reason ? `: ${reason}` : ''}]`);
 
       agent.remove();
     });
