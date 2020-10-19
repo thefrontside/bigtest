@@ -78,7 +78,7 @@ describe('running tests with subscription on an agent', () => {
           type: 'step:result',
           status: 'ok',
           testRunId: runCommand.testRunId,
-          path: ['All tests', 'Signing In', 'when I fill in the login form']
+          path: ['All tests', 'Signing In', '1:when I fill in the login form']
         })
       });
 
@@ -88,7 +88,7 @@ describe('running tests with subscription on an agent', () => {
           event: {
             type: 'step:result',
             status: 'ok',
-            path: ['All tests', 'Signing In', 'when I fill in the login form'],
+            path: ['All tests', 'Signing In', '1:when I fill in the login form'],
             agentId,
             testRunId
           }
@@ -102,7 +102,7 @@ describe('running tests with subscription on an agent', () => {
           type: 'step:result',
           status: 'failed',
           testRunId: runCommand.testRunId,
-          path: ['All tests', 'Signing In', 'when I fill in the login form'],
+          path: ['All tests', 'Signing In', '1:when I fill in the login form'],
           error: {
             message: 'this step failed',
           }
@@ -114,7 +114,7 @@ describe('running tests with subscription on an agent', () => {
           event: {
             type: 'step:result',
             status: 'failed',
-            path: ['All tests', 'Signing In', 'when I fill in the login form'],
+            path: ['All tests', 'Signing In', '1:when I fill in the login form'],
             error: {
               message: 'this step failed',
             }
@@ -137,7 +137,7 @@ describe('running tests with subscription on an agent', () => {
           event: {
             type: 'step:result',
             status: 'disregarded',
-            path: ['All tests', 'Signing In', 'when I press the submit button'],
+            path: ['All tests', 'Signing In', '2:when I press the submit button'],
           }
         }).first());
       });

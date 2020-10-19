@@ -155,7 +155,7 @@ describe("@bigtest/agent", function() {
           beforeEach(async () => {
             longStep = await run(events.match({
               type: 'step:result',
-              path: ['tests', 'test step timeouts', 'this takes literally forever']
+              path: ['tests', 'test step timeouts', '0:this takes literally forever']
             }).first()) as unknown as StepResult;
           });
 
@@ -172,7 +172,7 @@ describe("@bigtest/agent", function() {
           beforeEach(async () => {
             step = await run(events.match({
               type: 'step:result',
-              path: ['tests', 'test fetch', 'fetch is mocked']
+              path: ['tests', 'test fetch', '0:fetch is mocked']
             }).first()) as unknown as StepResult;
           });
 

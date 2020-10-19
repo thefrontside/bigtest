@@ -71,7 +71,7 @@ describe('result stream', () => {
           type: 'step:running',
           agentId: 'agent-1',
           testRunId: 'test-run-1',
-          path: ['some test', 'step one'],
+          path: ['some test', '0:step one'],
         });
       });
     });
@@ -88,7 +88,7 @@ describe('result stream', () => {
           status: 'ok',
           agentId: 'agent-1',
           testRunId: 'test-run-1',
-          path: ['some test', 'step one'],
+          path: ['some test', '0:step one'],
         });
       });
     });
@@ -110,7 +110,7 @@ describe('result stream', () => {
           status: 'failed',
           agentId: 'agent-1',
           testRunId: 'test-run-1',
-          path: ['some test', 'step one'],
+          path: ['some test', '0:step one'],
           error: { message: 'blah' },
           timeout: false,
         });
@@ -395,7 +395,7 @@ describe('result stream', () => {
         status: 'failed',
         agentId: 'agent-1',
         testRunId: 'test-run-1',
-        path: ['some test', 'step one'],
+        path: ['some test', '0:step one'],
       }).expect());
     });
   });

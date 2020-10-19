@@ -64,8 +64,8 @@ export function* runLane(config: LaneConfig) {
       originalConsole.warn(`[agent] the interactor timeout should be less than, but is greater than or equal to, the step timeout of ${stepTimeout}`);
     }
 
-    for(let step of test.steps) {
-      let stepPath = currentPath.concat(step.description);
+    for(let [index, step] of test.steps.entries()) {
+      let stepPath = currentPath.concat(`${index}:${step.description}`);
       try {
         originalConsole.debug('[agent] running step', step);
         events.send({ testRunId, type: 'step:running', path: stepPath });
