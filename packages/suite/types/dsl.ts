@@ -75,6 +75,28 @@ test('a test')
     { description: "hello", action: ({ hello }) => { hello.charAt(0) } })
   .step('consume context after multi-step', ({ hello }) => { hello.charAt(0) })
 
+// Add multiple steps as objects
+test('say hello')
+  .step({
+    description: "what",
+    action: () => ({ say: 'hello' })
+  }, {
+    description: "to whom",
+    action: () => ({ to: "world" })
+  }, {
+    description: "do nothing in between just for a laugh",
+    action: () => undefined
+  },{
+    description: "say it",
+    action: ({ say, to }) => {
+      return { speech: `${say} ${to}`};
+    }
+  })
+  .assertion({
+    description: "validate text",
+    check: ({ speech }) => assert.equal('hello world', speech)
+  });
+
 //Add multiple assertions
 test('a test')
   .step("add context", () => ({ hello: 'world' }))
