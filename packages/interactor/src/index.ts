@@ -12,3 +12,4 @@ export { TextField } from './definitions/text-field';
 export { CheckBox } from './definitions/check-box';
 export { RadioButton } from './definitions/radio-button';
 export { Select } from './definitions/select';
+export { MultiSelect } from './definitions/multi-select';

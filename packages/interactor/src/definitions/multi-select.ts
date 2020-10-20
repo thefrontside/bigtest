@@ -22,11 +22,29 @@ const SelectOption = createInteractor<HTMLOptionElement>('option')({
         dispatchInput(select);
       }
     }),
+    select: perform((element) => {
+      let select = getSelect(element);
+
+      if(!element.selected) {
+        element.selected = true;
+        dispatchChange(select);
+        dispatchInput(select);
+      }
+    }),
+    deselect: perform((element) => {
+      let select = getSelect(element);
+
+      if(element.selected) {
+        element.selected = false;
+        dispatchChange(select);
+        dispatchInput(select);
+      }
+    }),
   },
 });
 
-export const Select = createInteractor<HTMLSelectElement>('select box')({
-  selector: 'select:not([multiple])',
+export const MultiSelect = createInteractor<HTMLSelectElement>('select box')({
+  selector: 'select[multiple]',
   locator: (element) => element.labels ? (Array.from(element.labels)[0]?.textContent || '') : '',
   filters: {
     title: (element) => element.title,
@@ -48,6 +66,12 @@ export const Select = createInteractor<HTMLSelectElement>('select box')({
     blur: perform((element) => { element.blur(); }),
     choose: async (interactor, value: string) => {
       await interactor.find(SelectOption(value)).choose();
+    },
+    select: async (interactor, value: string) => {
+      await interactor.find(SelectOption(value)).select();
+    },
+    deselect: async (interactor, value: string) => {
+      await interactor.find(SelectOption(value)).deselect();
     },
   },
 });
