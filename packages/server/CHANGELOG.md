@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.18.0
+
+### Minor Changes
+
+- 9b2749b0: Handle duplicates in step descriptions
+- 8731eda0: Redirects to absolute URLs are handled automatically by proxy server
+
+### Patch Changes
+
+- 5d7e6e85: Modernize and test proxy server
+- Updated dependencies [9b2749b0]
+- Updated dependencies [5d7e6e85]
+- Updated dependencies [afd5bcf5]
+  - @bigtest/agent@0.15.0
+  - @bigtest/effection-express@0.9.0
+
 ## 0.17.0
 
 ### Minor Changes

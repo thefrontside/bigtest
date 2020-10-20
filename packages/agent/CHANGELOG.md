@@ -1,5 +1,17 @@
 # @bigtest/agent
 
+## 0.15.0
+
+### Minor Changes
+
+- 9b2749b0: Handle duplicates in step descriptions
+
+### Patch Changes
+
+- Updated dependencies [5d7e6e85]
+- Updated dependencies [afd5bcf5]
+  - @bigtest/effection-express@0.9.0
+
 ## 0.14.1
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @bigtest/cli
 
+## 0.15.1
+
+### Patch Changes
+
+- Updated dependencies [9b2749b0]
+- Updated dependencies [5d7e6e85]
+- Updated dependencies [8731eda0]
+  - @bigtest/server@0.18.0
+
 ## 0.15.0
 
 ### Minor Changes
