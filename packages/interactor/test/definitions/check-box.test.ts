@@ -236,5 +236,21 @@ describe('@bigtest/interactor', () => {
         await expect(CheckBox({ id: 'accept-field' }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
       });
     });
+
+    describe('filter `focused`', () => {
+      it('filters checkboxes by whether they have focus', async () => {
+        dom(`
+          <p>
+            <input required type="checkbox" id="focused"/>
+            <input required type="checkbox" id="not-focused"/>
+            <script type="text/javascript">document.getElementById('focused').focus()</script>
+          </p>
+`);
+
+        await CheckBox({id: 'focused'}).is({ focused: true });
+        await CheckBox({id: 'not-focused', focused: true }).absent();
+      });
+    });
+
   });
 });

@@ -99,5 +99,18 @@ describe('@bigtest/interactor', () => {
         await expect(Link('Foo', { id: 'does-not-exist' }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
       });
     });
+
+    describe('filter `focused`', () => {
+      it.only('filters `a` tags by if they are focused', async () => {
+        dom(`
+          <p><a href="/has-focus" id="with">With Focus</a></p>
+          <p><a href="/does-not-have-focus" id="without">Without Focus</a></p>
+          <script type="text/javascript">document.links.with.focus()</script>
+        `);
+
+        await expect(Link('With Focus').is({ focused: true })).resolves.toBeUndefined();
+        await expect(Link('Without Focus', { focused: true }).absent()).resolves.toBeUndefined();
+      });
+    });
   });
 });

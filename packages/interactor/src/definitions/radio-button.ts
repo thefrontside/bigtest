@@ -1,4 +1,4 @@
-import { createInteractor, perform } from '../index';
+import { createInteractor, perform, focused } from '../index';
 import { isVisible } from 'element-is-visible';
 
 export const RadioButton = createInteractor<HTMLInputElement>('radio button')({
@@ -16,7 +16,8 @@ export const RadioButton = createInteractor<HTMLInputElement>('radio button')({
     disabled: {
       apply: (element) => element.disabled,
       default: false
-    }
+    },
+    focused
   },
   actions: {
     click: perform((element) => { element.click(); }),

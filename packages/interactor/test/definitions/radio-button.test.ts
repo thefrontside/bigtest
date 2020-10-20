@@ -176,5 +176,20 @@ describe('@bigtest/interactor', () => {
         await expect(RadioButton({ id: 'accept-field' }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
       });
     });
+
+    describe('filter `focused`', () => {
+      it.only('filters radio buttons by whether they have focus', async () => {
+        dom(`
+          <p>
+            <input required type="radio" id="focused"/>
+            <input required type="radio" id="not-focused"/>
+            <script type="text/javascript">document.getElementById('focused').focus()</script>
+          </p>
+`);
+
+        await RadioButton({id: 'focused'}).is({ focused: true });
+        await RadioButton({id: 'not-focused', focused: true }).absent();
+      });
+    });
   });
 });
