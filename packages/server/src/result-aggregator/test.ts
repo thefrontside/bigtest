@@ -13,7 +13,7 @@ export class TestAggregator extends Aggregator<TestResult, AggregatorTestOptions
       let slice = this.slice.slice('steps', index);
       return new StepAggregator(slice, {
         ...this.options,
-        path: this.options.path.concat(step.description),
+        path: this.options.path.concat(`${index}:${step.description}`),
       }).run();
     }).concat([...this.slice.get().assertions.entries()].map(([index, assertion]) => {
       let slice = this.slice.slice('assertions', index);

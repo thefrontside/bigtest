@@ -81,7 +81,7 @@ function* streamTest(slice: Slice<TestResult, OrchestratorState>, publish: Publi
     let stepSlice = slice.slice('steps', Number(index));
     yield fork(streamStep(stepSlice, publish, {
       ...options,
-      path: options.path.concat(step.description),
+      path: options.path.concat(`${index}:${step.description}`),
     }));
   }
   for(let [index, assertion] of Object.entries(slice.get().assertions)) {

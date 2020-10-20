@@ -150,7 +150,7 @@ describe('running tests on an agent', () => {
           type: 'step:result',
           status: 'ok',
           testRunId: runCommand.testRunId,
-          path: ['All tests', "Signing In", "when I fill in the login form"]
+          path: ['All tests', "Signing In", "1:when I fill in the login form"]
         })
       });
 
@@ -169,7 +169,7 @@ describe('running tests on an agent', () => {
           type: 'step:result',
           status: 'failed',
           testRunId: runCommand.testRunId,
-          path: ['All tests', "Signing In", "when I fill in the login form"],
+          path: ['All tests', "Signing In", "1:when I fill in the login form"],
           error: {
             message: "this step failed",
           }
@@ -255,7 +255,7 @@ describe('running tests on an agent', () => {
           type: 'step:result',
           status: 'ok',
           testRunId: runCommand.testRunId,
-          path: ['All tests', 'Signing In', 'when I log out', 'when I click on the logout button']
+          path: ['All tests', 'Signing In', 'when I log out', '0:when I click on the logout button']
         })
         agent.send({
           type: 'assertion:result',
@@ -286,7 +286,7 @@ describe('running tests on an agent', () => {
           type: 'step:result',
           status: 'ok',
           testRunId: runCommand.testRunId,
-          path: ['All tests', 'Signing In', 'when I log out', 'when I click on the logout button']
+          path: ['All tests', 'Signing In', 'when I log out', '0:when I click on the logout button']
         })
         agent.send({
           type: 'assertion:result',
@@ -317,19 +317,19 @@ describe('running tests on an agent', () => {
           type: 'step:result',
           status: 'ok',
           testRunId: runCommand.testRunId,
-          path: ['All tests', 'Signing In', 'given a user']
+          path: ['All tests', 'Signing In', '0:given a user']
         })
         agent.send({
           type: 'step:result',
           status: 'ok',
           testRunId: runCommand.testRunId,
-          path: ['All tests', 'Signing In', 'when I fill in the login form']
+          path: ['All tests', 'Signing In', '1:when I fill in the login form']
         })
         agent.send({
           type: 'step:result',
           status: 'ok',
           testRunId: runCommand.testRunId,
-          path: ['All tests', 'Signing In', 'when I press the submit button']
+          path: ['All tests', 'Signing In', '2:when I press the submit button']
         })
         agent.send({
           type: 'assertion:result',
@@ -347,13 +347,13 @@ describe('running tests on an agent', () => {
           type: 'step:result',
           status: 'failed',
           testRunId: runCommand.testRunId,
-          path: ['All tests', 'Signing In', 'when I log out', 'when I click on the logout button']
+          path: ['All tests', 'Signing In', 'when I log out', '0:when I click on the logout button']
         })
         agent.send({
           type: 'step:result',
           status: 'ok',
           testRunId: runCommand.testRunId,
-          path: ['All tests', 'Signing In', 'when I go to the main navigation page', 'I click the hamburger button']
+          path: ['All tests', 'Signing In', 'when I go to the main navigation page', '0:I click the hamburger button']
         })
         agent.send({
           type: 'assertion:result',
@@ -407,14 +407,14 @@ describe('running tests on an agent', () => {
         type: 'step:result',
         status: 'ok',
         testRunId: runCommand.testRunId,
-        path: ['All tests', "Signing In", "when I fill in the login form"]
+        path: ['All tests', "Signing In", "1:when I fill in the login form"]
       });
 
       agent.send({
         type: 'step:result',
         status: 'failed',
         testRunId: runCommand.testRunId,
-        path: ['All tests', "Signing In", "when I fill in the login form"],
+        path: ['All tests', "Signing In", "1:when I fill in the login form"],
         error: { message: "this step failed" }
       });
     });
