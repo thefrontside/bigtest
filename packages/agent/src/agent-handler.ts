@@ -1,5 +1,5 @@
 import { Operation, spawn } from 'effection';
-import { express, Socket } from '@bigtest/effection-express';
+import { express, Socket, CloseEvent } from '@bigtest/effection-express';
 
 import { Channel } from '@effection/channel';
 import { createSubscription, subscribe, ChainableSubscription } from '@effection/subscription';
@@ -21,7 +21,7 @@ export interface AgentConnection {
    * events raised by the agent will be published
    * to this channel.
    */
-  events: Channel<TestEvent>;
+  events: Channel<TestEvent, CloseEvent>;
 
   /**
    * Additional metadata about the agent
@@ -48,10 +48,10 @@ export function* createAgentHandler(port: number): Operation<ChainableSubscripti
       let commands = new Channel<Command>();
       yield spawn(subscribe(commands).forEach(command => socket.send(command)));
 
-      let events = new Channel<TestEvent>();
+      let events = new Channel<TestEvent, CloseEvent>();
       let send = (command: Command) => commands.send(command);
 
-      let incoming: ChainableSubscription<AgentEvent, undefined> = yield subscribe(socket);
+      let incoming: ChainableSubscription<AgentEvent, CloseEvent> = yield subscribe(socket);
 
       let connect: Connect = yield incoming.expect();
 
@@ -61,13 +61,14 @@ export function* createAgentHandler(port: number): Operation<ChainableSubscripti
 
       // forward commands to the socket
       try {
-        yield incoming.forEach(function*(data) {
+        let close: CloseEvent = yield incoming.forEach(function*(data) {
           if(data.type != 'connected') {
             events.send({ agentId, ...data });
           }
         });
+        events.close(close);
       } finally {
-        events.close();
+        events.close({code: 1005, reason: "agent shutdown"});
       }
     });
 

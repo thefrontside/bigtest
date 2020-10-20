@@ -1,6 +1,6 @@
 import { Local, WebDriver } from '@bigtest/webdriver';
 import { readyResource } from '@bigtest/effection';
-import { express } from '@bigtest/effection-express';
+import { express, CloseEvent } from '@bigtest/effection-express';
 
 import { ChainableSubscription, subscribe } from '@effection/subscription';
 import { static as staticMiddleware } from 'express';
@@ -69,14 +69,13 @@ describe("@bigtest/agent", function() {
     describe('connecting a browser to the agent URL', () => {
       let browser: WebDriver;
       let connection: AgentConnection;
-      let events: ChainableSubscription<TestEvent, undefined>;
+      let events: ChainableSubscription<TestEvent, CloseEvent>;
 
       beforeEach(async function() {
         browser = await run(Local({ browserName: 'chrome', headless: true }));
         await run(browser.navigateTo(config.agentUrl(`ws://localhost:8001`)));
         connection = await run(connections.expect());
         events = await run(subscribe(connection.events));
-
       });
 
       it('sends a connection message with an agent id', () => {
