@@ -35,6 +35,11 @@ export const startProxyServer = (options: ProxyOptions) => function* ({ url: tar
 
     yield throwOnErrorEvent(proxyRes);
 
+    if(proxyRes.headers.location && target) {
+      let newLocation = proxyRes.headers.location.replace(target, `http://localhost:${options.port}`);
+      res.setHeader('location', newLocation);
+    }
+
     if(contentType && contentType.split(';')[0] === 'text/html') {
       res.removeHeader('content-length');
       res.removeHeader('content-encoding');
