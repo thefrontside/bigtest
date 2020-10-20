@@ -1,5 +1,18 @@
 # @bigtest/interactor
 
+## 0.20.0
+
+### Minor Changes
+
+- d12bbe7e: Add RadioButton interactor
+- 09a28c69: TextField interactor now also matches textarea elements
+- 64c8b12f: Rename App interactor to Page and deprecate App interactor
+- 95698ac3: Page interactor can filter by title/url
+
+### Patch Changes
+
+- d5fa391e: Don't thread action type through filter, it is not necessary
+
 ## 0.19.0
 
 ### Minor Changes

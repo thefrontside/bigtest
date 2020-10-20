@@ -1,5 +1,15 @@
 # @bigtest/effection-express
 
+## 0.9.0
+
+### Minor Changes
+
+- afd5bcf5: server websocket handlers can now explicitly handle socket exit codes
+
+### Patch Changes
+
+- 5d7e6e85: Modernize and test proxy server
+
 ## 0.8.0
 
 ### Minor Changes

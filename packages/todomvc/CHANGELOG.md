@@ -1,5 +1,13 @@
 # @bigtest/todomvc
 
+## 0.5.5
+
+### Patch Changes
+
+- Updated dependencies [5d7e6e85]
+- Updated dependencies [afd5bcf5]
+  - @bigtest/effection-express@0.9.0
+
 ## 0.5.4
 
 ### Patch Changes

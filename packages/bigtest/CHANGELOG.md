@@ -1,5 +1,27 @@
 # bigtest
 
+## 0.4.0
+
+### Minor Changes
+
+- d12bbe7e: Add RadioButton interactor
+- 09a28c69: TextField interactor now also matches textarea elements
+- 64c8b12f: Rename App interactor to Page and deprecate App interactor
+- 9b2749b0: Handle duplicates in step descriptions
+- 95698ac3: Page interactor can filter by title/url
+- 8731eda0: Redirects to absolute URLs are handled automatically by proxy server
+
+### Patch Changes
+
+- afd5bcf5: server websocket handlers can now explicitly handle socket exit codes
+- Updated dependencies [d12bbe7e]
+- Updated dependencies [09a28c69]
+- Updated dependencies [64c8b12f]
+- Updated dependencies [95698ac3]
+- Updated dependencies [d5fa391e]
+  - @bigtest/interactor@0.20.0
+  - @bigtest/cli@0.15.1
+
 ## 0.3.0
 
 ### Minor Changes
