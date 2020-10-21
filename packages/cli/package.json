@@ -40,6 +40,7 @@
     "@typescript-eslint/parser": "^2.3.2",
     "eslint-plugin-prefer-let": "^1.0.1",
     "expect": "^24.9.0",
+    "jest-mock": "^26.6.0",
     "mocha": "^6.2.2",
     "ts-node": "*"
   },
