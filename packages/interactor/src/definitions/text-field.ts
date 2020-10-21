@@ -1,4 +1,4 @@
-import { createInteractor, perform, fillIn } from '../index';
+import { createInteractor, perform, fillIn, focused } from '../index';
 import { isVisible } from 'element-is-visible';
 
 const selector = 'textarea, input' + [
@@ -19,7 +19,8 @@ export const TextField = createInteractor<HTMLInputElement | HTMLTextAreaElement
     disabled: {
       apply: (element) => element.disabled,
       default: false
-    }
+    },
+    focused
   },
   actions: {
     click: perform((element) => { element.click(); }),

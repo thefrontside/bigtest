@@ -1,4 +1,4 @@
-import { createInteractor, perform } from '../index';
+import { createInteractor, perform, focused } from '../index';
 import { isVisible } from 'element-is-visible';
 
 function isButtonElement(element: HTMLInputElement | HTMLButtonElement): element is HTMLButtonElement {
@@ -23,7 +23,8 @@ export const Button = createInteractor<HTMLInputElement | HTMLButtonElement>('bu
     disabled: {
       apply: (element) => element.disabled,
       default: false
-    }
+    },
+    focused
   },
   actions: {
     click: perform((element) => { element.click(); }),

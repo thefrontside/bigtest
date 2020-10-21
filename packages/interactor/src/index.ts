@@ -4,6 +4,7 @@ export { Page } from './page';
 export { App } from './app';
 export { perform } from './perform';
 export { fillIn } from './fill-in';
+export { focused } from './focused';
 
 export { Link } from './definitions/link';
 export { Heading } from './definitions/heading';

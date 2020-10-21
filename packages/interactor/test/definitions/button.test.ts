@@ -89,6 +89,7 @@ describe('@bigtest/interactor', () => {
         `);
 
         await Button('Foo').focus();
+        await Button('Foo').is({ focused: true });
         await Heading('Success').exists();
       });
     });
@@ -110,6 +111,7 @@ describe('@bigtest/interactor', () => {
         await Button('Foo').focus();
         await Button('Foo').blur();
         await Heading('Success').exists();
+        await Button('Foo').is({ focused: false })
       });
     });
 

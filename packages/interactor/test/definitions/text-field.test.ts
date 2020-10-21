@@ -93,6 +93,7 @@ describe('@bigtest/interactor', () => {
         `);
 
         await TextField('Name').focus();
+        await TextField('Name').is({ focused: true });
         await Heading('Success').exists();
       });
     });
@@ -112,6 +113,7 @@ describe('@bigtest/interactor', () => {
 
         await TextField('Name').focus();
         await TextField('Name').blur();
+        await TextField('Name').is({ focused: false });
         await Heading('Success').exists();
       });
     });
