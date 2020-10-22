@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect';
+import expect from 'expect';
 import { dom } from './helpers';
 import { bigtestGlobals } from '@bigtest/globals';
 

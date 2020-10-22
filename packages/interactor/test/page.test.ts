@@ -1,6 +1,6 @@
 import { describe, it, beforeEach } from 'mocha';
-import * as expect from 'expect';
-import * as express from 'express';
+import expect from 'expect';
+import express from 'express';
 import { Server } from 'http';
 
 import { bigtestGlobals } from '@bigtest/globals';

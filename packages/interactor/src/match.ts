@@ -1,3 +1,4 @@
+import isEqual from 'lodash.isequal';
 import { Locator } from './locator';
 import { Filter } from './filter';
 import { Filters } from './specification';
@@ -116,7 +117,7 @@ export class MatchFilterItem<E extends Element, F extends Filters<E>> {
       } else {
         this.actual = definition.apply(this.element);
       }
-      this.matches = this.actual === this.expected;
+      this.matches = isEqual(this.actual, this.expected);
     } else {
       throw new Error(`interactor does not define a filter named ${JSON.stringify(this.key)}`);
     }

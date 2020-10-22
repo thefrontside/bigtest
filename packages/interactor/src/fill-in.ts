@@ -1,3 +1,5 @@
+import { dispatchChange, dispatchInput, dispatchKeyDown, dispatchKeyUp } from './dispatch';
+
 type TextFieldElement = HTMLInputElement | HTMLTextAreaElement;
 
 // do a best effort at determining the key code
@@ -10,28 +12,22 @@ function guessCode(letter: string): string | undefined {
 }
 
 function clearText(element: TextFieldElement) {
-  let InputEvent = element.ownerDocument.defaultView?.InputEvent || window.InputEvent;
-
   if(element.value.length) {
     setValue(element, "");
-    element.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: false, inputType: 'deleteContentBackward', data: null }));
+    dispatchInput(element, { inputType: 'deleteContentBackward', data: null });
   }
 }
 
 function enterText(element: TextFieldElement, value: string) {
-  let InputEvent = element.ownerDocument.defaultView?.InputEvent || window.InputEvent;
-  let KeyboardEvent = element.ownerDocument.defaultView?.KeyboardEvent || window.KeyboardEvent;
-
   for(let letter of value) {
-    let keydownEvent = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: letter, code: guessCode(letter) });
-    if(element.dispatchEvent(keydownEvent)) {
+    if(dispatchKeyDown(element, { key: letter, code: guessCode(letter) })) {
       // don't change the value if the keydown event was stopped
       setValue(element, element.value + letter);
       // input is not dispatched if the keydown event was stopped
-      element.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: false, inputType: 'insertText', data: letter }));
+      dispatchInput(element, { inputType: 'insertText', data: letter });
     }
     // keyup is always dispatched
-    element.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true, cancelable: true, key: letter, code: guessCode(letter) }));
+    dispatchKeyUp(element, { key: letter, code: guessCode(letter) });
   }
 }
 
@@ -57,7 +53,6 @@ function setValue(element: TextFieldElement, value: string): void {
 }
 
 export function fillIn(element: TextFieldElement, value: string) {
-  let Event = element.ownerDocument.defaultView?.Event || window.Event;
   let originalValue = element.value;
 
   element.focus();
@@ -66,7 +61,7 @@ export function fillIn(element: TextFieldElement, value: string) {
   enterText(element, value);
 
   if(originalValue !== value) {
-    element.dispatchEvent(new Event('change', { bubbles: true, cancelable: false }));
+    dispatchChange(element);
   }
 
   element.blur();
