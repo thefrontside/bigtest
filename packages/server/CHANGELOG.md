@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.19.0
+
+### Minor Changes
+
+- c6e96302: Show app errors on test run if application server exits prematurely
+
+### Patch Changes
+
+- 393fee75: Throw non-fetch errors when checking reachability, like for example an invalid URL
+
 ## 0.18.0
 
 ### Minor Changes

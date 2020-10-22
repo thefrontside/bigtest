@@ -1,5 +1,30 @@
 # bigtest
 
+## 0.5.0
+
+### Minor Changes
+
+- bb1234b8: Add Select interactor
+- c6e96302: Show app errors on test run if application server exits prematurely
+- a986ba26: Add MultiSelect interactor
+
+### Patch Changes
+
+- 4f7edbe1: Add `focused` filter to `Button`, `RadioButton`, `CheckBox`, `Link`,
+  and `TextField` interactors
+- 1d525656: Add maximul column with for interactor alternative suggestion tables
+- 88bcd2c1: When an unexpected error happens in the CLI, catch it, let the user
+  know it is our fault, and generate a link to a github issue containing
+  diagnostic information
+- 393fee75: Throw non-fetch errors when checking reachability, like for example an invalid URL
+- Updated dependencies [bb1234b8]
+- Updated dependencies [4f7edbe1]
+- Updated dependencies [1d525656]
+- Updated dependencies [88bcd2c1]
+- Updated dependencies [a986ba26]
+  - @bigtest/interactor@0.21.0
+  - @bigtest/cli@0.15.2
+
 ## 0.4.0
 
 ### Minor Changes
