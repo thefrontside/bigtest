@@ -25,12 +25,14 @@
     "@bigtest/globals": "^0.7.2",
     "@bigtest/performance": "^0.5.0",
     "change-case": "^4.1.1",
-    "element-is-visible": "^1.0.0"
+    "element-is-visible": "^1.0.0",
+    "lodash.isequal": "^4.5.0"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^1.1.2",
     "@frontside/typescript": "^1.0.1",
     "@types/jsdom": "^16.2.3",
+    "@types/lodash.isequal": "^4.5.5",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
     "dtslint": "^3.5.2",

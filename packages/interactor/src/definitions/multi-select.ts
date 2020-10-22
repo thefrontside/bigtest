@@ -50,7 +50,7 @@ export const MultiSelect = createInteractor<HTMLSelectElement>('select box')({
     title: (element) => element.title,
     id: (element) => element.id,
     valid: (element) => element.validity.valid,
-    value: (element) => element.selectedOptions[0]?.label || '',
+    values: (element) => Array.from(element.selectedOptions).map((o) => o.label),
     visible: {
       apply: (element) => isVisible(element) || (element.labels && Array.from(element.labels).some(isVisible)),
       default: true

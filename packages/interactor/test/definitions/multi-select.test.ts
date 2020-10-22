@@ -273,17 +273,18 @@ describe('@bigtest/interactor', () => {
       });
     });
 
-    describe('filter `value`', () => {
+    describe('filter `values`', () => {
       it('filters `select` tags by their validity selected value label', async () => {
         dom(`
           <select multiple id="animalField" required>
             <option selected value="1">Cat</option>
-            <option value="2">Dog</option>
+            <option selected value="2">Dog</option>
+            <option value="3">Llama</option>
           </select>
         `);
 
-        await expect(MultiSelect({ id: 'animalField', value: 'Cat' }).exists()).resolves.toBeUndefined();
-        await expect(MultiSelect({ id: 'animalField', value: 'Incorrect Value' }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+        await expect(MultiSelect({ id: 'animalField', values: ['Cat', 'Dog'] }).exists()).resolves.toBeUndefined();
+        await expect(MultiSelect({ id: 'animalField', values: ['Incorrect Value'] }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
       });
     });
 
