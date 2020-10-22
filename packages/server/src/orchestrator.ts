@@ -119,10 +119,10 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       console.debug('[orchestrator] connection server ready');
     });
     yield fork(function*() {
-      yield options.atom.slice('appService', 'status').once((status) => {
-        return status.type === 'reachable'
+      let status = yield options.atom.slice('appService', 'status').once((status) => {
+        return status.type === 'reachable' || status.type === 'exited';
       });
-      console.debug('[orchestrator] app server ready');
+      console.debug(`[orchestrator] app server ${status.type}`);
     });
     yield fork(function* () {
       yield options.atom.slice('bundler').once(({ type }) => type === 'GREEN' || type === 'ERRORED');

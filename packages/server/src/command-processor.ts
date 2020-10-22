@@ -47,6 +47,21 @@ function* run({ id: testRunId, files }: RunMessage, options: CommandProcessorOpt
       return;
     }
 
+    let appStatus = options.atom.slice("appService", "status").get();
+
+    if(appStatus.type === 'exited') {
+      testRunSlice.set({
+        testRunId: testRunId,
+        status: 'failed',
+        error: {
+          name: 'AppError',
+          message: `Application exited unexpectedly with exit code ${appStatus.exitStatus.code} with the following output:\n\n${appStatus.exitStatus.tail}`
+        },
+        agents: {}
+      });
+      return;
+    }
+
     // todo: we should perform filtering of the agents here
     let agents: AgentState[] = Object.values(options.atom.get().agents);
 

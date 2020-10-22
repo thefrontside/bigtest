@@ -51,11 +51,10 @@ export type BundlerState =
 export type BundlerTypes = Pick<BundlerState, 'type'>['type'];
 
 export type ServiceStatus =
-  | { type: 'unstarted' } 
+  | { type: 'unstarted' }
   | { type: 'started' }
   | { type: 'reachable' }
-  | { type: 'unreachable' }
-  | { type: 'crashed'; exitStatus: ExitStatus };
+  | { type: 'exited'; exitStatus: ExitStatus };
 
 export type ServiceStatuses = ServiceStatus['type'];
 

@@ -268,6 +268,23 @@ describe('@bigtest/cli', function() {
         expect(child.stdout?.output).toContain('⨯ FAILURE')
       });
     });
+
+    describe('running the suite with app errors', () => {
+      let child: TestProcess;
+      let status: ExitStatus;
+
+      beforeEach(async () => {
+        child = await run('ci', '--app-command', 'yarn node doesnotexist.js');
+        status = await child.join();
+      });
+
+      it('exits with error code', async () => {
+        expect(status.code).toEqual(1);
+        expect(child.stdout?.output).toContain('Application exited unexpectedly with exit code 1 with the following output:')
+        expect(child.stdout?.output).toContain('Cannot find module')
+        expect(child.stdout?.output).toContain('⨯ FAILURE')
+      });
+    });
   });
 
   describe('coverage', () => {
