@@ -3,13 +3,23 @@ export interface TableOptions {
   rows: string[][];
 }
 
+const MAX_COLUMN_WIDTH = 40
+
+function formatValue(value: string, width: number) {
+  if(value.length > width) {
+    return value.slice(0, width - 1) + '…';
+  } else {
+    return value.padEnd(width);
+  }
+}
+
 export function formatTable(options: TableOptions) {
   let columnWidths = options.headers.map((h, index) => {
-    return Math.max(h.length, ...options.rows.map((r) => r[index].length));
+    return Math.min(MAX_COLUMN_WIDTH, Math.max(h.length, ...options.rows.map((r) => r[index].length)));
   });
 
   let formatRow = (cells: string[]) => {
-    return '┃ ' + cells.map((c, index) => c.padEnd(columnWidths[index])).join(' ┃ ') + ' ┃';
+    return '┃ ' + cells.map((c, index) => formatValue(c, columnWidths[index])).join(' ┃ ') + ' ┃';
   }
 
   let spacerRow = () => {
