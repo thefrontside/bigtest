@@ -33,21 +33,19 @@ const startApp = ({ atom }: AppServerOptions): Service<AppOptions> => function* 
     yield spawn(function* () {
       let exitStatus = yield child.join();
 
-      appStatus.set({ type: 'crashed', exitStatus });
+      appStatus.set({ type: 'exited', exitStatus });
     });
   }
 
   appStatus.set({ type: 'started' });
-  
-  while(true) {
+
+  while(!(yield isReachable(options.url))) {
     yield timeout(100);
-    
-    if (yield isReachable(options.url)) {
-      appStatus.set({ type: 'reachable' });
-    } else {
-      appStatus.set({ type: 'unreachable' });
-    }
   }
+
+  appStatus.set({ type: 'reachable' });
+
+  yield;
 }
 
 function* isReachable(url: string) {
