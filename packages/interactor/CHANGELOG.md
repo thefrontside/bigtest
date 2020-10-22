@@ -1,5 +1,18 @@
 # @bigtest/interactor
 
+## 0.21.0
+
+### Minor Changes
+
+- bb1234b8: Add Select interactor
+- 4f7edbe1: Add `focused` filter to `Button`, `RadioButton`, `CheckBox`, `Link`,
+  and `TextField` interactors
+- a986ba26: Add MultiSelect interactor
+
+### Patch Changes
+
+- 1d525656: Add maximul column with for interactor alternative suggestion tables
+
 ## 0.20.0
 
 ### Minor Changes

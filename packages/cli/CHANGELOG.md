@@ -1,5 +1,16 @@
 # @bigtest/cli
 
+## 0.15.2
+
+### Patch Changes
+
+- 88bcd2c1: When an unexpected error happens in the CLI, catch it, let the user
+  know it is our fault, and generate a link to a github issue containing
+  diagnostic information
+- Updated dependencies [c6e96302]
+- Updated dependencies [393fee75]
+  - @bigtest/server@0.19.0
+
 ## 0.15.1
 
 ### Patch Changes
