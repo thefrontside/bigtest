@@ -53,6 +53,10 @@ function* isReachable(url: string) {
     let response: Response = yield fetch(url);
     return response.ok;
   } catch (error) {
-    return false;
+    if (error.name === 'FetchError') {
+      return false;
+    } else {
+      throw error;
+    }
   }
 }
