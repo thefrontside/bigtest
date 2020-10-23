@@ -54,7 +54,11 @@ export const startProxyServer = (options: ProxyOptions) => function* ({ url: tar
       let unzip = zlib.createGunzip();
 
       yield throwOnErrorEvent(tr);
-      yield throwOnErrorEvent(unzip);
+
+      yield spawn(function*() {
+        yield throwOnErrorEvent(unzip);
+        yield once(unzip, 'finish');
+      });
 
       tr.select('head', (node) => {
         let rs = node.createReadStream();
