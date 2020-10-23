@@ -1,19 +1,16 @@
 import * as chokidar from 'chokidar';
-import { Operation } from 'effection';
-import { Mailbox, ensure } from '@bigtest/effection';
-import { throwOnErrorEvent } from '@effection/events';
+import { ensure } from '@bigtest/effection';
+import { throwOnErrorEvent, once, on } from '@effection/events';
 import * as fs from 'fs';
 import * as globby from 'globby';
 import * as path from 'path';
+import { ManifestGeneratorOptions, Service } from './orchestrator/state';
+import { assert } from './assertions/assert';
+import { spawn } from 'effection';
+import {Channel} from '@effection/channel';
+import { subscribe } from '@effection/subscription';
 
 const { writeFile, mkdir } = fs.promises;
-
-interface ManifestGeneratorOptions {
-  delegate: Mailbox;
-  files: string[];
-  destinationPath: string;
-  watch: boolean;
-};
 
 function* writeManifest(options: ManifestGeneratorOptions) {
   let files = yield globby(options.files);
@@ -39,37 +36,48 @@ module.exports = {
   children: children,
 }
 `
-
   yield mkdir(path.dirname(options.destinationPath), { recursive: true });
   yield writeFile(options.destinationPath, manifest);
 }
 
-export function* createManifestGenerator(options: ManifestGeneratorOptions): Operation {
-  if(options.watch) {
-    let watcher = chokidar.watch(options.files, { ignoreInitial: true });
+export const manifestGenerator: Service<ManifestGeneratorOptions> = function *(options) {
+  let { atom, files, mode } = options;
+
+  assert(atom, 'No atom in manifestGenerator options');
+
+  let serviceStatus = atom.slice('manifestGenerator', 'status');
+  
+  serviceStatus.set({ type: 'started' });
+
+  if(mode === 'watch') {
+    let watcher = chokidar.watch(files, { ignoreInitial: true });
 
     yield ensure(() => watcher.close());
 
-    let events: Mailbox = yield Mailbox.subscribe(watcher, ['ready', 'add', 'unlink']);
-
     yield throwOnErrorEvent(watcher);
 
-    yield events.receive({ event: 'ready' });
+    yield once(watcher, 'ready');
     yield writeManifest(options);
 
-    console.debug("[manifest generator] manifest ready, watching for updates");
-    options.delegate.send({ status: 'ready' });
+    console.debug("[manifest generator] manifest ready, watching for updates")
 
-    while(true) {
-      yield events.receive();
-      yield writeManifest(options);
+    serviceStatus.update(() => ({ type: 'reachable' }));
+    
+    let fileChanges = new Channel<void>();
 
+    let writeOperation = function *() {
+      fileChanges.send();
       console.debug("[manifest generator] manifest updated");
-      options.delegate.send({ event: 'update' });
+      serviceStatus.update(() => ({ type: 'reachable' }))
     }
+
+    yield spawn(on(watcher, 'add').forEach(writeOperation));
+    yield spawn(on(watcher, 'unlink').forEach(writeOperation));
+    
+    yield subscribe(fileChanges).forEach(() => writeManifest(options));
   } else {
     yield writeManifest(options);
     console.debug("[manifest generator] manifest ready");
-    options.delegate.send({ status: 'ready' });
+    serviceStatus.update(() => ({ type: 'reachable' }));
   }
 }

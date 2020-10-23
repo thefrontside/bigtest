@@ -67,7 +67,7 @@ export type ServiceState<O> = {
 } & O;
 
 export type Service<O> = {
-  (options: Partial<Omit<ServiceState<O>, keyof O>> & O): Operation<void>;
+  (options: Partial<Exclude<ServiceState<O>, keyof O>> & O): Operation<void>;
 };
 
 export interface Manifest extends Test  {
@@ -85,12 +85,19 @@ export type AppServiceState = {
   appOptions: AppOptions;
 };
 
+export interface ManifestGeneratorOptions {
+  files: string[];
+  destinationPath: string;
+  mode: 'watch' | 'build';
+};
+
 export type ProxyServiceState = {
   proxyStatus: 'unstarted' | 'starting' | 'started';
 }
 
 export type OrchestratorState = {
   agents: Record<string, AgentState>;
+  manifestGenerator: ServiceState<Partial<ManifestGeneratorOptions>>;
   manifest: Manifest;
   bundler: BundlerState;
   testRuns: Record<string, TestRunState>;

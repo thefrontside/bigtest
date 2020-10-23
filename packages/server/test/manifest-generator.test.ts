@@ -9,11 +9,13 @@ import { Test } from '@bigtest/suite';
 
 import { actions } from './helpers';
 
-import { createManifestGenerator } from '../src/manifest-generator';
-import { Mailbox } from '@bigtest/effection';
+import { manifestGenerator } from '../src/manifest-generator';
 
 const { mkdir, writeFile, unlink } = fs.promises;
 import { join } from 'path';
+import { Atom } from '@bigtest/atom';
+import { OrchestratorState } from '../src/orchestrator/state';
+import { createOrchestratorAtom } from '../src/orchestrator/atom';
 
 const TEST_DIR = "./tmp/manifest-generator"
 const MANIFEST_PATH = "./tmp/manifest-generator/manifest.js"
@@ -25,33 +27,30 @@ async function loadManifest() {
 }
 
 describe('manifest-generator', () => {
-  let delegate: Mailbox;
-
+  let atom: Atom<OrchestratorState>;
+  atom = createOrchestratorAtom();
   beforeEach((done) => rmrf(TEST_DIR, done));
   beforeEach(async () => {
     await mkdir(TEST_DIR, { recursive: true });
     await writeFile(join(TEST_DIR, "/test1.t.js"), "module.exports = { default: { description: 'hello' }};");
     await writeFile(join(TEST_DIR, "/test2.t.js"), "module.exports = { default: { description: 'monkey' }};");
   });
-
+  
   describe('watching', () => {
     beforeEach(async() => {
-      delegate = new Mailbox();
-
-      actions.fork(createManifestGenerator({
-        delegate,
+      actions.fork(manifestGenerator({
         files: [TEST_DIR + "/*.t.{js,ts}"],
         destinationPath: MANIFEST_PATH,
-        watch: true,
+        mode: 'watch',
+        atom
       }));
-
-      await actions.receive(delegate, { status: 'ready' });
     });
 
     describe('starting', () => {
       let manifest: Test;
 
       beforeEach(async () => {
+        await actions.fork(atom.slice('manifestGenerator', 'status').once(({ type }) => type === 'reachable'));
         manifest = await loadManifest();
       });
 
@@ -67,7 +66,7 @@ describe('manifest-generator', () => {
 
       beforeEach(async () => {
         await writeFile(join(TEST_DIR, "/test3.t.js"), "module.exports = { default: { description: 'test' } };");
-        await actions.receive(delegate, { event: "update" });
+        await actions.fork(atom.slice('manifestGenerator', 'status').once(({ type }) => type === 'reachable'));
         manifest = await loadManifest();
       });
 
@@ -84,7 +83,7 @@ describe('manifest-generator', () => {
 
       beforeEach(async () => {
         await unlink(join(TEST_DIR, "/test2.t.js"));
-        await actions.receive(delegate, { event: 'update' });
+        await actions.fork(atom.slice('manifestGenerator', 'status').once(({ type }) => type === 'reachable'));
         manifest = await loadManifest();
       });
 
@@ -97,16 +96,15 @@ describe('manifest-generator', () => {
 
   describe('not watching', () => {
     beforeEach(async() => {
-      delegate = new Mailbox();
 
-      actions.fork(createManifestGenerator({
-        delegate,
+      actions.fork(manifestGenerator({
         files: [TEST_DIR + "/*.t.{js,ts}"],
         destinationPath: MANIFEST_PATH,
-        watch: false,
+        mode: 'build',
+        atom
       }));
 
-      await actions.receive(delegate, { status: 'ready' });
+      await actions.fork(atom.slice('manifestGenerator', 'status').once(({ type }) => type === 'reachable'));
     });
 
     describe('starting', () => {

@@ -178,7 +178,7 @@ describe('@bigtest/interactor', () => {
     });
 
     describe('filter `focused`', () => {
-      it.only('filters radio buttons by whether they have focus', async () => {
+      it('filters radio buttons by whether they have focus', async () => {
         dom(`
           <p>
             <input required type="radio" id="focused"/>

@@ -11,7 +11,7 @@ import { createCommandServer } from './command-server';
 import { createCommandProcessor } from './command-processor';
 import { createConnectionServer } from './connection-server';
 import { createAppServer } from './app-server';
-import { createManifestGenerator } from './manifest-generator';
+import { manifestGenerator } from './manifest-generator';
 import { createManifestBuilder } from './manifest-builder';
 import { createManifestServer } from './manifest-server';
 import { createLogger } from './logger';
@@ -31,7 +31,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   let commandServerDelegate = new Mailbox();
   let connectionServerDelegate = new Mailbox();
-  let manifestGeneratorDelegate = new Mailbox();
   let manifestServerDelegate = new Mailbox();
 
   let agentServerConfig = new AgentServerConfig({ port: options.project.proxy.port, prefix: '/__bigtest/', });
@@ -83,15 +82,15 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     proxyPort: options.project.proxy.port,
   }));
 
-  yield fork(createManifestGenerator({
-    delegate: manifestGeneratorDelegate,
+  yield fork(manifestGenerator({
     files: options.project.testFiles,
     destinationPath: manifestSrcPath,
-    watch: options.project.watchTestFiles,
+    atom: options.atom,
+    mode: options.project.watchTestFiles ? 'watch' : 'build',
   }));
 
   console.debug('[orchestrator] wait for manifest generator');
-  yield manifestGeneratorDelegate.receive({ status: 'ready' });
+  yield options.atom.slice('manifestGenerator', 'status').once(({ type }) => type === 'reachable');
   console.debug('[orchestrator] manifest generator ready');
 
   yield fork(createManifestBuilder({
@@ -100,7 +99,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     srcPath: manifestSrcPath,
     distDir: manifestDistDir,
     buildDir: manifestBuildDir,
-    tsconfig: options.project.tsconfig,
   }));
 
   yield function* () {

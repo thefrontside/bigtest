@@ -7,6 +7,11 @@ interface OrchestratorAtomOptions {
 
 export const createOrchestratorAtom = (options?: OrchestratorAtomOptions) => {
   let atom = new Atom<OrchestratorState>({
+    manifestGenerator: {
+      id: '@bigtest/manifest-genertor',
+      name: '[manifest generator]',
+      status: { type: 'unstarted' },
+    },
     manifest: {
       description: "None",
       fileName: "<init>",
