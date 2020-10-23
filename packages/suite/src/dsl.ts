@@ -25,13 +25,23 @@ export interface AssertionDefinition<C extends Context> {
 
 type AssertionList<C extends Context> = [AssertionDefinition<C>, ...AssertionDefinition<C>[]];
 
+class TestStructureError extends Error {
+  name = 'TestStructureError'
+
+  constructor(message: string) {
+    super(message + '\n\nBigTest tests separate assertions and steps, where assertions should not affect application state and only verify behaviour. Assertions and children are always run after steps, so you cannot add them out of order.');
+  }
+}
+
+type TestBuilderState = 'step' | 'assertion' | 'child';
+
 export class TestBuilder<C extends Context> implements TestImplementation {
   public description: string;
   public steps: Step[];
   public assertions: Assertion[];
   public children: TestImplementation[];
 
-  constructor(test: TestImplementation) {
+  constructor(test: TestImplementation, private state = 'step') {
     this.description = test.description;
     this.steps = test.steps;
     this.assertions = test.assertions;
@@ -41,6 +51,9 @@ export class TestBuilder<C extends Context> implements TestImplementation {
   step<R extends Context | void>(...steps: StepList<C>): TestBuilder<C>;
   step<R extends Context | void>(description: string, action: Action<C,R>): TestBuilder<R extends void ? C : C & R>;
   step<R extends Context | void>(...args: [string, Action<C,R>] | StepList<C>): TestBuilder<R extends void ? C : C & R> {
+    if(this.state === 'assertion' || this.state === 'child') {
+      throw new TestStructureError(`Cannot add step after adding ${this.state}`);
+    }
 
     function getSteps(): Step[] {
       let [first, second] = args;
@@ -63,6 +76,9 @@ export class TestBuilder<C extends Context> implements TestImplementation {
   assertion(...assertions: AssertionList<C>): TestBuilder<C>;
   assertion(description: string, check: Check<C>): TestBuilder<C>;
   assertion(...args: [string, Check<C>] | AssertionList<C>): TestBuilder<C> {
+    if(this.state === 'child') {
+      throw new TestStructureError(`Cannot add step after adding ${this.state}`);
+    }
 
     function getAssertions(): Assertion[] {
       let [first, second] = args;
@@ -79,7 +95,7 @@ export class TestBuilder<C extends Context> implements TestImplementation {
     return new TestBuilder({
       ...this,
       assertions: this.assertions.concat(getAssertions()),
-    });
+    }, 'assertion');
   }
 
   child(description: string, childFn: (inner: TestBuilder<C>) => TestBuilder<Context>): TestBuilder<C> {
@@ -87,6 +103,6 @@ export class TestBuilder<C extends Context> implements TestImplementation {
     return new TestBuilder({
       ...this,
       children: this.children.concat(child)
-    });
+    }, 'child');
   }
 }

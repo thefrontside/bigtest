@@ -37,4 +37,19 @@ describe('dsl', () => {
 
     expect(assertions.map(assertion => assertion.description)).toEqual(['hello', 'world']);
   });
+
+  it('prevents adding steps after adding assertions', () => {
+    let base = test('an assertion').assertion("hello", noop)
+    expect(() => base.step('foo', noop)).toThrowError()
+  });
+
+  it('prevents adding steps after adding child', () => {
+    let base = test('an assertion').child('foo', (test) => test)
+    expect(() => base.step('foo', noop)).toThrowError()
+  });
+
+  it('prevents adding assertions after adding child', () => {
+    let base = test('an assertion').child('foo', (test) => test)
+    expect(() => base.assertion('foo', noop)).toThrowError()
+  });
 })
