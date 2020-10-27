@@ -60,30 +60,19 @@ already want to give it a go, here is how you can get going:
 Install bigtest in your application:
 
 ```
-yarn add bigtest @bigtest/cli @bigtest/suite @bigtest/interactor
+yarn add -D bigtest
 ```
 
-Add a `bigtest.json` file in the root of your project with a base configuration like this:
+Run the init command to set up your application:
 
-``` json
-{
-  "app": {
-    "command": "yarn start",
-    "env": { "PORT": 36000 },
-    "url": "http://localhost:36000"
-  },
-  "launch": ["chrome.headless"]
-}
 ```
-
-You can replace `yarn start` with however you start your application. In the
-future there will be an `init` command to set up this file.
+yarn bigtest init
+```
 
 Add a test file in `test/my-test.test.js`:
 
 ``` javascript
-import { App, Headline } from '@bigtest/interactor';
-import { test } from '@bigtest/suite';
+import { test, App, Headline } from 'bigtest';
 
 export default test('My Test')
   .step(App.visit('/'));
@@ -99,7 +88,7 @@ yarn bigtest server
 And run your tests:
 
 ```
-yarn bigtest run
+yarn bigtest test
 ```
 
 ## Development
