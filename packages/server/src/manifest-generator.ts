@@ -77,7 +77,6 @@ export const manifestGenerator: Service<ManifestGeneratorOptions> = function *(o
     yield subscribe(fileChanges).forEach(() => writeManifest(options));
   } else {
     yield writeManifest(options);
-    console.debug("[manifest generator] manifest ready");
     serviceStatus.update(() => ({ type: 'reachable' }));
   }
 }
