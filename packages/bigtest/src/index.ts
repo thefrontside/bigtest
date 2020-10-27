@@ -1,2 +1,2 @@
 export * from '@bigtest/interactor';
-export * from '@bigtest/suite';
+export { test } from '@bigtest/suite';

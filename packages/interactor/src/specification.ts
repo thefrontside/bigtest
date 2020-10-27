@@ -41,3 +41,26 @@ export type FilterParams<E extends Element, F extends Filters<E>> = keyof F exte
 }
 
 export type InteractorInstance<E extends Element, F extends Filters<E>, A extends Actions<E>> = Interactor<E, F, A> & ActionMethods<E, A>;
+
+export interface InteractorConstructor<E extends Element, F extends Filters<E>, A extends Actions<E>> {
+  (filters?: FilterParams<E, F>): InteractorInstance<E, F, A>;
+  (value: string, filters?: FilterParams<E, F>): InteractorInstance<E, F, A>;
+}
+
+/**
+ * When calling {@link createInteractor}, this is the intermediate object that
+ * is returned. See {@link InteractorSpecification} for a detailed list of all
+ * available options.
+ *
+ * @typeParam E The type of DOM Element that this interactor operates on. By specifying the element type, actions and filters defined for the interactor can be type checked against the actual element type.
+ */
+export interface InteractorBuilder<E extends Element> {
+  /**
+   * Calling the builder will create an interactor.
+   *
+   * @param specification The specification of this interactor
+   * @typeParam F the filters of this interactor, this is usually inferred from the specification
+   * @typeParam A the actions of this interactor, this is usually inferred from the specification
+   */
+  <F extends Filters<E> = {}, A extends Actions<E> = {}>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, F, A>;
+}
