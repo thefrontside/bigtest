@@ -58,6 +58,8 @@ export type ServiceStatus =
 
 export type ServiceStatuses = ServiceStatus['type'];
 
+export type ServiceStateAtom = { atom: Atom<OrchestratorState> };
+
 export type ServiceState<O> = {
   id: string;
   name: string;
@@ -67,7 +69,7 @@ export type ServiceState<O> = {
 } & O;
 
 export type Service<O> = {
-  (options: Partial<Exclude<ServiceState<O>, keyof O>> & O): Operation<void>;
+  (options: O & Required<Pick<ServiceState<O>, 'atom'>>): Operation<void>;
 };
 
 export interface Manifest extends Test  {

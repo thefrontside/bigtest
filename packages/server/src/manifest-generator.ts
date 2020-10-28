@@ -5,7 +5,6 @@ import * as fs from 'fs';
 import * as globby from 'globby';
 import * as path from 'path';
 import { ManifestGeneratorOptions, Service } from './orchestrator/state';
-import { assert } from './assertions/assert';
 import { spawn } from 'effection';
 import {Channel} from '@effection/channel';
 import { subscribe } from '@effection/subscription';
@@ -42,8 +41,6 @@ module.exports = {
 
 export const manifestGenerator: Service<ManifestGeneratorOptions> = function *(options) {
   let { atom, files, mode } = options;
-
-  assert(atom, 'No atom in manifestGenerator options');
 
   let serviceStatus = atom.slice('manifestGenerator', 'status');
   

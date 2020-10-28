@@ -10,7 +10,7 @@ import { createBrowserManager, BrowserManager } from './browser-manager';
 import { createCommandServer } from './command-server';
 import { createCommandProcessor } from './command-processor';
 import { createConnectionServer } from './connection-server';
-import { createAppServer } from './app-server';
+import { appServer } from './app-server';
 import { manifestGenerator } from './manifest-generator';
 import { createManifestBuilder } from './manifest-builder';
 import { createManifestServer } from './manifest-server';
@@ -73,7 +73,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     manifestPort: options.project.manifest.port,
   }));
 
-  yield fork(createAppServer({ atom: options.atom }));
+  yield fork(appServer({ atom: options.atom }));
 
   yield fork(createManifestServer({
     delegate: manifestServerDelegate,

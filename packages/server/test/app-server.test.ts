@@ -6,7 +6,7 @@ import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { assertAppServiceStatus } from '../src/assertions/app-service-assertions';
 
 import { actions } from './helpers';
-import { createAppServer } from '../src/app-server';
+import { appServer } from '../src/app-server';
 
 describe('app service', () => {
   let atom: Atom<OrchestratorState>;
@@ -20,7 +20,7 @@ describe('app service', () => {
       });
 
       actions.fork(function * () {
-        yield createAppServer({ atom })
+        yield appServer({ atom })
       });
     });
 
@@ -46,7 +46,7 @@ describe('app service', () => {
       });
 
       actions.fork(function * () {
-        yield createAppServer({ atom })
+        yield appServer({ atom })
       });
     });
 

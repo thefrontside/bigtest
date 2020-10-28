@@ -6,16 +6,12 @@ import { OrchestratorState, AppOptions, Service } from './orchestrator/state';
 import { Atom } from '@bigtest/atom';
 import { restartable } from './effection/restartable'
 
-interface AppServerOptions {
-  atom: Atom<OrchestratorState>;
-};
-
-export const createAppServer: Service<AppServerOptions> = (options) => {
+export const appServer: Service<AppOptions> = (options) => {
   let appOptions = options.atom.slice('appService', 'appOptions');
   return restartable(appOptions, startApp(options));
 }
 
-const startApp = ({ atom }: AppServerOptions): Service<AppOptions> => function* (options) {
+const startApp = ({ atom }: { atom: Atom<OrchestratorState> }) => function* (options: AppOptions) {
   if(!options.url) {
     throw new Error('no app url given');
   }
