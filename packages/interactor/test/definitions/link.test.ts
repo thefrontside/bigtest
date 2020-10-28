@@ -101,7 +101,7 @@ describe('@bigtest/interactor', () => {
     });
 
     describe('filter `focused`', () => {
-      it.only('filters `a` tags by if they are focused', async () => {
+      it('filters `a` tags by if they are focused', async () => {
         dom(`
           <p><a href="/has-focus" id="with">With Focus</a></p>
           <p><a href="/does-not-have-focus" id="without">Without Focus</a></p>
