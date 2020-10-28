@@ -1,4 +1,3 @@
 [build]
   base = "website/"
-  publish = "public/"
-  command = "gatsby build"
+  publish = "landing-page-oct-2020/"
