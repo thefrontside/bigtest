@@ -1,6 +1,4 @@
-import type { ServiceStatuses } from '../orchestrator/state';
-
-export class AppServiceAssertionError extends Error {
+export class StatusAssertionError extends Error {
   constructor(message: string) {
     super(`INTERNAL ASSERTION FAILURE:
     While running BigTest, ${message} was received.
@@ -12,10 +10,10 @@ export class AppServiceAssertionError extends Error {
   }
 }
 
-export function assertAppServiceStatus<R extends ServiceStatuses>(current: ServiceStatuses, { is }: { is: R | R[] }): asserts current is R  {
+export function assertStatus<S extends { type: string }, R extends string>(current: S['type'], { is }: { is: R | R[] }): asserts current is R  {
   let states = Array.isArray(is) ? is : [is];
   
   if(states.includes(current as R) === false) {
-    throw new AppServiceAssertionError(`app-service is not currently at state ${current}`)
+    throw new StatusAssertionError(`status is not currently at ${current}`)
   }
 }

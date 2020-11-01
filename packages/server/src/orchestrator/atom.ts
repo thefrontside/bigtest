@@ -8,9 +8,10 @@ interface OrchestratorAtomOptions {
 export const createOrchestratorAtom = (options?: OrchestratorAtomOptions) => {
   let atom = new Atom<OrchestratorState>({
     manifestGenerator: {
-      id: '@bigtest/manifest-genertor',
-      name: '[manifest generator]',
-      status: { type: 'unstarted' },
+      status: { type: 'pending' },
+      options: {
+        mode: 'idle'
+      }
     },
     manifest: {
       description: "None",
@@ -23,10 +24,8 @@ export const createOrchestratorAtom = (options?: OrchestratorAtomOptions) => {
       type: 'UNBUNDLED'
     },
     appService: {
-      id: '@bigtest/app-service',
-      name: '[app service]',
-      status: { type: 'unstarted' },
-      appOptions: options?.app || {},
+      status: { type: 'pending' },
+      options: options?.app || {},
     },
     proxyService: {
       proxyStatus: 'unstarted'

@@ -52,7 +52,7 @@ export const actions = {
 
   updateApp(appOptions: AppOptions) {
     actions.atom
-      .slice("appService", "appOptions")
+      .slice("appService", "options")
       .update(() => appOptions);
   },
 

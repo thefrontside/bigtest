@@ -19,7 +19,7 @@ interface ProxyOptions {
 };
 
 export function createProxyServer(options: ProxyOptions): Operation {
-  let appOptions = options.atom.slice("appService", "appOptions");
+  let appOptions = options.atom.slice("appService", "options");
   return restartable(appOptions, startProxyServer(options));
 }
 
