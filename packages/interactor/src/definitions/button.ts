@@ -1,4 +1,4 @@
-import { Interactor, Interaction, InteractorConstructor, createInteractor, perform, focused, isVisible } from '../index';
+import { Interaction, InteractorConstructor, createInteractor, perform, focused, isVisible } from '../index';
 import { FilterParams, ActionMethods } from '../specification';
 
 function isButtonElement(element: HTMLInputElement | HTMLButtonElement): element is HTMLButtonElement {

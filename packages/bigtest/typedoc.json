@@ -1,5 +1,5 @@
 {
-  "mode": "library",
   "out": "docs",
-  "name": "BigTest"
+  "name": "BigTest",
+  "entryPoints": "src/index.ts"
 }
