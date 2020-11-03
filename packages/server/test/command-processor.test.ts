@@ -6,7 +6,7 @@ import { Atom } from '@bigtest/atom';
 
 import { AgentEvent, Command as AgentCommand } from '@bigtest/agent';
 
-import { actions } from './helpers';
+import { actions, getTestProjectOptions } from './helpers';
 import { createCommandProcessor } from '../src/command-processor';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { CommandMessage } from '../src/command-server';
@@ -23,7 +23,7 @@ describe('command processor', () => {
     delegate = new Mailbox();
     events = new Mailbox();
     commands = new Mailbox();
-    atom = createOrchestratorAtom();
+    atom = createOrchestratorAtom(getTestProjectOptions());
     atom.slice('agents', 'agent-1').set({
       agentId: 'agent-1',
       browser: { name: "Safari", version: "13.0.4" },

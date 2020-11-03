@@ -43,7 +43,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   let connectTo = `ws://localhost:${options.project.connection.port}`;
 
-  yield spawn(createLogger({ atom: options.atom,  out: console.error }));
+  yield spawn(createLogger({ atom: options.atom, out: console.error }));
 
   let browserManager: BrowserManager = yield createBrowserManager({
     atom: options.atom,
@@ -73,9 +73,9 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     manifestPort: options.project.manifest.port,
   }));
 
-  let appServerStatus = options.atom.slice('appService', 'status');
+  let appServerState = options.atom.slice('appService');
 
-  yield fork(appServer(appServerStatus, { atom: options.atom }));
+  yield fork(appServer(appServerState));
 
   yield fork(createManifestServer({
     delegate: manifestServerDelegate,
@@ -84,14 +84,9 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     proxyPort: options.project.proxy.port,
   }));
 
-  let manifestServiceStatus = options.atom.slice('manifestGenerator', 'status');
+  let manifestGeneratorState = options.atom.slice('manifestGenerator');
 
-  yield fork(manifestGenerator(manifestServiceStatus, {
-    destinationPath: manifestSrcPath,
-    atom: options.atom,
-    mode: options.project.watchTestFiles ? 'watch' : 'build',
-    files: options.project.testFiles
-  }));
+  yield fork(manifestGenerator(manifestGeneratorState));
 
   console.debug('[orchestrator] wait for manifest generator');
   yield options.atom.slice('manifestGenerator', 'status').once(({ type }) => type === 'ready');

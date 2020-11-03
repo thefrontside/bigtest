@@ -8,21 +8,32 @@ import { Agent } from '@bigtest/agent';
 import { World } from './helpers/world';
 
 import { createOrchestrator } from '../src/index';
-import { createOrchestratorAtom } from '../src/orchestrator/atom';
+import { createOrchestratorAtom, OrchestratorAtomOptions } from '../src/orchestrator/atom';
 import { AppOptions } from '../src/orchestrator/state';
 import { Manifest, BundlerState } from '../src/orchestrator/state';
+import * as merge from 'deepmerge';
+
+export type DeepPartial<T> = { [P in keyof T]?: DeepPartial<T[P]> };
 
 let orchestratorPromise: Context;
 let manifest: Manifest;
 let bundler: BundlerState = { type: 'UNBUNDLED' };
 
+const TestProjectOptions: OrchestratorAtomOptions = {
+  app: {
+    url: "http://localhost:24100",
+    command: "yarn test:app:start 24100",
+  },
+  testFiles: ["test/fixtures/*.t.js"],
+  cacheDir: "./tmp/test/orchestrator",
+  watchTestFiles: true
+}
+
+export const getTestProjectOptions = (overrides: DeepPartial<OrchestratorAtomOptions> = {}) =>
+  merge(TestProjectOptions, overrides) as OrchestratorAtomOptions;
+
 export const actions = {
-  atom: createOrchestratorAtom({
-    app: {
-      url: "http://localhost:24100",
-      command: "yarn test:app:start 24100",
-    },
-  }),
+  atom: createOrchestratorAtom(getTestProjectOptions()),
 
   fork<T>(operation: Operation<T>): Context<T> {
     return currentWorld.fork(operation);

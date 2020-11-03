@@ -10,7 +10,7 @@ import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { OrchestratorState, TestRunState } from '../src/orchestrator/state';
 import { TestEvent } from '../src/schema/test-event';
 
-import { actions } from './helpers';
+import { actions, getTestProjectOptions } from './helpers';
 
 describe('result stream', () => {
   let atom: Atom<OrchestratorState>;
@@ -18,7 +18,7 @@ describe('result stream', () => {
   let subscription: ChainableSubscription<TestEvent, void>;
 
   beforeEach(async () => {
-    atom = createOrchestratorAtom();
+    atom = createOrchestratorAtom(getTestProjectOptions());
     slice = atom.slice('testRuns', 'test-run-1');
     slice.set({
       testRunId: 'test-run-1',

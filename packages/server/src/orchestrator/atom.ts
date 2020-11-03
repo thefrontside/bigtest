@@ -1,16 +1,24 @@
 import { Atom } from "@bigtest/atom";
-import { AppOptions, OrchestratorState } from "./state";
+import { OrchestratorState } from "./state";
+import { ProjectOptions } from '@bigtest/project/dist';
+import path = require('path');
 
-interface OrchestratorAtomOptions {
-  app?: AppOptions;
-}
+// TODO: eventually we can remove this type and just use ProjectOptions.
+// But until then we can just pick the bits we need.
+export type OrchestratorAtomOptions = Pick<ProjectOptions, 'app' |'watchTestFiles' | 'cacheDir' | 'testFiles'>
 
-export const createOrchestratorAtom = (options?: OrchestratorAtomOptions) => {
+export const createOrchestratorAtom = (project: OrchestratorAtomOptions) => {
+  let manifestSrcDir = path.resolve(project.cacheDir, 'manifest/src');
+  let manifestSrcPath = path.resolve(manifestSrcDir, 'manifest.js');
+
   let atom = new Atom<OrchestratorState>({
     manifestGenerator: {
       status: { type: 'pending' },
+      
       options: {
-        mode: 'idle'
+        destinationPath: manifestSrcPath,
+        mode: project.watchTestFiles ? 'watch' : 'build',
+        files: project.testFiles
       }
     },
     manifest: {
@@ -25,7 +33,7 @@ export const createOrchestratorAtom = (options?: OrchestratorAtomOptions) => {
     },
     appService: {
       status: { type: 'pending' },
-      options: options?.app || {},
+      options: project.app,
     },
     proxyService: {
       proxyStatus: 'unstarted'
