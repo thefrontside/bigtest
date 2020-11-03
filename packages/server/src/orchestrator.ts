@@ -10,8 +10,8 @@ import { createBrowserManager, BrowserManager } from './browser-manager';
 import { createCommandServer } from './command-server';
 import { createCommandProcessor } from './command-processor';
 import { createConnectionServer } from './connection-server';
-import { createAppServer } from './app-server';
-import { createManifestGenerator } from './manifest-generator';
+import { appServer } from './app-server';
+import { manifestGenerator } from './manifest-generator';
 import { createManifestBuilder } from './manifest-builder';
 import { createManifestServer } from './manifest-server';
 import { createLogger } from './logger';
@@ -31,7 +31,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   let commandServerDelegate = new Mailbox();
   let connectionServerDelegate = new Mailbox();
-  let manifestGeneratorDelegate = new Mailbox();
   let manifestServerDelegate = new Mailbox();
 
   let agentServerConfig = new AgentServerConfig({ port: options.project.proxy.port, prefix: '/__bigtest/', });
@@ -74,7 +73,9 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     manifestPort: options.project.manifest.port,
   }));
 
-  yield fork(createAppServer({ atom: options.atom }));
+  let appServerStatus = options.atom.slice('appService', 'status');
+
+  yield fork(appServer(appServerStatus, { atom: options.atom }));
 
   yield fork(createManifestServer({
     delegate: manifestServerDelegate,
@@ -83,15 +84,17 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     proxyPort: options.project.proxy.port,
   }));
 
-  yield fork(createManifestGenerator({
-    delegate: manifestGeneratorDelegate,
-    files: options.project.testFiles,
+  let manifestServiceStatus = options.atom.slice('manifestGenerator', 'status');
+
+  yield fork(manifestGenerator(manifestServiceStatus, {
     destinationPath: manifestSrcPath,
-    watch: options.project.watchTestFiles,
+    atom: options.atom,
+    mode: options.project.watchTestFiles ? 'watch' : 'build',
+    files: options.project.testFiles
   }));
 
   console.debug('[orchestrator] wait for manifest generator');
-  yield manifestGeneratorDelegate.receive({ status: 'ready' });
+  yield options.atom.slice('manifestGenerator', 'status').once(({ type }) => type === 'ready');
   console.debug('[orchestrator] manifest generator ready');
 
   yield fork(createManifestBuilder({
@@ -100,7 +103,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     srcPath: manifestSrcPath,
     distDir: manifestDistDir,
     buildDir: manifestBuildDir,
-    tsconfig: options.project.tsconfig,
   }));
 
   yield function* () {
@@ -120,7 +122,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     });
     yield fork(function*() {
       let status = yield options.atom.slice('appService', 'status').once((status) => {
-        return status.type === 'reachable' || status.type === 'exited';
+        return status.type === 'ready' || status.type === 'exited';
       });
       console.debug(`[orchestrator] app server ${status.type}`);
     });

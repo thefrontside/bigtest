@@ -130,7 +130,7 @@ describe('orchestrator', () => {
 
       await actions.fork(
         actions.atom.slice('appService', 'status').once(status => {
-          return ['unstarted', 'unreachable'].includes(status.type);
+          return ['started', 'exited'].includes(status.type);
         })
       );
 
@@ -138,7 +138,7 @@ describe('orchestrator', () => {
 
       await actions.fork(
         actions.atom.slice('appService', 'status').once(status => {
-          return status.type === 'reachable'
+          return status.type === 'ready'
         })
       );
     });

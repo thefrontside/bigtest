@@ -1,39 +1,42 @@
 import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
-import type { OrchestratorState } from '../src/orchestrator/state';
-import type { Atom } from '@bigtest/atom';
+import type { AppServiceStatus, OrchestratorState } from '../src/orchestrator/state';
+import type { Atom, Slice } from '@bigtest/atom';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
-import { assertAppServiceStatus } from '../src/assertions/app-service-assertions';
+import { assertStatus } from '../src/assertions/status-assertions';
 
 import { actions } from './helpers';
-import { createAppServer } from '../src/app-server';
+import { appServer } from '../src/app-server';
 
 describe('app service', () => {
   let atom: Atom<OrchestratorState>;
+  let appStatus: Slice<AppServiceStatus, OrchestratorState>;
 
-  describe('reachable', () => {
+  describe('ready', () => {
     beforeEach(() => {
       atom = createOrchestratorAtom({ app: {
-          url: "http://localhost:24000",
-          command: "yarn test:app:start 24000",
-        }
-      });
+        url: "http://localhost:24000",
+        command: "yarn test:app:start 24000",
+      }
+    });
+
+      appStatus = atom.slice('appService', 'status');
 
       actions.fork(function * () {
-        yield createAppServer({ atom })
+        yield appServer(appStatus, { atom });
       });
     });
 
-    it("should be transition from 'started' to 'reachable'", async () => {
+    it("should be transition from 'started' to 'ready'", async () => {
       let appStatus = atom.slice('appService', 'status');
 
       expect(appStatus.get().type).toBe('started');
 
       await actions.fork(
-        appStatus.once(status => status.type === 'reachable')
+        appStatus.once(status => status.type === 'ready')
       );
 
-      expect(appStatus.get().type).toBe('reachable');
+      expect(appStatus.get().type).toBe('ready');
     });
   });
 
@@ -45,8 +48,10 @@ describe('app service', () => {
         }
       });
 
+      appStatus = atom.slice('appService', 'status');
+
       actions.fork(function * () {
-        yield createAppServer({ atom })
+        yield appServer(appStatus, { atom })
       });
     });
 
@@ -59,7 +64,7 @@ describe('app service', () => {
 
       let current = appStatus.get();
 
-      assertAppServiceStatus(current.type, { is: 'exited' });
+      assertStatus(current.type, {is: 'exited'});
 
       expect(current.exitStatus.code).toBe(1);
     })

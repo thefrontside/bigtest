@@ -7,6 +7,12 @@ interface OrchestratorAtomOptions {
 
 export const createOrchestratorAtom = (options?: OrchestratorAtomOptions) => {
   let atom = new Atom<OrchestratorState>({
+    manifestGenerator: {
+      status: { type: 'pending' },
+      options: {
+        mode: 'idle'
+      }
+    },
     manifest: {
       description: "None",
       fileName: "<init>",
@@ -18,10 +24,8 @@ export const createOrchestratorAtom = (options?: OrchestratorAtomOptions) => {
       type: 'UNBUNDLED'
     },
     appService: {
-      id: '@bigtest/app-service',
-      name: '[app service]',
-      status: { type: 'unstarted' },
-      appOptions: options?.app || {},
+      status: { type: 'pending' },
+      options: options?.app || {},
     },
     proxyService: {
       proxyStatus: 'unstarted'

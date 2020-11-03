@@ -1,8 +1,7 @@
 import type { Test, TestResult, ResultStatus, ErrorDetails } from '@bigtest/suite';
 import type { BundlerError, BundlerWarning } from '@bigtest/bundler';
-import type { Operation } from 'effection';
-import type { ExitStatus } from '@effection/node';
-import type { Atom } from '@bigtest/atom';
+import type { Atom, Slice } from '@bigtest/atom';
+import { Operation } from 'effection';
 
 export type AgentState = {
   agentId: string;
@@ -50,25 +49,18 @@ export type BundlerState =
 
 export type BundlerTypes = Pick<BundlerState, 'type'>['type'];
 
-export type ServiceStatus =
-  | { type: 'unstarted' }
-  | { type: 'started' }
-  | { type: 'reachable' }
-  | { type: 'exited'; exitStatus: ExitStatus };
-
-export type ServiceStatuses = ServiceStatus['type'];
-
-export type ServiceState<O> = {
-  id: string;
-  name: string;
-  status: ServiceStatus;
-  // TODO: we need to further constrain this to Slice(s)
-  atom?: Atom<OrchestratorState>;
-} & O;
-
-export type Service<O> = {
-  (options: Partial<Omit<ServiceState<O>, keyof O>> & O): Operation<void>;
+export type ServiceStatus = {
+  type: string;
 };
+
+export type ServiceState<S extends ServiceStatus, O> = {
+  options: O;
+  status: S;
+};
+
+export type Service<S extends ServiceStatus, O> = {
+  (status: Slice<S, OrchestratorState>, options: O & { atom: Atom<OrchestratorState> }): Operation<void>;
+};  
 
 export interface Manifest extends Test  {
   fileName: string;
@@ -81,8 +73,40 @@ export type AppOptions = {
   dir?: string;
 }
 
-export type AppServiceState = {
-  appOptions: AppOptions;
+export type AppServiceStatus =
+  | {
+      type: "pending";
+    }
+  | {
+      type: "started";
+    }
+  | {
+      type: "ready";
+    }
+  | {
+      type: "stopping";
+    }
+  | {
+      type: "stopped";
+    }
+  | {
+      type: "exited";
+      exitStatus: {
+        code?: number;
+        signal?: string;
+        tail: string[];
+        command: string;
+      };
+    };
+
+export type ManifestGeneratorStatus = {
+  type: "pending" | "ready";
+};
+
+export interface ManifestGeneratorOptions {
+  files?: string[];
+  mode: 'idle' | 'watch' | 'build';
+  destinationPath?: string;
 };
 
 export type ProxyServiceState = {
@@ -91,9 +115,12 @@ export type ProxyServiceState = {
 
 export type OrchestratorState = {
   agents: Record<string, AgentState>;
+  manifestGenerator: ServiceState<ManifestGeneratorStatus, ManifestGeneratorOptions>;
   manifest: Manifest;
   bundler: BundlerState;
   testRuns: Record<string, TestRunState>;
-  appService: ServiceState<AppServiceState>;
+  appService: ServiceState<AppServiceStatus, AppOptions>;
   proxyService: ProxyServiceState;
 }
+
+declare const o: OrchestratorState;
