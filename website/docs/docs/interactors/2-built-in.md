@@ -1,3 +1,8 @@
+---
+id: built-in
+title: Built-in interactors
+---
+
 Currently, these are the eight default Interactors that come with BigTest:
 - [Button](link to source code)
 - [CheckBox](link to source code)
@@ -8,7 +13,7 @@ Currently, these are the eight default Interactors that come with BigTest:
 - [Select](link to source code)
 - [TextField](link to source code)
 
-In our example test in [Writing-your-first-test], we show you how you can assert against a Heading Interactor:
+In our example test in [Writing-your-first-test](https://frontside.com/), we show you how you can assert against a Heading Interactor:
 ```js
 import { Heading, Page, test } from 'bigtest';
 
@@ -31,9 +36,9 @@ export default test('some login page')
   .assertion(Heading('Hello Batman').exists());
 ```
 
-The source code for [TextField]() and [Button]() will show that its locators are `element.labels[0].textContent` and `element.textContent` respectively. So we use our locator value to refer to the correct element and invoke one of its actions.
+The source code for [TextField](https://frontside.com/) and [Button](https://frontside.com/) will show that its locators are `element.labels[0].textContent` and `element.textContent` respectively. So we use our locator value to refer to the correct element and invoke one of its actions.
 
-_In this example above we chained multiple steps together with commas. The [steps-and-assertions] section explains in-depth everything you need to know about steps and assertions._
+_In this example above we chained multiple steps together with commas. The [steps-and-assertions](https://frontside.com/) section explains in-depth everything you need to know about steps and assertions._
 
 But say if hypothetically you have multiple `Submit` buttons, you can narrow down and specify the element you want by using filters:
 ```js
