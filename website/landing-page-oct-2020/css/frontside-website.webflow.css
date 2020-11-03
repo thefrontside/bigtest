@@ -123,6 +123,14 @@
   flex: 0 0 auto;
 }
 
+.hero-logo {
+  margin-bottom: 60px;
+}
+
+.hero-logo img {
+  height: 40px;
+}
+
 .hero-side-demo {
   margin-left: auto;
   margin-right: auto;
@@ -999,7 +1007,6 @@
 }
 
 .bigtesthero {
-  padding-top: 40px;
   padding-bottom: 40px;
   background-image: url('../images/decor-color-blur-100.jpg');
   background-position: 100% 50%;
