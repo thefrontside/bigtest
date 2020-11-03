@@ -1,3 +1,4 @@
 [build]
-  base = "website/"
-  publish = "landing-page-oct-2020/"
+  base = "website/docs"
+  command = "yarn build"
+  publish = "build"
