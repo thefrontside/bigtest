@@ -1,3 +1,8 @@
+---
+id: custom
+title: Custom Interactors
+---
+
 The Interactors that are offered out of the box are there for your convenience, but you can construct your own Interactors and use those instead.
 
 Let's go ahead and create a simple `checkbox` interactor and add it to our tutorial test:
