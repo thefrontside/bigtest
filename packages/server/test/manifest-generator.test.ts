@@ -7,7 +7,7 @@ import * as rmrf from 'rimraf';
 import { timeout } from 'effection';
 import { Test } from '@bigtest/suite';
 
-import { actions } from './helpers';
+import { actions, getTestProjectOptions } from './helpers';
 
 import { manifestGenerator } from '../src/manifest-generator';
 
@@ -25,8 +25,18 @@ async function loadManifest() {
 }
 
 describe('manifest-generator', () => {
-  let atom = createOrchestratorAtom();
-  let status = atom.slice('manifestGenerator', 'status');
+  let atom = createOrchestratorAtom(getTestProjectOptions());
+  let manifestGeneratorState = atom.slice('manifestGenerator');
+
+  manifestGeneratorState.update(prev => ({
+    ...prev,
+    options: {
+      files: [TEST_DIR + "/*.t.{js,ts}"],
+      destinationPath: MANIFEST_PATH,
+      mode: 'watch',
+    },
+  }));
+
   beforeEach((done) => rmrf(TEST_DIR, done));
   beforeEach(async () => {
     await mkdir(TEST_DIR, { recursive: true });
@@ -36,12 +46,7 @@ describe('manifest-generator', () => {
   
   describe('watching', () => {
     beforeEach(async() => {
-      actions.fork(manifestGenerator(status, {
-        files: [TEST_DIR + "/*.t.{js,ts}"],
-        destinationPath: MANIFEST_PATH,
-        mode: 'watch',
-        atom
-      }));
+      actions.fork(manifestGenerator(manifestGeneratorState));
     });
 
     describe('starting', () => {
@@ -94,13 +99,19 @@ describe('manifest-generator', () => {
 
   describe('not watching', () => {
     beforeEach(async() => {
+      let atom = createOrchestratorAtom(getTestProjectOptions());
+      let manifestGeneratorState = atom.slice('manifestGenerator');
 
-      actions.fork(manifestGenerator(status, {
-        files: [TEST_DIR + "/*.t.{js,ts}"],
-        destinationPath: MANIFEST_PATH,
-        mode: 'build',
-        atom
+      manifestGeneratorState.update(prev => ({
+        ...prev,
+        options: {
+          files: [TEST_DIR + "/*.t.{js,ts}"],
+          destinationPath: MANIFEST_PATH,
+          mode: 'build',
+        },
       }));
+
+      actions.fork(manifestGenerator(manifestGeneratorState));
 
       await actions.fork(atom.slice('manifestGenerator', 'status').once(({ type }) => type === 'ready'));
     });

@@ -8,7 +8,7 @@ import { Atom } from '@bigtest/atom';
 import { AgentServerConfig } from '@bigtest/agent';
 import { fetch } from '@effection/fetch';
 
-import { actions } from './helpers';
+import { actions, getTestProjectOptions } from './helpers';
 import { createProxyServer } from '../src/proxy';
 import { OrchestratorState } from '../src/orchestrator/state';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
@@ -53,11 +53,12 @@ describe('proxy', () => {
     beforeEach(async () => {
       actions.fork(startAppServer);
 
-      atom = createOrchestratorAtom({
+      atom = createOrchestratorAtom(getTestProjectOptions({
         app: {
           url: `http://localhost:${APP_PORT}`
         }
-      });
+      }));
+
       actions.fork(createProxyServer({ atom, agentServerConfig, port: PROXY_PORT }));
 
       await actions.fork(atom.once((s) => s.proxyService.proxyStatus === 'started'));
@@ -131,7 +132,7 @@ describe('proxy', () => {
     let body: string;
 
     beforeEach(async () => {
-      atom = createOrchestratorAtom();
+      atom = createOrchestratorAtom(getTestProjectOptions());
       actions.fork(createProxyServer({ atom, agentServerConfig, port: PROXY_PORT }));
 
       await actions.fork(atom.once((s) => s.proxyService.proxyStatus === 'started'));

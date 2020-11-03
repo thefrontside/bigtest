@@ -1,6 +1,6 @@
 import type { Test, TestResult, ResultStatus, ErrorDetails } from '@bigtest/suite';
 import type { BundlerError, BundlerWarning } from '@bigtest/bundler';
-import type { Atom, Slice } from '@bigtest/atom';
+import type { Slice } from '@bigtest/atom';
 import { Operation } from 'effection';
 
 export type AgentState = {
@@ -59,7 +59,7 @@ export type ServiceState<S extends ServiceStatus, O> = {
 };
 
 export type Service<S extends ServiceStatus, O> = {
-  (status: Slice<S, OrchestratorState>, options: O & { atom: Atom<OrchestratorState> }): Operation<void>;
+  (state: Slice<ServiceState<S, O>, OrchestratorState>): Operation<void>;
 };  
 
 export interface Manifest extends Test  {

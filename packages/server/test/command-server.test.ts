@@ -8,7 +8,7 @@ import { Client } from '@bigtest/client';
 
 import { ChainableSubscription } from '@effection/subscription';
 
-import { actions } from './helpers';
+import { actions, getTestProjectOptions } from './helpers';
 import { createCommandServer } from '../src/command-server';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 
@@ -23,7 +23,7 @@ describe('command server', () => {
 
   beforeEach(async () => {
     delegate = new Mailbox();
-    let atom = createOrchestratorAtom();
+    let atom = createOrchestratorAtom(getTestProjectOptions());
     agents = atom.slice('agents');
     manifest = atom.slice('manifest');
     actions.fork(createCommandServer({

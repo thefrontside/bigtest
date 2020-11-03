@@ -14,7 +14,7 @@ interface Options {
 export function* startServer(project: ProjectOptions, options: Options) {
   return yield readyResource({}, function*(ready) {
     let delegate = new Mailbox();
-    let atom = createOrchestratorAtom({ app: project.app });
+    let atom = createOrchestratorAtom(project);
     yield spawn(createOrchestrator({ atom, delegate, project }));
 
     yield function*() {

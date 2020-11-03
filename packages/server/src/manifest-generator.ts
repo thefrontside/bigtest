@@ -42,7 +42,10 @@ module.exports = {
   yield writeFile(destinationPath, manifest);
 }
 
-export const manifestGenerator: Service<ManifestGeneratorStatus, ManifestGeneratorOptions> = function *(serviceStatus, options) {
+export const manifestGenerator: Service<ManifestGeneratorStatus, ManifestGeneratorOptions> = function *(serviceSlice) {
+  let options = serviceSlice.slice('options').get();
+  let serviceStatus = serviceSlice.slice('status');
+
   assert(!!options.files, 'no files options in ManifestGeneratorOptions');
   assert(!!options.destinationPath, 'no destinationApth in ManifestGeneratorOptions');
 

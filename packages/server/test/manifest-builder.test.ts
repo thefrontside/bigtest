@@ -6,7 +6,7 @@ import * as fs from 'fs';
 
 import { Atom } from '@bigtest/atom';
 
-import { actions } from './helpers';
+import { actions, getTestProjectOptions } from './helpers';
 import { createManifestBuilder, updateSourceMapURL } from '../src/manifest-builder';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { OrchestratorState } from '../src/orchestrator/state';
@@ -31,7 +31,7 @@ describe('manifest builder', () => {
     await mkdir(SRC_DIR, { recursive: true });
     await copyFile(path.join(FIXTURES_DIR, 'raw-tree-format.t.js'), MANIFEST_PATH);
 
-    atom = createOrchestratorAtom();
+    atom = createOrchestratorAtom(getTestProjectOptions());
 
     actions.fork(function*() {
       yield createManifestBuilder({

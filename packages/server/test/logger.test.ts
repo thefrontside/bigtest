@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect';
-import { actions } from './helpers';
+import { actions, getTestProjectOptions } from './helpers';
 import { createLogger } from '../src/logger';
 import { createOrchestratorAtom } from '../src';
 import { OrchestratorState } from '../src/orchestrator/state';
@@ -14,7 +14,7 @@ describe('logger', () => {
       expect(args).toEqual(["[manifest builder] build error:", "blah"]);
     };
 
-    atom = createOrchestratorAtom();
+    atom = createOrchestratorAtom(getTestProjectOptions());
     
     actions.fork(createLogger({ atom, out: logger }));
     
