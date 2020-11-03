@@ -5,7 +5,7 @@ import * as process from 'process';
 import { OrchestratorState, AppOptions, Service, AppServiceStatus } from './orchestrator/state';
 import { Slice } from '@bigtest/atom';
 import { restartable } from './effection/restartable'
-import { assert } from './assertions/assert';
+import { assert } from 'assert-ts';
 
 export const appServer: Service<AppServiceStatus, AppOptions> = (slice, options) => {
   let appOptions = options.atom.slice('appService', 'options');
@@ -14,7 +14,7 @@ export const appServer: Service<AppServiceStatus, AppOptions> = (slice, options)
 }
 
 const startApp = (appStatus: Slice<AppServiceStatus, OrchestratorState>) => function* (options: AppOptions) {
-  assert(options.url, 'no app url given');
+  assert(!!options.url, 'no app url given');
   
   if (options.command) {
     let child: Process = yield exec(options.command as string, {

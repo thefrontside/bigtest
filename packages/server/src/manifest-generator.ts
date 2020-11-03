@@ -8,7 +8,7 @@ import { ManifestGeneratorOptions, ManifestGeneratorStatus, Service } from './or
 import { spawn } from 'effection';
 import {Channel} from '@effection/channel';
 import { subscribe } from '@effection/subscription';
-import { assert } from './assertions/assert';
+import { assert } from 'assert-ts';
 
 const { writeFile, mkdir } = fs.promises;
 
@@ -43,8 +43,8 @@ module.exports = {
 }
 
 export const manifestGenerator: Service<ManifestGeneratorStatus, ManifestGeneratorOptions> = function *(serviceStatus, options) {
-  assert(options.files, 'no files options in ManifestGeneratorOptions');
-  assert(options.destinationPath, 'no destinationApth in ManifestGeneratorOptions');
+  assert(!!options.files, 'no files options in ManifestGeneratorOptions');
+  assert(!!options.destinationPath, 'no destinationApth in ManifestGeneratorOptions');
 
   let { files, mode, destinationPath } = options;
 
