@@ -1,6 +1,7 @@
 ---
 id: installation
 title: Installing BigTest
+slug: /
 ---
 
 The `bigtest` package includes everything you need to get started sogo ahead and install BigTest to your project:
