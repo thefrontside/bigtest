@@ -4,14 +4,14 @@ title: Built-in interactors
 ---
 
 Currently, these are the eight default Interactors that come with BigTest:
-- [Button](link to source code)
-- [CheckBox](link to source code)
-- [Heading](link to source code)
-- [Link](link to source code)
-- [MultiSelect](link to source code)
-- [RadioButton](link to source code)
-- [Select](link to source code)
-- [TextField](link to source code)
+- [Button](/)
+- [CheckBox](/)
+- [Heading](/)
+- [Link](/)
+- [MultiSelect](/)
+- [RadioButton](/)
+- [Select](/)
+- [TextField](/)
 
 In our example test in [Writing-your-first-test](https://frontside.com/), we show you how you can assert against a Heading Interactor:
 ```js
