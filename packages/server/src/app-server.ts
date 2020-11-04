@@ -16,7 +16,7 @@ export const appServer: Service<AppServiceStatus, AppOptions> = (serviceSlice) =
 const startApp = (serviceSlice: Slice<ServiceState<AppServiceStatus, AppOptions>, OrchestratorState>) => function* (options: AppOptions) {
   assert(!!options.url, 'no app url given');
 
-  let AppServiceStatus = serviceSlice.slice('status')
+  let appServiceStatus = serviceSlice.slice('status')
   
   if (options.command) {
     let child: Process = yield exec(options.command as string, {
@@ -27,17 +27,17 @@ const startApp = (serviceSlice: Slice<ServiceState<AppServiceStatus, AppOptions>
     yield spawn(function* () {
       let exitStatus = yield child.join();
 
-      AppServiceStatus.set({ type: 'exited', exitStatus });
+      appServiceStatus.set({ type: 'exited', exitStatus });
     });
   }
 
-  AppServiceStatus.set({ type: 'started' });
+  appServiceStatus.set({ type: 'started' });
 
   while(!(yield isReachable(options.url))) {
     yield timeout(100);
   }
 
-  AppServiceStatus.set({ type: 'ready' });
+  appServiceStatus.set({ type: 'ready' });
 
   yield;
 }
