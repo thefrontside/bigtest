@@ -123,6 +123,10 @@
   flex: 0 0 auto;
 }
 
+.herotext .field-label {
+  margin-left: 24px;
+}
+
 .hero-logo {
   margin-bottom: 100px;
 }
@@ -947,7 +951,7 @@
 
 .text-field {
   display: block;
-  width: 350px;
+  width: 330px;
   height: auto;
   margin-bottom: 0px;
   padding: 8px 20px;
@@ -971,6 +975,7 @@
   -webkit-align-items: flex-start;
   -ms-flex-align: start;
   align-items: flex-start;
+  flex-wrap: wrap;
 }
 
 .form-row.centered {
@@ -1049,10 +1054,11 @@
   border-radius: 52px;
   background-image: -webkit-gradient(linear, left top, right top, from(#f74d7b), to(#26abe8));
   background-image: linear-gradient(90deg, #f74d7b, #26abe8);
+  margin-bottom: 10px;
 }
 
 .input-border.centereed {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .form {
