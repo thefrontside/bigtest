@@ -30,8 +30,10 @@ html[data-theme='dark'] {
 }
 
 .main-wrapper {
+  width: 100%;
   max-width: 1346px;
   margin-left: auto;
+  margin-right: auto;
 }
 
 body {
@@ -42,4 +44,8 @@ body {
 
 p {
   font-family: georgia, serif;
+}
+
+.docSidebarContainer_node_modules-\@docusaurus-theme-classic-lib-theme-DocPage- {
+  width: 320px;
 }
