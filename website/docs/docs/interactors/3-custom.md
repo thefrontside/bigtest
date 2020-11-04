@@ -31,9 +31,9 @@ export default test('bigtest todomvc')
     .assertion(Button('Clear completed').exists()));
 ```
 
-_This was just for demonstration purposes as the [checkbox](source code for checkbox) interactor from bigtest is much more extensive and it's probably not great to use the classname property as a locator._
+_This was just for demonstration purposes as the [checkbox](/) interactor from bigtest is much more extensive and it's probably not great to use the classname property as a locator._
 
-Check out the API section to see the details of [createInteractor()](link).
+Check out the API section to see the details of [createInteractor()](/).
 
 # questions (to be removed)
 "ensure weird mutable APIs like nodelist cannot be used in filters"?
