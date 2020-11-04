@@ -84,9 +84,6 @@ test('say hello')
     description: "to whom",
     action: () => ({ to: "world" })
   }, {
-    description: "do nothing in between just for a laugh",
-    action: () => undefined
-  },{
     description: "say it",
     action: ({ say, to }) => {
       return { speech: `${say} ${to}`};
