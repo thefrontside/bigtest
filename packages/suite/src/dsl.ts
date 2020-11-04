@@ -16,7 +16,6 @@ export interface StepDefinition<C extends Context, R extends Context | void> {
   description: string;
   action: Action<C,R>;
 }
-type StepList<C extends Context> = [StepDefinition<C,void>, ...StepDefinition<C,void>[]];
 
 export interface AssertionDefinition<C extends Context> {
   description: string;
@@ -24,6 +23,10 @@ export interface AssertionDefinition<C extends Context> {
 }
 
 type AssertionList<C extends Context> = [AssertionDefinition<C>, ...AssertionDefinition<C>[]];
+
+type StepReturn = Context | void;
+
+type ResolveStepReturn<C extends Context, R extends StepReturn> = R extends void ? C : C & R;
 
 export class TestBuilder<C extends Context> implements TestImplementation {
   public description: string;
@@ -38,9 +41,15 @@ export class TestBuilder<C extends Context> implements TestImplementation {
     this.children = test.children;
   }
 
-  step<R extends Context | void>(...steps: StepList<C>): TestBuilder<C>;
-  step<R extends Context | void>(description: string, action: Action<C,R>): TestBuilder<R extends void ? C : C & R>;
-  step<R extends Context | void>(...args: [string, Action<C,R>] | StepList<C>): TestBuilder<R extends void ? C : C & R> {
+  
+
+  // step<R extends StepReturn>(...steps: StepList<C>): TestBuilder<C>;
+  // step<R extends StepReturn>(description: string, action: Action<C,R>): TestBuilder<ResolveStepReturn<C, R>>;
+  step<R extends StepReturn>(step: StepDefinition<C, R>): TestBuilder<ResolveStepReturn<C, R>>
+  step<R extends StepReturn>(description: string, action: Action<C,R>): TestBuilder<ResolveStepReturn<C, R>>;
+  step<R1 extends StepReturn, R2 extends StepReturn>(step1: StepDefinition<C, R1>, step2: StepDefinition<ResolveStepReturn<C, R1>, R2>): TestBuilder<ResolveStepReturn<ResolveStepReturn<C, R2>, R1>>
+  step<R1 extends StepReturn, R2 extends StepReturn, R3 extends StepReturn>(step1: StepDefinition<C, R1>, step2: StepDefinition<ResolveStepReturn<C, R1>, R2>, step3: StepDefinition<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>): TestBuilder<ResolveStepReturn<ResolveStepReturn<C, R2>, R1>>
+  step<R extends StepReturn>(...args: (string | Step)[]): TestBuilder<ResolveStepReturn<C, R>> {
 
     function getSteps(): Step[] {
       let [first, second] = args;
