@@ -8,7 +8,7 @@ To demonstrate how you can write tests, let's install the TodoMVC app from BigTe
 $ yarn add -D @bigtest/todomvc
 ```
 
-Assuming you went with the default settings for `bigtest.json`, the app command will be configured as `yarn start` as such:
+Assuming you went with the default settings for `bigtest.json`, the app command should be configured as `yarn start`:
 ```json
 {
   "app": {
@@ -17,7 +17,7 @@ Assuming you went with the default settings for `bigtest.json`, the app command 
   }
 }
 ```
-Then go into your `package.json` file and modify the start script as `yarn bigtest-todomvc 3000`:
+Go into your `package.json` file and modify the start script as `yarn bigtest-todomvc 3000`:
 ```json
 {
   "scripts": {
