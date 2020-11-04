@@ -1,18 +1,18 @@
 module.exports = {
-  title: 'My Site',
-  tagline: 'The tagline of my site',
-  url: 'https://your-docusaurus-test-site.com',
+  title: 'BigTest',
+  tagline: 'Truly cross-browser testing',
+  url: 'https://bigtestjs.io',
   baseUrl: '/',
   onBrokenLinks: 'throw',
-  favicon: 'img/favicon.ico',
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  favicon: 'images/favicon.png',
+  organizationName: 'thefrontside',
+  projectName: 'bigtest',
   themeConfig: {
     navbar: {
-      title: 'My Site',
+      title: '',
       logo: {
-        alt: 'My Site Logo',
-        src: 'img/logo.svg',
+        alt: 'BigTest',
+        src: 'images/bigtest-logo@2x.png',
       },
       items: [
         {
@@ -22,7 +22,7 @@ module.exports = {
           position: 'left',
         },
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/thefrontside/bigtest',
           label: 'GitHub',
           position: 'right',
         },
@@ -94,4 +94,7 @@ module.exports = {
       },
     ],
   ],
+  stylesheets: [
+    'https://use.typekit.net/gyc5wys.css'
+  ]
 };
