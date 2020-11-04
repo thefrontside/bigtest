@@ -5,8 +5,15 @@ import { Atom } from '@bigtest/atom';
 import { OrchestratorState } from './orchestrator/state';
 import { AgentConnection, createAgentHandler, Command, TestEvent } from '@bigtest/agent';
 
+import { DuplexChannel } from './duplex';
+
+export type Incoming = TestEvent & { agentId: string };
+export type Outgoing = Command & { agentId: string };
+
+export type ConnectionChannel = DuplexChannel<Outgoing, Incoming>;
+
 interface ConnectionServerOptions {
-  inbox: Mailbox<Command>;
+  channel: DuplexChannel<Incoming, Outgoing>;
   delegate: Mailbox;
   atom: Atom<OrchestratorState>;
   port: number;
@@ -27,17 +34,14 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
 
       agent.set({ ...connection.data, agentId: connection.agentId });
 
-      yield spawn(function*(): Operation<void> {
-        while (true) {
-          let message = yield options.inbox.receive({ agentId: connection.agentId });
-          console.debug('[connection] sending message to agent', connection.agentId, message);
-          connection.send(message);
-        }
-      });
+      yield spawn(options.channel.match({ agentId: connection.agentId }).forEach(function*(message) {
+        console.debug('[connection] sending message to agent', connection.agentId, message);
+        connection.send(message);
+      }));
 
       let { code, reason }: CloseEvent = yield subscribe(connection.events).forEach(function*(message: TestEvent) {
         console.debug('[connection] got message from agent', connection.agentId, message);
-        options.delegate.send({ ...message, agentId: connection.agentId });
+        options.channel.send({ ...message, agentId: connection.agentId });
       });
 
       console.debug(`[connection] disconnected ${connection.agentId} [${code}${reason ? `: ${reason}` : ''}]`);

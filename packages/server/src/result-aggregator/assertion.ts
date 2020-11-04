@@ -5,23 +5,23 @@ import { Aggregator, AggregatorTestOptions } from './aggregator';
 
 export class AssertionAggregator extends Aggregator<AssertionResult, AggregatorTestOptions> {
   *markRunning(): Operation<void> {
-    yield this.events.receive({
+    yield this.agents.match({
       type: 'assertion:running',
       agentId: this.options.agentId,
       testRunId: this.options.testRunId,
       path: this.options.path
-    });
+    }).expect();
     this.statusSlice.set('running');
   }
 
   *receiveResult(): Operation<AssertionResultEvent> {
     yield spawn(this.markRunning());
-    return yield this.events.receive({
+    return yield this.agents.match({
       type: 'assertion:result',
       agentId: this.options.agentId,
       testRunId: this.options.testRunId,
       path: this.options.path
-    });
+    }).expect();
   }
 
   *perform(): Operation<ResultStatus> {

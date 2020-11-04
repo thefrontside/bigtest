@@ -373,14 +373,6 @@ describe('running tests on an agent', () => {
             .find(child => child.description === 'Signing In')?.status === 'failed';
         }).expect());
       });
-
-      it('marks the entire agent as failed if it is the root test', async () => {
-        await actions.fork(results.match({ testRun: { agent: { status: 'failed' } } }).expect());
-      });
-
-      it('marks the entire suite as failed if it is the root test', async () => {
-        await actions.fork(results.match({ testRun: { agent: { status: 'failed' } } }).expect());
-      });
     });
   });
 

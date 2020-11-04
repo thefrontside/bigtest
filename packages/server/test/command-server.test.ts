@@ -13,6 +13,7 @@ import { createCommandServer } from '../src/command-server';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 
 import { AgentState, OrchestratorState, Manifest } from '../src/orchestrator/state';
+import { RunOptions } from '../src/runner';
 
 let COMMAND_PORT = 24200;
 
@@ -20,13 +21,23 @@ describe('command server', () => {
   let delegate: Mailbox
   let agents: Slice<Record<string, AgentState>, OrchestratorState>;
   let manifest: Slice<Manifest, OrchestratorState>;
+  let runs: Mailbox<RunOptions>;
 
   beforeEach(async () => {
+    runs = new Mailbox();
     delegate = new Mailbox();
     let atom = createOrchestratorAtom(getTestProjectOptions());
     agents = atom.slice('agents');
     manifest = atom.slice('manifest');
     actions.fork(createCommandServer({
+      runner: {
+        async run(options) {
+          runs.send(options);
+        },
+        async *subscribe() {
+          throw new Error('not implemented');
+        }
+      },
       delegate,
       atom,
       port: COMMAND_PORT,
@@ -57,9 +68,8 @@ describe('command server', () => {
     });
 
     it('sends a message to the orchestrator telling it to start the test run', async () => {
-      let message = await actions.receive(delegate, { type: "run" });
-      expect(message['type']).toEqual("run")
-      expect(message['id']).toEqual(result.data.run)
+      let message = await actions.fork(runs.receive());
+      expect(message.testRunId).toEqual(result.data.run)
     });
   });
 

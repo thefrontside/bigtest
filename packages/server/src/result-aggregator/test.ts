@@ -36,12 +36,12 @@ export class TestAggregator extends Aggregator<TestResult, AggregatorTestOptions
   }
 
   *markRunning(): Operation<void> {
-    yield this.events.receive({
+    yield this.agents.match({
       type: 'test:running',
       agentId: this.options.agentId,
       testRunId: this.options.testRunId,
       path: this.options.path
-    });
+    }).expect();
     this.statusSlice.set('running');
   }
 

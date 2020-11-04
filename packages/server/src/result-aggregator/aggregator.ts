@@ -1,12 +1,11 @@
 import { Operation } from 'effection';
-import { Mailbox } from '@bigtest/effection';
 import { ResultStatus } from '@bigtest/suite';
 import { Slice } from '@bigtest/atom';
-import { AgentEvent } from '@bigtest/agent';
 import { OrchestratorState } from '../orchestrator/state';
+import { ConnectionChannel } from '../connection-server';
 
 export interface AggregatorOptions {
-  events: Mailbox<AgentEvent>;
+  agents: ConnectionChannel;
   testRunId: string;
 }
 
@@ -24,8 +23,8 @@ export abstract class Aggregator<T extends {status: unknown }, O extends Aggrega
     public options: O,
   ) {}
 
-  get events(): Mailbox<AgentEvent> {
-    return this.options.events;
+  get agents(): ConnectionChannel {
+    return this.options.agents;
   }
 
   get statusSlice() {

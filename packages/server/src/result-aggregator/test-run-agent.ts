@@ -7,11 +7,11 @@ import { TestAggregator } from './test';
 
 export class TestRunAgentAggregator extends Aggregator<TestRunAgentState, AggregatorAgentOptions> {
   *markRunning(): Operation<void> {
-    yield this.events.receive({
+    yield this.agents.match({
       type: 'run:begin',
       agentId: this.options.agentId,
       testRunId: this.options.testRunId,
-    });
+    }).expect();
     this.statusSlice.set('running');
   }
 
@@ -26,11 +26,11 @@ export class TestRunAgentAggregator extends Aggregator<TestRunAgentState, Aggreg
     yield spawn(this.markRunning());
 
     let status: ResultStatus = yield aggregator.run();
-    let end: RunEnd = yield this.events.receive({
+    let end: RunEnd = yield this.agents.match({
       type: 'run:end',
       agentId: this.options.agentId,
       testRunId: this.options.testRunId
-    });
+    }).expect();
 
     this.slice.update(state => ({ ...state, status, coverage: end.coverage }))
 
