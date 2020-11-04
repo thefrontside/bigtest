@@ -36,6 +36,6 @@ export default test('bigtest todomvc')
 
 That's it! Now you can run `yarn bigtest ci` and you should see one passing step and one passing assertion.
 
-_The `bigtest ci` command is meant to run in your CI workflow. It starts your app, the BigTest server, runs the tests, and closes everything on its own. The alternative is to start the server manually and then run another command to trigger the tests which is more helpful when you need to debug your app. You can find out more in the [development-workflow] section._
+_The `bigtest ci` command is meant to run in your CI workflow. It starts your app, the BigTest server, runs the tests, and closes everything on its own. The alternative is to start the server manually and then run another command to trigger the tests which is more helpful when you need to debug your app. You can find out more in the [development-workflow](/) section._
 
-In the next section we'll be explaining what [interactors] are.
+In the next section we'll be explaining what [interactors](/) are.
