@@ -42,14 +42,59 @@ export class TestBuilder<C extends Context> implements TestImplementation {
   }
 
 
-  step<R extends StepReturn>(step: StepDefinition<C, R>): TestBuilder<ResolveStepReturn<C, R>>
-  step<R1 extends StepReturn, R2 extends StepReturn>(step1: StepDefinition<C, R1>, step2: StepDefinition<ResolveStepReturn<C, R1>, R2>): TestBuilder<ResolveStepReturn<ResolveStepReturn<C, R2>, R1>>
-  step<R1 extends StepReturn, R2 extends StepReturn, R3 extends StepReturn>(step1: StepDefinition<C, R1>, step2: StepDefinition<ResolveStepReturn<C, R1>, R2>, step3: StepDefinition<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>): TestBuilder<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>>
-  step<R1 extends StepReturn, R2 extends StepReturn, R3 extends StepReturn, R4 extends StepReturn>(step1: StepDefinition<C, R1>, step2: StepDefinition<ResolveStepReturn<C, R1>, R2>, step3: StepDefinition<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>, step4: StepDefinition<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>, R4>): TestBuilder<ResolveStepReturn<ResolveStepReturn<C, R2>, R1>>
-  step<R1 extends StepReturn, R2 extends StepReturn, R3 extends StepReturn, R4 extends StepReturn, R5 extends StepReturn>(step1: StepDefinition<C, R1>, step2: StepDefinition<ResolveStepReturn<C, R1>, R2>, step3: StepDefinition<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>, step4: StepDefinition<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>, R4>): TestBuilder<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>>
-  step<R1 extends StepReturn, R2 extends StepReturn, R3 extends StepReturn, R4 extends StepReturn, R5 extends StepReturn, R6 extends StepReturn>(step1: StepDefinition<C, R1>, step2: StepDefinition<ResolveStepReturn<C, R1>, R2>, step3: StepDefinition<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>, step4: StepDefinition<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>, R4>, step5: StepDefinition<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>, R4>, R5>): TestBuilder<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>, R4>>
-  step<R extends StepReturn>(description: string, action: Action<C,R>): TestBuilder<ResolveStepReturn<C, R>>;
-  step<R extends StepReturn>(...args: StepDefinition<C, R>[] | [string, Action<C,R>]): TestBuilder<ResolveStepReturn<C, R>> {
+  step<R extends StepReturn>(
+    step: StepDefinition<C, R>
+  ): TestBuilder<ResolveStepReturn<C, R>>;
+  step<R1 extends StepReturn, R2 extends StepReturn>(
+    step1: StepDefinition<C, R1>,
+    step2: StepDefinition<ResolveStepReturn<C, R1>, R2>
+  ): TestBuilder<ResolveStepReturn<ResolveStepReturn<C, R2>, R1>>;
+  step<R1 extends StepReturn, R2 extends StepReturn, R3 extends StepReturn>(
+    step1: StepDefinition<C, R1>,
+    step2: StepDefinition<ResolveStepReturn<C, R1>, R2>,
+    step3: StepDefinition<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>
+  ): TestBuilder<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>>;
+  step<
+    R1 extends StepReturn,
+    R2 extends StepReturn,
+    R3 extends StepReturn,
+    R4 extends StepReturn
+  >(
+    step1: StepDefinition<C, R1>,
+    step2: StepDefinition<ResolveStepReturn<C, R1>, R2>,
+    step3: StepDefinition<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>,
+    step4: StepDefinition<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>, R4>
+  ): TestBuilder<ResolveStepReturn<ResolveStepReturn<C, R2>, R1>>;
+  step<
+    R1 extends StepReturn,
+    R2 extends StepReturn,
+    R3 extends StepReturn,
+    R4 extends StepReturn,
+    R5 extends StepReturn
+  >(
+    step1: StepDefinition<C, R1>,
+    step2: StepDefinition<ResolveStepReturn<C, R1>, R2>,
+    step3: StepDefinition<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>,
+    step4: StepDefinition<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>, R4>,
+    step5: StepDefinition<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>,R4>,R5>
+  ): TestBuilder<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>>;
+  step<
+    R1 extends StepReturn,
+    R2 extends StepReturn,
+    R3 extends StepReturn,
+    R4 extends StepReturn,
+    R5 extends StepReturn,
+    R6 extends StepReturn
+  >(
+    step1: StepDefinition<C, R1>,
+    step2: StepDefinition<ResolveStepReturn<C, R1>, R2>,
+    step3: StepDefinition<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>,
+    step4: StepDefinition<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>, R4>,
+    step5: StepDefinition<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>, R4>,R5>,
+    step6: StepDefinition<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>,R3>,R4>,R5>,R6>
+  ): TestBuilder<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<ResolveStepReturn<C, R1>, R2>, R3>,R4>,R5>>;
+  step<R extends StepReturn>(description: string, action: Action<C, R>): TestBuilder<ResolveStepReturn<C, R>>;
+  step<R extends StepReturn>(...args: StepDefinition<C, R>[] | [string, Action<C, R>]): TestBuilder<ResolveStepReturn<C, R>> {
 
     function getSteps(): Step[] {
       let [first, second] = args;
