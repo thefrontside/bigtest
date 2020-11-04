@@ -17,6 +17,14 @@ module.exports = {
             'interactors/built-in',
             'interactors/custom',
           ]
+        },
+        {
+          type: 'category',
+          label: 'Development Workflow',
+          items: [
+            'development/running-tests',
+            'development/ci-setup'
+          ]
         }
       ],
     },
