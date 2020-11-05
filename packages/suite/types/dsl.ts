@@ -95,9 +95,9 @@ test('say hello')
     description: "feeling",            // step 4
     action: () => ( { emphasis: 'bold' } )
   }, {
-    description: "all together now",   // step 5 is he current limit.  You want more steps then you need more overloads
-    action: ({ say, to, speech, emphasis, ending }) => {
-      console.log(`${say} ${to} ${speech} ${emphasis} ${ending}`);
+    description: "all together now",   // step 5 is the current limit.  You want more steps then you need more overloads
+    action: ({ say, to, speech, emphasis }) => {
+      console.log(`${say} ${to} ${speech} ${emphasis}`);
   }})
   .assertion({
     description: "validate text",
