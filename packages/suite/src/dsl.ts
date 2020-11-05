@@ -1,5 +1,5 @@
 import { TestImplementation, Context, Step, Assertion } from './interfaces';
-import { Stepable, ActionContext, StepDefinition, Action, ResolveContext, AssertionList, Check, TestBuilderImplementation } from './types';
+import { Stepable, ActionContext, StepDefinition, Action, ResolveContext, AssertionList, Check } from './types';
 
 
 export function test<C extends Context>(description: string): TestBuilder<C> {
@@ -11,7 +11,7 @@ export function test<C extends Context>(description: string): TestBuilder<C> {
   });
 }
 
-export class TestBuilder<C extends Context> implements TestBuilderImplementation<C> {
+export class TestBuilder<C extends Context> implements TestImplementation {
   public description: string;
   public steps: Step[];
   public assertions: Assertion[];
