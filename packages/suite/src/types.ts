@@ -17,17 +17,28 @@ export type AssertionList<C extends Context> = [AssertionDefinition<C>, ...Asser
 
 export type ActionContext = Context | void;
 
-export type ResolveContext<C extends Context, R extends ActionContext> = R extends void | undefined | null ? C : C & R;
+export type Nothing = void | undefined | null;
+
+export type ResolveContext<C extends Context, R extends ActionContext> = R extends Nothing ? C : C & R;
 
 export type Stepable<C extends Context> = {
-  <R extends ActionContext>(
+  <
+    R extends ActionContext
+  >(
     step: StepDefinition<C, R>
   ): TestBuilderImplementation<ResolveContext<C, R>>;
-  <R1 extends ActionContext, R2 extends ActionContext>(
+  <
+    R1 extends ActionContext,
+    R2 extends ActionContext
+  >(
     step1: StepDefinition<C, R1>,
     step2: StepDefinition<ResolveContext<C, R1>, R2>
   ): TestBuilderImplementation<ResolveContext<ResolveContext<C, R2>, R1>>;
-  <R1 extends ActionContext, R2 extends ActionContext, R3 extends ActionContext>(
+  <
+    R1 extends ActionContext,
+    R2 extends ActionContext,
+    R3 extends ActionContext
+  >(
     step1: StepDefinition<C, R1>,
     step2: StepDefinition<ResolveContext<C, R1>, R2>,
     step3: StepDefinition<ResolveContext<ResolveContext<C, R1>, R2>, R3>
