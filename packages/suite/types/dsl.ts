@@ -79,19 +79,26 @@ test('a test')
 test('say hello')
   .step({
     description: "what",
-    action: () => ({ say: 'hello' })
-  }, {
+    action: () => ({ say: 'hello' })   // step 0
+  }, {    
     description: "to whom",
-    action: () => ({ to: "world" })
+    action: () => ({ to: "world" })    // step 1
   }, {
-  //   description: "do nothing in between just for a laugh",
-  //   action: (c) => undefined
-  // },{
+    description: "do nothing in between just for a laugh",
+    action: () => undefined            // step 2
+  },{
     description: "say it",
-    action: ({ say, to }) => {
+    action: ({ say, to }) => {         // step 3
       return { speech: `${say} ${to}`};
     }
-  })
+  }, {
+    description: "feeling",            // step 4
+    action: () => ( { emphasis: 'bold' } )
+  }, {
+    description: "all together now",   // step 5 is he current limit.  You want more steps then you need more overloads
+    action: ({ say, to, speech, emphasis, ending }) => {
+      console.log(`${say} ${to} ${speech} ${emphasis} ${ending}`);
+  }})
   .assertion({
     description: "validate text",
     check: ({ speech }) => assert.equal('hello world', speech)
