@@ -25,8 +25,18 @@ module.exports = {
             'development/running-tests',
             'development/ci-setup'
           ]
-        }
+        },
+        'browser-config',
+        'code-coverage'
       ],
     },
+    {
+      type: 'category',
+      label: 'Concepts',
+      items: [
+        'concepts/test-tree',
+        'concepts/steps-assertions'
+      ]
+    }
   ],
 };
