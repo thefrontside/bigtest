@@ -22,8 +22,7 @@ function* run({ id: testRunId, files }: RunMessage, options: CommandProcessorOpt
   console.debug('[command processor] running test', testRunId);
 
   let stepTimeout = 60_000;
-  let testRunSlice = options.atom.slice()('testRuns', testRunId);
-  let manifest = options.atom.get().manifest;
+  let testRunSlice = options.atom.slice('testRuns', testRunId);
 
   let bundlerSlice = options.atom.slice('bundler');
 
@@ -48,7 +47,7 @@ function* run({ id: testRunId, files }: RunMessage, options: CommandProcessorOpt
       return;
     }
 
-    let appStatus = options.atom.slice("appService", "status").get();
+    let appStatus = options.atom.slice()("appService", "status").get();
 
     if(appStatus.type === 'exited') {
       testRunSlice.set({

@@ -19,7 +19,7 @@ describe.only('result stream', () => {
 
   beforeEach(async () => {
     atom = createOrchestratorAtom(getTestProjectOptions());
-    slice = atom.slice()('testRuns', 'test-run-1');
+    slice = atom.slice('testRuns', 'test-run-1');
     slice.set({
       testRunId: 'test-run-1',
       status: 'pending',
@@ -370,15 +370,15 @@ describe.only('result stream', () => {
   describe('on an already finished run', () => {
     beforeEach(async () => {
       slice.slice('status').set('ok');
-      slice.slice('agents', 'agent-1', 'status').set('ok');
-      slice.slice('agents', 'agent-1', 'result', 'status').set('ok');
-      slice.slice('agents', 'agent-1', 'result', 'steps', 0, 'status').set('failed');
-      slice.slice('agents', 'agent-1', 'result', 'steps', 1, 'status').set('disregarded');
-      slice.slice('agents', 'agent-1', 'result', 'assertions', 0, 'status').set('disregarded');
-      slice.slice('agents', 'agent-1', 'result', 'assertions', 1, 'status').set('ok');
-      slice.slice('agents', 'agent-1', 'result', 'children', 0, 'status').set('ok');
-      slice.slice('agents', 'agent-1', 'result', 'children', 0, 'steps', 0, 'status').set('ok');
-      slice.slice('agents', 'agent-1', 'result', 'children', 0, 'assertions', 0, 'status').set('ok');
+      slice.slice('agents').slice('agent-1').slice('status').set('ok');
+      slice.slice('agents').slice('agent-1').slice('result').slice('status').set('ok');
+      slice.slice('agents').slice('agent-1').slice('result').slice('steps').slice(0).slice('status').set('failed');
+      slice.slice('agents').slice('agent-1').slice('result').slice('steps').slice(1).slice('status').set('disregarded');
+      slice.slice('agents').slice('agent-1').slice('result').slice('assertions').slice(0).slice('status').set('disregarded');
+      slice.slice('agents').slice('agent-1').slice('result').slice('assertions').slice(1).slice('status').set('ok');
+      slice.slice('agents').slice('agent-1').slice('result').slice('children').slice(0).slice('status').set('ok');
+      slice.slice('agents').slice('agent-1').slice('result').slice('children').slice(0).slice('steps').slice(0).slice('status').set('ok');
+      slice.slice('agents').slice('agent-1').slice('result').slice('children').slice(0).slice('assertions').slice(0).slice('status').set('ok');
       subscription = await actions.fork(resultStream('test-run-1', slice));
     });
 

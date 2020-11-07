@@ -23,7 +23,7 @@ export type Sliceable<S> = {
   * for every level deep we want to go in the slice there will need to be an overload 
   * with an argument for each of the string paths
   * 
-  * e.g. atom.slice()('agents', agentId);  // 2 levels deep
+  * e.g. atom.slice('agents', agentId);  // 2 levels deep
   * 
   * There must be a matching overload
   * 

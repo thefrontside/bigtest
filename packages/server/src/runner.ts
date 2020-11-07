@@ -91,7 +91,7 @@ export class AgentRunner implements Runner {
         return;
       }
 
-      let appStatus = this.options.atom.slice("appService", "status").get();
+      let appStatus = this.options.atom.slice('appService', 'status').get();
 
       if(appStatus.type === 'exited') {
         testRunSlice.set({
