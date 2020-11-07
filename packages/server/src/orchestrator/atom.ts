@@ -11,7 +11,7 @@ export type OrchestratorAtomOptions = Pick<ProjectOptions, 'app' |'watchTestFile
 export const createOrchestratorAtom = (project: OrchestratorAtomOptions) => {
   let manifestSrcDir = path.resolve(project.cacheDir, 'manifest/src');
   let manifestSrcPath = path.resolve(manifestSrcDir, 'manifest.js');
-  let agentServerConfig = new AgentServerConfig({ port: project.proxy.port, prefix: project.proxy.prefix, });
+  let agentServerConfig = new AgentServerConfig(project.proxy);
 
   let atom = new Atom<OrchestratorState>({
     manifestGenerator: {
@@ -44,7 +44,7 @@ export const createOrchestratorAtom = (project: OrchestratorAtomOptions) => {
         prefix: agentServerConfig.options.prefix,
         appDir: agentServerConfig.appDir(),
         harnessUrl: agentServerConfig.harnessUrl(),
-        // TODO: this is duplication but currently we can only pass 1 slice into a service
+        // TODO: this is duplication because currently we can only pass 1 slice into a service
         // Is this problematic?
         appOptions: project.app
       }
