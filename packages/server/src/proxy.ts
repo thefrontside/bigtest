@@ -13,7 +13,7 @@ import { Slice } from '@bigtest/atom';
 import { assert } from 'assert-ts';
 
 export const proxyServer: Service<ProxyStatus, ProxyOptions> = (serviceSlice) => {
-  let appOptions = serviceSlice.slice('options', 'appOptions');
+  let appOptions = serviceSlice.slice()('options', 'appOptions');
 
   return restartable(appOptions, startProxyServer(serviceSlice));
 }

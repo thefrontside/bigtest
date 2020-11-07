@@ -83,7 +83,7 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
 
   validateTest(manifest);
 
-  let slice = options.atom.slice('manifest');
+  let slice = options.atom.slice()('manifest');
 
   slice.update(() => ({ ...manifest }));
 
@@ -91,7 +91,7 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
 }
 
 export function* createManifestBuilder(options: ManifestBuilderOptions): Operation {
-  let bundlerSlice = options.atom.slice('bundler');
+  let bundlerSlice = options.atom.slice()('bundler');
 
   bundlerSlice.set({ type: 'UNBUNDLED' });
 
