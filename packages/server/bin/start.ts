@@ -14,6 +14,7 @@ main(createServer({
   },
   proxy: {
     port: 24001,
+    prefix: '/__bigtest/'
   },
   connection: {
     port: 24003,

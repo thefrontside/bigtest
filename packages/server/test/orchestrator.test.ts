@@ -34,7 +34,7 @@ describe('orchestrator', () => {
     let body: string;
 
     beforeEach(async () => {
-      response = await actions.fetch('http://localhost:24101/__bigtest/index.html');
+      response = await actions.fetch('http://localhost:24001/__bigtest/index.html');
       body = await response.text();
     });
 
@@ -51,7 +51,7 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
-      response = await actions.fetch('http://localhost:24101/__bigtest/harness.js');
+      response = await actions.fetch('http://localhost:24001/__bigtest/harness.js');
       body = await response.text();
     });
 
@@ -85,7 +85,7 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
-      response = await actions.fetch('http://localhost:24101/');
+      response = await actions.fetch('http://localhost:24001/');
       body = await response.text();
     });
 
@@ -159,7 +159,7 @@ describe('orchestrator', () => {
       let response: Response;
 
       beforeEach(async () => {
-        response = await actions.fetch('http://localhost:24101/');
+        response = await actions.fetch('http://localhost:24001/');
       });
 
       it('responds successfully', () => {
