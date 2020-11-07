@@ -28,7 +28,7 @@ function subscriptionQuery() {
   `;
 }
 
-describe('running tests with subscription on an agent', () => {
+describe.only('running tests with subscription on an agent', () => {
   let client: Client;
   let agent: Agent;
   let agentId = generateAgentId();
@@ -72,7 +72,7 @@ describe('running tests with subscription on an agent', () => {
       });
     });
 
-    describe('when a step succeeeds', () => {
+    describe.only('when a step succeeeds', () => {
       beforeEach(() => {
         agent.send({
           type: 'step:result',
@@ -96,7 +96,7 @@ describe('running tests with subscription on an agent', () => {
       });
     });
 
-    describe('when a step fails', () => {
+    describe.only('when a step fails', () => {
       beforeEach(() => {
         agent.send({
           type: 'step:result',

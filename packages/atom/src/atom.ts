@@ -5,12 +5,13 @@ import { Slice } from "./slice";
 import { Sliceable } from './sliceable';
 import { unique } from './unique';
 
-export class Atom<S> implements Subscribable<S,undefined> {
-  private readonly initial: S;
-  private state: S;
-  private states = new Channel<S>();
+export class Atom<A> implements Subscribable<A,undefined> {
+  private readonly initial: A;
+  private state: A;
+  private states = new Channel<A>();
 
-  constructor(initial: S) {
+
+  constructor(initial: A) {
     this.initial = this.state = initial;
   }
 
@@ -18,20 +19,20 @@ export class Atom<S> implements Subscribable<S,undefined> {
     this.states.setMaxListeners(value);
   }
 
-  get(): S {
+  get(): A {
     return this.state;
   }
 
-  set(value: S) {
+  set(value: A) {
     this.state = value;
     this.states.send(value);
   }
 
-  update(fn: (state: S) => S) {
+  update(fn: (state: A) => A) {
     this.set(fn(this.get()));
   }
 
-  *once(predicate: (state: S) => boolean): Operation<S> {
+  *once(predicate: (state: A) => boolean): Operation<A> {
     if(predicate(this.state)) {
       return this.state;
     } else {
@@ -40,20 +41,22 @@ export class Atom<S> implements Subscribable<S,undefined> {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  slice: Sliceable<S, S>['slice'] = (...keys: string[]): Slice<any, S> => {
-    return new Slice(this, keys);
+  slice(): Sliceable<A> {
+    return Slice.fromPath<A>(this);
   }
 
-  reset(initializer?: (initial: S, current: S) => S) {
+  reset(initializer?: (initial: A, current: A) => A) {
     if (!initializer) {
       initializer = (initial) => initial;
     }
+    
     this.states.close();
-    this.set(initializer(this.initial, this.state));
+    this.state = initializer(this.initial, this.state);
   }
 
-  *[SymbolSubscribable](): Operation<Subscription<S,undefined>> {
+  *[SymbolSubscribable](): Operation<Subscription<A,undefined>> {
+    // TODO: write a test to ensure uniqueness
+    // return yield subscribe(this.states).filter(unique(this.initial));
     return yield subscribe(this.states).filter(unique(this.initial));
   }
 }

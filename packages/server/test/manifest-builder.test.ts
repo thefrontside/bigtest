@@ -43,11 +43,11 @@ describe('manifest builder', () => {
       });
     });
 
-    let bundlerState = await actions.fork(atom.slice('bundler').once(({ type }) => type === 'GREEN'));
+    let bundlerState = await actions.fork(atom.slice()('bundler').once(({ type }) => type === 'GREEN'));
 
     resultPath = (bundlerState?.type === 'GREEN' && bundlerState.path) as string;
 
-    atom.slice('bundler').update(() => ({ type: 'BUILDING', warnings: []}));
+    atom.slice()('bundler').update(() => ({ type: 'BUILDING', warnings: []}));
   });
 
   describe('retrieving test file manifest from disk', () => {
@@ -67,7 +67,7 @@ describe('manifest builder', () => {
     beforeEach(async () => {
       await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
 
-      let bundle = await actions.fork(atom.slice('bundler').once(({ type }) => type === 'GREEN'));
+      let bundle = await actions.fork(atom.slice()('bundler').once(({ type }) => type === 'GREEN'));
 
       resultPath = (!!bundle && bundle.type === 'GREEN' && bundle.path) as string;
 
@@ -135,7 +135,7 @@ describe('manifest builder', () => {
   describe('updating the manifest and then reading it', () => {
     beforeEach(async () => {
       await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
-      await actions.fork(atom.slice('bundler').once(({ type }) => type === 'GREEN'))
+      await actions.fork(atom.slice()('bundler').once(({ type }) => type === 'GREEN'))
     });
 
     it('returns the updated manifest from the state', () => {
@@ -147,7 +147,7 @@ describe('manifest builder', () => {
   describe('importing the manifest with an error adds the error to the state', () => {
     beforeEach(async () => {
       await copyFile(path.join(FIXTURES_DIR, 'exceptions', 'error.t.js'), MANIFEST_PATH);
-      await actions.fork(atom.slice('bundler').once(({ type }) => type === 'ERRORED'));
+      await actions.fork(atom.slice()('bundler').once(({ type }) => type === 'ERRORED'));
     });
 
     it('should update the global state with the error detail', () => {

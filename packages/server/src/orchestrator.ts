@@ -73,7 +73,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     manifestPort: options.project.manifest.port,
   }));
 
-  let appServerState = options.atom.slice('appService');
+  let appServerState = options.atom.slice()'appService');
 
   yield fork(appServer(appServerState));
 
@@ -84,12 +84,12 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     proxyPort: options.project.proxy.port,
   }));
 
-  let manifestGeneratorState = options.atom.slice('manifestGenerator');
+  let manifestGeneratorState = options.atom.slice()('manifestGenerator');
 
   yield fork(manifestGenerator(manifestGeneratorState));
 
   console.debug('[orchestrator] wait for manifest generator');
-  yield options.atom.slice('manifestGenerator', 'status').once(({ type }) => type === 'ready');
+  yield options.atom.slice()('manifestGenerator', 'status').once(({ type }) => type === 'ready');
   console.debug('[orchestrator] manifest generator ready');
 
   yield fork(createManifestBuilder({
@@ -102,7 +102,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield function* () {
     yield fork(function* () {
-      yield options.atom.slice("proxyService", "proxyStatus").once((status) => {
+      yield options.atom.slice()("proxyService", "proxyStatus").once((status) => {
         return status === 'started'
       });
       console.debug('[orchestrator] proxy server ready');
@@ -116,13 +116,13 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       console.debug('[orchestrator] connection server ready');
     });
     yield fork(function*() {
-      let status = yield options.atom.slice('appService', 'status').once((status) => {
+      let status = yield options.atom.slice()('appService', 'status').once((status) => {
         return status.type === 'ready' || status.type === 'exited';
       });
       console.debug(`[orchestrator] app server ${status.type}`);
     });
     yield fork(function* () {
-      yield options.atom.slice('bundler').once(({ type }) => type === 'GREEN' || type === 'ERRORED');
+      yield options.atom.slice()('bundler').once(({ type }) => type === 'GREEN' || type === 'ERRORED');
       console.debug('[orchestrator] manifest builder ready');
     });
     yield fork(function* () {

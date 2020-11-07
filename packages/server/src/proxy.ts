@@ -19,7 +19,7 @@ interface ProxyOptions {
 };
 
 export function createProxyServer(options: ProxyOptions): Operation {
-  let appOptions = options.atom.slice("appService", "options");
+  let appOptions = options.atom.slice()("appService", "appOptions");
   return restartable(appOptions, startProxyServer(options));
 }
 
@@ -94,7 +94,7 @@ export const startProxyServer = (options: ProxyOptions) => function* ({ url: tar
     console.debug('[proxy]', 'finish', req.method, req.url);
   };
 
-  let proxyStatus = options.atom.slice("proxyService", "proxyStatus");
+  let proxyStatus = options.atom.slice()("proxyService", "proxyStatus");
 
   proxyStatus.set("starting");
 

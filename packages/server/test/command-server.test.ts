@@ -24,8 +24,9 @@ describe('command server', () => {
   beforeEach(async () => {
     delegate = new Mailbox();
     let atom = createOrchestratorAtom(getTestProjectOptions());
-    agents = atom.slice('agents');
-    manifest = atom.slice('manifest');
+    agents = atom.slice()('agents');
+    manifest = atom.slice()('manifest');
+
     actions.fork(createCommandServer({
       delegate,
       atom,
