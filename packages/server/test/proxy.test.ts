@@ -5,19 +5,16 @@ import * as zlib from 'zlib';
 
 import { Operation } from 'effection';
 import { Atom } from '@bigtest/atom';
-import { AgentServerConfig } from '@bigtest/agent';
 import { fetch } from '@effection/fetch';
 
 import { actions, getTestProjectOptions } from './helpers';
-import { createProxyServer } from '../src/proxy';
+import { proxyServer } from '../src/proxy';
 import { OrchestratorState } from '../src/orchestrator/state';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { express } from '@bigtest/effection-express';
 
 const PROXY_PORT = 24202;
 const APP_PORT = 24203;
-
-let agentServerConfig = new AgentServerConfig({ port: APP_PORT, prefix: '/__bigtest/', });
 
 function* startAppServer(): Operation<void> {
   let appServer = express();
@@ -56,12 +53,15 @@ describe('proxy', () => {
       atom = createOrchestratorAtom(getTestProjectOptions({
         app: {
           url: `http://localhost:${APP_PORT}`
+        },
+        proxy: {
+          port: PROXY_PORT,
         }
       }));
 
-      actions.fork(createProxyServer({ atom, agentServerConfig, port: PROXY_PORT }));
+      actions.fork(proxyServer(atom.slice('proxyService')));
 
-      await actions.fork(atom.once((s) => s.proxyService.proxyStatus === 'started'));
+      await actions.fork(atom.once((s) => s.proxyService.status.type === 'started'));
     });
 
     describe('retrieving html file', () => {
@@ -76,7 +76,7 @@ describe('proxy', () => {
       it('injects the harness script', () => {
         expect(response.status).toEqual(200);
         expect(body).toContain('<h1>Hello world</h1>');
-        expect(body).toContain('<script src="http://localhost:24203/__bigtest/harness.js"></script>');
+        expect(body).toContain('<script src="http://localhost:24202/__bigtest/harness.js"></script>');
       });
     });
 
@@ -92,7 +92,7 @@ describe('proxy', () => {
       it('decodez zip and injects the harness script', () => {
         expect(response.status).toEqual(200);
         expect(body).toContain('<h1>Hello zip world</h1>');
-        expect(body).toContain('<script src="http://localhost:24203/__bigtest/harness.js"></script>');
+        expect(body).toContain('<script src="http://localhost:24202/__bigtest/harness.js"></script>');
       });
     });
 
@@ -132,10 +132,15 @@ describe('proxy', () => {
     let body: string;
 
     beforeEach(async () => {
-      atom = createOrchestratorAtom(getTestProjectOptions());
-      actions.fork(createProxyServer({ atom, agentServerConfig, port: PROXY_PORT }));
+      atom = createOrchestratorAtom(getTestProjectOptions({
+        proxy: {
+          port: PROXY_PORT
+        }
+      }));
+      
+      actions.fork(proxyServer(atom.slice('proxyService')));
 
-      await actions.fork(atom.once((s) => s.proxyService.proxyStatus === 'started'));
+      await actions.fork(atom.once((s) => s.proxyService.status.type === 'started'));
 
       response = await actions.fork(fetch(`http://localhost:${PROXY_PORT}/simple`));
       body = await actions.fork(response.text());

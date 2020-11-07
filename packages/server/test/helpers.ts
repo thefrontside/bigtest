@@ -26,7 +26,11 @@ const TestProjectOptions: OrchestratorAtomOptions = {
   },
   testFiles: ["test/fixtures/*.t.js"],
   cacheDir: "./tmp/test/orchestrator",
-  watchTestFiles: true
+  watchTestFiles: true,
+  proxy: {
+    port: 24001,
+    prefix: '/__bigtest/'
+  }
 }
 
 export const getTestProjectOptions = (overrides: DeepPartial<OrchestratorAtomOptions> = {}) =>
@@ -65,6 +69,10 @@ export const actions = {
     actions.atom
       .slice("appService", "options")
       .update(() => appOptions);
+
+    actions.atom
+      .slice('proxyService', 'options', 'appOptions')
+      .update(() => appOptions);
   },
 
   async startOrchestrator() {
@@ -77,13 +85,13 @@ export const actions = {
         project: {
           port: 24102,
           testFiles: ["test/fixtures/*.t.js"],
+          proxy: {
+            ...TestProjectOptions.proxy
+          },
           cacheDir: "./tmp/test/orchestrator",
           watchTestFiles: true,
           manifest: {
             port: 24105,
-          },
-          proxy: {
-            port: 24101,
           },
           connection: {
             port: 24103,

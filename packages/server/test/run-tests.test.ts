@@ -109,7 +109,7 @@ describe('running tests on an agent', () => {
 
     it('receives a run event on the agent', () => {
       expect(runCommand.type).toEqual('run');
-      expect(runCommand.appUrl).toEqual(`http://localhost:24101`);
+      expect(runCommand.appUrl).toEqual(`http://localhost:24001`);
       expect(runCommand.tree.description).toEqual('All tests');
     });
 

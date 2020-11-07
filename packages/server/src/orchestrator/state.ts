@@ -109,9 +109,17 @@ export interface ManifestGeneratorOptions {
   destinationPath?: string;
 };
 
-export type ProxyServiceState = {
-  proxyStatus: 'unstarted' | 'starting' | 'started';
+export type ProxyStatus = {
+  type: 'unstarted' | 'starting' | 'started';
 }
+
+export type ProxyOptions = {
+  port: number;
+  harnessUrl: string;
+  prefix?: string;
+  appDir: string;
+  appOptions: AppOptions;
+};
 
 export type OrchestratorState = {
   agents: Record<string, AgentState>;
@@ -120,7 +128,7 @@ export type OrchestratorState = {
   bundler: BundlerState;
   testRuns: Record<string, TestRunState>;
   appService: ServiceState<AppServiceStatus, AppOptions>;
-  proxyService: ProxyServiceState;
+  proxyService: ServiceState<ProxyStatus, ProxyOptions>;
 }
 
 declare const o: OrchestratorState;

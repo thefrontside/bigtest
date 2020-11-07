@@ -5,7 +5,7 @@ import { AgentServerConfig } from '@bigtest/agent';
 import { Atom } from '@bigtest/atom';
 import { ProjectOptions } from '@bigtest/project';
 
-import { createProxyServer } from './proxy';
+import { proxyServer } from './proxy';
 import { createBrowserManager, BrowserManager } from './browser-manager';
 import { createCommandServer } from './command-server';
 import { createCommandProcessor } from './command-processor';
@@ -33,7 +33,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   let connectionServerDelegate = new Mailbox();
   let manifestServerDelegate = new Mailbox();
 
-  let agentServerConfig = new AgentServerConfig({ port: options.project.proxy.port, prefix: '/__bigtest/', });
+  let agentServerConfig = new AgentServerConfig(options.project.proxy);
 
   let manifestSrcDir = path.resolve(options.project.cacheDir, 'manifest/src');
   let manifestBuildDir = path.resolve(options.project.cacheDir, 'manifest/build');
@@ -50,13 +50,9 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     connectURL: (agentId: string) => agentServerConfig.agentUrl(connectTo, agentId),
     drivers: options.project.drivers,
     launch: options.project.launch
-  })
+  });
 
-  yield fork(createProxyServer({
-    atom: options.atom,
-    agentServerConfig,
-    port: options.project.proxy.port,
-  }));
+  yield fork(proxyServer(options.atom.slice('proxyService')));
 
   yield fork(createCommandServer({
     delegate: commandServerDelegate,
@@ -73,9 +69,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     manifestPort: options.project.manifest.port,
   }));
 
-  let appServerState = options.atom.slice('appService');
-
-  yield fork(appServer(appServerState));
+  yield fork(appServer(options.atom.slice('appService')));
 
   yield fork(createManifestServer({
     delegate: manifestServerDelegate,
@@ -84,9 +78,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     proxyPort: options.project.proxy.port,
   }));
 
-  let manifestGeneratorState = options.atom.slice('manifestGenerator');
-
-  yield fork(manifestGenerator(manifestGeneratorState));
+  yield fork(manifestGenerator(options.atom.slice('manifestGenerator')));
 
   console.debug('[orchestrator] wait for manifest generator');
   yield options.atom.slice('manifestGenerator', 'status').once(({ type }) => type === 'ready');
@@ -102,9 +94,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield function* () {
     yield fork(function* () {
-      yield options.atom.slice("proxyService", "proxyStatus").once((status) => {
-        return status === 'started'
-      });
+      yield options.atom.slice("proxyService", "status").once(({ type }) => type === 'started');
       console.debug('[orchestrator] proxy server ready');
     });
     yield fork(function* () {

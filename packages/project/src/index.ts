@@ -47,6 +47,7 @@ export type ProjectOptions = {
   };
   proxy: {
     port: number;
+    prefix: string;
   };
   connection: {
     port: number;
@@ -69,6 +70,7 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
     },
     proxy: {
       port: 24001,
+      prefix: '/__bigtest/'
     },
     connection: {
       port: 24003,
