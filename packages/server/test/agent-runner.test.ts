@@ -24,14 +24,14 @@ describe('agent runner', () => {
 
     messages = await actions.fork(Mailbox.from(connections));
     atom = createOrchestratorAtom(getTestProjectOptions());
-    atom.slice('agents', 'agent-1').set({
+    atom.slice()('agents', 'agent-1').set({
       agentId: 'agent-1',
       browser: { name: "Safari", version: "13.0.4" },
       os: { name: "macOS", version: "10.15.2", versionName: "Catalina" },
       platform: { type: "desktop", vendor: "Apple" },
       engine: { name: "Gecko", version: "5.0" }
     });
-    atom.slice('manifest').set({
+    atom.slice()('manifest').set({
       fileName: 'manifest-1234.js',
       description: 'the manifest',
       steps: [],

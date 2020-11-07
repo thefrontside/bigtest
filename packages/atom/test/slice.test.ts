@@ -14,7 +14,7 @@ describe('@bigtest/atom Slice', () => {
 
     beforeEach(() => {
       atom = new Atom({ data: 'foo' });
-      slice = atom.slice('data');
+      slice = atom.slice()('data');
     });
 
     describe('.get()', () => {
@@ -79,7 +79,7 @@ describe('@bigtest/atom Slice', () => {
 
       beforeEach(() => {
         atom = new Atom<{ outer: Data }>({ outer: { data: "baz" } });
-        slice1 = atom.slice('outer');
+        slice1 = atom.slice()('outer');
         slice2 = slice1.slice('data');
       });
 
@@ -107,7 +107,7 @@ describe('@bigtest/atom Slice', () => {
     });
 
     describe('subscribe', () => {
-      let subscription: Subscription<string, undefined>;
+      let subscription: Subscription<string, void>;
 
       beforeEach(async () => {
         subscription = await spawn(subscribe(slice));
@@ -126,7 +126,7 @@ describe('@bigtest/atom Slice', () => {
 
     describe('subscribe - unique state publish', () => {
       let result: string[];
-      let subscription: ChainableSubscription<string, undefined>;
+      let subscription: ChainableSubscription<string, void>;
 
       beforeEach(async () => {
         result = [];

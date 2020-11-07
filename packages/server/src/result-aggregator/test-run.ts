@@ -9,7 +9,7 @@ import { createCoverageMap, CoverageMap, CoverageMapData } from 'istanbul-lib-co
 export class TestRunAggregator extends Aggregator<TestRunState, AggregatorOptions> {
   *perform(): Operation<ResultStatus> {
     let agentRuns = Object.keys(this.slice.get().agents).map(agentId => {
-      let testRunAgentSlice = this.slice.slice('agents', agentId);
+      let testRunAgentSlice = this.slice.slice('agents').slice(agentId);
 
       return new TestRunAgentAggregator(testRunAgentSlice, { agentId, ...this.options }).run();
     });

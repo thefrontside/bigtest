@@ -9,7 +9,7 @@ export interface LoggerOptions {
 }
 
 export function* createLogger({ atom, out }: LoggerOptions) {
-  yield fork(subscribe(atom.slice('bundler')).forEach(function* (event) {
+  yield fork(subscribe(atom.slice()('bundler')).forEach(function* (event) {
     if(event.type === 'ERRORED'){
       out("[manifest builder] build error:");
       out(event.error.message);

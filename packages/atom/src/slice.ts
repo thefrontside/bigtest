@@ -1,15 +1,37 @@
 import { Operation } from "effection";
-import { lensPath, view, set, dissoc, over, ManualLens } from "ramda";
-import { Atom } from "./atom";
+import { Option } from "fp-ts/Option";
+import { ReadonlyRecord } from "fp-ts/ReadonlyRecord";
+import { Lens } from "monocle-ts";
+import { atReadonlyRecord } from "monocle-ts/lib/At/ReadonlyRecord";
 import { subscribe, Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
 import { Sliceable } from './sliceable';
-import { unique } from './unique';
 
-export class Slice<S, A> implements Subscribable<S, undefined> {
-  lens: ManualLens<S, A>;
+import { Atom } from "./atom";
 
-  constructor(private atom: Atom<A>, public path: Array<string | number>) {
-    this.lens = lensPath(path);
+// See https://medium.com/dailyjs/typescript-create-a-condition-based-subset-types-9d902cea5b8c
+export type FilterFlags<Base, Condition> = {
+  [Key in keyof Base]: Base[Key] extends Condition ? Key : never
+};
+
+export type AllowedNames<Base, Condition> =
+  FilterFlags<Base, Condition>[keyof Base];
+
+export interface AtRecordSlice<V, T, S> {
+  <P extends AllowedNames<T, ReadonlyRecord<K, V>>, K extends string = string>(key: K, p: P): Slice<Option<V>, S>;
+}
+
+
+export class Slice<S, A> implements Subscribable<S, void> {
+  private constructor(private atom: Atom<A>, private lens: Lens<A, S>) {}
+
+  static fromPath<S>(a: Atom<S>): Sliceable<S> {
+    let fromProp = Lens.fromProp<S>()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (...path: any[]) => {
+      let lens = fromProp(path[0])
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return new Slice(a, path.slice(1).reduce((acc, prop) => acc.compose(fromProp(prop)), lens)) as any
+    }
   }
 
   get state() {
@@ -17,56 +39,17 @@ export class Slice<S, A> implements Subscribable<S, undefined> {
   }
 
   get(): S {
-    return (view(this.lens)(this.state));
+    return this.lens.get(this.state)
   }
 
   set(value: S): void {
     this.atom.update((state) => {
-      return (set(this.lens, value, state));
+      return this.lens.set(value)(state);
     });
   }
 
   update(fn: (value: S) => S): void {
     this.set(fn(this.get()));
-  }
-
-  over(fn: (value: S) => S): void {
-    this.atom.update((state) => (over(this.lens, fn, state)));
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  slice: Sliceable<S, A>['slice'] =(...path: Array<string | number>): Slice<any, A> => {
-    return new Slice(this.atom, this.path.concat(path));
-  }
-
-  remove(): void {
-    // If this is the root, then it cannot be removed.
-    if (this.path.length === 0) {
-      return;
-    }
-
-    let parentPath = this.path.slice(0, -1);
-    let parentLens = lensPath(parentPath);
-    let parent = view(parentLens, this.state);
-    if (Array.isArray(parent)) {
-      this.atom.update((state) => {
-        let array = parent as unknown[];
-        return (set(
-          parentLens,
-          array.filter((el) => el !== this.get()),
-          state
-        )) as A;
-      });
-    } else {
-      let [property] = this.path.slice(-1);
-      this.atom.update((state) => {
-        return (set(
-          parentLens,
-          dissoc(property, parent as object),
-          state
-        )) as A;
-      });
-    }
   }
 
   *once(predicate: (state: S) => boolean): Operation<S> {
@@ -79,9 +62,28 @@ export class Slice<S, A> implements Subscribable<S, undefined> {
     }
   }
 
-  *[SymbolSubscribable](): Operation<Subscription<S, undefined>> {
-    return yield subscribe(this.atom)
-    .map((state) => view(this.lens)(state))
-    .filter(unique(this.get()));
+  over(fn: (value: S) => S): void {
+    this.atom.update((state) => this.lens.set(fn(this.lens.get(state)))(state));
+  }
+
+  slice<P extends keyof S>(p: P): Slice<S[P], A> {
+    return new Slice(this.atom, this.lens.composeLens(Lens.fromProp<S>()(p)));
+  }
+
+  atRecord<V>(): AtRecordSlice<V, S, A> {
+    return (key, p) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let lens2: Lens<S, ReadonlyRecord<typeof key, V>> = Lens.fromProp<S>()(p) as any
+
+      return new Slice(this.atom, this.lens
+        .composeLens(lens2)
+        .composeLens(atReadonlyRecord<V>().at(key))
+      )
+    }
+  }
+
+  *[SymbolSubscribable](): Operation<Subscription<S, void>> {
+    // TODO: write test to ensure uniqueness
+    return yield subscribe(this.atom).map((state) => this.lens.get(state) as unknown as S);
   }
 }

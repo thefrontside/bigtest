@@ -33,7 +33,8 @@
     "@effection/events": "^0.7.8",
     "@effection/subscription": "^0.11.0",
     "effection": "0.7.0",
-    "ramda": "0.27.0"
+    "fp-ts": "^2.8.2",
+    "monocle-ts": "^2.3.3"
   },
   "volta": {
     "node": "12.16.0",

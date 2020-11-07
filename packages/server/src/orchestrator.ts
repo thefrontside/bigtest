@@ -70,6 +70,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   }));
 
 
+
   yield fork(appServer(options.atom.slice('appService')));
 
   yield fork(createManifestServer({
@@ -95,7 +96,8 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield function* () {
     yield fork(function* () {
-      yield options.atom.slice("proxyService", "status").once(({ type }) => type === 'started');
+      yield options.atom.slice()("proxyService", "status").once(({ type }) => type === 'started');
+
       console.debug('[orchestrator] proxy server ready');
     });
     yield fork(function* () {
