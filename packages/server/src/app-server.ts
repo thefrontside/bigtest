@@ -2,18 +2,18 @@ import { timeout, spawn } from 'effection';
 import { fetch } from '@effection/fetch';
 import { exec, Process } from '@effection/node';
 import * as process from 'process';
-import { OrchestratorState, AppOptions, Service, AppServiceStatus, ServiceState } from './orchestrator/state';
+import { AppOptions, Service, AppServiceStatus, ServiceState } from './orchestrator/state';
 import { Slice } from '@bigtest/atom';
 import { restartable } from './effection/restartable'
 import { assert } from 'assert-ts';
 
 export const appServer: Service<AppServiceStatus, AppOptions> = (serviceSlice) => {
-  let appOptions = serviceSlice.slice('options');
+  let appOptions = serviceSlice.slice()('options');
 
   return restartable(appOptions, startApp(serviceSlice));
 }
 
-const startApp = (serviceSlice: Slice<ServiceState<AppServiceStatus, AppOptions>, OrchestratorState>) => function* (options: AppOptions) {
+const startApp = (serviceSlice: Slice<ServiceState<AppServiceStatus, AppOptions>>) => function* (options: AppOptions) {
   assert(!!options.url, 'no app url given');
 
   let appServiceStatus = serviceSlice.slice('status')

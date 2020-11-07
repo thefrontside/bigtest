@@ -19,8 +19,8 @@ export const proxyServer: Service<ProxyStatus, ProxyOptions> = (serviceSlice) =>
 }
 
 export const startProxyServer = (serviceSlice: Slice<ServiceState<ProxyStatus, ProxyOptions>, OrchestratorState>) => function* ({ url: target }: AppOptions): Operation {
-  let proxyStatus = serviceSlice.slice('status');
-  let proxyConfig = serviceSlice.slice('options').get();
+  let proxyStatus = serviceSlice.slice()('status');
+  let proxyConfig = serviceSlice.slice()('options').get();
 
   function* handleRequest(proxyRes: http.IncomingMessage, req: http.IncomingMessage, res: http.ServerResponse): Operation {
     console.debug('[proxy]', 'start', req.method, req.url);

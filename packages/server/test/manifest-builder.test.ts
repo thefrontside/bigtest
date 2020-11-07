@@ -167,7 +167,7 @@ describe('manifest builder', () => {
   describe('importing the manifest with an error adds the error to the state', () => {
     beforeEach(async () => {
       await copyFile(path.join(FIXTURES_DIR, 'exceptions', 'throw.t.js'), MANIFEST_PATH);
-      await actions.fork(atom.slice('bundler').once(({ type }) => type === 'ERRORED'));
+      await actions.fork(atom.slice()('bundler').once(({ type }) => type === 'ERRORED'));
     });
 
     it('should update the global state with the error detail', () => {

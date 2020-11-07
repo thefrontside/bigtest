@@ -29,7 +29,7 @@ export abstract class Aggregator<T extends {status: unknown }, O extends Aggrega
   }
 
   get statusSlice() {
-    return this.slice.slice('status');
+    return this.slice.slice()('status');
   }
 
   *perform(): Operation<ResultStatus> {

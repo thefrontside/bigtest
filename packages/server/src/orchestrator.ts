@@ -45,7 +45,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     launch: options.project.launch
   });
 
-  yield fork(proxyServer(options.atom.slice('proxyService')));
+  yield fork(proxyServer(options.atom.slice()('proxyService')));
 
   let connectionServer = yield createConnectionServer({
     atom: options.atom,
@@ -68,8 +68,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     atom: options.atom,
     port: options.project.port,
   }));
-
-
 
   yield fork(appServer(options.atom.slice('appService')));
 

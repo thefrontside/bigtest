@@ -23,9 +23,8 @@ function* run({ id: testRunId, files }: RunMessage, options: CommandProcessorOpt
 
   let stepTimeout = 60_000;
   let testRunSlice = options.atom.slice()('testRuns', testRunId);
-  let manifest = options.atom.get().manifest;
 
-  let bundlerSlice = options.atom.slice('bundler');
+  let bundlerSlice = options.atom.slice()('bundler');
 
   let bundler: BundlerState = yield bundlerSlice.once((state) => state.type === 'GREEN' || state.type === 'ERRORED');
 
@@ -48,7 +47,7 @@ function* run({ id: testRunId, files }: RunMessage, options: CommandProcessorOpt
       return;
     }
 
-    let appStatus = options.atom.slice("appService", "status").get();
+    let appStatus = options.atom.slice()("appService", "status").get();
 
     if(appStatus.type === 'exited') {
       testRunSlice.set({

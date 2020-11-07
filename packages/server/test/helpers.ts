@@ -71,7 +71,7 @@ export const actions = {
       .update(() => appOptions);
 
     actions.atom
-      .slice('proxyService', 'options', 'appOptions')
+      .slice()('proxyService', 'options', 'appOptions')
       .update(() => appOptions);
   },
 
