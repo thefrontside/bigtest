@@ -73,9 +73,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     manifestPort: options.project.manifest.port,
   }));
 
-  let appServerState = options.atom.slice()'appService');
-
-  yield fork(appServer(appServerState));
+  yield fork(appServer(options.atom.slice()('appService')));
 
   yield fork(createManifestServer({
     delegate: manifestServerDelegate,
@@ -84,9 +82,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     proxyPort: options.project.proxy.port,
   }));
 
-  let manifestGeneratorState = options.atom.slice()('manifestGenerator');
-
-  yield fork(manifestGenerator(manifestGeneratorState));
+  yield fork(manifestGenerator(options.atom.slice()('manifestGenerator')));
 
   console.debug('[orchestrator] wait for manifest generator');
   yield options.atom.slice()('manifestGenerator', 'status').once(({ type }) => type === 'ready');

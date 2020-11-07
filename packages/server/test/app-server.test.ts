@@ -16,7 +16,7 @@ describe('app service', () => {
     beforeEach(() => {
       atom = createOrchestratorAtom(getTestProjectOptions());
 
-      appStatus = atom.slice('appService');
+      appStatus = atom.slice()('appService');
 
       actions.fork(function * () {
         yield appServer(appStatus);
@@ -24,7 +24,7 @@ describe('app service', () => {
     });
 
     it("should be transition from 'started' to 'ready'", async () => {
-      let appStatus = atom.slice('appService', 'status');
+      let appStatus = atom.slice()('appService', 'status');
 
       expect(appStatus.get().type).toBe('started');
 
@@ -44,7 +44,7 @@ describe('app service', () => {
         }
       }));
 
-      appStatus = atom.slice('appService');
+      appStatus = atom.slice()('appService');
 
       actions.fork(function * () {
         yield appServer(appStatus)
@@ -52,7 +52,7 @@ describe('app service', () => {
     });
 
     it('should transition to exited', async () => {
-      let appStatus = atom.slice('appService', 'status');
+      let appStatus = atom.slice()('appService', 'status');
 
       await actions.fork(
         appStatus.once(status => status.type === 'exited')

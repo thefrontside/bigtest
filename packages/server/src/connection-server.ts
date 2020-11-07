@@ -42,7 +42,8 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
 
       console.debug(`[connection] disconnected ${connection.agentId} [${code}${reason ? `: ${reason}` : ''}]`);
 
-      agent.remove();
+      // TODO: fix remove - atRecord
+      // agent.remove();
     });
   }
 }

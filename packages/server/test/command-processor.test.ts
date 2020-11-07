@@ -53,11 +53,11 @@ describe('command processor', () => {
     let testRun: TestRunState;
 
     beforeEach(async () => {
-      atom.slice('bundler', 'type').set('GREEN');
+      atom.slice()('bundler', 'type').set('GREEN');
       commands.send({ type: 'run', id: 'test-id-1', files: [] });
       pendingMessage = await actions.fork(delegate.receive({ type: 'run' }));
       events.send({type: 'run:end', testRunId: 'test-id-1', agentId: 'agent-1' });
-      testRun = await actions.fork(atom.slice('testRuns', 'test-id-1').once((testRun) => testRun?.status === 'ok'));
+      testRun = await actions.fork(atom.slice()('testRuns', 'test-id-1').once((testRun) => testRun?.status === 'ok'));
     });
 
     it('runs on the available agents', () => {
@@ -92,9 +92,9 @@ describe('command processor', () => {
     let testRun: TestRunState;
 
     beforeEach(async () => {
-      atom.slice('bundler').set({ type: 'ERRORED', error: { message: 'it broke' }});
+      atom.slice()('bundler').set({ type: 'ERRORED', error: { message: 'it broke' }});
       commands.send({ type: 'run', id: 'test-id-1', files: [] });
-      testRun = await actions.fork(atom.slice('testRuns', 'test-id-1').once((testRun) => testRun?.status === 'failed'));
+      testRun = await actions.fork(atom.slice()('testRuns', 'test-id-1').once((testRun) => testRun?.status === 'failed'));
     });
 
     it('marks test run as failed', () => {
