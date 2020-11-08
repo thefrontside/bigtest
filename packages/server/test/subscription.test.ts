@@ -3,6 +3,7 @@ import { Agent, Command, generateAgentId } from '@bigtest/agent';
 import { Client } from '@bigtest/client';
 import { ChainableSubscription } from '@effection/subscription';
 import { actions } from './helpers';
+import { describe } from 'yargs';
 
 interface AgentsQuery {
   agents: {
@@ -28,7 +29,7 @@ function subscriptionQuery() {
   `;
 }
 
-describe.only('running tests with subscription on an agent', () => {
+describe('running tests with subscription on an agent', () => {
   let client: Client;
   let agent: Agent;
   let agentId = generateAgentId();

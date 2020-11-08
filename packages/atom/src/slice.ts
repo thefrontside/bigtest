@@ -41,6 +41,7 @@ export class Slice<S, A> implements Subscribable<S, void> {
   }
 
   get(): S {
+    // console.log(this.state);
     return this.lens.get(this.state)
   }
 
@@ -69,13 +70,12 @@ export class Slice<S, A> implements Subscribable<S, void> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  slice: Sliceable<S, A> = <P extends keyof S>(...p: P[]): Slice<any, A> => {
+  slice: Sliceable<S, A> = <P extends keyof S>(...p: [P]): Slice<any, A> => {
     assert(Array.isArray(p) && p.length >  0, "slice expects a rest parameter with at least 1 element");
 
-    let fromProps = Lens.fromProps<S>()(p);
-    let fromProp = Lens.fromProp<{[K in P]: S[K]}>()(p.slice(-1)[0])
+    let fromPath = Lens.fromPath<S>()(p);
     
-    return new Slice(this.atom, this.lens.composeLens(fromProps).composeLens(fromProp));
+    return new Slice(this.atom, this.lens.composeLens(fromPath));
   }
 
   atRecord<V>(): AtRecordSlice<V, S, A> {
