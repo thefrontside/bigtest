@@ -37,7 +37,7 @@
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
     "cypress": "^5.6.0",
-    "dtslint": "^3.5.2",
+    "dtslint": "^4.0.5",
     "expect": "^24.9.0",
     "express": "^4.17.1",
     "jsdom": "^16.2.2",

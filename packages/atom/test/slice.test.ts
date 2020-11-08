@@ -5,6 +5,7 @@ import { spawn, when } from './helpers';
 import { Slice } from '../src/slice';
 import { Subscription, subscribe, ChainableSubscription } from '@effection/subscription';
 import { TestResult, ResultStatus } from '@bigtest/suite';
+import * as O from 'fp-ts/lib/Option'
 
 type Data = { data: string };
 
