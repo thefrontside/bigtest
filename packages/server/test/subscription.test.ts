@@ -72,7 +72,7 @@ describe.only('running tests with subscription on an agent', () => {
       });
     });
 
-    describe.only('when a step succeeeds', () => {
+    describe('when a step succeeeds', () => {
       beforeEach(() => {
         agent.send({
           type: 'step:result',
@@ -96,7 +96,7 @@ describe.only('running tests with subscription on an agent', () => {
       });
     });
 
-    describe.only('when a step fails', () => {
+    describe('when a step fails', () => {
       beforeEach(() => {
         agent.send({
           type: 'step:result',
