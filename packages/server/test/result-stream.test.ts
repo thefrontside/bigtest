@@ -19,7 +19,7 @@ describe('result stream', () => {
 
   beforeEach(async () => {
     atom = createOrchestratorAtom(getTestProjectOptions());
-    slice = atom.slice()('testRuns', 'test-run-1');
+    slice = atom.slice()('testRuns').slice('test-run-1');
     slice.set({
       testRunId: 'test-run-1',
       status: 'pending',
@@ -62,7 +62,7 @@ describe('result stream', () => {
   describe('steps', () => {
     describe('marking a step as running', () => {
       beforeEach(() => {
-        slice.slice('agents').slice('agent-1').slice('result').slice('steps').slice(0).slice('status').set('running');
+        slice.slice('agents', 'agent-1', 'result', 'steps', 0, 'status').set('running');
       });
 
       it('generates a test event', async () => {
@@ -78,7 +78,7 @@ describe('result stream', () => {
 
     describe('marking a step as ok', () => {
       beforeEach(() => {
-        slice.slice('agents').slice('agent-1').slice('result').slice('steps').slice(0).slice('status').set('ok');
+        slice.slice('agents', 'agent-1', 'result', 'steps', 0, 'status').set('ok');
       });
 
       it('generates a test event', async () => {
@@ -95,7 +95,7 @@ describe('result stream', () => {
 
     describe('marking a step as failed', () => {
       beforeEach(() => {
-        slice.slice('agents').slice('agent-1').slice('result').slice('steps').slice(0).update((s) => ({
+        slice.slice('agents', 'agent-1', 'result', 'steps', 0).update((s) => ({
           ...s,
           status: 'failed',
           error: { message: 'blah' },
@@ -121,7 +121,7 @@ describe('result stream', () => {
   describe('assertions', () => {
     describe('marking a assertion as running', () => {
       beforeEach(() => {
-        slice.slice('agents').slice('agent-1').slice('result').slice('assertions').slice(0).slice('status').set('running');
+        slice.slice('agents', 'agent-1', 'result', 'assertions', 0, 'status').set('running');
       });
 
       it('generates a test event', async () => {
@@ -137,7 +137,7 @@ describe('result stream', () => {
 
     describe('marking a assertion as ok', () => {
       beforeEach(() => {
-        slice.slice('agents').slice('agent-1').slice('result').slice('assertions').slice(0).slice('status').set('ok');
+        slice.slice('agents', 'agent-1', 'result', 'assertions', 0, 'status').set('ok');
       });
 
       it('generates a test event', async () => {
@@ -154,7 +154,7 @@ describe('result stream', () => {
 
     describe('marking a assertion as failed', () => {
       beforeEach(() => {
-        slice.slice('agents').slice('agent-1').slice('result').slice('assertions').slice(0).update((s) => ({
+        slice.slice('agents', 'agent-1', 'result', 'assertions', 0).update((s) => ({
           ...s,
           status: 'failed',
           error: { message: 'blah' },
@@ -180,7 +180,7 @@ describe('result stream', () => {
   describe('tests', () => {
     describe('marking a test as running', () => {
       beforeEach(() => {
-        slice.slice('agents').slice('agent-1').slice('result').slice('status').set('running');
+        slice.slice('agents', 'agent-1', 'result', 'status').set('running');
       });
 
       it('generates a test event', async () => {
@@ -196,7 +196,7 @@ describe('result stream', () => {
 
     describe('marking a test as ok', () => {
       beforeEach(() => {
-        slice.slice('agents').slice('agent-1').slice('result').slice('status').set('ok');
+        slice.slice('agents', 'agent-1', 'result', 'status').set('ok');
       });
 
       it('generates a test event', async () => {
@@ -213,7 +213,7 @@ describe('result stream', () => {
 
     describe('marking a test as failed', () => {
       beforeEach(() => {
-        slice.slice('agents').slice('agent-1').slice('result').update((s) => ({
+        slice.slice('agents', 'agent-1', 'result').update((s) => ({
           ...s,
           status: 'failed',
           error: { message: 'blah' },
@@ -239,7 +239,7 @@ describe('result stream', () => {
   describe('agents', () => {
     describe('marking a agent as running', () => {
       beforeEach(() => {
-        slice.slice('agents').slice('agent-1').slice('status').set('running');
+        slice.slice('agents', 'agent-1', 'status').set('running');
       });
 
       it('generates a test event', async () => {
@@ -254,7 +254,7 @@ describe('result stream', () => {
 
     describe('marking a agent as ok', () => {
       beforeEach(() => {
-        slice.slice('agents').slice('agent-1').slice('status').set('ok');
+        slice.slice('agents', 'agent-1', 'status').set('ok');
       });
 
       it('generates a test event', async () => {
@@ -270,7 +270,7 @@ describe('result stream', () => {
 
     describe('marking a agent as failed', () => {
       beforeEach(() => {
-        slice.slice('agents').slice('agent-1').update((s) => ({
+        slice.slice('agents', 'agent-1').update((s) => ({
           ...s,
           status: 'failed',
           error: { message: 'blah' },
@@ -348,15 +348,15 @@ describe('result stream', () => {
   describe('finishing all items', () => {
     beforeEach(() => {
       slice.slice('status').set('ok');
-      slice.slice('agents').slice('agent-1').slice('status').set('ok');
-      slice.slice('agents').slice('agent-1').slice('result').slice('status').set('ok');
-      slice.slice('agents').slice('agent-1').slice('result').slice('steps').slice(0).slice('status').set('failed');
-      slice.slice('agents').slice('agent-1').slice('result').slice('steps').slice(1).slice('status').set('disregarded');
-      slice.slice('agents').slice('agent-1').slice('result').slice('assertions').slice(0).slice('status').set('disregarded');
-      slice.slice('agents').slice('agent-1').slice('result').slice('assertions').slice(1).slice('status').set('ok');
-      slice.slice('agents').slice('agent-1').slice('result').slice('children').slice(0).slice('status').set('ok');
-      slice.slice('agents').slice('agent-1').slice('result').slice('children').slice(0).slice('steps').slice(0).slice('status').set('ok');
-      slice.slice('agents').slice('agent-1').slice('result').slice('children').slice(0).slice('assertions').slice(0).slice('status').set('ok');
+      slice.slice('agents', 'agent-1', 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'steps', 0, 'status').set('failed');
+      slice.slice('agents', 'agent-1', 'result', 'steps', 1, 'status').set('disregarded');
+      slice.slice('agents', 'agent-1', 'result', 'assertions', 0, 'status').set('disregarded');
+      slice.slice('agents', 'agent-1', 'result', 'assertions', 1, 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'children', 0, 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'children', 0, 'steps', 0, 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'children', 0, 'assertions', 0, 'status').set('ok');
     });
 
     it('terminates subscription', async() => {
@@ -370,15 +370,15 @@ describe('result stream', () => {
   describe('on an already finished run', () => {
     beforeEach(async () => {
       slice.slice('status').set('ok');
-      slice.slice('agents').slice('agent-1').slice('status').set('ok');
-      slice.slice('agents').slice('agent-1').slice('result').slice('status').set('ok');
-      slice.slice('agents').slice('agent-1').slice('result').slice('steps').slice(0).slice('status').set('failed');
-      slice.slice('agents').slice('agent-1').slice('result').slice('steps').slice(1).slice('status').set('disregarded');
-      slice.slice('agents').slice('agent-1').slice('result').slice('assertions').slice(0).slice('status').set('disregarded');
-      slice.slice('agents').slice('agent-1').slice('result').slice('assertions').slice(1).slice('status').set('ok');
-      slice.slice('agents').slice('agent-1').slice('result').slice('children').slice(0).slice('status').set('ok');
-      slice.slice('agents').slice('agent-1').slice('result').slice('children').slice(0).slice('steps').slice(0).slice('status').set('ok');
-      slice.slice('agents').slice('agent-1').slice('result').slice('children').slice(0).slice('assertions').slice(0).slice('status').set('ok');
+      slice.slice('agents', 'agent-1', 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'steps', 0, 'status').set('failed');
+      slice.slice('agents', 'agent-1', 'result', 'steps', 1, 'status').set('disregarded');
+      slice.slice('agents', 'agent-1', 'result', 'assertions', 0, 'status').set('disregarded');
+      slice.slice('agents', 'agent-1', 'result', 'assertions', 1, 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'children', 0, 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'children', 0, 'steps', 0, 'status').set('ok');
+      slice.slice('agents', 'agent-1', 'result', 'children', 0, 'assertions', 0, 'status').set('ok');
       subscription = await actions.fork(resultStream('test-run-1', slice));
     });
 

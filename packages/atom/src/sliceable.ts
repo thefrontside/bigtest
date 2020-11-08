@@ -20,7 +20,7 @@ export type Sliceable<S, A> = {
   * key2 is constrained to be a key of the return type S[Key1] which is the agents object and in this
   * example whatever the agentId variable is
   * 
-  * The return type of the function is Slice<S[Key1][Key2], S>; or Slice<AgentState, OrchestratorState>
+  * The return type of the function is Slice<S[Key1][Key2], S>; or Slice<AgentState>
   * in this example
   */
  <

@@ -8,7 +8,7 @@ import * as proxy from 'http-proxy';
 import * as http from 'http';
 import * as Trumpet from 'trumpet';
 import * as zlib from 'zlib';
-import { ProxyStatus, Service, ProxyOptions, ServiceState, OrchestratorState, AppOptions } from './orchestrator/state';
+import { ProxyStatus, Service, ProxyOptions, ServiceState, AppOptions } from './orchestrator/state';
 import { Slice } from '@bigtest/atom';
 import { assert } from 'assert-ts';
 
@@ -18,7 +18,7 @@ export const proxyServer: Service<ProxyStatus, ProxyOptions> = (serviceSlice) =>
   return restartable(appOptions, startProxyServer(serviceSlice));
 }
 
-export const startProxyServer = (serviceSlice: Slice<ServiceState<ProxyStatus, ProxyOptions>, OrchestratorState>) => function* ({ url: target }: AppOptions): Operation {
+export const startProxyServer = (serviceSlice: Slice<ServiceState<ProxyStatus, ProxyOptions>>) => function* ({ url: target }: AppOptions): Operation {
   let proxyStatus = serviceSlice.slice()('status');
   let proxyConfig = serviceSlice.slice()('options').get();
 

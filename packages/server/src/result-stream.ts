@@ -2,12 +2,12 @@ import { Operation, fork } from 'effection';
 import { Slice } from '@bigtest/atom';
 import { subscribe, ChainableSubscription, createSubscription } from '@effection/subscription';
 import { TestResult, StepResult, AssertionResult, ResultStatus } from '@bigtest/suite';
-import { OrchestratorState, TestRunState, TestRunAgentState } from './orchestrator/state';
+import { TestRunState, TestRunAgentState } from './orchestrator/state';
 import { TestEvent } from './schema/test-event';
 
 type Publish = (event: TestEvent) => void;
 
-export function* resultStream(testRunId: string, slice: Slice<TestRunState, OrchestratorState>): Operation<ChainableSubscription<TestEvent, void>> {
+export function* resultStream(testRunId: string, slice: Slice<TestRunState>): Operation<ChainableSubscription<TestEvent, void>> {
   return yield createSubscription(function*(publish) {
     yield slice.once((state) => !!state);
     yield streamTestRun(slice, publish, { testRunId });
@@ -27,7 +27,7 @@ export interface StreamerTestOptions extends StreamerAgentOptions {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function* streamResults(type: string, slice: Slice<any, OrchestratorState>, publish: Publish, options: StreamerOptions): Operation<void> {
+function* streamResults(type: string, slice: Slice<any>, publish: Publish, options: StreamerOptions): Operation<void> {
   let statusSlice = slice.slice()('status');
   let previousStatus = undefined;
   let currentStatus = statusSlice.get();
@@ -58,15 +58,15 @@ function* streamResults(type: string, slice: Slice<any, OrchestratorState>, publ
   } while(!next.done);
 }
 
-function* streamTestRun(slice: Slice<TestRunState, OrchestratorState>, publish: Publish, options: StreamerOptions): Operation<void> {
+function* streamTestRun(slice: Slice<TestRunState>, publish: Publish, options: StreamerOptions): Operation<void> {
   for(let agentId in slice.get().agents) {
-    let testRunAgentSlice = slice.slice()('agents').slice(agentId);
+    let testRunAgentSlice = slice.slice()('agents', agentId);
     yield fork(streamTestRunAgent(testRunAgentSlice, publish, { agentId, ...options }));
   };
   yield streamResults('testRun', slice, publish, options);
 }
 
-function* streamTestRunAgent(slice: Slice<TestRunAgentState, OrchestratorState>, publish: Publish, options: StreamerAgentOptions): Operation<void> {
+function* streamTestRunAgent(slice: Slice<TestRunAgentState>, publish: Publish, options: StreamerAgentOptions): Operation<void> {
   let testResultSlice = slice.slice()('result');
 
   yield fork(streamTest(testResultSlice, publish, {
@@ -76,23 +76,23 @@ function* streamTestRunAgent(slice: Slice<TestRunAgentState, OrchestratorState>,
   yield streamResults('testRunAgent', slice, publish, options);
 }
 
-function* streamTest(slice: Slice<TestResult, OrchestratorState>, publish: Publish, options: StreamerTestOptions): Operation<void> {
+function* streamTest(slice: Slice<TestResult>, publish: Publish, options: StreamerTestOptions): Operation<void> {
   for(let [index, step] of Object.entries(slice.get().steps)) {
-    let stepSlice = slice.slice()('steps').slice(Number(index));
+    let stepSlice = slice.slice()('steps', Number(index));
     yield fork(streamStep(stepSlice, publish, {
       ...options,
       path: options.path.concat(`${index}:${step.description}`),
     }));
   }
   for(let [index, assertion] of Object.entries(slice.get().assertions)) {
-    let assertionSlice = slice.slice()('assertions').slice(Number(index));
+    let assertionSlice = slice.slice()('assertions', Number(index));
     yield fork(streamAssertion(assertionSlice, publish, {
       ...options,
       path: options.path.concat(assertion.description),
     }));
   }
   for(let [index, child] of Object.entries(slice.get().children)) {
-    let childSlice = slice.slice()('children').slice(Number(index));
+    let childSlice = slice.slice()('children', Number(index));
     yield fork(streamTest(childSlice, publish, {
       ...options,
       path: options.path.concat(child.description),
@@ -101,10 +101,10 @@ function* streamTest(slice: Slice<TestResult, OrchestratorState>, publish: Publi
   yield streamResults('test', slice, publish, options);
 }
 
-function* streamStep(slice: Slice<StepResult, OrchestratorState>, publish: Publish, options: StreamerTestOptions): Operation<void> {
+function* streamStep(slice: Slice<StepResult>, publish: Publish, options: StreamerTestOptions): Operation<void> {
   yield streamResults('step', slice, publish, options)
 }
 
-function* streamAssertion(slice: Slice<AssertionResult, OrchestratorState>, publish: Publish, options: StreamerTestOptions): Operation<void> {
+function* streamAssertion(slice: Slice<AssertionResult>, publish: Publish, options: StreamerTestOptions): Operation<void> {
   yield streamResults('assertion', slice, publish, options)
 }
