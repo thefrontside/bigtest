@@ -33,7 +33,7 @@ export type TestRunState = {
 }
 
 export type TestRunAgentState = {
-  status: ResultStatus;
+  status: 'pending' | 'running' | 'failed' | 'ok' | 'disregarded';
   agent: AgentState;
   result: TestResult;
   coverage?: unknown;

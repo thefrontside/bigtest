@@ -4,6 +4,7 @@ import { Atom } from '../src/atom';
 import { spawn, when } from './helpers';
 import { Slice } from '../src/slice';
 import { Subscription, subscribe, ChainableSubscription } from '@effection/subscription';
+import { TestResult, ResultStatus } from '@bigtest/suite';
 
 type Data = { data: string };
 
@@ -104,6 +105,81 @@ describe('@bigtest/atom Slice', () => {
           expect(atom.get()).toEqual({ outer: { data: 'blah' } });
         });
       });
+    });
+
+    type TestRunAgentState = {
+      status: ResultStatus;
+      agent: {
+        agentId: string;
+      };
+      result: TestResult;
+    }
+
+    type TestRunState = {
+      testRunId: string;
+      status: ResultStatus;
+      agents: Record<string, TestRunAgentState>;
+    }
+
+    type AtomState = {
+      testRuns: Record<string, TestRunState>;
+    }
+    
+
+    describe('deep slices', () => {
+      let subject: AtomState = {
+        testRuns: {}
+      };
+    
+      let atom: Atom<AtomState>;
+      let slice: Slice<TestRunState, AtomState>;
+
+      beforeEach(() => {
+        atom = new Atom(subject);
+        slice = atom.slice()('testRuns', 'testRunId');
+
+        slice.set({ 
+          testRunId: 'test-run-1',
+          status: 'pending',
+          agents: {
+            "agent-1": {
+              status: 'pending',
+              agent: { agentId: 'agent-1' },
+              result: {
+                description: 'some test',
+                status: 'pending',
+                steps: [
+                  { description: 'step one', status: 'pending' },
+                  { description: 'step two', status: 'pending' }
+                ],
+                assertions: [
+                  { description: 'assertion one', status: 'pending' },
+                  { description: 'assertion two', status: 'pending' }
+                ],
+                children: [
+                  {
+                    description: 'another test',
+                    status: 'pending',
+                    steps: [
+                      { description: 'a child step', status: 'pending' }
+                    ],
+                    assertions: [
+                      { description: 'a child assertion', status: 'pending' }
+                    ],
+                    children: []
+                  }
+                ]
+              }
+            }
+          }
+        })
+      });
+    
+      it('should resolve deeply nested properties', () => {
+        slice.slice('agents').slice('agent-1').slice('result').slice('steps').slice(0).slice('status').set('running');
+
+        expect(slice.slice('agents').slice('agent-1').slice('result').slice('steps').slice(0).slice('status').get()).toBe('running');
+      })
     });
 
     describe('subscribe', () => {
