@@ -1,6 +1,6 @@
 import { Slice } from './slice';
 
-export type Sliceable<S> = {
+export type Sliceable<S, A> = {
   /* 
   * Brute foce overload to allow strong typing of the string path syntax
   * for every level deep we want to go in the slice there will need to be an overload 
@@ -28,14 +28,14 @@ export type Sliceable<S> = {
  >(
     key: Key
  ):
-  Slice<S[Key], S>;
+  Slice<S[Key], A>;
  <
   Key1 extends keyof S,
   Key2 extends keyof S[Key1]
  >(
     key1: Key1, key2: Key2
   ):
-  Slice<S[Key1][Key2], S>;
+  Slice<S[Key1][Key2], A>;
  <
   Key1 extends keyof S,
   Key2 extends keyof S[Key1],
@@ -43,7 +43,7 @@ export type Sliceable<S> = {
  >(
     key1: Key1, key2: Key2, key3: Key3
   ):
-  Slice<S[Key1][Key2][Key3], S>;
+  Slice<S[Key1][Key2][Key3], A>;
  <
   Key1 extends keyof S,
   Key2 extends keyof S[Key1],
@@ -52,7 +52,7 @@ export type Sliceable<S> = {
  >(
     key1: Key1, key2: Key2, key3: Key3, key4: Key4
   ):
-  Slice<S[Key1][Key2][Key3][Key4], S>;
+  Slice<S[Key1][Key2][Key3][Key4], A>;
  <
   Key1 extends keyof S,
   Key2 extends keyof S[Key1], 
@@ -62,7 +62,7 @@ export type Sliceable<S> = {
  >(
    key1: Key1, key2: Key2, key3: Key3, key4: Key4, key5: Key5
   ):
-  Slice<S[Key1][Key2][Key3][Key4][Key5], S>;
+  Slice<S[Key1][Key2][Key3][Key4][Key5], A>;
  <
   Key1 extends keyof S,
   Key2 extends keyof S[Key1],
@@ -73,7 +73,7 @@ export type Sliceable<S> = {
  >(
    key1: Key1, key2: Key2, key3: Key3, key4: Key4, key5: Key5, key: Key6
   ):
-  Slice<S[Key1][Key2][Key3][Key4][Key5][Key6], S>;
+  Slice<S[Key1][Key2][Key3][Key4][Key5][Key6], A>;
  <
   Key1 extends keyof S,
   Key2 extends keyof S[Key1],
@@ -83,7 +83,7 @@ export type Sliceable<S> = {
   Key6 extends keyof S[Key1][Key2][Key3][Key4][Key5],
   Key7 extends keyof S[Key1][Key2][Key3][Key4][Key5][Key6]
  >(key1: Key1, key2: Key2, key3: Key3, key4: Key4, key5: Key5, key: Key6, key7: Key7):
-  Slice<S[Key1][Key2][Key3][Key4][Key5][Key6][Key7], S>;
+  Slice<S[Key1][Key2][Key3][Key4][Key5][Key6][Key7], A>;
  <
   Key1 extends keyof S,
   Key2 extends keyof S[Key1],
@@ -96,5 +96,5 @@ export type Sliceable<S> = {
  >(
    key1: Key1, key2: Key2, key3: Key3, key4: Key4, key5: Key5, key: Key6, key7: Key7, key8: Key8
   ):
-  Slice<S[Key1][Key2][Key3][Key4][Key5][Key6][Key7][Key8], S>;
+  Slice<S[Key1][Key2][Key3][Key4][Key5][Key6][Key7][Key8], A>;
 }

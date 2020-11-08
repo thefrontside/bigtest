@@ -41,7 +41,7 @@ export class Atom<A> implements Subscribable<A,undefined> {
     }
   }
 
-  slice(): Sliceable<A> {
+  slice(): Sliceable<A, A> {
     return Slice.fromPath<A>(this);
   }
 

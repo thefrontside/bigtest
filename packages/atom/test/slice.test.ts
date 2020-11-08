@@ -176,10 +176,8 @@ describe('@bigtest/atom Slice', () => {
       });
     
       it('should resolve deeply nested properties', () => {
-        slice.slice('agents').slice('agent-1').slice('result').slice('steps').slice(0).slice('status').set('running');
-
-        expect(slice.slice('agents').slice('agent-1').slice('result').slice('steps').slice(0).slice('status').get()).toBe('running');
-      })
+        expect(slice.slice('agents').slice('agent-1').slice('result').slice('steps').slice(0).slice('status').get()).toBe('pending');
+      });
     });
 
     describe('subscribe', () => {

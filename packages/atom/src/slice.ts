@@ -5,7 +5,7 @@ import { Lens } from "monocle-ts";
 import { atReadonlyRecord } from "monocle-ts/lib/At/ReadonlyRecord";
 import { subscribe, Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
 import { Sliceable } from './sliceable';
-
+import { assert } from 'assert-ts';
 import { Atom } from "./atom";
 
 // See https://medium.com/dailyjs/typescript-create-a-condition-based-subset-types-9d902cea5b8c
@@ -21,10 +21,12 @@ export interface AtRecordSlice<V, T, S> {
 }
 
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class Slice<S, A> implements Subscribable<S, void> {
   private constructor(private atom: Atom<A>, private lens: Lens<A, S>) {}
 
-  static fromPath<S>(a: Atom<S>): Sliceable<S> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static fromPath<S>(a: Atom<S>): Sliceable<S, any> {
     let fromProp = Lens.fromProp<S>()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (...path: any[]) => {
@@ -66,8 +68,14 @@ export class Slice<S, A> implements Subscribable<S, void> {
     this.atom.update((state) => this.lens.set(fn(this.lens.get(state)))(state));
   }
 
-  slice<P extends keyof S>(p: P): Slice<S[P], A> {
-    return new Slice(this.atom, this.lens.composeLens(Lens.fromProp<S>()(p)));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  slice: Sliceable<S, A> = <P extends keyof S>(...p: P[]): Slice<any, A> => {
+    assert(Array.isArray(p) && p.length >  0, "slice expects a rest parameter with at least 1 element");
+
+    let fromProps = Lens.fromProps<S>()(p);
+    let fromProp = Lens.fromProp<{[K in P]: S[K]}>()(p.slice(-1)[0])
+    
+    return new Slice(this.atom, this.lens.composeLens(fromProps).composeLens(fromProp));
   }
 
   atRecord<V>(): AtRecordSlice<V, S, A> {
