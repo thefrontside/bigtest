@@ -12,7 +12,7 @@ import { TestEvent } from '../src/schema/test-event';
 
 import { actions, getTestProjectOptions } from './helpers';
 
-describe.only('result stream', () => {
+describe('result stream', () => {
   let atom: Atom<OrchestratorState>;
   let slice: Slice<TestRunState>;
   let subscription: ChainableSubscription<TestEvent, void>;
