@@ -91,7 +91,6 @@ export class Slice<S, A> implements Subscribable<S, void> {
   }
 
   *[SymbolSubscribable](): Operation<Subscription<S, void>> {
-    // TODO: write test to ensure uniqueness
-    return yield subscribe(this.atom).map((state) => this.lens.get(state) as unknown as S);
+    return yield subscribe(this.atom).map((state) => this.lens.get(state));
   }
 }
