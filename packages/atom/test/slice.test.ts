@@ -150,7 +150,7 @@ describe('@bigtest/atom Slice', () => {
                 status: 'pending',
                 steps: [
                   { description: 'step one', status: 'pending' },
-                  { description: 'step two', status: 'pending' }
+                  { description: 'step two', status: 'running' }
                 ],
                 assertions: [
                   { description: 'assertion one', status: 'pending' },
@@ -175,8 +175,12 @@ describe('@bigtest/atom Slice', () => {
         })
       });
     
-      it('should resolve deeply nested properties', () => {
+      it('should resolve deeply nested properties with slice call at each step', () => {
         expect(slice.slice('agents').slice('agent-1').slice('result').slice('steps').slice(0).slice('status').get()).toBe('pending');
+      });
+
+      it('should resolve deeply nested properties with path syntax', () => {
+        expect(slice.slice('agents', 'agent-1', 'result', 'steps', 1, 'status').get()).toBe('running');
       });
     });
 
