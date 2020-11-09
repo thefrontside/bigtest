@@ -42,7 +42,7 @@ export class Atom<A> implements Subscribable<A,undefined> {
   }
 
   slice(): Sliceable<A, A> {
-    return Slice.fromPath<A>(this);
+    return Slice.fromPath<A, A>(this);
   }
 
   reset(initializer?: (initial: A, current: A) => A) {
@@ -55,8 +55,7 @@ export class Atom<A> implements Subscribable<A,undefined> {
   }
 
   *[SymbolSubscribable](): Operation<Subscription<A,undefined>> {
-    // TODO: write a test to ensure uniqueness
-    // return yield subscribe(this.states).filter(unique(this.initial));
+    // TODO: we will know this is fixed when we can remove the unique cheque
     return yield subscribe(this.states).filter(unique(this.initial));
   }
 }

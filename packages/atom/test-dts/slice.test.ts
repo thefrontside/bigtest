@@ -31,9 +31,3 @@ atom.slice()('a').slice('c');
 
 atom.slice()('a').slice('a').slice('b'); // $ExpectType Slice<string, ROOT>
 atom.slice()('a').slice('a', 'b'); // $ExpectType Slice<string, ROOT>
-
-// $ExpectError
-atom.slice()('a').atRecord<number>()('a', 'b');
-
-atom.slice()('a').atRecord()('a', 'b'); // $ExpectType Slice<Option<unknown>, ROOT>
-atom.slice()('a').atRecord<string>()('a', 'b'); // $ExpectType Slice<Option<string>, ROOT>
