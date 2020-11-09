@@ -20,11 +20,7 @@ export class WebDriver implements Driver<WDSession> {
 
   *navigateTo(url: string): Operation<void> {
     yield post(`${this.serverURL}/session/${this.session.sessionId}/url`, {
-      method: 'post',
-      body: JSON.stringify({ url }),
-      headers: {
-        "Content-Type": 'application/json'
-      }
+      url,
     });
   }
 }
@@ -46,18 +42,18 @@ export function* connect(driver: WebDriver, options: Options): Operation<void> {
   }
 
   driver.session = yield post(`${driver.serverURL}/session`, {
+    capabilities: capabilities.get()
+  });
+}
+
+function* post(url: string, body: Record<string, unknown>): Operation<WDResponse> {
+  let response: Response = yield fetch(url, {
     method: 'post',
-    body: JSON.stringify({
-      capabilities: capabilities.get()
-    }),
+    body: JSON.stringify(body),
     headers: {
       "Content-Type": 'application/json'
     }
   });
-}
-
-function* post(url: string, init: RequestInit): Operation<WDResponse> {
-  let response: Response = yield fetch(url, init);
 
   if (!response.ok) {
     let details: WDResponse;
