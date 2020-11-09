@@ -182,6 +182,20 @@ describe('@bigtest/atom Slice', () => {
       it('should resolve deeply nested properties with path syntax', () => {
         expect(slice.slice('agents', 'agent-1', 'result', 'steps', 1, 'status').get()).toBe('running');
       });
+
+
+      describe('removal', () => {
+        it('should remove a a record', () => {
+          let agent = slice.slice('agents', 'agent-1');
+
+          // precondition
+          expect(slice.slice('agents', 'agent-1').get().agent).toBeTruthy();
+          
+          agent.remove();
+
+          expect(slice.slice('agents', 'agent-1').get()).toBeUndefined();
+        })
+      });
     });
 
     describe('subscribe', () => {

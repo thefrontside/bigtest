@@ -43,7 +43,7 @@ export class Atom<A> implements Subscribable<A,undefined> {
 
   slice(): Sliceable<A, A> {
     return Slice.fromPath<A, A>(this);
-  }
+  } 
 
   reset(initializer?: (initial: A, current: A) => A) {
     if (!initializer) {
