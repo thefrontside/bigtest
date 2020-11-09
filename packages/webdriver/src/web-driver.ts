@@ -19,9 +19,8 @@ export class WebDriver implements Driver<WDSession> {
   }
 
   *navigateTo(url: string): Operation<void> {
-    yield request(`${this.serverURL}/session/${this.session.sessionId}/url`, {
-      method: 'post',
-      body: JSON.stringify({ url })
+    yield post(`${this.serverURL}/session/${this.session.sessionId}/url`, {
+      url,
     });
   }
 }
@@ -42,16 +41,19 @@ export function* connect(driver: WebDriver, options: Options): Operation<void> {
       .over(args => args.concat(['--headless']))
   }
 
-  driver.session = yield request(`${driver.serverURL}/session`, {
-    method: 'post',
-    body: JSON.stringify({
-      capabilities: capabilities.get()
-    })
+  driver.session = yield post(`${driver.serverURL}/session`, {
+    capabilities: capabilities.get()
   });
 }
 
-function* request(url: string, init: RequestInit): Operation<WDResponse> {
-  let response: Response = yield fetch(url, init);
+function* post(url: string, body: Record<string, unknown>): Operation<WDResponse> {
+  let response: Response = yield fetch(url, {
+    method: 'post',
+    body: JSON.stringify(body),
+    headers: {
+      "Content-Type": 'application/json'
+    }
+  });
 
   if (!response.ok) {
     let details: WDResponse;
