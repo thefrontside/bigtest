@@ -1903,18 +1903,6 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@bigtest/parcel@^0.5.2":
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/@bigtest/parcel/-/parcel-0.5.2.tgz#3ed6d0af2e5ffa809063200834720bdae775373c"
-  integrity sha512-w7nZZeewRKo8Ib1nLSD6vp+UYy9OajgFautAf6ozuDMuJ8SCq1YljG57eD8GZwUj4WehSKKsZLandzjVc8WXZA==
-  dependencies:
-    "@bigtest/effection" "^0.5.1"
-    "@effection/events" "^0.7.4"
-    "@effection/node" "^0.6.5"
-    effection "^0.7.0"
-    parcel "^1.12.4"
-    parcel-bundler "^1.12.4"
-
 "@changesets/apply-release-plan@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@changesets/apply-release-plan/-/apply-release-plan-4.0.0.tgz#e78efb56a4e459a8dab814ba43045f2ace0f27c9"
@@ -2160,14 +2148,6 @@
     "@effection/subscription" "^0.11.0"
     effection "^0.7.0"
 
-"@effection/events@^0.7.4":
-  version "0.7.7"
-  resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.7.7.tgz#8927b8a827d57b8b377182a47f037cc2085fed89"
-  integrity sha512-84js7W+noYlInnr2IEvqA4MriW/dgIdoxDHHEwfkShqJu+nTiAS1uCZuQnLeJrrDazTf7fvnX5hSUroKUQoWSQ==
-  dependencies:
-    "@effection/subscription" "^0.10.0"
-    effection "^0.7.0"
-
 "@effection/events@^0.7.8":
   version "0.7.8"
   resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.7.8.tgz#3cb8ec5e96b0ad7719e82a2163975cf7d6a77d7d"
@@ -2186,33 +2166,6 @@
     effection "^0.7.0"
     node-fetch "^2.6.0"
 
-"@effection/node@^0.6.5":
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/@effection/node/-/node-0.6.5.tgz#936487d04f4f734b4d6e5604d881b202732b165f"
-  integrity sha512-9Ke85fVLQDHc0JNKqfizrMqs4a5rDjz1SNDlyIoNZqcYGajr5ETzK75Z7UcxK1iO6MsUcoeoH6SJoEkXJcHjQg==
-  dependencies:
-    "@effection/events" "^0.7.4"
-    effection "^0.7.0"
-
-"@effection/node@^0.8.0":
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/@effection/node/-/node-0.8.0.tgz#a73069ecd60c628d1aa2b9e61a8ff930be8faa7c"
-  integrity sha512-p+6QQINBvGO0ev05LKRMlcsC567ubfBfEefkzNRBNWb1drumOMtD8FMjZjWCB/brPLPO5un7CAOErorfCHvkaA==
-  dependencies:
-    "@effection/events" "^0.7.4"
-    effection "^0.7.0"
-
-"@effection/node@^0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@effection/node/-/node-0.9.0.tgz#3944e1d9769408e6cdace2f94c2d0f88d29a042f"
-  integrity sha512-ujg3cX3Pl+Bo8Eixfy+Mtajp9hFQgbJXkXBF9fK+LW4Rb/AMmZoPC/rY5e6l+BOyb1ldwiF6/1vpnpBs/MRtpg==
-  dependencies:
-    "@effection/channel" "^0.6.7"
-    "@effection/events" "^0.7.8"
-    "@effection/subscription" "^0.11.1"
-    effection "^0.7.0"
-    shellwords "^0.1.1"
-
 "@effection/node@^0.9.1":
   version "0.9.1"
   resolved "https://registry.yarnpkg.com/@effection/node/-/node-0.9.1.tgz#a563539c8be6f16795f713c27c756660f60f24df"
@@ -2225,13 +2178,6 @@
     ctrlc-windows "^1.0.0"
     effection "^0.7.0"
     shellwords "^0.1.1"
-
-"@effection/subscription@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-0.10.0.tgz#72c31eec3b4e27e1ee84735842272b09c3474df4"
-  integrity sha512-RFKGGjUW96HwpaWSmQ7l26fo1LryRatJdOYLM4VIWzY3uQY7g4HmPrzGQPfxUP2tKlsaCZLiNVo03TIG+Ah8jw==
-  dependencies:
-    effection "^0.7.0"
 
 "@effection/subscription@^0.11.0":
   version "0.11.0"
