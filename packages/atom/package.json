@@ -26,7 +26,6 @@
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
     "@types/ramda": "types/npm-ramda#dist",
-    "test:types": "dtslint test-dts",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
     "ts-node": "*"
