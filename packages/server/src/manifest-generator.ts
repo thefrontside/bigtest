@@ -47,7 +47,7 @@ export const manifestGenerator: Service<ManifestGeneratorStatus, ManifestGenerat
   let serviceStatus = serviceSlice.slice('status');
 
   assert(!!options.files, 'no files options in ManifestGeneratorOptions');
-  assert(!!options.destinationPath, 'no destinationApth in ManifestGeneratorOptions');
+  assert(!!options.destinationPath, 'no destinationPath in ManifestGeneratorOptions');
 
   let { files, mode, destinationPath } = options;
 
