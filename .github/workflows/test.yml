@@ -37,7 +37,7 @@ jobs:
   test:
     runs-on: ${{ matrix.platform }}
     timeout-minutes: 30
-    name: ${{ matrix.package }}
+    name: ${{ matrix.package }} (${{ matrix.platform }})
     needs: prepack
     strategy:
       fail-fast: false
