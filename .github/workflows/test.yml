@@ -42,7 +42,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest]
+        platform: [ubuntu-latest, windows-latest]
         # keeping platform as a single item so test-*.yml files can be identical except for this value
         package: [agent, cli, effection, logging, bundler, project, server, suite, interactor, todomvc, atom, webdriver]
     steps:
