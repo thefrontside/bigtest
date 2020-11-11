@@ -118,7 +118,7 @@ describe("@bigtest/agent", function() {
           if(error && stack && logEvents) {
             expect(error.name).toEqual('Error');
             expect(error.message).toEqual('boom!');
-            expect(stack[0].source && stack[0].source.fileName).toContain('/test/fixtures/manifest.js');
+            expect(stack[0].source && stack[0].source.fileName).toContain('fixtures/manifest.js');
             expect(logEvents).toEqual(expect.arrayContaining([
               expect.objectContaining({ type: "message", message: { level: 'log', text: 'this is a good step' } }),
               expect.objectContaining({ type: "message", message: { level: 'log', text: 'some log message here' } }),
