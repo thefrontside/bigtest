@@ -32,7 +32,12 @@ describe("@bigtest/agent", function() {
     expect(fixtureManifest).toBeDefined();
   });
 
-  this.timeout(process.env.CI ? 60000 : 10000);
+  if (process.platform === 'win32') {
+    this.timeout(process.env.CI ? 120000 : 30000);
+  } else {
+    this.timeout(process.env.CI ? 60000 : 10000);
+  }
+
 
   describe('config', () => {
     it('has an agent url where it will server the agent application', () => {
