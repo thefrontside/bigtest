@@ -1,5 +1,6 @@
 import { Operation } from 'effection';
 import { Test, TestResult } from '@bigtest/suite';
+import { Mailbox } from '@bigtest/effection';
 import { Atom } from '@bigtest/atom';
 import { AgentState, OrchestratorState, BundlerState } from './orchestrator/state';
 import { TestRunAggregator } from './result-aggregator/test-run';
@@ -68,6 +69,10 @@ export class AgentRunner implements Runner {
     let bundler: BundlerState = yield bundlerSlice.once((state) => state.type === 'GREEN' || state.type === 'ERRORED');
 
     if(bundler.type === 'GREEN') {
+      let events = yield Mailbox.from(this.options.agents.match({ testRunId }));
+
+      events.setMaxListeners(100000);
+
       let manifest = this.options.atom.get().manifest;
 
       let appUrl = `http://localhost:${this.options.proxyPort}`;
@@ -119,7 +124,7 @@ export class AgentRunner implements Runner {
         this.options.agents.send({ type: 'run', agentId, appUrl, manifestUrl, testRunId, tree: test, stepTimeout });
       }
 
-      let aggregator = new TestRunAggregator(testRunSlice, { testRunId, ...this.options });
+      let aggregator = new TestRunAggregator(testRunSlice, { testRunId, events });
 
       yield aggregator.run();
     }
