@@ -9,7 +9,7 @@ const defaultLocator: LocatorFn<Element> = (element) => element.textContent || "
 
 
 /**
- * Create a custom interactor. Due to TypeInference issues, this creates an
+ * Create a custom interactor. Due to TypeScript inference issues, this creates an
  * {@link InteractorBuilder}, which you will need to create the actual
  * interactor. See {@link InteractorSpecification} for detailed breakdown of
  * available options for the builder.

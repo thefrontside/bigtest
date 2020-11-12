@@ -7,6 +7,20 @@ export type ActionFn<E extends Element> = (interactor: InteractorInstance<E, {},
 
 export type FilterFn<T, E extends Element> = (element: E) => T;
 
+/**
+ * A function which given an element returns a string which can be used to
+ * locate the element, for example by returning the elements text content, or
+ * an attribute value.
+ *
+ * ### Example
+ *
+ * ``` typescript
+ * const inputValue: LocatorFn<HTMLInputElement> = (element) => element.value;
+ * ```
+ *
+ * @param element The element to extract a locator out of
+ * @typeParam E The type of the element that the locator function operates on
+ */
 export type LocatorFn<E extends Element> = (element: E) => string;
 
 export type FilterObject<T, E extends Element> = {
@@ -19,9 +33,18 @@ export type Filters<E extends Element> = Record<string, FilterFn<unknown, E> | F
 export type Actions<E extends Element> = Record<string, ActionFn<E>>;
 
 export type InteractorSpecification<E extends Element, F extends Filters<E>, A extends Actions<E>> = {
+  /**
+   * The CSS selector that this interactor uses to find matching elements
+   */
   selector?: string;
   actions?: A;
   filters?: F;
+  /**
+   * A function which returns a string value for a matched element, which can
+   * be used to locate a specific instance of this interactor. The `value`
+   * parameter of an {@link InteractorConstructor} must match the value
+   * returned from the locator function.
+   */
   locator?: LocatorFn<E>;
 }
 
