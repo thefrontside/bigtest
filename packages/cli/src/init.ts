@@ -23,7 +23,7 @@ export function* init(configFile: string): Operation<void> {
     options = JSON.parse(yield fs.readFile(path.resolve(configFile)));
   } catch {
     options = {
-      port: 24000,
+      port: 28000,
       launch: ['chrome.headless']
     };
   }
@@ -50,7 +50,7 @@ export function* init(configFile: string): Operation<void> {
     options.app.env = {
       PORT: yield prompt.number('Which port would you like to run your application on?', {
         name: 'app.env.PORT',
-        defaultValue: Number(options.app.env?.PORT) || 3000,
+        defaultValue: Number(options.app.env?.PORT) || ((options.port || 0) + 1),
         min: 0,
         max: 65535,
       })
