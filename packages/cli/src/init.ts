@@ -23,7 +23,7 @@ export function* init(configFile: string): Operation<void> {
     options = JSON.parse(yield fs.readFile(path.resolve(configFile)));
   } catch {
     options = {
-      port: 24000,
+      port: 28000,
       launch: ['chrome.headless']
     };
   }
