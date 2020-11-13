@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@bigtest/cli": "0.15.2",
-    "@bigtest/interactor": "0.21.0",
+    "@bigtest/interactor": "mk_cypress",
     "@bigtest/suite": "0.11.0"
   },
   "volta": {
