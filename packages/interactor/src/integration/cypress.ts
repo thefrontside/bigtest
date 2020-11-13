@@ -1,33 +1,41 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { bigtestGlobals } from '@bigtest/globals';
+/// <reference types="cypress" />
+import { bigtestGlobals, RunnerState } from '@bigtest/globals';
+import { Interaction, ReadonlyInteraction } from '../interaction';
 
-declare const Cypress: any;
-declare const cy: any;
-
-function interact(interaction: any) {
+function interact(
+  interaction: Interaction<void> | ReadonlyInteraction<void>,
+  runnerState: RunnerState
+) {
+  bigtestGlobals.runnerState = runnerState;
   return cy.document({ log: false }).then((doc: Document) => {
     bigtestGlobals.document = doc;
     return interaction;
+  }).then(() => {
+    Cypress.log({
+      displayName: runnerState,
+      message: interaction.description
+    });
   })
 }
 
-Cypress.Commands.add('do', (interaction: { description: any }) => {
-  bigtestGlobals.runnerState = 'step';
-  // tagging the log into a then will nest it underneath the interact thus resulting in "- step" as opposed to "step" but we can't turn the command into a promise to await the interact function.
-  interact(interaction).then(()=> {
-    Cypress.log({
-      displayName: 'step',
-      message: interaction.description
-    })
-  });  
-});
-
-Cypress.Commands.add('expect', (interaction: { description: any }) => {
-  bigtestGlobals.runnerState = 'assertion';
-  interact(interaction).then(()=> {
-    Cypress.log({
-      displayName: 'assertion',
-      message: interaction.description
-    })
-  });  
-});
+if (typeof Cypress !== 'undefined' ) {
+  Cypress.Commands.add('do', (
+    interaction: Interaction<void> | Interaction<void>[]
+  ) => {
+    if(Array.isArray(interaction)){
+      interaction.map(interaction => interact(interaction, 'step'));
+    } else {
+      interact(interaction, 'step');
+    }
+  });
+  
+  Cypress.Commands.add('expect', (
+    interaction: ReadonlyInteraction<void> | ReadonlyInteraction<void>[]
+  ) => {
+    if(Array.isArray(interaction)){
+      interaction.map(interaction => interact(interaction, 'assertion'));
+    } else {
+      interact(interaction, 'assertion');
+    }
+  });
+}

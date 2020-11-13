@@ -15,4 +15,4 @@ export { RadioButton } from './definitions/radio-button';
 export { Select } from './definitions/select';
 export { MultiSelect } from './definitions/multi-select';
 
-export * as CypressCommands from './integration/cypress';
+import './integration/cypress';
