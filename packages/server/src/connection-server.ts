@@ -1,11 +1,9 @@
 import { Operation, spawn } from 'effection';
 import { subscribe, ChainableSubscription } from '@effection/subscription';
-import { Mailbox } from '@bigtest/effection';
+import { Mailbox, DuplexChannel } from '@bigtest/effection';
 import { Atom } from '@bigtest/atom';
 import { OrchestratorState } from './orchestrator/state';
 import { AgentConnection, createAgentHandler, Command, TestEvent } from '@bigtest/agent';
-
-import { DuplexChannel } from './duplex';
 
 export type Incoming = TestEvent & { agentId: string };
 export type Outgoing = Command & { agentId: string };

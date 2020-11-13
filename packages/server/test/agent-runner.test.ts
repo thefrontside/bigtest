@@ -1,11 +1,10 @@
 import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 
-import { Mailbox } from '@bigtest/effection';
+import { Mailbox, DuplexChannel, duplexChannel } from '@bigtest/effection';
 import { Atom } from '@bigtest/atom';
 
 import { actions, getTestProjectOptions } from './helpers';
-import { duplexChannel, DuplexChannel } from '../src/duplex';
 import { AgentRunner, Runner } from '../src/runner';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { Incoming as ConnectionIncoming, Outgoing as ConnectionOutgoing } from '../src/connection-server';

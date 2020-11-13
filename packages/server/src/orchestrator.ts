@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { fork, Operation, spawn } from 'effection';
-import { Mailbox } from '@bigtest/effection';
+import { Mailbox, duplexChannel } from '@bigtest/effection';
 import { AgentServerConfig } from '@bigtest/agent';
 import { Atom } from '@bigtest/atom';
 import { ProjectOptions } from '@bigtest/project';
@@ -16,7 +16,6 @@ import { createManifestServer } from './manifest-server';
 import { createLogger } from './logger';
 import { OrchestratorState } from './orchestrator/state';
 import { AgentRunner } from './runner';
-import { duplexChannel } from './duplex';
 
 type OrchestratorOptions = {
   atom: Atom<OrchestratorState>;
