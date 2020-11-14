@@ -16,10 +16,10 @@
     "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\"",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "build": "yarn prepack",
-    "prepack": "rm -rf dist && yarn mkdirp dist -p && cd app && cp app.package.json package.json && react-scripts build && cd .. && mv app/build dist/app && tsc --outdir dist --module commonjs --declaration --sourcemap && chmod a+x dist/start.js"
+    "prepack": "rm -rf dist && yarn mkdirp dist -p && cd app && cp app.package.json package.json && react-scripts build && cd .. && mv app/build dist/app && tsc --outdir dist --module commonjs --declaration --sourcemap"
   },
   "bin": {
-    "bigtest-todomvc": "dist/start.js"
+    "bigtest-todomvc": "bin/start.js"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^1.1.2",
