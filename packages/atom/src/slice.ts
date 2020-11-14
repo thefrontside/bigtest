@@ -8,14 +8,15 @@ import { Atom } from "./atom";
 import { atRecord } from 'monocle-ts/lib/At/Record';
 
 
-export class Slice<S, A> implements Subscribable<S, void> {
+export class Slice<S, A extends Record<string, unknown>> implements Subscribable<S, void> {
   private constructor(private atom: Atom<A>, private lens: Lens<A, S>, private path: (keyof A)[]) {}
 
-static fromPath<S, A>(a: Atom<S>): Sliceable<S, A> {
-  return <P extends keyof S>(...path: [P]) => {
-    let lens = Lens.fromPath<S>()(path);
+static fromPath<S, A extends Record<string, unknown>>(a: Atom<A>): Sliceable<S, A> {
+  return <P extends keyof A>(...path: [P]) => {
+    let lens = Lens.fromPath<A>()(path);
+    // TODO: should be a keyof constraint
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return new Slice(a, lens, path) as any;
+    return new Slice(a, lens as any, path as any) as any;
   }
 }
 

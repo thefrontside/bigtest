@@ -4,15 +4,17 @@ import { subscribe, Subscribable, SymbolSubscribable, Subscription } from '@effe
 import { Slice } from "./slice";
 import { Sliceable } from './sliceable';
 import { unique } from './unique';
+import * as R from "fp-ts/lib/ReadonlyRecord"
 
-export class Atom<A> implements Subscribable<A,undefined> {
+export class Atom<A extends Record<string, unknown>> implements Subscribable<A,undefined> {
   private readonly initial: A;
-  private state: A;
   private states = new Channel<A>();
+  private state: A;
 
 
   constructor(initial: A) {
-    this.initial = this.state = initial;
+    this.initial = initial;
+    this.state = R.fromRecord(initial) as A;
   }
 
   setMaxListeners(value: number) {
@@ -20,11 +22,11 @@ export class Atom<A> implements Subscribable<A,undefined> {
   }
 
   get(): A {
-    return this.state;
+    return this.state
   }
 
   set(value: A) {
-    this.state = value;
+    this.state = R.fromRecord(value) as A;
     this.states.send(value);
   }
 
