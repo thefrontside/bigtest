@@ -1,6 +1,6 @@
 import { Slice } from './slice';
 
-export type Sliceable<S, A> = {
+export type Sliceable<S, A extends Record<string, unknown>> = {
   /* 
   * Brute foce overload to allow strong typing of the string path syntax
   * for every level deep we want to go in the slice there will need to be an overload 
