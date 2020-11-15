@@ -15,6 +15,8 @@ import injectProcessEnv from 'rollup-plugin-inject-process-env';
 import babel from '@rollup/plugin-babel';
 import { BundlerMessage } from './types';
 import { DEFAULT_EXTENSIONS } from '@babel/core';
+import { match } from './match';
+import { pipe } from "fp-ts/lib/function"
 
 interface BundleOptions {
   entry: string;
@@ -80,7 +82,6 @@ function prepareWatchOptions(bundle: BundleOptions, channel: Channel<BundlerMess
     ...prepareInputOptions(bundle, channel),
     output: prepareOutputOptions(bundle),
     watch: {
-      // Rollup types are wrong; `watch.exclude` allows RegExp[]
       exclude: [/node_modules/ as unknown as string]
     },
   }
@@ -114,16 +115,13 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
         .map(([event]) => event as RollupWatcherEvent)
         .filter(event => ['START', 'END', 'ERROR'].includes(event.code))
         .map(event => {
-          switch (event.code) {
-            case 'START':
-              return { type: 'START' } as const;
-            case 'END':
-              return { type: 'UPDATE' } as const;
-            case 'ERROR':
-              return { type: 'ERROR', error: event.error } as const;
-            default:
-              throw new Error(`unexpect event ${event.code}`);
-          }
+          return match<RollupWatcherEvent, BundlerMessage>(event)('code')({
+            ['START']: () => ({ type: 'START' }) as const,
+            ['END']: () => ({ type: 'UPDATE' } as const),
+            ['ERROR']: ({ error }) => ({ type: 'ERROR', error } as const),
+            ['BUNDLE_START']: () => ({ type: 'START' }),
+            ['BUNDLE_END']: () => ({ type: 'START' }),
+          })
         });
 
       yield messages.forEach(function* (message) {
