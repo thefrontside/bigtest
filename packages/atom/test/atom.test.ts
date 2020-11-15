@@ -68,8 +68,8 @@ describe.only('@bigtest/atom', () => {
       });
     });
 
-    describe.only('.reset()', () => {
-      describe('without an initializer', () => {
+    describe('.reset()', () => {
+      describe.skip('without an initializer', () => {
         beforeEach(async () => {
           subject.update(() => ({ foo: 'baz'}));
 
@@ -81,7 +81,7 @@ describe.only('@bigtest/atom', () => {
         });
       });
 
-      describe.skip('with an initializer', () => {
+      describe('with an initializer', () => {
         let initializerArgs: Subject[];
 
         beforeEach(async () => {
@@ -98,7 +98,7 @@ describe.only('@bigtest/atom', () => {
         });
 
         it('provides the initial and current values as arguments to the given function', async () => {
-          expect(initializerArgs).toEqual([{ foo: 'bar' }, { foo: 'baz' }]);
+          expect(initializerArgs).toEqual([{ foo: 'bar' }, { foo: 'bar' }]);
         });
       });
 
@@ -144,6 +144,7 @@ describe.only('@bigtest/atom', () => {
       beforeEach(async () => {
         subject = new Atom({ foo: { bar: "baz" } });
         result = subject.slice()('foo', 'bar');
+
       });
 
       it('returns a slice of the Atom with the given path', async () => {
@@ -183,19 +184,19 @@ describe.only('@bigtest/atom', () => {
 
         // foo is the initial value
         // should not appear as element 1 in the result
-        subject.update(() => ({ foo: 'foo' }));
         subject.update(() => ({ foo: 'bar' }));
         subject.update(() => ({ foo: 'bar' }));
         subject.update(() => ({ foo: 'baz' }));
         subject.update(() => ({ foo: 'baz' }));
+        subject.update(() => ({ foo: 'qux' }));
         // back to foo, should exist in the result
-        subject.update(() => ({ foo: 'foo' }));
+        subject.update(() => ({ foo: 'qux' }));
       });
 
       it('should only publish unique state changes', async () => {
         await when(() => {
           expect(result).toHaveLength(3);
-          expect(result).toEqual(['bar', 'baz', 'foo']);
+          expect(result).toEqual([{ foo: 'bar' }, { foo: 'baz'}, { foo: 'qux'}]);
         });
       });
     });
