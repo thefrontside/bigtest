@@ -10,7 +10,7 @@ export type NonTagType<A, Tag extends keyof A, Type extends string> = Omit<
 >;
 
 type Matchers<A extends { [k in Tag]: string }, Tag extends string, R> = {
-  [K in A[Tag]]: (v: NonTagType<A, Tag, K>) => R;
+  [K in A[Tag]]?: (v: NonTagType<A, Tag, K>) => R;
 };
 
 export const match = <Tag extends string>(tag: Tag) => <

@@ -116,11 +116,11 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
         .map(([event]) => event as RollupWatcherEvent)
         .filter(event => ['START', 'END', 'ERROR'].includes(event.code))
         .map(event => {
-          return match<RollupWatcherEvent, BundlerMessage>(event)('code')({
-            ['START']: () => ({ type: 'START' }) as const,
-            ['END']: () => ({ type: 'UPDATE' } as const),
-            ['ERROR']: ({ error }) => ({ type: 'ERROR', error } as const),
-          })
+          return match('code')<RollupWatcherEvent, BundlerMessage>({
+            START: () => ({ type: 'START' }) as const,
+            END: () => ({ type: 'UPDATE' } as const),
+            ERROR: ({ error }) => ({ type: 'ERROR', error } as const),
+          })(event)
         });
 
       yield messages.forEach(function* (message) {

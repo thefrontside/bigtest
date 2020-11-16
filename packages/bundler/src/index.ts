@@ -1,2 +1,2 @@
 export { Bundler } from './bundler';
-export { BundlerError, BundlerWarning } from './types';
+export type { BundlerError, BundlerWarning, BundlerMessage } from './types';

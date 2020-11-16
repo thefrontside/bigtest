@@ -1,8 +1,8 @@
 import { describe, it } from 'mocha';
-import expect from 'expect'
+import * as expect from 'expect'
 import { match } from '../src';
 
-export type WatcherEvent =
+type WatcherEvent =
   | { code: "START" }
   | {
       code: "BUNDLE_END";
@@ -11,7 +11,7 @@ export type WatcherEvent =
     }
   | { code: "ERROR"; error: Error };
 
-export type BundlerMessage =
+type BundlerMessage =
   | { type: "START" }
   | { type: "UPDATE"; duration: number; result: "good" | "bad" }
   | { type: "ERROR"; error: Error };
