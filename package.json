@@ -9,6 +9,7 @@
   "workspaces": {
     "packages": [
       "packages/eslint-plugin",
+      "packages/matcher",
       "packages/effection",
       "packages/client",
       "packages/effection-express",

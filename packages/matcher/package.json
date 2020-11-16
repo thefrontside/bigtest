@@ -1,0 +1,32 @@
+{
+  "name": "@bigtest/matcher",
+  "version": "0.1.0",
+  "description": "Match an aglebraic data type's string tag with a function",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.js",
+  "repository": "https://github.com/thefrontside/bigtest.git",
+  "author": "Frontside Engineering <engineering@frontside.com>",
+  "license": "MIT",
+  "files": [
+    "dist/*",
+    "README.md"
+  ],
+  "scripts": {
+    "lint": "eslint \"{src,test}/**/*.ts\"",
+    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "prepack": "tsc --outdir dist --declaration --sourcemap --module commonjs"
+},
+  "devDependencies": {
+    "@frontside/eslint-config": "^1.1.2",
+    "@frontside/typescript": "^1.0.1",
+    "@types/mocha": "^7.0.1",
+    "@types/node": "^13.13.4",
+    "expect": "^24.9.0",
+    "mocha": "^6.2.2",
+    "ts-node": "*"
+  },
+  "volta": {
+    "node": "12.16.0",
+    "yarn": "1.19.1"
+  }
+}

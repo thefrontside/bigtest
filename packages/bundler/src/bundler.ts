@@ -17,6 +17,7 @@ import { BundlerMessage } from './types';
 import { DEFAULT_EXTENSIONS } from '@babel/core';
 import { match } from './match';
 import { pipe } from "fp-ts/lib/function"
+import { match } from '@bigtest/matcher';
 
 interface BundleOptions {
   entry: string;
@@ -119,8 +120,6 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
             ['START']: () => ({ type: 'START' }) as const,
             ['END']: () => ({ type: 'UPDATE' } as const),
             ['ERROR']: ({ error }) => ({ type: 'ERROR', error } as const),
-            ['BUNDLE_START']: () => ({ type: 'START' }),
-            ['BUNDLE_END']: () => ({ type: 'START' }),
           })
         });
 
