@@ -8,7 +8,7 @@
 
 const { spawn } = require('effection');
 const { main, exec } = require('@effection/node');
-const { chmod, rmdir, mkdir, copyFile, rename } = require('fs').promises;
+const { rmdir, mkdir, copyFile, rename } = require('fs').promises;
 
 main(function*() {
   yield rmdir('./dist', { recursive: true });
