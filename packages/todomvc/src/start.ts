@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import { todomvc } from './index';
 import { main } from '@effection/node';
 

@@ -16,10 +16,10 @@
     "test": "mocha -r ts-node/register \"test/{,!(fixtures)/**}/*.test.ts\"",
     "mocha": "mocha -r ts-node/register",
     "bigtest": "ts-node src/index.ts",
-    "prepack": "tsc --outdir dist --module commonjs && chmod +x dist/bin/bigtest.js"
+    "prepack": "tsc --outdir dist --module commonjs"
   },
   "bin": {
-    "bigtest": "dist/bin/bigtest.js"
+    "bigtest": "bin/bigtest.js"
   },
   "devDependencies": {
     "@bigtest/todomvc": "^0.5.5",
