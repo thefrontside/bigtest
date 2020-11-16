@@ -1,5 +1,6 @@
 {
   "out": "docs",
   "name": "BigTest",
-  "entryPoints": "src/index.ts"
+  "entryPoints": "src/index.ts",
+  "readme": "none"
 }
