@@ -3,40 +3,30 @@ module.exports = {
     {
       type: 'category',
       label: 'Getting Started',
-      items: ['getting-started/installation', 'getting-started/your-first-test'],
+      items: [
+        'getting-started/quick-start',
+        'getting-started/why-bigtest'
+      ]
     },
     {
       type: 'category',
-      label: 'Guides',
+      label: 'Interactors',
       items: [
-        {
-          type: 'category',
-          label: 'Interactors',
-          items: [
-            'interactors/introduction',
-            'interactors/built-in',
-            'interactors/custom',
-          ]
-        },
-        {
-          type: 'category',
-          label: 'Development Workflow',
-          items: [
-            'development/running-tests',
-            'development/ci-setup'
-          ]
-        },
-        'browser-config',
-        'code-coverage'
-      ],
+        'interactors/overview',
+        'interactors/built-in-dom',
+        'interactors/locators-filters-actions',
+        'interactors/write-your-own',
+        'interactors/asynchronous'
+      ]
     },
     {
       type: 'category',
-      label: 'Concepts',
+      label: 'Integrations',
       items: [
-        'concepts/test-tree',
-        'concepts/steps-assertions'
+        'integrations/overview',
+        'integrations/cypress',
+        'integrations/jest'
       ]
     }
-  ],
+  ]
 };
