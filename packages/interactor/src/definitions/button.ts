@@ -85,6 +85,8 @@ export interface ButtonActions extends ActionMethods<ButtonElement, typeof actio
  * - {@link ButtonActions}: actions callable on instances of this interactor
  * - {@link InteractorConstructor}: how to create an interactor instance from this constructor
  * - {@link Interactor}: interface of instances of this interactor in addition to its actions
+ *
+ * @category Interactor
  */
 export const Button: ButtonConstructor = createInteractor<ButtonElement>('button')({
   selector: 'button,input[type=button],input[type=submit],input[type=reset],input[type=image]',
