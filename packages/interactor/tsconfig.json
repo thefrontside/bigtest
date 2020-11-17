@@ -2,7 +2,8 @@
   "extends": "@frontside/tsconfig",
   "compilerOptions": {
     "esModuleInterop": true,
-    "types": ["cypress"]
+    "types": ["cypress"],
+    "sourceMap": false
   },
   "include": [
     "src/**/*.ts",

@@ -1903,17 +1903,6 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@bigtest/interactor@mk_cypress":
-  version "0.21.0-85cbe9db"
-  resolved "https://registry.yarnpkg.com/@bigtest/interactor/-/interactor-0.21.0-85cbe9db.tgz#28c9a226880d1a74854660d4784780dfc272cc0f"
-  integrity sha512-vHXGUHbtB6QrvgKAJennU3pvZ3Xz5f3TJjB7lec3IKUWarme6tCmej+fL+IGInmCZQaBPSDguugzbmHx8/J/GA==
-  dependencies:
-    "@bigtest/globals" "^0.7.2"
-    "@bigtest/performance" "^0.5.0"
-    change-case "^4.1.1"
-    element-is-visible "^1.0.0"
-    lodash.isequal "^4.5.0"
-
 "@bigtest/parcel@^0.5.2":
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/@bigtest/parcel/-/parcel-0.5.2.tgz#3ed6d0af2e5ffa809063200834720bdae775373c"
@@ -5415,6 +5404,7 @@ cross-spawn@^6.0.0, cross-spawn@^6.0.4, cross-spawn@^6.0.5:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 cross-spawn@^7.0.1, cross-spawn@^7.0.2, cross-spawn@^7.0.3:
 =======
 <<<<<<< HEAD
@@ -5426,6 +5416,9 @@ cross-spawn@^7.0.0, cross-spawn@^7.0.2:
 =======
 cross-spawn@^7.0.0, cross-spawn@^7.0.2:
 >>>>>>> 72df3fde... Finish typing cypress
+=======
+cross-spawn@^7.0.0, cross-spawn@^7.0.1, cross-spawn@^7.0.2:
+>>>>>>> bd8f04ef... yarn.lock
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.3.tgz#f73a85b9d5d41d045551c177e2882d4ac85728a6"
   integrity sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==
@@ -10136,11 +10129,6 @@ lodash@4.17.19, "lodash@>=3.5 <5", lodash@^4.17.11, lodash@^4.17.13, lodash@^4.1
   version "4.17.19"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
   integrity sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==
-
-lodash@^4.17.19:
-  version "4.17.20"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
-  integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
 
 log-symbols@2.2.0, log-symbols@^2.2.0:
   version "2.2.0"
