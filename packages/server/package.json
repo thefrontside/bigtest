@@ -16,7 +16,7 @@
     "test:debug": "cross-env LOG_LEVEL=debug yarn test",
     "mocha": "mocha ./test/setup",
     "test:app:start": "ts-node ./bin/todomvc.ts",
-    "generate:schema": "env BIGTEST_GENERATE_SCHEMA=true ts-node ./src/schema.ts",
+    "generate:schema": "node generate-schema.js",
     "prepack": "yarn generate:schema && tsc --outdir dist"
   },
   "files": [
@@ -62,7 +62,7 @@
     "@bigtest/webdriver": "^0.6.4",
     "@effection/events": "^0.7.8",
     "@effection/fetch": "^0.1.2",
-    "@effection/node": "^0.9.0",
+    "@effection/node": "^0.9.1",
     "@effection/subscription": "^0.11.0",
     "@nexus/schema": "^0.13.1",
     "assert-ts": "^0.2.2",

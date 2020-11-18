@@ -32,7 +32,12 @@ describe("@bigtest/agent", function() {
     expect(fixtureManifest).toBeDefined();
   });
 
-  this.timeout(process.env.CI ? 60000 : 10000);
+  if (process.platform === 'win32') {
+    this.timeout(process.env.CI ? 120000 : 30000);
+  } else {
+    this.timeout(process.env.CI ? 60000 : 10000);
+  }
+
 
   describe('config', () => {
     it('has an agent url where it will server the agent application', () => {
@@ -113,7 +118,7 @@ describe("@bigtest/agent", function() {
           if(error && stack && logEvents) {
             expect(error.name).toEqual('Error');
             expect(error.message).toEqual('boom!');
-            expect(stack[0].source && stack[0].source.fileName).toContain('/test/fixtures/manifest.js');
+            expect(stack[0].source && stack[0].source.fileName).toContain('fixtures/manifest.js');
             expect(logEvents).toEqual(expect.arrayContaining([
               expect.objectContaining({ type: "message", message: { level: 'log', text: 'this is a good step' } }),
               expect.objectContaining({ type: "message", message: { level: 'log', text: 'some log message here' } }),

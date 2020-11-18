@@ -25,7 +25,6 @@
   },
   "devDependencies": {
     "@bigtest/interactor": "^0.21.0",
-    "@bigtest/parcel": "^0.5.2",
     "@bigtest/suite": "^0.11.0",
     "@bigtest/webdriver": "^0.6.4",
     "@frontside/eslint-config": "^1.1.2",

@@ -22,14 +22,15 @@ import { WebDriver, Options, connect } from './web-driver';
  * new process for each local driver.
  */
 export function * Local(options: Options): Operation<WebDriver> {
-
-  let driverName = driverNameFor(options.browserName);
-
   let port: number = yield findAvailablePortNumber();
   let driverURL = `http://localhost:${port}`;
 
+  let pkg = yield import(driverNameFor(options.browserName));
+
+  let bin = pkg.path.replace(/\\/g, '/');
+
   let driver = yield resource(new WebDriver(driverURL), function*() {
-    yield daemon(`${driverName} --port=${port}`);
+    yield daemon(`${bin} --port=${port}`);
 
     yield;
   });

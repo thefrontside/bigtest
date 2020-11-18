@@ -43,15 +43,17 @@ describe("Running a local wedriver", () => {
     });
   });
 
-  describe('with geckodriver', () => {
-    beforeEach(async () => {
-      driver = await spawn(Local({ browserName: 'firefox', headless: true }));
-      await spawn(driver.navigateTo(serverURL));
-    });
+  if (process.platform !== 'win32') {
+    describe('with geckodriver', () => {
+      beforeEach(async () => {
+        driver = await spawn(Local({ browserName: 'firefox', headless: true }));
+        await spawn(driver.navigateTo(serverURL));
+      });
 
-    it('can navigate to a url', () => {
-      expect(latestRequest).toBeDefined();
-      expect(latestRequest.headers['user-agent']).toMatch('Firefox');
+      it('can navigate to a url', () => {
+        expect(latestRequest).toBeDefined();
+        expect(latestRequest.headers['user-agent']).toMatch('Firefox');
+      });
     });
-  });
+  }
 })
