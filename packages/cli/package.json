@@ -27,7 +27,7 @@
     "@effection/events": "^0.7.8",
     "@effection/subscription": "^0.11.0",
     "@frontside/eslint-config": "^1.1.2",
-    "@frontside/typescript": "^1.0.1",
+    "@frontside/typescript": "^1.1.0",
     "@types/capture-console": "1.0.0",
     "@types/istanbul-lib-coverage": "^2.0.3",
     "@types/istanbul-lib-report": "^3.0.0",
