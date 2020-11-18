@@ -1,6 +1,6 @@
 ---
 id: overview
-title: Interactors Overview
+title: Overview
 ---
 
 Interactors Overview
