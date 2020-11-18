@@ -1,5 +1,5 @@
 ---
-id: asynchronous-interactions
+id: asynchronous
 title: Asynchronous Interactions
 ---
 

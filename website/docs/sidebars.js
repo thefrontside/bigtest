@@ -24,8 +24,8 @@ module.exports = {
       label: 'Integrations',
       items: [
         'integrations/overview',
-        'integrations/cypress',
-        'integrations/jest'
+        'integrations/jest',
+        'integrations/cypress'
       ]
     }
   ]
