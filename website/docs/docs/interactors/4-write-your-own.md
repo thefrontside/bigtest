@@ -34,3 +34,12 @@ export default test('bigtest todomvc')
 _This was just for demonstration purposes as the [checkbox](/) interactor from bigtest is much more extensive and it's probably not great to use the classname property as a locator._
 
 Check out the API section to see the details of [createInteractor()](/).
+
+
+<!-- 
+- 1-2 sentences explaining that people should write their own interactors regularly, and why - they should do so
+- One example
+- What someone will learn
+- Writing your first interactor
+- Interactors for complex user interactions (radio button, 3rd party date picker). Make it clear here that if it’s hard to write an interactor, it might be an indicator of a problem with how something is written (like for accessibility) 
+-->
