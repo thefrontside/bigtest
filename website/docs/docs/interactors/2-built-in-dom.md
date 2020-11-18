@@ -3,7 +3,11 @@ id: built-in-dom
 title: Built-in Interactors
 ---
 
-Currently, these are the eight default Interactors that come with BigTest:
+<!-- 
+- 1-2 sentences of what they are
+-->
+
+These are the eight default interactors that come out-of-the-box with bigtest:
 - [Button](/)
 - [CheckBox](/)
 - [Heading](/)
@@ -12,6 +16,50 @@ Currently, these are the eight default Interactors that come with BigTest:
 - [RadioButton](/)
 - [Select](/)
 - [TextField](/)
+
+<!-- 
+- List of all available interactors
+  - there is also Page interactor but idk if that should be mentioned here 
+  - Either the list above links to API or we have an example of each. Or maybe both.
+    - I think a link to the API would be best
+-->
+
+As you might have seen in the [Quick Start](/) section, you can import any of the interactors directly from the bigtest package:
+
+```js
+import {
+  Button,
+  Heading,
+  TextField
+} from 'bigtest';
+
+describe('using interactors', () => {
+  it('signs in', async () => {
+    await TextField('Username').fillIn('batman');
+    await TextField('Password').fillIn('abc123');
+    await Button('Sign In').click();
+    await Heading('Welcome Batman').exists();
+    await Button('Log Out').exists();
+  })
+})
+```
+
+<!--
+- One example
+  - Because the focus is on just showing people how to import, I didn't think it would be necessary to show both jest and cypress here.
+  - and also we're covering locators, filters, actions in the next section so i kept the example simple.
+-->
+
+You can construct your own customer interactors which we cover in [Write Your Own Interactors](/) section. But first let's take a look at what locators, filters, and actions are. 
+
+<!-- 
+- Make sure to make it clear that people can and should write their own interactors.
+-->
+
+
+<!-- 
+below is from original doc draft. but they're mostly bigtest-runner related and goes over an example for filters which we're doing in the next section anyway
+-->
 
 In our example test in [Writing-your-first-test](https://frontside.com/), we show you how you can assert against a Heading Interactor:
 ```js
@@ -48,4 +96,3 @@ But say if hypothetically you have multiple `Submit` buttons, you can narrow dow
 Or if your button is an image and does not have text content, you can omit the locator argument and just use filters:
 ```js
 .step(Button({ id: 'login-submit-button' }).click())
-```
