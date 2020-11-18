@@ -1,6 +1,6 @@
 ---
 id: overview
-title: Integrations Overview
+title: Overview
 ---
 
 Integrations Overview
