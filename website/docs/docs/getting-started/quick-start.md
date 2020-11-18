@@ -29,12 +29,22 @@ tutorial using our sample app, [ToDo Sample App](#todo).
 
 First, install `bigtest` in your app:
 
-```
-$ yarn add -D bigtest
-$ npm install --save-dev bigtest
-```
-<!-- ToDo try out tabs here -->
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
+<Tabs
+  defaultValue="yarn"
+  values={[
+    {label: 'Yarn', value: 'yarn'},
+    {label: 'NPM', value: 'npm'}
+  ]}>
+  <TabItem value="yarn">
+    <pre><code>$ yarn add -D bigtest</code></pre>
+  </TabItem>
+  <TabItem value="npm">
+    <pre><code>$ npm install -D bigtest</code></pre>
+  </TabItem>
+</Tabs>
 
 
 ## Import Interactors in your test suite
