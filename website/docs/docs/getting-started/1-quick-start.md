@@ -58,7 +58,8 @@ If you are already using Jest or Cypress, here is how you can import the `Button
   defaultValue="jest"
   values={[
     {label: 'Jest', value: 'jest'},
-    {label: 'Cypress', value: 'cypress'}
+    {label: 'Cypress', value: 'cypress'},
+    {label: 'BigTest (alpha)', value: 'bigtest'}
   ]}>
   <TabItem value="jest">
 
@@ -69,7 +70,7 @@ If you are already using Jest or Cypress, here is how you can import the `Button
 
   import { Button } from 'bigtest';
 
-  describe('Jest with Interactors', () => {
+  describe('Interactors with Jest', () => {
     beforeEach(() => render(<App />));
 
     it('clicks button', async () => {
@@ -86,7 +87,7 @@ If you are already using Jest or Cypress, here is how you can import the `Button
   ```jsx
   import { Button } from 'bigtest';
 
-  describe('Cypress with Interactors', () => {
+  describe('Interactors with Cypress', () => {
     beforeEach(() => cy.visit('/'));
 
     it('clicks button', () => {
@@ -99,6 +100,19 @@ If you are already using Jest or Cypress, here is how you can import the `Button
       ])
     })
   })
+  ```
+
+  </TabItem>
+  <TabItem value="bigtest">
+
+  ```jsx
+  import { Button, Page, test } from 'bigtest';
+
+  export default test('BigTest')
+    .step(
+      Page.visit('/'),
+      Button('Sign In').click())
+    .assertion(Button('Log out').exists());
   ```
 
   </TabItem>
