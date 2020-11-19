@@ -1,4 +1,3 @@
-/// <reference types="../../../../src/integrations/" />
 import { TextField, Heading } from '../../../../src/';
 
 describe('Cypress with Interactors', () => {

@@ -1,3 +1,4 @@
+/// <reference types="." />
 import { bigtestGlobals, RunnerState } from '@bigtest/globals';
 import { Interaction, ReadonlyInteraction } from '../interaction';
 
