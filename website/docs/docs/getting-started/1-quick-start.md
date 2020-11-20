@@ -4,28 +4,20 @@ title: Quick Start
 slug: /
 ---
 
-BigTest DOM Interactors make writing UI tests easier, faster, and more reliable.
-When failures do occur, you get the highest order of precision so that you can
-diagnose what went wrong quickly.
+BigTest's Interactors make your UI tests easier to write, faster, and more reliable. You can use them across many different testing frameworks.
 
-By the end of this quick start, you will be testing your own app with Interactors.
+By the end of this quick start, you will be testing one of your own apps with Interactors.
 
-<!-- Links to places to get help or ask questions -->
+<!-- Todo Links to places to get help or ask questions -->
 
-<!-- 
-1-2 sentences saying what Interactors are. These sentences address the question “what is this for?” and “why is this valuable to me?”
-  - jonas' definition: Interactor: an object which describes a type of UI element in an application and provides actions to interact with elements of this type, as well as assertions to check against them. (note: the term interactor is actually a bit overloaded, since we use it to describe both the abstract definition of an interactor, and also a specific instance of it, i.e. Button vs Button("Submit"), my definition describes the former)
-  - from the detailed interactor docs notes: BigTest DOM Interactors make writing UI tests easier, faster, less flaky, and when failures do occur, provide you with the highest order of precision so that you can diagnose what went wrong quickly.
-
-1 sentence that says what you will accomplish by the end of the quickstart
--->
 
 ## Prerequisites
 
-- `npm` or `yarn`
-- Node 12
-- An app that uses Jest, Cypress, or BigTest. Or, you can follow along with this
-tutorial using our sample app, [BigTest TodoMVC](#todo).
+- [`npm`](https://www.npmjs.com/get-npm) or [`yarn`](https://classic.yarnpkg.com/en/docs/install)
+- [Node 12](https://nodejs.org/en/download/releases/)
+- A web app*
+
+*To follow along with this tutorial, you need an app that uses Jest, Cypress, or BigTest. You either can use your own app that you have already made, or you can follow along using our sample app, [BigTest TodoMVC](#todo).
 
 ## Installation
 
@@ -50,17 +42,13 @@ import TabItem from '@theme/TabItem';
 
 ## Import Interactors in your test suite
 
-Interactors can be used within many different testing frameworks.
-Click on the tabs below to see some examples!
+Interactors can do a lot, but let's keep things simple and start with testing one of the most common user interactions - a button click.
 
-We will start with one of the simplest user interactions.
-Find a test that has a button click in it.
+In your codebase, find a test that already has a button click in it.
 In that test, import the `Button` interactor from `bigtest`,
-and replace the click:
+and use it to replace the click interaction.
 
-<!-- Maybe need a nod to the fact that you can do a lot more with
-Interactors, since someone cannot yet see the problem this solves for them
-when it is such a straightforward interaction -->
+Click on the tabs below to see some examples within different testing frameworks:
 
 <Tabs
   defaultValue="jest"
@@ -99,7 +87,7 @@ when it is such a straightforward interaction -->
 
     it('clicks button', () => {
       cy.do(
-        Button('Sign In').click()
+        Button('Sign In').click();
       );
       // the rest of your test that was already written
     })
@@ -122,14 +110,16 @@ when it is such a straightforward interaction -->
   </TabItem>
 </Tabs>
 
-Now, run your tests! Congratulations, you used your first interactor.
+Make sure to ubstitute "Sign In" with your own button text.
+
+Now, run your tests! Congratulations, you used your first Interactor.
 
 ## Making test assertions
 
-Add `.absent()` or `.exists()` to make an assertion about your button.
+Interactors can also help you make assertions, like checking if a Button is `absent` or if it `exists`.
 
-In this example, we are testing that the Sign In button disappears after
-a click, and a Log Out button appears:
+In this example, we are testing that the "Sign In" button disappears after
+a click, and a "Log Out" button appears:
 
 <Tabs
   defaultValue="jest"
@@ -166,7 +156,7 @@ a click, and a Log Out button appears:
       cy.expect([
         Button('Sign In').absent(),
         Button('Log Out').exists(),
-      ])
+      ]);
     })
   })
   ```
@@ -191,9 +181,9 @@ a click, and a Log Out button appears:
 
 ## Next steps
 
-Next, try using more of the [built-in Interactors](#todo) within your tests,
+Try using more of the [built-in Interactors](#todo) within your tests,
 such as `Link`, `Checkbox`, `TextField`, and more.
 Once you are comfortable with those, 
-you can learn how to [write your own Interactors](#todo).
+you are ready to [write your own Interactors](#todo).
 
 <!-- product call to action -->
