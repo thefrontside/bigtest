@@ -1,63 +1,69 @@
-import { Operation } from "effection";
-import { Channel } from '@effection/channel';
-import { subscribe, Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
-import { Slice } from "./slice";
-import { Sliceable } from './sliceable';
-import { unique } from './unique';
-import * as R from "fp-ts/lib/ReadonlyRecord"
+// import { Operation } from "effection";
+// import { Channel } from '@effection/channel';
+// import { subscribe, Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
+// import { Slice } from "./slice";
+// import { Sliceable } from './sliceable';
+// import { unique } from './unique';
+import * as O from "fp-ts/Option";
 
-export class Atom<A extends Record<string, unknown>> implements Subscribable<A,undefined> {
-  private readonly initial: A;
-  private states = new Channel<A>();
-  private state: A;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isEmpty = (o: any): boolean => Object.keys(o).length === 0;
 
-
-  constructor(initial: A) {
-    this.initial = initial;
-    this.state = R.fromRecord(initial) as A;
+export class Atom<A> {
+  // private readonly initial: A;
+  // private states = new Channel<A>();
+  private state: O.Option<A>;
+  
+  constructor(state?: A) {
+    this.state = !!state ? O.some(state) : O.none;
   }
 
-  setMaxListeners(value: number) {
-    this.states.setMaxListeners(value);
-  }
+  // constructor(initial: A) {
+  //   this.initial = initial;
+  //   this.state = R.fromRecord(initial) as A;
+  // }
+
+  // setMaxListeners(value: number) {
+  //   this.states.setMaxListeners(value);
+  // }
 
   get(): A {
-    return this.state
+    return O.isNone(this.state) ? {} as A : this.state.value as A;
   }
 
-  set(value: A) {
-    this.state = R.fromRecord(value) as A;
-    this.states.send(value);
-  }
+  // set(value: A) {
+  //   this.state = R.fromRecord(value) as A;
+  //   this.states.send(value);
+  // }
 
-  update(fn: (state: A) => A) {
-    this.set(fn(this.get()));
-  }
+  // update(fn: (state: A) => A) {
+  //   this.set(fn(this.get()));
+  // }
 
-  *once(predicate: (state: A) => boolean): Operation<A> {
-    if(predicate(this.state)) {
-      return this.state;
-    } else {
-      let subscription = yield subscribe(this.states);
-      return yield subscription.filter(predicate).expect();
-    }
-  }
+  // *once(predicate: (state: A) => boolean): Operation<A> {
+  //   if(predicate(this.state)) {
+  //     return this.state;
+  //   } else {
+  //     let subscription = yield subscribe(this.states);
+  //     return yield subscription.filter(predicate).expect();
+  //   }
+  // }
 
-  slice(): Sliceable<A, A> {
-    return Slice.fromPath<A, A>(this);
-  } 
+  // slice(): Sliceable<A, A> {
+  //   return Slice.fromPath<A, A>(this);
+  // } 
 
-  reset(initializer?: (initial: A, current: A) => A) {
-    if (!initializer) {
-      initializer = (initial) => initial;
-    }
+  // reset(initializer?: (initial: A, current: A) => A) {
+  //   if (!initializer) {
+  //     initializer = (initial) => initial;
+  //   }
     
-    this.states.close();
-    this.state = initializer(this.initial, this.state);
-  }
+  //   this.states.close();
+  //   this.state = initializer(this.initial, this.state);
+  // }
 
-  *[SymbolSubscribable](): Operation<Subscription<A,undefined>> {
-    // TODO: we will know this is fixed when we can remove the unique cheque
-    return yield subscribe(this.states).filter(unique(this.initial));
-  }
+  // *[SymbolSubscribable](): Operation<Subscription<A,undefined>> {
+  //   // TODO: we will know this is fixed when we can remove the unique cheque
+  //   return yield subscribe(this.states).filter(unique(this.initial));
+  // }
 }

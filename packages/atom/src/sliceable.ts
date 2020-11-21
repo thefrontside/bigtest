@@ -1,5 +1,3 @@
-import { Slice } from './slice';
-
 export type Sliceable<S, A extends Record<string, unknown>> = {
   /* 
   * Brute foce overload to allow strong typing of the string path syntax
