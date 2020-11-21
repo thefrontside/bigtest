@@ -5,7 +5,7 @@ import { Atom } from '../src/atom';
 // import { Subscription, subscribe, ChainableSubscription } from '@effection/subscription';
 
 type TestRunAgentState = {
-  status: string;
+  status: "pending" | "running" | "finished" | "errored";
   platform?: {
     type: string;
     vendor: string;
@@ -26,10 +26,10 @@ const state: TestRunState = {
       }
     },
     "agent-2": {
-      status: "pending",
+      status: "running",
       platform: {
         type: "desktop",
-        vendor: "Apple"
+        vendor: "Microsoft"
       }
     }
   }
@@ -61,7 +61,23 @@ describe.only('@bigtest/atom', () => {
           expect(subject.get()).toEqual(state);
         });
       });
-    })
+    });
+
+
+    describe('.slice()', () => {
+      let subject: Atom<TestRunState>;
+      // let result: Slice<string, Foo>;
+
+      beforeEach(() => {
+        subject = new Atom(state);
+      });
+
+      it('returns a slice of the Atom with the given path', async () => {
+        let result = subject.slice()('agents', "agent-2", "status");
+
+        expect(result).toEqual("running");
+      });
+    });
 
     // describe('.update()', () => {
     //   beforeEach(() => {
@@ -167,28 +183,6 @@ describe.only('@bigtest/atom', () => {
     //         expect(result).toEqual([{ foo: 'state before reset' }, { foo: 'state after reset' }]);
     //       });
     //     });
-    //   });
-    // });
-
-    // describe.only('.slice()', () => {
-    //   interface Foo {
-    //     foo: {
-    //       bar: string;
-    //     };
-    //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    //     [key: string]: any;
-    //   }
-    //   let subject: Atom<Foo>;
-    //   let result: Slice<string, Foo>;
-
-    //   beforeEach(async () => {
-    //     subject = new Atom({ foo: { bar: "baz" } });
-    //     result = subject.slice()('foo', 'bar');
-
-    //   });
-
-    //   it('returns a slice of the Atom with the given path', async () => {
-    //     expect(result.get()).toEqual('baz');
     //   });
     // });
 

@@ -5,9 +5,9 @@
 // import { Sliceable } from './sliceable';
 // import { unique } from './unique';
 import * as O from "fp-ts/Option";
+import { Lens, LensFromPath } from "monocle-ts";
+import { Sliceable } from './sliceable';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isEmpty = (o: any): boolean => Object.keys(o).length === 0;
 
 export class Atom<A> {
   // private readonly initial: A;
@@ -30,6 +30,16 @@ export class Atom<A> {
   get(): A {
     return O.isNone(this.state) ? {} as A : this.state.value as A;
   }
+
+  slice(): Sliceable<A> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (...path: any[]) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let lens = Lens.fromPath<A>()(path as any) as any;
+
+      return lens.get(this.get());
+    }
+  } 
 
   // set(value: A) {
   //   this.state = R.fromRecord(value) as A;
