@@ -8,6 +8,9 @@ module.exports = {
   organizationName: 'thefrontside',
   projectName: 'bigtest',
   themeConfig: {
+    disableSwitch: true,
+    respectPrefersColorScheme: true,
+
     navbar: {
       title: '',
       logo: {
@@ -16,9 +19,14 @@ module.exports = {
       },
       items: [
         {
-          to: 'docs/',
-          activeBasePath: 'docs',
-          label: 'Docs',
+          to: '/interactors',
+          activeBaseRegex: '(interactors)|(docs\/interactors)',
+          label: 'Interactors',
+          position: 'left',
+        },{
+          to: '/platform',
+          activeBaseRegex: '(platform)|(docs\/platform)',
+          label: 'Platform',
           position: 'left',
         },
         {
@@ -67,7 +75,7 @@ module.exports = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} The Frontside Software, Inc.`,
     },
   },
   presets: [
@@ -78,7 +86,7 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/',
+            'https://github.com/thefrontside/bigtest/tree/v0/website',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
