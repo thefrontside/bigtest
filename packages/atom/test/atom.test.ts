@@ -1,6 +1,7 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect';
 import { Atom } from '../src/atom';
+import * as O from "fp-ts/Option";
 // import { spawn, when, never } from './helpers';
 // import { Subscription, subscribe, ChainableSubscription } from '@effection/subscription';
 
@@ -46,7 +47,7 @@ describe.only('@bigtest/atom', () => {
   
       describe('.get()', () => {
         it('gets the current state', () => {
-          expect(subject.get()).toEqual({});
+          expect(subject.get()).toBeUndefined();
         });
       });
     });
@@ -63,19 +64,23 @@ describe.only('@bigtest/atom', () => {
       });
     });
 
-
-    describe('.slice()', () => {
+    describe.only('.slice()', () => {
       let subject: Atom<TestRunState>;
-      // let result: Slice<string, Foo>;
 
       beforeEach(() => {
         subject = new Atom(state);
       });
 
+      it('returns one level deep', () => {
+        let result = subject.slice()('agents');
+
+        expect(result.get()).toEqual(state.agents);
+      });
+
       it('returns a slice of the Atom with the given path', async () => {
         let result = subject.slice()('agents', "agent-2", "status");
 
-        expect(result).toEqual("running");
+        expect(result.get()).toEqual("running");
       });
     });
 
