@@ -1,7 +1,7 @@
 ---
 id: quick-start
 title: Quick Start
-slug: /
+slug: /interactors
 ---
 
 BigTest's Interactors make your UI tests easier to write, faster, and more reliable. You can use them across many different testing frameworks.
@@ -183,7 +183,7 @@ a click, and a "Log Out" button appears:
 
 Try using more of the [built-in Interactors](#todo) within your tests,
 such as `Link`, `Checkbox`, `TextField`, and more.
-Once you are comfortable with those, 
+Once you are comfortable with those,
 you are ready to [write your own Interactors](#todo).
 
 <!-- product call to action -->
