@@ -36,7 +36,7 @@ const state: TestRunState = {
   }
 };
 
-describe.only('@bigtest/atom', () => {
+describe('@bigtest/atom', () => {
   describe('Atom', () => {
     let subject: Atom<TestRunState>;
 
@@ -64,7 +64,7 @@ describe.only('@bigtest/atom', () => {
       });
     });
 
-    describe.only('.slice()', () => {
+    describe('.slice()', () => {
       let subject: Atom<TestRunState>;
 
       beforeEach(() => {
@@ -82,6 +82,14 @@ describe.only('@bigtest/atom', () => {
 
         expect(result.get()).toEqual("running");
       });
+
+      it('set', () => {
+        let result = subject.slice()('agents', "agent-2", "status");
+
+        result.set('errored');
+
+        expect(result.get()).toBe('errored');
+      })
     });
 
     // describe('.update()', () => {

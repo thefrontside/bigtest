@@ -24,22 +24,23 @@ describe('@bigtest/atom Slice', () => {
       });
     });
 
-  //   describe('.update()', () => {
-  //     beforeEach(() => {
-  //       slice.update(previous => {
-  //         expect(previous).toEqual('foo');
-  //         return 'bar';
-  //       });
-  //     });
+    describe('.update()', () => {
+      beforeEach(() => {
+        slice.update(previous => {
+          console.log(previous);
+          expect(previous).toEqual('foo');
+          return 'bar';
+        });
+      });
 
-  //     it('updates the current state', () => {
-  //       expect(slice.get()).toEqual('bar');
-  //     });
+      it('updates the current state', () => {
+        expect(slice.get()).toEqual('bar');
+      });
 
-  //     it('updates the atom state', () => {
-  //       expect(atom.get()).toEqual({ data: 'bar' });
-  //     });
-  //   });
+      it('updates the atom state', () => {
+        expect(atom.get()).toEqual({ data: 'bar' });
+      });
+    });
 
   //   describe('.once()', () => {
   //     let result: Promise<string | undefined>;

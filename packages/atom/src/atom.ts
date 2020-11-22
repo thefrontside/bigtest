@@ -16,11 +16,11 @@ const LensId = new Lens(identity, constant);
 export class Atom<S> {
   // private readonly initial: A;
   // private states = new Channel<A>();
-  private state: O.Option<S>;
+  private state: S | undefined;
   private lens: Lens<S, S>;
   
   constructor(state?: S, lens?: Lens<S, S>) {
-    this.state = O.fromNullable(state);
+    this.state = state;
 
     this.lens = (lens ?? LensId as Lens<S,S>);
   }
@@ -37,11 +37,30 @@ export class Atom<S> {
   get(): S | undefined {
     return pipe(
       this.state,
+      O.fromNullable,
       O.map(state => this.lens.get(state)),
       O.toUndefined
     );
   }
-  
+
+  set(value: S): void {
+    this.state = pipe(
+      this.state,
+      O.fromNullable,
+      O.map(state => this.lens.asOptional().set(value)(state)),
+      O.toUndefined
+    );
+  }
+
+  update(fn: (state: S) => S) {
+    pipe(
+      this.get(),
+      O.fromNullable,
+      O.map(state => fn(state)),
+      O.map(state => this.set(state))
+    );
+  }
+
   slice(): Sliceable<S> {
     return <P extends keyof S>(...path: P[]) => {
       assert(Array.isArray(path) && path.length >  0, "slice expects a rest parameter with at least 1 element");
@@ -49,16 +68,10 @@ export class Atom<S> {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let lens = Lens.fromPath<S>()(path as any) as any;
 
-      let state = pipe(this.state, O.toUndefined);
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return new Atom(state as any, this.lens.compose(lens));
+      return new Atom(this.state as any, this.lens.compose(lens));
     }
-  } 
-
-  // update(fn: (state: S) => S) {
-    
-  // }
+  }
 
   // *once(predicate: (state: A) => boolean): Operation<A> {
   //   if(predicate(this.state)) {
