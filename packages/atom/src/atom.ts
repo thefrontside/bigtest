@@ -10,24 +10,28 @@ import { Sliceable } from './sliceable';
 import { assert } from 'assert-ts';
 import { constant, identity } from 'fp-ts/lib/function';
 import { pipe } from 'fp-ts/function'
+import { Channel } from '@effection/channel';
+import { state } from 'fp-ts/lib/State';
+import { Subscribable, subscribe, Subscription, SymbolSubscribable } from '@effection/subscription';
+import { Operation } from 'effection';
+import { unique } from './unique';
 
 const LensId = new Lens(identity, constant);
 
-export class Atom<S> {
-  // private readonly initial: A;
-  // private states = new Channel<A>();
+export class Atom<S> implements Subscribable<S,undefined> {
+  private readonly initial: S | undefined;
+  private states = new Channel<S>();
   private state: S | undefined;
   private lens: Lens<S, S>;
   
   constructor(state?: S, lens?: Lens<S, S>) {
-    this.state = state;
+    this.state = this.initial = state;
 
     this.lens = (lens ?? LensId as Lens<S,S>);
   }
 
   // constructor(initial: A) {
-  //   this.initial = initial;
-  //   this.state = R.fromRecord(initial) as A;
+  //   this.initial = this.state = initial;
   // }
 
   // setMaxListeners(value: number) {
@@ -50,6 +54,10 @@ export class Atom<S> {
       O.map(state => this.lens.asOptional().set(value)(state)),
       O.toUndefined
     );
+
+     if(this.state) {
+       this.states.send(this.state);
+     }
   }
 
   update(fn: (state: S) => S) {
@@ -82,10 +90,6 @@ export class Atom<S> {
   //   }
   // }
 
-  // slice(): Sliceable<A, A> {
-  //   return Slice.fromPath<A, A>(this);
-  // } 
-
   // reset(initializer?: (initial: A, current: A) => A) {
   //   if (!initializer) {
   //     initializer = (initial) => initial;
@@ -95,8 +99,8 @@ export class Atom<S> {
   //   this.state = initializer(this.initial, this.state);
   // }
 
-  // *[SymbolSubscribable](): Operation<Subscription<A,undefined>> {
-  //   // TODO: we will know this is fixed when we can remove the unique cheque
-  //   return yield subscribe(this.states).filter(unique(this.initial));
-  // }
+  *[SymbolSubscribable](): Operation<Subscription<S,undefined>> {
+    // TODO: we will know this is fixed when we can remove the unique cheque
+    return yield subscribe(this.states).filter(unique(this.initial));
+  }
 }

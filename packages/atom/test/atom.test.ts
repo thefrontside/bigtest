@@ -1,8 +1,8 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect';
 import { Atom } from '../src/atom';
-import * as O from "fp-ts/Option";
-// import { spawn, when, never } from './helpers';
+import { subscribe, Subscription } from '@effection/subscription';
+import { spawn } from './helpers';
 // import { Subscription, subscribe, ChainableSubscription } from '@effection/subscription';
 
 type TestRunAgentState = {
@@ -14,10 +14,12 @@ type TestRunAgentState = {
 };
 
 export type TestRunState = {
+  status: "on" | "off";
   agents: Record<string, TestRunAgentState>;
 };
 
 const state: TestRunState = {
+  status: "on",
   agents: {
     "agent-1": {
       status: "pending",
@@ -92,50 +94,73 @@ describe('@bigtest/atom', () => {
       })
     });
 
-    // describe('.update()', () => {
-    //   beforeEach(() => {
-    //     subject.update(previous => {
-    //       expect(previous).toEqual({ foo: 'bar' });
-    //       return { foo: 'baz' };
-    //     });
-    //   });
+    describe('.update()', () => {
+      beforeEach(() => {
+        subject.update(previous => {
+          expect(previous).toEqual(state);
+          return {...state, status: "off"}
+        });
+      });
 
-    //   it('updates the current state', () => {
-    //     expect(subject.get().foo).toEqual('baz');
-    //   });
-    // });
+      it('updates the current state', () => {
+        expect(subject.get()?.status).toEqual("off");
+      });
+    });
 
-    // describe('.once()', () => {
-    //   let result: Promise<Subject>;
+    type State = { foo: string};
+    describe('subscribe', () => {
+      let subject: Atom<State>;
+      let subscription: Subscription<State, undefined>;
 
-    //   describe('when initial state matches', () => {
-    //     beforeEach(async () => {
-    //       result = spawn(subject.once((state) => state.foo === 'bar'));
+      beforeEach(async () => {
+        subject = new Atom({foo: 'bar'});
+        subscription = await spawn(subscribe(subject));
 
-    //       subject.update(() => ({ foo: 'baz' }));
-    //     });
+        subject.update(() => ({ foo: 'bar' }));
+        subject.update(() => ({ foo: 'baz' }));
+        subject.update(() => ({ foo: 'quox' }));
+      });
 
-    //     it('gets the first state that passes the given predicate', async () => {
-    //       expect(await result).toEqual({ foo: 'bar' });
-    //       expect(subject.get()).toEqual({ foo: 'baz' });
-    //     });
-    //   });
+      it('iterates over emitted states', async () => {
+        await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: { foo: 'bar' } });
+        await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: { foo: 'baz' } });
+        await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: { foo: 'quox' } });
+      });
+    });
 
-    //   describe('when initial state does not match', () => {
-    //     beforeEach(async () => {
-    //       result = spawn(subject.once((state) => state.foo === 'baz'));
+    describe('.once()', () => {
+      let result: Promise<State>;
+      let subject: Atom<State>;
 
-    //       subject.update(() => ({ foo: 'bar' }));
-    //       subject.update(() => ({ foo: 'baz' }));
-    //       subject.update(() => ({ foo: 'quox' }));
-    //     });
+      describe('when initial state matches', () => {
+        beforeEach(async () => {
+          subject = new Atom({foo: 'bar'});
+          result = spawn(subject.once((state) => state.foo === 'bar'));
 
-    //     it('gets the first state that passes the given predicate', async () => {
-    //       expect(await result).toEqual({ foo: 'baz' });
-    //       expect(subject.get()).toEqual({ foo: 'quox' });
-    //     });
-    //   });
-    // });
+          subject.update(() => ({ foo: 'baz' }));
+        });
+
+        it('gets the first state that passes the given predicate', async () => {
+          expect(await result).toEqual({ foo: 'bar' });
+          expect(subject.get()).toEqual({ foo: 'baz' });
+        });
+      });
+
+      // describe('when initial state does not match', () => {
+      //   beforeEach(async () => {
+      //     result = spawn(subject.once((state) => state.foo === 'baz'));
+
+      //     subject.update(() => ({ foo: 'bar' }));
+      //     subject.update(() => ({ foo: 'baz' }));
+      //     subject.update(() => ({ foo: 'quox' }));
+      //   });
+
+      //   it('gets the first state that passes the given predicate', async () => {
+      //     expect(await result).toEqual({ foo: 'baz' });
+      //     expect(subject.get()).toEqual({ foo: 'quox' });
+      //   });
+      // });
+    });
 
     // describe('.reset()', () => {
     //   describe.skip('without an initializer', () => {
@@ -199,23 +224,6 @@ describe('@bigtest/atom', () => {
     //   });
     // });
 
-    // describe('subscribe', () => {
-    //   let subscription: Subscription<Subject, undefined>;
-
-    //   beforeEach(async () => {
-    //     subscription = await spawn(subscribe(subject));
-
-    //     subject.update(() => ({ foo: 'bar' }));
-    //     subject.update(() => ({ foo: 'baz' }));
-    //     subject.update(() => ({ foo: 'quox' }));
-    //   });
-
-    //   it('iterates over emitted states', async () => {
-    //     await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'bar' });
-    //     await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'baz' });
-    //     await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'quox' });
-    //   });
-    // });
 
     // describe.only('subscribe - unique state publish', () => {
     //   let result: Subject[];
