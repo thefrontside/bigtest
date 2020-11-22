@@ -1,32 +1,42 @@
 module.exports = {
-  docs: [
+  interactors: [
     {
       type: 'category',
       label: 'Getting Started',
       items: [
-        'getting-started/quick-start',
-        'getting-started/why-bigtest'
+        'interactors/getting-started/quick-start',
+        'interactors/getting-started/why-bigtest'
       ]
     },
     {
       type: 'category',
       label: 'Interactors',
       items: [
-        'interactors/overview',
-        'interactors/built-in-dom',
-        'interactors/locators-filters-actions',
-        'interactors/write-your-own',
-        'interactors/asynchronous'
+        'interactors/interactors/overview',
+        'interactors/interactors/built-in-dom',
+        'interactors/interactors/locators-filters-actions',
+        'interactors/interactors/write-your-own',
+        'interactors/interactors/asynchronous'
       ]
     },
     {
       type: 'category',
       label: 'Integrations',
       items: [
-        'integrations/overview',
-        'integrations/jest',
-        'integrations/cypress'
+        'interactors/integrations/overview',
+        'interactors/integrations/jest',
+        'interactors/integrations/cypress'
       ]
     }
-  ]
+  ],
+  platform: [
+    {
+      type: 'category',
+      label: 'Getting Started',
+      items: [
+        'platform/getting-started/quick-start',
+        'platform/getting-started/why-bigtest'
+      ]
+    },
+  ],
 };
