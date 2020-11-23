@@ -38,7 +38,7 @@
     "prepack": "yarn workspaces run prepack",
     "test": "yarn workspaces run test",
     "lint": "yarn workspaces run lint",
-    "website": "yarn --cwd website/docs start"
+    "website": "yarn install --cwd website/docs && yarn --cwd website/docs start"
   },
   "volta": {
     "node": "12.11.1",
