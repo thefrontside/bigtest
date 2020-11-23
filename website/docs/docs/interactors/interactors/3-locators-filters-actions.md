@@ -6,7 +6,9 @@ title: locators filters actions
 - 1-2 sentences of what they are
 - One example
 - What someone will learn
-- In-depth content 
+- In-depth content
+
+:warning: we need to mention the caveat of how weird mutable apis like nodelist cannot be used in filters
 -->
 
 ## Locators
