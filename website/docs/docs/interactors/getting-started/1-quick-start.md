@@ -10,7 +10,6 @@ By the end of this quick start, you will be testing one of your own apps with In
 
 <!-- Todo Links to places to get help or ask questions -->
 
-
 ## Prerequisites
 
 - [`npm`](https://www.npmjs.com/get-npm) or [`yarn`](https://classic.yarnpkg.com/en/docs/install)
