@@ -16,7 +16,7 @@ By the end of this quick start, you will be testing one of your own apps with In
 - [Node 12](https://nodejs.org/en/download/releases/)
 - A web app*
 
-*To follow along with this tutorial, you need an app that uses Jest, Cypress, or BigTest. You either can use your own app that you have already made, or you can follow along using our sample app, [BigTest TodoMVC](#todo).
+_*To follow along with this tutorial, you need an app that uses Jest, Cypress, or BigTest. You either can use your own app that you have already made, or you can follow along using our sample app, [BigTest TodoMVC](#todo)._
 
 ## Installation
 
@@ -109,7 +109,7 @@ Click on the tabs below to see some examples within different testing frameworks
   </TabItem>
 </Tabs>
 
-Make sure to ubstitute "Sign In" with your own button text.
+Make sure to substitute "Sign In" with your own button text.
 
 Now, run your tests! Congratulations, you used your first Interactor.
 

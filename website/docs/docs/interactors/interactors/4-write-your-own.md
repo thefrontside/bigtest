@@ -5,7 +5,7 @@ title: Writing Interactors
 
 The Interactors that are offered out of the box are there for your convenience, but you can construct your own Interactors and use those instead.
 
-Let's go ahead and create a simple `checkbox` interactor and add it to our tutorial test:
+Let's go ahead and create a simple `checkbox` interactor:
 ```js
 import { createInteractor, perform } from 'bigtest';
 
@@ -31,10 +31,9 @@ export default test('bigtest todomvc')
     .assertion(Button('Clear completed').exists()));
 ```
 
-_This was just for demonstration purposes as the [checkbox](/) interactor from bigtest is much more extensive and it's probably not great to use the classname property as a locator._
+_This was just for demonstration purposes as the [checkbox](/) interactor from bigtest is much more extensive and it's probably not great to use the classname property as a locator._ <!-- there's probably a better way to word this -->
 
-Check out the API section to see the details of [createInteractor()](/).
-
+Check out the API page of [createInteractor()](/) for more details.
 
 <!-- 
 - 1-2 sentences explaining that people should write their own interactors regularly, and why - they should do so

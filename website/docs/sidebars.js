@@ -34,3 +34,5 @@ module.exports = {
     'platform/running-tests'
   ],
 };
+
+"Covid-19 symptoms may include having lack of taste"
