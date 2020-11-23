@@ -16,7 +16,7 @@ If you need help or have questions along the way, please let us know in [the Dis
 - [Node 12](https://nodejs.org/en/download/releases/)
 - A web app*
 
-*To follow along with this tutorial, you need an app that uses Jest, Cypress, or BigTest. You either can use your own app that you have already made, or you can follow along using our sample app, [BigTest TodoMVC](#todo).
+*To follow along with this tutorial, you need an app that uses [Jest](https://jestjs.io/), [Cypress](https://www.cypress.io/), or BigTest. You either can use your own app that you have already made, or you can follow along using our sample app, [BigTest TodoMVC](#todo).
 
 ## Installation
 
