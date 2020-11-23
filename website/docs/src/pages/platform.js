@@ -7,8 +7,8 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './styles.module.css';
 
 function Interactors() {
-  const context = useDocusaurusContext();
-  const {siteConfig = {}} = context;
+  let context = useDocusaurusContext();
+  let {siteConfig = {}} = context;
   return (
     <Layout
       title={`Hello from ${siteConfig.title}`}
