@@ -34,9 +34,27 @@ module.exports = {
       type: 'category',
       label: 'Getting Started',
       items: [
-        'platform/getting-started/quick-start',
-        'platform/getting-started/why-bigtest'
+        'platform/getting-started/installation',
+        'platform/getting-started/writing-your-first-test'
       ]
     },
+    {
+      type: 'category',
+      label: 'Guides',
+      items: [
+        'platform/guides/running-tests',
+        'platform/guides/browser-config',
+        'platform/guides/ci-setup',
+        'platform/guides/code-coverage'
+      ]
+    },
+    {
+      type: 'category',
+      label: 'Concepts',
+      items: [
+        'platform/concepts/test-tree',
+        'platform/concepts/steps-assertions'
+      ]
+    }
   ],
 };
