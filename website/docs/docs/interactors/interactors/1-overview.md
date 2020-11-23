@@ -1,6 +1,6 @@
 ---
-id: overview
-title: Overview
+id: introduction
+title: Introduction
 ---
 
 <!-- 
@@ -17,4 +17,12 @@ Overview
 - Brief explanation of Actions, Locators, Filters. We do this here because reading an in-depth article about each, introduced one at a time, can be disorienting
 - Why use interactors?
 
+
+*** 
+i brought this over from asynchronus page as i think it makes more sense to describe the principles here
+  - 1-2 sentences that say the most important thing - you don’t need to worry about async interactions
+  - Example of a common async UI pattern
+  - How Interactors help you solve it
+  - How is this possible? Introduce the term convergence 
+***
 -->
