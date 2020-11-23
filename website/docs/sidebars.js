@@ -12,11 +12,10 @@ module.exports = {
       type: 'category',
       label: 'Interactors',
       items: [
-        'interactors/interactors/overview',
+        'interactors/interactors/introduction',
         'interactors/interactors/built-in-dom',
         'interactors/interactors/locators-filters-actions',
-        'interactors/interactors/write-your-own',
-        'interactors/interactors/asynchronous'
+        'interactors/interactors/write-your-own'
       ]
     },
     {
@@ -30,31 +29,8 @@ module.exports = {
     }
   ],
   platform: [
-    {
-      type: 'category',
-      label: 'Getting Started',
-      items: [
-        'platform/getting-started/installation',
-        'platform/getting-started/writing-your-first-test'
-      ]
-    },
-    {
-      type: 'category',
-      label: 'Guides',
-      items: [
-        'platform/guides/running-tests',
-        'platform/guides/browser-config',
-        'platform/guides/ci-setup',
-        'platform/guides/code-coverage'
-      ]
-    },
-    {
-      type: 'category',
-      label: 'Concepts',
-      items: [
-        'platform/concepts/test-tree',
-        'platform/concepts/steps-assertions'
-      ]
-    }
+    'platform/installation',
+    'platform/writing-your-first-test',
+    'platform/running-tests'
   ],
 };
