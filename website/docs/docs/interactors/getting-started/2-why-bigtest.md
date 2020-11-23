@@ -4,6 +4,12 @@ title: Why Bigtest
 ---
 
 <!-- 
+
+***
+this might get moved to the landing page of platform
+unless we name it `why interactors`?
+***
+
 Who should use BigTest? (need a better name for this) - someone should be able to link to this page, and it is their persuasive argument for why the team should adopt these tools. These are not sections but more like points that should be covered in some way:
 
 1-2 sentences that explain the “why”
