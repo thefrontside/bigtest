@@ -3,9 +3,24 @@ id: write-your-own
 title: Writing Interactors
 ---
 
-The Interactors that are offered out of the box are there for your convenience, but you can construct your own Interactors and use those instead.
+Nearly every app has at least one user interaction that is strange or special, like date pickers, drag and drop areas, masked radio buttons, modals, and more.
+It is normal to write your own Interactors, where you can make complex interactions as easy to test as a button click.
 
-Let's go ahead and create a simple `checkbox` interactor:
+In this section, you will learn how to create a new Interactor for any interface and use it in your tests. We will start with a simple example for learning purposes, level up to a more complex example, and then cover common questions.
+
+## Writing your first interactor
+
+In this example, we will create a `Checkbox` Interactor, similar to the one found in the [built-in DOM interactors](2-built-in-dom), and use it in a test.
+
+There are four things to decide:
+
+1. Which HTML element to target, like `checkbox`
+2. The selector, which helps us find examples of that element, like `'input[type=checkbox]'` 
+3. The locator, which helps filter through the selector results, like `className`
+4. Which actions a test should be able to `perform` on that element, like a `click`
+
+Putting this information together, we can make this new Interactor:
+
 ```js
 import { createInteractor, perform } from 'bigtest';
 
@@ -18,10 +33,11 @@ export const Checkbox = createInteractor<HTMLInputElement>('checkbox')({
 });
 ```
 
-And now we can import the new interactor and add it to our test:
+Now, import the new interactor and add it to a test:
+
 ```js
 import { Button, Heading, Page, test } from 'bigtest';
-import { Checkbox } from './Checkbox';
+import { MyCheckbox } from './MyCheckbox';
 
 export default test('bigtest todomvc')
   .step(Page.visit('/'))
@@ -31,14 +47,39 @@ export default test('bigtest todomvc')
     .assertion(Button('Clear completed').exists()));
 ```
 
-_This was just for demonstration purposes as the [checkbox](/) interactor from bigtest is much more extensive and it's probably not great to use the classname property as a locator._ <!-- there's probably a better way to word this -->
+The [checkbox](/) interactor from BigTest does a lot more than what we just wrote, but this small example is a good place to start for understanding how to use `createInteractor`.
+
+Can you think of how you could expand this? Maybe you could add a `check` or `uncheck` action. Maybe for test readability, you would like to have actions named `accept` or `decline` for testing an end user agreement form. It is up to you!
 
 Check out the API page of [createInteractor()](/) for more details.
 
-<!-- 
-- 1-2 sentences explaining that people should write their own interactors regularly, and why - they should do so
-- One example
-- What someone will learn
-- Writing your first interactor
-- Interactors for complex user interactions (radio button, 3rd party date picker). Make it clear here that if it’s hard to write an interactor, it might be an indicator of a problem with how something is written (like for accessibility) 
--->
+<!-- to do - a more complex example -->
+
+## Common questions
+
+### When should I write a new Interactor instead of using the Built In DOM interactors?
+
+If the built-in DOM Interactors work for your use case, they are probably the best choice.
+They are maintenance-free and support the most common user actions.
+
+When the built-ins are not enough, it is normal and encouraged for you to write your own Interactors!
+They will help you prevent duplicated logic in your tests, and if your interface changes, you only need to make the change in one place.
+
+For example, let's say that you want to replace a custom datepicker with a popular third-party library instead.
+Although you may have many tests for flows with the date picker, only your Interactor needs to change.
+
+### I have an interaction that is really difficult to test. What should I do?
+
+A good test suite helps you uncover hidden problems.
+Often, difficult UI tests are your early warning system for areas of your app that may have accessibility issues.
+
+The first step is to see if you can go through the interaction yourself in the browser by using only [keyboard navigation](https://webaim.org/techniques/keyboard/).
+If you cannot get to the end successfully, then you just found a bug in your app!
+Although many people navigate an interface by sight and clicking,
+others may use assistive technology such as screen readers, and keyboard support is critical.
+For example, have you ever seen a click mistakenly attached to a `div` instead of a button?
+Those types of errors can make your app unusable to some people, and also difficult to test.
+
+Another way to find some bugs is to use automated tools such as [Lighthouse](https://github.com/GoogleChrome/lighthouse) to find problems in your HTML markup, like missing input labels or misconfigured `aria` attributes.
+
+<!-- todo - advice for what to do if the problem is not accessibility -->
