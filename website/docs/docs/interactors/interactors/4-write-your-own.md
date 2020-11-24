@@ -18,6 +18,7 @@ There are four things to decide:
 2. The selector, which helps us find examples of that element, like `'input[type=checkbox]'` 
 3. The locator, which helps filter through the selector results, like `className`
 4. Which actions a test should be able to `perform` on that element, like a `click`
+<!-- 5. interactor id (the id that's used for error reporting) -->
 
 Putting this information together, we can make this new Interactor:
 
@@ -54,6 +55,44 @@ Can you think of how you could expand this? Maybe you could add a `check` or `un
 Check out the API page of [createInteractor()](/) for more details.
 
 <!-- to do - a more complex example -->
+```js
+import { createInteractor, perform } from '@bigtest/interactor';
+
+export default createInteractor('table cell')({
+  selector: '[role=gridcell]',
+  locator: element => element.id, // i changed this from textContent to id; maybe we can say how often times we would locate by textcontent but in cases where (say if a button is an image), we could change the default locator to something else so that a user can do `Button('id-button')` as opposed to `Button({ id: 'id-button' })`.
+  filters: {
+    columnTitle: element => {
+      const siblingCells = Array.from(element.closest('[class^=mclRow-]').querySelectorAll('[role=gridcell]'));
+      let position = -1;
+
+      for (const cell of siblingCells) {
+        position++;
+        if (cell === element) {
+          break;
+        }
+      }
+
+      const headerAtPosition = Array.from(
+        element.closest('[class^=mclContainer-]')
+          ?.querySelector('[class^=mclHeaderRow-]')
+          ?.querySelectorAll('[role=columnheader]')
+      )[position];
+
+      return headerAtPosition.textContent;
+    },
+    rowNumber: element => {
+      const headerRowOffset = 2;
+      return element.closest('[role=row]').getAttribute('aria-rowindex') - headerRowOffset;
+    }
+  },
+  actions: {
+    click: perform((element) => {
+      element.click();
+    })
+  }
+});
+```
 
 ## Common questions
 
