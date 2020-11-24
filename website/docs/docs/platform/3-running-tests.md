@@ -7,7 +7,7 @@ There are two ways you can run BigTest. Using `yarn bigtest ci`, as seen in our 
 
 The other way would be to start the server yourself and trigger the tests separately:
 ```
-$ yarn bigtest server --launch chrome
+$ yarn bigtest server
 ```
 [screenshot?]
 
@@ -20,11 +20,3 @@ $ yarn bigtest test
 The main benefit to starting the server and running the tests manually is for debugging purposes.
 
 Running the server in non-headless mode will allow you see the app as the tests run, and the browser won't automatically close after the test are finished running so you will be able to interact with your app.
-
-The default configs will run your server in `chrome.headless` so we recommend using the `--launch` flag to start your server as shown above.
-
-# We recommend keeping the bigtest configuration so that it starts the browsers in headless mode
-
-_BigTest supports multi-browser parallel testing. Read more about it [here](/)._
-
-ios/android simulator setup
