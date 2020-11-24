@@ -10,7 +10,7 @@ In this section, you will learn how to create a new Interactor for any interface
 
 ## Writing your first interactor
 
-In this example, we will create a `Checkbox` Interactor, similar to the one found in the [built-in DOM interactors](2-built-in-dom), and use it in a test.
+In this example, we will create a `Checkbox` Interactor, similar to the one found in the [built-in DOM interactors](/docs/interactors/interactors/built-in-dom), and use it in a test.
 
 There are four things to decide:
 
