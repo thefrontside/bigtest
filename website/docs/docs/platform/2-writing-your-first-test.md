@@ -5,11 +5,25 @@ title: Writing Your First Test
 
 ## Writing Your First Test
 To demonstrate how you can write tests, let's install the TodoMVC app from BigTest:
-```
-$ yarn add -D @bigtest/todomvc
-```
 
-Assuming you went with the default settings for `bigtest.json`, the app command will be configured as `yarn start` as such:
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs
+  defaultValue="npm"
+  values={[
+    {label: 'NPM', value: 'npm'},
+    {label: 'Yarn', value: 'yarn'}
+  ]}>
+  <TabItem value="npm">
+    <pre><code>$ npm install -D @bigtest/todomvc</code></pre>
+  </TabItem>
+  <TabItem value="yarn">
+    <pre><code>$ yarn add -D @bigtest/todomvc</code></pre>
+  </TabItem>
+</Tabs>
+
+After you've run `yarn bigtest init`, the default properties of `app.command` and `app.url` inside `bigtest.json` should be:
 ```json
 {
   "app": {
@@ -18,7 +32,7 @@ Assuming you went with the default settings for `bigtest.json`, the app command 
   }
 }
 ```
-Then go into your `package.json` file and modify the start script as `yarn bigtest-todomvc 3000`:
+Go into your `package.json` file and modify the start script:
 ```json
 {
   "scripts": {
