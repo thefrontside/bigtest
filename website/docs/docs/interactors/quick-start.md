@@ -109,7 +109,7 @@ Click on the tabs below to see some examples within different testing frameworks
   </TabItem>
 </Tabs>
 
-Make sure to ubstitute "Sign In" with your own button text.
+Make sure to substitute "Sign In" with your own button text.
 
 Now, run your tests! Congratulations, you used your first Interactor.
 

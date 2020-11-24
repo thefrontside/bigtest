@@ -1,13 +1,6 @@
 module.exports = {
   interactors: [
-    {
-      type: 'category',
-      label: 'Getting Started',
-      items: [
-        'interactors/getting-started/quick-start',
-        'interactors/getting-started/why-bigtest'
-      ]
-    },
+    'interactors/quick-start',
     {
       type: 'category',
       label: 'Interactors',
@@ -34,5 +27,3 @@ module.exports = {
     'platform/running-tests'
   ],
 };
-
-"Covid-19 symptoms may include having lack of taste"
