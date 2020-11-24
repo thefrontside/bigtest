@@ -1,6 +1,15 @@
-/// <reference types="." />
+/* eslint-disable @typescript-eslint/no-namespace */
 import { bigtestGlobals, RunnerState } from '@bigtest/globals';
 import { Interaction, ReadonlyInteraction } from '../interaction';
+
+declare global {
+  namespace Cypress {
+    interface Chainable<Subject> {
+      do(interaction: Interaction<void> | Interaction<void>[]): Chainable<Subject>;
+      expect(interaction: ReadonlyInteraction<void> | ReadonlyInteraction<void>[]): Chainable<Subject>;
+    }
+  }
+}
 
 function interact(
   interaction: Interaction<void> | ReadonlyInteraction<void>,
