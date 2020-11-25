@@ -33,7 +33,7 @@ function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMess
         extensions: ['.js', '.ts'],
       }),
       commonjs(),
-      typescript({
+      bundle.tsconfig && typescript({
         tsconfig: bundle.tsconfig,
         tsconfigDefaults: defaultTSConfig(),
         tsconfigOverride: {
@@ -51,7 +51,7 @@ function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMess
       injectProcessEnv({
         NODE_ENV: 'production'
       }),
-    ]
+    ].filter(Boolean)
   }
 }
 

@@ -4,9 +4,12 @@ import { promises as fs, existsSync } from 'fs';
 import expect from 'expect';
 import rmrf from 'rimraf';
 import { subscribe } from '@effection/subscription';
+import path from 'path';
 
 import { spawn } from './world';
 import { Bundler } from '../src/index';
+
+const tsconfig = path.join(process.cwd(), 'tsconfig.json');
 
 describe("Bundler", function() {
   this.timeout(5000);
@@ -94,6 +97,7 @@ describe("Bundler", function() {
           entry: "./build/test/sources/input.ts",
           outFile: "./build/test/output/manifest.js",
           globalName: "__bigtestManifest",
+          tsconfig
         }));
 
         await spawn(subscribe(bundler).match({ type: 'UPDATE' }).first());
@@ -113,6 +117,7 @@ describe("Bundler", function() {
           entry: "./build/test/sources/input.ts",
           outFile: "./build/test/output/manifest.js",
           globalName: "__bigtestManifest",
+          tsconfig
         }));
       });
 
@@ -132,7 +137,7 @@ describe("Bundler", function() {
         watch: true,
         entry: "./build/test/sources/input.js",
         outFile: "./build/test/output/manifest.js",
-        globalName: "__bigtestManifest"
+        globalName: "__bigtestManifest",
       }));
 
       await fs.writeFile("./build/test/sources/input.js", "export default {hello: 'world'}\n");
