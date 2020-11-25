@@ -16,7 +16,7 @@ export const createOrchestratorAtom = (project: OrchestratorAtomOptions) => {
   let atom = new Atom<OrchestratorState>({
     manifestGenerator: {
       status: { type: 'pending' },
-      
+
       options: {
         destinationPath: manifestSrcPath,
         mode: project.watchTestFiles ? 'watch' : 'build',
@@ -48,6 +48,12 @@ export const createOrchestratorAtom = (project: OrchestratorAtomOptions) => {
         // Is this problematic?
         appOptions: project.app
       }
+    },
+    connectionService: {
+      status: {
+        type: 'pending',
+      },
+      options: {}
     },
     agents: {},
     testRuns: {},

@@ -60,7 +60,7 @@ export type ServiceState<S extends ServiceStatus, O> = {
 
 export type Service<S extends ServiceStatus, O> = {
   (state: Slice<ServiceState<S, O>, OrchestratorState>): Operation<void>;
-};  
+};
 
 export interface Manifest extends Test  {
   fileName: string;
@@ -109,6 +109,10 @@ export interface ManifestGeneratorOptions {
   destinationPath?: string;
 };
 
+export type ConnectionStatus = {
+  type: "pending" | "ready";
+};
+
 export type ProxyStatus = {
   type: 'unstarted' | 'starting' | 'started';
 }
@@ -129,6 +133,7 @@ export type OrchestratorState = {
   testRuns: Record<string, TestRunState>;
   appService: ServiceState<AppServiceStatus, AppOptions>;
   proxyService: ServiceState<ProxyStatus, ProxyOptions>;
+  connectionService: ServiceState<ConnectionStatus, {}>;
 }
 
 declare const o: OrchestratorState;
