@@ -10,8 +10,6 @@ import resolve, {
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore
 import babel from '@rollup/plugin-babel';
 import { BundlerMessage } from './types';
 import { DEFAULT_EXTENSIONS } from '@babel/core';
