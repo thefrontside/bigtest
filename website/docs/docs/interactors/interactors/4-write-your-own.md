@@ -16,7 +16,7 @@ There are four things to decide:
 
 1. Which HTML element to target, like `checkbox`
 2. The selector, which helps us find examples of that element, like `'input[type=checkbox]'` 
-3. The locator, which helps filter through the selector results, like `className`
+3. The locator, which helps filter through the selector results, like `id`
 4. Which actions a test should be able to `perform` on that element, like a `click`
 <!-- 5. interactor id (the id that's used for error reporting) -->
 
@@ -27,7 +27,7 @@ import { createInteractor, perform } from 'bigtest';
 
 export const Checkbox = createInteractor<HTMLInputElement>('checkbox')({
   selector: 'input[type=checkbox]',
-  locator: (element) => element.className,
+  locator: (element) => element.id,
   actions: {
     click: perform((element) => { element.click(); })
   }
@@ -44,7 +44,7 @@ export default test('bigtest todomvc')
   .step(Page.visit('/'))
   .assertion(Heading('todos').exists())
   .child('click checkbox', test => test
-    .step(Checkbox('toggle').click())
+    .step(Checkbox('toggle-todo-id').click())
     .assertion(Button('Clear completed').exists()));
 ```
 
