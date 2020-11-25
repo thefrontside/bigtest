@@ -32,10 +32,10 @@ import TabItem from '@theme/TabItem';
     {label: 'Yarn', value: 'yarn'}
   ]}>
   <TabItem value="npm">
-    <pre><code>$ npm install -D bigtest</code></pre>
+    <pre><code>$ npm install bigtest --save-dev</code></pre>
   </TabItem>
   <TabItem value="yarn">
-    <pre><code>$ yarn add -D bigtest</code></pre>
+    <pre><code>$ yarn add bigtest --dev</code></pre>
   </TabItem>
 </Tabs>
 
