@@ -32,7 +32,6 @@ function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMess
         mainFields: ["browser", "module", "main"],
         extensions: ['.js', '.ts'],
       }),
-      commonjs(),
       typescript({
         tsconfig: bundle.tsconfig,
         tsconfigDefaults: defaultTSConfig(),
@@ -48,6 +47,7 @@ function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMess
         presets: ['@babel/preset-env', '@babel/preset-typescript'],
         plugins: ['@babel/plugin-transform-runtime']
       }),
+      commonjs(),
       injectProcessEnv({
         NODE_ENV: 'production'
       }),
