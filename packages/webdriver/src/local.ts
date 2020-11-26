@@ -1,6 +1,8 @@
 import 'chromedriver';
 import 'geckodriver';
 
+import { performance } from 'perf_hooks';
+
 import { Operation, resource } from 'effection';
 import { daemon } from '@effection/node';
 
@@ -35,7 +37,11 @@ export function * Local(options: Options): Operation<WebDriver> {
     yield;
   });
 
+  let now = performance.now();
+
   yield untilURLAvailable(`${driverURL}/status`, 5000);
+
+  console.log("DIFF", performance.now() - now);
 
   yield connect(driver, options);
 

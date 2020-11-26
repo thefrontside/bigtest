@@ -1,0 +1,29 @@
+name: Test
+
+on:
+  pull_request:
+    branches:
+      - 'v[0-9]+'
+
+jobs:
+  tmate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    name: tmate
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: cachekey-v1-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            cachekey-v1-${{ runner.os }}-yarn-
+      - name: Install dependencies
+        run: yarn
+      - name: Run prepack
+        run: yarn prepack
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
