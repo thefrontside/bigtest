@@ -1,14 +1,16 @@
 import { Test } from './interfaces';
 
-type Loc = {
-  file: string;
-}
-
-class TestValidationError extends Error {
+export class TestValidationError extends Error {
   name = 'TestValidationError'
 
-  public loc?: Loc;
+  /**
+   * The location where this error occurred.
+   */
+  public loc?: { file: string };
 
+  /**
+   * @hidden
+   */
   constructor(message: string, file?: string) {
     super(message);
     if(file) {
@@ -27,8 +29,21 @@ function findDuplicates<T>(array: T[], callback: (value: T) => void) {
   }
 }
 
+/**
+ * The maximum nesting depth of a test suite.
+ */
 export const MAXIMUM_DEPTH = 10;
 
+/**
+ * Checks whether the given {@link Test} is well formed. Note that this only
+ * checks the format of the test structure, and not whether the test is
+ * succeeds, or contains any other errors, such as type or logic errors.
+ *
+ * If the test is invalid, it will throw a {@link TestValidationError}.
+ *
+ * @param test The test to validate
+ * @returns `true` if the test is valid, otherwise it will throw an exception
+ */
 export function validateTest(test: Test): true {
   function validateTestInner(test: Test, path: string[] = [], file?: string, depth = 0): true {
     if(depth > MAXIMUM_DEPTH) {
