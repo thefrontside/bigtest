@@ -111,17 +111,17 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
     let { channel } = this;
     let rollup: RollupWatcher = watch(prepareWatchOptions(this.options, channel));
 
+    let matcher = match<RollupWatcherEvent>('code')({
+      START: () => ({ type: 'START' } as const),
+      END: () => ({ type: 'UPDATE' } as const),
+      ERROR: ({ error }) => ({ type: 'ERROR', error } as const),
+    });
+
     try {
       let messages = on(rollup, 'event')
         .map(([event]) => event as RollupWatcherEvent)
         .filter(event => ['START', 'END', 'ERROR'].includes(event.code))
-        .map(event => {
-          return match<RollupWatcherEvent>('code')({
-            START: () => ({ type: 'START' }),
-            END: () => ({ type: 'UPDATE' }),
-            ERROR: ({ error }) => ({ type: 'ERROR', error }),
-          })(event)
-        });
+        .map(matcher);
 
       yield messages.forEach(function* (message) {
         channel.send(message);

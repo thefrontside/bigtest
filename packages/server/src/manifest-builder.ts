@@ -5,14 +5,13 @@ import { once } from '@effection/events';
 import { validateTest } from '@bigtest/suite';
 import { Deferred } from '@bigtest/effection';
 import { Bundler } from '@bigtest/bundler';
-import type { BundlerMessage } from '@bigtest/bundler';
 import { Atom } from '@bigtest/atom';
 import { createFingerprint } from 'fprint';
 import * as path from 'path';
 import * as fs from 'fs';
 import { OrchestratorState } from './orchestrator/state';
 import { assertBundlerState, assertCanTransition } from '../src/assertions/bundler-assertions';
-import { match } from '@bigtest/matcher';
+
 
 const { copyFile, mkdir, stat, appendFile, open } = fs.promises;
 
@@ -105,14 +104,13 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
   });
 
   yield subscribe(bundler).forEach(function* (message) {
-    match('type')<BundlerMessage, void>({
-      START: () => {
+    switch (message.type) {
+      case 'START':
         console.debug("[manifest builder] received bundler start");
 
         bundlerSlice.update(() => ({ type: 'BUILDING', warnings: [] }));
-      },
-      // TODO: how do I handle generator functions
-      UPDATE: function *() {
+        break;
+      case 'UPDATE':
         console.debug("[manifest builder] received bundle update");
 
         try {
@@ -128,23 +126,24 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
           console.debug("[manifest builder] error loading manifest");
           bundlerSlice.update(() => ({ type: 'ERRORED', error }));
         }
-      },
-      ERROR: ({ error }) => {
+
+        break;
+      case 'ERROR':
         console.debug("[manifest builder] received bundle error");
 
-        bundlerSlice.update(() => ({ type: 'ERRORED', error }));
-      },
-      WARN: ({ warning }) => {
-        console.debug("received bundle warning", warning);
+        bundlerSlice.update(() => ({ type: 'ERRORED', error: message.error }));
+        break;
+      case 'WARN':
+        console.debug("received bundle warning", message.warning);
 
         bundlerSlice.update((previous) => {
           assertBundlerState(previous.type, {is: ['BUILDING', 'GREEN']});
 
-          let warnings = !!previous.warnings ? [...previous.warnings, warning] : [warning];
+          let warnings = !!previous.warnings ? [...previous.warnings, message.warning] : [message.warning];
 
           return {...previous, warnings };
         });
-      }
-    })(message);
+        break;
+    }
   });
 }

@@ -13,7 +13,9 @@
   ],
   "scripts": {
     "lint": "eslint \"{src,test}/**/*.ts\"",
-    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "test:unit": "mocha -r ts-node/register \"test/**/*.test.ts\"",
+    "test:types": "dtslint types --localTs ../../node_modules/typescript/lib --expectOnly",
+    "test": "yarn test:unit && yarn test:types",
     "prepack": "tsc --outdir dist --declaration --sourcemap --module commonjs"
 },
   "devDependencies": {
