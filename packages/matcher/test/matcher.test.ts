@@ -46,7 +46,7 @@ describe("match", () => {
     let matcher = (msg: BundlerMessage) => match<BundlerMessage>('type')({
       START: () => ({ kind: "ONE", a: 1  } as const),
       ERROR: () => ({ kind: 'TWO' } as const),
-    });
+    })(msg);
 
     it('can select from partial cases', () => {
       let result = matcher({  type: 'START' });
