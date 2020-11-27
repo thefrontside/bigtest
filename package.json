@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.8.0",
-    "@types/node": "^12"
+    "@types/node": "^13.13.4"
   },
   "resolutions": {
     "lodash": "4.17.19",
