@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Interactor } from './interactor';
+import { Interaction } from './interaction';
 
-export type ActionFn<E extends Element> = (interactor: InteractorInstance<E, {}, {}>, ...args: any[]) => unknown;
+export type ActionFn<E extends Element> = (interactor: InteractorInstance<E, {}, {}>, ...args: any[]) => Promise<unknown>;
 
 export type FilterFn<T, E extends Element> = (element: E) => T;
 
@@ -25,8 +26,8 @@ export type InteractorSpecification<E extends Element, F extends Filters<E>, A e
 }
 
 export type ActionMethods<E extends Element, A extends Actions<E>> = {
-  [P in keyof A]: A[P] extends ((interactor: InteractorInstance<E, {}, {}>, ...args: infer TArgs) => infer TReturn)
-    ? ((...args: TArgs) => TReturn)
+  [P in keyof A]: A[P] extends ((interactor: InteractorInstance<E, {}, {}>, ...args: infer TArgs) => Promise<infer TReturn>)
+    ? ((...args: TArgs) => Interaction<TReturn>)
     : never;
 }
 

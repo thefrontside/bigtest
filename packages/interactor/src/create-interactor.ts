@@ -4,7 +4,6 @@ import { Locator } from './locator';
 import { Filter } from './filter';
 import { Interactor } from './interactor';
 import { interaction } from './interaction';
-import { converge } from './converge';
 
 const defaultLocator: LocatorFn<Element> = (element) => element.textContent || "";
 
@@ -23,9 +22,7 @@ export function createInteractor<E extends Element>(interactorName: string) {
             if(bigtestGlobals.runnerState === 'assertion') {
               throw new Error(`tried to ${actionDescription} on ${this.description} in an assertion, actions should only be performed in steps`);
             }
-            return await converge(() => {
-              return action(this, ...args);
-            });
+            return action(this, ...args);
           });
         },
         configurable: true,
