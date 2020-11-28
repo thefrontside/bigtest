@@ -11,7 +11,7 @@ export { isVisible } from 'element-is-visible';
 
 export { Link } from './definitions/link';
 export { Heading } from './definitions/heading';
-export { Button, ButtonFilters, ButtonActions } from './definitions/button';
+export { Button } from './definitions/button';
 export { TextField } from './definitions/text-field';
 export { CheckBox } from './definitions/check-box';
 export { RadioButton } from './definitions/radio-button';
