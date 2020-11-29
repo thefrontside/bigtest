@@ -22,12 +22,12 @@ declare const atom: Atom<ROOT>;
 // $ExpectError
 atom.slice()('a', 'c');
 
-atom.slice()('a', 'b'); // $ExpectType Slice<Readonly<Record<string, string>>, ROOT>
+atom.slice()('a', 'b'); // $ExpectType Slice<Readonly<Record<string, string>>>
 
-atom.slice()('a'); // $ExpectType Slice<A, ROOT>
+atom.slice()('a'); // $ExpectType Slice<A>
 
 // $ExpectError
-atom.slice()('a').slice('c');
+atom.slice()('a').slice()('c');
 
-atom.slice()('a').slice('a').slice('b'); // $ExpectType Slice<string, ROOT>
-atom.slice()('a').slice('a', 'b'); // $ExpectType Slice<string, ROOT>
+atom.slice()('a').slice()('a').slice()('b'); // $ExpectType Slice<string>
+atom.slice()('a').slice()('a', 'b'); // $ExpectType Slice<string>

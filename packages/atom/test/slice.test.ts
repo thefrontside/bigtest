@@ -27,7 +27,6 @@ describe('@bigtest/atom Slice', () => {
     describe('.update()', () => {
       beforeEach(() => {
         slice.update(previous => {
-          console.log(previous);
           expect(previous).toEqual('foo');
           return 'bar';
         });
@@ -37,7 +36,7 @@ describe('@bigtest/atom Slice', () => {
         expect(slice.get()).toEqual('bar');
       });
 
-      it.skip('updates the atom state', () => {
+      it('updates the atom state', () => {
         expect(atom.get()).toEqual({ data: 'bar' });
       });
     });
@@ -138,7 +137,6 @@ describe('@bigtest/atom Slice', () => {
       });
     });
 
-
     type TestRunAgentState = {
       status: ResultStatus;
       agent: {
@@ -214,7 +212,6 @@ describe('@bigtest/atom Slice', () => {
         expect(slice.slice()('agents', 'agent-1', 'result', 'steps', 1, 'status').get()).toBe('running');
       });
 
-
       describe('removal', () => {
         it('should remove a a record', () => {
           let agent = slice.slice()('agents', 'agent-1');
@@ -229,54 +226,58 @@ describe('@bigtest/atom Slice', () => {
       });
     });
 
-    // describe('subscribe', () => {
-    //   let subscription: Subscription<string, void>;
+    describe('subscribe', () => {
+      let atom: Atom<Data>;
+      let slice: Slice<string>;
+      let subscription: Subscription<string, undefined>;
 
-    //   beforeEach(async () => {
-    //     subscription = await spawn(subscribe(slice));
+      beforeEach(async () => {
+        atom = createAtom({ data: 'foo' });
+        slice = atom.slice()('data');
+        subscription = await spawn(subscribe(slice));
 
-    //     slice.update(() => 'bar');
-    //     slice.update(() => 'baz');
-    //     slice.update(() => 'quox');
-    //   });
+        slice.update(() => 'bar');
+        slice.update(() => 'baz');
+        slice.update(() => 'quox');
+      });
 
-    //   it('iterates over emitted states', async () => {
-    //     await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'bar' });
-    //     await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'baz' });
-    //     await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'quox' });
-    //   });
-    // });
+      it('iterates over emitted states', async () => {
+        await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'bar' });
+        await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'baz' });
+        await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'quox' });
+      });
+    });
 
-    // describe.skip('subscribe - unique state publish', () => {
-    //   let result: string[];
-    //   let subscription: ChainableSubscription<string, void>;
+    describe.skip('subscribe - unique state publish', () => {
+      let result: string[];
+      let subscription: ChainableSubscription<string, undefined>;
 
-    //   beforeEach(async () => {
-    //     result = [];
+      beforeEach(async () => {
+        result = [];
 
-    //     subscription = await spawn(subscribe(slice));
+        subscription = await spawn(subscribe(slice));
         
-    //     spawn(subscription.forEach(function*(state) { 
-    //       result.push(state); 
-    //     }));
+        spawn(subscription.forEach(function*(state) { 
+          result.push(state); 
+        }));
 
-    //     // foo is the initial value
-    //     // should not appear as element 1 in the result
-    //     slice.update(() => 'foo');
-    //     slice.update(() => 'bar');
-    //     slice.update(() => 'bar');
-    //     slice.update(() => 'baz');
-    //     slice.update(() => 'baz');
-    //     // back to foo, should exist in the result
-    //     slice.update(() => 'foo');
-    //   });
+        // foo is the initial value
+        // should not appear as element 1 in the result
+        slice.update(() => 'foo');
+        slice.update(() => 'bar');
+        slice.update(() => 'bar');
+        slice.update(() => 'baz');
+        slice.update(() => 'baz');
+        // back to foo, should exist in the result
+        slice.update(() => 'foo');
+      });
 
-    //   it('should only publish unique state changes', async () => {
-    //     await when(() => {
-    //       expect(result).toHaveLength(3);
-    //       expect(result).toEqual(['bar', 'baz', 'foo']);
-    //     });
-    //   });
-    // });
+      it('should only publish unique state changes', async () => {
+        await when(() => {
+          expect(result).toHaveLength(3);
+          expect(result).toEqual(['bar', 'baz', 'foo']);
+        });
+      });
+    });
   });
 });

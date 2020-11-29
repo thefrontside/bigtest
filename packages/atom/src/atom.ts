@@ -2,15 +2,12 @@ import * as O from "fp-ts/Option";
 import { Lens } from "monocle-ts";
 import { constant, identity } from 'fp-ts/lib/function';
 import { pipe } from 'fp-ts/function'
-import { Atom, Sliceable } from './sliceable';
+import { Atom, Slice, Sliceable } from './sliceable';
 import { assert } from 'assert-ts';
 import { subscribe, Subscription, SymbolSubscribable } from '@effection/subscription';
 import { Channel } from '@effection/channel';
 import { Operation } from 'effection';
-import { atRecord } from 'monocle-ts/lib/At';
-import { cons } from 'fp-ts/lib/NonEmptyArray';
-// import { Operation } from 'effection';
-// import { unique } from './unique';
+import { AnyNsRecord } from 'dns';
 
 export function createAtom<S>(init?: S): Atom<S> {
   let initialState = init;
@@ -43,17 +40,23 @@ export function createAtom<S>(init?: S): Atom<S> {
   }
 
   function update(fn: (state: S) => S) {
-    pipe(
+    let next = pipe(
       get(),
       O.fromNullable,
-      O.map(state => fn(state)),
-      O.map(state => set(state))
+      O.map(s => {
+        let updated = fn(lens.get(get() as S) as S);
+        
+        return lens.asOptional().modify(() => updated)(s as S);
+      }),
+      O.toUndefined
     );
+
+    set(next as S);
   }
 
   function *once(predicate: (state: S) => boolean): Operation<S> {
     if(predicate(state as S)) {
-      return state;
+      return state as S;
     } else {
       let subscription = yield subscribe(states);
       return yield subscription.filter(predicate).expect();
@@ -72,7 +75,7 @@ export function createAtom<S>(init?: S): Atom<S> {
     states.setMaxListeners(value);
   }
 
-  let sliceMaker = (parentLens: Lens<S, S>) => (): Sliceable<S> => <P extends keyof S>(...path: P[]) => {
+  let sliceMaker = <A>(parentLens: Lens<S, S>) => (): Sliceable<S> => <P extends keyof S>(...path: P[]) => {
     assert(Array.isArray(path) && path.length >  0, "slice expects a rest parameter with at least 1 element");
     
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -95,7 +98,7 @@ export function createAtom<S>(init?: S): Atom<S> {
           O.toUndefined
         );
 
-        set(next as S);
+        update(() => next as S);
       },
       update(fn: (s: S) => S) {
         let next = pipe(
@@ -109,7 +112,7 @@ export function createAtom<S>(init?: S): Atom<S> {
           O.toUndefined
         );
 
-        set(next as S);
+        update(() => next as S);
       },
       remove() {
         let next = pipe(
@@ -119,7 +122,7 @@ export function createAtom<S>(init?: S): Atom<S> {
           O.toUndefined
         );
 
-        set(next as S);
+        update(() => next as S);
       },
       slice: sliceMaker(sliceLens as Lens<S, S>),
       *[SymbolSubscribable](): Operation<Subscription<S, void>> {
@@ -131,13 +134,14 @@ export function createAtom<S>(init?: S): Atom<S> {
     slice.once = function *(predicate: (state: S) => boolean): Operation<S> {
       let currentState = sliceLens.get(get() as S);
       if(predicate(currentState as S)) {
-        return currentState;
+        return currentState as S;
       } else {
         let subscription = yield subscribe(slice);
         return yield subscription.filter(predicate).expect();
       }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return slice;
   }
 
