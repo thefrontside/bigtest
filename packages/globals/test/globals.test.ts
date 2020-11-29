@@ -11,6 +11,8 @@ function makeDocument(body = ''): Document {
 describe('@bigtest/globals', () => {
   beforeEach(() => {
     bigtestGlobals.reset();
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
     delete globalThis.document;
   });
 

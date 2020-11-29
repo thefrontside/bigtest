@@ -28,8 +28,7 @@ describe('manifest-generator', () => {
   let atom = createOrchestratorAtom(getTestProjectOptions());
   let manifestGeneratorState = atom.slice()('manifestGenerator');
 
-  manifestGeneratorState
-  prev => ({
+  manifestGeneratorState.update(prev => ({
     ...prev,
     options: {
       files: [TEST_DIR + "/*.t.{js,ts}"],

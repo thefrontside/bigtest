@@ -10,7 +10,7 @@ import { appServer } from '../src/app-server';
 
 describe('app service', () => {
   let atom: Atom<OrchestratorState>;
-  let appStatus: Slice<ServiceState<AppServiceStatus, AppOptions>, OrchestratorState>;
+  let appStatus: Slice<ServiceState<AppServiceStatus, AppOptions>>;
 
   describe('ready', () => {
     beforeEach(() => {

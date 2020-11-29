@@ -1,5 +1,5 @@
 import { Operation } from 'effection';
-import { Atom } from '@bigtest/atom';
+import { createAtom } from '@bigtest/atom';
 import { fetch } from '@effection/fetch';
 import { Driver } from '@bigtest/driver';
 
@@ -38,7 +38,7 @@ export class WebDriver implements Driver<WDSession> {
  */
 export function* connect(driver: WebDriver, options: Options): Operation<void> {
 
-  let capabilities = new Atom(Capabilities);
+  let capabilities = createAtom(Capabilities);
 
   if (options.headless) {
     capabilities.slice()('alwaysMatch', 'goog:chromeOptions', 'args')

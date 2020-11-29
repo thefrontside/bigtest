@@ -99,7 +99,7 @@ export function createAtom<S>(init?: S): Atom<S> {
         let next = pipe(
           get(),
           O.fromNullable,
-          O.map(s => sliceLens.asOptional().modify(() => value)(s as S)),
+          O.map(s => sliceLens.asOptional().set(value)(s as S)),
           O.toUndefined
         );
 
@@ -128,6 +128,9 @@ export function createAtom<S>(init?: S): Atom<S> {
         );
 
         update(() => next as S);
+      },
+      over(fn: (value: S) => S): void {
+        update((s) => sliceLens.set(fn(sliceLens.get(s) as S))(get() as S));
       },
       slice: sliceMaker(sliceLens as Lens<S, S>),
       *[SymbolSubscribable](): Operation<Subscription<S, void>> {
