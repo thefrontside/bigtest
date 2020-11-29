@@ -234,7 +234,7 @@ describe('@bigtest/atom', () => {
       foo: string;
     }
 
-    describe.skip('subscribe - unique state publish', () => {
+    describe('subscribe - unique state publish', () => {
       let result: Subject[];
       let subject: Atom<Subject>;
       let subscription: ChainableSubscription<Subject, undefined>;

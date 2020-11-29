@@ -2,12 +2,11 @@ import * as O from "fp-ts/Option";
 import { Lens } from "monocle-ts";
 import { constant, identity } from 'fp-ts/lib/function';
 import { pipe } from 'fp-ts/function'
-import { Atom, Slice, Sliceable } from './sliceable';
+import { Atom, Sliceable } from './sliceable';
 import { assert } from 'assert-ts';
 import { subscribe, Subscription, SymbolSubscribable } from '@effection/subscription';
 import { Channel } from '@effection/channel';
 import { Operation } from 'effection';
-import { AnyNsRecord } from 'dns';
 
 export function createAtom<S>(init?: S): Atom<S> {
   let initialState = init;
@@ -75,22 +74,22 @@ export function createAtom<S>(init?: S): Atom<S> {
     states.setMaxListeners(value);
   }
 
-  let sliceMaker = <A>(parentLens: Lens<S, S>) => (): Sliceable<S> => <P extends keyof S>(...path: P[]) => {
+  let sliceMaker = <A>(parentLens: Lens<S, A>) => (): Sliceable<S> => <P extends keyof S>(...path: P[]) => {
     assert(Array.isArray(path) && path.length >  0, "slice expects a rest parameter with at least 1 element");
     
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let sliceLens = parentLens.compose(Lens.fromPath<S>()(path as any) as any);
 
     let slice = {
-      get(): S | undefined {
+      get(): A | undefined {
         return pipe(
           get(),
           O.fromNullable,
           O.map(s => sliceLens.get(s)),
           O.toUndefined
-        ) as S;
+        ) as A;
       },
-      set(value: S): void {
+      set(value: A): void {
         let next = pipe(
           get(),
           O.fromNullable,
@@ -100,12 +99,12 @@ export function createAtom<S>(init?: S): Atom<S> {
 
         update(() => next as S);
       },
-      update(fn: (s: S) => S) {
+      update(fn: (s: A) => S) {
         let next = pipe(
           get(),
           O.fromNullable,
           O.map(s => {
-            let updated = fn(sliceLens.get(get() as S) as S);
+            let updated = fn(sliceLens.get(get() as S) as A);
             
             return sliceLens.asOptional().modify(() => updated)(s as S);
           }),
@@ -126,6 +125,7 @@ export function createAtom<S>(init?: S): Atom<S> {
       },
       slice: sliceMaker(sliceLens as Lens<S, S>),
       *[SymbolSubscribable](): Operation<Subscription<S, void>> {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         return yield subscribe(atom).map((s) => sliceLens.get(s));
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
