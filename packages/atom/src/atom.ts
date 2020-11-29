@@ -7,6 +7,8 @@ import { assert } from 'assert-ts';
 import { subscribe, Subscription, SymbolSubscribable } from '@effection/subscription';
 import { Channel } from '@effection/channel';
 import { Operation } from 'effection';
+import { atRecord } from 'monocle-ts/lib/At';
+import { cons } from 'fp-ts/lib/NonEmptyArray';
 // import { Operation } from 'effection';
 // import { unique } from './unique';
 
@@ -70,56 +72,73 @@ export function createAtom<S>(init?: S): Atom<S> {
     states.setMaxListeners(value);
   }
 
-  let sliceMaker = (parentLens: Lens<S, S>) => (): Sliceable<S> => {
-    return <P extends keyof S>(...path: P[]) => {
-      assert(Array.isArray(path) && path.length >  0, "slice expects a rest parameter with at least 1 element");
-      
+  let sliceMaker = (parentLens: Lens<S, S>) => (): Sliceable<S> => <P extends keyof S>(...path: P[]) => {
+    assert(Array.isArray(path) && path.length >  0, "slice expects a rest parameter with at least 1 element");
+    
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let sliceLens = parentLens.compose(Lens.fromPath<S>()(path as any) as any);
+
+    let slice = {
+      get(): S | undefined {
+        return pipe(
+          get(),
+          O.fromNullable,
+          O.map(s => sliceLens.get(s)),
+          O.toUndefined
+        ) as S;
+      },
+      set(value: S): void {
+        let next = pipe(
+          get(),
+          O.fromNullable,
+          O.map(s => sliceLens.asOptional().modify(() => value)(s as S)),
+          O.toUndefined
+        );
+
+        set(next as S);
+      },
+      update(fn: (s: S) => S) {
+        let next = pipe(
+          get(),
+          O.fromNullable,
+          O.map(s => {
+            let updated = fn(sliceLens.get(get() as S) as S);
+            
+            return sliceLens.asOptional().modify(() => updated)(s as S);
+          }),
+          O.toUndefined
+        );
+
+        set(next as S);
+      },
+      remove() {
+        let next = pipe(
+          get(),
+          O.fromNullable,
+          O.map(s => sliceLens.asOptional().modify(() => undefined)(s as S)),
+          O.toUndefined
+        );
+
+        set(next as S);
+      },
+      slice: sliceMaker(sliceLens as Lens<S, S>),
+      *[SymbolSubscribable](): Operation<Subscription<S, void>> {
+        return yield subscribe(atom).map((s) => sliceLens.get(s));
+      }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let sliceLens = parentLens.compose(Lens.fromPath<S>()(path as any) as any);
+    } as any;
 
-      return {
-        get(): S | undefined {
-          return pipe(
-            get(),
-            O.fromNullable,
-            O.map(s => sliceLens.get(s)),
-            O.toUndefined
-          ) as S;
-        },
-        set(value: S): void {
-          let next = pipe(
-            get(),
-            O.fromNullable,
-            O.map(s => sliceLens.asOptional().modify(() => value)(s as S)),
-            O.toUndefined
-          );
-
-          console.log(next)
-
-          set(next as S);
-        },
-        update(fn: (s: S) => S) {
-          let next = pipe(
-            get(),
-            O.fromNullable,
-            O.map(s => {
-              let updated = fn(sliceLens.get(get() as S) as S);
-              
-              return sliceLens.asOptional().modify(() => updated)(s as S);
-            }),
-            O.toUndefined
-          );
-
-          console.log(next);
-          set(next as S);
-        },
-        slice: sliceMaker(sliceLens as Lens<S, S>),
-        *[SymbolSubscribable](): Operation<Subscription<S, void>> {
-          return yield subscribe(atom).map((s) => sliceLens.get(s));
-        }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any;
+    slice.once = function *(predicate: (state: S) => boolean): Operation<S> {
+      let currentState = sliceLens.get(get() as S);
+      if(predicate(currentState as S)) {
+        return currentState;
+      } else {
+        let subscription = yield subscribe(slice);
+        return yield subscription.filter(predicate).expect();
+      }
     }
+
+    return slice;
   }
 
   let atom = ({
