@@ -19,6 +19,8 @@ export function createAtom<S>(init: S): Atom<S> {
       state,
       lens.getOption
     );
+
+    return current;
   }
 
   function get(): S {
