@@ -26,8 +26,14 @@ export function createAtom<S>(init?: S): Atom<S> {
   }
 
   function set(value: S): void {
+    let current = get();
+
+    if(value === current) {
+      return;
+    }
+
     state = pipe(
-      get(),
+      current,
       O.fromNullable,
       O.map(state => lens.asOptional().set(value)(state)),
       O.toUndefined
@@ -97,7 +103,7 @@ export function createAtom<S>(init?: S): Atom<S> {
           O.toUndefined
         );
 
-        update(() => next as S);
+        set(next as S);
       },
       update(fn: (s: A) => S) {
         let next = pipe(

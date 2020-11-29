@@ -248,7 +248,7 @@ describe('@bigtest/atom Slice', () => {
       });
     });
 
-    describe.skip('subscribe - unique state publish', () => {
+    describe('subscribe - unique state publish', () => {
       let result: string[];
       let subscription: ChainableSubscription<string, undefined>;
 
