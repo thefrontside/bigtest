@@ -35,7 +35,7 @@ switch (event.code) {
 ## Riches
 
 ```ts
-match('code')<RollupWatcherEvent, BundlerMessage>({
+match<RollupWatcherEvent>('code')({
   START: () => ({ type: 'START' }) as const,
   END: () => ({ type: 'UPDATE' } as const),
   ERROR: ({ error }) => ({ type: 'ERROR', error } as const),
