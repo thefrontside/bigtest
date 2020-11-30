@@ -26,7 +26,7 @@ let matchAll = match<WatcherEvent>('code')({
 
 let matcherStart = matchAll({ code: 'START' } as const);
 
- matcherStart.type === 'START';
+ matcherStart.type // $ExpectType "START"
 
 // $ExpectError
 matcherStart.type === 'UPDATE';
@@ -42,8 +42,8 @@ matcherStart.duration
 let matcherError = matchAll({ code: 'ERROR', error: new Error('fooo') } as const);
 
 // type narrows on error field
-matcherError.type === 'ERROR';
-matcherError.error.message;
+matcherError.type // $ExpectType "ERROR"
+matcherError.error.message // $ExpectType string
 
 
 let matchPartial = match<BundlerMessage>('type')({
@@ -54,4 +54,4 @@ let matchPartial = match<BundlerMessage>('type')({
 let result = matchPartial({  type: 'START' });
 
 // type narrow
-result.a;
+result.a // $ExpectType 1
