@@ -160,7 +160,7 @@ describe('manifest builder', () => {
 
       let error = bundlerState.error;
 
-      expect(error.frame).toBeTruthy();
+      expect(error).toBeInstanceOf(SyntaxError);
     });
   })
 
