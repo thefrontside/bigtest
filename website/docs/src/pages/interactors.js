@@ -120,6 +120,46 @@ function Interactors() {
             </div>
           </section>
         )}
+
+          <section>
+            <div className="container">
+              <div className="row">
+                <div className={clsx('col', styles.feature)}>
+                  <h2>Why try Interactors?</h2>
+                  <p>
+                    In many typical test suites, if you change something about
+                    one button, you may have to change dozens of tests.
+                    It can take more time to update the tests than to make the
+                    change in the codebase.
+                    Does that sound familiar?
+                  </p>
+                  <p>
+                    Interactors were designed to help solve this problem
+                    and bring your user interface tests closer to what users
+                    actually do.
+                  </p>
+                  <p>
+                    A user finds something they want to interact with,
+                    takes action, and gets a result.
+                    The code to accomplish these same steps in a test is in one
+                    place as an Interactor.
+                    These Interactors can then be reused in many different test
+                    contexts.
+                    You can even create your own Interactors that test for
+                    whether a UI is accessible to people using assistive
+                    technology or navigating by keyboard controls.
+                  </p>
+                  <p>
+                    Best of all, you do not need to throw out your existing
+                    tests when you try out Interactors! They fit right in
+                    with the work that you have already done.
+                    Try out the Quick Start guide to see this in action
+                    in your own app's test suite.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
       </main>
     </Layout>
   );
