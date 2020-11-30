@@ -4,7 +4,9 @@ import { Subscribable, SymbolSubscribable } from '@effection/subscription';
 import { Channel } from '@effection/channel';
 import { watch, rollup, OutputOptions, InputOptions, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'rollup';
 import { defaultTSConfig } from '@bigtest/project';
-import resolve from '@rollup/plugin-node-resolve';
+import resolve, {
+  DEFAULTS as RESOLVE_DEFAULTS,
+} from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
@@ -12,6 +14,7 @@ import injectProcessEnv from 'rollup-plugin-inject-process-env';
 // @ts-ignore
 import babel from '@rollup/plugin-babel';
 import { BundlerMessage } from './types';
+import { DEFAULT_EXTENSIONS } from '@babel/core';
 
 interface BundleOptions {
   entry: string;
@@ -30,7 +33,7 @@ function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMess
     plugins: [
       resolve({
         mainFields: ["browser", "module", "main"],
-        extensions: ['.js', '.ts'],
+        extensions: [...RESOLVE_DEFAULTS.extensions, '.jsx'],
       }),
       typescript({
         tsconfig: bundle.tsconfig,
@@ -43,8 +46,11 @@ function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMess
       }),
       babel({
         babelHelpers: 'runtime',
-        extensions: ['.js', '.ts'],
-        presets: ['@babel/preset-env', '@babel/preset-typescript'],
+        exclude: /node_modules/,
+        extensions: [
+          ...DEFAULT_EXTENSIONS
+        ],
+        presets: ['@babel/preset-env'],
         plugins: ['@babel/plugin-transform-runtime']
       }),
       commonjs(),
