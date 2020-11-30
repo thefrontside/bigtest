@@ -45,7 +45,7 @@ function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMess
       babel({
         babelHelpers: 'runtime',
         extensions: ['.js', '.ts'],
-        presets: ['@babel/preset-env', '@babel/preset-typescript'],
+        presets: ['@babel/preset-env'],
         plugins: ['@babel/plugin-transform-runtime']
       }),
       injectProcessEnv({
