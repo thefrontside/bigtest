@@ -50,10 +50,15 @@ function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMess
         extensions: [
           ...DEFAULT_EXTENSIONS
         ],
+        sourceType: 'unambiguous',
         presets: ['@babel/preset-env'],
-        plugins: ['@babel/plugin-transform-runtime']
+        plugins: [
+          ['@babel/plugin-transform-runtime']
+        ]
       }),
-      commonjs(),
+      commonjs({
+        ignoreGlobal: true,
+      }),
       injectProcessEnv({
         NODE_ENV: 'production'
       }),
@@ -124,7 +129,10 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
       yield messages.forEach(function* (message) {
         channel.send(message);
       });
-    } finally {
+    } catch(errr) {
+      console.dir(errr)
+    } 
+    finally {
       console.debug('[bundler] shutting down');
       rollup.close();
     }
@@ -139,6 +147,7 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
 
       this.channel.send({ type: 'UPDATE' });
     } catch(error) {
+      console.log(error)
       this.channel.send({ type: 'ERROR', error });
     }
   }
