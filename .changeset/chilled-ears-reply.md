@@ -2,4 +2,4 @@
 "@bigtest/interactor": minor
 ---
 
-Add cypress implementation for interactors
+Add cypress integration for interactors
