@@ -1,6 +1,6 @@
 ---
 id: locators-filters-actions
-title: locators filters actions
+title: Locators, Filters, and Actions
 ---
 <!-- 
 - 1-2 sentences of what they are
@@ -11,11 +11,12 @@ title: locators filters actions
 :warning: we need to mention the caveat of how weird mutable apis like nodelist cannot be used in filters
 -->
 
-Locators, filters, and actions are the key ingredients for creating new Interactors.
-In this section, you will learn what they are and some more details about how to use them.
+Every Interactor can have locators, filters, and actions.
+In this section, you will learn what these are and some more details about how to use them.
 
 ## Locators
 
+One benefit of Interactors is that they help you align your tests with how a user actually interacts with the app, starting with finding what to click on.
 Locators are one of two ways to find a specific element in a user interface.
 
 Whenever you use an Interactor in a test, you can pass it a string, like "Submit" in the example below. This string argument is the Locator.
@@ -24,7 +25,9 @@ Whenever you use an Interactor in a test, you can pass it a string, like "Submit
 Button('Submit').exists();
 ```
 
-What is going on behind the scenes? The built-in Button interactor provided by BigTest looks for a button with that test, using [element.textContent](/). So, `Button('Submit')` returns a button element whose `element.textContent` is equal to `Submit`.
+A typical user would try to find a button with the word "Submit" on it, and so we use that word for the Locator.
+
+What is going on behind the scenes? Just like the user, the built-in Button interactor provided by BigTest looks for a button with the "Submit" text. It uses [element.textContent](/) to find the match. To say it another way, `Button('Submit')` returns a button element whose `element.textContent` is equal to `Submit`.
 
 ### Locators are optional
 
