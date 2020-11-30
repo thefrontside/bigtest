@@ -129,10 +129,7 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
       yield messages.forEach(function* (message) {
         channel.send(message);
       });
-    } catch(errr) {
-      console.dir(errr)
-    } 
-    finally {
+    } finally {
       console.debug('[bundler] shutting down');
       rollup.close();
     }
@@ -147,7 +144,6 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
 
       this.channel.send({ type: 'UPDATE' });
     } catch(error) {
-      console.log(error)
       this.channel.send({ type: 'ERROR', error });
     }
   }
