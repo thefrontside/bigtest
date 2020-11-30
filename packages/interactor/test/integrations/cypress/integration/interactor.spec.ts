@@ -7,7 +7,7 @@ describe('Cypress with Interactors', () => {
   it('single interactor per command', () => {
     cy
       .do(TextField().fillIn('hello'))
-      .expect(TextField('hello').exists())
+      .expect(TextField({ value: 'hello' }).exists())
   });
   it('array of interactors', () => {
     cy
