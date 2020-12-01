@@ -1,12 +1,11 @@
-// import React from 'react';
-// import clsx from 'clsx';
-// import Layout from '@theme/Layout';
-// import Link from '@docusaurus/Link';
-// import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-// import useBaseUrl from '@docusaurus/useBaseUrl';
-// import styles from './styles.module.css';
-
-// /* 
+/* eslint-disable prefer-let/prefer-let */
+import React from 'react';
+import clsx from 'clsx';
+import Layout from '@theme/Layout';
+import Link from '@docusaurus/Link';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import styles from './styles.module.css';
 
 // // originally from interactors/getting-started/why-bigtest
 
@@ -21,14 +20,26 @@
 // How this fits into an existing testing strategy 
 
 
+// // originally from interactors/overview
 
-import React from 'react';
-import clsx from 'clsx';
-import Layout from '@theme/Layout';
-import Link from '@docusaurus/Link';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import useBaseUrl from '@docusaurus/useBaseUrl';
-import styles from './styles.module.css';
+// Overview 
+//   - this article sets the stage for how the pieces fit together
+
+// - 1-2 sentences of what an interactor is
+//   - I think Charles?: BigTest Interactors provide an API to access the components of a user interface by finding them, observing their state, and manipulating them all from the same perspective as a user.
+// - Code example
+// - Summary of what someone will learn
+// - Brief explanation of Actions, Locators, Filters. We do this here because reading an in-depth article about each, introduced one at a time, can be disorienting
+// - Why use interactors?
+
+// *** 
+// i brought this over from asynchronus page as i think it makes more sense to describe the principles here:
+//   - 1-2 sentences that say the most important thing - you don’t need to worry about async interactions
+//   - Example of a common async UI pattern
+//   - How Interactors help you solve it
+//   - How is this possible? Introduce the term convergence 
+// ***
+
 
 const features = [
   {
@@ -83,6 +94,7 @@ function Feature({imageUrl, title, description}) {
 
 function Interactors() {
   const context = useDocusaurusContext();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const {siteConfig = {}} = context;
   return (
     <Layout
