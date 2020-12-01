@@ -31,8 +31,8 @@ functions just need to be async
 ## Cypress
 
 - do/expect commands automatically registered when importing interactors or creating interactors
-- <!-- min --> may need to follow [these] steps for enable esmodules
-- <!-- min --> for typescript make sure you add ["types"] in tsconfig
+- may need to follow [these] steps for enable esmodules
+- for typescript make sure you add ["types"] in tsconfig
 
 <!-- 
 - 1-2 sentence intro
