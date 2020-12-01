@@ -8,17 +8,37 @@ It is normal to write your own Interactors, where you can make complex interacti
 
 In this section, you will learn how to create a new Interactor for any interface and use it in your tests. We will start with a simple example for learning purposes, level up to a more complex example, and then cover common questions.
 
+<!--
+
+we use a button interactor as an example in the quick start and maybe we should expand on that and create a our own button interactor in the simple example of this page so that people can connect the dots and go "oh, so there's one by bigtest and we're making our own here".
+
+with textfield, yeah we list it as one of the ones offered by bigtest in the built-in page, but people's minds might lean towards "okay, so button is offered out of the box but i guess textfield i have to make my own?"
+
+-->
+
 ## Writing your first interactor
 
 In this example, we will create a `Checkbox` Interactor, similar to the one found in the [built-in DOM interactors](/docs/interactors/interactors/built-in-dom), and use it in a test.
 
 There are four things to decide:
 
+<!-- 
+// old
+
 1. Which HTML element to target, like `checkbox`
 2. The selector, which helps us find examples of that element, like `'input[type=checkbox]'` 
 3. The locator, which helps filter through the selector results, like `id`
 4. Which actions a test should be able to `perform` on that element, like a `click`
-<!-- 5. interactor id (the id that's used for error reporting) -->
+
+// new?
+
+1. id for error reporting (there's probably a better terminology than 'error-reporting')
+2. selector: i think a combination of 1. and 2. of the original list.
+3. locator: "default filter"
+4. filters: for additional filters
+5. action
+
+-->
 
 Putting this information together, we can make this new Interactor:
 
@@ -33,6 +53,10 @@ export const Checkbox = createInteractor<HTMLInputElement>('checkbox')({
   }
 });
 ```
+
+<!--
+maybe this would be a good place to mention that we're delegating to our own custom checkbox (as opposed to using the one offered by bigtest) so that we can use the id as the locator and not textcontent.
+-->
 
 Now, import the new interactor and add it to a test:
 

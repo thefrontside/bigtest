@@ -1,25 +1,10 @@
 module.exports = {
   interactors: [
     'interactors/quick-start',
-    {
-      type: 'category',
-      label: 'Interactors',
-      items: [
-        'interactors/interactors/introduction',
-        'interactors/interactors/built-in-dom',
-        'interactors/interactors/locators-filters-actions',
-        'interactors/interactors/write-your-own'
-      ]
-    },
-    {
-      type: 'category',
-      label: 'Integrations',
-      items: [
-        'interactors/integrations/overview',
-        'interactors/integrations/jest',
-        'interactors/integrations/cypress'
-      ]
-    }
+    'interactors/built-in-dom',
+    'interactors/locators-filters-actions',
+    'interactors/write-your-own',
+    'interactors/jest-cypress'
   ],
   platform: [
     'platform/installation',
