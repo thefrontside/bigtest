@@ -52,6 +52,14 @@ function setValue(element: TextFieldElement, value: string): void {
   }
 }
 
+/**
+ * Fill in text into an element by emulating how a user would do it, first
+ * focusing the element, then filling in the text letter by letter, generating
+ * the appropriate keyboard events.
+ *
+ * @param element The element to fill in text in
+ * @param value The text value to fill in
+ */
 export function fillIn(element: TextFieldElement, value: string) {
   let originalValue = element.value;
 
