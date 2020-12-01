@@ -1,7 +1,6 @@
 ---
 id: quick-start
 title: Quick Start
-slug: /interactors
 ---
 
 BigTest's Interactors make your UI tests easier to write, faster, and more reliable. You can use them across many different testing frameworks.
@@ -12,8 +11,8 @@ If you need help or have questions along the way, please let us know in [the Dis
 
 ## Prerequisites
 
-- [`npm`](https://www.npmjs.com/get-npm) or [`yarn`](https://classic.yarnpkg.com/en/docs/install)
-- [Node 12](https://nodejs.org/en/download/releases/)
+- [NPM](https://www.npmjs.com/get-npm) or [Yarn](https://classic.yarnpkg.com/en/docs/install)
+- [Node](https://nodejs.org/en/download/releases/)
 - A web app*
 
 *To follow along with this tutorial, you need an app that uses [Jest](https://jestjs.io/), [Cypress](https://www.cypress.io/), or BigTest. You either can use your own app that you have already made, or you can follow along using our sample app, [BigTest TodoMVC](#todo).
@@ -32,10 +31,18 @@ import TabItem from '@theme/TabItem';
     {label: 'Yarn', value: 'yarn'}
   ]}>
   <TabItem value="npm">
-    <pre><code>$ npm install bigtest --save-dev</code></pre>
+
+  ```
+  $ npm install bigtest --save-dev
+  ```
+
   </TabItem>
   <TabItem value="yarn">
-    <pre><code>$ yarn add bigtest --dev</code></pre>
+  
+  ```
+  $ yarn add bigtest --dev
+  ```
+  
   </TabItem>
 </Tabs>
 

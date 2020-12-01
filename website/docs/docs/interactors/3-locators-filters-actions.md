@@ -17,7 +17,7 @@ In this section, you will learn what these are and some more details about how t
 ## Locators
 
 One benefit of Interactors is that they help you align your tests with how a user actually interacts with the app, starting with finding what to click on.
-Locators are one of two ways to find a specific element in a user interface.
+Locators are one of two ways to find a specific element in a user interface. <!-- I think this needs to be re-worded per Charles' suggestion about how locators are the default filter. -->
 
 Whenever you use an Interactor in a test, you can pass it a string, like "Submit" in the example below. This string argument is the Locator.
 
@@ -60,13 +60,13 @@ Why are Filters useful? Imagine we have a form with multiple `Submit` buttons:
 </div>
 ```
 
-If we only use a Locator, we would get two elements and see an error. In this case, we cannarrow it down further using the `id` Filter provided by the BigTest `Button` Interactor:
+If we only use a Locator, we would get two elements and see an error. In this case, we can narrow it down further using the `id` filter provided by the BigTest `Button` interactor:
 
 ```js
 Button('Submit', { id: 'submit-button-1' }).exists();
 ```
 
-If you take a look at the [button API](/), you'll see that the button interactor supports five different filters: `title`, `id`, `visible`, `disabled`, and `focused`.
+If you take a look at the [button API](/), you'll see that the button interactor provides five different filters: `title`, `id`, `visible`, `disabled`, and `focused`.
 
 You can add multiple filters to your own Interactors, as covered in the next article.
 
@@ -87,3 +87,13 @@ Button('Submit').click();
 ```
 
 The `Button` Interactor created by BigTest comes with `click`, `focus`, and `blur` actions. You can add more actions to suit your needs when you create your own Interactors, which we will cover in the next section.
+
+## find()
+> "find() is in its own category in that it returns a new interactor scoped within the current interactor, and is generally used for composing actions from interactor primitives:
+  ```js
+  createInteractor('DatePicker')({
+    actions: {
+      open: (picker) => picker.find(Button).click()
+    }
+  });
+  ```
