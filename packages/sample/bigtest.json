@@ -1,0 +1,13 @@
+{
+  "app": {
+    "url": "http://localhost:3000",
+    "command": "yarn start"
+  },
+  "testFiles": [
+    "src/test/bigtest.test.js"
+  ],
+  "launch": [
+    "chrome.headless"
+  ],
+  "port": 3001
+}
