@@ -4,6 +4,8 @@ on:
   pull_request:
     branches:
       - 'v[0-9]+'
+    branches-ignore:
+      - 'mk/sample-app'
 
 jobs:
   publish-previews:
