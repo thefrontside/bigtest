@@ -65,8 +65,51 @@ export type FilterParams<E extends Element, F extends Filters<E>> = keyof F exte
 
 export type InteractorInstance<E extends Element, F extends Filters<E>, A extends Actions<E>> = Interactor<E, F, A> & ActionMethods<E, A>;
 
+/**
+ * An interactor constructor is a function which can be used to initialize an
+ * {@link Interactor}. When calling {@link createInteractor}, you will get
+ * back an interactor constructor.
+ *
+ * The constructor can be called with a locator value, and an object of
+ * filters. Both are optional, and can be omitted.
+ *
+ * @typeParam E The type of DOM Element that this interactor operates on.
+ * @typeParam F the filters of this interactor, this is usually inferred from the specification
+ * @typeParam A the actions of this interactor, this is usually inferred from the specification
+ */
 export interface InteractorConstructor<E extends Element, F extends Filters<E>, A extends Actions<E>> {
+  /**
+   * The constructor can be called with filters only:
+   *
+   * ``` typescript
+   * Link({ id: 'home-link', href: '/' });
+   * ```
+   *
+   * Or with no arguments, this can be especially useful when finding a nested element.
+   *
+   * ```
+   * ListItem('JavaScript').find(Link()).click(); // click the only link within a specific list item
+   * ```
+   *
+   * @param filters An object describing a set of filters to apply, which should match the value of applying the filters defined in the {@link InteractorSpecification} to the element.
+   */
   (filters?: FilterParams<E, F>): InteractorInstance<E, F, A>;
+  /**
+   * The constructor can be called with a locator:
+   *
+   * ``` typescript
+   * Link('Home');
+   * ```
+   *
+   * Or with a locator and options:
+   *
+   * ``` typescript
+   * Link('Home', { href: '/' });
+   * ```
+   *
+   * @param value The locator value, which should match the value of applying the locator function defined in the {@link InteractorSpecification} to the element.
+   * @param filters An object describing a set of filters to apply, which should match the value of applying the filters defined in the {@link InteractorSpecification} to the element.
+   */
   (value: string, filters?: FilterParams<E, F>): InteractorInstance<E, F, A>;
 }
 

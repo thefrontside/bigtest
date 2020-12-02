@@ -20,9 +20,13 @@ export class Interactor<E extends Element, F extends Filters<E>, A extends Actio
 
   /** @hidden */
   constructor(
+    /** @hidden */
     public name: string,
+    /** @hidden */
     public specification: InteractorSpecification<E, F, A>,
+    /** @hidden */
     public filter: Filter<E, F>,
+    /** @hidden */
     public locator?: Locator<E>,
   ) {}
 
