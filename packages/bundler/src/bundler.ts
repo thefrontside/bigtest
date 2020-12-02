@@ -78,8 +78,7 @@ function prepareWatchOptions(bundle: BundleOptions, channel: Channel<BundlerMess
     ...prepareInputOptions(bundle, channel),
     output: prepareOutputOptions(bundle),
     watch: {
-      // Rollup types are wrong; `watch.exclude` allows RegExp[]
-      exclude: [/node_modules/ as unknown as string]
+      exclude: [/node_modules/]
     },
   }
 }
