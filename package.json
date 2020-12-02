@@ -51,5 +51,6 @@
     "lodash": "4.17.19",
     "@definitelytyped/typescript-versions": "^0.0.40",
     "yargs-parser": "^13.1.2"
-  }
+  },
+  "dependencies": {}
 }
