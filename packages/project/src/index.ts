@@ -85,6 +85,7 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
       chrome: {
         module: "@bigtest/webdriver",
         options: {
+          type: 'local',
           browserName: "chrome",
           headless: false
         }
@@ -92,6 +93,7 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
       "chrome.headless": {
         module: "@bigtest/webdriver",
         options: {
+          type: 'local',
           browserName: "chrome",
           headless: true
         }
@@ -99,6 +101,7 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
       firefox: {
         module: "@bigtest/webdriver",
         options: {
+          type: 'local',
           browserName: "firefox",
           headless: false
         }
@@ -106,6 +109,7 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
       "firefox.headless": {
         module: "@bigtest/webdriver",
         options: {
+          type: 'local',
           browserName: "firefox",
           headless: true
         }
@@ -113,6 +117,7 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
       "safari": {
         module: "@bigtest/webdriver",
         options: {
+          type: 'local',
           browserName: "safari",
           headless: false
         }

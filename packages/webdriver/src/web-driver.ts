@@ -4,6 +4,7 @@ import { fetch } from '@effection/fetch';
 import { Driver } from '@bigtest/driver';
 
 export class WebDriver implements Driver<WDSession> {
+
   session: WDSession = { sessionId: '' };
 
   constructor(public serverURL: string) { }
@@ -23,6 +24,11 @@ export class WebDriver implements Driver<WDSession> {
       url,
     });
   }
+
+  //we need this to synchronize in testing because
+  //async finally blocks are not yet supported. It
+  //should not be used anywhere.
+  active = false;
 }
 
 /**
@@ -34,7 +40,7 @@ export function* connect(driver: WebDriver, options: Options): Operation<void> {
 
   let capabilities = new Atom(Capabilities);
 
-  if (options.headless) {
+  if (options.headless != null && options.headless) {
     capabilities.slice('alwaysMatch', 'goog:chromeOptions', 'args')
       .over(args => args.concat(['--headless']))
     capabilities.slice('alwaysMatch', 'moz:firefoxOptions', 'args')
@@ -44,36 +50,60 @@ export function* connect(driver: WebDriver, options: Options): Operation<void> {
   driver.session = yield post(`${driver.serverURL}/session`, {
     capabilities: capabilities.get()
   });
+  driver.active = true;
 }
 
-function* post(url: string, body: Record<string, unknown>): Operation<WDResponse> {
-  let response: Response = yield fetch(url, {
-    method: 'post',
-    body: JSON.stringify(body),
-    headers: {
-      "Content-Type": 'application/json'
-    }
-  });
+export function* disconnect(driver: WebDriver): Operation<void> {
+  yield request(`${driver.serverURL}/session/${driver.session.sessionId}/window`, {
+    method: 'delete'
+  }, () => Promise.resolve());
+  driver.active = false;
+}
 
+function* request<T>(url: string,init: RequestInit, handler: (response: Response) => Operation<T>): Operation<T> {
+  let response: Response = yield fetch(url, init);
   if (!response.ok) {
     let details: WDResponse;
     try {
       details = yield response.json();
     } catch (e) { /* ok, no json details*/ }
+
     if (details && details.value && details.value) {
       throw new Error(details.value.message);
     } else {
       throw new Error(`RequestError: ${response.status} ${response.statusText}`)
     }
+  } else {
+    return yield handler(response);
   }
-  let json = yield response.json();
-  return json.value;
 }
 
-export interface Options {
-  browserName: 'chrome' | 'firefox' | 'safari';
-  headless: boolean;
+function* post(url: string, params: Record<string, unknown>): Operation<WDResponse> {
+  let method = 'post';
+  let body = JSON.stringify(params);
+  let headers = {
+    "Content-Type": "application/json"
+  };
+
+  return yield request(url, { method, body, headers }, function*(response) {
+    let json = yield response.json();
+    return json.value;
+  });
 }
+
+export type LocalOptions = {
+  type: 'local';
+  headless: boolean;
+  browserName: 'chrome' | 'firefox' | 'safari';
+};
+
+export type RemoteOptions = {
+  type: 'remote';
+  url: string;
+  headless?: boolean;
+};
+
+export type Options = LocalOptions | RemoteOptions;
 
 interface WDSession {
   sessionId: string;
