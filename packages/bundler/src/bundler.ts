@@ -15,8 +15,6 @@ import injectProcessEnv from 'rollup-plugin-inject-process-env';
 import babel from '@rollup/plugin-babel';
 import { BundlerMessage } from './types';
 import { DEFAULT_EXTENSIONS } from '@babel/core';
-import { match } from './match';
-import { pipe } from "fp-ts/lib/function"
 import { match } from '@bigtest/matcher';
 
 interface BundleOptions {

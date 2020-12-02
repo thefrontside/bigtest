@@ -2184,7 +2184,7 @@
     "@effection/subscription" "^0.11.0"
     effection "^0.7.0"
 
-"@effection/events@^0.7.8":
+"@effection/events@^0.7.4", "@effection/events@^0.7.8":
   version "0.7.8"
   resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.7.8.tgz#3cb8ec5e96b0ad7719e82a2163975cf7d6a77d7d"
   integrity sha512-JLeWRlGFCmFCrXtdGMHVB+8xX94fclfhPXxZscUptDlyGJaJ5aHEfNY7AqK667jlaE6m/043zf4WUKpvNViZyg==
@@ -2201,6 +2201,14 @@
     cross-fetch "^3.0.4"
     effection "^0.7.0"
     node-fetch "^2.6.0"
+
+"@effection/node@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@effection/node/-/node-0.8.0.tgz#a73069ecd60c628d1aa2b9e61a8ff930be8faa7c"
+  integrity sha512-p+6QQINBvGO0ev05LKRMlcsC567ubfBfEefkzNRBNWb1drumOMtD8FMjZjWCB/brPLPO5un7CAOErorfCHvkaA==
+  dependencies:
+    "@effection/events" "^0.7.4"
+    effection "^0.7.0"
 
 "@effection/node@^0.9.1":
   version "0.9.1"
@@ -2264,7 +2272,7 @@
   resolved "https://registry.yarnpkg.com/@frontside/tsconfig/-/tsconfig-1.1.0.tgz#4370d62d6cc01711ca4618e0547b4f8db164fcf2"
   integrity sha512-6TwSIsbWkujljxBV1+xSBi+X9sUISdwuXoNagX+tx9D5jM9Ok3eBNlPA73nMg1DbLz2cyMV06BLRd8A5XSrzVg==
 
-"@frontside/typescript@^1.1.0":
+"@frontside/typescript@^1.0.1", "@frontside/typescript@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@frontside/typescript/-/typescript-1.1.0.tgz#58680adc1b0aaf9fbf36be6712ff2d26828dfbc6"
   integrity sha512-p6z0YUndsqSdttiFJ0Wa2Um6btY69oyVwg07DpGosHqOyg/cFWXvaxE48rvzWPw6JX4cJFrWCCrGcCK+SO1D3w==
@@ -4834,10 +4842,10 @@ chrome-trace-event@^1.0.2:
   dependencies:
     tslib "^1.9.0"
 
-chromedriver@~87.0.0:
-  version "87.0.0"
-  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-87.0.0.tgz#e8390deed8ada791719a67ad6bf1116614f1ba2d"
-  integrity sha512-PY7FnHOQKfH0oPfSdhpLx5nEy5g4dGYySf2C/WZGkAaCaldYH8/3lPPucZ8MlOCi4bCSGoKoCUTeG6+wYWavvw==
+chromedriver@~86.0.0:
+  version "86.0.0"
+  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-86.0.0.tgz#4b9504d5bbbcd4c6bd6d6fd1dd8247ab8cdeca67"
+  integrity sha512-byLJWhAfuYOmzRYPDf4asJgGDbI4gJGHa+i8dnQZGuv+6WW1nW1Fg+8zbBMOfLvGn7sKL41kVdmCEVpQHn9oyg==
   dependencies:
     "@testim/chrome-version" "^1.0.7"
     axios "^0.19.2"
