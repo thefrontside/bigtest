@@ -1,6 +1,7 @@
 {
   "name": "bigtest-sample",
-  "version": "0.0.1",
+  "version": "0.0.0",
+  "private": true,
   "description": "BigTest Sample App",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
@@ -12,14 +13,6 @@
     "test:jest": "SKIP_PREFLIGHT_CHECK=true react-scripts test --verbose ./test/jest.test.js",
     "test:cypress": "yarn cypress run --spec 'src/test/cypress.spec.js'",
     "test:bigtest": "yarn bigtest ci"
-  },
-  "bin": {
-    "sample": "./bin/setup.js"
-  },
-  "dependencies": {
-    "chalk": "^4.1.0",
-    "cross-spawn": "^7.0.3",
-    "rimraf": "^3.0.2"
   },
   "devDependencies": {
     "@testing-library/react": "^11.1.0",
@@ -47,9 +40,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "volta": {
-    "node": "12.16.0",
-    "yarn": "1.19.1"
   }
 }
