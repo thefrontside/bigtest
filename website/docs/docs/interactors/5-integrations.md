@@ -1,5 +1,5 @@
 ---
-id: jest-cypress
+id: integrations
 title: Jest & Cypress
 ---
 
@@ -18,15 +18,32 @@ If you would like to add some examples for your favorite testing tools to these 
 
 ## Jest
 
-functions just need to be async
+When you use interactors in Jest, there are only a few things you need to know to fit them in with the tests you have already written.
 
-<!--
-- 1-2 sentence intro
-- Code sample
-- What someone will learn how to do
-- Detailed explanation and examples
-- Link to demo
--->
+First, interactors replace both user actions and test assertions:
+
+```jsx
+import React from 'react';
+import { render } from '@testing-library/react';
+import App from './App';
+
+import { Button } from 'bigtest';
+
+describe('Interactors with Jest', () => {
+    beforeEach(() => render(<App />));
+
+    it('clicks button', async () => {
+        await Button('Sign In').click();
+        await Button('Log Out').exists();
+    })
+})
+```
+
+Lines such as `await Button('Log Out').exists()` replace assertions like `expect(someElement).toBeTruthy()`.
+
+If an interactor's assertion fails, the error will be received by Jest and you will see it in your test output.
+
+Note that the interactors are async, and so you need to mark your test function as `async`, and you should `await` the interactors and their assertions.
 
 ## Cypress
 
