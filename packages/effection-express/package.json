@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@frontside/eslint-config": "^1.1.2",
-    "@frontside/typescript": "^1.1.0",
+    "@frontside/typescript": "^1.0.1",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
     "expect": "^24.9.0",
