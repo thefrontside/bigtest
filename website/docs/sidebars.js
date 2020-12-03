@@ -4,7 +4,7 @@ module.exports = {
     'interactors/built-in-dom',
     'interactors/locators-filters-actions',
     'interactors/write-your-own',
-    'interactors/jest-cypress'
+    'interactors/integrations'
   ],
   platform: [
     'platform/installation',
