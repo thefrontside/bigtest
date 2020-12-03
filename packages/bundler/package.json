@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\"",
-    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "test": "mocha -r ts-node/register --timeout 60000 test/**/*.test.ts",
     "prepack": "tsc --outDir dist --declaration --sourcemap --module commonjs"
   },
   "dependencies": {

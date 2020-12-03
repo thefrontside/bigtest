@@ -9,7 +9,6 @@ import { spawn } from './world';
 import { Bundler } from '../src/index';
 
 describe("Bundler", function() {
-  this.timeout(5000);
   let bundler: Bundler;
 
   beforeEach((done) => rmrf('./build', done));
