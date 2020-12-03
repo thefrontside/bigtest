@@ -52,7 +52,7 @@ Interactors can do a lot, but let's keep things simple and start with testing on
 
 In your codebase, find a test that already has a button click in it.
 In that test, import the `Button` interactor from `bigtest`,
-and use it to replace the click interaction.
+and use it to replace the click interaction. Interactors have methods like `click` that mimic user actions.
 
 Click on the tabs below to see some examples within different testing frameworks:
 
@@ -122,7 +122,7 @@ Now, run your tests! Congratulations, you used your first Interactor.
 
 ## Making test assertions
 
-Interactors can also help you make assertions, like checking if a Button is `absent` or if it `exists`.
+Interactors have methods to help you make test assertions, like checking if a Button is `absent` or if it `exists`.
 
 In this example, we are testing that the "Sign In" button disappears after
 a click, and a "Log Out" button appears:
@@ -183,7 +183,7 @@ a click, and a "Log Out" button appears:
   </TabItem>
 </Tabs>
 
-<!-- consider using a text input example instead of button click -->
+Run your tests. Now you are making an assertion with an interactor!
 
 ## Next steps
 
