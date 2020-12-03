@@ -40,7 +40,7 @@ export function* connect(driver: WebDriver, options: Options): Operation<void> {
 
   let capabilities = new Atom(Capabilities);
 
-  if (options.headless != null && options.headless) {
+  if (options.headless) {
     capabilities.slice('alwaysMatch', 'goog:chromeOptions', 'args')
       .over(args => args.concat(['--headless']))
     capabilities.slice('alwaysMatch', 'moz:firefoxOptions', 'args')
