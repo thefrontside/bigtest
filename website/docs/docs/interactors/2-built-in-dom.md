@@ -3,10 +3,9 @@ id: built-in-dom
 title: Built-in Interactors
 ---
 
-<!-- 
-- 1-2 sentences of what they are
--->
-These are the eight default interactors that are offered out-of-the-box with BigTest:
+Built-in Interactors cover some of the most common UI testing needs for apps that run in the browser.
+These are the default interactors that are offered out-of-the-box with BigTest:
+
 - [Button](/)
 - [CheckBox](/)
 - [Heading](/)
@@ -17,14 +16,18 @@ These are the eight default interactors that are offered out-of-the-box with Big
 - [Select](/)
 - [TextField](/)
 
-As you might have seen in the [Quick Start](/) section, you are able to import any of the interactors directly from the `bigtest` package:
+As you might have seen in the [Quick Start](/) section, you can import any of the interactors directly from the `bigtest` package:
+
 ```js
 import { 
   Button, 
   TextField, 
-  ... 
 } from 'bigtest';
 ```
+
+Follow the links to the API documentation above for how to use each of these interactors to test your app.
+
+If your app has unique interfaces that are not covered by these built-in tools, you are encouraged to [write your own interactors](/).
 
 ### Page Interactor
 <!-- 
@@ -33,4 +36,4 @@ write about page interactor here and also mention how it's more for the bigtest 
 
 ### Up Next
 
-You can construct your own customer interactors which we will cover in the [Write Your Own Interactors](/) section. But first let's have a closer look at what locators, filters, and actions are. 
+Every interactor has some things in common, whether it is built in or you wrote it yourself. In the next section, we will have a closer look at what locators, filters, and actions are. 
