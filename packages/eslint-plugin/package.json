@@ -15,7 +15,7 @@
     "@typescript-eslint/eslint-plugin": "^4.0.1",
     "@typescript-eslint/parser": "^4.0.1",
     "@frontside/eslint-config": "^1.1.2",
-    "@frontside/typescript": "^1.1.0",
+    "@frontside/typescript": "^1.0.1",
     "ts-node": "*",
     "typescript": "3.9.7"
   },
