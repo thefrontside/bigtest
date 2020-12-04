@@ -9,17 +9,13 @@ class TimeoutError extends Error {
  * An operation that completes when the server at `url` begins
  * returning successful responses to an HTTP GET request.
  */
-export function* untilURLAvailable(url: string, maxWait: number): Operation<void> {
-  yield spawn(function* () {
-    yield timeout(maxWait);
-    throw new TimeoutError(`timed out waiting ${maxWait}ms for ${url} to become available`)
-  });
+export function* untilURLAvailable(url: string): Operation<void> {
   while (true) {
     try {
       let response: Response = yield function*() {
         yield spawn(function* () {
-          yield timeout(maxWait);
-          throw new TimeoutError(`timed out waiting ${maxWait}ms for ${url} to become available`)
+          yield timeout(200);
+          throw new TimeoutError('request timed out')
         });
         return yield fetch(url);
       };
