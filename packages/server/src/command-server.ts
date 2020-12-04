@@ -6,9 +6,11 @@ import * as graphqlHTTP from 'express-graphql';
 import { parse as parseGraphql, graphql as executeGraphql, subscribe as executeGraphqlSubscription, ExecutionResult } from 'graphql';
 
 import { schema } from './schema';
-import { GraphqlContext, SpawnContext } from './schema/context';
+import { GraphqlContext } from './schema/context';
 import { Atom } from '@bigtest/atom';
 import { OrchestratorState } from './orchestrator/state';
+import { Runner } from './runner';
+import { SpawnContext } from './spawn-context';
 
 import { Variables, Message, Response, QueryMessage, MutationMessage, SubscriptionMessage, isQuery, isMutation, isSubscription } from '@bigtest/client';
 
@@ -16,6 +18,7 @@ export type RunMessage = { type: "run"; id: string; files: string[] };
 export type CommandMessage = { status: "ready" } | RunMessage;
 
 interface CommandServerOptions {
+  runner: Runner;
   delegate: Mailbox<CommandMessage>;
   atom: Atom<OrchestratorState>;
   port: number;
@@ -30,11 +33,10 @@ export function* createCommandServer(options: CommandServerOptions): Operation {
 
   yield app.ws('*', handleSocketConnection(options));
 
-  let outerContext: SpawnContext = yield spawn(undefined);
+  let spawnContext: SpawnContext = yield spawn(undefined);
 
-  app.raw.use(graphqlHTTP(async () => await outerContext.spawn(function* getOptionsData() {
-    let innerContext = yield spawn(undefined);
-    return { ...graphqlOptions(innerContext, options, options.atom.get()), graphiql: true};
+  app.raw.use(graphqlHTTP(async () => await spawnContext.spawn(function* getOptionsData() {
+    return { ...graphqlOptions(options, options.atom.get()), graphiql: true};
   })));
 
   yield app.listen(options.port);
@@ -49,8 +51,7 @@ export function* createCommandServer(options: CommandServerOptions): Operation {
  * state contained in `state`
  */
 function* graphql(source: string, variables: Variables | undefined, options: CommandServerOptions, state: OrchestratorState): Operation {
-  let context: SpawnContext = yield spawn(undefined);
-  let opts = graphqlOptions(context, options, state);
+  let opts = graphqlOptions(options, state);
   return yield executeGraphql({...opts, contextValue: opts.context, source, variableValues: variables });
 }
 
@@ -59,11 +60,11 @@ function* graphql(source: string, variables: Variables | undefined, options: Com
  * because the express graphql server calls the `graphql` function for
  * you based on the .
  */
-function graphqlOptions(context: SpawnContext, options: CommandServerOptions, state: OrchestratorState) {
+function graphqlOptions(options: CommandServerOptions, state: OrchestratorState) {
   return {
     schema,
     rootValue: state,
-    context: new GraphqlContext(context, options.atom, options.delegate)
+    context: new GraphqlContext(options.runner)
   };
 }
 
@@ -83,12 +84,10 @@ function handleSocketConnection(options: CommandServerOptions): (socket: Socket)
   }
 
   function* handleSubscription(message: SubscriptionMessage, socket: Socket): Operation {
-    let context: SpawnContext = yield spawn(undefined);
-
     let result = yield executeGraphqlSubscription({
       schema,
       document: parseGraphql(message.subscription),
-      contextValue: new GraphqlContext(context, options.atom, options.delegate),
+      contextValue: new GraphqlContext(options.runner),
       variableValues: message.variables
     });
 

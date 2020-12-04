@@ -1,28 +1,28 @@
 import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 
-import { Mailbox } from '@bigtest/effection';
+import { Mailbox, DuplexChannel, createDuplexChannel } from '@bigtest/effection';
 import { Atom } from '@bigtest/atom';
 
-import { AgentEvent, Command as AgentCommand } from '@bigtest/agent';
-
 import { actions, getTestProjectOptions } from './helpers';
-import { createCommandProcessor } from '../src/command-processor';
+import { AgentRunner, Runner } from '../src/runner';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
-import { CommandMessage } from '../src/command-server';
+import { Incoming as ConnectionIncoming, Outgoing as ConnectionOutgoing } from '../src/connection-server';
+import { SpawnContext } from '../src/spawn-context';
 
 import { OrchestratorState, TestRunState } from '../src/orchestrator/state';
 
-describe('command processor', () => {
-  let delegate: Mailbox<AgentCommand & { agentId: string }>;
-  let events: Mailbox<AgentEvent>;
-  let commands: Mailbox<CommandMessage>;
+describe('agent runner', () => {
+  let messages: Mailbox<ConnectionOutgoing>;
   let atom: Atom<OrchestratorState>;
+  let agents: DuplexChannel<ConnectionOutgoing, ConnectionIncoming>;
+  let connections: DuplexChannel<ConnectionIncoming, ConnectionOutgoing>;
+  let runner: Runner;
 
   beforeEach(async () => {
-    delegate = new Mailbox();
-    events = new Mailbox();
-    commands = new Mailbox();
+    [agents, connections] = createDuplexChannel<ConnectionOutgoing, ConnectionIncoming>({ maxListeners: 100000 });
+
+    messages = await actions.fork(Mailbox.from(connections));
     atom = createOrchestratorAtom(getTestProjectOptions());
     atom.slice('agents', 'agent-1').set({
       agentId: 'agent-1',
@@ -38,14 +38,13 @@ describe('command processor', () => {
       assertions: [],
       children: [],
     });
-    actions.fork(createCommandProcessor({
+    runner = new AgentRunner({
       atom,
-      events,
-      commands,
-      delegate,
+      agents,
+      context: actions.fork(function*() { yield }) as SpawnContext,
       proxyPort: 24201,
       manifestPort: 24202,
-    }));
+    });
   });
 
   describe('when sent a `run` message with a valid manifest', () => {
@@ -54,9 +53,9 @@ describe('command processor', () => {
 
     beforeEach(async () => {
       atom.slice('bundler', 'type').set('GREEN');
-      commands.send({ type: 'run', id: 'test-id-1', files: [] });
-      pendingMessage = await actions.fork(delegate.receive({ type: 'run' }));
-      events.send({type: 'run:end', testRunId: 'test-id-1', agentId: 'agent-1' });
+      runner.run({ testRunId: 'test-id-1', files: [] });
+      pendingMessage = await actions.fork(messages.receive({ type: 'run' }));
+      connections.send({type: 'run:end', testRunId: 'test-id-1', agentId: 'agent-1' });
       testRun = await actions.fork(atom.slice('testRuns', 'test-id-1').once((testRun) => testRun?.status === 'ok'));
     });
 
@@ -93,7 +92,7 @@ describe('command processor', () => {
 
     beforeEach(async () => {
       atom.slice('bundler').set({ type: 'ERRORED', error: { message: 'it broke' }});
-      commands.send({ type: 'run', id: 'test-id-1', files: [] });
+      runner.run({ testRunId: 'test-id-1', files: [] });
       testRun = await actions.fork(atom.slice('testRuns', 'test-id-1').once((testRun) => testRun?.status === 'failed'));
     });
 

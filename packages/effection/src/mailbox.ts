@@ -5,7 +5,7 @@ import { compile } from './pattern';
 export { any } from './pattern';
 
 import { on } from '@effection/events';
-import { subscribe as subscriptionSubscribe } from '@effection/subscription';
+import { subscribe as subscriptionSubscribe, Subscribable } from '@effection/subscription';
 
 export interface SubscriptionMessage {
   event: string;
@@ -24,6 +24,16 @@ export class Mailbox<T = any> {
     let mailbox: Mailbox<SubscriptionMessage> = new Mailbox();
 
     return yield resource(mailbox, subscribe(mailbox, source, events));
+  }
+
+  static *from<R, RReturn = undefined>(
+    source: Subscribable<R, RReturn>
+  ): Operation<Mailbox<R>> {
+    let mailbox: Mailbox<R> = new Mailbox();
+
+    return yield resource(mailbox, function*() {
+      yield subscriptionSubscribe(source).forEach(function*(m) { mailbox.send(m) })
+    });
   }
 
   setMaxListeners(value: number) {

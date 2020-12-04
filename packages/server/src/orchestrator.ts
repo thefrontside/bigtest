@@ -8,7 +8,6 @@ import { ProjectOptions } from '@bigtest/project';
 import { proxyServer } from './proxy';
 import { createBrowserManager, BrowserManager } from './browser-manager';
 import { createCommandServer } from './command-server';
-import { createCommandProcessor } from './command-processor';
 import { createConnectionServer } from './connection-server';
 import { appServer } from './app-server';
 import { manifestGenerator } from './manifest-generator';
@@ -16,7 +15,7 @@ import { createManifestBuilder } from './manifest-builder';
 import { createManifestServer } from './manifest-server';
 import { createLogger } from './logger';
 import { OrchestratorState } from './orchestrator/state';
-
+import { AgentRunner } from './runner';
 
 type OrchestratorOptions = {
   atom: Atom<OrchestratorState>;
@@ -27,10 +26,7 @@ type OrchestratorOptions = {
 export function* createOrchestrator(options: OrchestratorOptions): Operation {
   console.log('[orchestrator] starting');
 
-  let connectionServerInbox = new Mailbox();
-
   let commandServerDelegate = new Mailbox();
-  let connectionServerDelegate = new Mailbox();
   let manifestServerDelegate = new Mailbox();
 
   let agentServerConfig = new AgentServerConfig(options.project.proxy);
@@ -54,20 +50,29 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield fork(proxyServer(options.atom.slice('proxyService')));
 
+  let connectionServer = yield createConnectionServer({
+    atom: options.atom,
+    port: options.project.connection.port,
+    proxyPort: options.project.proxy.port,
+    manifestPort: options.project.manifest.port,
+  });
+
+  let runner = new AgentRunner({
+    context: yield spawn(undefined),
+    proxyPort: options.project.proxy.port,
+    manifestPort: options.project.manifest.port,
+    atom: options.atom,
+    agents: connectionServer.channel,
+    testFiles: options.project.testFiles,
+  });
+
   yield fork(createCommandServer({
+    runner,
     delegate: commandServerDelegate,
     atom: options.atom,
     port: options.project.port,
   }));
 
-  yield fork(createConnectionServer({
-    inbox: connectionServerInbox,
-    delegate: connectionServerDelegate,
-    atom: options.atom,
-    port: options.project.connection.port,
-    proxyPort: options.project.proxy.port,
-    manifestPort: options.project.manifest.port,
-  }));
 
   yield fork(appServer(options.atom.slice('appService')));
 
@@ -102,7 +107,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       console.debug('[orchestrator] command server ready');
     });
     yield fork(function* () {
-      yield connectionServerDelegate.receive({ status: 'ready' });
+      yield options.atom.slice("connectionService", "status").once(({ type }) => type === 'ready');
       console.debug('[orchestrator] connection server ready');
     });
     yield fork(function*() {
@@ -135,23 +140,8 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   options.delegate && options.delegate.send({ status: 'ready' });
 
-  let commandProcessorEvents = new Mailbox();
-  commandProcessorEvents.setMaxListeners(100000);
-  yield connectionServerDelegate.pipe(commandProcessorEvents);
-
-  let commandProcessorCommands = new Mailbox();
-  yield commandServerDelegate.pipe(commandProcessorCommands);
-
   try {
-    yield createCommandProcessor({
-      proxyPort: options.project.proxy.port,
-      manifestPort: options.project.manifest.port,
-      atom: options.atom,
-      events: commandProcessorEvents,
-      commands: commandProcessorCommands,
-      delegate: connectionServerInbox,
-      testFiles: options.project.testFiles,
-    });
+    yield;
   } finally {
     console.log("[orchestrator] shutting down!");
   }
