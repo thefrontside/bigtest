@@ -9,7 +9,7 @@ export type DuplexChannel<S, R, RReturn = undefined> = ChainableSubscribable<R, 
 
 export type DuplexPair<Tx, Rx> = [DuplexChannel<Tx, Rx>, DuplexChannel<Rx, Tx>];
 
-export function duplexChannel<Tx, Rx>(options: { maxListeners?: number } = {}): DuplexPair<Tx, Rx> {
+export function createDuplexChannel<Tx, Rx>(options: { maxListeners?: number } = {}): DuplexPair<Tx, Rx> {
   let tx = new Channel<Tx>();
   let rx = new Channel<Rx>();
 

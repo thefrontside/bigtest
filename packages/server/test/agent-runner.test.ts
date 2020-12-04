@@ -1,7 +1,7 @@
 import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 
-import { Mailbox, DuplexChannel, duplexChannel } from '@bigtest/effection';
+import { Mailbox, DuplexChannel, createDuplexChannel } from '@bigtest/effection';
 import { Atom } from '@bigtest/atom';
 
 import { actions, getTestProjectOptions } from './helpers';
@@ -12,7 +12,7 @@ import { SpawnContext } from '../src/spawn-context';
 
 import { OrchestratorState, TestRunState } from '../src/orchestrator/state';
 
-describe('command processor', () => {
+describe('agent runner', () => {
   let messages: Mailbox<ConnectionOutgoing>;
   let atom: Atom<OrchestratorState>;
   let agents: DuplexChannel<ConnectionOutgoing, ConnectionIncoming>;
@@ -20,7 +20,7 @@ describe('command processor', () => {
   let runner: Runner;
 
   beforeEach(async () => {
-    [agents, connections] = duplexChannel<ConnectionOutgoing, ConnectionIncoming>({ maxListeners: 100000 });
+    [agents, connections] = createDuplexChannel<ConnectionOutgoing, ConnectionIncoming>({ maxListeners: 100000 });
 
     messages = await actions.fork(Mailbox.from(connections));
     atom = createOrchestratorAtom(getTestProjectOptions());

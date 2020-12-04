@@ -1,6 +1,6 @@
 import { Operation, spawn, resource } from 'effection';
 import { subscribe, ChainableSubscription } from '@effection/subscription';
-import { duplexChannel, DuplexChannel } from '@bigtest/effection';
+import { createDuplexChannel, DuplexChannel } from '@bigtest/effection';
 import { Atom } from '@bigtest/atom';
 import { OrchestratorState } from './orchestrator/state';
 import { AgentConnection, createAgentHandler, Command, TestEvent } from '@bigtest/agent';
@@ -22,7 +22,7 @@ interface ConnectionServer {
 }
 
 export function* createConnectionServer(options: ConnectionServerOptions): Operation<ConnectionServer> {
-  let [tx, rx] = duplexChannel<Outgoing, Incoming>({ maxListeners: 100000 });
+  let [tx, rx] = createDuplexChannel<Outgoing, Incoming>({ maxListeners: 100000 });
 
   return yield resource({ channel: tx }, function*() {
     let handler: ChainableSubscription<AgentConnection, void> = yield createAgentHandler(options.port);

@@ -5,14 +5,14 @@ import { subscribe, ChainableSubscription } from '@effection/subscription';
 
 import { spawn as run } from './helpers';
 
-import { duplexChannel, DuplexChannel } from '../src/index';
+import { createDuplexChannel, DuplexChannel } from '../src/index';
 
-describe("duplexChannel", () => {
+describe("createDuplexChannel", () => {
   let tx: DuplexChannel<string, number>;
   let rx: DuplexChannel<number, string>;
 
   beforeEach(() => {
-    [tx, rx] = duplexChannel<string, number>();
+    [tx, rx] = createDuplexChannel<string, number>();
   });
 
   describe('sending a message to tx', () => {
