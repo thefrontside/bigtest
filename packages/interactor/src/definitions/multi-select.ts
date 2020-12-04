@@ -1,4 +1,4 @@
-import { createInteractor, perform, focused } from '../index';
+import { createInteractor, perform, focused, focus, blur } from '../index';
 import { isVisible } from 'element-is-visible';
 import { dispatchChange, dispatchInput } from '../dispatch';
 import { getSelect } from '../get-select';
@@ -60,8 +60,8 @@ const MultiSelectInteractor = createInteractor<HTMLSelectElement>('select box')(
   },
   actions: {
     click: perform((element) => { element.click(); }),
-    focus: perform((element) => { element.focus(); }),
-    blur: perform((element) => { element.blur(); }),
+    focus,
+    blur,
     choose: async (interactor, text: string) => {
       await interactor.find(MultiSelectOption(text)).choose();
     },

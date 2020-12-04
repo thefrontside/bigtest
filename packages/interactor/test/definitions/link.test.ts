@@ -42,6 +42,45 @@ describe('@bigtest/interactor', () => {
       });
     });
 
+    describe('.focus', () => {
+      it('focuses on link', async () => {
+        dom(`
+          <p><a href="#" id="foobar">Foo</a></p>
+          <script>
+            foobar.addEventListener('focus', (event) => {
+              event.preventDefault();
+              let h1 = document.createElement('h1')
+              h1.textContent = 'Success';
+              document.body.appendChild(h1);
+            });
+          </script>
+        `);
+
+        await Link('Foo').focus();
+        await Heading('Success').exists();
+      });
+    });
+
+    describe('.blur', () => {
+      it('blurs the link', async () => {
+        dom(`
+          <p><a href="#" id="foobar">Foo</a></p>
+          <script>
+            foobar.addEventListener('blur', (event) => {
+              event.preventDefault();
+              let h1 = document.createElement('h1')
+              h1.textContent = 'Success';
+              document.body.appendChild(h1);
+            });
+          </script>
+        `);
+
+        await Link('Foo').focus();
+        await Link('Foo').blur();
+        await Heading('Success').exists();
+      });
+    });
+
     describe('filter `visible`', () => {
       it('filters `a` tags by their visibility', async () => {
         dom(`

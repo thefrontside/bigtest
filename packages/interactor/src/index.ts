@@ -6,7 +6,7 @@ export { Page } from './page';
 export { App } from './app';
 export { perform } from './perform';
 export { fillIn } from './fill-in';
-export { focused } from './focused';
+export { focused, focus, blur } from './focused';
 export { isVisible } from 'element-is-visible';
 
 export { Link } from './definitions/link';
