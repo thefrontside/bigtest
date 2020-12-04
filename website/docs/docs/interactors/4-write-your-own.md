@@ -18,7 +18,7 @@ with textfield, yeah we list it as one of the ones offered by bigtest in the bui
 
 ## Writing your first interactor
 
-In this example, we will create a `Checkbox` Interactor, similar to the one found in the [built-in DOM interactors](/docs/interactors/interactors/built-in-dom), and use it in a test.
+In this example, we will create a `Checkbox` Interactor, similar to the one found in the [built-in DOM interactors](/docs/interactors/built-in-dom), and use it in a test.
 
 There are four things to decide:
 
