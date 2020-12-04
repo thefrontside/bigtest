@@ -28,8 +28,11 @@ module.exports = {
           activeBaseRegex: '(platform)|(docs\/platform)',
           label: 'Platform',
           position: 'left',
-        },
-        {
+        }, {
+          to: '/about',
+          label: 'About',
+          position: 'left'
+        }, {
           href: 'https://github.com/thefrontside/bigtest',
           label: 'GitHub',
           position: 'right',
