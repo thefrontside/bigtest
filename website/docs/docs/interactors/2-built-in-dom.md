@@ -4,6 +4,7 @@ title: Built-in Interactors
 ---
 
 Built-in Interactors cover some of the most common UI testing needs for apps that run in the browser.
+
 These are the default interactors that are offered out-of-the-box with BigTest:
 
 - [Button](/)
