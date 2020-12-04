@@ -1,5 +1,18 @@
 # @bigtest/interactor
 
+## 0.22.0
+
+### Minor Changes
+
+- 4eae24b6: Add cypress integration for interactors
+- 70f91954: Interactor actions are not automatically wrapped in a convergence
+
+### Patch Changes
+
+- c2c4bd11: Upgrade @frontside/typescript to v1.1.0
+- Updated dependencies [c2c4bd11]
+  - @bigtest/globals@0.7.3
+
 ## 0.21.0
 
 ### Minor Changes

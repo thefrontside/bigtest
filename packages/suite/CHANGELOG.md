@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.11.1
+
+### Patch Changes
+
+- 33a64ac0: Enforce order ot steps, assertion and children in DSL
+- c2c4bd11: Upgrade @frontside/typescript to v1.1.0
+
 ## 0.11.0
 
 ### Minor Changes

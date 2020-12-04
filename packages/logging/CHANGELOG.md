@@ -1,5 +1,11 @@
 # @bigtest/logging
 
+## 0.5.2
+
+### Patch Changes
+
+- c2c4bd11: Upgrade @frontside/typescript to v1.1.0
+
 ## 0.5.1
 
 ### Patch Changes

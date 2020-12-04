@@ -1,5 +1,11 @@
 # @bigtest/eslint-plugin
 
+## 0.3.0
+
+### Minor Changes
+
+- 85891d0a: add missing eslint peer dependencies
+
 ## 0.2.1
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @bigtest/globals
 
+## 0.7.3
+
+### Patch Changes
+
+- c2c4bd11: Upgrade @frontside/typescript to v1.1.0
+- Updated dependencies [33a64ac0]
+- Updated dependencies [c2c4bd11]
+  - @bigtest/suite@0.11.1
+
 ## 0.7.2
 
 ### Patch Changes

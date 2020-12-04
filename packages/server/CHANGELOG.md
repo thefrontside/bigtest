@@ -1,5 +1,43 @@
 # Changelog
 
+## 0.20.0
+
+### Minor Changes
+
+- 3bf116f8: pass the whole service slice of options and status into the service
+- 6bfcb3ae: refactor manifest-generator to service and remove MailBox
+- 85891d0a: add missing eslint peer dependencies
+- 6af43e28: refactor ProxyServer to Service
+- c052e7e2: upgrade bundler dependencies mainly to get type definitions for @rollup/plugin-babel
+
+### Patch Changes
+
+- 7a39af49: add cross-env and a test:debug yarn script to @bigtest/server
+- c2c4bd11: Upgrade @frontside/typescript to v1.1.0
+- ee797ddf: Refactor away command processor, replaces it with the Runner
+- Updated dependencies [33a64ac0]
+- Updated dependencies [dd0ae975]
+- Updated dependencies [ee797ddf]
+- Updated dependencies [ada894f4]
+- Updated dependencies [c14b56b4]
+- Updated dependencies [c2c4bd11]
+- Updated dependencies [2603129b]
+- Updated dependencies [41018eaf]
+- Updated dependencies [6af43e28]
+- Updated dependencies [c052e7e2]
+- Updated dependencies [ee797ddf]
+  - @bigtest/suite@0.11.1
+  - @bigtest/webdriver@0.7.0
+  - @bigtest/effection@0.6.0
+  - @bigtest/agent@0.15.1
+  - @bigtest/atom@0.10.1
+  - @bigtest/bundler@0.12.0
+  - @bigtest/driver@0.5.4
+  - @bigtest/effection-express@0.9.1
+  - @bigtest/globals@0.7.3
+  - @bigtest/logging@0.5.2
+  - @bigtest/project@0.13.0
+
 ## 0.19.0
 
 ### Minor Changes

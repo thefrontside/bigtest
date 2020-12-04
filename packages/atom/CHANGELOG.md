@@ -1,5 +1,11 @@
 # @bigtest/atom
 
+## 0.10.1
+
+### Patch Changes
+
+- c2c4bd11: Upgrade @frontside/typescript to v1.1.0
+
 ## 0.10.0
 
 ### Minor Changes

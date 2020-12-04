@@ -1,5 +1,11 @@
 # @bigtest/effection-express
 
+## 0.9.1
+
+### Patch Changes
+
+- c2c4bd11: Upgrade @frontside/typescript to v1.1.0
+
 ## 0.9.0
 
 ### Minor Changes
