@@ -33,7 +33,7 @@ describe("Running a local wedriver", () => {
 
   describe('with chromedriver', () => {
     beforeEach(async () => {
-      driver = await spawn(Local({ browserName: 'chrome', headless: true }));
+      driver = await spawn(Local({ type: 'local', browserName: 'chrome', headless: true }));
       await spawn(driver.navigateTo(serverURL));
     });
 
@@ -46,7 +46,7 @@ describe("Running a local wedriver", () => {
   if (process.platform !== 'win32') {
     describe('with geckodriver', () => {
       beforeEach(async () => {
-        driver = await spawn(Local({ browserName: 'firefox', headless: true }));
+        driver = await spawn(Local({ type: 'local', browserName: 'firefox', headless: true }));
         await spawn(driver.navigateTo(serverURL));
       });
 

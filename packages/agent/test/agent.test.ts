@@ -77,7 +77,7 @@ describe("@bigtest/agent", function() {
       let events: ChainableSubscription<TestEvent, CloseEvent>;
 
       beforeEach(async function() {
-        browser = await run(Local({ browserName: 'chrome', headless: true }));
+        browser = await run(Local({ type: 'local', browserName: 'chrome', headless: true }));
         await run(browser.navigateTo(config.agentUrl(`ws://localhost:8001`)));
         connection = await run(connections.expect());
         events = await run(subscribe(connection.events));
