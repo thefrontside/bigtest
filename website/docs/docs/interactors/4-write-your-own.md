@@ -3,78 +3,64 @@ id: write-your-own
 title: Writing Interactors
 ---
 
-Nearly every app has at least one user interaction that is strange or special, like date pickers, drag and drop areas, masked radio buttons, modals, and more.
-It is normal to write your own Interactors, where you can make complex interactions as easy to test as a button click.
+Nearly every app has at least one user interaction that is strange or special, like date pickers, drag and drop areas, masked radio buttons, modals, and more. It is normal to write your own Interactors, where you can make complex interactions as easy to test as a button click.
 
 In this section, you will learn how to create a new Interactor for any interface and use it in your tests. We will start with a simple example for learning purposes, level up to a more complex example, and then cover common questions.
 
-<!--
-
-we use a button interactor as an example in the quick start and maybe we should expand on that and create a our own button interactor in the simple example of this page so that people can connect the dots and go "oh, so there's one by bigtest and we're making our own here".
-
-with textfield, yeah we list it as one of the ones offered by bigtest in the built-in page, but people's minds might lean towards "okay, so button is offered out of the box but i guess textfield i have to make my own?"
-
--->
-
 ## Writing your first interactor
 
-In this example, we will create a `Checkbox` Interactor, similar to the one found in the [built-in DOM interactors](/docs/interactors/built-in-dom), and use it in a test.
+In this example, we will create our own `Button` Interactor, similar to the one found in the [built-in DOM interactors](/docs/interactors/built-in-dom), and use it in a test.
 
 There are four things to decide:
-
-<!-- 
-// old
-
-1. Which HTML element to target, like `checkbox`
-2. The selector, which helps us find examples of that element, like `'input[type=checkbox]'` 
-3. The locator, which helps filter through the selector results, like `id`
+1. What to name and label of the interactor.
+2. Which HTML element to target, like `'input[type=button]'`
+3. The locator and filters, which helps users be able to narrow down the element they want to reference.
 4. Which actions a test should be able to `perform` on that element, like a `click`
-
-// new?
-
-1. id for error reporting (there's probably a better terminology than 'error-reporting')
-2. selector: i think a combination of 1. and 2. of the original list.
-3. locator: "default filter"
-4. filters: for additional filters
-5. action
-
--->
 
 Putting this information together, we can make this new Interactor:
 
 ```js
 import { createInteractor, perform } from 'bigtest';
 
-export const Checkbox = createInteractor<HTMLInputElement>('checkbox')({
+export const Button = createInteractor<HTMLButtonElement>('my-button')({
   selector: 'input[type=checkbox]',
   locator: (element) => element.id,
+  filters: {
+    value: (element) => element.value
+  }
   actions: {
     click: perform((element) => { element.click(); })
   }
 });
 ```
 
-<!--
-maybe this would be a good place to mention that we're delegating to our own custom checkbox (as opposed to using the one offered by bigtest) so that we can use the id as the locator and not textcontent.
--->
+The string argument to `createInteractor()` is the name of the interactor your console will print.
 
-Now, import the new interactor and add it to a test:
+<!-- example here of console output -->
+
+And also note that locators, filters, and actions are optional when creating your own interactor. If you create an interactor without a locator, it will default to `locator: element => element.textContent`.
+
+Now import the new interactor and add it to a test:
 
 ```js
-import { Button, Heading, Page, test } from 'bigtest';
-import { MyCheckbox } from './MyCheckbox';
+import { Heading, Page, test } from 'bigtest';
+import { Button } from './MyButton';
 
-export default test('bigtest todomvc')
+export default test('login form')
   .step(Page.visit('/'))
-  .assertion(Heading('todos').exists())
-  .child('click checkbox', test => test
-    .step(Checkbox('toggle-todo-id').click())
-    .assertion(Button('Clear completed').exists()));
+  .assertion(Heading('Log In').exists())
+  .child('fill username and click button', test => test
+    .step(Button('sign-in-button').click())
+    .assertion(Heading('You are logged in!').exists()));
 ```
 
-The [checkbox](/) interactor from BigTest does a lot more than what we just wrote, but this small example is a good place to start for understanding how to use `createInteractor`.
+<!-- add cypress and jest here too? -->
 
-Can you think of how you could expand this? Maybe you could add a `check` or `uncheck` action. Maybe for test readability, you would like to have actions named `accept` or `decline` for testing an end user agreement form. It is up to you!
+In this example, we are passing in `sign-in-button` as the locator which we configured as the `id`.
+
+The [Button](/) interactor from BigTest does a lot more than what we just wrote, but this small example is a good place to start for understanding how to use `createInteractor`.
+
+<!-- Can you think of how you could expand this? Maybe you could add a `check` or `uncheck` action. Maybe for test readability, you would like to have actions named `accept` or `decline` for testing an end user agreement form. It is up to you! -->
 
 Check out the API page of [createInteractor()](/) for more details.
 
