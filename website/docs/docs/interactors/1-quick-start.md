@@ -16,7 +16,9 @@ If you need help or have questions along the way, please let us know in [the Dis
 - [Node](https://nodejs.org/en/download/releases/)
 - A web app*
 
-*To follow along with this tutorial, you need an app that uses [Jest](https://jestjs.io/), [Cypress](https://www.cypress.io/), or BigTest. You either can use your own app that you have already made, or you can follow along using our sample app, [BigTest TodoMVC](#todo).
+*To follow along with this tutorial, you need an app that uses [Jest](https://jestjs.io/), [Cypress](https://www.cypress.io/), or BigTest. You either can use your own app that you have already made, or you can follow along using our sample app, [bigtest-sample](#todo).
+
+<!-- putting this comment here because i'm evaluating where we should talk about the sample app -->
 
 ## Installation
 
@@ -51,9 +53,7 @@ import TabItem from '@theme/TabItem';
 
 Interactors can do a lot, but let's keep things simple and start with testing one of the most common user interactions - a button click.
 
-In your codebase, find a test that already has a button click in it.
-In that test, import the `Button` interactor from `bigtest`,
-and use it to replace the click interaction. Interactors have methods like `click` that mimic user actions.
+In your codebase, find a test that already has a button click in it. In that test, import the `Button` interactor from `bigtest`, and use it to replace the click interaction. Interactors have methods like `click` that mimic user actions.
 
 Click on the tabs below to see some examples within different testing frameworks:
 
@@ -121,12 +121,13 @@ Make sure to substitute "Sign In" with your own button text.
 
 Now, run your tests! Congratulations, you used your first Interactor.
 
+<!-- we could leave a side note here and give a shout out to the bigtest platform because this is the first place people will see it and leave a link to the bigtest platform docs -->
+
 ## Making test assertions
 
 Interactors have methods to help you make test assertions, like checking if a Button is `absent` or if it `exists`.
 
-In this example, we are testing that the "Sign In" button disappears after
-a click, and a "Log Out" button appears:
+In this example, we are testing that the "Sign In" button disappears after a click, and a "Log Out" button appears:
 
 <Tabs
   defaultValue="jest"
@@ -190,10 +191,9 @@ Run your tests. Now you are making an assertion with an interactor!
 
 ### Continue learning about Interactors
 
-Try using more of the [built-in Interactors](#todo) within your tests,
-such as `Link`, `Checkbox`, `TextField`, and more.
-Once you are comfortable with those, 
-you are ready to [write your own Interactors](#todo).
+Try using more of the [built-in Interactors](#todo) within your tests, such as `Link`, `Checkbox`, `TextField`, and more. 
+
+Once you are comfortable with those, you are ready to [write your own Interactors](#todo).
 
 ### Try out more BigTest features
 
