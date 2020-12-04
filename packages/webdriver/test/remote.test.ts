@@ -67,7 +67,7 @@ describe('Connecting to a remote webdriver', () => {
 
   beforeEach(async () => {
     await spawn(function*() {
-      yield untilURLAvailable(`${driverURL}/status`, 11_000);
+      yield untilURLAvailable(`${driverURL}/status`);
       driver = yield Remote({ type: 'remote', url: driverURL, headless: true });
       yield driver.navigateTo(serverURL);
     });
