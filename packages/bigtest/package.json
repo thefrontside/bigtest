@@ -23,6 +23,7 @@
     "@frontside/typescript": "^1.1.0",
     "@types/node": "^13.13.4",
     "ts-node": "*",
+    "typedoc": "^0.20.0-beta.8",
     "typescript": "3.9.7"
   },
   "dependencies": {

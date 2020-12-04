@@ -30,6 +30,7 @@
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
     "ts-node": "*",
+    "typedoc": "^0.20.0-beta.8",
     "typescript": "3.9.7"
   },
   "volta": {
