@@ -1,6 +1,7 @@
 ---
 id: quick-start
 title: Quick Start
+slug: /interactors
 ---
 
 BigTest's Interactors make your UI tests easier to write, faster, and more reliable. You can use them across many different testing frameworks.
