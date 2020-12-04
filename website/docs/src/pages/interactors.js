@@ -114,7 +114,7 @@ function Interactors() {
                 'button button--outline button--secondary button--lg',
                 styles.getStarted,
               )}
-              to={useBaseUrl('docs/interactors/quick-start')}>
+              to={useBaseUrl('docs/interactors/')}>
               Get Started
             </Link>
           </div>
