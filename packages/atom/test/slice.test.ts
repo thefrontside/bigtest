@@ -8,6 +8,7 @@ import { Atom, Slice } from '../src/sliceable';
 
 type Data = { data: string };
 
+
 describe('@bigtest/atom Slice', () => {
   describe('Slice', () => {
     let atom: Atom<Data>;
@@ -21,6 +22,20 @@ describe('@bigtest/atom Slice', () => {
     describe('.get()', () => {
       it('gets the current state', () => {
         expect(slice.get()).toEqual('foo');
+      });
+    });
+
+    describe('.set()', () => {
+      beforeEach(() => {
+        slice.set('bar');
+      });
+
+      it('updates the current state', () => {
+        expect(slice.get()).toEqual('bar');
+      });
+
+      it('updates the atom state', () => {
+        expect(atom.get()).toEqual({ data: 'bar' });
       });
     });
 
@@ -276,6 +291,92 @@ describe('@bigtest/atom Slice', () => {
         await when(() => {
           expect(result).toHaveLength(3);
           expect(result).toEqual(['bar', 'baz', 'foo']);
+        });
+      });
+    });
+
+    describe.skip('arrays', () => {
+      type ResultStatus =
+        | "pending"
+        | "running"
+        | "failed"
+        | "ok"
+        | "disregarded";
+  
+      interface TestResult {
+        status: ResultStatus;
+        children: TestResult[];
+      }
+  
+      type TestRunAgentState = {
+        status: ResultStatus;
+        result: TestResult;
+      };
+  
+      type TestRunState = {
+        agents: Record<string, TestRunAgentState>;
+      };
+  
+      let atom: Atom<TestRunState>;
+      let slice: Slice<ResultStatus>;
+  
+      beforeEach(() => {
+        atom = createAtom<TestRunState>({
+          agents: {
+            "agent-1": {
+              status: "pending",
+              result: {
+                status: "pending",
+                children: [
+                  {
+                    status: "pending",
+                    children: []
+                  }
+                ]
+              }
+            }
+          }
+        });
+  
+        slice = atom.slice()('agents', 'agent-1', 'result', 'children', 0, 'status');
+      });
+  
+      describe('.get()', () => {
+        it('gets the current state', () => {
+          expect(slice.get()).toEqual('pending');
+        });
+      });
+  
+      describe('.set()', () => {
+        beforeEach(() => {
+          slice.set('ok');
+        });
+  
+        it('updates the current state', () => {
+          expect(slice.get()).toEqual('ok');
+        });
+
+        it('should maintain the original state', () => {
+          expect(Array.isArray(atom.get().agents['agent-1'].result.children)).toBe(true);
+        });
+  
+        it('updates the atom state', () => {
+          expect(atom.get()).toEqual({
+            agents: {
+              "agent-1": {
+                status: "pending",
+                result: {
+                  status: "pending",
+                  children: [
+                    {
+                      status: "ok",
+                      children: []
+                    }
+                  ]
+                }
+              }
+            }
+          });
         });
       });
     });
