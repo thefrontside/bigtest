@@ -2929,7 +2929,7 @@
   resolved "https://registry.yarnpkg.com/@frontside/tsconfig/-/tsconfig-1.1.0.tgz#4370d62d6cc01711ca4618e0547b4f8db164fcf2"
   integrity sha512-6TwSIsbWkujljxBV1+xSBi+X9sUISdwuXoNagX+tx9D5jM9Ok3eBNlPA73nMg1DbLz2cyMV06BLRd8A5XSrzVg==
 
-"@frontside/typescript@^1.0.1":
+"@frontside/typescript@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@frontside/typescript/-/typescript-1.1.0.tgz#58680adc1b0aaf9fbf36be6712ff2d26828dfbc6"
   integrity sha512-p6z0YUndsqSdttiFJ0Wa2Um6btY69oyVwg07DpGosHqOyg/cFWXvaxE48rvzWPw6JX4cJFrWCCrGcCK+SO1D3w==
@@ -3930,13 +3930,13 @@
     semver "^7.3.2"
     tsutils "^3.17.1"
 
-"@typescript-eslint/typescript-estree@4.8.2":
-  version "4.8.2"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/typescript-estree/-/typescript-estree-4.8.2.tgz#eeec34707d8577600fb21661b5287226cc8b3bed"
-  integrity sha512-HToGNwI6fekH0dOw3XEVESUm71Onfam0AKin6f26S2FtUmO7o3cLlWgrIaT1q3vjB3wCTdww3Dx2iGq5wtUOCg==
+"@typescript-eslint/typescript-estree@4.9.0":
+  version "4.9.0"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/typescript-estree/-/typescript-estree-4.9.0.tgz#38a98df6ee281cfd6164d6f9d91795b37d9e508c"
+  integrity sha512-rmDR++PGrIyQzAtt3pPcmKWLr7MA+u/Cmq9b/rON3//t5WofNR4m/Ybft2vOLj0WtUzjn018ekHjTsnIyBsQug==
   dependencies:
-    "@typescript-eslint/types" "4.8.2"
-    "@typescript-eslint/visitor-keys" "4.8.2"
+    "@typescript-eslint/types" "4.9.0"
+    "@typescript-eslint/visitor-keys" "4.9.0"
     debug "^4.1.1"
     globby "^11.0.1"
     is-glob "^4.0.1"
@@ -10887,7 +10887,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@4.17.19, "lodash@>=3.5 <5", lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.4, lodash@^4.17.5:
+"lodash@>=3.5 <5", lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.4, lodash@^4.17.5:
   version "4.17.19"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
   integrity sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==
@@ -15976,6 +15976,7 @@ typedoc@^0.20.0-beta.8:
     semver "^7.3.2"
     shelljs "^0.8.4"
     typedoc-default-themes "0.12.0-beta.6"
+
 typescript@3.9.7:
   version "3.9.7"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.7.tgz#98d600a5ebdc38f40cb277522f12dc800e9e25fa"
