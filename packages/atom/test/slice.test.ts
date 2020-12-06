@@ -1,8 +1,8 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect';
 import { createAtom } from '../src/atom';
-// import { spawn, when } from './helpers';
-// import { Subscription, subscribe, ChainableSubscription } from '@effection/subscription';
+import { spawn, when } from './helpers';
+import { Subscription, subscribe, ChainableSubscription } from '@effection/subscription';
 import { TestResult, ResultStatus } from '@bigtest/suite';
 import { Atom, Slice } from '../src/sliceable';
 
@@ -73,38 +73,103 @@ describe('@bigtest/atom Slice', () => {
     });
   });
 
+  describe('.once()', () => {
+    let result: Promise<string | undefined>;
+    let atom: Atom<Data>;
+    let slice: Slice<string>;
 
-  // describe('.once()', () => {
-  //   let result: Promise<string | undefined>;
+    beforeEach(() => {
+      atom = createAtom({ data: 'foo' });
+      slice = atom.slice()('data');
+    });
 
-  //   describe('when initial state matches', () => {
-  //     beforeEach(async () => {
-  //       result = spawn(slice.once((state) => state === 'foo'));
+    describe('when initial state matches', () => {
+      beforeEach(async () => {
+        result = spawn(slice.once((state) => state === 'foo'));
 
-  //       slice.update(() => 'bar');
-  //     });
+        slice.update(() => 'bar');
+      });
 
-  //     it('gets the first state that passes the given predicate', async () => {
-  //       expect(await result).toEqual('foo');
-  //       expect(slice.get()).toEqual('bar');
-  //     });
-  //   });
+      it('gets the first state that passes the given predicate', async () => {
+        expect(await result).toEqual('foo');
+        expect(slice.get()).toEqual('bar');
+      });
+    });
 
-  //   describe('when initial state does not match', () => {
-  //     beforeEach(async () => {
-  //       result = spawn(slice.once((state) => state === 'baz'));
+    describe('when initial state does not match', () => {
+      beforeEach(async () => {
+        result = spawn(slice.once((state) => state === 'baz'));
 
-  //       slice.update(() => 'bar');
-  //       slice.update(() => 'baz');
-  //       slice.update(() => 'quox');
-  //     });
+        slice.update(() => 'bar');
+        slice.update(() => 'baz');
+        slice.update(() => 'quox');
+      });
 
-  //     it('gets the first state that passes the given predicate', async () => {
-  //       expect(await result).toEqual('baz');
-  //       expect(slice.get()).toEqual('quox');
-  //     });
-  //   });
-  // });
+      it('gets the first state that passes the given predicate', async () => {
+        expect(await result).toEqual('baz');
+        expect(slice.get()).toEqual('quox');
+      });
+    });
+  });
+
+
+  describe('subscribe', () => {
+    let atom: Atom<Data>;
+    let slice: Slice<string>;
+    let subscription: Subscription<string, undefined>;
+
+    beforeEach(async () => {
+      atom = createAtom({ data: 'foo' });
+      slice = atom.slice()('data');
+      subscription = await spawn(subscribe(slice));
+
+      slice.update(() => 'bar');
+      slice.update(() => 'baz');
+      slice.update(() => 'quox');
+    });
+
+    it('iterates over emitted states', async () => {
+      await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'bar' });
+      await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'baz' });
+      await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'quox' });
+    });
+  });
+
+  describe('subscribe - unique state publish', () => {
+    let atom: Atom<Data>;
+    let slice: Slice<string>;
+    let result: string[];
+    let subscription: ChainableSubscription<string, undefined>;
+
+    beforeEach(async () => {
+      atom = createAtom({ data: 'foo' });
+      slice = atom.slice()('data');
+      result = [];
+
+      subscription = await spawn(subscribe(slice));
+      
+      spawn(subscription.forEach(function*(state) { 
+        result.push(state); 
+      }));
+
+      // foo is the initial value
+      // should not appear as element 1 in the result
+      slice.update(() => 'foo');
+      slice.update(() => 'bar');
+      slice.update(() => 'bar');
+      slice.update(() => 'baz');
+      slice.update(() => 'baz');
+      // back to foo, should exist in the result
+      slice.update(() => 'foo');
+    });
+
+    it('should only publish unique state changes', async () => {
+      await when(() => {
+        expect(result).toHaveLength(3);
+        expect(result).toEqual(['bar', 'baz', 'foo']);
+      });
+    });
+  });
 
   type TestRunAgentState = {
     status: ResultStatus;
@@ -193,145 +258,94 @@ describe('@bigtest/atom Slice', () => {
         expect(slice.slice()('agents', 'agent-1').get()).toBeUndefined();
       })
     });
-  // });
 
-  // describe('subscribe', () => {
-  //   let atom: Atom<Data>;
-  //   let slice: Slice<string>;
-  //   let subscription: Subscription<string, undefined>;
+  });
 
-  //   beforeEach(async () => {
-  //     atom = createAtom({ data: 'foo' });
-  //     slice = atom.slice()('data');
-  //     subscription = await spawn(subscribe(slice));
+  describe('deeply nested', () => {
+    type ResultStatus =
+      | "pending"
+      | "running"
+      | "failed"
+      | "ok"
+      | "disregarded";
 
-  //     slice.update(() => 'bar');
-  //     slice.update(() => 'baz');
-  //     slice.update(() => 'quox');
-  //   });
+    interface TestResult {
+      status: ResultStatus;
+      children: TestResult[];
+    }
 
-  //   it('iterates over emitted states', async () => {
-  //     await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'bar' });
-  //     await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'baz' });
-  //     await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: 'quox' });
-  //   });
-  // });
+    type TestRunAgentState = {
+      status: ResultStatus;
+      result: TestResult;
+    };
 
-  // describe('subscribe - unique state publish', () => {
-  //   let result: string[];
-  //   let subscription: ChainableSubscription<string, undefined>;
+    type TestRunState = {
+      agents: Record<string, TestRunAgentState>;
+    };
 
-  //   beforeEach(async () => {
-  //     result = [];
+    let atom: Atom<TestRunState>;
+    let slice: Slice<ResultStatus>;
 
-  //     subscription = await spawn(subscribe(slice));
-      
-  //     spawn(subscription.forEach(function*(state) { 
-  //       result.push(state); 
-  //     }));
+    beforeEach(() => {
+      atom = createAtom<TestRunState>({
+        agents: {
+          "agent-1": {
+            status: "pending",
+            result: {
+              status: "pending",
+              children: [
+                {
+                  status: "pending",
+                  children: []
+                }
+              ]
+            }
+          }
+        }
+      });
 
-  //     // foo is the initial value
-  //     // should not appear as element 1 in the result
-  //     slice.update(() => 'foo');
-  //     slice.update(() => 'bar');
-  //     slice.update(() => 'bar');
-  //     slice.update(() => 'baz');
-  //     slice.update(() => 'baz');
-  //     // back to foo, should exist in the result
-  //     slice.update(() => 'foo');
-  //   });
+      slice = atom.slice()('agents', 'agent-1', 'result', 'children', 0, 'status');
+    });
 
-  //   it('should only publish unique state changes', async () => {
-  //     await when(() => {
-  //       expect(result).toHaveLength(3);
-  //       expect(result).toEqual(['bar', 'baz', 'foo']);
-  //     });
-  //   });
-  // });
+    describe('.get()', () => {
+      it('gets the current state', () => {
+        expect(slice.get()).toEqual('pending');
+      });
+    });
 
-  // describe.skip('arrays', () => {
-  //   type ResultStatus =
-  //     | "pending"
-  //     | "running"
-  //     | "failed"
-  //     | "ok"
-  //     | "disregarded";
+    describe('.set()', () => {
+      beforeEach(() => {
+        slice.set('ok');
+      });
 
-  //   interface TestResult {
-  //     status: ResultStatus;
-  //     children: TestResult[];
-  //   }
+      it('updates the current state', () => {
+        expect(slice.get()).toEqual('ok');
+      });
 
-  //   type TestRunAgentState = {
-  //     status: ResultStatus;
-  //     result: TestResult;
-  //   };
+      it('should maintain the original state', () => {
+        // calling Lens.modify on an array will change it into an object.
+        // This is a regression to ensure that does not happen
+        expect(Array.isArray(atom.get().agents['agent-1'].result.children)).toBe(true);
+      });
 
-  //   type TestRunState = {
-  //     agents: Record<string, TestRunAgentState>;
-  //   };
-
-  //   let atom: Atom<TestRunState>;
-  //   let slice: Slice<ResultStatus>;
-
-  //   beforeEach(() => {
-  //     atom = createAtom<TestRunState>({
-  //       agents: {
-  //         "agent-1": {
-  //           status: "pending",
-  //           result: {
-  //             status: "pending",
-  //             children: [
-  //               {
-  //                 status: "pending",
-  //                 children: []
-  //               }
-  //             ]
-  //           }
-  //         }
-  //       }
-  //     });
-
-  //     slice = atom.slice()('agents', 'agent-1', 'result', 'children', 0, 'status');
-  //   });
-
-  //   describe('.get()', () => {
-  //     it('gets the current state', () => {
-  //       expect(slice.get()).toEqual('pending');
-  //     });
-  //   });
-
-  //   describe('.set()', () => {
-  //     beforeEach(() => {
-  //       slice.set('ok');
-  //     });
-
-  //     it('updates the current state', () => {
-  //       expect(slice.get()).toEqual('ok');
-  //     });
-
-  //     it('should maintain the original state', () => {
-  //       expect(Array.isArray(atom.get().agents['agent-1'].result.children)).toBe(true);
-  //     });
-
-  //     it('updates the atom state', () => {
-  //       expect(atom.get()).toEqual({
-  //         agents: {
-  //           "agent-1": {
-  //             status: "pending",
-  //             result: {
-  //               status: "pending",
-  //               children: [
-  //                 {
-  //                   status: "ok",
-  //                   children: []
-  //                 }
-  //               ]
-  //             }
-  //           }
-  //         }
-  //       });
-  //     });
-  //   });
+      it('updates the atom state', () => {
+        expect(atom.get()).toEqual({
+          agents: {
+            "agent-1": {
+              status: "pending",
+              result: {
+                status: "pending",
+                children: [
+                  {
+                    status: "ok",
+                    children: []
+                  }
+                ]
+              }
+            }
+          }
+        });
+      });
+    });
   });
 });

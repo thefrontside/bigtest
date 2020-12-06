@@ -122,6 +122,16 @@ export function createAtom<S>(init?: S): Atom<S> {
       set(next);
     }
 
+    function *once(predicate: (state: A) => boolean): Operation<A> {
+      let currentState = getter();
+      if(predicate(currentState)) {
+        return currentState;
+      } else {
+        let subscription = yield subscribe(slice);
+        return yield subscription.filter(predicate).expect();
+      }
+    }
+
     let slice = {
       get: getter,
       set: setter,
@@ -129,28 +139,19 @@ export function createAtom<S>(init?: S): Atom<S> {
       remove: remover,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       slice: sliceMaker(sliceOptional as any),
+      once,
 
-      // over(fn: (value: S) => S): void {
-      //   update((s) => sliceLens.set(fn(sliceLens.get(s) as S))(get() as S));
-      // },
-      // *[SymbolSubscribable](): Operation<Subscription<S, void>> {
-      //   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      //   return yield subscribe(atom).map((s) => sliceLens.get(s));
-      // }
+      // TODO: is there any difference with the slice update
+      over(fn: (value: A) => A): void {
+        update((s) => sliceOptional.set(fn(pipe(sliceOptional.getOption(s), O.toUndefined) as A))(get() as S));
+      },
+      *[SymbolSubscribable](): Operation<Subscription<S, void>> {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        return yield subscribe(atom).map((s) => pipe(sliceOptional.getOption(s), O.toUndefined));
+      }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
-    // slice.once = function *(predicate: (state: S) => boolean): Operation<S> {
-    //   let currentState = sliceLens.get(get() as S);
-    //   if(predicate(currentState as S)) {
-    //     return currentState as S;
-    //   } else {
-    //     let subscription = yield subscribe(slice);
-    //     return yield subscription.filter(predicate).expect();
-    //   }
-    // }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return slice;
   }
 

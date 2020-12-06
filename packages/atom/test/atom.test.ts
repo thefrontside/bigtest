@@ -146,39 +146,40 @@ describe('@bigtest/atom createAtom', () => {
     });
   });
 
-  // describe('.once()', () => {
-  //   let result: Promise<State>;
-  //   let subject: Slice<State>;
+  describe('.once()', () => {
+    let result: Promise<State>;
+    let subject: Atom<State>;
 
-  //   describe('when initial state matches', () => {
-  //     beforeEach(async () => {
-  //       subject = createAtom({foo: 'bar'});
-  //       result = spawn(subject.once((state) => state.foo === 'bar'));
+    describe('when initial state matches', () => {
+      beforeEach(async () => {
+        subject = createAtom({foo: 'bar'});
+        result = spawn(subject.once((state) => state.foo === 'bar'));
 
-  //       subject.update(() => ({ foo: 'baz' }));
-  //     });
+        subject.update(() => ({ foo: 'baz' }));
+      });
 
-  //     it('gets the first state that passes the given predicate', async () => {
-  //       expect(await result).toEqual({ foo: 'bar' });
-  //       expect(subject.get()).toEqual({ foo: 'baz' });
-  //     });
-  //   });
+      it('gets the first state that passes the given predicate', async () => {
+        expect(await result).toEqual({ foo: 'bar' });
+        expect(subject.get()).toEqual({ foo: 'baz' });
+      });
+    });
 
-  //   describe('when initial state does not match', () => {
-  //     beforeEach(async () => {
-  //       result = spawn(subject.once((state) => state.foo === 'baz'));
+    describe('when initial state does not match', () => {
+      beforeEach(async () => {
+        result = spawn(subject.once((state) => state.foo === 'baz'));
 
-  //       subject.update(() => ({ foo: 'bar' }));
-  //       subject.update(() => ({ foo: 'baz' }));
-  //       subject.update(() => ({ foo: 'quox' }));
-  //     });
+        subject.update(() => ({ foo: 'bar' }));
+        subject.update(() => ({ foo: 'baz' }));
+        subject.update(() => ({ foo: 'quox' }));
+      });
 
-  //     it('gets the first state that passes the given predicate', async () => {
-  //       expect(await result).toEqual({ foo: 'baz' });
-  //       expect(subject.get()).toEqual({ foo: 'quox' });
-  //     });
-  //   });
-  // });
+      it('gets the first state that passes the given predicate', async () => {
+        expect(await result).toEqual({ foo: 'baz' });
+        expect(subject.get()).toEqual({ foo: 'quox' });
+      });
+    });
+  });
+
   type Subject = {
     foo: string;
   }
