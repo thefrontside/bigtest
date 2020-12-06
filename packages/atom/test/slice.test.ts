@@ -9,30 +9,48 @@ import { Atom, Slice } from '../src/sliceable';
 type Data = { data: string };
 
 describe('@bigtest/atom Slice', () => {
-  describe('Slice', () => {
+  describe('with no data', () => {
     let atom: Atom<{ outer: Data }>;
-    let slice1: Slice<Data>;
+    let slice: Slice<string>;
+
+    before(() => {
+      atom = createAtom();
+      slice = atom.slice()('outer', 'data');
+    });
+
+    it('should not blow up with get', () => {
+       console.dir(slice.get());
+    });
+
+    it('should not blow up with set', () => {
+      slice.set('houston we have a problem')
+    });
+  });
+  
+  describe('with data', () => {
+    let atom: Atom<{ outer: Data }>;
+    let slice: Slice<Data>;
 
     beforeEach(() => {
       atom = createAtom({ outer: { data: "baz" } });
-      slice1 = atom.slice()('outer');
+      slice = atom.slice()('outer');
     });
 
     it('should return the slice data', () => {
-      expect(slice1.get()).toEqual({ data: 'baz' });
+      expect(slice.get()).toEqual({ data: 'baz' });
     });
 
     it('should set the slice and atom', () => {
-      slice1.set({ data: 'bar' });
+      slice.set({ data: 'bar' });
       
-      expect(slice1.get()).toEqual({ data: 'bar' });
+      expect(slice.get()).toEqual({ data: 'bar' });
       expect(atom.get()).toEqual({ outer: { data: 'bar' } });
     });
 
     it('should update the slice', () => {
-      slice1.update((prev) => ({ data: `${prev.data}-bar` }));
+      slice.update((prev) => ({ data: `${prev.data}-bar` }));
       
-      expect(slice1.get()).toEqual({ data: 'baz-bar' });
+      expect(slice.get()).toEqual({ data: 'baz-bar' });
       expect(atom.get()).toEqual({ outer: { data: 'baz-bar' } });
     });
   });

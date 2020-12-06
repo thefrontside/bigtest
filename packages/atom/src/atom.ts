@@ -75,9 +75,11 @@ export function createAtom<S>(init?: S): Atom<S> {
   let sliceMaker = <A>(parentOptional: Op.Optional<S, A>) => () => <P extends keyof S>(...path: P[]): Sliceable<S[P]> => {
     assert(Array.isArray(path) && path.length >  0, "slice expects a rest parameter with at least 1 element");
 
-    let getters = [parentOptional, ...path.map(p => {
-      return (typeof p === 'number') ? Op.index(p) : Op.prop<S, P>(p);
-    })];
+    let getters = [
+      parentOptional,
+      Op.fromNullable, 
+      ...path.map(p => (typeof p === 'number') ? Op.index(p) : Op.prop<S, P>(p))
+    ];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let sliceOptional = (pipe as any)(...getters) as Op.Optional<S, S[P]>;
