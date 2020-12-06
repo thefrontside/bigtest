@@ -72,7 +72,7 @@ export function createAtom<S>(init?: S): Atom<S> {
     states.setMaxListeners(value);
   }
 
-  let sliceMaker = <A>(parentOptional: Op.Optional<S, S>) => (): Sliceable<S> => (...path: PropertyKey[]) => {
+  let sliceMaker = <A>(parentOptional: Op.Optional<S, S>) => () => (...path: PropertyKey[]): Sliceable<A> => {
     assert(Array.isArray(path) && path.length >  0, "slice expects a rest parameter with at least 1 element");
 
     let getters = path.map(p => {
@@ -152,7 +152,7 @@ export function createAtom<S>(init?: S): Atom<S> {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
-    return slice;
+    return slice as Sliceable<A>;
   }
 
   let atom = ({
@@ -168,5 +168,5 @@ export function createAtom<S>(init?: S): Atom<S> {
     }
   } as const);
 
-  return atom;
+  return atom as unknown as Atom<S>;
 }
