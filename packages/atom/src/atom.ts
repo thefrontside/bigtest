@@ -7,7 +7,7 @@ import { Operation } from 'effection';
 import { Atom } from './sliceable';
 
 export function createAtom<S>(init?: S): Atom<S> {
-  // let initialState = init;
+  let initialState = init;
   let state = init as S;
   let lens = Op.id<S>();
   let states = new Channel<S>();
@@ -20,10 +20,6 @@ export function createAtom<S>(init?: S): Atom<S> {
     );
 
     return current as S;
-  }
-
-  function updater(next: S) {
-    state = next;
   }
 
   function set(value: S): void {
@@ -39,8 +35,8 @@ export function createAtom<S>(init?: S): Atom<S> {
     );
 
     if(state) {
-       states.send(state);
-     }
+      states.send(state);
+    }
   }
 
   function update(fn: (s: S) => S) {
@@ -51,7 +47,7 @@ export function createAtom<S>(init?: S): Atom<S> {
       O.toUndefined
     ) as S;
 
-    updater(next);
+    set(next);
   }
 
   // function *once(predicate: (state: S) => boolean): Operation<S> {
@@ -68,12 +64,12 @@ export function createAtom<S>(init?: S): Atom<S> {
       initializer = (initial) => initial;
     }
     states.close();
-    set(initializer(initialState as S, state as S));
+    set(initializer(initialState as S, get()));
   }
 
-  // function setMaxListeners(value: number) {
-  //   states.setMaxListeners(value);
-  // }
+  function setMaxListeners(value: number) {
+    states.setMaxListeners(value);
+  }
 
   // let sliceMaker = <A>(parentLens: Lens<S, A>) => (): Sliceable<S> => <P extends keyof S>(...path: P[]) => {
   //   assert(Array.isArray(path) && path.length >  0, "slice expects a rest parameter with at least 1 element");
@@ -156,11 +152,11 @@ export function createAtom<S>(init?: S): Atom<S> {
     // slice: sliceMaker(lens),
     // once,
     reset,
-    // setMaxListeners,
+    setMaxListeners,
     *[SymbolSubscribable](): Operation<Subscription<S,undefined>> {
       return yield subscribe(states);
     }
   } as const);
 
-  return atom as Atom<S>;
+  return atom;
 }
