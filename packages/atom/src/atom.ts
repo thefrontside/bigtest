@@ -5,7 +5,7 @@ import { subscribe, Subscription, SymbolSubscribable } from '@effection/subscrip
 import { Channel } from '@effection/channel';
 import { Operation } from 'effection';
 import { Atom, Sliceable } from './sliceable';
-import assert = require('assert');
+import { assert } from  'assert-ts';
 
 export function createAtom<S>(init?: S): Atom<S> {
   let initialState = init;
@@ -72,29 +72,27 @@ export function createAtom<S>(init?: S): Atom<S> {
     states.setMaxListeners(value);
   }
 
-  let sliceMaker = <A>(parentOptional: Op.Optional<S, S>) => () => (...path: PropertyKey[]): Sliceable<A> => {
+  let sliceMaker = <A>(parentOptional: Op.Optional<S, A>) => () => <P extends keyof S>(...path: P[]): Sliceable<S[P]> => {
     assert(Array.isArray(path) && path.length >  0, "slice expects a rest parameter with at least 1 element");
 
-    let getters = path.map(p => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return (typeof p === 'number') ? Op.index(p) : Op.prop<S, any>(p as any);
-    });
+    let getters = [parentOptional, ...path.map(p => {
+      return (typeof p === 'number') ? Op.index(p) : Op.prop<S, P>(p);
+    })];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let sliceOptional = (pipe as any)(...[parentOptional, ...getters]) as Op.Optional<S, A>;
+    let sliceOptional = (pipe as any)(...getters) as Op.Optional<S, S[P]>;
 
-    function getter(): A {
+    function getter(): S[P] {
       let current = pipe(
         get(),
         sliceOptional.getOption,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        O.toUndefined as any
+        O.toUndefined
       );
 
-      return current as A;
+      return current as S[P];
     }
 
-    function setter(value: A): void {
+    function setter(value: S[P]): void {
       let next = pipe(
         get(),
         sliceOptional.set(value)
@@ -103,7 +101,7 @@ export function createAtom<S>(init?: S): Atom<S> {
       set(next);
     }
 
-    function updater(fn: (s: A) => A) {
+    function updater(fn: (s: S[P]) => S[P]) {
       let next = pipe(
         sliceOptional,
         Op.modify(fn)
@@ -122,7 +120,7 @@ export function createAtom<S>(init?: S): Atom<S> {
       set(next);
     }
 
-    function *once(predicate: (state: A) => boolean): Operation<A> {
+    function *once(predicate: (state: S[P]) => boolean): Operation<S[P]> {
       let currentState = getter();
       if(predicate(currentState)) {
         return currentState;
@@ -132,27 +130,25 @@ export function createAtom<S>(init?: S): Atom<S> {
       }
     }
 
+    function over(fn: (value: S[P]) => S[P]): void {
+      update((s) => sliceOptional.set(fn(pipe(sliceOptional.getOption(s), O.toUndefined) as S[P]))(get() as S));
+    }
+
     let slice = {
       get: getter,
       set: setter,
       update: updater,
       remove: remover,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      slice: sliceMaker(sliceOptional as any),
+      slice: sliceMaker(sliceOptional),
       once,
-
-      // TODO: is there any difference with the slice update
-      over(fn: (value: A) => A): void {
-        update((s) => sliceOptional.set(fn(pipe(sliceOptional.getOption(s), O.toUndefined) as A))(get() as S));
-      },
+      over,
       *[SymbolSubscribable](): Operation<Subscription<S, void>> {
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
         return yield subscribe(atom).map((s) => pipe(sliceOptional.getOption(s), O.toUndefined));
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any;
+    } as const;
 
-    return slice as Sliceable<A>;
+    return slice as unknown as Sliceable<S[P]>;
   }
 
   let atom = ({
