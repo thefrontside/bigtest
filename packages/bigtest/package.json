@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@frontside/eslint-config": "^1.1.2",
-    "@frontside/typescript": "^1.0.1",
+    "@frontside/typescript": "^1.1.0",
     "@types/node": "^13.13.4",
     "ts-node": "*",
     "typedoc": "^0.20.0-beta.8",

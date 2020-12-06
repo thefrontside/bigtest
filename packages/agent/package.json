@@ -28,7 +28,7 @@
     "@bigtest/suite": "^0.11.1",
     "@bigtest/webdriver": "^0.7.0",
     "@frontside/eslint-config": "^1.1.2",
-    "@frontside/typescript": "^1.0.1",
+    "@frontside/typescript": "^1.1.0",
     "@types/express": "^4.17.2",
     "@types/istanbul-lib-coverage": "^2.0.3",
     "@types/localforage": "^0.0.34",
