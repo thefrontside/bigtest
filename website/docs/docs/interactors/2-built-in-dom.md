@@ -30,10 +30,23 @@ Follow the links to the API documentation above for how to use each of these int
 
 If your app has unique interfaces that are not covered by these built-in tools, you are encouraged to [write your own interactors](/docs/interactors/write-your-own).
 
-<!-- ### Page Interactor -->
-<!-- 
-write about page interactor here and also mention how it's more for the bigtest platform
--->
+### Page
+The `Page` interactor is special in that, unlike the other interactors, it's not to target one specific element but the whole page. It is useful for asserting for the url or title in your test environment:
+
+```js
+Page({ url: 'localhost:3000' }).exists();
+```
+
+And when using BigTest platform, the Page interactor can be used to navigate between routes:
+
+```js
+import { Page, test } from 'bigtest';
+
+export default test('BigTest Platform')
+  .step(Page.visit('/contact'))
+  .assertion(
+    Page({ url: 'localhost:3000/contact' }).exists());
+```
 
 ### Up Next
 
