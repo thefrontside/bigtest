@@ -77,7 +77,7 @@ If you take a look at the [button API](/), you'll see that the button interactor
 One limitation is that mutable APIs such as `NodeList` cannot be used in a filter.
 
 ### Asserting with filters
-In the [Quick Start](/interactors/quick-start#making-test-assertions) section, we briefly touch on the assertion methods that are available on all interactors, `exists()` and `absent()`. There is also `has()` which allows you pass in a filter as its argument. Continuing from the last example, this is how we would assert the title against a button:
+In the [quick start](/docs/interactors/#making-test-assertions) section, we briefly touch on the assertion methods that are available on all interactors, `exists()` and `absent()`. There is also `has()` which allows you pass in a filter as its argument. Continuing from the last example, this is how we would assert the title against a button:
 
 ```js
 Button({ id: 'submit-button-1' }).has({ title: 'Sign Up Form' });
