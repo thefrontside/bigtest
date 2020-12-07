@@ -2,10 +2,8 @@ name: Lint
 
 on:
   pull_request:
-    # branches:
-    #   - 'v[0-9]+'
-    branches-ignore:
-      - 'init-docusaurus'
+    branches:
+      - '!v[0-9]+'
 
 jobs:
   build:
