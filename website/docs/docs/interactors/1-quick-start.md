@@ -16,9 +16,7 @@ If you need help or have questions along the way, please let us know in [the Dis
 - [Node](https://nodejs.org/en/download/releases/)
 - A web app*
 
-*To follow along with this tutorial, you need an app that uses [Jest](https://jestjs.io/), [Cypress](https://www.cypress.io/), or BigTest. You either can use your own app that you have already made, or you can follow along using our sample app, [bigtest-sample](#todo).
-
-<!-- putting this comment here because i'm evaluating where we should talk about the sample app -->
+*To follow along with this tutorial, you need an app that uses [Jest](https://jestjs.io/), [Cypress](https://www.cypress.io/), or BigTest. You can either use your own app or you can install our sample app which has Jest, Cypress, and Bigtest preinstalled and configured against a very simple app. We recommend that you read through the quick start but you can skip ahead to the [Sample App](#sample-app) section if you want to see the interactors in action right away.
 
 ## Installation
 
@@ -187,13 +185,20 @@ In this example, we are testing that the "Sign In" button disappears after a cli
 
 Run your tests. Now you are making an assertion with an interactor!
 
+## Sample app
+To see an example of an app with Jest, Cypress, and BigTest, run the following command:
+```
+$ npx bigtest-sample
+```
+This will create a project and output instructions in the console on how you can run tests on any of the three testing platforms.
+
 ## Next steps
 
 ### Continue learning about Interactors
 
-Try using more of the [Built-in Interactors](2-built-in-dom.md) within your tests, such as `Link`, `Checkbox`, `TextField`, and more. 
+Try using more of the [Built-in Interactors](/docs/interactors/built-in-dom) within your tests, such as `Link`, `Checkbox`, `TextField`, and more. 
 
-Once you are comfortable with those, you are ready to [write your own Interactors](4-write-your-own.md).
+Once you are comfortable with those, you are ready to [write your own Interactors](/docs/interactors/write-your-own).
 
 ### Try out more BigTest features
 
