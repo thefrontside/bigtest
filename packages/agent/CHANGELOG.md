@@ -1,5 +1,17 @@
 # @bigtest/agent
 
+## 0.15.1
+
+### Patch Changes
+
+- c2c4bd11: Upgrade @frontside/typescript to v1.1.0
+- Updated dependencies [ee797ddf]
+- Updated dependencies [c2c4bd11]
+- Updated dependencies [ee797ddf]
+  - @bigtest/effection@0.6.0
+  - @bigtest/effection-express@0.9.1
+  - @bigtest/globals@0.7.3
+
 ## 0.15.0
 
 ### Minor Changes

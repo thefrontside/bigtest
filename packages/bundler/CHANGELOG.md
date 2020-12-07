@@ -1,5 +1,23 @@
 # @bigtest/bundler
 
+## 0.12.0
+
+### Minor Changes
+
+- c052e7e2: upgrade bundler dependencies mainly to get type definitions for @rollup/plugin-babel
+
+### Patch Changes
+
+- c2c4bd11: Upgrade @frontside/typescript to v1.1.0
+- 41018eaf: move commonjs down the rollup plugin order
+- Updated dependencies [ee797ddf]
+- Updated dependencies [c2c4bd11]
+- Updated dependencies [2603129b]
+- Updated dependencies [6af43e28]
+- Updated dependencies [ee797ddf]
+  - @bigtest/effection@0.6.0
+  - @bigtest/project@0.13.0
+
 ## 0.11.0
 
 ### Minor Changes

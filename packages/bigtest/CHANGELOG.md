@@ -1,5 +1,33 @@
 # bigtest
 
+## 0.6.0
+
+### Minor Changes
+
+- 70f91954: Interactor actions are not automatically wrapped in a convergence
+- 2603129b: support spawning agents from an unmanaged webdriver
+
+### Patch Changes
+
+- 33a64ac0: Enforce order ot steps, assertion and children in DSL
+- ada894f4: Fix race condition in chromedriver start
+- de93ed83: Change default suggested app port to 3000
+- c14b56b4: Upgrade chromedriver and geckodriver versions and loosen their constraints
+- c2c4bd11: Upgrade @frontside/typescript to v1.1.0
+- dd0ae975: Modify post function in webdriver for firefox
+- Updated dependencies [33a64ac0]
+- Updated dependencies [4eae24b6]
+- Updated dependencies [d7a1ee72]
+- Updated dependencies [3bf116f8]
+- Updated dependencies [c2c4bd11]
+- Updated dependencies [70f91954]
+- Updated dependencies [2914cdcb]
+- Updated dependencies [85891d0a]
+- Updated dependencies [c052e7e2]
+  - @bigtest/suite@0.11.1
+  - @bigtest/interactor@0.22.0
+  - @bigtest/cli@0.16.0
+
 ## 0.5.0
 
 ### Minor Changes

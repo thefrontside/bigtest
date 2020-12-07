@@ -1,5 +1,21 @@
 # @bigtest/webdriver
 
+## 0.7.0
+
+### Minor Changes
+
+- 2603129b: support spawning agents from an unmanaged webdriver
+
+### Patch Changes
+
+- dd0ae975: Modify post function to include content-type to satisfy geckodriver
+- ada894f4: Fix race condition in chromedriver start
+- c14b56b4: Upgrade chromedriver and geckodriver versions and loosen their constraints
+- c2c4bd11: Upgrade @frontside/typescript to v1.1.0
+- Updated dependencies [c2c4bd11]
+  - @bigtest/atom@0.10.1
+  - @bigtest/driver@0.5.4
+
 ## 0.6.4
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @bigtest/driver
 
+## 0.5.4
+
+### Patch Changes
+
+- c2c4bd11: Upgrade @frontside/typescript to v1.1.0
+
 ## 0.5.3
 
 ### Patch Changes

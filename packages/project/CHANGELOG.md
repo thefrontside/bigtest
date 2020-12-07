@@ -1,5 +1,18 @@
 # @bigtest/project
 
+## 0.13.0
+
+### Minor Changes
+
+- 2603129b: support spawning agents from an unmanaged webdriver
+- 6af43e28: refactor ProxyServer to Service
+
+### Patch Changes
+
+- c2c4bd11: Upgrade @frontside/typescript to v1.1.0
+- Updated dependencies [c2c4bd11]
+  - @bigtest/driver@0.5.4
+
 ## 0.12.0
 
 ### Minor Changes

@@ -1,5 +1,33 @@
 # @bigtest/cli
 
+## 0.16.0
+
+### Minor Changes
+
+- 3bf116f8: pass the whole service slice of options and status into the service
+- 85891d0a: add missing eslint peer dependencies
+- c052e7e2: upgrade bundler dependencies mainly to get type definitions for @rollup/plugin-babel
+
+### Patch Changes
+
+- d7a1ee72: check bin scripts under source control. This simplifies build scripts and makes building in windows simpler
+- c2c4bd11: Upgrade @frontside/typescript to v1.1.0
+- 2914cdcb: Change the default suggested app port to 3000 in bigtest init
+- Updated dependencies [7a39af49]
+- Updated dependencies [ee797ddf]
+- Updated dependencies [3bf116f8]
+- Updated dependencies [c2c4bd11]
+- Updated dependencies [ee797ddf]
+- Updated dependencies [6bfcb3ae]
+- Updated dependencies [2603129b]
+- Updated dependencies [85891d0a]
+- Updated dependencies [6af43e28]
+- Updated dependencies [c052e7e2]
+- Updated dependencies [ee797ddf]
+  - @bigtest/server@0.20.0
+  - @bigtest/effection@0.6.0
+  - @bigtest/project@0.13.0
+
 ## 0.15.2
 
 ### Patch Changes
