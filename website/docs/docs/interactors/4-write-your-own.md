@@ -26,10 +26,10 @@ export const Button = createInteractor<HTMLButtonElement>('my-button-interactor'
   selector: 'button, input[type=button]',
   locator: (element) => element.id,
   filters: {
-    value: (element) => element.value
+    value: (element) => element.textContent
   },
   actions: {
-    click: perform((element) => { element.click(); })
+    click: perform((element) => { element.click() })
   }
 });
 ```
@@ -65,14 +65,13 @@ The [Button](/) interactor from BigTest does a lot more than what we just wrote,
 
 Check out the API page of [createInteractor()](/) for more details.
 
-<!-- to do - a more complex example -->
- 
+## Writing your second interactor
+Below is a more complex demonstration of what you can do with interactors:
 ```js
-import { createInteractor, perform } from '@bigtest/interactor';
+import { createInteractor, perform } from 'bigtest';
 
-export default createInteractor('table cell')({
+export const TableCell = createInteractor('table cell')({
   selector: '[role=gridcell]',
-  locator: element => element.id,
   filters: {
     columnTitle: element => {
       const siblingCells = Array.from(element.closest('[class^=mclRow-]').querySelectorAll('[role=gridcell]'));
@@ -83,7 +82,7 @@ export default createInteractor('table cell')({
         if (cell === element) {
           break;
         }
-      }
+      };
 
       const headerAtPosition = Array.from(
         element.closest('[class^=mclContainer-]')
@@ -94,16 +93,28 @@ export default createInteractor('table cell')({
       return headerAtPosition.textContent;
     },
     rowNumber: element => {
-      const headerRowOffset = 2;
+      const headerRowOffset = 1;
       return element.closest('[role=row]').getAttribute('aria-rowindex') - headerRowOffset;
     }
   },
   actions: {
-    click: perform((element) => {
-      element.click();
-    })
+    click: perform((element) => { element.click() })
   }
 });
+```
+You'll notice we created `columnTitle` and `rowNumber` filters that will access its parent elements to get the appropriate value we're looking for. The locator was not specified so it will default to `element.textContent`.
+
+Now let's pretend we're testing a Jeopardy chart where we have multiple tablecells with similar values:
+```js
+import { Page, test } from 'bigtest';
+import { TableCell } from './tablecell';
+
+export default test('Jeopardy chart')
+  .step(Page.visit('/'))
+  .assertion(TableCell('$600', { columnTitle: 'politics' }).exists())
+  .child('host clicks on tablecell', test => test
+    .step(TableCell({ columnTitle: 'politics', rowNumber: 2 }).click())
+    .assertion(TableCell('$600', { columnTitle: 'politics' }).absent()));
 ```
 
 ## Common questions
