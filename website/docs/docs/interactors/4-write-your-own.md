@@ -3,44 +3,49 @@ id: write-your-own
 title: Writing Interactors
 ---
 
-Nearly every app has at least one user interaction that is strange or special, like date pickers, drag and drop areas, masked radio buttons, modals, and more. It is normal to write your own Interactors, where you can make complex interactions as easy to test as a button click.
+Nearly every app has at least one user interaction that is strange or special, like date pickers, drag and drop areas, masked radio buttons, modals, and more. It is normal to write your own Interactors, where you can make complex interactions as easy to test as a simple button click.
 
 In this section, you will learn how to create a new Interactor for any interface and use it in your tests. We will start with a simple example for learning purposes, level up to a more complex example, and then cover common questions.
 
 ## Writing your first interactor
 
-In this example, we will create our own `Button` Interactor, similar to the one found in the [built-in DOM interactors](2-built-in-dom.md), and use it in a test.
+In this example, we will create our own `Button` Interactor to use as an alterantive to the one offered by BigTest as you may have seen in the [`Quick Start`](/interactors/quick-start) section.
 
 There are four things to decide:
-1. What to name and label of the interactor.
-2. Which HTML element to target, like `'input[type=button]'`
+1. What to name and label the interactor
+2. Which HTML element or elements to target
 3. The locator and filters, which helps users be able to narrow down the element they want to reference.
-4. Which actions a test should be able to `perform` on that element, like a `click`
+4. Actions that a test should be able to `perform` on that element, like `click`
 
 Putting this information together, we can make this new Interactor:
 
 ```js
 import { createInteractor, perform } from 'bigtest';
 
-export const Button = createInteractor<HTMLButtonElement>('my-button')({
-  selector: 'input[type=checkbox]',
+export const Button = createInteractor<HTMLButtonElement>('my-button-interactor')({
+  selector: 'button, input[type=button]',
   locator: (element) => element.id,
   filters: {
     value: (element) => element.value
-  }
+  },
   actions: {
     click: perform((element) => { element.click(); })
   }
 });
 ```
 
-The string argument to `createInteractor()` is the name of the interactor your console will print.
+In this example we've configured the selector as `'button, input[type=button]'` which will target both `<button>` and `<input type='button'>` elements.
 
-<!-- example here of console output -->
+The string argument to `createInteractor()` is the name of the interactor your console will print if there's a failing test:
+```
+NoSuchElementError: did not find my-button-interactor "sign-in"
+```
+_An example of the console output when a test is unable to locate the interactor_
+<!-- check what cypress and bigtest platform outputs; i think it might be the same -->
 
-And also note that locators, filters, and actions are optional when creating your own interactor. If you create an interactor without a locator, it will default to `locator: element => element.textContent`.
+And also note that locators, filters, and actions are optional when creating your own interactor. If you create an interactor without a locator, it will default to `locator: element => element.textContent`. The example above has its locator configured as `element.id`; this was just to demonstrate that it does not always have to be `element.textContent` and you can set these properties to anything that suits your needs.
 
-Now import the new interactor and add it to a test:
+Now let's import the new interactor and add it to a test:
 
 ```js
 import { Heading, Page, test } from 'bigtest';
@@ -50,25 +55,17 @@ export default test('login form')
   .step(Page.visit('/'))
   .assertion(Heading('Log In').exists())
   .child('fill username and click button', test => test
-    .step(Button('sign-in-button').click())
+    .step(Button('sign-in-button-id').click())
     .assertion(Heading('You are logged in!').exists()));
 ```
 
-<!-- add cypress and jest here too? -->
-
-In this example, we are passing in `sign-in-button` as the locator which we configured as the `id`.
+In this example using the Bigtest Platform, we are passing in `sign-in-button-id` to the Button because its locator was configured to search for `element.id`.
 
 The [Button](/) interactor from BigTest does a lot more than what we just wrote, but this small example is a good place to start for understanding how to use `createInteractor`.
 
-<!-- Can you think of how you could expand this? Maybe you could add a `check` or `uncheck` action. Maybe for test readability, you would like to have actions named `accept` or `decline` for testing an end user agreement form. It is up to you! -->
-
 Check out the API page of [createInteractor()](/) for more details.
 
-<!-- to do - a more complex example
-
-// i changed this from textContent to id; maybe we can say how often times we would locate by textcontent but in cases where (say if a button is an image), we could change the default locator to something else so that a user can do `Button('id-button')` as opposed to `Button({ id: 'id-button' })`.
-
- -->
+<!-- to do - a more complex example -->
  
 ```js
 import { createInteractor, perform } from '@bigtest/interactor';
