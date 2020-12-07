@@ -64,13 +64,18 @@ The [Button](/) interactor from BigTest does a lot more than what we just wrote,
 
 Check out the API page of [createInteractor()](/) for more details.
 
-<!-- to do - a more complex example -->
+<!-- to do - a more complex example
+
+// i changed this from textContent to id; maybe we can say how often times we would locate by textcontent but in cases where (say if a button is an image), we could change the default locator to something else so that a user can do `Button('id-button')` as opposed to `Button({ id: 'id-button' })`.
+
+ -->
+ 
 ```js
 import { createInteractor, perform } from '@bigtest/interactor';
 
 export default createInteractor('table cell')({
   selector: '[role=gridcell]',
-  locator: element => element.id, // i changed this from textContent to id; maybe we can say how often times we would locate by textcontent but in cases where (say if a button is an image), we could change the default locator to something else so that a user can do `Button('id-button')` as opposed to `Button({ id: 'id-button' })`.
+  locator: element => element.id,
   filters: {
     columnTitle: element => {
       const siblingCells = Array.from(element.closest('[class^=mclRow-]').querySelectorAll('[role=gridcell]'));
