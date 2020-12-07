@@ -64,10 +64,14 @@ Or if you know the filter by itself will output one element, you can omit the lo
 Button({ id: 'submit-button-1' }).exists();
 ```
 
-The filter object can take as many properties as you need it to:
+Also, the filter object can take as many properties as you want it to:
 
 ```js
-Button({ id: 'submit-button-1', title: 'Sign Up Form', visible }).exists();
+Button({
+  id: 'submit-button-1',
+  title: 'Sign Up Form',
+  visible
+}).exists();
 ```
 
 The filters available are defined by each interactor, so look at the API docs for the built-in interactors or the code for your own interactors to know what is available.
@@ -77,13 +81,14 @@ If you take a look at the [button API](/), you'll see that the button interactor
 One limitation is that mutable APIs such as `NodeList` cannot be used in a filter.
 
 ### Asserting with filters
-In the [quick start](/docs/interactors/#making-test-assertions) section, we briefly touch on the assertion methods that are available on all interactors, `exists()` and `absent()`. There is also `has()` which allows you pass in a filter as its argument. Continuing from the last example, this is how we would assert the title against a button:
+In the [quick start](/docs/interactors/#making-test-assertions) we briefly touched on the assertion methods that are available on all interactors, `exists()` and `absent()`. There is also `has()` which allows you pass in a filter as its argument. Continuing from the last example, this is how we would assert the title against a button:
 
 ```js
-Button({ id: 'submit-button-1' }).has({ title: 'Sign Up Form' });
+Button({ id: 'submit-button-1' })
+  .has({ title: 'Sign Up Form' });
 ```
 
-The difference between this approach and using `exists()` is that `exists()` will succeed as long as there is at least one match so you will need to choose the assertion method that is most appropriate for your use case.
+The difference between this approach and using `exists()` is that `exists()` will succeed as long as there is at least one match. You will need to choose the assertion method that is most appropriate for your use case.
 
 Going back to the example of where we have two Buttons with ids `submit-button-1` and `submit-button-2`, say if we were to write a test like:
 
@@ -93,7 +98,7 @@ Button('Submit').has({ id: 'submit-button-1' });
 
 This assertion would fail on account of the button that has the `submit-button-2` id.
 
-And lastly, there is also the `is()` method which is identical to `has()` in functionality. The difference is only in semantics so that your tests can read better. For instance, if we wanted to test if a button is visible, `has()` would work perfectly fine but we could write the test using `is()`:
+Lastly, there is also the `is()` method which is identical to `has()` in functionality. The difference is only in semantics so that your tests can read better. For instance, if we wanted to test if a button is visible, `has()` would work perfectly fine but we could write the test using `is()`:
 
 ```js
 Button({ id: 'submit-button-1' }).is({ visible });
@@ -121,9 +126,8 @@ createInteractor('DatePicker')({
 });
 ```
 
-You can also use the `find` method inside your tests. Going back to the example with two `Submit` buttons, if one button was inside of a `table` and the other one wasn't, you could take this approach:
+You can also use the `find` method in your tests:
 
 ```js
-Table().find(Button('Submit')).click();
+DatePicker().find(Button('31')).click();
 ```
-<!-- this is a horrible example -->
