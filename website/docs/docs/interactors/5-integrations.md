@@ -18,7 +18,7 @@ If you would like to add some examples for your favorite testing tools to these 
 
 ## Jest
 
-When you use interactors in Jest, there are only a few things you need to know to fit them in with the tests you have already written.
+When you use interactors in [Jest](https://jestjs.io/), there are only a few things you need to know to fit them in with the tests you have already written.
 
 First, interactors replace both user actions and test assertions:
 
@@ -47,14 +47,45 @@ Note that the interactors are async, and so you need to mark your test function 
 
 ## Cypress
 
-- do/expect commands automatically registered when importing interactors or creating interactors
-- may need to follow [these] steps for enable esmodules
-- for typescript make sure you add ["types"] in tsconfig
+In Cypress, interactors fit right in, though you may need some slight configuration for ES Modules and TypeScript, which we will cover below.
 
-<!-- 
-- 1-2 sentence intro
-- Code sample
-- What someone will learn how to do
-- Detailed explanation and examples
-- Link to demo 
--->
+Interactors take care of the command registration for you. They are already registered whenever you are importing and creating interactors.
+You can use interactors in Cypress tests like this:
+
+```jsx
+import { Button } from 'bigtest';
+
+describe('Interactors with Cypress', () => {
+    beforeEach(() => cy.visit('/'));
+
+    it('clicks button', () => {
+        cy.do(
+            Button('Sign In').click()
+        );
+        cy.expect([
+            Button('Sign In').absent(),
+            Button('Log Out').exists(),
+        ]);
+    })
+})
+```
+
+### ES Modules
+
+To use `import` and `export` in your tests, your project needs to support [ES Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules). You may already have this set up, but if you do not, you may see a warning like this if you try to `import` anything in your test:
+
+> ParseError: 'import' and 'export' may appear only with 'sourceType: module'
+
+Follow [these steps](https://stackoverflow.com/questions/53650208/cypress-parseerror-import-and-export-may-appear-only-with-sourcetype-modu) to get them working.
+
+### TypeScript
+
+Typescript users should make sure to add `bigtest` to the types array in `tsconfig`:
+
+```
+"types": ["cypress", "bigtest]
+```
+
+See [this article](https://glebbahmutov.com/blog/use-typescript-with-cypress/#transpile-typescript-using-webpack) for more details.
+
+<!-- TODO check this for accuracy and see if these are the correct links. -->
