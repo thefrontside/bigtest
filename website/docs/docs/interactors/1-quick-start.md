@@ -191,9 +191,9 @@ Run your tests. Now you are making an assertion with an interactor!
 
 ### Continue learning about Interactors
 
-Try using more of the [built-in Interactors](#todo) within your tests, such as `Link`, `Checkbox`, `TextField`, and more. 
+Try using more of the [Built-in Interactors](2-built-in-dom.md) within your tests, such as `Link`, `Checkbox`, `TextField`, and more. 
 
-Once you are comfortable with those, you are ready to [write your own Interactors](#todo).
+Once you are comfortable with those, you are ready to [write your own Interactors](4-write-your-own.md).
 
 ### Try out more BigTest features
 
