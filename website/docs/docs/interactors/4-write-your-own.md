@@ -9,7 +9,7 @@ In this section, you will learn how to create a new Interactor for any interface
 
 ## Writing your first interactor
 
-In this example, we will create our own `Button` Interactor to use as an alterantive to the one offered by BigTest as you may have seen in the [`Quick Start`](/interactors/quick-start) section.
+In this example, we will create our own `Button` Interactor to use as an alterantive to the one offered by BigTest as you may have seen in the [`quick start`](/docs/interactors) section.
 
 There are four things to decide:
 1. What to name and label the interactor
