@@ -64,7 +64,7 @@ Click on the tabs below to see some examples within different testing frameworks
   ]}>
   <TabItem value="jest">
 
-  ```jsx
+  ```js
   import React from 'react';
   import { render } from '@testing-library/react';
   import App from './App';
@@ -84,7 +84,7 @@ Click on the tabs below to see some examples within different testing frameworks
   </TabItem>
   <TabItem value="cypress">
 
-  ```jsx
+  ```js
   import { Button } from 'bigtest';
 
   describe('Interactors with Cypress', () => {
@@ -119,7 +119,7 @@ Make sure to substitute "Sign In" with your own button text.
 
 Now, run your tests! Congratulations, you used your first Interactor.
 
-<!-- we could leave a side note here and give a shout out to the bigtest platform because this is the first place people will see it and leave a link to the bigtest platform docs -->
+> There's more to BigTest than Interactors. BigTest can also run your tests on any _real_ browser! We have built a new integrated platform from the ground up to help you test more with less effort. And yes, it's free and Open Source too! [Check it out](/platform), and let us know what you think.
 
 ## Making test assertions
 
@@ -199,10 +199,6 @@ This will create a project and output instructions in the console on how you can
 Try using more of the [Built-in Interactors](/docs/interactors/built-in-dom) within your tests, such as `Link`, `Checkbox`, `TextField`, and more. 
 
 Once you are comfortable with those, you are ready to [write your own Interactors](/docs/interactors/write-your-own).
-
-### Try out more BigTest features
-
-There's more to BigTest than Interactors. BigTest can also run your tests on any _real_ browser! We have built a new integrated platform from the ground up to help you test more with less effort. And yes, it's free and Open Source too! Check it out, and let us know what you think.
 
 ### Join the BigTest community
 
