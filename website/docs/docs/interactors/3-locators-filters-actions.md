@@ -13,8 +13,6 @@ Locators are the simplest way to find a specific element in a user interface.
 
 Whenever you use an Interactor in a test, you can pass it a string, like "Submit" in the example below. This string argument is used by the Locator.
 
-<!-- i'm not sure if we should say the string argument is being used by the locator or if the locator is using the string to search -->
-
 ```js
 Button('Submit').exists();
 ```
@@ -72,13 +70,34 @@ The filter object can take as many properties as you need it to:
 Button({ id: 'submit-button-1', title: 'Sign Up Form', visible }).exists();
 ```
 
-If you take a look at the [button API](/), you'll see that the button interactor provides five different filters. You can add as many filters as you need to your own Interactors, as covered in the next article.
-
-### What can you use for a filter?
-
 The filters available are defined by each interactor, so look at the API docs for the built-in interactors or the code for your own interactors to know what is available.
 
+If you take a look at the [button API](/), you'll see that the button interactor provides five different filters. You can add as many filters as you need to your own Interactors, as covered in the next article.
+
 One limitation is that mutable APIs such as `NodeList` cannot be used in a filter.
+
+### Asserting with filters
+In the [Quick Start](/interactors/quick-start#making-test-assertions) section, we briefly touch on the assertion methods that are available on all interactors, `exists()` and `absent()`. There is also `has()` which allows you pass in a filter as its argument. Continuing from the last example, this is how we would assert the title against a button:
+
+```js
+Button({ id: 'submit-button-1' }).has({ title: 'Sign Up Form' });
+```
+
+The difference between this approach and using `exists()` is that `exists()` will succeed as long as there is at least one match so you will need to choose the assertion method that is most appropriate for your use case.
+
+Going back to the example of where we have two Buttons with ids `submit-button-1` and `submit-button-2`, say if we were to write a test like:
+
+```js
+Button('Submit').has({ id: 'submit-button-1' });
+```
+
+This assertion would fail on account of the button that has the `submit-button-2` id.
+
+And lastly, there is also the `is()` method which is identical to `has()` in functionality. The difference is only in semantics so that your tests can read better. For instance, if we wanted to test if a button is visible, `has()` would work perfectly fine but we could write the test using `is()`:
+
+```js
+Button({ id: 'submit-button-1' }).is({ visible });
+```
 
 ## Actions
 
@@ -88,7 +107,7 @@ Actions are events that simulate real user interaction. In this example, the Act
 Button('Submit').click();
 ```
 
-The `Button` Interactor created by BigTest comes with `click`, `focus`, and `blur` actions. You can add more actions to suit your needs when you create your own Interactors, which we will cover in the next section.
+The `Button` Interactor created by BigTest comes with `click`, `focus`, and `blur` actions. You can add more actions to suit your needs when you create your own Interactors.
 
 ## find
 
