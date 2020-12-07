@@ -17,7 +17,7 @@ These are the default interactors that are offered out-of-the-box with BigTest:
 - [Select](/)
 - [TextField](/)
 
-As you might have seen in the [Quick Start](1-quick-start.md) section, you can import any of the interactors directly from the `bigtest` package:
+As you might have seen on the [quick start](/docs/interactors/) page, you can import any of the interactors directly from the `bigtest` package:
 
 ```js
 import { 
@@ -28,7 +28,7 @@ import {
 
 Follow the links to the API documentation above for how to use each of these interactors to test your app.
 
-If your app has unique interfaces that are not covered by these built-in tools, you are encouraged to [write your own interactors](4-write-your-own.md).
+If your app has unique interfaces that are not covered by these built-in tools, you are encouraged to [write your own interactors](/docs/interactors/write-your-own).
 
 <!-- ### Page Interactor -->
 <!-- 
