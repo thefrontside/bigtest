@@ -9,7 +9,7 @@ In this section, you will learn how to create a new Interactor for any interface
 
 ## Writing your first interactor
 
-In this example, we will create our own `Button` Interactor, similar to the one found in the [built-in DOM interactors](/docs/interactors/built-in-dom), and use it in a test.
+In this example, we will create our own `Button` Interactor, similar to the one found in the [built-in DOM interactors](2-built-in-dom.md), and use it in a test.
 
 There are four things to decide:
 1. What to name and label of the interactor.
