@@ -8,14 +8,16 @@ module.exports = {
   organizationName: 'thefrontside',
   projectName: 'bigtest',
   themeConfig: {
-    disableSwitch: true,
-    respectPrefersColorScheme: true,
-
+    colorMode: {
+      disableSwitch: true,
+      respectPrefersColorScheme: true,
+    },
     navbar: {
       title: '',
       logo: {
         alt: 'BigTest',
         src: 'images/bigtest-logo@2x.png',
+        srcDark: 'images/logo-dark@2x.png'
       },
       items: [
         {
@@ -34,6 +36,11 @@ module.exports = {
           label: 'GitHub',
           position: 'right',
         },
+        {
+          href: 'https://discord.gg/r6AvtnU',
+          label: 'Discord',
+          position: 'right',
+        }
       ],
     },
     footer: {

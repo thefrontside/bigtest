@@ -39,11 +39,11 @@ import TabItem from '@theme/TabItem';
 
   </TabItem>
   <TabItem value="yarn">
-  
+
   ```
   $ yarn add bigtest --dev
   ```
-  
+
   </TabItem>
 </Tabs>
 
@@ -196,7 +196,11 @@ This will create a project and output instructions in the console on how you can
 
 ### Continue learning about Interactors
 
-Try using more of the [Built-in Interactors](/docs/interactors/built-in-dom) within your tests, such as `Link`, `Checkbox`, `TextField`, and more. 
+Try using more of the [Built-in Interactors](2-built-in-dom.md) within your tests, such as `Link`, `Checkbox`, `TextField`, and more.
+
+Once you are comfortable with those, you are ready to [write your own Interactors](4-write-your-own.md).
+
+### Try out more BigTest features
 
 Once you are comfortable with those, you are ready to [write your own Interactors](/docs/interactors/write-your-own).
 
