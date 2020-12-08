@@ -22,9 +22,10 @@
   margin: 40px auto;
 }
 
-@media screen and (max-width: 966px) {
+@media screen and (max-width: 997px) {
   .heroContainer {
     display: block;
+    padding-top: 40px;
   }
   .heroImage {
     display: none;

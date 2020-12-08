@@ -26,6 +26,7 @@
   --ifm-code-font-size: 0.80em;
   --ifm-navbar-link-color: var(--ifm-color-primary);
   --fs-pink: #f74d7b;
+  --ifm-link-hover-decoration: none;
 }
 
 html[data-theme='dark'] {
@@ -98,14 +99,18 @@ body {
   position: relative;
   font-weight: bold;
 }
-.navbar__link--active:before {
-  content: '';
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(-90deg, #26abe8, #f74d7b);
-  position: absolute;
-  bottom: -21px;
-  left: 0;
+
+
+@media screen and (min-width: 997px) {
+  .navbar__link--active:before {
+    content: '';
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(-90deg, #26abe8, #f74d7b);
+    position: absolute;
+    bottom: -21px;
+    left: 0;
+  }
 }
 
 .main-wrapper {
@@ -122,7 +127,7 @@ body {
   width: 100%;
 }
 
-@media screen and (min-width: 966px) {
+@media screen and (min-width: 997px) {
   .docMainContainer_node_modules-\@docusaurus-theme-classic-lib-theme-DocPage- {
     width: calc(100% - 300px);
   }
@@ -193,4 +198,34 @@ body {
 }
 .table-of-contents__link--active:before {
   background: linear-gradient(0deg, #26abe8, #f74d7b);
+}
+
+.footer {
+  background: none;
+  padding: 0;
+  font-size: 20px;
+  text-align: center;
+}
+
+.footer .text--center {
+  font-size: 15px;
+  text-transform: uppercase;
+  margin-top: 40px;
+}
+
+.footer__link-item {
+  text-decoration: none;
+}
+
+.footer .container {
+  border-top: 1px solid var(--ifm-toc-border-color);
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.footer__title {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.8rem;
 }
