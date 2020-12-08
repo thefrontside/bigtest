@@ -138,7 +138,7 @@ describe('orchestrator', () => {
 
       await actions.fork(
         actions.atom.slice('appService', 'status').once(status => {
-          return status.type === 'ready'
+          return status.type === 'available'
         })
       );
     });

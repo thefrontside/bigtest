@@ -81,7 +81,7 @@ export type AppServiceStatus =
       type: "started";
     }
   | {
-      type: "ready";
+      type: "available";
     }
   | {
       type: "stopping";
@@ -103,6 +103,10 @@ export type ManifestGeneratorStatus = {
   type: "pending" | "ready";
 };
 
+export type ManifestServerStatus = {
+  type: 'unstarted' | 'starting' | 'started';
+}
+
 export interface ManifestGeneratorOptions {
   files?: string[];
   mode: 'idle' | 'watch' | 'build';
@@ -110,10 +114,14 @@ export interface ManifestGeneratorOptions {
 };
 
 export type ConnectionStatus = {
-  type: "pending" | "ready";
+  type: 'unstarted' | 'starting' | 'started';
 };
 
 export type ProxyStatus = {
+  type: 'unstarted' | 'starting' | 'started';
+}
+
+export type CommandStatus = {
   type: 'unstarted' | 'starting' | 'started';
 }
 
@@ -127,13 +135,15 @@ export type ProxyOptions = {
 
 export type OrchestratorState = {
   agents: Record<string, AgentState>;
-  manifestGenerator: ServiceState<ManifestGeneratorStatus, ManifestGeneratorOptions>;
   manifest: Manifest;
   bundler: BundlerState;
   testRuns: Record<string, TestRunState>;
+  manifestGenerator: ServiceState<ManifestGeneratorStatus, ManifestGeneratorOptions>;
+  manifestServer: ServiceState<ManifestServerStatus, {}>;
   appService: ServiceState<AppServiceStatus, AppOptions>;
   proxyService: ServiceState<ProxyStatus, ProxyOptions>;
   connectionService: ServiceState<ConnectionStatus, {}>;
+  commandService: ServiceState<CommandStatus, {}>;
 }
 
 declare const o: OrchestratorState;

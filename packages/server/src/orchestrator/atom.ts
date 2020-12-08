@@ -51,7 +51,19 @@ export const createOrchestratorAtom = (project: OrchestratorAtomOptions) => {
     },
     connectionService: {
       status: {
-        type: 'pending',
+        type: 'unstarted',
+      },
+      options: {}
+    },
+    commandService: {
+      status: {
+        type: 'unstarted',
+      },
+      options: {}
+    },
+    manifestServer: {
+      status: {
+        type: 'unstarted',
       },
       options: {}
     },

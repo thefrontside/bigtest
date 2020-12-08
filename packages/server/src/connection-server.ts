@@ -25,10 +25,13 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
   let [tx, rx] = createDuplexChannel<Outgoing, Incoming>({ maxListeners: 100000 });
 
   return yield resource({ channel: tx }, function*() {
-    let handler: ChainableSubscription<AgentConnection, void> = yield createAgentHandler(options.port);
     let statusSlice = options.atom.slice('connectionService', 'status');
 
-    statusSlice.set({ type: 'ready' });
+    statusSlice.set({ type: 'starting' });
+
+    let handler: ChainableSubscription<AgentConnection, void> = yield createAgentHandler(options.port);
+
+    statusSlice.set({ type: 'started' });
 
     while(true) {
       let connection: AgentConnection = yield handler.expect();
