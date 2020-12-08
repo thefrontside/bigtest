@@ -21,7 +21,7 @@ function populate(message) {
         version: '0.0.0',
         private: true,
         dependencies: {
-          'bigtest-sample': '*'
+          'bigtest-sample': '0.0.1-17e2eb7a'
         }
       };
       fs.writeFileSync(
@@ -46,7 +46,7 @@ function migrate(messages) {
     const hard_list = ['cypress/', 'public/', 'src/', 'bigtest.json', 'cypress.json', 'package.json']; 
     hard_list.forEach(file => {
       if(file==='package.json'){
-        fs.renameSync(`${SOURCE_DIR}/bin/${file}`, `${TARGET_DIR}/${file}`)
+        fs.renameSync(`${SOURCE_DIR}/bin/pkg.json`, `${TARGET_DIR}/${file}`)
       } else {
         fs.renameSync(`${SOURCE_DIR}/${file}`, `${TARGET_DIR}/${file}`);
       };
@@ -77,30 +77,28 @@ function install(messages) {
   });
 };
 
-function abort(messages, err) {
-  if(err){
-    console.log(chalk`\n{red Error}: {yellow ${err}}\n`);
+function abort(err, clean, messages) {
+  console.log(chalk`\n{red Error}: {yellow ${err}}\n`);
+  if(!clean) {
+    console.log(messages);
   }
-  if (messages) {
+  if (clean) {
     let loading = animate(messages);
     loading.start();
     rmrf.sync(TARGET_DIR);
     loading.stop();
-  } else {
-    console.log(message.abort);
   }
   process.exit(1);
 }
 
 async function run() { 
   await populate(message.creating_dir)
-    .catch(err => abort(undefined, err));
+    .catch(err => abort(err, false, message.abort));
   await install(message.downloading_repo)
-    .catch(err => abort(message.abort, err));
-  await migrate(message.organizing_files)
-    .catch(() => abort(message.abort));
+    .catch(err => abort(err, true, message.deleting));
+  await migrate(message.organizing_files);
   await install(message.installing_dep)
-    .catch(err => abort(message.abort, err));
+    .catch(err => abort(err, true, message.deleting));
   console.log(message.success);
 };
 
