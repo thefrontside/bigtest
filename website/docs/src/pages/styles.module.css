@@ -5,17 +5,92 @@
  * and scoped locally.
  */
 
-.heroBanner {
-  padding: 4rem 0;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
+.heroContainer {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.heroText {
+  width: 40%;
+  flex-shrink: 0;
+}
+
+.heroImage {
+  width: 50%;
+  margin: 40px auto;
 }
 
 @media screen and (max-width: 966px) {
-  .heroBanner {
-    padding: 2rem;
+  .heroContainer {
+    display: block;
   }
+  .heroImage {
+    display: none;
+  }
+  .heroText {
+    width: 100%;
+  }
+  .heroImage {
+    width: 100%;
+  }
+}
+
+.heroHome {
+  box-sizing: border-box;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-image: url("/images/decor-color-blur-100-p-1080.jpeg");
+  background-position: 100% 50%;
+  background-size: 53%;
+  background-repeat: no-repeat;
+}
+
+.heroHeading {
+  font-family: proxima-nova, sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+  margin-bottom: 34px;
+  color: var(--ifm-heading-color);
+  font-size: 50px;
+  line-height: 55px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.heroSubheader {
+  font-family: proxima-nova, sans-serif;
+  box-sizing: border-box;
+  margin-top: 0;
+  margin-bottom: 40px;
+  color: var(--ifm-sub-heading-color);
+  font-size: 30px;
+  line-height: 35px;
+}
+
+.ctaButton {
+  margin: 0;
+  background-color: #26abe8;
+  color: white;
+  border: 0;
+  line-height: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 10px 35px;
+  border-radius: 50px;
+  font-size: 23px;
+  font-weight: 700;
+  display: inline-block;
+  padding-bottom: 10px;
+  background-image: url("/images/decor-button-twist2x.png"),
+    linear-gradient(90deg, #26abe8, #f74d7b);
+  background-position: -15px -15px, 0px 0px;
+  background-size: 317px, auto;
+}
+.ctaButton:hover {
+  color: white;
+  text-decoration: none;
 }
 
 .buttons {
@@ -24,14 +99,51 @@
   justify-content: center;
 }
 
-.features {
+.feature {
   display: flex;
   align-items: center;
-  padding: 2rem 0;
   width: 100%;
+  max-width: 1045px;
+  padding: var(--ifm-spacing-horizontal);
+  margin: 40px auto;
 }
 
 .featureImage {
-  height: 200px;
-  width: 200px;
+  width: 30%;
+  flex-shrink: 0;
+}
+
+.featureText {
+  margin-left: 40px;
+}
+
+.featureHeading {
+  font-size: 25px;
+  line-height: 30px;
+  font-weight: bolder;
+}
+
+@media screen and (max-width: 500px) {
+  .feature {
+    display: block;
+  }
+  .featureImage {
+    width: 100%;
+    max-width: 250px;
+  }
+  .featureText {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+.textColumn {
+  max-width: 711px;
+  padding-right: 33px;
+  padding-left: 33px;
+  margin: 60px auto;
+}
+
+.topDecoration {
+  margin-bottom: 40px;
 }
