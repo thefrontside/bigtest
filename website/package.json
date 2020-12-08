@@ -7,13 +7,12 @@
     "build": "docusaurus build && mkdir -p ./public/bigtest && rsync -a ./build/* ./public/bigtest && rm -rf ./build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
-    "serve": "docusaurus serve",
-    "postinstall": "patch-package"
+    "serve": "docusaurus serve"
   },
   "dependencies": {
     "@docusaurus/core": "2.0.0-alpha.69",
     "@docusaurus/preset-classic": "2.0.0-alpha.69",
-    "@mdx-js/react": "2.0.0-next.8",
+    "@mdx-js/react": "^1.5.8",
     "clsx": "^1.1.1",
     "docusaurus-plugin-typedoc": "^0.4.0",
     "react": "^16.8.4",
@@ -32,9 +31,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "patch-package": "^6.2.2",
-    "postinstall-postinstall": "^2.1.0"
   }
 }
