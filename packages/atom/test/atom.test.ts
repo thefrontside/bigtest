@@ -104,19 +104,19 @@ describe('@bigtest/atom createAtom', () => {
     });
 
     it('returns one level deep', () => {
-      let result = subject.slice()('agents');
+      let result = subject.slice('agents');
 
       expect(result.get()).toEqual(state.agents);
     });
 
     it('returns a slice of the Atom with the given path', async () => {
-      let result = subject.slice()('agents', "agent-2", "status");
+      let result = subject.slice('agents', "agent-2", "status");
 
       expect(result.get()).toEqual("running");
     });
 
     it('set', () => {
-      let result = subject.slice()('agents', "agent-2", "status");
+      let result = subject.slice('agents', "agent-2", "status");
 
       result.set('errored');
 

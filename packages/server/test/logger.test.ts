@@ -18,6 +18,6 @@ describe('logger', () => {
     
     actions.fork(createLogger({ atom, out: logger }));
     
-    atom.slice()('bundler').update(() => ({ status: 'ERRORED', error: 'blah' } as any));
+    atom.slice('bundler').update(() => ({ status: 'ERRORED', error: 'blah' } as any));
   });
 })

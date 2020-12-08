@@ -13,14 +13,14 @@ import { Slice } from '@bigtest/atom';
 import { assert } from 'assert-ts';
 
 export const proxyServer: Service<ProxyStatus, ProxyOptions> = (serviceSlice) => {
-  let appOptions = serviceSlice.slice()('options', 'appOptions');
+  let appOptions = serviceSlice.slice('options', 'appOptions');
 
   return restartable(appOptions, startProxyServer(serviceSlice));
 }
 
 export const startProxyServer = (serviceSlice: Slice<ServiceState<ProxyStatus, ProxyOptions>>) => function* ({ url: target }: AppOptions): Operation {
-  let proxyStatus = serviceSlice.slice()('status');
-  let proxyConfig = serviceSlice.slice()('options').get();
+  let proxyStatus = serviceSlice.slice('status');
+  let proxyConfig = serviceSlice.slice('options').get();
 
   function* handleRequest(proxyRes: http.IncomingMessage, req: http.IncomingMessage, res: http.ServerResponse): Operation {
     console.debug('[proxy]', 'start', req.method, req.url);

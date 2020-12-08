@@ -26,7 +26,7 @@ async function loadManifest() {
 
 describe('manifest-generator', () => {
   let atom = createOrchestratorAtom(getTestProjectOptions());
-  let manifestGeneratorState = atom.slice()('manifestGenerator');
+  let manifestGeneratorState = atom.slice('manifestGenerator');
 
   manifestGeneratorState.update(prev => ({
     ...prev,
@@ -53,7 +53,7 @@ describe('manifest-generator', () => {
       let manifest: Test;
 
       beforeEach(async () => {
-        await actions.fork(atom.slice()('manifestGenerator', 'status').once(({ type }) => type === 'ready'));
+        await actions.fork(atom.slice('manifestGenerator', 'status').once(({ type }) => type === 'ready'));
         manifest = await loadManifest();
       });
 
@@ -69,7 +69,7 @@ describe('manifest-generator', () => {
 
       beforeEach(async () => {
         await writeFile(join(TEST_DIR, "/test3.t.js"), "module.exports = { default: { description: 'test' } };");
-        await actions.fork(atom.slice()('manifestGenerator', 'status').once(({ type }) => type === 'ready'));
+        await actions.fork(atom.slice('manifestGenerator', 'status').once(({ type }) => type === 'ready'));
         manifest = await loadManifest();
       });
 
@@ -86,7 +86,7 @@ describe('manifest-generator', () => {
 
       beforeEach(async () => {
         await unlink(join(TEST_DIR, "/test2.t.js"));
-        await actions.fork(atom.slice()('manifestGenerator', 'status').once(({ type }) => type === 'ready'));
+        await actions.fork(atom.slice('manifestGenerator', 'status').once(({ type }) => type === 'ready'));
         manifest = await loadManifest();
       });
 
@@ -100,7 +100,7 @@ describe('manifest-generator', () => {
   describe('not watching', () => {
     beforeEach(async() => {
       let atom = createOrchestratorAtom(getTestProjectOptions());
-      let manifestGeneratorState = atom.slice()('manifestGenerator');
+      let manifestGeneratorState = atom.slice('manifestGenerator');
 
       manifestGeneratorState.update(prev => ({
         ...prev,
@@ -113,7 +113,7 @@ describe('manifest-generator', () => {
 
       actions.fork(manifestGenerator(manifestGeneratorState));
 
-      await actions.fork(atom.slice()('manifestGenerator', 'status').once(({ type }) => type === 'ready'));
+      await actions.fork(atom.slice('manifestGenerator', 'status').once(({ type }) => type === 'ready'));
     });
 
     describe('starting', () => {

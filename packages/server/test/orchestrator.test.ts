@@ -129,7 +129,7 @@ describe('orchestrator', () => {
       actions.updateApp({ url: `http://localhost:${port}` });
 
       await actions.fork(
-        actions.atom.slice()('appService', 'status').once(status => {
+        actions.atom.slice('appService', 'status').once(status => {
           return ['started', 'exited'].includes(status.type);
         })
       );

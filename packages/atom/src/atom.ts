@@ -72,7 +72,7 @@ export function createAtom<S>(init?: S): Atom<S> {
     states.setMaxListeners(value);
   }
 
-  let sliceMaker = <A>(parentOptional: Op.Optional<S, A>) => () => <P extends keyof S>(...path: P[]): Sliceable<S[P]> => {
+  let sliceMaker = <A>(parentOptional: Op.Optional<S, A>) => <P extends keyof S>(...path: P[]): Sliceable<S[P]> => {
     assert(Array.isArray(path) && path.length >  0, "slice expects a rest parameter with at least 1 element");
 
     let getters = [

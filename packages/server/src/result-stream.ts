@@ -28,7 +28,7 @@ export interface StreamerTestOptions extends StreamerAgentOptions {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function* streamResults(type: string, slice: Slice<any>, publish: Publish, options: StreamerOptions): Operation<void> {
-  let statusSlice = slice.slice()('status');
+  let statusSlice = slice.slice('status');
   let previousStatus = undefined;
   let currentStatus = statusSlice.get();
 
@@ -60,14 +60,14 @@ function* streamResults(type: string, slice: Slice<any>, publish: Publish, optio
 
 function* streamTestRun(slice: Slice<TestRunState>, publish: Publish, options: StreamerOptions): Operation<void> {
   for(let agentId in slice.get().agents) {
-    let testRunAgentSlice = slice.slice()('agents', agentId);
+    let testRunAgentSlice = slice.slice('agents', agentId);
     yield fork(streamTestRunAgent(testRunAgentSlice, publish, { agentId, ...options }));
   };
   yield streamResults('testRun', slice, publish, options);
 }
 
 function* streamTestRunAgent(slice: Slice<TestRunAgentState>, publish: Publish, options: StreamerAgentOptions): Operation<void> {
-  let testResultSlice = slice.slice()('result');
+  let testResultSlice = slice.slice('result');
 
   yield fork(streamTest(testResultSlice, publish, {
     ...options,
@@ -78,21 +78,21 @@ function* streamTestRunAgent(slice: Slice<TestRunAgentState>, publish: Publish, 
 
 function* streamTest(slice: Slice<TestResult>, publish: Publish, options: StreamerTestOptions): Operation<void> {
   for(let [index, step] of Object.entries(slice.get().steps)) {
-    let stepSlice = slice.slice()('steps', Number(index));
+    let stepSlice = slice.slice('steps', Number(index));
     yield fork(streamStep(stepSlice, publish, {
       ...options,
       path: options.path.concat(`${index}:${step.description}`),
     }));
   }
   for(let [index, assertion] of Object.entries(slice.get().assertions)) {
-    let assertionSlice = slice.slice()('assertions', Number(index));
+    let assertionSlice = slice.slice('assertions', Number(index));
     yield fork(streamAssertion(assertionSlice, publish, {
       ...options,
       path: options.path.concat(assertion.description),
     }));
   }
   for(let [index, child] of Object.entries(slice.get().children)) {
-    let childSlice = slice.slice()('children', Number(index));
+    let childSlice = slice.slice('children', Number(index));
     yield fork(streamTest(childSlice, publish, {
       ...options,
       path: options.path.concat(child.description),

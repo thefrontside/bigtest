@@ -37,7 +37,7 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
       let connection: AgentConnection = yield handler.expect();
       yield spawn(function*() {
         console.log(`[connection] connected ${connection.agentId}`);
-        let agent = options.atom.slice()('agents', connection.agentId);
+        let agent = options.atom.slice('agents', connection.agentId);
 
         agent.set({ ...connection.data, agentId: connection.agentId });
 

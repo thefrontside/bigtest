@@ -39,7 +39,7 @@ export class AgentRunner implements Runner {
   };
 
   async *subscribe(id: string): AsyncIterator<TestEvent> {
-    let slice = this.options.atom.slice()('testRuns', id);
+    let slice = this.options.atom.slice('testRuns', id);
 
     let scope = this.options.context.spawn(undefined) as SpawnContext;
 
@@ -62,9 +62,9 @@ export class AgentRunner implements Runner {
   private *_run({ testRunId, files }: RunOptions): Operation<void> {
     console.debug('[command processor] running test', testRunId);
     let stepTimeout = 60_000;
-    let testRunSlice = this.options.atom.slice()('testRuns', testRunId);
+    let testRunSlice = this.options.atom.slice('testRuns', testRunId);
 
-    let bundlerSlice = this.options.atom.slice()('bundler');
+    let bundlerSlice = this.options.atom.slice('bundler');
 
     let bundler: BundlerState = yield bundlerSlice.once((state) => state.type === 'GREEN' || state.type === 'ERRORED');
 
@@ -91,7 +91,7 @@ export class AgentRunner implements Runner {
         return;
       }
 
-      let appStatus = this.options.atom.slice()('appService', 'status').get();
+      let appStatus = this.options.atom.slice('appService', 'status').get();
 
       if(appStatus.type === 'exited') {
         testRunSlice.set({

@@ -15,7 +15,7 @@ describe('@bigtest/atom Slice', () => {
 
     before(() => {
       atom = createAtom();
-      slice = atom.slice()('outer', 'data');
+      slice = atom.slice('outer', 'data');
     });
 
     it('should not blow up with get', () => {
@@ -33,7 +33,7 @@ describe('@bigtest/atom Slice', () => {
 
     beforeEach(() => {
       atom = createAtom({ outer: { data: "baz" } });
-      slice = atom.slice()('outer');
+      slice = atom.slice('outer');
     });
 
     it('should return the slice data', () => {
@@ -62,8 +62,8 @@ describe('@bigtest/atom Slice', () => {
 
     beforeEach(() => {
       atom = createAtom({ outer: { data: "baz" } });
-      slice1 = atom.slice()('outer');
-      slice2 = slice1.slice()('data');
+      slice1 = atom.slice('outer');
+      slice2 = slice1.slice('data');
     })
 
     it('further slices the slice', async () => {
@@ -98,7 +98,7 @@ describe('@bigtest/atom Slice', () => {
 
     beforeEach(() => {
       atom = createAtom({ data: 'foo' });
-      slice = atom.slice()('data');
+      slice = atom.slice('data');
     });
 
     describe('when initial state matches', () => {
@@ -138,7 +138,7 @@ describe('@bigtest/atom Slice', () => {
 
     beforeEach(async () => {
       atom = createAtom({ data: 'foo' });
-      slice = atom.slice()('data');
+      slice = atom.slice('data');
       subscription = await spawn(subscribe(slice));
 
       slice.update(() => 'bar');
@@ -161,7 +161,7 @@ describe('@bigtest/atom Slice', () => {
 
     beforeEach(async () => {
       atom = createAtom({ data: 'foo' });
-      slice = atom.slice()('data');
+      slice = atom.slice('data');
       result = [];
 
       subscription = await spawn(subscribe(slice));
@@ -217,7 +217,7 @@ describe('@bigtest/atom Slice', () => {
 
     beforeEach(() => {
       atom = createAtom(subject);
-      slice = atom.slice()('testRuns', 'testRunId');
+      slice = atom.slice('testRuns', 'testRunId');
 
       slice.set({ 
         testRunId: 'test-run-1',
@@ -257,23 +257,23 @@ describe('@bigtest/atom Slice', () => {
     });
   
     it('should resolve deeply nested properties with slice call at each step', () => {
-      expect(slice.slice()('agents').slice()('agent-1').slice()('result').slice()('steps').slice()(0).slice()('status').get()).toBe('pending');
+      expect(slice.slice('agents').slice('agent-1').slice('result').slice('steps').slice(0).slice('status').get()).toBe('pending');
     });
 
     it('should resolve deeply nested properties with path syntax', () => {
-      expect(slice.slice()('agents', 'agent-1', 'result', 'steps', 1, 'status').get()).toBe('running');
+      expect(slice.slice('agents', 'agent-1', 'result', 'steps', 1, 'status').get()).toBe('running');
     });
 
     describe('removal', () => {
       it('should remove a a record', () => {
-        let agent = slice.slice()('agents', 'agent-1');
+        let agent = slice.slice('agents', 'agent-1');
 
         // precondition
-        expect(slice.slice()('agents', 'agent-1').get().agent).toBeTruthy();
+        expect(slice.slice('agents', 'agent-1').get().agent).toBeTruthy();
         
         agent.remove();
 
-        expect(slice.slice()('agents', 'agent-1').get()).toBeUndefined();
+        expect(slice.slice('agents', 'agent-1').get()).toBeUndefined();
       })
     });
 
@@ -322,7 +322,7 @@ describe('@bigtest/atom Slice', () => {
         }
       });
 
-      slice = atom.slice()('agents', 'agent-1', 'result', 'children', 0, 'status');
+      slice = atom.slice('agents', 'agent-1', 'result', 'children', 0, 'status');
     });
 
     describe('.get()', () => {

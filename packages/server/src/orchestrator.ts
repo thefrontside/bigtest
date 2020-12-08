@@ -45,7 +45,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     launch: options.project.launch
   });
 
-  yield fork(proxyServer(options.atom.slice()('proxyService')));
+  yield fork(proxyServer(options.atom.slice('proxyService')));
 
   let connectionServer = yield createConnectionServer({
     atom: options.atom,
@@ -94,7 +94,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield function* () {
     yield fork(function* () {
-      yield options.atom.slice()("proxyService", "status").once(({ type }) => type === 'started');
+      yield options.atom.slice("proxyService", "status").once(({ type }) => type === 'started');
 
       console.debug('[orchestrator] proxy server ready');
     });

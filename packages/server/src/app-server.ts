@@ -8,7 +8,7 @@ import { restartable } from './effection/restartable'
 import { assert } from 'assert-ts';
 
 export const appServer: Service<AppServiceStatus, AppOptions> = (serviceSlice) => {
-  let appOptions = serviceSlice.slice()('options');
+  let appOptions = serviceSlice.slice('options');
 
   return restartable(appOptions, startApp(serviceSlice));
 }

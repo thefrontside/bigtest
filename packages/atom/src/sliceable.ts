@@ -5,7 +5,7 @@ export interface Slice<S> extends Subscribable<S,undefined> {
   get(): S;
   set(value: S): void;
   update(fn: (state: S) => S): void;
-  slice(): Sliceable<S>;
+  slice: Sliceable<S>;
   once(predicate: (state: S) => boolean): Operation<S>;
   remove(): void;
   over(fn: (value: S) => S): void;
@@ -21,7 +21,7 @@ export type Sliceable<A> = {
   * for every level deep we want to go in the slice there will need to be an overload 
   * with an argument for each of the string paths
   * 
-  * e.g. atom.slice()('agents', agentId);  // 2 levels deep
+  * e.g. atom.slice('agents', agentId);  // 2 levels deep
   * 
   * There must be a matching overload
   * 
