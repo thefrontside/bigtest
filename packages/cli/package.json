@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/cli",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "Use BigTest",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",

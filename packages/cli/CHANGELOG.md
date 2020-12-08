@@ -1,5 +1,11 @@
 # @bigtest/cli
 
+## 0.16.1
+
+### Patch Changes
+
+- 15015975: Fix broken CLI package distributions
+
 ## 0.16.0
 
 ### Minor Changes
