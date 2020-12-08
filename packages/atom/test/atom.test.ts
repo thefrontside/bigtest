@@ -43,7 +43,8 @@ describe('@bigtest/atom createAtom', () => {
 
   describe('Atom with none', () => {
     beforeEach(() => {
-      subject = createAtom();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      subject = createAtom(undefined as any);
     });
 
     describe('.get()', () => {
@@ -259,7 +260,8 @@ describe('@bigtest/atom createAtom', () => {
     let subscription: ChainableSubscription<Subject, undefined>;
 
     beforeEach(async () => {
-      subject = createAtom()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      subject = createAtom(undefined as any)
       result = [];
       let bar = { foo: 'bar' };
       let baz = { foo: 'baz' };

@@ -14,7 +14,8 @@ describe('@bigtest/atom Slice', () => {
     let slice: Slice<string>;
 
     before(() => {
-      atom = createAtom();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      atom = createAtom(undefined as any);
       slice = atom.slice('outer', 'data');
     });
 

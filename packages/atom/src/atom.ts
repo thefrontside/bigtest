@@ -7,11 +7,11 @@ import { Operation } from 'effection';
 import { Atom, Sliceable } from './sliceable';
 import { assert } from  'assert-ts';
 
-export function createAtom<S>(init?: S): Atom<S> {
+export function createAtom<S>(init: S): Atom<S> {
   let initialState = init;
   let lens = pipe(Op.id<O.Option<S>>(), Op.some);
   let state: O.Option<S> = O.fromNullable(init);
-  let states = new Channel<S | undefined>();
+  let states = new Channel<S>();
 
   function getOption(): O.Option<S> {
     return pipe(
@@ -20,14 +20,14 @@ export function createAtom<S>(init?: S): Atom<S> {
     );
   }
 
-  function get(): S | undefined {
+  function get(): S {
     return pipe(
       getOption(),
       O.toUndefined
-    );
+    ) as S;
   }
 
-  function set(value: S | undefined): void {
+  function set(value: S): void {
     let current = getOption();
 
     if(value === O.toUndefined(current)) {
@@ -40,21 +40,21 @@ export function createAtom<S>(init?: S): Atom<S> {
       lens.set(value as S),
     );
 
-    states.send(O.toUndefined(state));
+    states.send(O.toUndefined(state) as S);
   }
 
-  function update(fn: (s: S | undefined) => S | undefined) {
+  function update(fn: (s: S) => S) {
     let next = pipe(
       getOption(),
-      O.toUndefined,
+      O.toUndefined as ((a: O.Option<S>) => S),
       fn,
     );
 
     set(next);
   }
 
-  function *once(predicate: (state: S | undefined) => boolean): Operation<S> {
-    let current = O.toUndefined(getOption());
+  function *once(predicate: (state: S) => boolean): Operation<S> {
+    let current = get();
     if(predicate(current)) {
       return current as S;
     } else {
@@ -63,12 +63,12 @@ export function createAtom<S>(init?: S): Atom<S> {
     }
   }
 
-  function reset(initializer?: (initial: S | undefined, curr: S | undefined) => S | undefined) {
+  function reset(initializer?: (initial: S, curr: S) => S) {
     if (!initializer) {
       initializer = (initial) => initial;
     }
     states.close();
-    set(initializer(initialState, O.toUndefined(getOption())));
+    set(initializer(initialState, O.toUndefined(getOption()) as S));
   }
 
   function setMaxListeners(value: number) {
@@ -96,11 +96,11 @@ export function createAtom<S>(init?: S): Atom<S> {
       return current;
     }
 
-    function getter(): S[P] | undefined {
+    function getter(): S[P] {
       return pipe(
         getSliceOption(),
         O.toUndefined
-      )
+      ) as S[P]
     }
 
     function setter(value: S[P]): void {
@@ -110,7 +110,7 @@ export function createAtom<S>(init?: S): Atom<S> {
         O.toUndefined
       );
 
-      set(next);
+      set(next as S);
     }
 
     function updater(fn: (s: S[P]) => S[P]) {
@@ -119,7 +119,7 @@ export function createAtom<S>(init?: S): Atom<S> {
         Op.modify(fn),
       )(getOption());
     
-      set(O.toUndefined(next));
+      set(O.toUndefined(next) as S);
     }
 
     function remover() {
@@ -129,11 +129,11 @@ export function createAtom<S>(init?: S): Atom<S> {
         Op.modify(() => undefined as any),
       )(getOption());
 
-      set(O.toUndefined(next));
+      set(O.toUndefined(next) as S);
     }
 
     function *once(predicate: (state: S[P]) => boolean): Operation<S[P]> {
-      let currentState = getter() as S[P];
+      let currentState = getter();
       if(predicate(currentState)) {
         return currentState;
       } else {
@@ -142,19 +142,19 @@ export function createAtom<S>(init?: S): Atom<S> {
       }
     }
 
-    function over(fn: (value: S[P] | undefined) => S[P]): void {
+    function over(fn: (value: S[P]) => S[P]): void {
       update((s) => {
         let next = sliceOptional.set(
           pipe(
             s,
             O.fromNullable,
             sliceOptional.getOption,
-            O.toUndefined,
+            O.toUndefined as ((a: O.Option<S[P]>) => S[P]),
             fn,
           )
         )(getOption());
 
-        return O.toUndefined(next);
+        return O.toUndefined(next) as S;
       });
     }
 
