@@ -1,0 +1,28 @@
+diff --git a/node_modules/docusaurus-plugin-typedoc/dist/plugin.js b/node_modules/docusaurus-plugin-typedoc/dist/plugin.js
+index dd61dbe..09ab003 100644
+--- a/node_modules/docusaurus-plugin-typedoc/dist/plugin.js
++++ b/node_modules/docusaurus-plugin-typedoc/dist/plugin.js
+@@ -19,12 +19,14 @@ const DEFAULT_PLUGIN_OPTIONS = {
+ };
+ let app;
+ function pluginDocusaurus(context, opts) {
++    if (opts.id) console.log(`running docusaurus-plugin-typedoc with id: ${opts.id}`);
+     const { siteDir } = context;
+     const options = Object.assign(Object.assign(Object.assign({}, DEFAULT_PLUGIN_OPTIONS), opts), (opts.sidebar && {
+         sidebar: Object.assign(Object.assign({}, DEFAULT_PLUGIN_OPTIONS.sidebar), opts.sidebar),
+     }));
+     if (!app) {
+         app = new typedoc_1.Application();
++    }
+         const typedocOptions = Object.keys(options).reduce((option, key) => {
+             if (![...['id'], ...Object.keys(DEFAULT_PLUGIN_OPTIONS)].includes(key)) {
+                 option[key] = options[key];
+@@ -48,7 +50,7 @@ function pluginDocusaurus(context, opts) {
+             const theme = app.renderer.getComponent('theme');
+             sidebar_1.writeSidebar(options.disableOutputCheck || theme.isOutputDirectory(outputDirectory), siteDir, options.out, options.sidebar, theme.getNavigation(project));
+         }
+-    }
++
+     return {
+         name: 'docusaurus-plugin-typedoc',
+     };
