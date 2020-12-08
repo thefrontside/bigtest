@@ -9,70 +9,73 @@ import { assert } from  'assert-ts';
 
 export function createAtom<S>(init?: S): Atom<S> {
   let initialState = init;
-  let state = init as S;
-  let lens = Op.id<S>();
-  let states = new Channel<S>();
+  let lens = pipe(Op.id<O.Option<S>>(), Op.some);
+  let state: O.Option<S> = O.fromNullable(init);
+  let states = new Channel<S | undefined>();
 
-  function get(): S {
-    let current = pipe(
+  function getOption(): O.Option<S> {
+    return pipe(
       state,
-      lens.getOption,
-      O.toUndefined
+      lens.getOption
     );
-
-    return current as S;
   }
 
-  function set(value: S): void {
-    let current = get();
+  function get(): S | undefined {
+    return pipe(
+      getOption(),
+      O.toUndefined
+    );
+  }
 
-    if(value === current) {
+  function set(value: S | undefined): void {
+    let current = getOption();
+
+    if(value === O.toUndefined(current)) {
       return;
     }
 
     state = pipe(
       current,
-      lens.set(value)
-    );
-
-    if(state) {
-      states.send(state);
-    }
-  }
-
-  function update(fn: (s: S) => S) {
-    let next = pipe(
-      get(),
-      fn,
       lens.getOption,
-      O.toUndefined
+      lens.set(value as S),
     );
 
-    set(next as S);
+    states.send(O.toUndefined(state));
   }
 
-  function *once(predicate: (state: S) => boolean): Operation<S> {
-    if(predicate(state as S)) {
-      return state as S;
+  function update(fn: (s: S | undefined) => S | undefined) {
+    let next = pipe(
+      getOption(),
+      O.toUndefined,
+      fn,
+    );
+
+    set(next);
+  }
+
+  function *once(predicate: (state: S | undefined) => boolean): Operation<S> {
+    let current = O.toUndefined(getOption());
+    if(predicate(current)) {
+      return current as S;
     } else {
       let subscription = yield subscribe(states);
       return yield subscription.filter(predicate).expect();
     }
   }
 
-  function reset(initializer?: (initial: S, curr: S) => S) {
+  function reset(initializer?: (initial: S | undefined, curr: S | undefined) => S | undefined) {
     if (!initializer) {
       initializer = (initial) => initial;
     }
     states.close();
-    set(initializer(initialState as S, get()));
+    set(initializer(initialState, O.toUndefined(getOption())));
   }
 
   function setMaxListeners(value: number) {
     states.setMaxListeners(value);
   }
 
-  let sliceMaker = <A>(parentOptional: Op.Optional<S, A>) => <P extends keyof S>(...path: P[]): Sliceable<S[P]> => {
+  let sliceMaker = <A>(parentOptional: Op.Optional<O.Option<S>, A>) => <P extends keyof S>(...path: P[]): Sliceable<S[P]> => {
     assert(Array.isArray(path) && path.length >  0, "slice expects a rest parameter with at least 1 element");
 
     let getters = [
@@ -82,22 +85,29 @@ export function createAtom<S>(init?: S): Atom<S> {
     ];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let sliceOptional = (pipe as any)(...getters) as Op.Optional<S, S[P]>;
+    let sliceOptional = (pipe as any)(...getters) as Op.Optional<O.Option<S>, S[P]>;
 
-    function getter(): S[P] {
+    function getSliceOption(): O.Option<S[P]> {
       let current = pipe(
-        get(),
+        getOption(),
         sliceOptional.getOption,
-        O.toUndefined
       );
 
-      return current as S[P];
+      return current;
+    }
+
+    function getter(): S[P] | undefined {
+      return pipe(
+        getSliceOption(),
+        O.toUndefined
+      )
     }
 
     function setter(value: S[P]): void {
       let next = pipe(
-        get(),
-        sliceOptional.set(value)
+        getOption(),
+        sliceOptional.set(value),
+        O.toUndefined
       );
 
       set(next);
@@ -106,10 +116,10 @@ export function createAtom<S>(init?: S): Atom<S> {
     function updater(fn: (s: S[P]) => S[P]) {
       let next = pipe(
         sliceOptional,
-        Op.modify(fn)
-      )(get());
+        Op.modify(fn),
+      )(getOption());
     
-      set(next);
+      set(O.toUndefined(next));
     }
 
     function remover() {
@@ -117,13 +127,13 @@ export function createAtom<S>(init?: S): Atom<S> {
         sliceOptional,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         Op.modify(() => undefined as any),
-      )(get());
+      )(getOption());
 
-      set(next);
+      set(O.toUndefined(next));
     }
 
     function *once(predicate: (state: S[P]) => boolean): Operation<S[P]> {
-      let currentState = getter();
+      let currentState = getter() as S[P];
       if(predicate(currentState)) {
         return currentState;
       } else {
@@ -132,8 +142,20 @@ export function createAtom<S>(init?: S): Atom<S> {
       }
     }
 
-    function over(fn: (value: S[P]) => S[P]): void {
-      update((s) => sliceOptional.set(fn(pipe(sliceOptional.getOption(s), O.toUndefined) as S[P]))(get() as S));
+    function over(fn: (value: S[P] | undefined) => S[P]): void {
+      update((s) => {
+        let next = sliceOptional.set(
+          pipe(
+            s,
+            O.fromNullable,
+            sliceOptional.getOption,
+            O.toUndefined,
+            fn,
+          )
+        )(getOption());
+
+        return O.toUndefined(next);
+      });
     }
 
     let slice = {
@@ -146,7 +168,7 @@ export function createAtom<S>(init?: S): Atom<S> {
       over,
       *[SymbolSubscribable](): Operation<Subscription<S, void>> {
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        return yield subscribe(atom).map((s) => pipe(sliceOptional.getOption(s), O.toUndefined));
+        return yield subscribe(atom).map((s) => pipe(s, O.fromNullable, sliceOptional.getOption, O.toUndefined));
       }
     } as const;
 
