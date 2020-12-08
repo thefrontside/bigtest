@@ -10,22 +10,19 @@ export class TestAggregator extends Aggregator<TestResult, AggregatorTestOptions
     yield spawn(this.markRunning());
 
     let results = [...this.slice.get().steps.entries()].map(([index, step]) => {
-      let slice = this.slice.slice('steps').slice(index);
-
+      let slice = this.slice.slice('steps', index);
       return new StepAggregator(slice, {
         ...this.options,
         path: this.options.path.concat(`${index}:${step.description}`),
       }).run();
     }).concat([...this.slice.get().assertions.entries()].map(([index, assertion]) => {
-      let slice = this.slice.slice('assertions').slice(index);
-
+      let slice = this.slice.slice('assertions', index);
       return new AssertionAggregator(slice, {
         ...this.options,
         path: this.options.path.concat(assertion.description),
       }).run();
     })).concat([...this.slice.get().children.entries()].map(([index, child]) => {
-      let slice = this.slice.slice('children').slice(index);
-
+      let slice = this.slice.slice('children', index);
       return new TestAggregator(slice, {
         ...this.options,
         path: this.options.path.concat(child.description),

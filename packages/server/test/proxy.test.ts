@@ -59,7 +59,7 @@ describe('proxy', () => {
         }
       }));
 
-      actions.fork(proxyServer(atom.slice()('proxyService')));
+      actions.fork(proxyServer(atom.slice('proxyService')));
 
       await actions.fork(atom.once((s) => s.proxyService.status.type === 'started'));
     });
@@ -138,7 +138,7 @@ describe('proxy', () => {
         }
       }));
       
-      actions.fork(proxyServer(atom.slice()('proxyService')));
+      actions.fork(proxyServer(atom.slice('proxyService')));
 
       await actions.fork(atom.once((s) => s.proxyService.status.type === 'started'));
 
