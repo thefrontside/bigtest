@@ -18,7 +18,7 @@ const message = {
     chalk`{green Files organized}`
   ],
   installing_dep: [
-    chalk`{white.dim Installing dependencies... (this might take a few minutes)}`, 
+    chalk`{white.dim Installing dependencies... (this will take a few minutes)}`, 
     chalk`{green Installation complete\n}`
   ],
   deleting: [
@@ -26,8 +26,7 @@ const message = {
     chalk`{grey Cleanup complete}`
   ],
   success: chalk`{white Setup is complete!}\n\nNow you can start exploring:\n\n  {magentaBright cd} {white bigtest-sample}\n\n  {magentaBright ${command}} test:{blueBright bigtest}\n  {magentaBright ${command}} test:{redBright jest}\n  {magentaBright ${command}} test:{green cypress}\n\n{yellow Have any questions?}\nReach us at: {cyan https://discord.gg/RKss6jw2}\n`,
-  abort: 'we detect the bigtest-sample directory already exists\nplease reach out to us on discord if you need help\nhttps://discord.gg/RKss6jw2\n\nif you would still like to install bigtest-sample\nplease rename or delete the current bigtest-sample directory and retry\n',
-  fake: chalk`{blueBright ✓}`
+  abort: `Please rename the existing \'bigtest-sample\' directory and rerun the command\n`
 };
 
 module.exports = {
