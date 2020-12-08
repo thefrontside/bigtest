@@ -11,4 +11,7 @@ module.exports = {
     'platform/writing-your-first-test',
     'platform/running-tests'
   ],
+  bigtest: require('./sidebars/typedoc-bigtest-sidebar'),
+  interactor: require('./sidebars/typedoc-interactor-sidebar'),
+  suite: require('./sidebars/typedoc-suite-sidebar')
 };

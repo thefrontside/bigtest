@@ -114,5 +114,81 @@ module.exports = {
   ],
   stylesheets: [
     'https://use.typekit.net/gyc5wys.css'
+  ],
+  plugins: [
+    [
+      'docusaurus-plugin-typedoc',
+      {
+        id: 'typedoc-bigtest',
+        inputFiles: ['../../packages/bigtest/src'],
+        tsconfig: '../../packages/bigtest/tsconfig.json',
+        // TypeDoc options (see typedoc --help)
+        out: 'api/bigtest',
+        readme: '../../packages/bigtest/API.md',
+        target: 'esnext',
+        mode: 'file',
+        sidebar: {
+          sidebarFile: './sidebars/typedoc-bigtest-sidebar.js',
+          fullNames: false,
+          readmeLabel: 'README',
+          globalsLabel: 'Globals',
+        },
+        includeDeclarations: true,
+        excludeExternals: true,
+        ignoreCompilerErrors: true,
+        disableSources: true,
+        allReflectionsHaveOwnDocument: true
+      }
+    ],
+    [
+      'docusaurus-plugin-typedoc',
+      {
+        id: 'typedoc-interactor',
+        inputFiles: ['../../packages/interactor/src'],
+        tsconfig: '../../packages/interactor/tsconfig.json',
+        // TypeDoc options (see typedoc --help)
+        out: 'api/interactors',
+        readme: '../../packages/interactor/API.md',
+        ignoreCompilerErrors: true,
+        target: 'esnext',
+        mode: 'file',
+        sidebar: {
+          sidebarFile: './sidebars/typedoc-interactor-sidebar.js',
+          fullNames: false,
+          readmeLabel: 'README',
+          globalsLabel: 'Globals',
+        },
+        includeDeclarations: true,
+        excludeExternals: true,
+        ignoreCompilerErrors: true,
+        disableSources: true,
+        allReflectionsHaveOwnDocument: true
+      }
+    ],
+    [
+      'docusaurus-plugin-typedoc',
+      {
+        id: 'typedoc-suite',
+        inputFiles: ['../../packages/suite/src'],
+        tsconfig: '../../packages/suite/tsconfig.json',
+        // TypeDoc options (see typedoc --help)
+        out: 'api/suite',
+        readme: '../../packages/suite/API.md',
+        ignoreCompilerErrors: true,
+        target: 'esnext',
+        mode: 'file',
+        sidebar: {
+          sidebarFile: './sidebars/typedoc-suite-sidebar.js',
+          fullNames: false,
+          readmeLabel: 'README',
+          globalsLabel: 'Globals',
+        },
+        includeDeclarations: true,
+        excludeExternals: true,
+        ignoreCompilerErrors: true,
+        disableSources: true,
+        allReflectionsHaveOwnDocument: true
+      }
+    ],
   ]
 };
