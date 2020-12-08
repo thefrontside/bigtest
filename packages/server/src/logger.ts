@@ -20,7 +20,7 @@ export function* createLogger({ atom, out }: LoggerOptions) {
   }));
 
   yield fork(subscribe(atom.slice('appService', 'status')).forEach(function* (status) {
-    if(status.type === 'ready') {
+    if(status.type === 'available') {
       out("[app] successfully connected to application!");
     }
     if(status.type === 'exited') {

@@ -17,7 +17,7 @@ const startApp = (serviceSlice: Slice<ServiceState<AppServiceStatus, AppOptions>
   assert(!!options.url, 'no app url given');
 
   let appServiceStatus = serviceSlice.slice('status')
-  
+
   if (options.command) {
     let child: Process = yield exec(options.command as string, {
       cwd: options.dir,
@@ -37,7 +37,7 @@ const startApp = (serviceSlice: Slice<ServiceState<AppServiceStatus, AppOptions>
     yield timeout(100);
   }
 
-  appServiceStatus.set({ type: 'ready' });
+  appServiceStatus.set({ type: 'available' });
 
   yield;
 }

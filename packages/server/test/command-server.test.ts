@@ -18,14 +18,12 @@ import { RunOptions } from '../src/runner';
 let COMMAND_PORT = 24200;
 
 describe('command server', () => {
-  let delegate: Mailbox
   let agents: Slice<Record<string, AgentState>, OrchestratorState>;
   let manifest: Slice<Manifest, OrchestratorState>;
   let runs: Mailbox<RunOptions>;
 
   beforeEach(async () => {
     runs = new Mailbox();
-    delegate = new Mailbox();
     let atom = createOrchestratorAtom(getTestProjectOptions());
     agents = atom.slice('agents');
     manifest = atom.slice('manifest');
@@ -38,12 +36,11 @@ describe('command server', () => {
           throw new Error('not implemented');
         }
       },
-      delegate,
       atom,
       port: COMMAND_PORT,
     }));
 
-    await actions.receive(delegate, { status: 'ready' });
+    await actions.fork(atom.slice('commandService', 'status', 'type').once((t) => t === 'started'));
   });
 
   describe('fetching the agents at the start', () => {

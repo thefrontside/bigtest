@@ -1,6 +1,5 @@
 import { Operation, spawn, fork } from 'effection';
 import { subscribe } from '@effection/subscription';
-import { Mailbox } from '@bigtest/effection';
 import { express, Socket } from '@bigtest/effection-express';
 import * as graphqlHTTP from 'express-graphql';
 import { parse as parseGraphql, graphql as executeGraphql, subscribe as executeGraphqlSubscription, ExecutionResult } from 'graphql';
@@ -14,12 +13,8 @@ import { SpawnContext } from './spawn-context';
 
 import { Variables, Message, Response, QueryMessage, MutationMessage, SubscriptionMessage, isQuery, isMutation, isSubscription } from '@bigtest/client';
 
-export type RunMessage = { type: "run"; id: string; files: string[] };
-export type CommandMessage = { status: "ready" } | RunMessage;
-
 interface CommandServerOptions {
   runner: Runner;
-  delegate: Mailbox<CommandMessage>;
   atom: Atom<OrchestratorState>;
   port: number;
 };
@@ -29,7 +24,10 @@ function isAsyncIterator(value: AsyncIterableIterator<unknown> | ExecutionResult
 }
 
 export function* createCommandServer(options: CommandServerOptions): Operation {
+  let status = options.atom.slice('commandService', 'status');
   let app = express();
+
+  status.set({ type: 'starting' });
 
   yield app.ws('*', handleSocketConnection(options));
 
@@ -41,7 +39,7 @@ export function* createCommandServer(options: CommandServerOptions): Operation {
 
   yield app.listen(options.port);
 
-  options.delegate.send({ status: "ready" });
+  status.set({ type: 'started' });
 
   yield;
 }

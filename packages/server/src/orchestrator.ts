@@ -26,9 +26,6 @@ type OrchestratorOptions = {
 export function* createOrchestrator(options: OrchestratorOptions): Operation {
   console.log('[orchestrator] starting');
 
-  let commandServerDelegate = new Mailbox();
-  let manifestServerDelegate = new Mailbox();
-
   let agentServerConfig = new AgentServerConfig(options.project.proxy);
 
   let manifestSrcDir = path.resolve(options.project.cacheDir, 'manifest/src');
@@ -68,7 +65,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield fork(createCommandServer({
     runner,
-    delegate: commandServerDelegate,
     atom: options.atom,
     port: options.project.port,
   }));
@@ -77,7 +73,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   yield fork(appServer(options.atom.slice('appService')));
 
   yield fork(createManifestServer({
-    delegate: manifestServerDelegate,
+    atom: options.atom,
     dir: manifestDistDir,
     port: options.project.manifest.port,
     proxyPort: options.project.proxy.port,
@@ -103,16 +99,16 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       console.debug('[orchestrator] proxy server ready');
     });
     yield fork(function* () {
-      yield commandServerDelegate.receive({ status: 'ready' });
+      yield options.atom.slice("commandService", "status").once(({ type }) => type === 'started');
       console.debug('[orchestrator] command server ready');
     });
     yield fork(function* () {
-      yield options.atom.slice("connectionService", "status").once(({ type }) => type === 'ready');
+      yield options.atom.slice("connectionService", "status").once(({ type }) => type === 'started');
       console.debug('[orchestrator] connection server ready');
     });
     yield fork(function*() {
       let status = yield options.atom.slice('appService', 'status').once((status) => {
-        return status.type === 'ready' || status.type === 'exited';
+        return status.type === 'started' || status.type === 'exited';
       });
       console.debug(`[orchestrator] app server ${status.type}`);
     });
@@ -121,7 +117,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       console.debug('[orchestrator] manifest builder ready');
     });
     yield fork(function* () {
-      yield manifestServerDelegate.receive({ status: 'ready' });
+      yield options.atom.slice("manifestServer", "status").once(({ type }) => type === 'started');
       console.debug('[orchestrator] manifest server ready');
     });
     yield fork(function* () {

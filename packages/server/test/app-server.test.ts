@@ -23,16 +23,16 @@ describe('app service', () => {
       });
     });
 
-    it("should be transition from 'started' to 'ready'", async () => {
+    it("should be transition from 'started' to 'available'", async () => {
       let appStatus = atom.slice('appService', 'status');
 
       expect(appStatus.get().type).toBe('started');
 
       await actions.fork(
-        appStatus.once(status => status.type === 'ready')
+        appStatus.once(status => status.type === 'available')
       );
 
-      expect(appStatus.get().type).toBe('ready');
+      expect(appStatus.get().type).toBe('available');
     });
   });
 
