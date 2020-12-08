@@ -4,7 +4,7 @@
   "description": "Use BigTest",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "license": "MIT",
   "files": [
     "bin/*",
