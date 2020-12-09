@@ -4,7 +4,11 @@ title: Installation
 slug: /platform
 ---
 
-Thank you for taking an interest in the BigTest testing platform! The platform is still in the alpha phase so our documentation is brief but these next few pages will still cover enough to get you started. If you have any feedback or questions, please feel free to reach out to us in [the Discord chat](https://discord.gg/r6AvtnU).
+BigTest is a free, Open Source testing platform built from scratch for the modern age — with no traces of Selenium, Playwright, or earlier tools.
+
+After following along with these guides, you will be up and running with some new user interface tests.
+
+The BigTest platform and its documentation are in the alpha phase. We welcome any feedback or questions! Please feel free to reach out to us in [the Discord chat](https://discord.gg/r6AvtnU).
 
 ## Prerequisites
 - [`npm`](https://www.npmjs.com/get-npm) or [`yarn`](https://classic.yarnpkg.com/en/docs/install)
@@ -14,7 +18,8 @@ Thank you for taking an interest in the BigTest testing platform! The platform i
 *If you would like to see BigTest in action right away or in an environment separate from your project, you can install our sample app that was originally created to demonstrate interactors in various testing frameworks. The sample app will have the BigTest platform and its configurations all ready to go. You can install the sample app by running the command `npx bigtest-sample` in your terminal and skip the installation step below.
 
 ## Installation
-The `bigtest` package includes everything you need to get started so go ahead and install BigTest to your project:
+
+The `bigtest` package includes everything you need to get started. Go ahead and install BigTest to your project:
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -26,19 +31,45 @@ import TabItem from '@theme/TabItem';
     {label: 'Yarn', value: 'yarn'}
   ]}>
   <TabItem value="npm">
-    <pre><code>$ npm install bigtest --save-dev</code></pre>
+
+  ```
+  $ npm install bigtest --save-dev
+  ```
+
   </TabItem>
   <TabItem value="yarn">
-    <pre><code>$ yarn add bigtest --dev</code></pre>
+  
+  ```
+  $ yarn add bigtest --dev
+  ```
+  
   </TabItem>
 </Tabs>
 
-Once that's finished installing, you can run the following command:
+Once that's finished installing, you can run the following command to generate the essential files:
 
-```
-$ yarn bigtest init
-```
+<Tabs
+  defaultValue="npm"
+  values={[
+    {label: 'NPM', value: 'npm'},
+    {label: 'Yarn', value: 'yarn'}
+  ]}>
+  <TabItem value="npm">
 
-This command will help help generate the `bigtest.json` file for you. 
+  ```
+  $ npx bigtest init
+  ```
 
-<!-- how do i use npm to run bigtest commands? -->
+  </TabItem>
+  <TabItem value="yarn">
+  
+  ```
+  $ yarn bigtest init
+  ```
+  
+  </TabItem>
+</Tabs>
+
+You will know that your installation is successful if this command generates the `bigtest.json` file.
+
+Continue on to the next article to learn how to use this file and write your first test!
