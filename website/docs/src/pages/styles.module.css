@@ -54,8 +54,8 @@
   margin: 0;
   margin-bottom: 34px;
   color: var(--ifm-heading-color);
-  font-size: 50px;
-  line-height: 55px;
+  font-size: 45px;
+  line-height: 50px;
   font-weight: 800;
   letter-spacing: -1px;
 }
@@ -66,8 +66,8 @@
   margin-top: 0;
   margin-bottom: 40px;
   color: var(--ifm-sub-heading-color);
-  font-size: 30px;
-  line-height: 35px;
+  font-size: 27px;
+  line-height: 32px;
 }
 
 .ctaButton {
@@ -80,7 +80,7 @@
   cursor: pointer;
   padding: 10px 35px;
   border-radius: 50px;
-  font-size: 23px;
+  font-size: 21px;
   font-weight: 700;
   display: inline-block;
   padding-bottom: 10px;
@@ -119,8 +119,8 @@
 }
 
 .featureHeading {
-  font-size: 25px;
-  line-height: 30px;
+  font-size: 22px;
+  line-height: 27px;
   font-weight: bolder;
 }
 
