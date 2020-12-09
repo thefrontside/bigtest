@@ -42,7 +42,7 @@
   box-sizing: border-box;
   padding-top: 40px;
   padding-bottom: 40px;
-  background-image: url("/images/decor-color-blur-100-p-1080.jpeg");
+  background-image: url("/bigtest/images/decor-color-blur-100-p-1080.jpeg");
   background-position: 100% 50%;
   background-size: 53%;
   background-repeat: no-repeat;
@@ -84,7 +84,7 @@
   font-weight: 700;
   display: inline-block;
   padding-bottom: 10px;
-  background-image: url("/images/decor-button-twist2x.png"),
+  background-image: url("/bigtest/images/decor-button-twist2x.png"),
     linear-gradient(90deg, #26abe8, #f74d7b);
   background-position: -15px -15px, 0px 0px;
   background-size: 317px, auto;
