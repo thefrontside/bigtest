@@ -1,4 +1,8 @@
 [build]
   base = "website/"
-  command = "docusaurus build"
-  publish = "build/"
+  command = "yarn build"
+  publish = "public/"
+
+[[redirects]]
+  from = "/*"
+  to = "/bigtest/:splat"
