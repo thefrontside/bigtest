@@ -107,12 +107,12 @@ function Interactors() {
             </p>
             <Link
               className={styles.ctaButton}
-              to={useBaseUrl('docs/')}>
+              to={useBaseUrl('docs/interactors')}>
               Get Started
             </Link>
           </div>
           <div className={styles.heroImage}>
-            <img src="/images/interactors-hero.png" alt="" />
+            <img src={useBaseUrl('images/interactors-hero.png')} alt="" />
           </div>
         </div>
       </header>
@@ -129,7 +129,7 @@ function Interactors() {
         <section className="text--center">
           <Link
             className={styles.ctaButton}
-            to={useBaseUrl('docs/')}>
+            to={useBaseUrl('docs/interactors')}>
             Try Interactors
             </Link>
         </section>
