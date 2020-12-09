@@ -2,7 +2,7 @@ module.exports = {
   title: 'BigTest',
   tagline: 'Truly cross-browser testing',
   url: 'https://bigtestjs.io',
-  baseUrl: '/',
+  baseUrl: '/bigtest/',
   onBrokenLinks: 'throw',
   favicon: 'images/favicon.png',
   organizationName: 'thefrontside',
