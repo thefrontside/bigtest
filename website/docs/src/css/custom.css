@@ -7,19 +7,42 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #26ABE8;
-  --ifm-color-primary-dark: #20A3D1;
-  --ifm-color-primary-darker: #1C98C4;
-  --ifm-color-primary-darkest: #1285AD;
-  --ifm-color-primary-light: #2EB5E5;
-  --ifm-color-primary-lighter: #35B7E5;
-  --ifm-color-primary-lightest: #3DBDEA;
+  --ifm-color-primary: #14315D;
+  --ifm-color-primary-dark: #14315D;
+  --ifm-color-primary-darker: #14315D;
+  --ifm-color-primary-darkest: #14315D;
+  --ifm-color-primary-light: #14315D;
+  --ifm-color-primary-lighter: #14315D;
+  --ifm-color-primary-lightest: #14315D;
+  --color-over-primary: #fff;
   --ifm-code-font-size: 95%;
   --ifm-heading-color: #14315D;
+  --ifm-sub-heading-color: #4f6586;
+  --ifm-navbar-height: 80px;
+  --ifm-container-width: 1346px;
+  --ifm-spacing-horizontal: 33px;
+  --ifm-toc-border-color: rgba(224, 224, 224, 0.5);
+  --ifm-navbar-shadow: 0 1px 0px var(--ifm-toc-border-color);
+  --ifm-code-font-size: 0.80em;
+  --ifm-navbar-link-color: var(--ifm-color-primary);
+  --fs-pink: #f74d7b;
+  --ifm-link-hover-decoration: none;
 }
 
 html[data-theme='dark'] {
+  --ifm-color-content: #CCCCCC;
+  --ifm-color-primary: white;
+  --ifm-color-primary-dark: white;
+  --ifm-color-primary-darker: white;
+  --ifm-color-primary-darkest: white;
+  --ifm-color-primary-light: white;
+  --ifm-color-primary-lighter: white;
+  --ifm-color-primary-lightest: white;
+  --color-over-primary: #14315D;
   --ifm-heading-color: white;
+  --ifm-sub-heading-color: #95acce;
+  --ifm-navbar-background-color: var(--ifm-background-color);
+  --ifm-toc-border-color: rgba(92, 92, 92, 0.5);
 }
 
 .docusaurus-highlight-code-line {
@@ -29,23 +52,180 @@ html[data-theme='dark'] {
   padding: 0 var(--ifm-pre-padding);
 }
 
-.main-wrapper {
-  width: 100%;
-  max-width: 1346px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 body {
   font-family: proxima-nova, sans-serif;
-  font-size: 20px;
-  line-height: 30px;
-}
-
-p {
-  font-family: georgia, serif;
+  font-size: 18px;
+  line-height: 27px;
+  font-weight: normal;
 }
 
 .docSidebarContainer_node_modules-\@docusaurus-theme-classic-lib-theme-DocPage- {
   width: 320px;
+}
+
+.navbar {
+  max-width: var(--ifm-container-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--ifm-spacing-horizontal);
+  padding-right: var(--ifm-spacing-horizontal);
+}
+
+.navbar__link[href$="interactors"]:after {
+  content: 'beta';
+  font-size: 0.7em;
+  padding: 1px 2px;
+  border: 1px solid var(--fs-pink);
+  color: var(--fs-pink);
+  border-radius: 5px;
+  margin-left: 0.5rem;
+  text-transform: uppercase;
+  font-weight: normal;
+}
+
+.navbar__link[href$="platform"]:after {
+  content: 'alpha';
+  font-size: 0.7em;
+  padding: 1px 2px;
+  border: 1px solid var(--ifm-sub-heading-color);
+  color: var(--ifm-sub-heading-color);
+  border-radius: 5px;
+  margin-left: 0.5rem;
+  text-transform: uppercase;
+  font-weight: normal;
+}
+
+.navbar__link--active {
+  position: relative;
+  font-weight: bold;
+}
+
+
+@media screen and (min-width: 997px) {
+  .navbar__link--active:before {
+    content: '';
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(-90deg, #26abe8, #f74d7b);
+    position: absolute;
+    bottom: -21px;
+    left: 0;
+  }
+}
+
+.main-wrapper {
+  max-width: var(--ifm-container-width);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.docSidebarContainer_node_modules-\@docusaurus-theme-classic-lib-theme-DocPage- {
+  flex-shrink: 0;
+}
+
+.docMainContainer_node_modules-\@docusaurus-theme-classic-lib-theme-DocPage- {
+  width: 100%;
+}
+
+@media screen and (min-width: 997px) {
+  .docMainContainer_node_modules-\@docusaurus-theme-classic-lib-theme-DocPage- {
+    width: calc(100% - 300px);
+  }
+}
+
+.menu_node_modules-\@docusaurus-theme-classic-lib-theme-DocSidebar- {
+  margin-top: 2rem;
+}
+
+.menu__link--active:not(.menu__link--sublist) {
+  border: 1px solid var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
+  background: none;
+}
+
+.markdown > p {
+  font-size: 20px;
+  line-height: 30px;
+}
+
+.markdown a {
+  text-decoration: none;
+  color: var(--ifm-color-content);
+  border-bottom: 1px dotted var(--ifm-color-content);
+  display: inline-block;
+  line-height: 25px;
+  margin-bottom: 2px;
+}
+
+.markdown .hash-link {
+  color: var(--fs-pink);
+  border: none;
+}
+
+.markdown a:hover {
+  border-color: var(--fs-pink);
+}
+
+.table-of-contents {
+  font-size: 1rem;
+  line-height: 1.3rem;
+  padding: 0;
+}
+
+.table-of-contents > li {
+  padding: 0;
+  margin: 0;
+  margin-bottom: 1rem;
+  margin-left: -1px;
+}
+
+.table-of-contents > li ul {
+  /** TOC is only one level deep  **/
+  display: none;
+}
+
+.table-of-contents__link:before {
+  content: '';
+  display: block;
+  background: transparent;
+  width: 2px;
+  height: 1rem;
+  margin-right: 10px;
+  float: left;
+  margin-bottom: 1rem;
+  margin-top: 2px;
+  clear: both;
+}
+.table-of-contents__link--active:before {
+  background: linear-gradient(0deg, #26abe8, #f74d7b);
+}
+
+.footer {
+  background: none;
+  padding: 0;
+  font-size: 20px;
+  text-align: center;
+}
+
+.footer .text--center {
+  font-size: 15px;
+  text-transform: uppercase;
+  margin-top: 40px;
+}
+
+.footer__link-item {
+  text-decoration: none;
+}
+
+.footer .container {
+  border-top: 1px solid var(--ifm-toc-border-color);
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.footer__title {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.8rem;
 }

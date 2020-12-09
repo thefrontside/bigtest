@@ -8,14 +8,16 @@ module.exports = {
   organizationName: 'thefrontside',
   projectName: 'bigtest',
   themeConfig: {
-    disableSwitch: true,
-    respectPrefersColorScheme: true,
-
+    colorMode: {
+      disableSwitch: true,
+      respectPrefersColorScheme: true,
+    },
     navbar: {
       title: '',
       logo: {
         alt: 'BigTest',
         src: 'images/bigtest-logo@2x.png',
+        srcDark: 'images/logo-dark@2x.png'
       },
       items: [
         {
@@ -37,17 +39,43 @@ module.exports = {
           label: 'GitHub',
           position: 'right',
         },
+        {
+          href: 'https://discord.gg/r6AvtnU',
+          label: 'Discord',
+          position: 'right',
+        }
       ],
     },
     footer: {
-      style: 'dark',
+      style: 'light',
       links: [
         {
-          title: 'Docs',
+          title: 'Interactors',
           items: [
             {
-              label: 'Style Guide',
-              to: 'docs/',
+              label: 'About Interactors',
+              to: 'interactors/',
+            },
+            {
+              label: 'Getting Started',
+              to: 'docs/interactors/',
+            },
+            {
+              label: 'API',
+              to: 'docs/interactors/',
+            }
+          ],
+        },
+        {
+          title: 'Platform',
+          items: [
+            {
+              label: 'About the BigTest platform',
+              to: 'platform/',
+            },
+            {
+              label: 'Introduction',
+              to: 'docs/platform/',
             }
           ],
         },
@@ -55,28 +83,15 @@ module.exports = {
           title: 'Community',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
               label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
+              href: 'https://discord.gg/r6AvtnU',
             },
-            {
-              label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
-            },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
-            },
+              href: 'https://github.com/thefrontside/bigtest',
+            }
           ],
-        },
+        }
       ],
       copyright: `Copyright © ${new Date().getFullYear()} The Frontside Software, Inc.`,
     },
