@@ -6,3 +6,7 @@
 .env.production.local
 .docusaurus
 build
+public
+
+# Local Netlify folder
+.netlify
