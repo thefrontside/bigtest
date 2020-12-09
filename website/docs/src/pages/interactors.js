@@ -103,7 +103,7 @@ function Interactors() {
               Test your app as real people use it
             </h1>
             <p className={styles.heroSubheader}>
-              Interactors make it easy to test UIs at scale while keeping accesibility at the core.
+              Interactors make it easy to test UIs at scale while keeping accessibility at the core.
             </p>
             <Link
               className={styles.ctaButton}
@@ -176,4 +176,3 @@ function Interactors() {
 }
 
 export default Interactors;
-
