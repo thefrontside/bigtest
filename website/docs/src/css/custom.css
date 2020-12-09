@@ -54,8 +54,8 @@ html[data-theme='dark'] {
 
 body {
   font-family: proxima-nova, sans-serif;
-  font-size: 20px;
-  line-height: 30px;
+  font-size: 18px;
+  line-height: 27px;
   font-weight: normal;
 }
 
@@ -144,8 +144,8 @@ body {
 }
 
 .markdown > p {
-  font-size: 22px;
-  line-height: 32px;
+  font-size: 20px;
+  line-height: 30px;
 }
 
 .markdown a {
