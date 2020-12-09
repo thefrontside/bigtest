@@ -144,7 +144,9 @@ export function createAtom<S>(init: S): Atom<S> {
 
     function over(fn: (value: S[P]) => S[P]): void {
       update((s) => {
-        let next = sliceOptional.set(
+        let next = pipe(
+          getOption(),
+          sliceOptional.set(
           pipe(
             s,
             O.fromNullable,
@@ -152,9 +154,10 @@ export function createAtom<S>(init: S): Atom<S> {
             O.toUndefined as ((a: O.Option<S[P]>) => S[P]),
             fn,
           )
-        )(getOption());
+        ),
+        O.toUndefined);
 
-        return O.toUndefined(next) as S;
+        return next as S;
       });
     }
 
