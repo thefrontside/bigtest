@@ -19,7 +19,7 @@ describe('result stream', () => {
 
   beforeEach(async () => {
     atom = createOrchestratorAtom(getTestProjectOptions());
-    slice = atom.slice('testRuns').slice('test-run-1');
+    slice = atom.slice('testRuns', 'test-run-1');
     slice.set({
       testRunId: 'test-run-1',
       status: 'pending',
