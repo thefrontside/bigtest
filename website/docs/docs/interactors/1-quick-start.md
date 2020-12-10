@@ -12,8 +12,7 @@ If you need help or have questions along the way, please let us know in [the Dis
 
 ## Prerequisites
 
-- [NPM](https://www.npmjs.com/get-npm) or [Yarn](https://classic.yarnpkg.com/en/docs/install)
-- [Node](https://nodejs.org/en/download/releases/)
+- [npm](https://www.npmjs.com/get-npm) or [yarn](https://classic.yarnpkg.com/en/docs/install)
 - A web app*
 
 *To follow along with this tutorial, you need an app that uses [Jest](https://jestjs.io/), [Cypress](https://www.cypress.io/), or BigTest. You can either use your own app or you can install our sample app which has Jest, Cypress, and Bigtest preinstalled and configured against a very simple app. We recommend that you read through the quick start but you can skip ahead to the [Sample App](#sample-app) section if you want to see the interactors in action right away.
