@@ -1,4 +1,4 @@
-import { createInteractor, perform, focused } from '../index';
+import { createInteractor, perform, focused, focus, blur } from '../index';
 import { isVisible } from 'element-is-visible';
 
 const CheckBoxInteractor = createInteractor<HTMLInputElement>('check box')({
@@ -24,6 +24,8 @@ const CheckBoxInteractor = createInteractor<HTMLInputElement>('check box')({
     check: perform((element) => { if(!element.checked) element.click(); }),
     uncheck: perform((element) => { if(element.checked) element.click(); }),
     toggle: perform((element) => { element.click(); }),
+    focus,
+    blur
   },
 });
 
@@ -55,6 +57,8 @@ const CheckBoxInteractor = createInteractor<HTMLInputElement>('check box')({
  * ### Actions
  *
  * - `click()`: *{@link Interaction}* – Click on the checkbox
+ * - `focus()`: *{@link Interaction}* – Focus the checkbox
+ * - `blur()`: *{@link Interaction}* – Blur the checkbox
  * - `check()`: *{@link Interaction}* – Check the checkbox if it is not checked
  * - `uncheck()`: *{@link Interaction}* – Uncheck the checkbox if it is checked
  * - `toggle()`: *{@link Interaction}* – Toggle the checkbox
