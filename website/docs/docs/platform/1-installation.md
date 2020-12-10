@@ -12,7 +12,6 @@ The BigTest platform and its documentation are in the alpha phase. We welcome an
 
 ## Prerequisites
 - [`npm`](https://www.npmjs.com/get-npm) or [`yarn`](https://classic.yarnpkg.com/en/docs/install)
-- [Node](https://nodejs.org/en/download/releases/)
 - A web app*
 
 *If you would like to see BigTest in action right away or in an environment separate from your project, you can install our sample app that was originally created to demonstrate interactors in various testing frameworks. The sample app will have the BigTest platform and its configurations all ready to go. You can install the sample app by running the command `npx bigtest-sample` in your terminal and skip the installation step below.
