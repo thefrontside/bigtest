@@ -14,6 +14,7 @@ module.exports = {
   platform: [
     'platform/installation',
     'platform/writing-your-first-test',
-    'platform/running-tests'
+    'platform/running-tests',
+    'platform/architecture',
   ],
 };
