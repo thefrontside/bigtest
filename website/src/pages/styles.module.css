@@ -22,6 +22,11 @@
   margin: 40px auto;
 }
 
+.pinkEmphasis {
+  font-style: normal;
+  color: var(--fs-pink)
+}
+
 @media screen and (max-width: 997px) {
   .heroContainer {
     display: block;
@@ -147,4 +152,12 @@
 
 .topDecoration {
   margin-bottom: 40px;
+}
+
+.iframeCrossPlatform {
+  width: 535px;
+  height: 665px;
+  outline: none;
+  border: none;
+  overflow: hidden;
 }
