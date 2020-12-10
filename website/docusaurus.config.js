@@ -120,8 +120,8 @@ module.exports = {
       'docusaurus-plugin-typedoc',
       {
         id: 'typedoc-interactor',
-        inputFiles: ['../../packages/interactor/src'],
-        tsconfig: '../../packages/interactor/tsconfig.json',
+        inputFiles: ['../packages/interactor/src'],
+        tsconfig: '../packages/interactor/tsconfig.json',
         // TypeDoc options (see typedoc --help)
         out: 'interactors/api',
         readme: '../../packages/interactor/API.md',
