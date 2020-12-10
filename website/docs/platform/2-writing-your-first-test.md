@@ -44,7 +44,7 @@ export default test('bigtest todomvc')
   );
 ```
 
-For your first test, you can start with something small, and then build it up after you see it running successfully. Let's assert that an app's heading text has rendered. 
+For your first test, you can start with something small, and then build it up after you see it running successfully. Let's assert that an app's heading text has rendered.
 
 First, look for some text on your app's index page that is wrapped in an `<h1>`.
 
