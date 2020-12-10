@@ -17,7 +17,7 @@ const features = [
   },
   {
     title: 'Easier testing starts with helpful error messages',
-    imageUrl: 'images/design-systems.png',
+    imageUrl: 'images/error-sample.svg',
     description: (
       <>
         Developers spend more than 30% of their time debugging errors, and failed tests are no exception. BigTest&#x27;s brand new architecture provides you with insightful error messages, sparing you the never-ending logs.
@@ -72,7 +72,7 @@ function Interactors() {
               Get Started
             </Link>
           </div>
-          <div className={styles.heroImage}>
+          <div className={clsx(styles.heroImage, styles.heroCrossPlatformIframe)}>
             <iframe
               src={useBaseUrl('/asciinema/iframes/cross-platform.html')}
               className={styles.iframeCrossPlatform}
@@ -82,6 +82,10 @@ function Interactors() {
         </div>
       </header>
       <main>
+        <section className={styles.bigQuoteWrapper}>
+          <blockquote className={styles.bigQuote}>“BigTest is the testing framework I've always wanted to have. It takes all we've learned about testing and wraps it up in a coherent and powerful package.”</blockquote>
+          <p className={styles.bigQuoteAuthor}>— Jonas Nicklas, Creator of <a href="https://github.com/teamcapybara/capybara" target="_blank" rel="nofollow" className="link">Capybara</a>, co-creator of BigTest</p>
+        </section>
         {features && features.length > 0 && (
           <>
             {
