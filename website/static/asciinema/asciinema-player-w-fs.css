@@ -2576,9 +2576,9 @@
 }
 
 .frontside-player .asciinema-player .control-bar{
-  bottom: -35px;
+  bottom: -32px;
   background: none;
-  color: #15315d;
+  color: white;
 }
 
 .frontside-player .asciinema-player .control-bar .playback-button svg {
@@ -2587,7 +2587,7 @@
 }
 
 .frontside-player .asciinema-player .control-bar svg.icon path {
-  fill: #15315d;
+  fill: white;
 }
 
 .frontside-player .asciinema-player .fullscreen-button {
