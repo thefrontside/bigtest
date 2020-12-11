@@ -98,7 +98,32 @@ export class Interactor<E extends Element, F extends Filters<E>, A extends Actio
    * ```
    */
   perform(fn: (element: E) => void): Interaction<void> {
-    return interaction(`${this.description} performs`, () => {
+    return interaction(`${this.description} performs`, async () => {
+      if(bigtestGlobals.runnerState === 'assertion') {
+        throw new Error(`tried to run perform on ${this.description} in an assertion, perform should only be run in steps`);
+      }
+      return await converge(() => {
+        fn(this.unsafeSyncResolveUnique());
+      });
+    });
+  }
+
+  /**
+   * Perform a one-off assertion on the given interactor. Takes a function which
+   * receives an element. This function converges, which means that it is rerun
+   * in a loop until it does not throw an error or times out.
+   *
+   * We recommend using this function for debugging only. You should normally
+   * define a filter in an {@link InteractorSpecification}.
+   *
+   * ## Example
+   *
+   * ``` typescript
+   * await Link('Next').assert((e) => assert(e.tagName === 'A'));
+   * ```
+   */
+  assert(fn: (element: E) => void): Interaction<void> {
+    return interaction(`${this.description} asserts`, () => {
       return converge(() => {
         fn(this.unsafeSyncResolveUnique());
       });
