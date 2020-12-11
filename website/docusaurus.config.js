@@ -124,7 +124,7 @@ module.exports = {
         tsconfig: '../packages/interactor/tsconfig.json',
         // TypeDoc options (see typedoc --help)
         out: 'interactors/api',
-        readme: '../../packages/interactor/API.md',
+        readme: '../packages/interactor/API.md',
         ignoreCompilerErrors: true,
         target: 'esnext',
         mode: 'file',
