@@ -5,11 +5,21 @@ title: Writing Interactors
 
 Nearly every app has at least one user interaction that is strange or special, like date pickers, drag and drop areas, masked radio buttons, modals, and more. It is normal to write your own Interactors, where you can make complex interactions as easy to test as a simple button click.
 
+<!--
+🧹👆
+"strange" seems like a very charged word, can we choose something more neutral like "unusual" or "non-standard" or something? 
+-->
+
 In this section, you will learn how to create a new Interactor for any interface and use it in your tests. We will start with a simple example for learning purposes, level up to a more complex example, and then cover common questions.
 
 ## Writing your first interactor
 
 In this example, we will create our own `Button` Interactor to use as an alterantive to the one offered by BigTest as you may have seen in the [`quick start`](/docs/interactors) section.
+
+<!--
+🧹👆
+Can we start with something even simpler? Something like `Sidebar` or something would be nice?
+-->
 
 There are four things to decide:
 1. What to name and label the interactor
@@ -34,14 +44,23 @@ export const Button = createInteractor<HTMLButtonElement>('my-button-interactor'
 });
 ```
 
+<!--
+🧹👆
+The example, which uses an id for the locator goes against the advice we gave for interactor in the previous section. The id is for computers. I know we want to make it different, but maybe we can use `aria-label` for the locator instead? That's something a user with assistive technology would use to identify the UI element.
+-->
+
 In this example we've configured the selector as `'button, input[type=button]'` which will target both `<button>` and `<input type='button'>` elements.
+
+<!--
+🧹👆
+What does "target" mean? It could mean a couple of things, so maybe it's worth expanding on this to say that the selector chooses a flat list top level elements that will be considered. Filters and locators are used to narrow this list.
+-->
 
 The string argument to `createInteractor()` is the name of the interactor your console will print if there's a failing test:
 ```
 NoSuchElementError: did not find my-button-interactor "sign-in"
 ```
 _An example of the console output when a test is unable to locate the interactor_
-<!-- check what cypress and bigtest platform outputs; i think it might be the same -->
 
 And also note that locators, filters, and actions are optional when creating your own interactor. If you create an interactor without a locator, it will default to `locator: element => element.textContent`. The example above has its locator configured as `element.id`; this was just to demonstrate that it does not always have to be `element.textContent` and you can set these properties to anything that suits your needs.
 
@@ -59,6 +78,11 @@ export default test('login form')
     .assertion(Heading('You are logged in!').exists()));
 ```
 
+<!--
+🧹👆
+The code snippet only has a rendition in Platform, not Cypress or Jest
+-->
+
 In this example using the Bigtest Platform, we are passing in `sign-in-button-id` to the Button because its locator was configured to search for `element.id`.
 
 The [Button](/) interactor from BigTest does a lot more than what we just wrote, but this small example is a good place to start for understanding how to use `createInteractor`.
@@ -67,6 +91,17 @@ Check out the API page of [createInteractor()](/) for more details.
 
 ## Writing your second interactor
 Below is a more complex demonstration of what you can do with interactors:
+
+<!--
+🧹👆
+Rather than put the implementation first here with the table cell interactor, talking about how you can use filters to make very complex, yet very readable assertions is one of the great strengths of interactors. Leading with an example of how awesome it is to _use_ the power filter is going to sell more than the somewhat large implementation, which without seeing the benefit first, is hard to evaluate in context.
+
+Something like this:
+```js
+TableCell({ columnTitle: 'politics', row: 3 }).has({ value: '$600' });
+```
+-->
+
 ```js
 import { createInteractor, perform } from 'bigtest';
 
@@ -102,6 +137,12 @@ export const TableCell = createInteractor('table cell')({
   }
 });
 ```
+
+<!--
+🧹👆
+There is a very significant jump in complexity in this example. This seems like the type of the interactor we should bundle, but it doesn't seem great as a teaching aid.
+-->
+
 You'll notice we created `columnTitle` and `rowNumber` filters that will access its parent elements to get the appropriate value we're looking for. The locator was not specified so it will default to `element.textContent`.
 
 Now let's pretend we're testing a Jeopardy chart where we have multiple tablecells with similar values:

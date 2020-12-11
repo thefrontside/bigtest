@@ -47,7 +47,19 @@ export default test('BigTest Platform')
   .assertion(
     Page({ url: 'localhost:3000/contact' }).exists());
 ```
+<!-- 
+🧹👆
+assert on the title because that's more likely the use-case
+```
+Page.has({ title: 'BigTest Example Application' });
+```
+-->
 
 ### Up Next
 
 Every interactor has some things in common, whether it is built in or you wrote it yourself. In the next section, we will have a closer look at what locators, filters, and actions are. 
+
+<!--
+🧹👆
+Can we get a preview here? "some things in common" might be better as more specific. What are those things? Actions, which advance the state of your app, and filters which match on it and help you do things like make assertions
+-->
