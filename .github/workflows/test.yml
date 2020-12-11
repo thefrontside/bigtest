@@ -74,7 +74,7 @@ jobs:
       - name: cypress install, build and run
         uses: cypress-io/github-action@v2
         with:
-          project: integrations/cypress-interactors
+          working-directory: integrations/cypress-interactors
           build: yarn setup
           start: yarn start-server
           wait-on: 'http://localhost:3000'
