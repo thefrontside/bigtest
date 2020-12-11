@@ -6,12 +6,13 @@
   "scripts": {
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "setup": "cd .. && yarn && yarn prepack && yarn workspace @bigtest/interactor prepack --project tsconfig-publish.json",
-    "start-server": "yarn ../packages/todomvc/bin/start.js 3000",
-    "test": "yarn start-server & wait-on http://localhost:3000 & yarn cypress run"
+    "start-server": "node ../../packages/todomvc/bin/start 3000",
+    "test": "cypress run",
+    "start:then:test": "start-server-and-test start-server http://localhost:3000 test"
   },
   "devDependencies": {
     "cypress": "^5.6.0",
-    "typescript": "3.9.7",
-    "wait-on": "^5.2.0"
+    "start-server-and-test": "^1.11.6",
+    "typescript": "3.9.7"
   }
 }
