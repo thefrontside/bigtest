@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-/// <reference types="cypress" />
+/// <reference types="../../integrations/cypress-interactors/node_modules/cypress" />
 import { bigtestGlobals, RunnerState } from '@bigtest/globals';
 import { Interaction, ReadonlyInteraction } from '../interaction';
 

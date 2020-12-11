@@ -1,0 +1,11 @@
+{
+  "extends": "@frontside/tsconfig",
+  "compilerOptions": {
+    "sourceMap": false,
+    "esModuleInterop": true,
+    "types": ["cypress"]
+  },
+  "include": [
+    "../../packages/interactor/src/integrations/**/*.ts"
+  ]
+}

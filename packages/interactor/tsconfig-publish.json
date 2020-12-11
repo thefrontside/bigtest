@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "types": ["../../integrations/cypress-interactors/node_modules/cypress"]
+  },
+}

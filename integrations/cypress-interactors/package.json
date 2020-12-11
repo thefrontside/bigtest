@@ -1,0 +1,17 @@
+{
+  "name": "cypress-interactors",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "lint": "eslint \"{src,test}/**/*.ts\"",
+    "setup": "cd .. && yarn && yarn prepack && yarn workspace @bigtest/interactor prepack --project tsconfig-publish.json",
+    "start-server": "yarn ../packages/todomvc/bin/start.js 3000",
+    "test": "yarn start-server & wait-on http://localhost:3000 & yarn cypress run"
+  },
+  "devDependencies": {
+    "cypress": "^5.6.0",
+    "typescript": "3.9.7",
+    "wait-on": "^5.2.0"
+  }
+}
