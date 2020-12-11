@@ -19,12 +19,14 @@ describe('@bigtest/atom Slice', () => {
       slice = atom.slice('outer', 'data');
     });
 
-    it('should not blow up with get', () => {
-       console.dir(slice.get());
+    it('should not blow up with no state and get', () => {
+       expect(slice.get()).toBeUndefined();
     });
 
-    it('should not blow up with set', () => {
-      slice.set('houston we have a problem')
+    it('should not blow up with no state and set', () => {
+      slice.set('houston we have a problem');
+
+      expect(slice.get()).toBeUndefined();
     });
   });
   

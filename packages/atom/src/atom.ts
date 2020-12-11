@@ -6,6 +6,7 @@ import { Channel } from '@effection/channel';
 import { Operation } from 'effection';
 import { Atom, Sliceable } from './sliceable';
 import { assert } from  'assert-ts';
+import { unique } from './unique';
 
 export function createAtom<S>(init: S): Atom<S> {
   let initialState = init;
@@ -28,14 +29,12 @@ export function createAtom<S>(init: S): Atom<S> {
   }
 
   function set(value: S): void {
-    let current = getOption();
-
-    if(value === O.toUndefined(current)) {
+    if(value === get()) {
       return;
     }
 
     state = pipe(
-      current,
+      getOption(),
       lens.getOption,
       lens.set(value as S),
     );
@@ -45,12 +44,11 @@ export function createAtom<S>(init: S): Atom<S> {
 
   function update(fn: (s: S) => S) {
     let next = pipe(
-      getOption(),
-      O.toUndefined as ((a: O.Option<S>) => S),
-      fn,
-    );
+      lens,
+      Op.modify(fn),
+    )(getOption());
 
-    set(next);
+    set(O.toUndefined(next) as S);
   }
 
   function *once(predicate: (state: S) => boolean): Operation<S> {
@@ -65,10 +63,12 @@ export function createAtom<S>(init: S): Atom<S> {
 
   function reset(initializer?: (initial: S, curr: S) => S) {
     if (!initializer) {
-      initializer = (initial) => initial;
+      initializer = (initial) => {
+        return initial;
+      }
     }
     states.close();
-    set(initializer(initialState, O.toUndefined(getOption()) as S));
+    set(initializer(initialState, get()));
   }
 
   function setMaxListeners(value: number) {
@@ -96,14 +96,18 @@ export function createAtom<S>(init: S): Atom<S> {
       return current;
     }
 
-    function getter(): S[P] {
+    function getSlice(): S[P] {
       return pipe(
         getSliceOption(),
         O.toUndefined
-      ) as S[P]
+      ) as S[P];
     }
 
-    function setter(value: S[P]): void {
+    function setSlice(value: S[P]): void {
+      if(value === getSlice()) {
+        return;
+      }
+
       let next = pipe(
         getOption(),
         sliceOptional.set(value),
@@ -113,7 +117,7 @@ export function createAtom<S>(init: S): Atom<S> {
       set(next as S);
     }
 
-    function updater(fn: (s: S[P]) => S[P]) {
+    function updateSlice(fn: (s: S[P]) => S[P]) {
       let next = pipe(
         sliceOptional,
         Op.modify(fn),
@@ -122,7 +126,7 @@ export function createAtom<S>(init: S): Atom<S> {
       set(O.toUndefined(next) as S);
     }
 
-    function remover() {
+    function removeSlice() {
       let next = pipe(
         sliceOptional,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -132,8 +136,8 @@ export function createAtom<S>(init: S): Atom<S> {
       set(O.toUndefined(next) as S);
     }
 
-    function *once(predicate: (state: S[P]) => boolean): Operation<S[P]> {
-      let currentState = getter();
+    function *onceSlice(predicate: (state: S[P]) => boolean): Operation<S[P]> {
+      let currentState = getSlice();
       if(predicate(currentState)) {
         return currentState;
       } else {
@@ -162,16 +166,17 @@ export function createAtom<S>(init: S): Atom<S> {
     }
 
     let slice = {
-      get: getter,
-      set: setter,
-      update: updater,
-      remove: remover,
+      get: getSlice,
+      set: setSlice,
+      update: updateSlice,
+      remove: removeSlice,
       slice: sliceMaker(sliceOptional),
-      once,
+      once: onceSlice,
       over,
       *[SymbolSubscribable](): Operation<Subscription<S, void>> {
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        return yield subscribe(atom).map((s) => pipe(s, O.fromNullable, sliceOptional.getOption, O.toUndefined));
+        return yield subscribe(atom).map(
+          (s) => pipe(s, O.fromNullable, sliceOptional.getOption, O.toUndefined) as S[P]
+        ).filter(unique(getSlice()));
       }
     } as const;
 
