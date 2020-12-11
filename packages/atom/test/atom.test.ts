@@ -39,20 +39,20 @@ const state: TestRunState = {
 };
 
 describe('@bigtest/atom createAtom', () => {
-  let subject: Atom<TestRunState>;
-
   describe('Atom with none', () => {
+    let subject: Atom<undefined>;
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      subject = createAtom(undefined as any);
+      subject = createAtom(undefined);
     });
-
+    
     describe('.get()', () => {
       it('gets the current state', () => {
         expect(subject.get()).toBeUndefined();
       });
     });
   });
+
+  let subject: Atom<TestRunState>;
 
   describe('Atom with some', () => {
     beforeEach(() => {
