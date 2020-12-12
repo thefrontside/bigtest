@@ -13,13 +13,18 @@
 }
 
 .heroText {
-  width: 40%;
+  width: 41%;
   flex-shrink: 0;
 }
 
 .heroImage {
   width: 50%;
   margin: 40px auto;
+}
+
+.pinkEmphasis {
+  font-style: normal;
+  color: var(--fs-pink)
 }
 
 @media screen and (max-width: 997px) {
@@ -42,7 +47,7 @@
   box-sizing: border-box;
   padding-top: 40px;
   padding-bottom: 40px;
-  background-image: url("/bigtest/images/decor-color-blur-100-p-1080.jpeg");
+  background-image: url(/bigtest/images/decor-color-blur-100-p-1080.jpeg);
   background-position: 100% 50%;
   background-size: 53%;
   background-repeat: no-repeat;
@@ -84,7 +89,7 @@
   font-weight: 700;
   display: inline-block;
   padding-bottom: 10px;
-  background-image: url("/bigtest/images/decor-button-twist2x.png"),
+  background-image: url(/bigtest/images/decor-button-twist2x.png),
     linear-gradient(90deg, #26abe8, #f74d7b);
   background-position: -15px -15px, 0px 0px;
   background-size: 317px, auto;
@@ -147,4 +152,66 @@
 
 .topDecoration {
   margin-bottom: 40px;
+}
+
+.iframeCrossPlatform {
+  width: 535px;
+  height: 665px;
+  outline: none;
+  border: none;
+  overflow: hidden;
+  background: #091a35;
+  border-radius: 10px;
+  animation-name: iframeLoading;
+	animation-duration: 1s;
+	animation-iteration-count: 1;
+	animation-direction: alternate;
+	animation-timing-function: linear;
+}
+
+@keyframes iframeLoading {
+  0% {
+		background: #091a35;
+	}
+	50% {
+		background: #153a75;
+  }
+  100% {
+		background: #040e1f;
+	}
+
+}
+
+.heroCrossPlatformIframe {
+  text-align: center;
+  background: url(/bigtest/images/iframe-bg.svg) no-repeat center top;
+  background-size: contain;
+  padding-top: 60px;
+}
+
+.bigQuoteWrapper {
+  max-width: 780px;
+  margin: 0 auto -40px auto;
+  padding: 80px 33px;
+  background-image: url(/bigtest/images/decor-subtler-background.svg);
+  background-position: center center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.bigQuote {
+  padding: 10px 0;
+  border-left-style: none;
+  color: var(--ifm-color-primary);
+  font-size: 40px;
+  line-height: 45px;
+  font-weight: 800;
+  letter-spacing: -0.1px;
+}
+
+.bigQuoteAuthor {
+  color: var(--ifm-color-primary);
+  font-size: 25px;
+  line-height: 35px;
+  font-weight: 400;
 }
