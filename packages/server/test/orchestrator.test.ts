@@ -20,11 +20,8 @@ describe('orchestrator', () => {
       body = await response.json();
     });
 
-    it('responds successfully', () => {
-      expect(response.ok).toEqual(true);
-    });
-
     it('contains the ping text', () => {
+      expect(response.ok).toEqual(true);
       expect(body).toEqual({"data": {"echo": "Hello World"}})
     });
   });
@@ -38,11 +35,8 @@ describe('orchestrator', () => {
       body = await response.text();
     });
 
-    it('responds successfully', () => {
-      expect(response.ok).toEqual(true);
-    });
-
     it('returns the agent html', () => {
+      expect(response.ok).toEqual(true);
       expect(body).toContain('<title>BigTest</title>');
     });
   });
@@ -55,11 +49,8 @@ describe('orchestrator', () => {
       body = await response.text();
     });
 
-    it('responds successfully', () => {
-      expect(response.ok).toEqual(true);
-    });
-
     it('returns the harness script', () => {
+      expect(response.ok).toEqual(true);
       expect(body).toContain('harness');
     });
   });
@@ -72,11 +63,8 @@ describe('orchestrator', () => {
       body = await response.text();
     });
 
-    it('responds successfully', () => {
-      expect(response.ok).toEqual(true);
-    });
-
     it('serves the application', () => {
+      expect(response.ok).toEqual(true);
       expect(body).toContain('<title>React TodoMVC Example</title>');
     });
   });
@@ -89,15 +77,9 @@ describe('orchestrator', () => {
       body = await response.text();
     });
 
-    it('responds successfully', () => {
-      expect(response.ok).toEqual(true);
-    });
-
     it('proxies to the application', () => {
+      expect(response.ok).toEqual(true);
       expect(body).toContain('<title>React TodoMVC Example</title>');
-    });
-
-    it('injects the harness script tag', () => {
       expect(body).toMatch(new RegExp(`<script src="http://localhost:\\d+/__bigtest/harness.js"></script>`, 'mg'));
     });
   });
@@ -111,11 +93,8 @@ describe('orchestrator', () => {
       body = await response.text();
     });
 
-    it('responds successfully', () => {
-      expect(response.ok).toEqual(true);
-    });
-
     it('serves the application', () => {
+      expect(response.ok).toEqual(true);
       expect(body).toContain('Signing In');
     });
   });
