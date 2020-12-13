@@ -68,15 +68,17 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
+      await actions.fork(
+        actions.atom.slice('appService', 'status').once(status => status.type === 'available')
+      );
+
       response = await actions.fetch('http://localhost:24100/');
       body = await response.text();
     });
 
-    it('responds successfully', () => {
-      expect(response.ok).toEqual(true);
-    });
-
     it('serves the application', () => {
+      expect(response.ok).toEqual(true);
+
       expect(body).toContain('<title>React TodoMVC Example</title>');
     });
   });
@@ -129,17 +131,13 @@ describe('orchestrator', () => {
       actions.updateApp({ url: `http://localhost:${port}` });
 
       await actions.fork(
-        actions.atom.slice('appService', 'status').once(status => {
-          return ['started', 'exited'].includes(status.type);
-        })
+        actions.atom.slice('appService', 'status').once(status => ['started', 'exited'].includes(status.type))
       );
 
       await actions.fork(daemon(`yarn test:app:start ${port}`));
 
       await actions.fork(
-        actions.atom.slice('appService', 'status').once(status => {
-          return status.type === 'available'
-        })
+        actions.atom.slice('appService', 'status').once(status => status.type === 'available')
       );
     });
 
