@@ -1,4 +1,4 @@
-import { Atom } from "@bigtest/atom";
+import { createAtom } from "@bigtest/atom";
 import { OrchestratorState } from "./state";
 import { ProjectOptions } from '@bigtest/project/dist';
 import path = require('path');
@@ -13,7 +13,7 @@ export const createOrchestratorAtom = (project: OrchestratorAtomOptions) => {
   let manifestSrcPath = path.resolve(manifestSrcDir, 'manifest.js');
   let agentServerConfig = new AgentServerConfig(project.proxy);
 
-  let atom = new Atom<OrchestratorState>({
+  let atom = createAtom<OrchestratorState>({
     manifestGenerator: {
       status: { type: 'pending' },
 

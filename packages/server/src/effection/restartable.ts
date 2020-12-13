@@ -2,7 +2,7 @@ import { spawn, Context, Operation } from 'effection'
 import { subscribe, ChainableSubscription } from '@effection/subscription';
 import { Slice } from "@bigtest/atom";
 
-export function *restartable<T>(slice: Slice<T, unknown>, operation: (t: T) => Operation<void>): Operation<void> {
+export function *restartable<T>(slice: Slice<T>, operation: (t: T) => Operation<void>): Operation<void> {
   let current: Context | null = null;
 
   let subscription: ChainableSubscription<T, undefined> = yield subscribe(slice);

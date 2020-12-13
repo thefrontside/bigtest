@@ -1,2 +1,2 @@
-export { Atom } from './atom';
-export { Slice } from './slice';
+export type { Atom, Slice } from './sliceable';
+export { createAtom } from './atom';

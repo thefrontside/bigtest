@@ -59,8 +59,8 @@ export type ServiceState<S extends ServiceStatus, O> = {
 };
 
 export type Service<S extends ServiceStatus, O> = {
-  (state: Slice<ServiceState<S, O>, OrchestratorState>): Operation<void>;
-};
+  (state: Slice<ServiceState<S, O>>): Operation<void>;
+};  
 
 export interface Manifest extends Test  {
   fileName: string;

@@ -3,7 +3,6 @@ import { Mailbox } from '@bigtest/effection';
 import { ResultStatus } from '@bigtest/suite';
 import { Slice } from '@bigtest/atom';
 import { AgentEvent } from '@bigtest/agent';
-import { OrchestratorState } from '../orchestrator/state';
 
 export interface AggregatorOptions {
   events: Mailbox<AgentEvent>;
@@ -20,7 +19,7 @@ export interface AggregatorTestOptions extends AggregatorAgentOptions {
 
 export abstract class Aggregator<T extends {status: unknown }, O extends AggregatorOptions> {
   constructor(
-    public slice: Slice<T, OrchestratorState>,
+    public slice: Slice<T>,
     public options: O,
   ) {}
 

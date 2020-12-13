@@ -102,6 +102,10 @@ export const actions = {
         }
       }));
 
+      await actions.fork(
+        actions.atom.slice('appService', 'status').once(status => status.type === 'available')
+      );
+
       orchestratorPromise = this.receive(delegate, { status: 'ready' });
     }
     return orchestratorPromise.then(cxt => {

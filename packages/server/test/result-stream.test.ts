@@ -14,12 +14,13 @@ import { actions, getTestProjectOptions } from './helpers';
 
 describe('result stream', () => {
   let atom: Atom<OrchestratorState>;
-  let slice: Slice<TestRunState, OrchestratorState>;
+  let slice: Slice<TestRunState>;
   let subscription: ChainableSubscription<TestEvent, void>;
 
   beforeEach(async () => {
     atom = createOrchestratorAtom(getTestProjectOptions());
     slice = atom.slice('testRuns', 'test-run-1');
+
     slice.set({
       testRunId: 'test-run-1',
       status: 'pending',

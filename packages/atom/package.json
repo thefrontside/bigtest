@@ -14,7 +14,9 @@
   "scripts": {
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "mocha": "mocha -r ts-node/register",
-    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "test:unit": "mocha -r ts-node/register test/**/*.test.ts",
+    "test:types": "dtslint test-dts --localTs ../../node_modules/typescript/lib --expectOnly",
+    "test": "yarn test:unit && yarn test:types",
     "prepack": "tsc --outdir dist --declaration --sourcemap"
   },
   "devDependencies": {
@@ -23,7 +25,6 @@
     "@frontside/typescript": "^1.1.0",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
-    "@types/ramda": "types/npm-ramda#dist",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
     "ts-node": "*"
@@ -32,8 +33,11 @@
     "@effection/channel": "^0.6.7",
     "@effection/events": "^0.7.8",
     "@effection/subscription": "^0.11.0",
+    "assert-ts": "^0.2.2",
     "effection": "0.7.0",
-    "ramda": "0.27.0"
+    "fp-ts": "^2.8.2",
+    "monocle-ts": "^2.3.3",
+    "typescript": "3.9.7"
   },
   "volta": {
     "node": "12.16.0",
