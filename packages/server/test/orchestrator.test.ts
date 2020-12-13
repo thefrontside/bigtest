@@ -68,9 +68,6 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
-      await actions.fork(
-        actions.atom.slice('appService', 'status').once(status => status.type === 'available')
-      );
 
       response = await actions.fetch('http://localhost:24100/');
       body = await response.text();
