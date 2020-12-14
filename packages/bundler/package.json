@@ -20,6 +20,7 @@
     "@babel/core": "^7.12.9",
     "@babel/plugin-transform-runtime": "^7.12.1",
     "@babel/preset-env": "^7.12.7",
+    "@babel/preset-typescript": "^7.12.7",
     "@babel/runtime": "^7.12.5",
     "@bigtest/effection": "^0.6.0",
     "@bigtest/project": "^0.13.0",

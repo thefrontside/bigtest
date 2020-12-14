@@ -31,8 +31,9 @@ function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMess
     plugins: [
       resolve({
         mainFields: ["browser", "module", "main"],
-        extensions: [...RESOLVE_DEFAULTS.extensions, '.jsx'],
+        extensions: [...RESOLVE_DEFAULTS.extensions, '.ts', '.tsx', '.jsx'],
       }),
+      commonjs(),
       typescript({
         tsconfig: bundle.tsconfig,
         tsconfigDefaults: defaultTSConfig(),
@@ -44,18 +45,13 @@ function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMess
       }),
       babel({
         babelHelpers: 'runtime',
-        exclude: /node_modules/,
         extensions: [
-          ...DEFAULT_EXTENSIONS
+          ...DEFAULT_EXTENSIONS,
+          '.ts',
+          '.tsx'
         ],
-        sourceType: 'unambiguous',
-        presets: ['@babel/preset-env'],
-        plugins: [
-          ['@babel/plugin-transform-runtime']
-        ]
-      }),
-      commonjs({
-        ignoreGlobal: true,
+        presets: ['@babel/preset-env', '@babel/preset-typescript'],
+        plugins: ['@babel/plugin-transform-runtime']
       }),
       injectProcessEnv({
         NODE_ENV: 'production'
