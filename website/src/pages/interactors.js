@@ -127,6 +127,7 @@ function Interactors() {
                   {`it('subscribes to newsletter', async () => {
   await Input('email').fillIn('jorge@frontside.com');
   await Button('Subscribe').click();
+
   await Heading('Thanks!').exists();
 })`}
                 </CodeBlock>
