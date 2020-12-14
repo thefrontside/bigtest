@@ -127,7 +127,7 @@ function Interactors() {
                   {`it('subscribes to newsletter', async () => {
   await Input('email').fillIn('jorge@frontside.com');
   await Button('Subscribe').click();
-  await Heading('Thanks!').isVisible();
+  await Heading('Thanks!').exists();
 })`}
                 </CodeBlock>
               </TabItem>
@@ -139,7 +139,7 @@ function Interactors() {
     Button('Subscribe').click()
   ]);
   cy.expect([
-    Heading('Thanks!').isVisible();
+    Heading('Thanks!').exists();
   ])
 })`}
                 </CodeBlock>
@@ -152,7 +152,7 @@ function Interactors() {
     Button('Subscribe').click()
   ])
   .assertion(
-    Heading('Thanks!').isVisible()
+    Heading('Thanks!').exists()
   );`}
                 </CodeBlock>
               </TabItem>
