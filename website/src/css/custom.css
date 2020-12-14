@@ -241,3 +241,39 @@ body {
   letter-spacing: 1px;
   font-size: 0.8rem;
 }
+
+.interactors-hero-tabs .maybe-class-name {
+  /* color: var(--fs-pink) !important; */
+  font-weight: bold;
+  background-image: linear-gradient(45deg,#ec6999,#59aae9 95%);
+  text-align: center;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.interactors-hero-tabs .punctuation + .punctuation + .property-access {
+  color: #db95c2 !important;
+  font-weight: bold;
+}
+
+.interactors-hero-tabs .token-line {
+  margin-top: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+
+.tabs__item {
+  padding: 0.3rem 1rem;
+  border-radius: var(--ifm-global-radius);
+  border: 1px solid transparent;
+  color: var(--ifm-sub-heading-color);
+  margin-right: 0.5rem;
+}
+
+.tabs__item.tabs__item--active {
+  background: none;
+  border-bottom: none;
+  border-radius: var(--ifm-global-radius);
+  border: 1px solid var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
+}
