@@ -158,6 +158,29 @@ export default test('Jeopardy chart')
     .assertion(TableCell('$600', { columnTitle: 'politics' }).absent()));
 ```
 
+## find
+
+Some interactors use the `find` method to chain interactors together. It returns a new interactor scoped within the current interactor, and is generally used for composing actions from primitives:
+
+```js
+createInteractor('DatePicker')({
+  actions: {
+    open: (picker) => picker.find(Button).click()
+  }
+});
+```
+
+You can also use the `find` method in your tests:
+
+```js
+DatePicker().find(Button('31')).click();
+```
+
+<!--
+🧹👆
+The section on `find` is in the wrong place, it should belong to "Writing interactors". In its place it would be good to have a section on using `find` to scope interactors, this is challenging since we don't currently have any built-in interactors which lend themselves to scoping, but there is one interactor we could easily add which would work well for scoping: `Fieldset`!
+-->
+
 ## Common questions
 
 ### When should I write a new Interactor instead of using the Built In DOM interactors?
