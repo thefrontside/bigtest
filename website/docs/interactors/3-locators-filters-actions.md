@@ -7,6 +7,8 @@ All interactors have some things in common, whether they are built-in or written
 
 ## Locators
 
+<!-- todo: talk about how we get a list and error if more than one -->
+
 One benefit of Interactors is that they help you align your tests with how a user actually interacts with the app, starting with finding what to act upon.
 
 Locators are the simplest way to find a specific element in a user interface.
@@ -18,15 +20,6 @@ Button('Submit').exists();
 ```
 
 A typical user identifies a button by the words printed across it, so for example, they would think of a button with the word 'Submit' on it as the "Submit" button. Interactors use locators to make that connection.
-
-<!--
-🧹👆
-I'd rephrase this a bit because finding buttons isn't what users do so much as identify them and divine their purpose and perhaps use an example.
-
-Maybe "A typical user identifies a button by the words printed across it, so for example, they would think of a button with the word 'Submit' on it as the "Submit" button. Interactors use
-
-min: i think he forgot to finish his suggestion so i filled in the blank.
--->
 
 What is going on behind the scenes? Just like the user, the built-in Button interactor provided by BigTest looks for a button with the "Submit" text. It uses [element.textContent](/) to find the match. To say it another way, `Button('Submit')` returns a button element whose `element.textContent` is equal to `Submit`.
 
