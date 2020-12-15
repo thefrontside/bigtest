@@ -1,124 +1,40 @@
 # BigTest
 
-The goal of the BigTest Project is to miniaturize the testing feedback
-loop while at the same time expanding the sizes of the systems it is
-possible to test.
+The goal of the BigTest Project is to minimize the testing feedback loop while at the same time expanding the size of the system it can test.
 
-# Fast
+## Fast and Smart
 
-The length of the testing feedback loop is equivalent to the time it
-takes from when you start a test until it either succeeds, or it fails
-and you are accurately able to understand why it failed. Why do we
-care about this metric? The math is simple. A project that can
-validate 100 changes in a 24 hour period has the potential of 10 times
-the throughput as a project that can only validate 10. This means that
-in order to achieve this, tests must be able to run quickly. But while
-test speed is a critical ingredient to a tight feedback loop, it is
-not the only thing. In the event of failure, the speed of diagnosis
-must be commensurately fast. Imagine a test that takes 5 milliseconds
-to run, but fails with an error message so inscrutable that it takes a
-further 90 minutes to figure out why. Unfortunately, despite a
-lightning fast test run, the effective length of the feedback loop is
-90 minutes. Thus in order to make testing feedback loops as small as
-possible, BigTest components must both run quickly, and provide
-failures that are precise and helpful. Apart from this, the only other
-substantial factor in the value of a test is its size.
+The length of the testing feedback loop is not determined by just how fast the test can report it succeeds or fails. Of course a test suite that can validate 800 assertions per minute has twice the throughput as a project that can only validate 400. But the critically important aspect of the speed of the testing feedback loop is how quickly and accurately you are able to understand why a test failed. A test that takes only 5 milliseconds to run but fails with an error message so inscrutable that it takes a further 90 minutes to figure out why is in fact excruciatingly slow. In order to make testing feedback loops as short as possible, BigTest components run quickly and provide failures that are precise and helpful.
 
-# Big
+## Size = Value
 
-It is very easy to write tests that are both fast and precise, but at
-the same time test almost nothing. These small tests, though
-instantaneous, are of little value because the outcomes they measure
-are themselves of little value. That’s not to say a React component
-rendering its props correctly isn’t critical, it’s just that if you
-test only that, and not that the component can be used in a workflow
-that correctly transfers money from one user account to another, then
-you’re leaving the lion’s share of the value, and thus the fate of
-your business, unguarded. At Google, they’ve [arrived at the insight][5]
-that "unit test", "functional test", and "end-to-end test" are
-arbitrary designations and that what really matters is the relative
-size of a test. The larger a test, the more systems it integrates and
-thus the more business value it protects. However, as demonstrated in
-the blog post from the Google testing team, test size is in direct
-conflict with feedback loops size.
+A test that is both fast and precise is not enough; it has to measure something of value as well. That’s not to say a React component rendering its props correctly isn’t critical; it’s just that a truly useful test would also test the component used in a workflow that correctly transfers money from one user account to another. At Google they’ve [come to the realization][5] that "unit test," "functional test" and "end-to-end test" are arbitrary designations and what really matters is the relative size of a test. The larger a test, the more systems it integrates and thus the more business value it protects. The only hitch of course is that test size is in direct conflict with feedback loop speed.
 
-The BigTest project approaches every piece of its platform from the
-perspective of empowering development teams to master this paradox and
-optimize testing feedback loops within the context of truly big, truly
-valuable tests.
+The BigTest project approaches every piece of its platform from the perspective of empowering development teams to master this tension and optimize testing feedback loops within the context of truly valuable tests.
 
 ## Interactors (Beta)
 
-The first piece in our platform, [BigTest Interactors](interactors) is
-a library that applies these principles to help you write UI tests
-from the outside in.
+The first element of our platform – BigTest Interactors – is a library designed to help you write UI tests from the outside in that are both efficient and valuable.
 
-Interactors manipulate an HTML interface at the highest level
-possible: from the perspective of a user, and make no assumptions
-about the internal workings of an app. This means that they cover 100%
-of your UI code starting from the raw input event handlers down. Not
-only that, but this same property means that your tests will work the
-same no matter if your application is written in React, Angular, Vue,
-or whether you chose to eventually rewrite it in Framework 2043 ™
+BigTest Interactors manipulate an HTML interface from the perspective of a user and make no assumptions about the internal workings of an app. This means they cover 100% of your UI code starting from the raw input event handlers. Your tests will work the same no matter if your application is written in React, Angular, Vue, or whether you chose to eventually rewrite it in Framework 2043.™
 
-Not only are Interactors big, but they're both fast and precise
-too. By using its unique [convergence strategy][1] and only coupling
-wait times to observable states, interactors naturally use the minimum
-amount of synchronization time while performing actions and
-assertions. Finally, because interactors are strongly associated with
-both the type and properties of the UI elements they actuate
-(e.g. Button, Checkbox, Input, ...), they can provide the next level
-in error messaging when something goes wrong, or an assertion fails.
+Not only are BigTest Interactors valuable, but they’re fast and precise too. By using its unique [convergence strategy][1] and only coupling wait times to observable states, BigTest Interactors naturally use the minimum amount of synchronization time while performing actions and assertions. Because they are strongly associated with both the type and properties of the UI elements they actuate (e.g. Button, Checkbox, Input, ...), they quickly provide the next level in error messaging when something goes wrong or an assertion fails.
 
 ## Platform (Alpha)
 
-The [BigTest platform](platform) is a tool designed to meet the needs of an entire organization's testing strategy.
+The BigTest platform is a tool designed to meet the needs of an entire organization's testing strategy. It can do this because BigTest has been built from the ground up to be completely platform independent. Rather that coupling to a single runtime like [Electron][2] or [WebDriver][3], it uses an Agent architecture that allows tests to be run on any platform that supports WebSockets (which is pretty much anything!). That means it can be used to test real web applications against real browsers on any number of devices including iOS and Android. But it also means it can be used to support testing on native apps, desktop apps, and even server side apps. And best of all: the BigTest platform enables radical transparency into the testing process by making all internal state available over a convenient GraphQL API (its CLI in fact is a GraphQL client).
 
-Currently, it can be used to test real web applications, against real
-browsers on any number of devices... including iOS and Android.
-However, it is built to be used not just for testing web applications,
-but to support testing on native apps, desktop apps, and even server
-side apps.
-
-In order to accomplish this, BigTest has been built from
-the ground up to be completely platform indedpendent. Rather that
-coupling to a single runtime like [Electron][2] or [WebDriver][3], it
-uses an Agent architecture that allows tests to be run on _any_
-platform that supports WebSockets (which is pretty much anything!).
-
-Not only that, but the BigTest platform enables radical transparency
-into the testing process by making all internal state available over a
-convenient GraphQL API. Anything that you can do with BigTest can be
-done over GraphQL. In fact, the CLI is nothing more than just another
-GraphQL client.
-
-- illustration
 
 ## Simulation (Researching)
+A key area of research in the BigTest project involves enabling tests for systems whose dependencies may or may not be available. This could be a frontend team that wants to develop against a backend that doesn't exist yet or is under heavy development, or perhaps a native developer that wants to make an app for a Bluetooth device that been designed but not manufactured. Whatever the reason, both testing and [the entire developer experience are always better off with a simulation strategy][4]
 
-A key area of research in the BigTest project involves enabling tests
-for systems whose dependencies may or may not be available. This could
-be a frontend team that wants to develop against a
-backend that doesn't exist yet or is under heavy development, or
-perhaps a native developer that wants to make an app for a Bluetooth
-device that been designed, but not manufactured. Whatever the reason,
-both testing and [the entire developer experience are always better off
-with a simulation strategy][4] in place.
+We have deployed such simulators on a number of different projects and are busy investigating the best ways to package them as independent products. Frontside plans to release simulators for
 
-We have deployed such simulators on a number of different projects and
-are looking into the best ways to package them as independent
-producs. Our plans are to release simulators for
+- HTTP; both custom backends and well-known 3rd party services like auth0
+- Bluetooth Low Energy Peripherals
+- Location Services
 
-* HTTP; both custom backends and well-known 3rd party services like auth0
-* Bluetooth Low Energy Peripherals
-* Location Services
-
-When using these simulators in the context of testing, the most
-important capability that they must posess is the ability to set them
-into a known state before each and every test case, and so the
-standalone simulators will provide hooks to manufacture and load large
-datasets, but also clear them out. However, when using them together
-with the BigTest platform, this integration will be seamless.
+The key advantage of using these simulators in the context of the BigTest platform will be the ability to set them to a known state before each and every test case. That way the standalone simulators will provide “hooks” to manufacture and load large datasets, but also efficiently clear them out between tests.
 
 [1]: https://frontside.com/blog/2020-07-16-the-lesson-of-bigtest-interactors/#the-convergence-strategy
 [2]: https://www.electronjs.org
