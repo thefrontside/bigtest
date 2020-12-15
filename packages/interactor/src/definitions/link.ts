@@ -22,7 +22,7 @@ const LinkInteractor = createInteractor<HTMLLinkElement>('link')({
  *
  * The link is located by its text.
  *
- * ### Example
+ * ## Example
  *
  * ``` typescript
  * await Link('Home').click();
@@ -30,7 +30,7 @@ const LinkInteractor = createInteractor<HTMLLinkElement>('link')({
  * await Link({ id: 'home-link', href: '/' }).exists();
  * ```
  *
- * ### Filters
+ * ## Filters
  *
  * - `title`: *string* – Filter by title
  * - `id`: *string* – Filter by id
@@ -38,7 +38,7 @@ const LinkInteractor = createInteractor<HTMLLinkElement>('link')({
  * - `visible`: *boolean* – Filter by visibility. Defaults to `true`. See {@link isVisible}.
  * - `focused`: *boolean* – Filter by whether the link is focused. See {@link focused}.
  *
- * ### Actions
+ * ## Actions
  *
  * - `click()`: *{@link Interaction}* – Click on the link
  *

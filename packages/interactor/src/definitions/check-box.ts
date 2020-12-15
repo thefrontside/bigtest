@@ -34,7 +34,7 @@ const CheckBoxInteractor = createInteractor<HTMLInputElement>('check box')({
  *
  * The checkbox is located by the text of its label.
  *
- * ### Example
+ * ## Example
  *
  * ``` typescript
  * await CheckBox('Submit').click();
@@ -42,7 +42,7 @@ const CheckBoxInteractor = createInteractor<HTMLInputElement>('check box')({
  * await CheckBox({ id: 'submit-button', disabled: true }).exists();
  * ```
  *
- * ### Filters
+ * ## Filters
  *
  * - `title`: *string* – Filter by title
  * - `id`: *string* – Filter by id
@@ -52,7 +52,7 @@ const CheckBoxInteractor = createInteractor<HTMLInputElement>('check box')({
  * - `disabled`: *boolean* – Filter by whether the checkbox is disabled. Defaults to `false`.
  * - `focused`: *boolean* – Filter by whether the checkbox is focused. See {@link focused}.
  *
- * ### Actions
+ * ## Actions
  *
  * - `click()`: *{@link Interaction}* – Click on the checkbox
  * - `check()`: *{@link Interaction}* – Check the checkbox if it is not checked

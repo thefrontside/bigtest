@@ -84,7 +84,7 @@ const MultiSelectInteractor = createInteractor<HTMLSelectElement>('select box')(
  *
  * The multi select is located by the text of its label.
  *
- * ### Example
+ * ## Example
  *
  * ``` typescript
  * await MultiSelect('Language').select('English');
@@ -93,7 +93,7 @@ const MultiSelectInteractor = createInteractor<HTMLSelectElement>('select box')(
  * await MultiSelect('Language').has({ values: ['English', 'German'] });
  * ```
  *
- * ### Filters
+ * ## Filters
  *
  * - `title`: *string* – Filter by title
  * - `id`: *string* – Filter by id
@@ -103,7 +103,7 @@ const MultiSelectInteractor = createInteractor<HTMLSelectElement>('select box')(
  * - `disabled`: *boolean* – Filter by whether the checkbox is disabled. Defaults to `false`.
  * - `focused`: *boolean* – Filter by whether the checkbox is focused. See {@link focused}.
  *
- * ### Actions
+ * ## Actions
  *
  * - `click()`: *{@link Interaction}* – Click on the multi select
  * - `focus()`: *{@link Interaction}* – Move focus to the multi select

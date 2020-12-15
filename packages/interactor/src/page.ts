@@ -48,7 +48,7 @@ const PageInteractorInstance = Object.assign(PageInteractor(), {
  * page. When using the BigTest test runner, it can also be used for
  * interacting with the page itself, for example through nagivation.
  *
- * ### Example
+ * #### Example
  *
  * ``` typescript
  * await Page.has({ title: 'Welcome to my app!' });
@@ -60,12 +60,12 @@ const PageInteractorInstance = Object.assign(PageInteractor(), {
  * await Page.visit('/archive');
  * ```
  *
- * ### Filters
+ * #### Filters
  *
  * - `title`: *string* – the title of the document
  * - `url`: *string* – the URL of the document
  *
- * ### Actions
+ * #### Actions
  *
  * - `visit(path: string)`: *{@link Interaction}* – visit the given path in the test frame, BigTest runner only.
  *

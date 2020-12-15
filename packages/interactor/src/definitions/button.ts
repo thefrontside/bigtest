@@ -5,6 +5,7 @@ function isButtonElement(element: HTMLInputElement | HTMLButtonElement): element
   return element.tagName === 'BUTTON';
 }
 
+/** @internal **/
 const ButtonInteractor = createInteractor<HTMLInputElement | HTMLButtonElement>('button')({
   selector: 'button,input[type=button],input[type=submit],input[type=reset],input[type=image]',
   locator(element) {
@@ -40,7 +41,7 @@ const ButtonInteractor = createInteractor<HTMLInputElement | HTMLButtonElement>(
  *
  * The button is located by the visible text on the button.
  *
- * ### Example
+ * ## Example
  *
  * ``` typescript
  * await Button('Submit').click();
@@ -48,7 +49,7 @@ const ButtonInteractor = createInteractor<HTMLInputElement | HTMLButtonElement>(
  * await Button({ id: 'submit-button', disabled: true }).exists();
  * ```
  *
- * ### Filters
+ * ## Filters
  *
  * - `title`: *string* – Filter by title
  * - `id`: *string* – Filter by id
@@ -56,7 +57,7 @@ const ButtonInteractor = createInteractor<HTMLInputElement | HTMLButtonElement>(
  * - `disabled`: *boolean* – Filter by whether the button is disabled. Defaults to `false`.
  * - `focused`: *boolean* – Filter by whether the button is focused. See {@link focused}.
  *
- * ### Actions
+ * ## Actions
  *
  * - `click()`: *{@link Interaction}* – Click on the button
  * - `focus()`: *{@link Interaction}* – Move focus to the button

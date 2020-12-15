@@ -32,7 +32,7 @@ const RadioButtonInteractor = createInteractor<HTMLInputElement>('radio button')
  *
  * The radio button is located by the text of its label.
  *
- * ### Example
+ * ## Example
  *
  * ``` typescript
  * await RadioButton('Public').click();
@@ -40,7 +40,7 @@ const RadioButtonInteractor = createInteractor<HTMLInputElement>('radio button')
  * await RadioButton({ id: 'privacy-public', disabled: true }).exists();
  * ```
  *
- * ### Filters
+ * ## Filters
  *
  * - `title`: *string* – Filter by title
  * - `id`: *string* – Filter by id
@@ -50,7 +50,7 @@ const RadioButtonInteractor = createInteractor<HTMLInputElement>('radio button')
  * - `disabled`: *boolean* – Filter by whether the radio button is disabled. Defaults to `false`.
  * - `focused`: *boolean* – Filter by whether the radio button is focused. See {@link focused}.
  *
- * ### Actions
+ * ## Actions
  *
  * - `click()`: *{@link Interaction}* – Click on the radio button
  * - `choose()`: *{@link Interaction}* – Click on the radio button

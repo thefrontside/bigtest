@@ -40,7 +40,7 @@ const TextFieldInteractor = createInteractor<HTMLInputElement | HTMLTextAreaElem
  *
  * The text fied is located by the text of its label.
  *
- * ### Example
+ * ## Example
  *
  * ``` typescript
  * await TextField('Email').fillIn('jonas@example.com');
@@ -48,7 +48,7 @@ const TextFieldInteractor = createInteractor<HTMLInputElement | HTMLTextAreaElem
  * await TextField({ id: 'email-field', disabled: true }).exists();
  * ```
  *
- * ### Filters
+ * ## Filters
  *
  * - `title`: *string* – Filter by title
  * - `id`: *string* – Filter by id
@@ -59,7 +59,7 @@ const TextFieldInteractor = createInteractor<HTMLInputElement | HTMLTextAreaElem
  * - `disabled`: *boolean* – Filter by whether the text field is disabled. Defaults to `false`.
  * - `focused`: *boolean* – Filter by whether the text field is focused. See {@link focused}.
  *
- * ### Actions
+ * ## Actions
  *
  * - `click()`: *{@link Interaction}* – Click on the text field
  * - `focus()`: *{@link Interaction}* – Move focus to the text field

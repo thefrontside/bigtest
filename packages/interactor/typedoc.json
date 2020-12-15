@@ -1,8 +1,10 @@
 {
   "out": "docs",
+  "entryPoint": "src/index.ts",
+  "inputFiles": "src/index.ts",
   "name": "@bigtest/interactor",
-  "entryPoints": "src/index.ts",
   "readme": "API.md",
   "includeVersion": true,
-  "excludePrivate": true
+  "excludePrivate": true,
+  "excludeNotExported": true
 }

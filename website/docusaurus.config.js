@@ -120,24 +120,33 @@ module.exports = {
       'docusaurus-plugin-typedoc',
       {
         id: 'typedoc-interactor',
-        inputFiles: ['../packages/interactor/src'],
+        inputFiles: ['../packages/interactor/src/'],
+        entryPoint: 'index.ts',
         tsconfig: '../packages/interactor/tsconfig.json',
         // TypeDoc options (see typedoc --help)
         out: 'interactors/api',
-        readme: '../packages/interactor/API.md',
-        ignoreCompilerErrors: true,
         target: 'esnext',
         mode: 'file',
+        includeDeclarations: false,
+        excludeExternals: true,
+        excludeNotExported: true,
+        excludePrivate: true,
+        excludeProtected: true,
+        ignoreCompilerErrors: true,
+        includeVersion: true,
+        disableSources: false,
+        excludeTags: false,
+        readme: 'none',
+        categorizeByGroup: true,
+        defaultCategory: 'Default category',
+
         sidebar: {
           sidebarFile: './sidebars/typedoc-interactor-sidebar.js',
-          fullNames: false,
+          fullNames: true,
           readmeLabel: 'README',
           globalsLabel: 'Globals',
         },
-        includeDeclarations: true,
-        excludeExternals: true,
-        ignoreCompilerErrors: true,
-        allReflectionsHaveOwnDocument: true
+        allReflectionsHaveOwnDocument: false,
       }
     ]
   ]

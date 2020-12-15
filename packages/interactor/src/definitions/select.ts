@@ -62,14 +62,14 @@ const SelectInteractor = createInteractor<HTMLSelectElement>('select box')({
  *
  * The select box is located by the text of its label.
  *
- * ### Example
+ * ## Example
  *
  * ``` typescript
  * await Select('Language').select('English');
  * await Select('Language').has({ value: 'English' });
  * ```
  *
- * ### Filters
+ * ## Filters
  *
  * - `title`: *string* – Filter by title
  * - `id`: *string* – Filter by id
@@ -79,7 +79,7 @@ const SelectInteractor = createInteractor<HTMLSelectElement>('select box')({
  * - `disabled`: *boolean* – Filter by whether the checkbox is disabled. Defaults to `false`.
  * - `focused`: *boolean* – Filter by whether the checkbox is focused. See {@link focused}.
  *
- * ### Actions
+ * ## Actions
  *
  * - `click()`: *{@link Interaction}* – Click on the select box
  * - `focus()`: *{@link Interaction}* – Move focus to the select box

@@ -12,7 +12,7 @@ export type FilterFn<T, E extends Element> = (element: E) => T;
  * locate the element, for example by returning the elements text content, or
  * an attribute value.
  *
- * ### Example
+ * #### Example
  *
  * ``` typescript
  * const inputValue: LocatorFn<HTMLInputElement> = (element) => element.value;

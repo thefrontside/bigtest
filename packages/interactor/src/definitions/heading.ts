@@ -14,13 +14,13 @@ const HeadingInteractor = createInteractor<HTMLHeadingElement>('heading')({
  * The heading interactor can be used to assert on the state of headings on the page,
  * represented by the `h1` through `h6` tags.
  *
- * ### Example
+ * ## Example
  *
  * ``` typescript
  * await Heading('Welcome!').exists();
  * ```
  *
- * ### Filters
+ * ## Filters
  *
  * - `level`: *number* – The level of the heading, for example, the level of `h3` is `3`.
  * - `visible`: *boolean* – Filter by visibility. Defaults to `true`. See {@link isVisible}.

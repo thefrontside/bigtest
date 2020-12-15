@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "docusaurus start",
+    "start-hard": "rm -drf ./docs/interactors/api ./sidebars && yarn start",
     "build": "docusaurus build && mkdir -p ./public/bigtest && rsync -a ./build/* ./public/bigtest && rm -rf ./build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",

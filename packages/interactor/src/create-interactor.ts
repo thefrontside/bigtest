@@ -14,7 +14,7 @@ const defaultLocator: LocatorFn<Element> = (element) => element.textContent || "
  * interactor. See {@link InteractorSpecification} for detailed breakdown of
  * available options for the builder.
  *
- * ### Creating a simple interactor
+ * ## Creating a simple interactor
  *
  * ``` typescript
  * let Paragraph = createInteractor('paragraph')({ selector: 'p' });
