@@ -12,6 +12,9 @@ module.exports = {
       disableSwitch: true,
       respectPrefersColorScheme: true,
     },
+    prism: {
+      theme: require('prism-react-renderer/themes/nightOwl'),
+    },
     navbar: {
       title: '',
       logo: {
