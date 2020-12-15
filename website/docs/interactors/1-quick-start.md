@@ -29,7 +29,7 @@ import TabItem from '@theme/TabItem';
   values={[
     {label: 'NPM', value: 'npm'},
     {label: 'Yarn', value: 'yarn'}
-  ]}>
+]}>
   <TabItem value="npm">
 
   ```
@@ -60,7 +60,7 @@ Click on the tabs below to see some examples within different testing frameworks
     {label: 'Jest', value: 'jest'},
     {label: 'Cypress', value: 'cypress'},
     {label: 'BigTest (alpha)', value: 'bigtest'}
-  ]}>
+]}>
   <TabItem value="jest">
 
   ```js
@@ -101,7 +101,7 @@ Click on the tabs below to see some examples within different testing frameworks
   </TabItem>
   <TabItem value="bigtest">
 
-  ```jsx
+  ```js
   import { Button, Page, test } from 'bigtest';
 
   export default test('BigTest')
@@ -132,10 +132,10 @@ In this example, we are testing that the "Sign In" button disappears after a cli
     {label: 'Jest', value: 'jest'},
     {label: 'Cypress', value: 'cypress'},
     {label: 'BigTest (alpha)', value: 'bigtest'}
-  ]}>
+]}>
   <TabItem value="jest">
 
-  ```jsx
+  ```js
   describe('Interactors with Jest', () => {
     beforeEach(() => render(<App />));
 
@@ -150,7 +150,7 @@ In this example, we are testing that the "Sign In" button disappears after a cli
   </TabItem>
   <TabItem value="cypress">
 
-  ```jsx
+  ```js
   describe('Interactors with Cypress', () => {
     beforeEach(() => cy.visit('/'));
 
@@ -169,7 +169,7 @@ In this example, we are testing that the "Sign In" button disappears after a cli
   </TabItem>
   <TabItem value="bigtest">
 
-  ```jsx
+  ```js
   import { Button, Page, test } from 'bigtest';
 
   export default test('BigTest')

@@ -3,22 +3,19 @@ id: write-your-own
 title: Writing Interactors
 ---
 
-Nearly every app has at least one user interaction that is strange or special, like date pickers, drag and drop areas, masked radio buttons, modals, and more. It is normal to write your own Interactors, where you can make complex interactions as easy to test as a simple button click.
-
-<!--
-🧹👆
-"strange" seems like a very charged word, can we choose something more neutral like "unusual" or "non-standard" or something? 
--->
+Nearly every app has at least one user interaction that is unusual or special, like date pickers, drag and drop areas, masked radio buttons, modals, and more. It is normal to write your own Interactors, where you can make complex interactions as easy to test as a simple button click.
 
 In this section, you will learn how to create a new Interactor for any interface and use it in your tests. We will start with a simple example for learning purposes, level up to a more complex example, and then cover common questions.
 
 ## Writing your first interactor
 
-In this example, we will create our own `Button` Interactor to use as an alterantive to the one offered by BigTest as you may have seen in the [`quick start`](/docs/interactors) section.
+In this example, we will create our own `TextField` Interactor to use as an alterantive to the one offered by BigTest as you may have seen in the [`Locators, Filters, and Actions`](/docs/interactors) page.
 
 <!--
 🧹👆
 Can we start with something even simpler? Something like `Sidebar` or something would be nice?
+
+min: i don't think we can because we want to hit all of the points below so there's no benefit to doing a `Sidebar` example especially when we want to make the point that you can create your own as an alternative to the ones offered by bigtest 
 -->
 
 There are four things to decide:
@@ -30,62 +27,114 @@ There are four things to decide:
 Putting this information together, we can make this new Interactor:
 
 ```js
-import { createInteractor, perform } from 'bigtest';
+import { createInteractor, perform, fillIn } from 'bigtest';
 
-export const Button = createInteractor<HTMLButtonElement>('my-button-interactor')({
-  selector: 'button, input[type=button]',
-  locator: (element) => element.id,
+export const TextField = createInteractor<HTMLInputElement>('my-textfield-interactor')({
+  selector: 'input[type=text]',
+  locator: (element) => element.placeholder,
   filters: {
-    value: (element) => element.textContent
+    value: (element) => element.value
   },
   actions: {
-    click: perform((element) => { element.click() })
+    fillIn: perform(fillIn)
   }
 });
 ```
 
-<!--
-🧹👆
-The example, which uses an id for the locator goes against the advice we gave for interactor in the previous section. The id is for computers. I know we want to make it different, but maybe we can use `aria-label` for the locator instead? That's something a user with assistive technology would use to identify the UI element.
--->
+> `fillIn` is a function exported by `bigtest`. See the implementation on its [API](/) page. You can use any of the functions defined by BigTest or implement your own.
 
-In this example we've configured the selector as `'button, input[type=button]'` which will target both `<button>` and `<input type='button'>` elements.
+In this example we've configured the selector as `input[type=text]` which will search for `<input type='text'>` elements in your testing environment.
 
 <!--
 🧹👆
 What does "target" mean? It could mean a couple of things, so maybe it's worth expanding on this to say that the selector chooses a flat list top level elements that will be considered. Filters and locators are used to narrow this list.
+
+min: changed target to 'search' but 🤷‍♂️
 -->
 
 The string argument to `createInteractor()` is the name of the interactor your console will print if there's a failing test:
 ```
-NoSuchElementError: did not find my-button-interactor "sign-in"
+NoSuchElementError: did not find my-textfield-interactor "USERNAME"
 ```
 _An example of the console output when a test is unable to locate the interactor_
 
-And also note that locators, filters, and actions are optional when creating your own interactor. If you create an interactor without a locator, it will default to `locator: element => element.textContent`. The example above has its locator configured as `element.id`; this was just to demonstrate that it does not always have to be `element.textContent` and you can set these properties to anything that suits your needs.
+And also note that locators, filters, and actions are optional when creating your own interactor. If you create an interactor without a locator, it will default to `locator: element => element.textContent`. The locator for the `TextField` interactor offered by BigTest uses the `textContent` of the associated label as we mentioned in the [previous page](docs/interactors/locators-filters-actions#filters). The example above has its locator configured as `element.placeholder`; this is just to demonstrate that you can set these properties to anything that suits your needs.
 
 Now let's import the new interactor and add it to a test:
 
-```js
-import { Heading, Page, test } from 'bigtest';
-import { Button } from './MyButton';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-export default test('login form')
-  .step(Page.visit('/'))
-  .assertion(Heading('Log In').exists())
-  .child('fill username and click button', test => test
-    .step(Button('sign-in-button-id').click())
-    .assertion(Heading('You are logged in!').exists()));
-```
+<Tabs
+  defaultValue="jest"
+  values={[
+    {label: 'Jest', value: 'jest'},
+    {label: 'Cypress', value: 'cypress'},
+    {label: 'BigTest (alpha)', value: 'bigtest'}
+]}>
+  <TabItem value="jest">
 
-<!--
-🧹👆
-The code snippet only has a rendition in Platform, not Cypress or Jest
--->
+  ```js
+  import React from 'react';
+  import { render } from '@testing-library/react';
+  import App from './App';
 
-In this example using the Bigtest Platform, we are passing in `sign-in-button-id` to the Button because its locator was configured to search for `element.id`.
+  import { Button, Heading } from 'bigtest';
+  import { TextField } from './MyTextField';
 
-The [Button](/) interactor from BigTest does a lot more than what we just wrote, but this small example is a good place to start for understanding how to use `createInteractor`.
+  describe('email subscription form', () => {
+    beforeEach(() => render(<App />));
+
+    it('fill and submit email address', async () => {
+      await TextField('EMAIL').fillIn('batman@gmail.com');
+      await Button('Subscribe').click();
+      await Heading('Success!').exists();
+    })
+  })
+  ```
+
+  </TabItem>
+  <TabItem value="cypress">
+
+  ```js
+  import { Button, Heading } from 'bigtest';
+  import { TextField } from './MyTextField';
+
+  describe('email subscription form', () => {
+    beforeEach(() => cy.visit('/'));
+
+    it('fill and submit email address', () => {
+      cy.do([
+        TextField('EMAIL').fillIn('batman@gmail.com');
+        Button('Subscribe').click();
+      ]);
+      cy.expect(Heading('Success'))
+    })
+  })
+  ```
+
+  </TabItem>
+  <TabItem value="bigtest">
+
+  ```js
+  import { Button, Heading, Page, test } from 'bigtest';
+  import { TextField } from './MyTextField';
+
+  export default test('email subscription form')
+    .step(Page.visit('/'))
+    .child('fill and submit email address', test => test
+      .step(
+        TextField('EMAIL').fillIn('batman@gmail.com'),
+        Button('Subscribe').click())
+      .assertion(Heading('Success!').exists()));
+  ```
+
+  </TabItem>
+</Tabs>
+
+In this example we are testing an email subscription form by first filling in the email textfield, clicking the `Subscribe` button, and then asserting for the success header.
+
+The [TextField](/) interactor from BigTest does a lot more than what we just wrote, but this small example is a good place to start for understanding how to use `createInteractor`.
 
 Check out the API page of [createInteractor()](/) for more details.
 
@@ -94,7 +143,7 @@ Below is a more complex demonstration of what you can do with interactors:
 
 <!--
 🧹👆
-Rather than put the implementation first here with the table cell interactor, talking about how you can use filters to make very complex, yet very readable assertions is one of the great strengths of interactors. Leading with an example of how awesome it is to _use_ the power filter is going to sell more than the somewhat large implementation, which without seeing the benefit first, is hard to evaluate in context.
+charles: Rather than put the implementation first here with the table cell interactor, talking about how you can use filters to make very complex, yet very readable assertions is one of the great strengths of interactors. Leading with an example of how awesome it is to _use_ the power filter is going to sell more than the somewhat large implementation, which without seeing the benefit first, is hard to evaluate in context.
 
 Something like this:
 ```js
@@ -140,27 +189,81 @@ export const TableCell = createInteractor('table cell')({
 
 <!--
 🧹👆
-There is a very significant jump in complexity in this example. This seems like the type of the interactor we should bundle, but it doesn't seem great as a teaching aid.
+jonas: There is a very significant jump in complexity in this example. This seems like the type of the interactor we should bundle, but it doesn't seem great as a teaching aid.
+
+min: hmmmmm
 -->
 
 You'll notice we created `columnTitle` and `rowNumber` filters that will access its parent elements to get the appropriate value we're looking for. The locator was not specified so it will default to `element.textContent`.
 
 Now let's pretend we're testing a Jeopardy chart where we have multiple tablecells with similar values:
-```js
-import { Page, test } from 'bigtest';
-import { TableCell } from './tablecell';
 
-export default test('Jeopardy chart')
-  .step(Page.visit('/'))
-  .assertion(TableCell('$600', { columnTitle: 'politics' }).exists())
-  .child('host clicks on tablecell', test => test
-    .step(TableCell({ columnTitle: 'politics', rowNumber: 2 }).click())
-    .assertion(TableCell('$600', { columnTitle: 'politics' }).absent()));
-```
+<Tabs
+  defaultValue="jest"
+  values={[
+    {label: 'Jest', value: 'jest'},
+    {label: 'Cypress', value: 'cypress'},
+    {label: 'BigTest (alpha)', value: 'bigtest'}
+]}>
+  <TabItem value="jest">
+
+  ```js
+  import React from 'react';
+  import { render } from '@testing-library/react';
+  import App from './App';
+
+  import { TableCell } from './tablecell';
+
+  describe('Jeopardy chart', () => {
+    beforeEach(() => render(<App />));
+
+    it('host clicks on tablecell', async () => {
+      await TableCell('$600', { columnTitle: 'politics' }).exists()
+      await TableCell({ columnTitle: 'politics', rowNumber: 2 }).click()
+      await TableCell('$600', { columnTitle: 'politics' }).absent()
+    })
+  })
+  ```
+
+  </TabItem>
+  <TabItem value="cypress">
+
+  ```js
+  import { TableCell } from './tablecell';
+
+  describe('Jeopardy chart', () => {
+    beforeEach(() => cy.visit('/'));
+
+    it('host clicks on tablecell', () => {
+      cy.expect(TableCell('$600', { columnTitle: 'politics' }).exists());
+      cy.do(TableCell({ columnTitle: 'politics', rowNumber: 2 }).click());
+      cy.expect(TableCell('$600', { columnTitle: 'politics' }).absent());
+    })
+  })
+  ```
+
+  </TabItem>
+  <TabItem value="bigtest">
+
+
+  ```js
+  import { Page, test } from 'bigtest';
+  import { TableCell } from './tablecell';
+
+  export default test('Jeopardy chart')
+    .step(Page.visit('/'))
+    .assertion(TableCell('$600', { columnTitle: 'politics' }).exists())
+    .child('host clicks on tablecell', test => test
+      .step(TableCell({ columnTitle: 'politics', rowNumber: 2 }).click())
+      .assertion(TableCell('$600', { columnTitle: 'politics' }).absent()));
+  ```
+
+  </TabItem>
+</Tabs>
 
 ## find
 
-Some interactors use the `find` method to chain interactors together. It returns a new interactor scoped within the current interactor, and is generally used for composing actions from primitives:
+Lastly, we need to go over the `find` method. Some interactors use the `find` method to chain interactors together. It returns a new interactor scoped within the current interactor, and is generally used for composing actions from primitives:
 
 ```js
 createInteractor('DatePicker')({
@@ -178,7 +281,11 @@ DatePicker().find(Button('31')).click();
 
 <!--
 🧹👆
-The section on `find` is in the wrong place, it should belong to "Writing interactors". In its place it would be good to have a section on using `find` to scope interactors, this is challenging since we don't currently have any built-in interactors which lend themselves to scoping, but there is one interactor we could easily add which would work well for scoping: `Fieldset`!
+The section on `find` is in the wrong place, it should belong to "Writing interactors". 
+  - done
+In its place it would be good to have a section on using `find` to scope interactors, this is challenging since we don't currently have any built-in interactors which lend themselves to scoping, but there is one interactor we could easily add which would work well for scoping: `Fieldset`!
+
+min: he says 'in its place' as in we keep it in both places but i think it makes most sense to introduce it as a method to be used when creating an interactor as that was suggested to be its main use. so if we introduce it here first, we can just tag it with "oh and hey, you can also use it in tests like this". idk. given how short this is, i think we can just keep it all together in one section.
 -->
 
 ## Common questions
@@ -208,4 +315,9 @@ Those types of errors can make your app unusable to some people, and also diffic
 
 Another way to find some bugs is to use automated tools such as [Lighthouse](https://github.com/GoogleChrome/lighthouse) to find problems in your HTML markup, like missing input labels or misconfigured `aria` attributes.
 
-<!-- todo - advice for what to do if the problem is not accessibility -->
+<!-- 
+todo
+- advice for what to do if the problem is not accessibility 
+
+min: i think we can omit this too until it becomes an issue
+-->
