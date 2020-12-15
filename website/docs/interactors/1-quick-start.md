@@ -15,7 +15,16 @@ If you need help or have questions along the way, please let us know in [the Dis
 - [npm](https://www.npmjs.com/get-npm) or [yarn](https://classic.yarnpkg.com/en/docs/install)
 - A web app*
 
-*To follow along with this tutorial, you need an app that uses [Jest](https://jestjs.io/), [Cypress](https://www.cypress.io/), or BigTest. You can either use your own app or you can install our sample app which has Jest, Cypress, and Bigtest preinstalled and configured against a very simple app. We recommend that you read through the quick start but you can skip ahead to the [Sample App](#sample-app) section if you want to see the interactors in action right away.
+*To follow along with this tutorial, you need an app that uses [Jest](https://jestjs.io/), [Cypress](https://www.cypress.io/), or BigTest. You can either use your own app or you can install our sample app which has Jest, Cypress, and Bigtest preinstalled and configured against a very simple app. 
+
+<!-- todo: We recommend that you read through the quick start but you can skip ahead to the [Sample App](#sample-app) section if you want to see the interactors in action right away. -->
+
+## Sample app
+To see an example of an app with Jest, Cypress, and BigTest, run the following command:
+```
+$ npx bigtest-sample
+```
+This will create a project and output instructions in the console on how you can run tests on any of the three testing platforms.
 
 ## Installation
 
@@ -184,12 +193,12 @@ In this example, we are testing that the "Sign In" button disappears after a cli
 
 Run your tests. Now you are making an assertion with an interactor!
 
-## Sample app
-To see an example of an app with Jest, Cypress, and BigTest, run the following command:
-```
-$ npx bigtest-sample
-```
-This will create a project and output instructions in the console on how you can run tests on any of the three testing platforms.
+<!-- todo -->
+## i in the real world.. interactors for rich uis, power of interactors, real life examples (WIP) 
+
+what if interacting with complex ui is as simple as using this button interactor. by the time you're done reading through our guide, you'll be able to write interactors like these:
+
+tabs?
 
 ## Next steps
 
