@@ -115,50 +115,51 @@ function Interactors() {
             </Link>
           </div>
           <div className={clsx(styles.heroImage, styles.interactorsHero, 'interactors-hero-tabs')}>
-            <Tabs
-              defaultValue="jest"
-              values={[
-                {label: 'Jest', value: 'jest'},
-                {label: 'Cypress', value: 'cypress'},
-                {label: 'BigTest (alpha)', value: 'bigtest'}
-              ]}>
-              <TabItem value="jest">
-                <CodeBlock className='language-js'>
-                  {`it('subscribes to newsletter', async () => {
-  await Input('email').fillIn('jorge@frontside.com');
-  await Button('Subscribe').click();
+            <div className={styles.interactorsHeroBackground}>
+              <Tabs
+                defaultValue="jest"
+                values={[
+                  {label: 'Jest', value: 'jest'},
+                  {label: 'Cypress', value: 'cypress'},
+                  {label: 'BigTest (alpha)', value: 'bigtest'}
+                ]}>
+                <TabItem value="jest">
+                  <CodeBlock className='language-js'>
+                    {`it('subscribes to newsletter', async () => {
+    await Input('email').fillIn('jorge@frontside.com');
+    await Button('Subscribe').click();
 
-  await Heading('Thanks!').exists();
-})`}
-                </CodeBlock>
-              </TabItem>
-              <TabItem value="cypress">
-                <CodeBlock className="language-js">
-                  {`it('subscribes to newsletter', () => {
-  cy.do([
-    Input('email').fillIn('jorge@frontside.com'),
-    Button('Subscribe').click()
-  ]);
-  cy.expect([
-    Heading('Thanks!').exists();
-  ])
-})`}
-                </CodeBlock>
-              </TabItem>
-              <TabItem value="bigtest">
-                <CodeBlock className="language-js">
-                  {`test('subscribes to newsletter')
-  .step([
-    Input('email').fillIn('jorge@frontside.com'),
-    Button('Subscribe').click()
-  ])
-  .assertion(
-    Heading('Thanks!').exists()
-  );`}
-                </CodeBlock>
-              </TabItem>
-            </Tabs>
-
+    await Heading('Thanks!').exists();
+  })`}
+                  </CodeBlock>
+                </TabItem>
+                <TabItem value="cypress">
+                  <CodeBlock className="language-js">
+                    {`it('subscribes to newsletter', () => {
+    cy.do([
+      Input('email').fillIn('jorge@frontside.com'),
+      Button('Subscribe').click()
+    ]);
+    cy.expect([
+      Heading('Thanks!').exists();
+    ])
+  })`}
+                  </CodeBlock>
+                </TabItem>
+                <TabItem value="bigtest">
+                  <CodeBlock className="language-js">
+                    {`test('subscribes to newsletter')
+    .step([
+      Input('email').fillIn('jorge@frontside.com'),
+      Button('Subscribe').click()
+    ])
+    .assertion(
+      Heading('Thanks!').exists()
+    );`}
+                  </CodeBlock>
+                </TabItem>
+              </Tabs>
+            </div>
           </div>
         </div>
       </header>
