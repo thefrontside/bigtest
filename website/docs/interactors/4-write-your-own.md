@@ -129,15 +129,30 @@ Check out the API page of [createInteractor()](/docs/interactors/api/functions/c
 One of the greatest benefits of Interactors is that you can turn complex testing scenarios into readable assertions. Let's create an interactor for a table that navigates by row and column to make assertions about the table's data. When we are finished, we can use it in our tests like this:
 
 ```js
-TableCell({ columnTitle: 'politics', row: 3 }).has({ value: '$600' });
+TableCell({ columnTitle: 'Name', rowNumber: 2 }).has({ value: 'Marge Simpson' });
 ```
 
 First let's look at the markup we're trying to filter through:
 
 ```html
-<table>
-  <!-- todo -->
-</table>
+<div role="grid">
+  <div class="HeaderRow" role="row" aria-rowindex="1">
+    <div role="columnheader">Name</div>
+    <div role="columnheader">Birthday</div>
+  </div>
+  <div role="row" aria-rowindex="2">
+    <div class="Row">
+      <div role="gridcell">Homer Simpson</div>
+      <div role="gridcell">May 12, 1956</div>
+    </div>
+  </div>
+  <div role="row" aria-rowindex="3">
+    <div class="Row">
+      <div role="gridcell">Marge Simpson</div>
+      <div role="gridcell">October 1, 1956</div>
+    </div>
+  </div>
+</div>
 ```
 
 Here is one way to create the `TableCell` interactor:
@@ -149,7 +164,8 @@ export const TableCell = createInteractor('table cell')({
   selector: '[role=gridcell]',
   filters: {
     columnTitle: element => {
-      const siblingCells = Array.from(element.closest('[class^=mclRow-]').querySelectorAll('[role=gridcell]'));
+      const siblingCells = Array.from(element.closest('[class=Row]')
+        .querySelectorAll('[role=gridcell]'));
       let position = -1;
 
       for (const cell of siblingCells) {
@@ -160,20 +176,17 @@ export const TableCell = createInteractor('table cell')({
       };
 
       const headerAtPosition = Array.from(
-        element.closest('[class^=mclContainer-]')
-          ?.querySelector('[class^=mclHeaderRow-]')
+        element.closest('[role=grid]')
+          ?.querySelector('[class=HeaderRow]')
           ?.querySelectorAll('[role=columnheader]')
       )[position];
 
       return headerAtPosition.textContent;
     },
     rowNumber: element => {
-      const headerRowOffset = 1;
-      return element.closest('[role=row]').getAttribute('aria-rowindex') - headerRowOffset;
+      const offset = 1;
+      return element.closest('[role=row]').getAttribute('aria-rowindex') - offset;
     }
-  },
-  actions: {
-    click: perform((element) => { element.click() })
   }
 });
 ```
@@ -203,11 +216,11 @@ Now let's pretend we're testing a Jeopardy chart where we have multiple tablecel
     beforeEach(() => render(<App />));
 
     it('host clicks on tablecell', async () => {
-      await TableCell('$600', { columnTitle: 'politics' }).exists()
-      await TableCell({ columnTitle: 'politics', rowNumber: 2 }).click()
-      await TableCell('$600', { columnTitle: 'politics' }).absent()
-    })
-  })
+      await TableCell('$600', { columnTitle: 'Politics' }).exists();
+      await TableCell({ columnTitle: 'Politics', rowNumber: 2 }).click();
+      await TableCell('$600', { columnTitle: 'Politics' }).absent();
+    });
+  });
   ```
 
   </TabItem>
@@ -220,11 +233,11 @@ Now let's pretend we're testing a Jeopardy chart where we have multiple tablecel
     beforeEach(() => cy.visit('/'));
 
     it('host clicks on tablecell', () => {
-      cy.expect(TableCell('$600', { columnTitle: 'politics' }).exists());
-      cy.do(TableCell({ columnTitle: 'politics', rowNumber: 2 }).click());
-      cy.expect(TableCell('$600', { columnTitle: 'politics' }).absent());
-    })
-  })
+      cy.expect(TableCell('$600', { columnTitle: 'Politics' }).exists());
+      cy.do(TableCell({ columnTitle: 'Politics', rowNumber: 2 }).click());
+      cy.expect(TableCell('$600', { columnTitle: 'Politics' }).absent());
+    });
+  });
   ```
 
   </TabItem>
@@ -237,14 +250,16 @@ Now let's pretend we're testing a Jeopardy chart where we have multiple tablecel
 
   export default test('Jeopardy chart')
     .step(Page.visit('/'))
-    .assertion(TableCell('$600', { columnTitle: 'politics' }).exists())
+    .assertion(TableCell('$600', { columnTitle: 'Politics' }).exists())
     .child('host clicks on tablecell', test => test
-      .step(TableCell({ columnTitle: 'politics', rowNumber: 2 }).click())
-      .assertion(TableCell('$600', { columnTitle: 'politics' }).absent()));
+      .step(TableCell({ columnTitle: 'Politics', rowNumber: 2 }).click())
+      .assertion(TableCell('$600', { columnTitle: 'Politics' }).absent()));
   ```
 
   </TabItem>
 </Tabs>
+
+<!-- i think we need to tie it off here somehow -->
 
 ## find
 
