@@ -185,6 +185,12 @@ export type FilterParams<E extends Element, F extends Filters<E>> = keyof F exte
     never;
 }
 
+export interface InteractorBuilder<E extends Element, F extends Filters<E>, A extends Actions<E>> {
+  selector(value: string): InteractorBuilder<E, F, A>;
+  filters<FR extends Filters<E>>(filters: FR): InteractorConstructor<E, F & FR, A>;
+  actions<AR extends Actions<E>>(actions: AR): InteractorConstructor<E, F, A & AR>;
+}
+
 /**
  * An interactor constructor is a function which can be used to initialize an
  * {@link Interactor}. When calling {@link createInteractor}, you will get
@@ -197,7 +203,7 @@ export type FilterParams<E extends Element, F extends Filters<E>> = keyof F exte
  * @typeParam F the filters of this interactor, this is usually inferred from the specification
  * @typeParam A the actions of this interactor, this is usually inferred from the specification
  */
-export interface InteractorConstructor<E extends Element, F extends Filters<E>, A extends Actions<E>> {
+export interface InteractorConstructor<E extends Element, F extends Filters<E>, A extends Actions<E>> extends InteractorBuilder<E, F, A> {
   /**
    * The constructor can be called with filters only:
    *
@@ -240,7 +246,7 @@ export interface InteractorConstructor<E extends Element, F extends Filters<E>, 
  *
  * @typeParam E The type of DOM Element that this interactor operates on. By specifying the element type, actions and filters defined for the interactor can be type checked against the actual element type.
  */
-export interface InteractorBuilder<E extends Element> {
+export interface InteractorSpecificationBuilder<E extends Element> extends InteractorBuilder<E, {}, {}> {
   /**
    * Calling the builder will create an interactor.
    *
