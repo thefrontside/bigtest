@@ -189,6 +189,25 @@
   padding-top: 60px;
 }
 
+.interactorsHero {
+  height: 480px;
+  position: relative;
+  overflow-y: visible;
+}
+
+.interactorsHeroBackground {
+  box-sizing: border-box;
+  background:
+    url(/bigtest/images/decor-interactor-bottom.png) no-repeat left bottom,
+    url(/bigtest/images/decor-interactor-top.png) no-repeat right top;
+  background-size: 300px, 100px;
+  position: absolute;
+  height: auto;
+  width: 100%;
+  padding-bottom: 100px;
+  padding-top: 40px;
+}
+
 .bigQuoteWrapper {
   max-width: 780px;
   margin: 0 auto -40px auto;

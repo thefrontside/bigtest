@@ -57,7 +57,7 @@ module.exports = {
               to: 'interactors/',
             },
             {
-              label: 'Getting Started',
+              label: 'Docs',
               to: 'docs/interactors/',
             },
             {
