@@ -4,8 +4,14 @@ import { Filter } from './filter';
 import { Filters } from './specification';
 import { escapeHtml } from './escape-html';
 
-const check = (value: unknown): string => value ? "✓" : "⨯";
+/**
+ * @internal
+ * Typedoc will not remove this if it is named `check`.
+ * */
+const checkThat = (value: unknown): string => value ? "✓" : "⨯";
 
+
+/** @internal */
 export class Match<E extends Element, F extends Filters<E>> {
   public matchLocator?: MatchLocator<E>;
   public matchFilter: MatchFilter<E, F>;
@@ -50,6 +56,7 @@ export class Match<E extends Element, F extends Filters<E>> {
   }
 }
 
+/** @internal */
 export class MatchLocator<E extends Element> {
   public matches: boolean;
   public expected: string | null;
@@ -69,7 +76,7 @@ export class MatchLocator<E extends Element> {
   }
 
   format(): string {
-    return `${check(this.matches)} ${this.formatActual()}`;
+    return `${checkThat(this.matches)} ${this.formatActual()}`;
   }
 
   get sortWeight(): number {
@@ -77,6 +84,7 @@ export class MatchLocator<E extends Element> {
   }
 }
 
+/** @internal */
 export class MatchFilter<E extends Element, F extends Filters<E>> {
   public matches: boolean;
   public items: MatchFilterItem<E, F>[];
@@ -100,6 +108,7 @@ export class MatchFilter<E extends Element, F extends Filters<E>> {
   }
 }
 
+/** @internal */
 export class MatchFilterItem<E extends Element, F extends Filters<E>> {
   public actual: unknown;
   public matches: boolean;
@@ -128,7 +137,7 @@ export class MatchFilterItem<E extends Element, F extends Filters<E>> {
   }
 
   format(): string {
-    return `${check(this.matches)} ${this.formatActual()}`;
+    return `${checkThat(this.matches)} ${this.formatActual()}`;
   }
 
   get sortWeight(): number {

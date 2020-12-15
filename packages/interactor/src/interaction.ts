@@ -32,6 +32,7 @@ export interface ReadonlyInteraction<T> extends Interaction<T> {
   check: () => Promise<T>;
 }
 
+/** @internal */
 export function interaction<T>(description: string, action: () => Promise<T>): Interaction<T> {
   let promise: Promise<T>;
   return {
@@ -53,6 +54,7 @@ export function interaction<T>(description: string, action: () => Promise<T>): I
   }
 }
 
+/** @internal */
 export function check<T>(description: string, check: () => Promise<T>): ReadonlyInteraction<T> {
   return { check, ...interaction(description, check) };
 }

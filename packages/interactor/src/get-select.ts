@@ -1,3 +1,4 @@
+/** @internal */
 export function getSelect(option: HTMLOptionElement): HTMLSelectElement {
   let select = option.closest('select');
   if(select) {

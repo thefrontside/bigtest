@@ -1,11 +1,12 @@
 import { createInteractor, perform, focused } from '../index';
 import { isVisible } from 'element-is-visible';
 
+/** @internal */
 function isButtonElement(element: HTMLInputElement | HTMLButtonElement): element is HTMLButtonElement {
   return element.tagName === 'BUTTON';
 }
 
-/** @internal **/
+/** @internal */
 const ButtonInteractor = createInteractor<HTMLInputElement | HTMLButtonElement>('button')({
   selector: 'button,input[type=button],input[type=submit],input[type=reset],input[type=image]',
   locator(element) {

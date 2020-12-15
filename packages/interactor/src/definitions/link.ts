@@ -1,6 +1,7 @@
 import { createInteractor, perform, focused } from '../index';
 import { isVisible } from 'element-is-visible';
 
+/** @internal */
 const LinkInteractor = createInteractor<HTMLLinkElement>('link')({
   selector: 'a[href]',
   filters: {

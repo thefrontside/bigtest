@@ -3,6 +3,7 @@
 import { bigtestGlobals, RunnerState } from '@bigtest/globals';
 import { Interaction, ReadonlyInteraction } from '../interaction';
 
+/** @internal */
 declare global {
   namespace Cypress {
     interface Chainable<Subject> {
@@ -12,6 +13,7 @@ declare global {
   }
 }
 
+/** @internal */
 function interact(
   interaction: Interaction<void> | ReadonlyInteraction<void>,
   runnerState: RunnerState

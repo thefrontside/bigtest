@@ -3,8 +3,10 @@ export interface TableOptions {
   rows: string[][];
 }
 
+/** @internal */
 const MAX_COLUMN_WIDTH = 40
 
+/** @internal */
 function formatValue(value: string, width: number) {
   if(value.length > width) {
     return value.slice(0, width - 1) + '…';
@@ -13,6 +15,7 @@ function formatValue(value: string, width: number) {
   }
 }
 
+/** @internal */
 export function formatTable(options: TableOptions) {
   let columnWidths = options.headers.map((h, index) => {
     return Math.min(MAX_COLUMN_WIDTH, Math.max(h.length, ...options.rows.map((r) => r[index].length)));

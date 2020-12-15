@@ -3,6 +3,7 @@ import { isVisible } from 'element-is-visible';
 import { dispatchChange, dispatchInput } from '../dispatch';
 import { getSelect } from '../get-select';
 
+/** @internal */
 const MultiSelectOption = createInteractor<HTMLOptionElement>('option')({
   selector: 'option',
   locator: (element) => element.label,
@@ -43,6 +44,7 @@ const MultiSelectOption = createInteractor<HTMLOptionElement>('option')({
   },
 });
 
+/** @internal */
 const MultiSelectInteractor = createInteractor<HTMLSelectElement>('select box')({
   selector: 'select[multiple]',
   locator: (element) => element.labels ? (Array.from(element.labels)[0]?.textContent || '') : '',

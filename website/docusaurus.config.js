@@ -120,33 +120,63 @@ module.exports = {
       'docusaurus-plugin-typedoc',
       {
         id: 'typedoc-interactor',
-        inputFiles: ['../packages/interactor/src/'],
-        entryPoint: 'index.ts',
+        inputFiles: ['../packages/interactor/src'],
         tsconfig: '../packages/interactor/tsconfig.json',
-        // TypeDoc options (see typedoc --help)
-        out: 'interactors/api',
+        // TypeDoc options
+        // https://typedoc.org/guides/options/
         target: 'esnext',
+        // https://typedoc.org/guides/options/#mode
+        // we may want to try library mode at some point
+        // but our plugins don't support it yet
         mode: 'file',
+        // parse the .d.ts files?
         includeDeclarations: false,
+        // Prevent externally resolved
+        // TypeScript files from being documented
         excludeExternals: true,
+        // removes local symbols from the generated documentation
+        // doesn't seem to work?
         excludeNotExported: true,
+        // within a class, ignore private
         excludePrivate: true,
+        // within a class, ignore protected
         excludeProtected: true,
+        // remove anything with @internal
+        stripInternal: true,
+        // we get errors for types in deps
+        // just ignore them, as it should
+        // compile for us at by PR merge
         ignoreCompilerErrors: true,
         includeVersion: true,
         disableSources: false,
+        // more for APIs, not really used but be explicit
         excludeTags: false,
         readme: 'none',
+        // on the Index page, group within each
+        // by the groups defined in the typedoc
+        // comments, order by categoryOrder
         categorizeByGroup: true,
-        defaultCategory: 'Default category',
+        defaultCategory: 'Other',
+        categoryOrder: [
+          'Interactors',
+          'Init',
+          'Helper',
+          '*',
+          'Other'
+        ],
 
+        // docusaurus options
+        out: 'interactors/api',
         sidebar: {
           sidebarFile: './sidebars/typedoc-interactor-sidebar.js',
           fullNames: true,
-          readmeLabel: 'README',
-          globalsLabel: 'Globals',
+          readmeLabel: 'none',
+          globalsLabel: 'Index',
         },
-        allReflectionsHaveOwnDocument: false,
+        // this options makes the plugin use a
+        // different renderer / grouping which seems
+        // to give us a better results than false
+        allReflectionsHaveOwnDocument: true,
       }
     ]
   ]

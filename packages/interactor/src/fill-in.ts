@@ -1,7 +1,11 @@
 import { dispatchChange, dispatchInput, dispatchKeyDown, dispatchKeyUp } from './dispatch';
 
+/** @internal */
 type TextFieldElement = HTMLInputElement | HTMLTextAreaElement;
 
+/**
+* @category Helper
+*/
 // do a best effort at determining the key code
 function guessCode(letter: string): string | undefined {
   if(letter.match(/^[a-zA-Z]$/)) {
@@ -11,6 +15,9 @@ function guessCode(letter: string): string | undefined {
   }
 }
 
+/**
+* @category Helper
+*/
 function clearText(element: TextFieldElement) {
   if(element.value.length) {
     setValue(element, "");
@@ -18,6 +25,9 @@ function clearText(element: TextFieldElement) {
   }
 }
 
+/**
+* @category Helper
+*/
 function enterText(element: TextFieldElement, value: string) {
   for(let letter of value) {
     if(dispatchKeyDown(element, { key: letter, code: guessCode(letter) })) {
@@ -40,6 +50,8 @@ function enterText(element: TextFieldElement, value: string) {
  * short-circuit syncing the react state whenever someone sets input.value and then ignore the next `change` event.
  *
  * See https://github.com/cypress-io/cypress/issues/536
+ * 
+ * @category Helper
  */
 function setValue(element: TextFieldElement, value: string): void {
   let property = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(element), 'value');
@@ -59,6 +71,8 @@ function setValue(element: TextFieldElement, value: string): void {
  *
  * @param element The element to fill in text in
  * @param value The text value to fill in
+ * 
+ * @category Helper
  */
 export function fillIn(element: TextFieldElement, value: string) {
   let originalValue = element.value;

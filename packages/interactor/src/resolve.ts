@@ -3,8 +3,10 @@ import { Interactor } from './interactor';
 import { NoSuchElementError, AmbiguousElementError, NotAbsentError } from './errors';
 import { formatTable } from './format-table';
 
+/** @internal */
 const defaultSelector = 'div';
 
+/** @internal */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function findMatches(parentElement: Element, interactor: Interactor<any, any, any>): Match<Element, any>[] {
   let elements;
@@ -17,11 +19,13 @@ function findMatches(parentElement: Element, interactor: Interactor<any, any, an
   return elements.map((e) => new Match(e, interactor.filter, interactor.locator));
 }
 
+/** @internal */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function findMatchesMatching(parentElement: Element, interactor: Interactor<any, any, any>): Match<Element, any>[] {
   return findMatches(parentElement, interactor).filter((m) => m.matches);
 }
 
+/** @internal */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function findMatchesNonEmpty(parentElement: Element, interactor: Interactor<any, any, any>): Match<Element, any>[] {
   let matches = findMatches(parentElement, interactor);
@@ -39,6 +43,7 @@ function findMatchesNonEmpty(parentElement: Element, interactor: Interactor<any,
   }
 }
 
+/** @internal */
 // Given a parent element, and an interactor, find exactly one matching element
 // and return it. If no elements match, raise an error. If more than one
 // element matches, raise an error.
@@ -54,6 +59,7 @@ export function resolveUnique(parentElement: Element, interactor: Interactor<any
   }
 }
 
+/** @internal */
 // Given a parent element, and an interactor, find all matching elements and
 // return them. If no elements match, raise an error.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -61,6 +67,7 @@ export function resolveNonEmpty(parentElement: Element, interactor: Interactor<a
   return findMatchesNonEmpty(parentElement, interactor).map(m => m.element);
 }
 
+/** @internal */
 // Given a parent element, and an interactor, check if there are any matching
 // elements, and throw an error if there are. Otherwise return undefined.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

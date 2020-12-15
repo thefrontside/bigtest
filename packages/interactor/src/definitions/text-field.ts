@@ -1,11 +1,13 @@
 import { createInteractor, perform, fillIn, focused } from '../index';
 import { isVisible } from 'element-is-visible';
 
+/** @internal */
 const selector = 'textarea, input' + [
   'button', 'checkbox', 'color', 'date', 'datetime-local', 'file', 'hidden',
   'image', 'month', 'radio', 'range', 'reset', 'submit', 'time', 'datetime'
 ].map((t) => `:not([type=${t}])`).join('');
 
+/** @internal */
 const TextFieldInteractor = createInteractor<HTMLInputElement | HTMLTextAreaElement>('text field')({
   selector,
   locator: (element) => element.labels ? (Array.from(element.labels)[0]?.textContent || '') : '',

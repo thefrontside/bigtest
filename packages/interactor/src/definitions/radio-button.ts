@@ -1,6 +1,7 @@
 import { createInteractor, perform, focused } from '../index';
 import { isVisible } from 'element-is-visible';
 
+/** @internal */
 const RadioButtonInteractor = createInteractor<HTMLInputElement>('radio button')({
   selector: 'input[type=radio]',
   locator: (element) => element.labels ? (Array.from(element.labels)[0]?.textContent || '') : '',

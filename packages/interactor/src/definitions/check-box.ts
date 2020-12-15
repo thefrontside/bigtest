@@ -1,6 +1,7 @@
 import { createInteractor, perform, focused } from '../index';
 import { isVisible } from 'element-is-visible';
 
+/** @internal */
 const CheckBoxInteractor = createInteractor<HTMLInputElement>('check box')({
   selector: 'input[type=checkbox]',
   locator: (element) => element.labels ? (Array.from(element.labels)[0]?.textContent || '') : '',

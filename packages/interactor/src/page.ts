@@ -2,6 +2,7 @@ import { interaction, Interaction } from './interaction';
 import { bigtestGlobals } from '@bigtest/globals';
 import { createInteractor } from './create-interactor';
 
+/** @internal */
 const PageInteractor = createInteractor('page')({
   selector: ':root',
   filters: {
@@ -10,6 +11,7 @@ const PageInteractor = createInteractor('page')({
   }
 });
 
+/** @internal */
 const PageInteractorInstance = Object.assign(PageInteractor(), {
   visit(path = '/'): Interaction<void> {
     return interaction(`visiting ${JSON.stringify(path)}`, async () => {

@@ -3,8 +3,10 @@
 import { Interactor } from './interactor';
 import { Interaction } from './interaction';
 
+/** @internal */
 export type ActionFn<E extends Element> = (interactor: InteractorInstance<E, {}, {}>, ...args: any[]) => Promise<unknown>;
 
+/** @internal */
 export type FilterFn<T, E extends Element> = (element: E) => T;
 
 /**
@@ -23,15 +25,19 @@ export type FilterFn<T, E extends Element> = (element: E) => T;
  */
 export type LocatorFn<E extends Element> = (element: E) => string;
 
+/** @internal */
 export type FilterObject<T, E extends Element> = {
   apply: FilterFn<T, E>;
   default?: T;
 }
 
+/** @internal */
 export type Filters<E extends Element> = Record<string, FilterFn<unknown, E> | FilterObject<unknown, E>>
 
+/** @internal */
 export type Actions<E extends Element> = Record<string, ActionFn<E>>;
 
+/** @internal */
 export type InteractorSpecification<E extends Element, F extends Filters<E>, A extends Actions<E>> = {
   /**
    * The CSS selector that this interactor uses to find matching elements
@@ -48,12 +54,14 @@ export type InteractorSpecification<E extends Element, F extends Filters<E>, A e
   locator?: LocatorFn<E>;
 }
 
+/** @internal */
 export type ActionMethods<E extends Element, A extends Actions<E>> = {
   [P in keyof A]: A[P] extends ((interactor: InteractorInstance<E, {}, {}>, ...args: infer TArgs) => Promise<infer TReturn>)
     ? ((...args: TArgs) => Interaction<TReturn>)
     : never;
 }
 
+/** @internal */
 export type FilterParams<E extends Element, F extends Filters<E>> = keyof F extends never ? never : {
   [P in keyof F]?:
     F[P] extends FilterFn<infer TArg, E> ?
@@ -63,6 +71,7 @@ export type FilterParams<E extends Element, F extends Filters<E>> = keyof F exte
     never;
 }
 
+/** @internal */
 export type InteractorInstance<E extends Element, F extends Filters<E>, A extends Actions<E>> = Interactor<E, F, A> & ActionMethods<E, A>;
 
 /**

@@ -2,6 +2,8 @@ export type LocatorFn<E extends Element> = (element: E) => string;
 import { Filters, FilterFn, FilterObject, FilterParams, InteractorSpecification } from './specification';
 import { noCase } from 'change-case';
 
+
+/** @internal */
 export class Filter<E extends Element, F extends Filters<E>> {
   constructor(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

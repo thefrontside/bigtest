@@ -5,6 +5,7 @@ import { Filter } from './filter';
 import { Interactor } from './interactor';
 import { interaction } from './interaction';
 
+/** @internal */
 const defaultLocator: LocatorFn<Element> = (element) => element.textContent || "";
 
 
@@ -25,6 +26,8 @@ const defaultLocator: LocatorFn<Element> = (element) => element.textContent || "
  * @param interactorName The human readable name of the interactor, used mainly for debugging purposes and error messages
  * @typeParam E The type of DOM Element that this interactor operates on. By specifying the element type, actions and filters defined for the interactor can be type checked against the actual element type.
  * @returns You will need to call the returned builder to create an interactor.
+ * 
+ * @category Init
  */
 export function createInteractor<E extends Element>(interactorName: string): InteractorBuilder<E> {
   return function<F extends Filters<E> = {}, A extends Actions<E> = {}>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, F, A> {
