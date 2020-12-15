@@ -15,6 +15,7 @@
   ],
   "scripts": {
     "lint": "eslint \"{src,test}/**/*.ts\"",
+    "mocha": "mocha -r ts-node/register",
     "test:unit": "mocha -r ts-node/register \"test/**/*.test.ts\"",
     "test:types": "dtslint types --localTs ../../node_modules/typescript/lib --expectOnly",
     "test:cypress": "yarn bigtest-todomvc 3000 & wait-on http://localhost:3000 & yarn cypress run --spec 'test/integrations/cypress/integration/*.spec.ts'",

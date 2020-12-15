@@ -66,18 +66,6 @@ const MainNav = createInteractor('main nav')({
 });
 
 describe('@bigtest/interactor', () => {
-  describe('instantiation', () => {
-    describe('no arguments', () => {
-      it('just uses the selector to locate', async () => {
-        dom(`
-          <nav id="main-nav"></nav>
-        `);
-
-        await expect(MainNav().exists()).resolves.toBeUndefined();
-      });
-    });
-  });
-
   describe('.exists', () => {
     it('can determine whether an element exists based on the interactor', async () => {
       dom(`
