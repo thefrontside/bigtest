@@ -9,7 +9,7 @@ In this section, you will learn how to create a new Interactor for any interface
 
 ## Writing your first interactor
 
-In this example, we will create our own `TextField` Interactor to use as an alterantive to the one offered by BigTest as you may have seen in the [`Locators, Filters, and Actions`](/docs/interactors) page.
+In this example, we will create our own `TextField` Interactor to use as an alterantive to the one offered by BigTest as you may have seen in the [`Locators, Filters, and Actions`](/docs/interactors/locators-filters-actions) page.
 
 <!--
 🧹👆
@@ -58,7 +58,7 @@ NoSuchElementError: did not find my-textfield-interactor "USERNAME"
 ```
 _An example of the console output when a test is unable to locate the interactor_
 
-And also note that locators, filters, and actions are optional when creating your own interactor. If you create an interactor without a locator, it will default to `locator: element => element.textContent`. The locator for the `TextField` interactor offered by BigTest uses the `textContent` of the associated label as we mentioned in the [previous page](docs/interactors/locators-filters-actions#filters). The example above has its locator configured as `element.placeholder`; this is just to demonstrate that you can set these properties to anything that suits your needs.
+And also note that locators, filters, and actions are optional when creating your own interactor. If you create an interactor without a locator, it will default to `locator: element => element.textContent`. The locator for the `TextField` interactor offered by BigTest uses the `textContent` of the associated label as we mentioned in the [previous page](/docs/interactors/locators-filters-actions#filters). The example above has its locator configured as `element.placeholder`; this is just to demonstrate that you can set these properties to anything that suits your needs.
 
 Now let's import the new interactor and add it to a test:
 
