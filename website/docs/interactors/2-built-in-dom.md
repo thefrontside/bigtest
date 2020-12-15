@@ -49,11 +49,4 @@ export default test('BigTest Platform')
 
 ### Up Next
 
-Every interactor has some things in common, whether it is built in or you wrote it yourself. In the next section, we will have a closer look at what locators, filters, and actions are. 
-
-<!--
-🧹👆
-charles: Can we get a preview here? "some things in common" might be better as more specific. What are those things? Actions, which advance the state of your app, and filters which match on it and help you do things like make assertions
-
-min: also the next page starts out with a very similar sentence so maybe we can rephrase this one
--->
+What are the pieces that make up an interactor? Locators and filters help you find things in the UI and make assertions. Actions advance the state of your app. Keep reading to learn more.

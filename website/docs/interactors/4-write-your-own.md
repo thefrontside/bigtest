@@ -11,13 +11,6 @@ In this section, you will learn how to create a new Interactor for any interface
 
 In this example, we will create our own `TextField` Interactor to use as an alterantive to the one offered by BigTest as you may have seen in the [`Locators, Filters, and Actions`](/docs/interactors/locators-filters-actions) page.
 
-<!--
-🧹👆
-Can we start with something even simpler? Something like `Sidebar` or something would be nice?
-
-min: i don't think we can because we want to hit all of the points below so there's no benefit to doing a `Sidebar` example especially when we want to make the point that you can create your own as an alternative to the ones offered by bigtest 
--->
-
 There are four things to decide:
 1. What to name and label the interactor
 2. Which HTML element or elements to target
@@ -43,14 +36,7 @@ export const TextField = createInteractor<HTMLInputElement>('my-textfield-intera
 
 > `fillIn` is a function exported by `bigtest`. See the implementation on its [API](/) page. You can use any of the functions defined by BigTest or implement your own.
 
-In this example we've configured the selector as `input[type=text]` which will search for `<input type='text'>` elements in your testing environment.
-
-<!--
-🧹👆
-What does "target" mean? It could mean a couple of things, so maybe it's worth expanding on this to say that the selector chooses a flat list top level elements that will be considered. Filters and locators are used to narrow this list.
-
-min: changed target to 'search' but 🤷‍♂️
--->
+In this example we've configured the selector as `input[type=text]` which will search for all `<input type='text'>` elements in your testing environment. Filters and locators are used to narrow down the list of results.
 
 The string argument to `createInteractor()` is the name of the interactor your console will print if there's a failing test:
 ```
@@ -139,17 +125,22 @@ The [TextField](/) interactor from BigTest does a lot more than what we just wro
 Check out the API page of [createInteractor()](/) for more details.
 
 ## Writing your second interactor
-Below is a more complex demonstration of what you can do with interactors:
 
-<!--
-🧹👆
-charles: Rather than put the implementation first here with the table cell interactor, talking about how you can use filters to make very complex, yet very readable assertions is one of the great strengths of interactors. Leading with an example of how awesome it is to _use_ the power filter is going to sell more than the somewhat large implementation, which without seeing the benefit first, is hard to evaluate in context.
+One of the greatest benefits of Interactors is that you can turn complex testing scenarios into readable assertions. Let's create an interactor for a table that navigates by row and column to make assertions about the table's data. When we are finished, we can use it in our tests like this:
 
-Something like this:
 ```js
 TableCell({ columnTitle: 'politics', row: 3 }).has({ value: '$600' });
 ```
--->
+
+First let's look at the markup we're trying to filter through:
+
+```html
+<table>
+  <!-- todo -->
+</table>
+```
+
+Here is one way to create the `TableCell` interactor:
 
 ```js
 import { createInteractor, perform } from 'bigtest';
@@ -186,13 +177,7 @@ export const TableCell = createInteractor('table cell')({
   }
 });
 ```
-
-<!--
-🧹👆
-jonas: There is a very significant jump in complexity in this example. This seems like the type of the interactor we should bundle, but it doesn't seem great as a teaching aid.
-
-min: hmmmmm
--->
+> This example uses [optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) which is only available in Node >=14.
 
 You'll notice we created `columnTitle` and `rowNumber` filters that will access its parent elements to get the appropriate value we're looking for. The locator was not specified so it will default to `element.textContent`.
 
@@ -279,15 +264,6 @@ You can also use the `find` method in your tests:
 DatePicker().find(Button('31')).click();
 ```
 
-<!--
-🧹👆
-The section on `find` is in the wrong place, it should belong to "Writing interactors". 
-  - done
-In its place it would be good to have a section on using `find` to scope interactors, this is challenging since we don't currently have any built-in interactors which lend themselves to scoping, but there is one interactor we could easily add which would work well for scoping: `Fieldset`!
-
-min: he says 'in its place' as in we keep it in both places but i think it makes most sense to introduce it as a method to be used when creating an interactor as that was suggested to be its main use. so if we introduce it here first, we can just tag it with "oh and hey, you can also use it in tests like this". idk. given how short this is, i think we can just keep it all together in one section.
--->
-
 ## Common questions
 
 ### When should I write a new Interactor instead of using the Built In DOM interactors?
@@ -314,10 +290,3 @@ For example, have you ever seen a click mistakenly attached to a `div` instead o
 Those types of errors can make your app unusable to some people, and also difficult to test.
 
 Another way to find some bugs is to use automated tools such as [Lighthouse](https://github.com/GoogleChrome/lighthouse) to find problems in your HTML markup, like missing input labels or misconfigured `aria` attributes.
-
-<!-- 
-todo
-- advice for what to do if the problem is not accessibility 
-
-min: i think we can omit this too until it becomes an issue
--->
