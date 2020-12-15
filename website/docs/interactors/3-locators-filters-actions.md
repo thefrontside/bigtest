@@ -7,8 +7,6 @@ All interactors have some things in common, whether they are built-in or written
 
 ## Locators
 
-<!-- todo: talk about how we get a list and error if more than one -->
-
 One benefit of Interactors is that they help you align your tests with how a user actually interacts with the app, starting with finding what to act upon.
 
 Locators are the simplest way to find a specific element in a user interface.
@@ -33,7 +31,7 @@ For example, if there was only one button rendered in a test, you could referenc
 Button().exists();
 ```
 
-If there were multiple buttons, you would need to use a locator and or filters to distinguish between them.
+However, calling an interactor will return an array of all of the matching elements and you will get an error if there are two or more matches. So if there were multiple buttons, you would need to use a locator and or filters to distinguish between them.
 
 ## Filters
 
