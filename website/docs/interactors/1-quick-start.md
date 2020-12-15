@@ -15,20 +15,21 @@ If you need help or have questions along the way, please let us know in [the Dis
 - [npm](https://www.npmjs.com/get-npm) or [yarn](https://classic.yarnpkg.com/en/docs/install)
 - A web app*
 
-*To follow along with this tutorial, you need an app that uses [Jest](https://jestjs.io/), [Cypress](https://www.cypress.io/), or BigTest. You can either use your own app or you can install our sample app which has Jest, Cypress, and Bigtest preinstalled and configured against a very simple app. 
-
-<!-- todo: We recommend that you read through the quick start but you can skip ahead to the [Sample App](#sample-app) section if you want to see the interactors in action right away. -->
+*To follow along with this tutorial, you need an app that uses [Jest](https://jestjs.io/), [Cypress](https://www.cypress.io/), or BigTest.
 
 ## Sample app
-To see an example of an app with Jest, Cypress, and BigTest, run the following command:
+
+We recommend that you read the rest of the page to see how Interactors are imported and how they can be used to make assertions but if you would you like to skip the installation process, you can run the following command to install a very simple app that has Jest, Cypress, and BigTest platform preinstalled and configured:
+
 ```
 $ npx bigtest-sample
 ```
-This will create a project and output instructions in the console on how you can run tests on any of the three testing platforms.
+
+This command will create a project and output instructions in the console on how you can run tests on any of the three testing platforms.
 
 ## Installation
 
-First, install `bigtest` in your app:
+If you're using your own app, install `bigtest` with the following command:
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -194,11 +195,63 @@ In this example, we are testing that the "Sign In" button disappears after a cli
 Run your tests. Now you are making an assertion with an interactor!
 
 <!-- todo -->
-## i in the real world.. interactors for rich uis, power of interactors, real life examples (WIP) 
+## (header subject wip) Interactors in the real world, interactors for rich UIs, Power of Interactors
 
-what if interacting with complex ui is as simple as using this button interactor. by the time you're done reading through our guide, you'll be able to write interactors like these:
+What if interacting with complex UI is as simple as using this button interactor? By the time you're done reading through our guide, you'll be able to write and use interactors like these:
 
-tabs?
+<!-- <Tabs
+  defaultValue="jest"
+  values={[
+    {label: 'Jest', value: 'jest'},
+    {label: 'Cypress', value: 'cypress'},
+    {label: 'BigTest (alpha)', value: 'bigtest'}
+]}>
+  <TabItem value="jest">
+
+  ```js
+  import { Button } from 'bigtest';
+
+  describe('Interactors with Jest', () => {
+    beforeEach(() => render(<App />));
+
+    it('clicks button', async () => {
+      await Button('Sign In').click();
+    })
+  })
+  ```
+
+  </TabItem>
+  <TabItem value="cypress">
+
+  ```js
+  import { Button } from 'bigtest';
+
+  describe('Interactors with Cypress', () => {
+    beforeEach(() => cy.visit('/'));
+
+    it('clicks button', () => {
+      cy.do(
+        Button('Sign In').click();
+      );
+    })
+  })
+  ```
+
+  </TabItem>
+  <TabItem value="bigtest">
+
+  ```js
+  import { Button, Page, test } from 'bigtest';
+
+  export default test('BigTest')
+    .step(
+      Page.visit('/'),
+      Button('Sign In').click())
+    .assertion(Button('Log out').exists());
+  ```
+
+  </TabItem>
+</Tabs> -->
 
 ## Next steps
 
