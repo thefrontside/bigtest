@@ -121,4 +121,4 @@ Actions are events that simulate real user interaction. In this example, the Act
 Button('Submit').click();
 ```
 
-The `Button` Interactor created by BigTest comes with `click`, `focus`, and `blur` actions. You can add more actions to suit your needs when you create your own Interactors.
+The `Button` Interactor created by BigTest comes with `click`, `focus`, and `blur` actions. You can add more actions to suit your needs when you create your own Interactors. We've shown you `click` and in the next page we'll be using `fillIn` in our TextField interactor example but you can also take a look at all the other available actions in the API section.
