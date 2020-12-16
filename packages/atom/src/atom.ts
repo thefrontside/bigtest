@@ -177,12 +177,14 @@ export function createAtom<S>(init: S, { channelMaxListeners = DefaultChannelMax
         return yield subscribe(atom).map(
           (s) => pipe(s, O.fromNullable, sliceOptional.getOption, O.toUndefined) as S[P]
         ).filter(unique(getSlice()));
-      }
+      },
+      _reset: reset,
     } as const;
 
+    
     return slice as unknown as Sliceable<S[P]>;
   }
-
+  
   let atom = ({
     get,
     set,
@@ -196,6 +198,11 @@ export function createAtom<S>(init: S, { channelMaxListeners = DefaultChannelMax
     },
     _reset: reset
   } as const);
-
+  
   return atom as unknown as Atom<S>;
+}
+
+export function resetAtom<S>(atom: Atom<S>, initializer?: (initial: S, curr: S) => S | undefined) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (atom as any)._reset(initializer)
 }
