@@ -4,7 +4,7 @@ import { Mailbox } from '@bigtest/effection';
 import { beforeEach, afterEach } from 'mocha';
 import { w3cwebsocket } from 'websocket';
 import { Agent } from '@bigtest/agent';
-
+import { resetAtom } from '@bigtesst/atom';
 import { World } from './helpers/world';
 
 import { createOrchestrator } from '../src/index';
@@ -125,7 +125,7 @@ after(async function() {
 
 beforeEach(() => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (actions.atom as any)._reset((initial: OrchestratorState) => ({ ...initial, manifest, bundler }));
+  resetAtom(actions.atom, (initial: OrchestratorState) => ({ ...initial, manifest, bundler }));
 
   currentWorld = new World();
 });

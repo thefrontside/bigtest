@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect';
-import { createAtom, DefaultChannelMaxListeners } from '../src/atom';
+import { createAtom, DefaultChannelMaxListeners, resetAtom } from '../src/atom';
 import { never, spawn, when } from './helpers';
 import { Atom } from '../src/sliceable';
 import { subscribe, ChainableSubscription, Subscription } from '@effection/subscription';
@@ -195,8 +195,7 @@ describe('@bigtest/atom createAtom', () => {
       beforeEach(async () => {
         subject.update(() => ({ foo: 'baz'}));
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (subject as any)._reset();
+        resetAtom(subject);
       });
 
       it('resets to the initial value', async () => {
@@ -210,8 +209,7 @@ describe('@bigtest/atom createAtom', () => {
       beforeEach(async () => {
         subject.update(() => ({ foo: 'bar' }));
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (subject as any)._reset((initial: State, current: State) => {
+        resetAtom(subject, (initial: State, current: State) => {
           initializerArgs = [initial, current];
           return { foo: 'baz'};
         });
@@ -238,8 +236,7 @@ describe('@bigtest/atom createAtom', () => {
         }));
 
         subject.update(() => ({ foo: 'state before reset' }));
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (subject as any)._reset(() => ({ foo: 'reset state' }));
+        resetAtom(subject, () => ({ foo: 'reset state' }));
         subject.update(() => ({ foo: 'state after reset' }));
       });
 
