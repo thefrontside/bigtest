@@ -70,7 +70,6 @@ export const createOrchestratorAtom = (project: OrchestratorAtomOptions) => {
     agents: {},
     testRuns: {},
   });
-  atom.setMaxListeners(100000);
 
   return atom;
 }

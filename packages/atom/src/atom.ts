@@ -4,15 +4,19 @@ import { pipe } from 'fp-ts/function'
 import { subscribe, Subscription, SymbolSubscribable } from '@effection/subscription';
 import { Channel } from '@effection/channel';
 import { Operation } from 'effection';
-import { Atom, Sliceable } from './sliceable';
+import { Atom, Sliceable, AtomConfig } from './sliceable';
 import { assert } from  'assert-ts';
 import { unique } from './unique';
 
-export function createAtom<S>(init: S): Atom<S> {
+export const DefaultChannelMaxListeners = 100000;
+
+export function createAtom<S>(init: S, { channelMaxListeners = DefaultChannelMaxListeners }: AtomConfig = {}): Atom<S> {
   let initialState = init;
   let lens = pipe(Op.id<O.Option<S>>(), Op.some);
   let state: O.Option<S> = O.fromNullable(init);
   let states = new Channel<S>();
+
+  states.setMaxListeners(channelMaxListeners);
 
   function getOption(): O.Option<S> {
     return pipe(
@@ -69,10 +73,6 @@ export function createAtom<S>(init: S): Atom<S> {
     }
     states.close();
     set(initializer(initialState, get()));
-  }
-
-  function setMaxListeners(value: number) {
-    states.setMaxListeners(value);
   }
 
   let sliceMaker = <A>(parentOptional: Op.Optional<O.Option<S>, A>) => <P extends keyof S>(...path: P[]): Sliceable<S[P]> => {
@@ -190,7 +190,8 @@ export function createAtom<S>(init: S): Atom<S> {
     slice: sliceMaker(lens),
     once,
     reset,
-    setMaxListeners,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    _channelMaxListeners: (states as any).bus._maxListeners,
     *[SymbolSubscribable](): Operation<Subscription<S,undefined>> {
       return yield subscribe(states);
     }

@@ -1,6 +1,10 @@
 import { Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
 import { Operation } from 'effection';
 
+export interface AtomConfig {
+  channelMaxListeners?: number;
+}
+
 export interface Slice<S> extends Subscribable<S,undefined> {
   get(): S;
   set(value: S): void;
@@ -14,7 +18,6 @@ export interface Slice<S> extends Subscribable<S,undefined> {
 
 export type Atom<S> = Omit<Slice<S>, 'remove' | 'over'> & {
   reset(initializer?: (initial: S, curr: S) => S): void;
-  setMaxListeners(value: number): void;
 }
 
 export type Sliceable<S> = {

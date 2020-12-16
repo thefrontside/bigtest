@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect';
-import { createAtom } from '../src/atom';
+import { createAtom, DefaultChannelMaxListeners } from '../src/atom';
 import { never, spawn, when } from './helpers';
 import { Atom } from '../src/sliceable';
 import { subscribe, ChainableSubscription, Subscription } from '@effection/subscription';
@@ -260,8 +260,6 @@ describe('@bigtest/atom createAtom', () => {
     let subscription: ChainableSubscription<Subject, undefined>;
 
     beforeEach(async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      subject = createAtom(undefined as any)
       result = [];
       let bar = { foo: 'bar' };
       let baz = { foo: 'baz' };
@@ -290,4 +288,20 @@ describe('@bigtest/atom createAtom', () => {
       });
     });
   });
+
+  describe('channel maxListeners', () => {
+    it('should set a default value for the channel max listeners' , () => {
+      let atom = createAtom(undefined);
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((atom as any)._channelMaxListeners).toBe(DefaultChannelMaxListeners);
+    });
+
+    it('should be able to override channel max listeners' , () => {
+      let atom = createAtom(undefined, { channelMaxListeners: 33 });
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((atom as any)._channelMaxListeners).toBe(33);
+    });
+  })
 });
