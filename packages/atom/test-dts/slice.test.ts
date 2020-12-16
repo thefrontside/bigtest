@@ -20,6 +20,9 @@ type ROOT = {
 declare const atom: Atom<ROOT>;
 
 // $ExpectError
+atom.reset();
+
+// $ExpectError
 atom.slice('a', 'c');
 
 atom.slice('a', 'b'); // $ExpectType Slice<Readonly<Record<string, string>>>

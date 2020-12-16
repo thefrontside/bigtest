@@ -195,7 +195,8 @@ describe('@bigtest/atom createAtom', () => {
       beforeEach(async () => {
         subject.update(() => ({ foo: 'baz'}));
 
-        subject.reset();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (subject as any)._reset();
       });
 
       it('resets to the initial value', async () => {
@@ -209,7 +210,8 @@ describe('@bigtest/atom createAtom', () => {
       beforeEach(async () => {
         subject.update(() => ({ foo: 'bar' }));
 
-        subject.reset((initial, current) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (subject as any)._reset((initial: State, current: State) => {
           initializerArgs = [initial, current];
           return { foo: 'baz'};
         });
@@ -236,7 +238,8 @@ describe('@bigtest/atom createAtom', () => {
         }));
 
         subject.update(() => ({ foo: 'state before reset' }));
-        subject.reset(() => ({ foo: 'reset state' }));
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (subject as any)._reset(() => ({ foo: 'reset state' }));
         subject.update(() => ({ foo: 'state after reset' }));
       });
 

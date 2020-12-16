@@ -16,9 +16,7 @@ export interface Slice<S> extends Subscribable<S,undefined> {
   [SymbolSubscribable](): Operation<Subscription<S, undefined>>;
 }
 
-export type Atom<S> = Omit<Slice<S>, 'remove' | 'over'> & {
-  reset(initializer?: (initial: S, curr: S) => S): void;
-}
+export type Atom<S> = Omit<Slice<S>, 'remove' | 'over'>;
 
 export type Sliceable<S> = {
   /* 
