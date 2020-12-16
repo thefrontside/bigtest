@@ -26,11 +26,11 @@ import TabItem from '@theme/TabItem';
 
   </TabItem>
   <TabItem value="yarn">
-  
+
   ```
   $ yarn bigtest ci
   ```
-  
+
   </TabItem>
 </Tabs>
 
@@ -44,7 +44,6 @@ What is different about this mode? Unlike `ci` mode, you can see the app as your
 The browser also stays open after tests are running so that you can inspect and interact with your app.
 
 First, start the server with this command:
-
 
 <Tabs
   defaultValue="npm"
@@ -60,11 +59,11 @@ First, start the server with this command:
 
   </TabItem>
   <TabItem value="yarn">
-  
+
   ```
   $ yarn bigtest server --launch=chrome
   ```
-  
+
   </TabItem>
 </Tabs>
 
@@ -94,8 +93,24 @@ Once the server is running, run this command in a separate terminal:
 
 Now you should see your tests running!
 
-
 > You can also modify your `bigtest.json` file to start the server in a non-headless browser but then you'll need to remember to revert it to headless if you plan on running BigTest in your CI. And for that reason, we just recommend using the `--launch` flag instead as shown above.
+
+## Parallel Testing
+
+BigTest allows you to simultaneously run your tests in multiple browsers. You may have noticed that the `launch` property of your `bigtest.json` file is an array. In order to set up parallel testing, you just need to add additional browsers to that list:
+
+```json
+{
+  "launch": [
+    "chrome.headless",
+    "firefox.headless"
+  ],
+  "app": {...},
+  "testFiles: [...]
+}
+```
+
+The configuration shown above will run your tests in both Chrome and Firefox in headless modes.
 
 ## Next steps
 
