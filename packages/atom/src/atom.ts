@@ -189,12 +189,12 @@ export function createAtom<S>(init: S, { channelMaxListeners = DefaultChannelMax
     update,
     slice: sliceMaker(lens),
     once,
-    reset,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     _channelMaxListeners: (states as any).bus._maxListeners,
     *[SymbolSubscribable](): Operation<Subscription<S,undefined>> {
       return yield subscribe(states);
-    }
+    },
+    _reset: reset
   } as const);
 
   return atom as unknown as Atom<S>;
