@@ -192,11 +192,6 @@ body {
   margin-left: -1px;
 }
 
-.table-of-contents > li ul {
-  /** TOC is only one level deep  **/
-  display: none;
-}
-
 .table-of-contents__link:before {
   content: '';
   display: block;

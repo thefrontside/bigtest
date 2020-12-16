@@ -41,7 +41,7 @@ export class Interactor<E extends Element, F extends Filters<E>, A extends Actio
    * to make them more specific by limiting the interactor to a section of the
    * page.
    *
-   * ## Example
+   * #### Example
    *
    * ``` typescript
    * await Fieldset('Owner').find(TextField('Name')).fillIn('Jonas');
@@ -91,7 +91,7 @@ export class Interactor<E extends Element, F extends Filters<E>, A extends Actio
    * We recommend using this function for debugging only. You should normally
    * define an action in an {@link InteractorSpecification}.
    *
-   * ## Example
+   * #### Example
    *
    * ``` typescript
    * await Link('Next').perform((e) => e.click());
@@ -109,7 +109,7 @@ export class Interactor<E extends Element, F extends Filters<E>, A extends Actio
    * An assertion which checks that an element matching the interactor exists.
    * Throws an error if the element does not exist.
    *
-   * ## Example
+   * #### Example
    *
    * ``` typescript
    * await Link('Next').exists();
@@ -127,7 +127,7 @@ export class Interactor<E extends Element, F extends Filters<E>, A extends Actio
    * An assertion which checks that an element matching the interactor does not
    * exist. Throws an error if the element exists.
    *
-   * ## Example
+   * #### Example
    *
    * ``` typescript
    * await Link('Next').absent();
@@ -146,7 +146,7 @@ export class Interactor<E extends Element, F extends Filters<E>, A extends Actio
    * element matches the given filters. The available filters are defined by
    * the {@link InteractorSpecification}.
    *
-   * ## Example
+   * #### Example
    *
    * ``` typescript
    * await Link('Home').has({ href: '/' })
@@ -159,7 +159,7 @@ export class Interactor<E extends Element, F extends Filters<E>, A extends Actio
   /**
    * Identical to {@link has}, but reads better with some filters.
    *
-   * ## Example
+   * #### Example
    *
    * ``` typescript
    * await CheckBox('Accept conditions').is({ checked: true })

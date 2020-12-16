@@ -1,3 +1,4 @@
+/** @internal */
 export interface TableOptions {
   headers: string[];
   rows: string[][];
