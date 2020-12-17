@@ -197,9 +197,9 @@ Run your tests. Now you are making an assertion with an interactor!
 <!-- todo -->
 ## (header subject wip) Interactors in the real world, interactors for rich UIs, Power of Interactors
 
-What if interacting with complex UI is as simple as using this button interactor? By the time you're done reading through our guide, you'll be able to write and use interactors like these:
+What if interacting with complex UI is as simple as using this button interactor? Date pickers, depending on how they're implemented, can be difficult to test. However, with interactors, your tests can be reliable as well as be simple like this:
 
-<!-- <Tabs
+<Tabs
   defaultValue="jest"
   values={[
     {label: 'Jest', value: 'jest'},
@@ -209,13 +209,19 @@ What if interacting with complex UI is as simple as using this button interactor
   <TabItem value="jest">
 
   ```js
-  import { Button } from 'bigtest';
+  import { Heading, RadioButton, TextField } from 'bigtest';
+  import { DatePicker, Modal } from './MyInteractors';
 
   describe('Interactors with Jest', () => {
     beforeEach(() => render(<App />));
 
-    it('clicks button', async () => {
-      await Button('Sign In').click();
+    it('date picker for flights', async () => {
+      await RadioButton('One-way').click();
+      await TextField('FROM').fillIn('LAX');
+      await TextField('TO').fillIn('YYZ');
+      await DatePicker().select('June, 2022', '10'));
+      await Modal({ id: 'loading' }).exists();
+      await Heading('Departing flight').exists();
     })
   })
   ```
@@ -224,14 +230,22 @@ What if interacting with complex UI is as simple as using this button interactor
   <TabItem value="cypress">
 
   ```js
-  import { Button } from 'bigtest';
+  import { Heading, RadioButton, TextField } from 'bigtest';
+  import { DatePicker, Modal } from './MyInteractors';
 
   describe('Interactors with Cypress', () => {
     beforeEach(() => cy.visit('/'));
 
-    it('clicks button', () => {
+    it('date picker for flights', () => {
       cy.do(
-        Button('Sign In').click();
+        RadioButton('One-way').click();
+        TextField('FROM').fillIn('LAX');
+        TextField('TO').fillIn('YYZ');
+        DatePicker().select('June, 2022', '10'));
+      );
+      cy.expect(
+        Modal({ id: 'loading' }).exists();
+        Heading('Departing flight').exists();
       );
     })
   })
@@ -241,17 +255,26 @@ What if interacting with complex UI is as simple as using this button interactor
   <TabItem value="bigtest">
 
   ```js
-  import { Button, Page, test } from 'bigtest';
+  import { Heading, RadioButton, Page, test, TextField } from 'bigtest';
+  import { DatePicker, Modal } from './MyInteractors';
 
   export default test('BigTest')
     .step(
       Page.visit('/'),
-      Button('Sign In').click())
-    .assertion(Button('Log out').exists());
+      RadioButton('One-way').click(),
+      TextField('FROM').fillIn('LAX'),
+      TextField('TO').fillIn('YYZ'),
+      DatePicker().select('June, 2022', '10')),
+    .assertion(
+      Modal({ id: 'loading' }).exists(),
+      Heading('Departing flight').exists()
+    );
   ```
 
   </TabItem>
-</Tabs> -->
+</Tabs>
+
+By the time you're done reading through our guide, you'll be able to write and use such interactors.
 
 ## Next steps
 
