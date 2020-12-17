@@ -46,7 +46,35 @@ _An example of the console output when a test is unable to locate the interactor
 
 And also note that locators, filters, and actions are optional when creating your own interactor. If you create an interactor without a locator, it will default to `locator: element => element.textContent`. The locator for the `TextField` interactor offered by BigTest uses the `textContent` of the associated label as we mentioned in the [previous page](/docs/interactors/locators-filters-actions#filters). The example above has its locator configured as `element.placeholder`; this is just to demonstrate that you can set these properties to anything that suits your needs.
 
-Now let's import the new interactor and add it to a test:
+Lastly, you might be wondering what `perform()` does. The `perform()` function is just a convenient shortcut for writing interactions. So a click action written like this:
+
+```js
+actions: {
+  click: perform(element => element.click())
+}
+```
+
+Is the same as:
+
+```js
+actions: {
+  async click(interactor){
+    await interactor.click();
+  }
+}
+```
+
+The latter syntax is necessary if you want to write an action that delegates to other interactors' actions. For example if you wanted to create a Form interactor that has a submit action, this is one way you could compose such action:
+
+```js
+actions: {
+  async submit(interactor){
+    await interactor.find(Button('Submit')).click();
+  }
+}
+```
+
+Now let's get back to our example and import the new TextField interactor from earlier and add it to a test:
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
