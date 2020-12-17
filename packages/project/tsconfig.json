@@ -1,7 +1,12 @@
 {
-  "extends": "@frontside/tsconfig",
+  "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+    "outDir": "dist"
+  },
   "include": [
-    "src/**/*.ts",
-    "bin/*.ts"
+    "src/**/*.ts"
+  ],
+  "references": [
+    { "path": "../driver" }
   ]
 }

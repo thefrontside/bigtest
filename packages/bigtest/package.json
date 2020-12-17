@@ -16,7 +16,7 @@
   "scripts": {
     "lint": "eslint \"src/**/*.ts\"",
     "test": "echo no-op",
-    "prepack": "tsc --outDir dist --declaration --sourcemap"
+    "prepack": "tsc -b"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^1.1.2",

@@ -1,10 +1,26 @@
 {
-  "extends": "@frontside/tsconfig",
+  "extends": "../../tsconfig-base.json",
   "compilerOptions": {
-    "typeRoots" : ["./node_modules/@types", "./typings"]
+    "outDir": "dist",
+    "typeRoots" : ["./node_modules/@types", "./typings"],
   },
   "include": [
     "src/**/*.ts",
-    "bin/*.ts"
+    "bin/**/*.ts"
+  ],
+  "references": [
+    { "path": "../agent" },
+    { "path": "../atom" },
+    { "path": "../bundler" },
+    { "path": "../client" },
+    { "path": "../driver" },
+    { "path": "../effection" },
+    { "path": "../effection-express" },
+    { "path": "../globals" },
+    { "path": "../logging" },
+    { "path": "../project" },
+    { "path": "../suite" },
+    { "path": "../todomvc" },
+    { "path": "../webdriver" }
   ]
 }

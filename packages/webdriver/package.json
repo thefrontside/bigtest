@@ -14,7 +14,7 @@
   "scripts": {
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "test": "mocha --timeout 60000 -r ts-node/register test/**/*.test.ts",
-    "prepack": "tsc --outdir dist --declaration --sourcemap"
+    "prepack": "tsc -b"
   },
   "devDependencies": {
     "@bigtest/effection-express": "^0.9.1",

@@ -15,7 +15,7 @@
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "mocha": "mocha -r ts-node/register",
-    "prepack": "tsc --outdir dist --declaration --sourcemap --module commonjs"
+    "prepack": "tsc -b"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^1.1.2",
@@ -27,6 +27,7 @@
     "ts-node": "*"
   },
   "dependencies": {
+    "@bigtest/effection": "^0.6.0",
     "@effection/events": "^0.7.8",
     "@effection/subscription": "^0.11.0",
     "@types/express-ws": "^3.0.0",

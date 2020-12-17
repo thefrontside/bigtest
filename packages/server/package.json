@@ -17,7 +17,7 @@
     "mocha": "mocha ./test/setup",
     "test:app:start": "ts-node ./bin/todomvc.ts",
     "generate:schema": "node generate-schema.js",
-    "prepack": "yarn generate:schema && tsc --outdir dist"
+    "prepack": "yarn generate:schema && tsc -b"
   },
   "files": [
     "README.md",

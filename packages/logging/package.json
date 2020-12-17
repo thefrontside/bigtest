@@ -13,7 +13,7 @@
   "scripts": {
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "test": "true",
-    "prepack": "tsc --outdir dist --declaration --sourcemap --module commonjs"
+    "prepack": "tsc -b"
   },
   "devDependencies": {
     "@types/node": "^13.13.4",

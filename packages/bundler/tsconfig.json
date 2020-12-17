@@ -1,7 +1,18 @@
 {
-  "extends": "@frontside/tsconfig",
-  "files": ["src/index.ts"],
+  "extends": "../../tsconfig-base.json",
   "compilerOptions": {
-    "esModuleInterop": true
-  }
+    "esModuleInterop": true,
+    "outDir": "dist"
+  },
+  "include": [
+    "src/**/*.ts",
+    "bin/*.ts"
+  ],
+  "exclude": [
+    "../../node_modules"
+  ],
+  "references": [
+    { "path": "../project"},
+    { "path": "../effection" }
+  ]
 }

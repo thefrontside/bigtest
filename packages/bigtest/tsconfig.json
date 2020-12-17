@@ -1,7 +1,19 @@
 {
-  "extends": "@frontside/tsconfig",
+  "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+  "esModuleInterop": true,
+  "outDir": "dist"
+  },
   "include": [
     "src/**/*.ts",
-    "bin/*.ts"
+    "bin/**/*.ts",
+  ],
+  "exclude": [
+    "../../node_modules"
+  ],
+  "references": [
+    { "path": "../cli"},
+    { "path": "../interactor" },
+    { "path": "../suite" }
   ]
 }

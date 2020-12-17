@@ -21,7 +21,7 @@
   },
   "scripts": {
     "lint": "eslint \"{src,test}/**/*.ts\"",
-    "prepack": "tsc --declaration --sourcemap",
+    "prepack": "tsc -b",
     "test": "mocha -r ts-node/register \"test/{,!(fixtures)/**}/*.test.ts\""
   },
   "files": [

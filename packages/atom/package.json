@@ -17,7 +17,7 @@
     "test:unit": "mocha -r ts-node/register test/**/*.test.ts",
     "test:types": "dtslint test-dts --localTs ../../node_modules/typescript/lib --expectOnly",
     "test": "yarn test:unit && yarn test:types",
-    "prepack": "tsc --outdir dist --declaration --sourcemap"
+    "prepack": "tsc -b"
   },
   "devDependencies": {
     "@bigtest/performance": "^0.5.0",

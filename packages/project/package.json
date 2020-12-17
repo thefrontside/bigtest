@@ -14,7 +14,7 @@
   "scripts": {
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "prepack": "tsc --outdir dist --declaration --sourcemap --module commonjs"
+    "prepack": "tsc -b"
   },
   "dependencies": {
     "@bigtest/driver": "^0.5.4",
