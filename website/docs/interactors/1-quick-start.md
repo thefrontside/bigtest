@@ -267,8 +267,7 @@ What if interacting with complex UI is as simple as using this button interactor
       DatePicker().select('June, 2022', '10')),
     .assertion(
       Modal({ id: 'loading' }).exists(),
-      Heading('Departing flight').exists()
-    );
+      Heading('Departing flight').exists());
   ```
 
   </TabItem>
