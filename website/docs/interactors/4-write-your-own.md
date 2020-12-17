@@ -46,7 +46,7 @@ _An example of the console output when a test is unable to locate the interactor
 
 And also note that locators, filters, and actions are optional when creating your own interactor. If you create an interactor without a locator, it will default to `locator: element => element.textContent`. The locator for the `TextField` interactor offered by BigTest uses the `textContent` of the associated label as we mentioned in the [previous page](/docs/interactors/locators-filters-actions#filters). The example above has its locator configured as `element.placeholder`; this is just to demonstrate that you can set these properties to anything that suits your needs.
 
-Lastly, you might be wondering what `perform()` does. The `perform()` function is just a convenient shortcut for writing interactions. So a click action written like this:
+Lastly, you might be wondering what `perform()` does. The `perform()` function is just a short way of writing interactions. So a click action written like this:
 
 ```js
 actions: {
