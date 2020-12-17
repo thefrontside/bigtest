@@ -4,7 +4,7 @@ import { Mailbox } from '@bigtest/effection';
 import { beforeEach, afterEach } from 'mocha';
 import { w3cwebsocket } from 'websocket';
 import { Agent } from '@bigtest/agent';
-import { resetAtom } from '@bigtesst/atom';
+import { resetAtom } from '@bigtest/atom/dist/atom';
 import { World } from './helpers/world';
 
 import { createOrchestrator } from '../src/index';
