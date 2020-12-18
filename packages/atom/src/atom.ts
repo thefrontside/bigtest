@@ -22,15 +22,15 @@ export function createAtom<S>(init: S, { channelMaxListeners = DefaultChannelMax
   }
 
   function setState(value: S) {
-   let next = O.fromNullable(value);
-   
-   if (next === getState()) {
+    let next = O.fromNullable(value);
+
+    if (next === getState()) {
     return;
-   }
+    }
 
-   state = next;
+    state = next;
 
-   states.send(O.toUndefined(state) as S);
+    states.send(O.toUndefined(state) as S);
   }
 
   function reset(initializer?: (initial: S, curr: S) => S) {
@@ -39,115 +39,106 @@ export function createAtom<S>(init: S, { channelMaxListeners = DefaultChannelMax
         return initial;
       }
     }
+    
     states.close();
+
     setState(initializer(initialState, O.toUndefined(getState()) as S));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let sliceMaker = <A>(parentOptional?: Op.Optional<O.Option<S>, A>): Sliceable<any> => <P extends keyof A>(...path: P[]): Slice<A[P]> => {
-    if(typeof parentOptional === 'undefined') {
-      parentOptional = lens as unknown as Op.Optional<O.Option<S>, A>;
-    }
+  let sliceMaker = <A>(parentOptional: Op.Optional<O.Option<S>, A> = lens as unknown as Op.Optional<O.Option<S>, A>): Sliceable<any> =>
+    <P extends keyof A>(...path: P[]): Slice<A[P]> => {
+      let getters = [
+        parentOptional,
+        Op.fromNullable,
+        ...(path || []).map(p => (typeof p === 'number') ? Op.index(p) : Op.prop<A, P>(p))
+      ];
 
-    let getters = [
-      parentOptional,
-      Op.fromNullable,
-      ...(path || []).map(p => (typeof p === 'number') ? Op.index(p) : Op.prop<A, P>(p))
-    ];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let sliceOptional = (pipe as any)(...getters) as Op.Optional<O.Option<S>, A[P]>;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let sliceOptional = (pipe as any)(...getters) as Op.Optional<O.Option<S>, A[P]>;
+      function getOption(): O.Option<A[P]> {
+        let current = pipe(
+          getState(),
+          sliceOptional.getOption,
+        );
 
-    function getOption(): O.Option<A[P]> {
-      let current = pipe(
-        getState(),
-        sliceOptional.getOption,
-      );
+        return current;
+      }
 
-      return current;
-    }
+      function get(): A[P] {
+        return pipe(
+          getOption(),
+          O.toUndefined
+        ) as A[P];
+      }
 
-    function get(): A[P] {
-      return pipe(
-        getOption(),
-        O.toUndefined
-      ) as A[P];
-    }
+      function set(value: A[P]): void {
+        if(value === get()) {
+          return;
+        }
 
-    function set(value: A[P]): void {
-      let current = get();
+        let next = pipe(
+          getState(),
+          sliceOptional.set(value),
+          O.toUndefined
+        );
+
+        setState(next as S);
+      }
+
+      function update(fn: (s: A[P]) => A[P]) {
+        let next = pipe(
+          sliceOptional,
+          Op.modify(fn),
+        )(getState());
       
-      if(value === get()) {
-        return;
+        setState(O.toUndefined(next) as S);
       }
 
-      let next = pipe(
-        getState(),
-        sliceOptional.set(value),
-        O.toUndefined
-      );
+      function remove() {
+        let next = pipe(
+          sliceOptional,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          Op.modify(() => undefined as any),
+        )(getState());
 
-      if(next as unknown as A[P] === current) {
-        return;
+        setState(O.toUndefined(next) as S);
       }
 
-      setState(next as S);
-    }
-
-    function update(fn: (s: A[P]) => A[P]) {
-      let next = pipe(
-        sliceOptional,
-        Op.modify(fn),
-      )(getState());
-    
-      setState(O.toUndefined(next) as S);
-    }
-
-    function remove() {
-      let next = pipe(
-        sliceOptional,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        Op.modify(() => undefined as any),
-      )(getState());
-
-      setState(O.toUndefined(next) as S);
-    }
-
-    function *once(predicate: (state: A[P]) => boolean): Operation<A[P]> {
-      let currentState = get();
-      if(predicate(currentState)) {
-        return currentState;
-      } else {
-        let subscription = yield subscribe(slice);
-        return yield subscription.filter(predicate).expect();
+      function *once(predicate: (state: A[P]) => boolean): Operation<A[P]> {
+        let currentState = get();
+        if(predicate(currentState)) {
+          return currentState;
+        } else {
+          let subscription = yield subscribe(slice);
+          return yield subscription.filter(predicate).expect();
+        }
       }
-    }
 
-    let slice: Slice<A[P]> = {
-      get,
-      set,
-      update,
-      once,
-      slice: sliceMaker(sliceOptional),
-      remove,
-      *[SymbolSubscribable](): Operation<Subscription<A[P], undefined>> {
-        return yield subscribe(states).map(
-          (s) => pipe(s, O.fromNullable, sliceOptional.getOption, O.toUndefined) as A[P]
-        ).filter(unique(get()));
-      },
-    }
-    
-    return slice;
+      let slice: Slice<A[P]> = {
+        get,
+        set,
+        update,
+        once,
+        slice: sliceMaker(sliceOptional),
+        remove,
+        *[SymbolSubscribable](): Operation<Subscription<A[P], undefined>> {
+          return yield subscribe(states).map(
+            (s) => pipe(s, O.fromNullable, sliceOptional.getOption, O.toUndefined) as A[P]
+          ).filter(unique(get()));
+        },
+      }
+      
+      return slice;
   }
 
-  let atom: Atom<S> = {
+  return {
     ...sliceMaker()(),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     _channelMaxListeners: (states as any).bus._maxListeners,
     _reset: reset
   };
-
-  return atom;
 }
 
 // This is purely for testing purposes
