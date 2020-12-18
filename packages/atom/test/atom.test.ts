@@ -3,7 +3,7 @@ import * as expect from 'expect';
 import { createAtom, DefaultChannelMaxListeners, resetAtom } from '../src/atom';
 import { spawn, when, never } from './helpers';
 import { ChainableSubscription, subscribe, Subscription } from '@effection/subscription';
-import { Slice } from '../src/sliceable';
+import { Slice } from '../src/types';
 
 type TestRunAgentState = {
   status: "pending" | "running" | "finished" | "errored";

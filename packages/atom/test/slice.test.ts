@@ -4,7 +4,7 @@ import { createAtom } from '../src/atom';
 import { spawn, when } from './helpers';
 import { Subscription, subscribe, ChainableSubscription } from '@effection/subscription';
 import { TestResult, ResultStatus } from '@bigtest/suite';
-import { Slice } from '../src/sliceable';
+import { Slice } from '../src/types';
 
 type Data = { data: string };
 
