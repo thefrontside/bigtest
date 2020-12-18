@@ -7,6 +7,7 @@ const spawn = require('cross-spawn');
 
 const { message, yarn, TARGET_DIR, SOURCE_DIR } = require('./constants');
 const Spinner = require('./helper');
+const { version } = require('../package.json');
 
 const animate = (msgs) => new Spinner(msgs);
 
@@ -18,10 +19,9 @@ function populate(message) {
       fs.mkdirSync(TARGET_DIR);
       const installer = {
         name: 'bigtest-sample',
-        version: '0.0.0',
-        private: true,
+        version: '0.0.0', 
         dependencies: {
-          'bigtest-sample': '0.0.1-17e2eb7a'
+          'bigtest-sample': version
         }
       };
       fs.writeFileSync(
@@ -42,11 +42,21 @@ function migrate(messages) {
     rmrf.sync(`${TARGET_DIR}/${lockfile}`);
     rmrf.sync(`${TARGET_DIR}/package.json`);
 
-    // todo: refactor hard coded list
-    const hard_list = ['cypress/', 'public/', 'src/', 'bigtest.json', 'cypress.json', 'package.json']; 
-    hard_list.forEach(file => {
+    fs.readdirSync(SOURCE_DIR).filter(file => {
+      return file !== 'bin';
+    }).forEach(file => {
       if(file==='package.json'){
-        fs.renameSync(`${SOURCE_DIR}/bin/pkg.json`, `${TARGET_DIR}/${file}`)
+        const {
+          name, version, description, repository, author, license, 
+          main, scripts, devDependencies, eslintConfig, browserslist
+        } = require(`${SOURCE_DIR}/${file}`);
+
+        const pkgjson = {
+          name, version, private: true, description, repository, author, 
+          license, main, scripts, devDependencies, eslintConfig, browserslist
+        };
+
+        fs.writeFileSync(`${TARGET_DIR}/package.json`, JSON.stringify(pkgjson, null, 2));
       } else {
         fs.renameSync(`${SOURCE_DIR}/${file}`, `${TARGET_DIR}/${file}`);
       };
@@ -55,7 +65,7 @@ function migrate(messages) {
     rmrf.sync(`${TARGET_DIR}/node_modules/`);
     loading.stop();
     resolve();
-  })
+  });
 };
 
 function install(messages) {
