@@ -1,7 +1,6 @@
 ---
-"@bi
-"@bigtest/webdriver": minor
-"@bigtest/server": minor
+"@bigtest/atom": minor
+"bigtest": patch
 ---
 
 use only slice functions in createAtom
