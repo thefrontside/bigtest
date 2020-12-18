@@ -1,24 +1,25 @@
-import { Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
-import { Operation } from 'effection';
+// import { Subscribable } from '@effection/subscription';
+// import { Operation } from 'effection';
 
 export interface AtomConfig {
   channelMaxListeners?: number;
 }
 
-export interface Slice<S> extends Subscribable<S,undefined> {
+// export interface Slice<S> extends Subscribable<S,undefined> {
+export interface Slice<S> {
   get(): S;
   set(value: S): void;
   update(fn: (state: S) => S): void;
-  slice: Sliceable<S>;
-  once(predicate: (state: S) => boolean): Operation<S>;
-  remove(): void;
-  over(fn: (value: S) => S): void;
-  [SymbolSubscribable](): Operation<Subscription<S, undefined>>;
+  // slice: Sliceable<S>;
+  // once(predicate: (state: S) => boolean): Operation<S>;
+  // remove(): void;
+  // over(fn: (value: S) => S): void;
+  // [SymbolSubscribable](): Operation<Subscription<S, undefined>>;
 }
 
 export type Atom<S> = Omit<Slice<S>, 'remove' | 'over'>;
 
-export type Sliceable<S> = {
+export interface Sliceable<S> {
   /* 
   * Brute foce overload to allow strong typing of the string path syntax
   * for every level deep we want to go in the slice there will need to be an overload 
