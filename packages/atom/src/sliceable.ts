@@ -12,7 +12,6 @@ export interface Slice<S> extends Subscribable<S,undefined> {
   slice: Sliceable<S>;
   once(predicate: (state: S) => boolean): Operation<S>;
   remove(): void;
-  // over(fn: (value: S) => S): void;
   [SymbolSubscribable](): Operation<Subscription<S, undefined>>;
 }
 

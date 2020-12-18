@@ -94,7 +94,7 @@ describe('@bigtest/atom Slice', () => {
     });
   });
 
-  describe.skip('.once()', () => {
+  describe('.once()', () => {
     let result: Promise<string | undefined>;
     let atom: Atom<Data>;
     let slice: Slice<string>;
@@ -134,7 +134,7 @@ describe('@bigtest/atom Slice', () => {
   });
 
 
-  describe.skip('subscribe', () => {
+  describe('subscribe', () => {
     let atom: Atom<Data>;
     let slice: Slice<string>;
     let subscription: Subscription<string, undefined>;
@@ -156,7 +156,7 @@ describe('@bigtest/atom Slice', () => {
     });
   });
 
-  describe.skip('subscribe - unique state publish', () => {
+  describe('subscribe - unique state publish', () => {
     let atom: Atom<Data>;
     let slice: Slice<string>;
     let result: string[];

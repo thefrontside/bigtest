@@ -1,9 +1,9 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect';
-import { createAtom, resetAtom } from '../src/atom';
+import { createAtom, DefaultChannelMaxListeners, resetAtom } from '../src/atom';
 import { spawn, when, never } from './helpers';
 import { Atom } from '../src/sliceable';
-import { subscribe, Subscription } from '@effection/subscription';
+import { ChainableSubscription, subscribe, Subscription } from '@effection/subscription';
 
 type TestRunAgentState = {
   status: "pending" | "running" | "finished" | "errored";
@@ -127,7 +127,7 @@ describe('@bigtest/atom createAtom', () => {
 
 
   type State = { foo: string};
-  describe.skip('subscribe', () => {
+  describe('subscribe', () => {
     let subject: Atom<State>;
     let subscription: Subscription<State, undefined>;
 
@@ -224,7 +224,7 @@ describe('@bigtest/atom createAtom', () => {
       });
     });
 
-    describe.skip('removing listeners', () => {
+    describe('removing listeners', () => {
       let result: Subject[];
 
       beforeEach(async () => {
@@ -254,54 +254,54 @@ describe('@bigtest/atom createAtom', () => {
     });
   });
 
-  // describe('subscribe - unique state publish', () => {
-  //   let result: Subject[];
-  //   let subject: Atom<Subject>;
-  //   let subscription: ChainableSubscription<Subject, undefined>;
+  describe('subscribe - unique state publish', () => {
+    let result: Subject[];
+    let subject: Atom<Subject>;
+    let subscription: ChainableSubscription<Subject, undefined>;
 
-  //   beforeEach(async () => {
-  //     result = [];
-  //     let bar = { foo: 'bar' };
-  //     let baz = { foo: 'baz' };
-  //     let qux = { foo: 'qux' };
+    beforeEach(async () => {
+      result = [];
+      let bar = { foo: 'bar' };
+      let baz = { foo: 'baz' };
+      let qux = { foo: 'qux' };
 
-  //     subject = createAtom(bar);
+      subject = createAtom(bar);
 
-  //     subscription = await spawn(subscribe(subject));
+      subscription = await spawn(subscribe(subject));
 
-  //     spawn(subscription.forEach(function*(state) { 
-  //       result.push(state); 
-  //     }));
+      spawn(subscription.forEach(function*(state) { 
+        result.push(state); 
+      }));
 
-  //     subject.update(() => bar);
-  //     subject.update(() => bar);
-  //     subject.update(() => baz);
-  //     subject.update(() => baz);
-  //     subject.update(() => qux);
-  //     subject.update(() => bar);
-  //   });
+      subject.update(() => bar);
+      subject.update(() => bar);
+      subject.update(() => baz);
+      subject.update(() => baz);
+      subject.update(() => qux);
+      subject.update(() => bar);
+    });
 
-  //   it('should only publish unique state changes', async () => {
-  //     await when(() => {
-  //       expect(result).toHaveLength(3);
-  //       expect(result).toEqual([{ foo: 'baz'}, { foo: 'qux'}, { foo: 'bar' }]);
-  //     });
-  //   });
-  // });
+    it('should only publish unique state changes', async () => {
+      await when(() => {
+        expect(result).toHaveLength(3);
+        expect(result).toEqual([{ foo: 'baz'}, { foo: 'qux'}, { foo: 'bar' }]);
+      });
+    });
+  });
 
-  // describe('channel maxListeners', () => {
-  //   it('should set a default value for the channel max listeners' , () => {
-  //     let atom = createAtom(undefined);
+  describe('channel maxListeners', () => {
+    it('should set a default value for the channel max listeners' , () => {
+      let atom = createAtom(undefined);
 
-  //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //     expect((atom as any)._channelMaxListeners).toBe(DefaultChannelMaxListeners);
-  //   });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((atom as any)._channelMaxListeners).toBe(DefaultChannelMaxListeners);
+    });
 
-  //   it('should be able to override channel max listeners' , () => {
-  //     let atom = createAtom(undefined, { channelMaxListeners: 33 });
+    it('should be able to override channel max listeners' , () => {
+      let atom = createAtom(undefined, { channelMaxListeners: 33 });
 
-  //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //     expect((atom as any)._channelMaxListeners).toBe(33);
-  //   });
-  // })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((atom as any)._channelMaxListeners).toBe(33);
+    });
+  })
 });
