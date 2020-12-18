@@ -10,7 +10,7 @@ export interface Slice<S> {
   get(): S;
   set(value: S): void;
   update(fn: (state: S) => S): void;
-  // slice: Sliceable<S>;
+  slice: Sliceable<S>;
   // once(predicate: (state: S) => boolean): Operation<S>;
   // remove(): void;
   // over(fn: (value: S) => S): void;
@@ -42,6 +42,7 @@ export interface Sliceable<S> {
   * The return type of the function is Slice<S[Key1][Key2], S>; or Slice<AgentState>
   * in this example
   */
+ (): S;
  <
   Key extends keyof S
  >(

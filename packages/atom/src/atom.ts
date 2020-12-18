@@ -5,7 +5,6 @@ import { pipe } from 'fp-ts/function'
 import { Channel } from '@effection/channel';
 // import { Operation } from 'effection';
 import { Atom, Sliceable, AtomConfig, Slice } from './sliceable';
-import { assert } from  'assert-ts';
 // import { unique } from './unique';
 
 export const DefaultChannelMaxListeners = 100000;
@@ -90,19 +89,19 @@ export function createAtom<S>(init: S, { channelMaxListeners = DefaultChannelMax
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let sliceMaker = <A>(parentOptional: Op.Optional<O.Option<S>, A>): Sliceable<any> => <P extends keyof A>(...path: P[]): Slice<A[P]> => {
-    assert(Array.isArray(path) && path.length >  0, "slice expects a rest parameter with at least 1 element");
-
-    let isRoot = parentOptional === lens as unknown as Op.Optional<O.Option<S>, A>;
+  let sliceMaker = <A>(parentOptional?: Op.Optional<O.Option<S>, A>): Sliceable<any> => <P extends keyof A>(...path: P[]): Slice<A[P]> => {
+    if(typeof parentOptional === 'undefined') {
+      parentOptional = lens as unknown as Op.Optional<O.Option<S>, A>;
+    }
 
     let getters = [
       parentOptional,
-      Op.fromNullable, 
-      ...path.map(p => (typeof p === 'number') ? Op.index(p) : Op.prop<A, P>(p))
+      Op.fromNullable,
+      ...(path || []).map(p => (typeof p === 'number') ? Op.index(p) : Op.prop<A, P>(p))
     ];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let sliceOptional = (isRoot ? lens : (pipe as any)(...getters)) as Op.Optional<O.Option<S>, A[P]>;
+    let sliceOptional = (pipe as any)(...getters) as Op.Optional<O.Option<S>, A[P]>;
 
     function getOption(): O.Option<A[P]> {
       let current = pipe(
@@ -207,7 +206,8 @@ export function createAtom<S>(init: S, { channelMaxListeners = DefaultChannelMax
     let slice: Slice<A[P]> = {
       get,
       set,
-      update
+      update,
+      slice: sliceMaker(sliceOptional)
     }
     
     return slice;
@@ -228,7 +228,7 @@ export function createAtom<S>(init: S, { channelMaxListeners = DefaultChannelMax
   // } as const);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let atom: Atom<S>  = sliceMaker(lens)('') as unknown as Atom<S>;
+  let atom: Atom<S>  = sliceMaker()() as unknown as Atom<S>;
   
   return atom;
 }

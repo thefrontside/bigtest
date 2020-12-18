@@ -98,33 +98,33 @@ describe('@bigtest/atom createAtom', () => {
     });
   });
 
-  // describe('.slice()', () => {
-  //   let subject: Atom<TestRunState>;
+  describe.only('.slice()', () => {
+    let subject: Atom<TestRunState>;
 
-  //   beforeEach(() => {
-  //     subject = createAtom(state);
-  //   });
+    beforeEach(() => {
+      subject = createAtom(state);
+    });
 
-  //   it('returns one level deep', () => {
-  //     let result = subject.slice('agents');
+    it('returns one level deep', () => {
+      let result = subject.slice('agents');
 
-  //     expect(result.get()).toEqual(state.agents);
-  //   });
+      expect(result.get()).toEqual(state.agents);
+    });
 
-  //   it('returns a slice of the Atom with the given path', async () => {
-  //     let result = subject.slice('agents', "agent-2", 'status');
+    it('returns a slice of the Atom with the given path', async () => {
+      let result = subject.slice('agents', "agent-2", 'status');
 
-  //     expect(result.get()).toEqual("running");
-  //   });
+      expect(result.get()).toEqual("running");
+    });
 
-  //   it('set', () => {
-  //     let result = subject.slice('agents', "agent-2", "status");
+    it('set', () => {
+      let result = subject.slice('agents', "agent-2", "status");
 
-  //     result.set('errored');
+      result.set('errored');
 
-  //     expect(result.get()).toBe('errored');
-  //   })
-  // });
+      expect(result.get()).toBe('errored');
+    })
+  });
 
 
   // type State = { foo: string};
