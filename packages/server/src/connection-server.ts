@@ -1,7 +1,7 @@
 import { Operation, spawn, resource } from 'effection';
 import { subscribe, ChainableSubscription } from '@effection/subscription';
 import { createDuplexChannel, DuplexChannel } from '@bigtest/effection';
-import { Atom } from '@bigtest/atom';
+import { Slice } from '@bigtest/atom';
 import { OrchestratorState } from './orchestrator/state';
 import { AgentConnection, createAgentHandler, Command, TestEvent } from '@bigtest/agent';
 
@@ -11,7 +11,7 @@ export type Outgoing = Command & { agentId: string };
 export type ConnectionChannel = DuplexChannel<Outgoing, Incoming>;
 
 interface ConnectionServerOptions {
-  atom: Atom<OrchestratorState>;
+  atom: Slice<OrchestratorState>;
   port: number;
   proxyPort: number;
   manifestPort: number;

@@ -5,7 +5,7 @@ import { once } from '@effection/events';
 import { validateTest } from '@bigtest/suite';
 import { Deferred } from '@bigtest/effection';
 import { Bundler } from '@bigtest/bundler';
-import { Atom } from '@bigtest/atom';
+import { Slice } from '@bigtest/atom';
 import { createFingerprint } from 'fprint';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -17,7 +17,7 @@ const { copyFile, mkdir, stat, appendFile, open } = fs.promises;
 
 interface ManifestBuilderOptions {
   watch: boolean;
-  atom: Atom<OrchestratorState>;
+  atom: Slice<OrchestratorState>;
   srcPath: string;
   buildDir: string;
   distDir: string;

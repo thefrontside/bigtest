@@ -1,4 +1,5 @@
 ---
+"@bi
 "@bigtest/webdriver": minor
 "@bigtest/server": minor
 ---

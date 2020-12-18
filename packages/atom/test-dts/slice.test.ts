@@ -1,5 +1,5 @@
 import { ReadonlyRecord } from "fp-ts/ReadonlyRecord";
-import { Atom } from "../src";
+import { Slice } from "../src";
 
 type AA = {
   b: string;
@@ -17,10 +17,7 @@ type ROOT = {
   a: A;
 };
 
-declare const atom: Atom<ROOT>;
-
-// $ExpectError
-atom.reset();
+declare const atom: Slice<ROOT>;
 
 // $ExpectError
 atom.slice('a', 'c');

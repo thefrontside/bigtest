@@ -4,7 +4,7 @@ import * as expect from 'expect';
 import * as zlib from 'zlib';
 
 import { Operation } from 'effection';
-import { Atom } from '@bigtest/atom';
+import { Slice } from '@bigtest/atom';
 import { fetch } from '@effection/fetch';
 
 import { actions, getTestProjectOptions } from './helpers';
@@ -44,7 +44,7 @@ function* startAppServer(): Operation<void> {
 }
 
 describe('proxy', () => {
-  let atom: Atom<OrchestratorState>;
+  let atom: Slice<OrchestratorState>;
 
   describe('with working app server', () => {
     beforeEach(async () => {

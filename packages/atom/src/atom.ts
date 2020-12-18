@@ -2,14 +2,14 @@ import * as O from "fp-ts/Option";
 import * as Op from "monocle-ts/lib/Optional"
 import { pipe } from 'fp-ts/function'
 import { Channel } from '@effection/channel';
-import { Atom, Sliceable, AtomConfig, Slice } from './sliceable';
+import { Sliceable, AtomConfig, Slice } from './sliceable';
 import { Operation } from 'effection';
 import { subscribe, Subscription, SymbolSubscribable } from '@effection/subscription';
 import { unique } from './unique';
 
 export const DefaultChannelMaxListeners = 100000;
 
-export function createAtom<S>(init: S, { channelMaxListeners = DefaultChannelMaxListeners }: AtomConfig = {}): Atom<S> {
+export function createAtom<S>(init: S, { channelMaxListeners = DefaultChannelMaxListeners }: AtomConfig = {}): Slice<S> {
   let initialState = init;
   let lens = pipe(Op.id<O.Option<S>>(), Op.some);
   let state: O.Option<S> = O.fromNullable(init);
@@ -55,7 +55,7 @@ export function createAtom<S>(init: S, { channelMaxListeners = DefaultChannelMax
       ];
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let sliceOptional = (pipe as any)(...getters) as Op.Optional<O.Option<S>, A[P]>;
+      let sliceOptional = (pipe as any)(...getters) as unknown as Op.Optional<O.Option<S>, A[P]>;
 
       function getOption(): O.Option<A[P]> {
         let current = pipe(
@@ -142,7 +142,7 @@ export function createAtom<S>(init: S, { channelMaxListeners = DefaultChannelMax
 }
 
 // This is purely for testing purposes
-export function resetAtom<S>(atom: Atom<S>, initializer?: (initial: S, curr: S) => S | undefined) {
+export function resetAtom<S>(atom: Slice<S>, initializer?: (initial: S, curr: S) => S | undefined) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (atom as any)._reset(initializer)
 }

@@ -6,7 +6,7 @@ import { parse as parseGraphql, graphql as executeGraphql, subscribe as executeG
 
 import { schema } from './schema';
 import { GraphqlContext } from './schema/context';
-import { Atom } from '@bigtest/atom';
+import { Slice } from '@bigtest/atom';
 import { OrchestratorState } from './orchestrator/state';
 import { Runner } from './runner';
 import { SpawnContext } from './spawn-context';
@@ -15,7 +15,7 @@ import { Variables, Message, Response, QueryMessage, MutationMessage, Subscripti
 
 interface CommandServerOptions {
   runner: Runner;
-  atom: Atom<OrchestratorState>;
+  atom: Slice<OrchestratorState>;
   port: number;
 };
 

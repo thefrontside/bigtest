@@ -9,7 +9,7 @@ import { actions, getTestProjectOptions } from './helpers';
 import { appServer } from '../src/app-server';
 
 describe('app service', () => {
-  let atom: Atom<OrchestratorState>;
+  let atom: Slice<OrchestratorState>;
   let appStatus: Slice<ServiceState<AppServiceStatus, AppOptions>>;
 
   describe('ready', () => {

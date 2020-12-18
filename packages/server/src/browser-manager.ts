@@ -1,13 +1,13 @@
 import { Operation, resource } from 'effection';
 import { spawn } from 'effection';
-import { Atom } from '@bigtest/atom';
+import { Slice } from '@bigtest/atom';
 import { Deferred } from '@bigtest/effection';
 import { load, Driver, DriverSpec } from '@bigtest/driver';
 
 import { OrchestratorState } from './orchestrator/state';
 
 interface CreateOptions {
-  atom: Atom<OrchestratorState>;
+  atom: Slice<OrchestratorState>;
   connectURL(agentId: string): string;
   drivers: Record<string, DriverSpec<unknown>>;
   launch: string[];

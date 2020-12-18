@@ -1,7 +1,7 @@
 import { Operation } from 'effection';
 import { Test, TestResult } from '@bigtest/suite';
 import { Mailbox } from '@bigtest/effection';
-import { Atom } from '@bigtest/atom';
+import { Slice } from '@bigtest/atom';
 import { AgentState, OrchestratorState, BundlerState } from './orchestrator/state';
 import { TestRunAggregator } from './result-aggregator/test-run';
 import { filterTest } from './filter-test';
@@ -13,7 +13,7 @@ import { ConnectionChannel } from './connection-server';
 
 export interface RunnerOptions {
   context: SpawnContext;
-  atom: Atom<OrchestratorState>;
+  atom: Slice<OrchestratorState>;
   agents: ConnectionChannel;
   proxyPort: number;
   manifestPort: number;
