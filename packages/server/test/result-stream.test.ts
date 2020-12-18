@@ -3,7 +3,7 @@ import * as expect from 'expect';
 
 import { ChainableSubscription } from '@effection/subscription';
 
-import { Atom, Slice } from '@bigtest/atom';
+import { Slice } from '@bigtest/atom';
 
 import { resultStream } from '../src/result-stream';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';

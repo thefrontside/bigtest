@@ -4,7 +4,7 @@ import { actions, getTestProjectOptions } from './helpers';
 import { createLogger } from '../src/logger';
 import { createOrchestratorAtom } from '../src';
 import { OrchestratorState } from '../src/orchestrator/state';
-import { Atom } from '@bigtest/atom/dist';
+import { Slice } from '@bigtest/atom';
 
 describe('logger', () => {
   it('should log bundler events', async () => {
