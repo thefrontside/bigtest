@@ -1,20 +1,19 @@
-// import { Subscribable } from '@effection/subscription';
-// import { Operation } from 'effection';
+import { Subscribable, Subscription, SymbolSubscribable } from '@effection/subscription';
+import { Operation } from 'effection';
 
 export interface AtomConfig {
   channelMaxListeners?: number;
 }
 
-// export interface Slice<S> extends Subscribable<S,undefined> {
-export interface Slice<S> {
+export interface Slice<S> extends Subscribable<S,undefined> {
   get(): S;
   set(value: S): void;
   update(fn: (state: S) => S): void;
   slice: Sliceable<S>;
-  // once(predicate: (state: S) => boolean): Operation<S>;
-  // remove(): void;
+  once(predicate: (state: S) => boolean): Operation<S>;
+  remove(): void;
   // over(fn: (value: S) => S): void;
-  // [SymbolSubscribable](): Operation<Subscription<S, undefined>>;
+  [SymbolSubscribable](): Operation<Subscription<S, undefined>>;
 }
 
 export type Atom<S> = Omit<Slice<S>, 'remove' | 'over'>;

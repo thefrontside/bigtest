@@ -1,10 +1,9 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect';
-// import { createAtom, DefaultChannelMaxListeners, resetAtom } from '../src/atom';
-// import { never, spawn, when } from './helpers';
-import { createAtom } from '../src/atom';
+import { createAtom, resetAtom } from '../src/atom';
+import { spawn, when, never } from './helpers';
 import { Atom } from '../src/sliceable';
-// import { subscribe, ChainableSubscription, Subscription } from '@effection/subscription';
+import { subscribe, Subscription } from '@effection/subscription';
 
 type TestRunAgentState = {
   status: "pending" | "running" | "finished" | "errored";
@@ -98,7 +97,7 @@ describe('@bigtest/atom createAtom', () => {
     });
   });
 
-  describe.only('.slice()', () => {
+  describe('.slice()', () => {
     let subject: Atom<TestRunState>;
 
     beforeEach(() => {
@@ -127,133 +126,133 @@ describe('@bigtest/atom createAtom', () => {
   });
 
 
-  // type State = { foo: string};
-  // describe('subscribe', () => {
-  //   let subject: Atom<State>;
-  //   let subscription: Subscription<State, undefined>;
+  type State = { foo: string};
+  describe.skip('subscribe', () => {
+    let subject: Atom<State>;
+    let subscription: Subscription<State, undefined>;
 
-  //   beforeEach(async () => {
-  //     subject = createAtom({foo: 'bar'});
-  //     subscription = await spawn(subscribe(subject));
+    beforeEach(async () => {
+      subject = createAtom({foo: 'bar'});
+      subscription = await spawn(subscribe(subject));
 
-  //     subject.update(() => ({ foo: 'bar' }));
-  //     subject.update(() => ({ foo: 'baz' }));
-  //     subject.update(() => ({ foo: 'quox' }));
-  //   });
+      subject.update(() => ({ foo: 'bar' }));
+      subject.update(() => ({ foo: 'baz' }));
+      subject.update(() => ({ foo: 'quox' }));
+    });
 
-  //   it('iterates over emitted states', async () => {
-  //     await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: { foo: 'bar' } });
-  //     await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: { foo: 'baz' } });
-  //     await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: { foo: 'quox' } });
-  //   });
-  // });
+    it('iterates over emitted states', async () => {
+      await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: { foo: 'bar' } });
+      await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: { foo: 'baz' } });
+      await expect(spawn(subscription.next())).resolves.toEqual({ done: false, value: { foo: 'quox' } });
+    });
+  });
 
-  // describe('.once()', () => {
-  //   let result: Promise<State>;
-  //   let subject: Atom<State>;
+  describe('.once()', () => {
+    let result: Promise<State>;
+    let subject: Atom<State>;
 
-  //   describe('when initial state matches', () => {
-  //     beforeEach(async () => {
-  //       subject = createAtom({foo: 'bar'});
-  //       result = spawn(subject.once((state) => state.foo === 'bar'));
+    describe('when initial state matches', () => {
+      beforeEach(async () => {
+        subject = createAtom({foo: 'bar'});
+        result = spawn(subject.once((state) => state.foo === 'bar'));
 
-  //       subject.update(() => ({ foo: 'baz' }));
-  //     });
+        subject.update(() => ({ foo: 'baz' }));
+      });
 
-  //     it('gets the first state that passes the given predicate', async () => {
-  //       expect(await result).toEqual({ foo: 'bar' });
-  //       expect(subject.get()).toEqual({ foo: 'baz' });
-  //     });
-  //   });
+      it('gets the first state that passes the given predicate', async () => {
+        expect(await result).toEqual({ foo: 'bar' });
+        expect(subject.get()).toEqual({ foo: 'baz' });
+      });
+    });
 
-  //   describe('when initial state does not match', () => {
-  //     beforeEach(async () => {
-  //       result = spawn(subject.once((state) => state.foo === 'baz'));
+    describe('when initial state does not match', () => {
+      beforeEach(async () => {
+        result = spawn(subject.once((state) => state.foo === 'baz'));
 
-  //       subject.update(() => ({ foo: 'bar' }));
-  //       subject.update(() => ({ foo: 'baz' }));
-  //       subject.update(() => ({ foo: 'quox' }));
-  //     });
+        subject.update(() => ({ foo: 'bar' }));
+        subject.update(() => ({ foo: 'baz' }));
+        subject.update(() => ({ foo: 'quox' }));
+      });
 
-  //     it('gets the first state that passes the given predicate', async () => {
-  //       expect(await result).toEqual({ foo: 'baz' });
-  //       expect(subject.get()).toEqual({ foo: 'quox' });
-  //     });
-  //   });
-  // });
+      it('gets the first state that passes the given predicate', async () => {
+        expect(await result).toEqual({ foo: 'baz' });
+        expect(subject.get()).toEqual({ foo: 'quox' });
+      });
+    });
+  });
 
-  // type Subject = {
-  //   foo: string;
-  // }
+  type Subject = {
+    foo: string;
+  }
 
-  // describe('.reset()', () => {
-  //   let subject: Atom<State>;
-  //   beforeEach(() => {
-  //     subject = createAtom({foo: 'bar'});
-  //   });
+  describe('.reset()', () => {
+    let subject: Atom<State>;
+    beforeEach(() => {
+      subject = createAtom({foo: 'bar'});
+    });
     
-  //   describe('without an initializer', () => { 
-  //     beforeEach(async () => {
-  //       subject.update(() => ({ foo: 'baz'}));
+    describe('without an initializer', () => { 
+      beforeEach(async () => {
+        subject.update(() => ({ foo: 'baz'}));
 
-  //       resetAtom(subject);
-  //     });
+        resetAtom(subject);
+      });
 
-  //     it('resets to the initial value', async () => {
-  //       expect(subject.get()).toEqual({ foo: 'bar' });
-  //     });
-  //   });
+      it('resets to the initial value', async () => {
+        expect(subject.get()).toEqual({ foo: 'bar' });
+      });
+    });
 
-  //   describe('with an initializer', () => {
-  //     let initializerArgs: Subject[];
+    describe('with an initializer', () => {
+      let initializerArgs: Subject[];
 
-  //     beforeEach(async () => {
-  //       subject.update(() => ({ foo: 'bar' }));
+      beforeEach(async () => {
+        subject.update(() => ({ foo: 'bar' }));
 
-  //       resetAtom(subject, (initial: State, current: State) => {
-  //         initializerArgs = [initial, current];
-  //         return { foo: 'baz'};
-  //       });
-  //     });
+        resetAtom(subject, (initial: State, current: State) => {
+          initializerArgs = [initial, current];
+          return { foo: 'baz'};
+        });
+      });
 
-  //     it('resets to the value returned from the given function', async () => {
-  //       expect(subject.get()).toEqual({ foo: 'baz' });
-  //     });
+      it('resets to the value returned from the given function', async () => {
+        expect(subject.get()).toEqual({ foo: 'baz' });
+      });
 
-  //     it('provides the initial and current values as arguments to the given function', async () => {
-  //       expect(initializerArgs).toEqual([{ foo: 'bar' }, { foo: 'bar' }]);
-  //     });
-  //   });
+      it('provides the initial and current values as arguments to the given function', async () => {
+        expect(initializerArgs).toEqual([{ foo: 'bar' }, { foo: 'bar' }]);
+      });
+    });
 
-  //   describe('removing listeners', () => {
-  //     let result: Subject[];
+    describe.skip('removing listeners', () => {
+      let result: Subject[];
 
-  //     beforeEach(async () => {
-  //       result = [];
+      beforeEach(async () => {
+        result = [];
 
-  //       let subscription = await spawn(subscribe(subject));
-  //       spawn(subscription.forEach(function*(state) { 
-  //         result.push(state); 
-  //       }));
+        let subscription = await spawn(subscribe(subject));
+        spawn(subscription.forEach(function*(state) { 
+          result.push(state); 
+        }));
 
-  //       subject.update(() => ({ foo: 'state before reset' }));
-  //       resetAtom(subject, () => ({ foo: 'reset state' }));
-  //       subject.update(() => ({ foo: 'state after reset' }));
-  //     });
+        subject.update(() => ({ foo: 'state before reset' }));
+        resetAtom(subject, () => ({ foo: 'reset state' }));
+        subject.update(() => ({ foo: 'state after reset' }));
+      });
 
-  //     it('emits state changes to listeners before reset', async () => {
-  //       await when(() => {
-  //         expect(result).toEqual([{ foo: 'state before reset' }]);
-  //       });
-  //     });
+      it('emits state changes to listeners before reset', async () => {
+        await when(() => {
+          expect(result).toEqual([{ foo: 'state before reset' }]);
+        });
+      });
 
-  //     it('stops emitting changes to listeners set before reset', async () => {
-  //       await never(() => {
-  //         expect(result).toEqual([{ foo: 'state before reset' }, { foo: 'state after reset' }]);
-  //       });
-  //     });
-  //   });
-  // });
+      it('stops emitting changes to listeners set before reset', async () => {
+        await never(() => {
+          expect(result).toEqual([{ foo: 'state before reset' }, { foo: 'state after reset' }]);
+        });
+      });
+    });
+  });
 
   // describe('subscribe - unique state publish', () => {
   //   let result: Subject[];
