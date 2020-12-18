@@ -140,12 +140,14 @@ export function createAtom<S>(init: S, { channelMaxListeners = DefaultChannelMax
     return slice;
   }
 
-  return {
-    ...sliceMaker()() as unknown as Atom<S>,
+  let atom: Atom<S> = {
+    ...sliceMaker()(),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     _channelMaxListeners: (states as any).bus._maxListeners,
     _reset: reset
-  } as Atom<S>;
+  };
+
+  return atom;
 }
 
 // This is purely for testing purposes
