@@ -58,20 +58,35 @@ Is the same as:
 
 ```js
 actions: {
-  async click(interactor){
+  click: async (interactor) => {
     await interactor.click();
   }
 }
 ```
 
-The latter syntax is necessary if you want to write an action that delegates to other interactors' actions. For example if you wanted to create a Form interactor that has a submit action, this is one way you could compose such action:
+The latter syntax is necessary if you want to write an action that delegates to other interactors' actions. For example say you want to create a Form interactor that has a submit action, you could take this approach:
 
 ```js
-actions: {
-  async submit(interactor){
-    await interactor.find(Button('Submit')).click();
+import { Button, createInteractor } from 'bigtest';
+
+export const Form = createInteractor<HTMLFormElement>('form')({
+  selector: 'form',
+  actions: {
+    async submit(interactor){
+      await interactor.find(Button('Submit')).click();
+    }
   }
-}
+})
+```
+
+Delegating the click action will save you the hassle of having to implement the click separately and there is also the added benefit of making your tests easier to read:
+
+```js
+Form.find(Button('Submit')).click();
+
+// versus
+
+Form.submit();
 ```
 
 Now let's get back to our example and import the new TextField interactor from earlier and add it to a test:
