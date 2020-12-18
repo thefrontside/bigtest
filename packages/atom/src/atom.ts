@@ -2,7 +2,7 @@ import * as O from "fp-ts/Option";
 import * as Op from "monocle-ts/lib/Optional"
 import { pipe } from 'fp-ts/function'
 import { Channel } from '@effection/channel';
-import { Sliceable, AtomConfig, Slice } from './sliceable';
+import { MakeSlice, AtomConfig, Slice } from './sliceable';
 import { Operation } from 'effection';
 import { subscribe, Subscription, SymbolSubscribable } from '@effection/subscription';
 import { unique } from './unique';
@@ -46,7 +46,7 @@ export function createAtom<S>(init: S, { channelMaxListeners = DefaultChannelMax
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let sliceMaker = <A>(parentOptional: Op.Optional<O.Option<S>, A> = lens as unknown as Op.Optional<O.Option<S>, A>): Sliceable<any> =>
+  let sliceMaker = <A>(parentOptional: Op.Optional<O.Option<S>, A> = lens as unknown as Op.Optional<O.Option<S>, A>): MakeSlice<any> =>
     <P extends keyof A>(...path: P[]): Slice<A[P]> => {
       let getters = [
         parentOptional,

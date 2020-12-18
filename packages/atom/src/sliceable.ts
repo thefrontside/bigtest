@@ -9,13 +9,13 @@ export interface Slice<S> extends Subscribable<S,undefined> {
   get(): S;
   set(value: S): void;
   update(fn: (state: S) => S): void;
-  slice: Sliceable<S>;
+  slice: MakeSlice<S>;
   once(predicate: (state: S) => boolean): Operation<S>;
   remove(): void;
   [SymbolSubscribable](): Operation<Subscription<S, undefined>>;
 }
 
-export interface Sliceable<S> {
+export interface MakeSlice<S> {
   /* 
   * Brute foce overload to allow strong typing of the string path syntax
   * for every level deep we want to go in the slice there will need to be an overload 
