@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.21.0
+
+### Minor Changes
+
+- 581a100e: make reset private and remove from the Atom interface
+- eea76b5f: add atom configuration and remove setMaxListeners
+- 0df559a9: readd @babel/preset-typescript to @bigtest/bundler
+
+### Patch Changes
+
+- 0c30e69d: Remove delegate mailboxes in orchestrator
+- Updated dependencies [1840b2fd]
+- Updated dependencies [25633b44]
+  - @bigtest/atom@0.11.0
+  - @bigtest/webdriver@0.7.1
+
 ## 0.20.0
 
 ### Minor Changes

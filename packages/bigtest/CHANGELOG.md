@@ -1,5 +1,22 @@
 # bigtest
 
+## 0.7.0
+
+### Minor Changes
+
+- 98c94312: `perform` will throw an error if run inside an assertion context
+- 98c94312: Add `assertion` method to `Interactor`
+
+### Patch Changes
+
+- 1840b2fd: use only slice functions in createAtom
+- 25633b44: replace ramda lens with monocle-ts lens
+- Updated dependencies [98c94312]
+- Updated dependencies [98c94312]
+- Updated dependencies [c1dd9d83]
+  - @bigtest/interactor@0.23.0
+  - @bigtest/cli@0.16.2
+
 ## 0.6.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "bigtest",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "Tests that speed up development, not slow it down",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -27,8 +27,8 @@
     "typescript": "3.9.7"
   },
   "dependencies": {
-    "@bigtest/cli": "0.16.1",
-    "@bigtest/interactor": "0.22.0",
+    "@bigtest/cli": "0.16.2",
+    "@bigtest/interactor": "0.23.0",
     "@bigtest/suite": "0.11.1"
   },
   "volta": {

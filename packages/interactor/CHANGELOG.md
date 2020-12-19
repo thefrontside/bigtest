@@ -1,5 +1,16 @@
 # @bigtest/interactor
 
+## 0.23.0
+
+### Minor Changes
+
+- 98c94312: `perform` will throw an error if run inside an assertion context
+- 98c94312: Add `assertion` method to `Interactor`
+
+### Patch Changes
+
+- c1dd9d83: Extracts out the focus action and imports it into each interactor (and adds it to a few that were missing it).
+
 ## 0.22.0
 
 ### Minor Changes
