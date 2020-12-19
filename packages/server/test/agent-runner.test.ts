@@ -2,7 +2,7 @@ import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 
 import { Mailbox, DuplexChannel, createDuplexChannel } from '@bigtest/effection';
-import { Atom } from '@bigtest/atom';
+import { Slice } from '@bigtest/atom';
 
 import { actions, getTestProjectOptions } from './helpers';
 import { AgentRunner, Runner } from '../src/runner';
@@ -14,7 +14,7 @@ import { OrchestratorState, TestRunState } from '../src/orchestrator/state';
 
 describe('agent runner', () => {
   let messages: Mailbox<ConnectionOutgoing>;
-  let atom: Atom<OrchestratorState>;
+  let atom: Slice<OrchestratorState>;
   let agents: DuplexChannel<ConnectionOutgoing, ConnectionIncoming>;
   let connections: DuplexChannel<ConnectionIncoming, ConnectionOutgoing>;
   let runner: Runner;

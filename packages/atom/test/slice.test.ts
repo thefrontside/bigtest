@@ -4,13 +4,13 @@ import { createAtom } from '../src/atom';
 import { spawn, when } from './helpers';
 import { Subscription, subscribe, ChainableSubscription } from '@effection/subscription';
 import { TestResult, ResultStatus } from '@bigtest/suite';
-import { Atom, Slice } from '../src/sliceable';
+import { Slice } from '../src/types';
 
 type Data = { data: string };
 
 describe('@bigtest/atom Slice', () => {
   describe('with no data', () => {
-    let atom: Atom<{ outer: Data }>;
+    let atom: Slice<{ outer: Data }>;
     let slice: Slice<string>;
 
     before(() => {
@@ -31,7 +31,7 @@ describe('@bigtest/atom Slice', () => {
   });
   
   describe('with data', () => {
-    let atom: Atom<{ outer: Data }>;
+    let atom: Slice<{ outer: Data }>;
     let slice: Slice<Data>;
 
     beforeEach(() => {
@@ -59,7 +59,7 @@ describe('@bigtest/atom Slice', () => {
   });
 
   describe('nested slices', () => {
-    let atom: Atom<{ outer: Data }>;
+    let atom: Slice<{ outer: Data }>;
     let slice1: Slice<Data>;
     let slice2: Slice<string>;
 
@@ -96,7 +96,7 @@ describe('@bigtest/atom Slice', () => {
 
   describe('.once()', () => {
     let result: Promise<string | undefined>;
-    let atom: Atom<Data>;
+    let atom: Slice<Data>;
     let slice: Slice<string>;
 
     beforeEach(() => {
@@ -135,7 +135,7 @@ describe('@bigtest/atom Slice', () => {
 
 
   describe('subscribe', () => {
-    let atom: Atom<Data>;
+    let atom: Slice<Data>;
     let slice: Slice<string>;
     let subscription: Subscription<string, undefined>;
 
@@ -157,7 +157,7 @@ describe('@bigtest/atom Slice', () => {
   });
 
   describe('subscribe - unique state publish', () => {
-    let atom: Atom<Data>;
+    let atom: Slice<Data>;
     let slice: Slice<string>;
     let result: string[];
     let subscription: ChainableSubscription<string, undefined>;
@@ -215,7 +215,7 @@ describe('@bigtest/atom Slice', () => {
       testRuns: {}
     };
   
-    let atom: Atom<AtomState>;
+    let atom: Slice<AtomState>;
     let slice: Slice<TestRunState>;
 
     beforeEach(() => {
@@ -304,7 +304,7 @@ describe('@bigtest/atom Slice', () => {
       agents: Record<string, TestRunAgentState>;
     };
 
-    let atom: Atom<TestRunState>;
+    let atom: Slice<TestRunState>;
     let slice: Slice<ResultStatus>;
 
     beforeEach(() => {

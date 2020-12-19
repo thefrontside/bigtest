@@ -1,5 +1,5 @@
 import { Operation } from 'effection';
-import { Atom } from '@bigtest/atom';
+import { Slice } from '@bigtest/atom';
 import { express } from '@bigtest/effection-express';
 import { static as staticMiddleware } from 'express';
 import { OrchestratorState } from './orchestrator/state';
@@ -8,7 +8,7 @@ interface ManifestServerOptions {
   dir: string;
   port: number;
   proxyPort: number;
-  atom: Atom<OrchestratorState>;
+  atom: Slice<OrchestratorState>;
 };
 
 export function* createManifestServer(options: ManifestServerOptions): Operation {

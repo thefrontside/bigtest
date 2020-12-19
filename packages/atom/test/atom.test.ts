@@ -1,9 +1,9 @@
 import { describe, it } from 'mocha';
 import * as expect from 'expect';
 import { createAtom, DefaultChannelMaxListeners, resetAtom } from '../src/atom';
-import { never, spawn, when } from './helpers';
-import { Atom } from '../src/sliceable';
-import { subscribe, ChainableSubscription, Subscription } from '@effection/subscription';
+import { spawn, when, never } from './helpers';
+import { ChainableSubscription, subscribe, Subscription } from '@effection/subscription';
+import { Slice } from '../src/types';
 
 type TestRunAgentState = {
   status: "pending" | "running" | "finished" | "errored";
@@ -40,7 +40,7 @@ const state: TestRunState = {
 
 describe('@bigtest/atom createAtom', () => {
   describe('Atom with none', () => {
-    let subject: Atom<undefined>;
+    let subject: Slice<undefined>;
     beforeEach(() => {
       subject = createAtom(undefined);
     });
@@ -52,7 +52,7 @@ describe('@bigtest/atom createAtom', () => {
     });
   });
 
-  let subject: Atom<TestRunState>;
+  let subject: Slice<TestRunState>;
 
   describe('Atom with some', () => {
     beforeEach(() => {
@@ -98,7 +98,7 @@ describe('@bigtest/atom createAtom', () => {
   });
 
   describe('.slice()', () => {
-    let subject: Atom<TestRunState>;
+    let subject: Slice<TestRunState>;
 
     beforeEach(() => {
       subject = createAtom(state);
@@ -111,7 +111,7 @@ describe('@bigtest/atom createAtom', () => {
     });
 
     it('returns a slice of the Atom with the given path', async () => {
-      let result = subject.slice('agents', "agent-2", "status");
+      let result = subject.slice('agents', "agent-2", 'status');
 
       expect(result.get()).toEqual("running");
     });
@@ -128,7 +128,7 @@ describe('@bigtest/atom createAtom', () => {
 
   type State = { foo: string};
   describe('subscribe', () => {
-    let subject: Atom<State>;
+    let subject: Slice<State>;
     let subscription: Subscription<State, undefined>;
 
     beforeEach(async () => {
@@ -149,7 +149,7 @@ describe('@bigtest/atom createAtom', () => {
 
   describe('.once()', () => {
     let result: Promise<State>;
-    let subject: Atom<State>;
+    let subject: Slice<State>;
 
     describe('when initial state matches', () => {
       beforeEach(async () => {
@@ -186,7 +186,7 @@ describe('@bigtest/atom createAtom', () => {
   }
 
   describe('.reset()', () => {
-    let subject: Atom<State>;
+    let subject: Slice<State>;
     beforeEach(() => {
       subject = createAtom({foo: 'bar'});
     });
@@ -256,7 +256,7 @@ describe('@bigtest/atom createAtom', () => {
 
   describe('subscribe - unique state publish', () => {
     let result: Subject[];
-    let subject: Atom<Subject>;
+    let subject: Slice<Subject>;
     let subscription: ChainableSubscription<Subject, undefined>;
 
     beforeEach(async () => {

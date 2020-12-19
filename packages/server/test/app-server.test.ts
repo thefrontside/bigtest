@@ -1,7 +1,7 @@
 import { describe, beforeEach, it } from 'mocha';
 import * as expect from 'expect';
 import type { AppServiceStatus, OrchestratorState, ServiceState, AppOptions } from '../src/orchestrator/state';
-import type { Atom, Slice } from '@bigtest/atom';
+import type { Slice } from '@bigtest/atom';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { assertStatus } from '../src/assertions/status-assertions';
 
@@ -9,7 +9,7 @@ import { actions, getTestProjectOptions } from './helpers';
 import { appServer } from '../src/app-server';
 
 describe('app service', () => {
-  let atom: Atom<OrchestratorState>;
+  let atom: Slice<OrchestratorState>;
   let appStatus: Slice<ServiceState<AppServiceStatus, AppOptions>>;
 
   describe('ready', () => {

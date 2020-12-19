@@ -3,7 +3,7 @@ import * as expect from 'expect';
 
 import { ChainableSubscription } from '@effection/subscription';
 
-import { Atom, Slice } from '@bigtest/atom';
+import { Slice } from '@bigtest/atom';
 
 import { resultStream } from '../src/result-stream';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
@@ -13,7 +13,7 @@ import { TestEvent } from '../src/schema/test-event';
 import { actions, getTestProjectOptions } from './helpers';
 
 describe('result stream', () => {
-  let atom: Atom<OrchestratorState>;
+  let atom: Slice<OrchestratorState>;
   let slice: Slice<TestRunState>;
   let subscription: ChainableSubscription<TestEvent, void>;
 

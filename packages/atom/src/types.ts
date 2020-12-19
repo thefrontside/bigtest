@@ -1,4 +1,4 @@
-import { Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
+import { Subscribable, Subscription, SymbolSubscribable } from '@effection/subscription';
 import { Operation } from 'effection';
 
 export interface AtomConfig {
@@ -9,16 +9,13 @@ export interface Slice<S> extends Subscribable<S,undefined> {
   get(): S;
   set(value: S): void;
   update(fn: (state: S) => S): void;
-  slice: Sliceable<S>;
+  slice: MakeSlice<S>;
   once(predicate: (state: S) => boolean): Operation<S>;
   remove(): void;
-  over(fn: (value: S) => S): void;
   [SymbolSubscribable](): Operation<Subscription<S, undefined>>;
 }
 
-export type Atom<S> = Omit<Slice<S>, 'remove' | 'over'>;
-
-export type Sliceable<S> = {
+export interface MakeSlice<S> {
   /* 
   * Brute foce overload to allow strong typing of the string path syntax
   * for every level deep we want to go in the slice there will need to be an overload 
@@ -33,7 +30,7 @@ export type Sliceable<S> = {
   * key1 is 'agents' and key2 is agentId.
   * 
   * key1 is constrained to be a key of the atom `agents` which is atom.agents or could be
-  * atom.manifest or atom.testRuns of Atom<OrchestratorState>
+  * atom.manifest or atom.testRuns of Slice<OrchestratorState>
   * 
   * key2 is constrained to be a key of the return type S[Key1] which is the agents object and in this
   * example whatever the agentId variable is
@@ -41,6 +38,7 @@ export type Sliceable<S> = {
   * The return type of the function is Slice<S[Key1][Key2], S>; or Slice<AgentState>
   * in this example
   */
+ (): S;
  <
   Key extends keyof S
  >(

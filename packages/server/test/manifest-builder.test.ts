@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as rmrf from 'rimraf';
 import * as fs from 'fs';
 
-import { Atom } from '@bigtest/atom';
+import { Slice } from '@bigtest/atom';
 
 import { actions, getTestProjectOptions } from './helpers';
 import { createManifestBuilder, updateSourceMapURL } from '../src/manifest-builder';
@@ -24,7 +24,7 @@ const { mkdir, copyFile, readFile } = fs.promises;
 
 const describe = process.platform === 'win32' ? suite.skip : suite;
 describe('manifest builder', () => {
-  let atom: Atom<OrchestratorState>;
+  let atom: Slice<OrchestratorState>;
   let resultPath: string;
 
   beforeEach((done) => rmrf(TEST_DIR, done));

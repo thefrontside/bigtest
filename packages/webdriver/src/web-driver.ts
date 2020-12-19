@@ -42,9 +42,9 @@ export function* connect(driver: WebDriver, options: Options): Operation<void> {
 
   if (options.headless) {
     capabilities.slice('alwaysMatch', 'goog:chromeOptions', 'args')
-      .over(args => args.concat(['--headless']))
+      .update(args => args.concat(['--headless']))
     capabilities.slice('alwaysMatch', 'moz:firefoxOptions', 'args')
-      .over(args => args.concat(['--headless']))
+      .update(args => args.concat(['--headless']))
   }
 
   driver.session = yield post(`${driver.serverURL}/session`, {

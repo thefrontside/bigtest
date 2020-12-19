@@ -1,10 +1,10 @@
 import { fork } from 'effection';
 import { OrchestratorState } from './orchestrator/state';
-import { Atom } from '@bigtest/atom';
+import { Slice } from '@bigtest/atom';
 import { subscribe } from '@effection/subscription';
 
 export interface LoggerOptions {
-  atom: Atom<OrchestratorState>;
+  atom: Slice<OrchestratorState>;
   out: <A extends unknown[]>(...args: A) => void;
 }
 

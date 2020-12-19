@@ -4,11 +4,11 @@ import { actions, getTestProjectOptions } from './helpers';
 import { createLogger } from '../src/logger';
 import { createOrchestratorAtom } from '../src';
 import { OrchestratorState } from '../src/orchestrator/state';
-import { Atom } from '@bigtest/atom/dist';
+import { Slice } from '@bigtest/atom';
 
 describe('logger', () => {
   it('should log bundler events', async () => {
-    let atom: Atom<OrchestratorState>;
+    let atom: Slice<OrchestratorState>;
     
     let logger:  (<A extends unknown[]>(...a: A) => void) = (...args) => {
       expect(args).toEqual(["[manifest builder] build error:", "blah"]);

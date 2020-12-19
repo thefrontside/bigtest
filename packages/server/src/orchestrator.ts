@@ -2,7 +2,7 @@ import * as path from 'path';
 import { fork, Operation, spawn } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { AgentServerConfig } from '@bigtest/agent';
-import { Atom } from '@bigtest/atom';
+import { Slice } from '@bigtest/atom';
 import { ProjectOptions } from '@bigtest/project';
 
 import { proxyServer } from './proxy';
@@ -18,7 +18,7 @@ import { OrchestratorState } from './orchestrator/state';
 import { AgentRunner } from './runner';
 
 type OrchestratorOptions = {
-  atom: Atom<OrchestratorState>;
+  atom: Slice<OrchestratorState>;
   delegate?: Mailbox;
   project: Omit<ProjectOptions, 'app'>;
 }
