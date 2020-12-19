@@ -1,6 +1,6 @@
 import { Button } from 'bigtest';
 
-describe('Cypress with Interactors', () => {
+describe('Interactors with Cypress', () => {
   beforeEach(() => {
     cy.visit('/')
     cy.expect(Button('SIGN IN').exists())
