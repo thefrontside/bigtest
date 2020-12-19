@@ -4,20 +4,15 @@ body {
 }
 
 .App {
-  text-align: center;
   background-color: #14191e;
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 1.5vmin);
-  color: white;
 }
 
 button {
   padding: 50px;
-  font-family: inherit;
-  border-radius: 35px;
+  border-radius: 40px;
   font-size: calc(45px + 1.5vmin);
 }

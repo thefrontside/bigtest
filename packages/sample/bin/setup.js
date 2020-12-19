@@ -48,12 +48,14 @@ function migrate(messages) {
       if(file==='package.json'){
         const {
           name, version, description, repository, author, license, 
-          main, scripts, devDependencies, eslintConfig, browserslist
+          main, scripts, devDependencies, eslintConfig, browserslist,
+          babel, jest
         } = require(`${SOURCE_DIR}/${file}`);
 
         const pkgjson = {
           name, version, private: true, description, repository, author, 
-          license, main, scripts, devDependencies, eslintConfig, browserslist
+          license, main, scripts, devDependencies, eslintConfig, browserslist,
+          babel, jest
         };
 
         fs.writeFileSync(`${TARGET_DIR}/package.json`, JSON.stringify(pkgjson, null, 2));
