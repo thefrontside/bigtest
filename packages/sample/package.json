@@ -7,10 +7,11 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "start": "SKIP_PREFLIGHT_CHECK=true react-scripts start",
-    "build": "SKIP_PREFLIGHT_CHECK=true react-scripts build",
-    "test:jest": "SKIP_PREFLIGHT_CHECK=true react-scripts test --verbose ./test/jest.test.js",
-    "test:cypress": "yarn cypress run --spec 'src/test/cypress.spec.js'",
+    "start": "parcel src/index.html --no-source-maps --port 3000",
+    "build": "parcel build src/index.html --no-cache",
+    "cypress:run": "yarn cypress run --spec 'src/test/cypress.spec.js'",
+    "test:jest": "jest 'src/test/jest.test.js'",
+    "test:cypress": "start-server-and-test start http://localhost:3000 cypress:run",
     "test:bigtest": "yarn bigtest ci"
   },
   "bin": {
@@ -22,13 +23,22 @@
     "rimraf": "^3.0.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-react": "^7.12.10",
     "@testing-library/react": "^11.1.0",
+    "babel-jest": "^26.6.3",
     "bigtest": "^0.6.1",
     "cypress": "^6.0.1",
     "eslint-plugin-cypress": "^2.11.2",
+    "jest": "^26.6.3",
+    "jest-css-modules-transform": "^4.1.0",
+    "parcel": "^1.12.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-scripts": "4.0.0"
+    "react-test-renderer": "^17.0.1",
+    "start-server-and-test": "^1.11.6",
+    "ts-jest": "^26.4.4"
   },
   "eslintConfig": {
     "extends": [
@@ -36,17 +46,28 @@
       "plugin:cypress/recommended"
     ]
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
+  "browserslist": [
+    "defaults"
+  ],
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": true
+          }
+        }
+      ],
+      "@babel/preset-react"
     ]
+  },
+  "jest": {
+    "preset": "ts-jest/presets/js-with-babel",
+    "transform": {
+      "^.+\\.js$": "babel-jest",
+      ".+\\.(css|styl|less|sass|scss)$": "jest-css-modules-transform"
+    }
   },
   "volta": {
     "node": "12.16.0",
