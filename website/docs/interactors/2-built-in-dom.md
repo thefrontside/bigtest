@@ -7,15 +7,15 @@ Built-in Interactors cover some of the most common UI testing needs for apps tha
 
 These are the default interactors that are offered out-of-the-box with BigTest:
 
-- [Button](/docs/interactors/api/variables/button)
-- [CheckBox](/docs/interactors/api/variables/checkbox)
-- [Heading](/docs/interactors/api/variables/heading)
-- [Link](/docs/interactors/api/variables/link)
-- [MultiSelect](/docs/interactors/api/variables/multiselect)
-- [Page](/docs/interactors/api/variables/page)
-- [RadioButton](/docs/interactors/api/variables/radiobutton)
-- [Select](/docs/interactors/api/variables/select)
-- [TextField](/docs/interactors/api/variables/textfield)
+- [Button](/)
+- [CheckBox](/)
+- [Heading](/)
+- [Link](/)
+- [MultiSelect](/)
+- [Page](/)
+- [RadioButton](/)
+- [Select](/)
+- [TextField](/)
 
 As you might have seen on the [quick start](/docs/interactors/) page, you can import any of the interactors directly from the `bigtest` package:
 
