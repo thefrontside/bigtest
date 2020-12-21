@@ -7,6 +7,8 @@ Nearly every app has at least one user interaction that is unusual or special, l
 
 In this section, you will learn how to create a new Interactor for any interface and use it in your tests. We will start with a simple example for learning purposes, level up to a more complex example, and then cover common questions.
 
+> :exclamation: There are new, exciting changes in the works for the `createInteractor()` API. Those changes will deprecate the syntax you see in the examples below, but the refactoring process will be very simple. We will output clear instructions in your console on how you can update to the new syntax so you can use Interactors today without worrying too much about tomorrow.
+
 ## Writing your first interactor
 
 In this example, we will create our own `TextField` Interactor to use as an alterantive to the one offered by BigTest as you may have seen in the [`Locators, Filters, and Actions`](/docs/interactors/locators-filters-actions) page.
@@ -45,8 +47,6 @@ NoSuchElementError: did not find my-textfield-interactor "USERNAME"
 _An example of the console output when a test is unable to locate the interactor_
 
 And also note that locators, filters, and actions are optional when creating your own interactor. If you create an interactor without a locator, it will default to `locator: element => element.textContent`. The locator for the `TextField` interactor offered by BigTest uses the `textContent` of the associated label as we mentioned in the [previous page](/docs/interactors/locators-filters-actions#filters). The example above has its locator configured as `element.placeholder`; this is just to demonstrate that you can set these properties to anything that suits your needs.
-
-## remove this heading later
 
 Lastly, you might be wondering what `perform()` does. The `perform()` function is just a short way of writing interactions. So a click action written like this:
 
