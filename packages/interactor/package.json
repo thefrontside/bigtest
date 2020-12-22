@@ -20,8 +20,7 @@
     "test:types": "dtslint types --localTs ../../node_modules/typescript/lib --expectOnly",
     "test:cypress": "yarn bigtest-todomvc 3000 & wait-on http://localhost:3000 & yarn cypress run --spec 'test/integrations/cypress/integration/*.spec.ts'",
     "test": "yarn test:unit && yarn test:types",
-    "preprepack": "tsc --build",
-    "prepack": "tsc --outdir dist/esm --module es2015 && tsc --outdir dist/cjs --module commonjs && tsc --outdir dist/types --emitDeclarationOnly"
+    "prepack": "tsc --build && tsc --outdir dist/esm --module es2015 && tsc --outdir dist/cjs --module commonjs && tsc --outdir dist/types --emitDeclarationOnly"
   },
   "dependencies": {
     "@bigtest/globals": "^0.7.3",

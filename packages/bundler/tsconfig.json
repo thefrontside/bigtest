@@ -3,11 +3,10 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "outDir": "dist",
-    "rootDir": "./src"
+    "rootDir": "src"
   },
   "include": [
-    "src/**/*.ts",
-    "bin/*.ts"
+    "src",
   ],
   "exclude": [
     "../../node_modules"

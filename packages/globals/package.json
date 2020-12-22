@@ -16,8 +16,7 @@
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "mocha": "mocha -r ts-node/register",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "preprepack": "tsc --build",
-    "prepack": "tsc --outdir dist/esm --module es2015 && tsc --outdir dist/cjs --module commonjs && tsc --outdir dist/types --emitDeclarationOnly"
+    "prepack": "tsc --build && tsc --outdir dist/esm --module es2015 && tsc --outdir dist/cjs --module commonjs && tsc --outdir dist/types --emitDeclarationOnly"
   },
   "dependencies": {
     "@bigtest/suite": "^0.11.1",

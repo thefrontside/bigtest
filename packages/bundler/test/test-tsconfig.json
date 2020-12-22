@@ -1,0 +1,6 @@
+{
+  "extends": "@frontside/tsconfig",
+  "compilerOptions": {
+    "esModuleInterop": true
+  }
+}

@@ -4,9 +4,9 @@ import { promises as fs, existsSync } from 'fs';
 import expect from 'expect';
 import rmrf from 'rimraf';
 import { subscribe } from '@effection/subscription';
-
 import { spawn } from './world';
 import { Bundler } from '../src/index';
+import path from 'path';
 
 describe("Bundler", function() {
   let bundler: Bundler;
@@ -84,6 +84,8 @@ describe("Bundler", function() {
   });
 
   describe("TypeScript support", () => {
+    let tsconfig = path.resolve('./test/test-tsconfig.json');
+
     describe('success', () => {
       beforeEach(async () => {
         await fs.writeFile("./build/test/sources/input.ts", "const foo: string = 'bar';\nexport default foo;\n");
@@ -93,6 +95,7 @@ describe("Bundler", function() {
           entry: "./build/test/sources/input.ts",
           outFile: "./build/test/output/manifest.js",
           globalName: "__bigtestManifest",
+          tsconfig
         }));
 
         await spawn(subscribe(bundler).match({ type: 'UPDATE' }).first());
@@ -112,6 +115,7 @@ describe("Bundler", function() {
           entry: "./build/test/sources/input.ts",
           outFile: "./build/test/output/manifest.js",
           globalName: "__bigtestManifest",
+          tsconfig
         }));
       });
 
