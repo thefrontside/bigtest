@@ -15,7 +15,7 @@
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "mocha": "mocha -r ts-node/register",
-    "prepack": "tsc --outdir dist --declaration --sourcemap"
+    "prepack": "tsc -b"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^1.1.2",

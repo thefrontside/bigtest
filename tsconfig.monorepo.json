@@ -1,0 +1,53 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./packages/eslint-plugin"
+    },
+    {
+      "path": "./packages/atom"
+    },
+    {
+      "path": "./packages/effection"
+    },
+    {
+      "path": "./packages/logging"
+    },
+    {
+      "path": "./packages/driver"
+    },
+    {
+      "path": "./packages/suite"
+    },
+    {
+      "path": "./packages/globals"
+    },
+    {
+      "path": "./packages/effection-express"
+    },
+    {
+      "path": "./packages/webdriver"
+    },
+    {
+      "path": "./packages/project"
+    },
+    {
+      "path": "./packages/bundler"
+    },
+    {
+      "path": "./packages/client"
+    },
+    {
+      "path": "./packages/interactor"
+    },
+    {
+      "path": "./packages/agent"
+    },
+    {
+      "path": "./packages/todomvc"
+    },
+    {
+      "path": "./packages/server"
+    }
+  ]
+}

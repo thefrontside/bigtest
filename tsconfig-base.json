@@ -1,0 +1,31 @@
+{
+  "extends": "@frontside/tsconfig",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "paths": {
+      "@bigtest/agent": ["packages/agent/src"],
+      "@bigtest/atom": ["packages/atom/src"],
+      "@bigtest/bigtest": ["packages/bigtest/src"],
+      "@bigtest/bundler": ["packages/bundler/src"],
+      "@bigtest/cli": ["packages/cli/src"],
+      "@bigtest/client": ["packages/client/src"],
+      "@bigtest/driver": ["packages/driver/src"],
+      "@bigtest/effection": ["packages/effection/src"],
+      "@bigtest/effection-express": ["packages/effection-express/src"],
+      "@bigtest/eslint-plugin": ["packages/eslint-plugin/src"],
+      "@bigtest/globals": ["packages/globals/src"],
+      "@bigtest/interactor": ["packages/interactor/src"],
+      "@bigtest/logging": ["packages/logging/src"],
+      "@bigtest/performance": ["packages/performance/src"],
+      "@bigtest/project": ["packages/project/src"],
+      "@bigtest/server": ["packages/server/src"],
+      "@bigtest/suite": ["packages/suite/src"],
+      "@bigtest/todomvc": ["packages/todomvc/src"],
+      "@bigtest/webdriver": ["packages/webdriver/src"]
+    }
+  }
+}

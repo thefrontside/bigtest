@@ -1,6 +1,19 @@
 {
   "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDirs": ["./shared", "./src"]
+  },
+  "include": [
+    "shared/**/*.ts",
+    "src/**/*.ts",
+  ],
   "exclude": [
     "app/**/*.ts"
+  ],
+  "references": [
+    { "path": "../globals" },
+    { "path": "../interactor"},
+    { "path": "../suite" },
+    { "path": "../webdriver" }
   ]
 }

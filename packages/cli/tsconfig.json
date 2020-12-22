@@ -1,6 +1,19 @@
 {
-  "extends": "@frontside/tsconfig",
+  "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "./src"
+  },
   "include": [
     "src/**/*.ts"
+  ],
+  "exclude": [
+    "../../node_modules"
+  ],
+  "references": [
+    { "path": "../client"},
+    { "path": "../effection" },
+    { "path": "../project" },
+    { "path": "../server" }
   ]
 }
