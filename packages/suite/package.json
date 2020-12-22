@@ -19,7 +19,7 @@
     "test:unit": "mocha -r ts-node/register test/**/*.test.ts",
     "test:types": "dtslint types --localTs ../../node_modules/typescript/lib --expectOnly",
     "test": "yarn test:unit && yarn test:types",
-    "prepack": "tsc -b"
+    "prepack": "tsc --build"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^1.1.2",

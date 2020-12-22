@@ -1,13 +1,21 @@
+// this additional tsconfig is required by dtslint
+// see: https://github.com/Microsoft/dtslint#typestsconfigjson
 {
-  "extends": "../tsconfig.json",
+  "extends": "@frontside/tsconfig",
   "compilerOptions": {
-    "strict": true,
-    "sourceMap": false,
-    "declaration": false,
+    "lib": ["es6", "dom"],
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+
+    // If the library is an external module (uses `export`), this allows your test file to import "mylib" instead of "./index".
+    // If the library is global (cannot be imported via `import` or `require`), leave this out.
     "baseUrl": ".",
-    "lib": ["ES2019"]
-  },
-  "include": [
-    "./**/*.ts"
-  ]
+    "paths": {
+      "interactor": ["../dist/types"]
+    }
+  }
 }

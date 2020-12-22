@@ -17,7 +17,7 @@
     "mocha": "mocha -r ts-node/register",
     "start": "parcel serve --out-dir dist/app app/index.html app/harness.ts",
     "prepack:app": "parcel build --public-url ./ --no-minify --out-dir dist/app app/index.html app/test-frame.html app/harness.ts",
-    "prepack:tsc": "yarn tsc -b ./tsconfig.dist.json",
+    "prepack:tsc": "yarn tsc --build ./tsconfig.dist.json",
     "prepack": "yarn prepack:app && yarn prepack:tsc",
     "pretest:manifest": "parcel build test/fixtures/manifest.js test/fixtures/app.html --out-dir tmp/test --no-minify --global __bigtestManifest",
     "pretest:app": "parcel build --public-url ./ --no-minify --out-dir tmp/test app/index.html app/test-frame.html app/harness.ts",

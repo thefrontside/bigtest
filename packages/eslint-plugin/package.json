@@ -22,7 +22,7 @@
   },
   "scripts": {
     "lint": "eslint \"{src,test}/**/*.ts\"",
-    "prepack": "tsc -b",
+    "prepack": "tsc --build",
     "test": "mocha -r ts-node/register \"test/{,!(fixtures)/**}/*.test.ts\""
   },
   "files": [

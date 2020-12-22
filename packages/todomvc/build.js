@@ -4,7 +4,7 @@
 // $ react-scripts build
 // $ cd ..
 // & mv app/build dist/app
-// $ tsc -b
+// $ tsc --build
 
 const { spawn } = require('effection');
 const { main, exec } = require('@effection/node');
@@ -22,7 +22,7 @@ main(function*() {
 
   yield rename('app/build', 'dist/app');
 
-  yield sh('tsc -b');
+  yield sh('tsc --build');
 });
 
 function* sh(command, options) {

@@ -1,7 +1,7 @@
 // this additional tsconfig is required by dtslint
 // see: https://github.com/Microsoft/dtslint#typestsconfigjson
 {
-  "extends": "../../tsconfig-base.json",
+  "extends": "@frontside/tsconfig",
   "compilerOptions": {
     "lib": ["es6", "dom"],
     "noImplicitAny": true,

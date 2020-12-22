@@ -13,7 +13,7 @@
   "scripts": {
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "test": "true",
-    "prepack": "tsc -b"
+    "prepack": "tsc --build"
   },
   "devDependencies": {
     "@types/node": "^13.13.4",
