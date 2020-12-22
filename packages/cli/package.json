@@ -16,7 +16,7 @@
     "test": "mocha -r ts-node/register \"test/{,!(fixtures)/**}/*.test.ts\"",
     "mocha": "mocha -r ts-node/register",
     "bigtest": "ts-node src/index.ts",
-    "prepack": "tsc --build ./tsconfig.build.json"
+    "prepack": "tsc --build"
   },
   "bin": {
     "bigtest": "bin/bigtest.js"

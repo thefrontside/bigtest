@@ -17,7 +17,7 @@ export interface TestProcess {
 }
 
 async function run(...args: string[]): Promise<TestProcess> {
-  let cli = await World.spawn(exec("yarn ts-node ./src/index.ts", {
+  let cli = await World.spawn(exec("yarn ts-node --project ./test.tsconfig.json ./src/index.ts", {
     arguments: args
   }));
 
