@@ -126,8 +126,13 @@ ultimately appear on NPM.
 
 ### Typescript Project References
 
-All of the packages which have a compiled output use [typescript project references](https://www.typescriptlang.org/docs/handbook/project-references.html)
+All of the packages which have a compiled output use [typescript project references](https://www.typescriptlang.org/docs/handbook/project-references.html) for faster build times and a better project structure.
 
+The following scripts can work on all packages when executed at the root level:
+
+1. Run `yarn prepack:tsc` to compile all typescript
+2. Run `yarn watch` to compile all typescript and instruct `tsc` to watch for file modifications.
+3. Run `yarn clean:tsc` to delete all `*.tsbuildinfo` files and ensure that a clean build is being performed.
 
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fthefrontside%2Fbigtest.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fthefrontside%2Fbigtest?ref=badge_large)
