@@ -11,7 +11,7 @@ In this section, you will learn how to create a new Interactor for any interface
 
 ## Writing your first interactor
 
-In this example, we will create our own `TextField` Interactor to use as an alterantive to the one offered by BigTest as you may have seen in the [`Locators, Filters, and Actions`](/docs/interactors/locators-filters-actions) page.
+In this tutorial, we will create our own `TextField` Interactor. Although BigTest has this type of interactor built-in, recreating it is a great way to learn all the pieces that make up an interactor, while using familiar examples.
 
 There are four things to decide:
 1. What to name and label the interactor
@@ -48,7 +48,7 @@ _An example of the console output when a test is unable to locate the interactor
 
 And also note that locators, filters, and actions are optional when creating your own interactor. If you create an interactor without a locator, it will default to `locator: element => element.textContent`. The locator for the `TextField` interactor offered by BigTest uses the `textContent` of the associated label as we mentioned in the [previous page](/docs/interactors/locators-filters-actions#filters). The example above has its locator configured as `element.placeholder`; this is just to demonstrate that you can set these properties to anything that suits your needs.
 
-Lastly, you might be wondering what `perform()` does. The `perform()` function is just a short way of writing interactions. So a click action written like this:
+Lastly, you might be wondering what `perform()` does. The `perform()` function is just a short way of writing interactions. A click action written like this...
 
 ```js
 actions: {
@@ -56,7 +56,7 @@ actions: {
 }
 ```
 
-Is the same as:
+...is the same as this:
 
 ```js
 actions: {
@@ -66,7 +66,7 @@ actions: {
 }
 ```
 
-The latter syntax is necessary if you want to write an action that delegates to other interactors' actions. For example say you want to create a Form interactor that has a submit action, you could take this approach:
+The latter syntax is necessary if you want to write an action that delegates to other interactors' actions. For example, imagine that you want to create a form interactor that has a submit action. You could take this approach:
 
 ```js
 import { Button, createInteractor } from 'bigtest';
@@ -81,7 +81,7 @@ export const Form = createInteractor<HTMLFormElement>('form')({
 })
 ```
 
-Delegating the click action will save you the hassle of having to implement the click separately and there is also the added benefit of making your tests easier to read:
+Delegating the click action will save you the hassle of having to implement the click separately, and there is also the added benefit of making your tests easier to read:
 
 ```js
 Form.find(Button('Submit')).click();
@@ -163,7 +163,7 @@ import TabItem from '@theme/TabItem';
   </TabItem>
 </Tabs>
 
-In this example we are testing an email subscription form by first filling in the email textfield, clicking the `Subscribe` button, and then asserting for the success header.
+In this example we are testing an email subscription form by first filling in the email text field, clicking the `Subscribe` button, and then asserting for the success header.
 
 The [TextField](/docs/interactors/api/variables/textfield) interactor from BigTest does a lot more than what we just wrote, but this small example is a good place to start for understanding how to use `createInteractor`.
 
@@ -171,13 +171,13 @@ Check out the API page of [createInteractor()](/docs/interactors/api/functions/c
 
 ## Writing your second interactor
 
-One of the greatest benefits of Interactors is that you can turn complex testing scenarios into readable assertions. Let's create an interactor for a table that navigates by row and column to make assertions about the table's data. When we are finished, we can use it in our tests like this:
+One of the greatest benefits of Interactors is that you can turn complex testing scenarios into readable assertions. Let's create an interactor for a table that navigates by row and column to make assertions about the table's data. Our goal is that when we are finished, we will be able to use it in our tests like this:
 
 ```js
 TableCell({ columnTitle: 'Name', rowNumber: 2 }).has({ value: 'Marge Simpson' });
 ```
 
-First let's look at the markup we're trying to filter through:
+First, let's look at the markup we are trying to filter through:
 
 ```html
 <div role="grid">
@@ -235,11 +235,12 @@ export const TableCell = createInteractor('table cell')({
   }
 });
 ```
-> This example uses [optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) which is only available in Node >=14.
 
-You'll notice we created `columnTitle` and `rowNumber` filters that will access its parent elements to get the appropriate value we're looking for. The locator was not specified so it will default to `element.textContent`.
+> This example uses [optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) which is available in Node >=14.
 
-Now let's pretend we're testing a Jeopardy chart where we have multiple tablecells with similar values:
+You'll notice we created `columnTitle` and `rowNumber` filters that will access its parent elements to get the appropriate value we're looking for. The locator was not specified, so it will default to `element.textContent`.
+
+Now, let's pretend we're testing a Jeopardy chart where we have multiple tablecells with similar values:
 
 <Tabs
   defaultValue="jest"
@@ -304,11 +305,11 @@ Now let's pretend we're testing a Jeopardy chart where we have multiple tablecel
   </TabItem>
 </Tabs>
 
-<!-- i think we need to tie it off here somehow -->
+With some upfront thinking about how to test a data-driven UI, you can write interactors and tests that can be quickly modified as changes occur over the lifetime of your app. The approach above is flexible, and can handle changes like adding new columns, rearranging the order, changing table headings, and more.
 
 ## find
 
-Lastly, we need to go over the `find` method. Some interactors use the `find` method to chain interactors together. It returns a new interactor scoped within the current interactor, and is generally used for composing actions from primitives:
+One more building block available to you is the `find` method, which helps you chain interactors together. `find` returns a new interactor scoped within the current interactor, and is generally used for composing actions from primitives:
 
 ```js
 createInteractor('DatePicker')({
