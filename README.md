@@ -124,6 +124,10 @@ ultimately appear on NPM.
 2. Run `yarn prepack` to build all packages
 3. Run `yarn lint` to run linters
 
+### Typescript Project References
+
+All of the packages which have a compiled output use [typescript project references](https://www.typescriptlang.org/docs/handbook/project-references.html)
+
 
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fthefrontside%2Fbigtest.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fthefrontside%2Fbigtest?ref=badge_large)

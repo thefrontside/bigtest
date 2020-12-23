@@ -6,7 +6,6 @@ import rmrf from 'rimraf';
 import { subscribe } from '@effection/subscription';
 import { spawn } from './world';
 import { Bundler } from '../src/index';
-import path from 'path';
 
 describe("Bundler", function() {
   let bundler: Bundler;
