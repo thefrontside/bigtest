@@ -132,7 +132,8 @@ The following scripts can work on all packages when executed at the root level:
 
 1. Run `yarn prepack:tsc` to compile all typescript
 2. Run `yarn watch` to compile all typescript and instruct `tsc` to watch for file modifications.
-3. Run `yarn clean:tsc` to delete all `*.tsbuildinfo` files and ensure that a clean build is being performed.
+3. Run `yarn clean:tsc` to delete all the `dist` directories and `*.tsbuildinfo` files and ensure that a clean build is being performed.
+4. Run `yarn clean:tsbuild` to delete all the `*.tsbuildinfo` files.
 
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fthefrontside%2Fbigtest.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fthefrontside%2Fbigtest?ref=badge_large)
