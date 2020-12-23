@@ -19,7 +19,7 @@ Button('Submit').exists();
 
 A typical user identifies a button by the words printed across it, so for example, they would think of a button with the word 'Submit' on it as the "Submit" button. Interactors use locators to make that connection.
 
-What is going on behind the scenes? Just like the user, the built-in Button interactor provided by BigTest looks for a button with the "Submit" text. It uses [element.textContent](/docs/interactors/api/variables/button) to find the match. To say it another way, `Button('Submit')` returns a button element whose `element.textContent` is equal to `Submit`.
+What is going on behind the scenes? Just like the user, the built-in Button interactor provided by BigTest looks for a button with the "Submit" text. It uses [element.textContent](/) to find the match. To say it another way, `Button('Submit')` returns a button element whose `element.textContent` is equal to `Submit`.
 
 ### Locators are optional
 
@@ -48,7 +48,7 @@ TextField('Username:', { id: 'username-id' }).exists();
 >  <input type='text' id='username-id'/>
 ></label>
 > ```
-> _See the API of the TextField interactor [here](/docs/interactors/api/variables/textfield)_.
+> _See the API of the TextField interactor [here](/)_.
 
 You can think of locators as the "default filter" because filters and locators both serve the same functionality. The reason why we offer both solutions is for your convenience because having to pass in an object for each interactor can be repetitive.
 
@@ -75,7 +75,7 @@ TextField({ id: 'username-id', placeholder: 'USERNAME', visible: true }).exists(
 
 The filters available are defined by each interactor, so look at the API docs for the built-in interactors or the code for your own interactors to know what is available.
 
-If you take a look at the [TextField API](/docs/interactors/api/variables/textfield), you'll see that the TextField interactor provides eight different filters. Later you will learn how to add your own filters to Interactors.
+If you take a look at the [TextField API](/), you'll see that the TextField interactor provides eight different filters. Later you will learn how to add your own filters to Interactors.
 
 ### Asserting with filters
 Filters can be very convenient for finding matching UI elements, but where they really shine is in making assertions about what you expect your application to be showing.
