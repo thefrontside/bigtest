@@ -62,10 +62,6 @@ module.exports = {
             {
               label: 'Docs',
               to: 'docs/interactors/',
-            },
-            {
-              label: 'API',
-              to: 'docs/interactors/',
             }
           ],
         },
