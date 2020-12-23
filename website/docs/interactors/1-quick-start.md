@@ -15,17 +15,18 @@ If you need help or have questions along the way, please let us know in [the Dis
 - [npm](https://www.npmjs.com/get-npm) or [yarn](https://classic.yarnpkg.com/en/docs/install)
 - A web app*
 
-*To follow along with this tutorial, you need an app that uses [Jest](https://jestjs.io/), [Cypress](https://www.cypress.io/), or BigTest.
+*To follow along with this tutorial, you need an app that uses [Jest](https://jestjs.io/), [Cypress](https://www.cypress.io/), or BigTest. For the most interesting learning experience, you should use one of your own apps, or you can use the sample app described below.
 
-## Sample app
+### Sample app
 
-We recommend that you read the rest of the page to see how Interactors are imported and how they can be used to make assertions but if you would you like to skip the installation process, you can run the following command to install a very simple app that has Jest, Cypress, and BigTest platform preinstalled and configured:
+If you do not have an app of your own to use with this tutorial, run the following command to install a very simple app that has Jest, Cypress, and BigTest platform pre-installed and configured:
 
 ```
 $ npx bigtest-sample
 ```
 
 This command will create a project and output instructions in the console on how you can run tests on any of the three testing platforms.
+Keep reading to learn about what is inside the sample app!
 
 ## Installation
 
@@ -194,10 +195,14 @@ In this example, we are testing that the "Sign In" button disappears after a cli
 
 Run your tests. Now you are making an assertion with an interactor!
 
-<!-- todo -->
-## (header subject wip) Interactors in the real world, interactors for rich UIs, Power of Interactors
+This small example above may seem familiar to you from your work with other testing libraries; now that you have the basics down and can see that things are up and running, it's time to see what Interactors can really do.
 
-What if interacting with complex UI is as simple as using this button interactor? Date pickers, depending on how they're implemented, can be difficult to test. However, with interactors, your tests can be reliable as well as be simple like this:
+<!-- todo -->
+## A look at real-world interactors
+
+What if testing a more complex UI was as straightforward as using that button interactor? In your past work, you might have seen that date pickers, custom radio buttons, and modals can be difficult to test, especially when you add in animations and async loading patterns. However, with interactors, your tests can be reliable, simple, and readable.
+
+Here's an example of what a test for an airline datepicker interface could look like, using interactors:
 
 <Tabs
   defaultValue="jest"
@@ -273,7 +278,7 @@ What if interacting with complex UI is as simple as using this button interactor
   </TabItem>
 </Tabs>
 
-By the time you're done reading through our guide, you'll be able to write and use such interactors.
+This is just a sneak peak of what is possible! By the time you're done reading through our guide, you'll be able to write and use such interactors.
 
 ## Next steps
 
