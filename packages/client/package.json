@@ -4,7 +4,7 @@
   "description": "Communicate with a BigTest Orchestrator",
   "main": "dist/cjs/index.js",
   "browser": "dist/esm/index.js",
-  "typings": "dist/types/index.d.js",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
@@ -17,7 +17,7 @@
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "mocha": "mocha -r ts-node/register",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "prepack": "tsc --build && tsc --outdir dist/esm --module es2015 && tsc --outdir dist/cjs --module commonjs && tsc --outdir dist/types --emitDeclarationOnly"
+    "prepack": "tsc --build && tsc --outdir dist/esm --module es2015 && tsc --outdir dist/cjs --module commonjs"
   },
   "dependencies": {
     "@effection/events": "^0.7.8",

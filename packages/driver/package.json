@@ -3,7 +3,7 @@
   "version": "0.5.4",
   "description": "Startup and connect BigTest agents to an orchestrator",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",

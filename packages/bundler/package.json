@@ -3,7 +3,7 @@
   "version": "0.12.0",
   "description": "Effection wrappers for working with a bundler",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
