@@ -84,8 +84,6 @@ describe("Bundler", function() {
   });
 
   describe("TypeScript support", () => {
-    let tsconfig = path.resolve('./test.tsconfig.json');
-
     describe('success', () => {
       beforeEach(async () => {
         await fs.writeFile("./build/test/sources/input.ts", "const foo: string = 'bar';\nexport default foo;\n");
@@ -94,8 +92,7 @@ describe("Bundler", function() {
           watch: false,
           entry: "./build/test/sources/input.ts",
           outFile: "./build/test/output/manifest.js",
-          globalName: "__bigtestManifest",
-          tsconfig
+          globalName: "__bigtestManifest"
         }));
 
         await spawn(subscribe(bundler).match({ type: 'UPDATE' }).first());
@@ -114,8 +111,7 @@ describe("Bundler", function() {
           watch: false,
           entry: "./build/test/sources/input.ts",
           outFile: "./build/test/output/manifest.js",
-          globalName: "__bigtestManifest",
-          tsconfig
+          globalName: "__bigtestManifest"
         }));
       });
 

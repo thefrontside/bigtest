@@ -12,7 +12,7 @@
   "references": [
     { "path": "../agent" },
     { "path": "../atom" },
-    { "path": "../bundler" },
+    { "path": "../bundler/tsconfig.build.json" },
     { "path": "../client" },
     { "path": "../driver" },
     { "path": "../effection" },

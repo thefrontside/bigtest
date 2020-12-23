@@ -17,13 +17,13 @@ export interface TestProcess {
 }
 
 async function run(...args: string[]): Promise<TestProcess> {
-  let cli = await World.spawn(exec("yarn ts-node --project ./test.tsconfig.json ./src/index.ts", {
+  let cli = await World.spawn(exec("yarn ts-node ./src/index.ts", {
     arguments: args
   }));
 
   let stdin = { write: (data: string) => cli.stdin.send(data) };
-  let stdout = await World.spawn(Stream.of(cli.stdout, !!process.env['LOG_CLI']));
-  let stderr = await World.spawn(Stream.of(cli.stderr, !!process.env['LOG_CLI']));
+  let stdout = await World.spawn(Stream.of(cli.stdout, !!process.env.LOG_CLI));
+  let stderr = await World.spawn(Stream.of(cli.stderr, !!process.env.LOG_CLI));
   let join = () => World.spawn(cli.join()) as unknown as Promise<ExitStatus>;
   let expect = () => World.spawn(cli.expect()) as unknown as Promise<ExitStatus>;
 

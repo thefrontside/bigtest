@@ -14,7 +14,7 @@
   "scripts": {
     "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\"",
     "test": "mocha -r ts-node/register --timeout 60000 test/**/*.test.ts",
-    "prepack": "tsc --build"
+    "prepack": "tsc --build ./tsconfig.build.json"
   },
   "dependencies": {
     "@babel/core": "^7.12.9",
