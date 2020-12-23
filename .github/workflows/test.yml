@@ -27,6 +27,9 @@ jobs:
             cachekey-v1-${{ runner.os }}-yarn-
       - name: Install dependencies
         run: yarn
+      - name: Run project build
+        # use --force until settled
+        run: yarn tsc --build ./tsconfig.monorepo.json --force
       - name: Run prepack
         run: yarn prepack
       - uses: actions/upload-artifact@v2
