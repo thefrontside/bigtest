@@ -7,15 +7,15 @@ Built-in Interactors cover some of the most common UI testing needs for apps tha
 
 These are the default interactors that are offered out-of-the-box with BigTest:
 
-- [Button](/)
-- [CheckBox](/)
-- [Heading](/)
-- [Link](/)
-- [MultiSelect](/)
-- [Page](/)
-- [RadioButton](/)
-- [Select](/)
-- [TextField](/)
+- [Button](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/button.ts)
+- [CheckBox](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/check-box.ts)
+- [Heading](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/heading.ts)
+- [Link](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/link.ts)
+- [MultiSelect](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/multi-select.ts)
+- [Page](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/page.ts)
+- [RadioButton](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/radio-button.ts)
+- [Select](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/select.ts)
+- [TextField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts)
 
 As you might have seen on the [quick start](/docs/interactors/) page, you can import any of the interactors directly from the `bigtest` package:
 
@@ -23,7 +23,7 @@ As you might have seen on the [quick start](/docs/interactors/) page, you can im
 import { Button, TextField } from 'bigtest';
 ```
 
-Follow the links to the API documentation above for how to use each of these interactors to test your app.
+Follow the links above for how to use each of these interactors to test your app.
 
 If your app has unique interfaces that are not covered by these built-in tools, you are encouraged to [write your own interactors](/docs/interactors/write-your-own).
 

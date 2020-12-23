@@ -19,7 +19,7 @@ Button('Submit').exists();
 
 A typical user identifies a button by the words printed across it, so for example, they would think of a button with the word 'Submit' on it as the "Submit" button. Interactors use locators to make that connection.
 
-What is going on behind the scenes? Just like the user, the built-in Button interactor provided by BigTest looks for a button with the "Submit" text. It uses [element.textContent](/) to find the match. To say it another way, `Button('Submit')` returns a button element whose `element.textContent` is equal to `Submit`.
+What is going on behind the scenes? Just like the user, the built-in Button interactor provided by BigTest looks for a button with the "Submit" text. It uses [element.textContent](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/button.ts#L11-L12) to find the match. To say it another way, `Button('Submit')` returns a button element whose `element.textContent` is equal to `Submit`.
 
 ### Locators are optional
 
@@ -48,7 +48,7 @@ TextField('Username:', { id: 'username-id' }).exists();
 >  <input type='text' id='username-id'/>
 ></label>
 > ```
-> _See the API of the TextField interactor [here](/)_.
+> _See the source code of the TextField interactor [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts)_.
 
 You can think of locators as the "default filter" because filters and locators both serve the same functionality. The reason why we offer both solutions is for your convenience because having to pass in an object for each interactor can be repetitive.
 
@@ -60,7 +60,7 @@ So how are Filters useful? Most forms have multiple textfields and if they do no
 </form>
 ```
 
-As they do not have labels, we would not be able to use a locator in this scenario. Using `TextField()` would return two elements and therefore an error. We can narrow it down using either `id` or `placeholder` filters provided by the BigTest `TextField` interactor:
+As they do not have labels, we would not be able to use a locator in this scenario. Using `TextField()` would return two elements and therefore an error. We can narrow it down using either the `id` or `placeholder` filters provided by the BigTest `TextField` interactor:
 
 ```js
 TextField({ id: 'username-id' }).exists();
@@ -75,14 +75,14 @@ TextField({ id: 'username-id', placeholder: 'USERNAME', visible: true }).exists(
 
 The filters available are defined by each interactor, so look at the API docs for the built-in interactors or the code for your own interactors to know what is available.
 
-If you take a look at the [TextField API](/), you'll see that the TextField interactor provides eight different filters. Later you will learn how to add your own filters to Interactors.
+If you take a look at the [TextField source code](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts), you'll see that the TextField interactor provides eight different filters. Later you will learn how to add your own filters to Interactors.
 
 ### Asserting with filters
 Filters can be very convenient for finding matching UI elements, but where they really shine is in making assertions about what you expect your application to be showing.
 
 In the [quick start](/docs/interactors/#making-test-assertions) we briefly touched on the assertion methods that are available on all interactors, `exists()` and `absent()`. There is also `has()` which allows you pass in a filter as its argument. 
 
-> These assertion methods are equivalanets of `expect` and `should` of Jest and Cypress respectively. When refactoring your test with Interactors, you would replace those constructs with the interactors' assertion methods.
+> These assertion methods are equivalents of Jest's `expect` and Cypress' `should`. When refactoring your test with Interactors, you would replace those constructs with the interactors' assertion methods.
 
 Continuing from the last example, this is how we would assert the placeholder against a textfield:
 
@@ -90,7 +90,7 @@ Continuing from the last example, this is how we would assert the placeholder ag
 TextField({ id: 'username-id' }).has({ placeholder: 'USERNAME' });
 ```
 
-The difference between this approach and using `exists()` is that `exists()` is less explicit as it will succeed as long as there is at least one match. Going back to the example of where we have two textfields with placeholders `USERNAME` and `PASSWORD`, say if we were to write a test like:
+The difference between this approach and using `exists()` is that `exists()` is less explicit as it will succeed as long as there is at least one match. With the two textfields for the username and password, if we were to write a test like this:
 
 ```js
 TextField().has({ placeholder: 'USERNAME' });
@@ -98,7 +98,7 @@ TextField().has({ placeholder: 'USERNAME' });
 
 This assertion would fail on account of the textfield that has the placeholder value `PASSWORD`. So you will need to choose the assertion method that is most appropriate for your tests.
 
-Lastly, there is also the `is()` method which is identical to `has()`. The difference is only in semantics so that your tests can read better. For instance, if we wanted to test if a textfield is visible, `has()` would work perfectly fine but we could write the test using `is()`:
+Lastly, there is also the `is()` method which is identical to `has()`. The difference is only in semantics so that your tests can read better. For instance, if we wanted to test if a textfield is visible, `has()` would work perfectly fine but we would write the test using `is()` instead:
 
 ```js
 TextField({ id: 'username-id' }).is({ visible: true });
@@ -112,4 +112,4 @@ Actions are events that simulate real user interaction. In this example, the Act
 Button('Submit').click();
 ```
 
-The `Button` Interactor created by BigTest comes with `click`, `focus`, and `blur` actions. You can add more actions to suit your needs when you create your own Interactors. We've shown you `click` and in the next page we'll be using `fillIn` in our TextField interactor example but you can also take a look at all the other available actions in the API section.
+The `Button` Interactor created by BigTest comes with `click`, `focus`, and `blur` actions. You can add more actions to suit your needs when you create your own Interactors. We've shown you `click` and we'll be using `fillIn` for another example later in the guide. In the next page, we'll also be explaining how you can construct your own actions.

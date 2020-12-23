@@ -36,7 +36,7 @@ export const TextField = createInteractor<HTMLInputElement>('my-textfield-intera
 });
 ```
 
-> `fillIn` is a function exported by `bigtest`. See the implementation on its [API](/) page. You can use any of the functions defined by BigTest or implement your own.
+> `fillIn` is a function exported by `bigtest`. See the implementation [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/fill-in.ts). You can use any of the functions defined by BigTest or implement your own.
 
 In this example we've configured the selector as `input[type=text]` which will search for all `<input type='text'>` elements in your testing environment. Filters and locators are used to narrow down the list of results.
 
@@ -165,9 +165,9 @@ import TabItem from '@theme/TabItem';
 
 In this example we are testing an email subscription form by first filling in the email text field, clicking the `Subscribe` button, and then asserting for the success header.
 
-The [TextField](/) interactor from BigTest does a lot more than what we just wrote, but this small example is a good place to start for understanding how to use `createInteractor`.
+The [TextField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts) interactor from BigTest does a lot more than what we just wrote, but this small example is a good place to start for understanding how to use `createInteractor`.
 
-Check out the API page of [createInteractor()](/) for more details.
+Check out the source code of [createInteractor()](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/create-interactor.ts) for more details.
 
 ## Writing your second interactor
 
@@ -314,7 +314,7 @@ One more building block available to you is the `find` method, which helps you c
 ```js
 createInteractor('DatePicker')({
   actions: {
-    open: (picker) => picker.find(Button).click()
+    open: (interactor) => interactor.find(Button).click()
   }
 });
 ```
