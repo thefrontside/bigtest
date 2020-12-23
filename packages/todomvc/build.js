@@ -22,7 +22,7 @@ main(function*() {
 
   yield rename('app/build', 'dist/app');
 
-  yield sh('tsc --build');
+  yield sh('tsc --build --force');
 });
 
 function* sh(command, options) {
