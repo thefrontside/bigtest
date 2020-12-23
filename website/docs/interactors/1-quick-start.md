@@ -8,7 +8,7 @@ BigTest's Interactors make your UI tests easier to write, faster, and more relia
 
 By the end of this quick start, you will be testing one of your own apps with Interactors.
 
-If you need help or have questions along the way, please let us know in [the Discord chat](https://discord.gg/r6AvtnU).
+> If you need help or have questions along the way, please let us know in [the Discord chat](https://discord.gg/r6AvtnU).
 
 ## Prerequisites
 
@@ -25,8 +25,7 @@ If you do not have an app of your own to use with this tutorial, run the followi
 $ npx bigtest-sample
 ```
 
-This command will create a project and output instructions in the console on how you can run tests on any of the three testing platforms.
-Keep reading to learn about what is inside the sample app!
+This command will create a project and output instructions in the console on how you can run tests on any of the three testing platforms. Keep reading to learn about what is inside the sample app!
 
 ## Installation
 
@@ -197,7 +196,6 @@ Run your tests. Now you are making an assertion with an interactor!
 
 This small example above may seem familiar to you from your work with other testing libraries; now that you have the basics down and can see that things are up and running, it's time to see what Interactors can really do.
 
-<!-- todo -->
 ## A look at real-world interactors
 
 What if testing a more complex UI was as straightforward as using that button interactor? In your past work, you might have seen that date pickers, custom radio buttons, and modals can be difficult to test, especially when you add in animations and async loading patterns. However, with interactors, your tests can be reliable, simple, and readable.
