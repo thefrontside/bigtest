@@ -12,6 +12,7 @@
     "README.md"
   ],
   "scripts": {
+    "clean": "rm -rf dist *.tsbuildinfo",
     "start": "yarn prepack && ts-node dist/start.js",
     "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\"",
     "test": "mocha -r ts-node/register test/**/*.test.ts",

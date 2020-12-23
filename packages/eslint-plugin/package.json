@@ -21,6 +21,7 @@
     "typescript": "3.9.7"
   },
   "scripts": {
+    "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "prepack": "tsc --build",
     "test": "mocha -r ts-node/register \"test/{,!(fixtures)/**}/*.test.ts\""

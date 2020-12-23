@@ -11,6 +11,7 @@
     "README.md"
   ],
   "scripts": {
+    "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "test": "true",
     "prepack": "tsc --build"

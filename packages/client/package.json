@@ -13,6 +13,7 @@
     "README.md"
   ],
   "scripts": {
+    "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "mocha": "mocha -r ts-node/register",
     "test": "mocha -r ts-node/register test/**/*.test.ts",

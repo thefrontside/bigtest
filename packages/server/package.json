@@ -8,6 +8,7 @@
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "scripts": {
+    "clean": "rm -rf dist *.tsbuildinfo",
     "start": "ts-node bin/start.ts",
     "query": "ts-node bin/query.ts",
     "query:live": "ts-node bin/live-query.ts",
