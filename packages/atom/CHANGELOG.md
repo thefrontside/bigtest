@@ -1,5 +1,12 @@
 # @bigtest/atom
 
+## 0.11.0
+
+### Minor Changes
+
+- 1840b2fd: use only slice functions in createAtom
+- 25633b44: replace ramda lens with monocle-ts lens
+
 ## 0.10.1
 
 ### Patch Changes

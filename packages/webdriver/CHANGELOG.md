@@ -1,5 +1,13 @@
 # @bigtest/webdriver
 
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies [1840b2fd]
+- Updated dependencies [25633b44]
+  - @bigtest/atom@0.11.0
+
 ## 0.7.0
 
 ### Minor Changes
