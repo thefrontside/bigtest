@@ -25,7 +25,7 @@ export function createAtom<S>(init: S, { channelMaxListeners = DefaultChannelMax
     let next = O.fromNullable(value);
 
     if (next === getState()) {
-    return;
+      return;
     }
 
     state = next;

@@ -19,7 +19,7 @@
     "start": "parcel serve --out-dir dist/app app/index.html app/harness.ts",
     "prepack:app": "parcel build --public-url ./ --no-minify --out-dir dist/app app/index.html app/test-frame.html app/harness.ts",
     "prepack:tsc": "yarn tsc --build ./tsconfig.dist.json",
-    "prepack": "yarn prepack:app && yarn prepack:tsc",
+    "prepack": "yarn prepack:tsc && yarn prepack:app",
     "pretest:manifest": "parcel build test/fixtures/manifest.js test/fixtures/app.html --out-dir tmp/test --no-minify --global __bigtestManifest",
     "pretest:app": "parcel build --public-url ./ --no-minify --out-dir tmp/test app/index.html app/test-frame.html app/harness.ts",
     "pretest": "yarn pretest:manifest && yarn pretest:app"
