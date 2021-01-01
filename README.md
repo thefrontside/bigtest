@@ -111,7 +111,7 @@ All of the packages which have a compiled output use [typescript project referen
 Any individual package can be built with the `prepack` script, eg. for `@bigtest/server`
 
 ```bash
-yarn --cwd ./packages/server prepack
+yarn workspace @bigtest/server prepack
 ```
 
 The `prepack` command will build the server package and any dependant packages that are set in the `"references"` field of the relevant `tsconfig.json`.
