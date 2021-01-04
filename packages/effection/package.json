@@ -3,7 +3,7 @@
   "version": "0.6.0",
   "description": "Collection of handly utilities for working with effection. May find a different home later",
   "main": "dist/index.js",
-  "typings": "dist/index.d.js",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
@@ -12,10 +12,11 @@
     "README.md"
   ],
   "scripts": {
+    "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "mocha": "mocha -r ts-node/register",
-    "prepack": "tsc --outdir dist --declaration --sourcemap"
+    "prepack": "tsc --build"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^1.1.2",

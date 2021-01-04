@@ -1,7 +1,7 @@
 {
   "extends": "@frontside/tsconfig",
-  "files": ["src/index.ts"],
   "compilerOptions": {
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "outDir": "dist"
   }
 }

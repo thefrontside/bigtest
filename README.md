@@ -100,17 +100,28 @@ yarn bigtest test
 
 ### Building
 
-Many of the packages in this repository depend on each other in order
-to function. However, being assembled from TypeScript and HTML
-webapps, these packages need to be built before they can be
-consumed. In order to build dependencies
+To build every package into a publishable state for npm, run the following command at the root of the repo:
 
-``` shell
-$ yarn prepack
+```bash
+yarn prepack
 ```
 
-This will compile each package into the state in which it will
-ultimately appear on NPM.
+All of the packages which have a compiled output use [typescript project references](https://www.typescriptlang.org/docs/handbook/project-references.html) for faster build times and a better project structure.
+
+Any individual package can be built with the `prepack` script, eg. for `@bigtest/server`
+
+```bash
+yarn workspace @bigtest/server prepack
+```
+
+The `prepack` command will build the server package and any dependant packages that are set in the `"references"` field of the relevant `tsconfig.json`.
+
+The following scripts can work on all packages when executed at the root level:
+
+1. Run `yarn prepack:tsc` to compile all typescript
+2. Run `yarn watch` to compile all typescript and instruct `tsc` to watch for file modifications.
+3. Run `yarn clean:tsc` to delete all the `dist` directories and `*.tsbuildinfo` files and ensure that a clean build is being performed.
+4. Run `yarn clean:tsbuild` to delete only the `*.tsbuildinfo` files.
 
 ### Running tests
 
@@ -123,7 +134,6 @@ ultimately appear on NPM.
 1. Run `yarn` to ensure that all dependencies are installed
 2. Run `yarn prepack` to build all packages
 3. Run `yarn lint` to run linters
-
 
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fthefrontside%2Fbigtest.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fthefrontside%2Fbigtest?ref=badge_large)

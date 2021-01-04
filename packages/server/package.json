@@ -3,11 +3,12 @@
   "version": "0.21.0",
   "description": "BigTest Server",
   "main": "dist/src/index.js",
-  "typings": "dist/src/index.d.ts",
+  "types": "dist/src/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "scripts": {
+    "clean": "rm -rf dist *.tsbuildinfo",
     "start": "ts-node bin/start.ts",
     "query": "ts-node bin/query.ts",
     "query:live": "ts-node bin/live-query.ts",
@@ -17,7 +18,7 @@
     "mocha": "mocha ./test/setup",
     "test:app:start": "ts-node ./bin/todomvc.ts",
     "generate:schema": "node generate-schema.js",
-    "prepack": "yarn generate:schema && tsc --outdir dist"
+    "prepack": "yarn generate:schema && tsc --build"
   },
   "files": [
     "README.md",

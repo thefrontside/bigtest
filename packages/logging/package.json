@@ -11,9 +11,10 @@
     "README.md"
   ],
   "scripts": {
+    "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "test": "true",
-    "prepack": "tsc --outdir dist --declaration --sourcemap --module commonjs"
+    "prepack": "tsc --build"
   },
   "devDependencies": {
     "@types/node": "^13.13.4",

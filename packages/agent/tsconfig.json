@@ -1,12 +1,23 @@
 {
-  "extends": "@frontside/tsconfig",
+  "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+    "target": "esnext",
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "rootDirs": ["./app", "./shared", "./src"]
+  },
   "include": [
     "app/**/*.ts",
     "shared/**/*.ts",
     "src/**/*.ts",
   ],
-  "compilerOptions": {
-    "target": "esnext",
-    "esModuleInterop": true
-  }
+  "exclude": [
+    "../../node_modules"
+  ],
+  "references": [
+    { "path": "../globals" },
+    { "path": "../interactor"},
+    { "path": "../suite" },
+    { "path": "../webdriver" }
+  ]
 }

@@ -4,7 +4,7 @@
   "description": "Cross platform interface to the DOM performance API",
   "main": "node-ponyfill.js",
   "browser": "browser-ponyfill.js",
-  "typings": "index.d.ts",
+  "types": "index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",

@@ -12,11 +12,12 @@
     "README.md"
   ],
   "scripts": {
+    "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{src,test,bin}/**/*.ts\"",
     "test": "mocha -r ts-node/register \"test/{,!(fixtures)/**}/*.test.ts\"",
     "mocha": "mocha -r ts-node/register",
     "bigtest": "ts-node src/index.ts",
-    "prepack": "tsc --outdir dist --module commonjs"
+    "prepack": "tsc --build ./tsconfig.build.json"
   },
   "bin": {
     "bigtest": "bin/bigtest.js"

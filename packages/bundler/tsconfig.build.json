@@ -1,13 +1,18 @@
 {
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
+    "esModuleInterop": true,
     "outDir": "dist",
     "rootDir": "./src"
   },
   "include": [
     "src/**/*.ts"
   ],
+  "exclude": [
+    "../../node_modules"
+  ],
   "references": [
-    { "path": "../driver" }
+    { "path": "../project"},
+    { "path": "../effection" }
   ]
 }

@@ -3,7 +3,7 @@
   "version": "0.7.1",
   "description": "Control Webdriver instances",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
@@ -12,9 +12,10 @@
     "README.md"
   ],
   "scripts": {
+    "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "test": "mocha --timeout 60000 -r ts-node/register test/**/*.test.ts",
-    "prepack": "tsc --outdir dist --declaration --sourcemap"
+    "prepack": "tsc --build"
   },
   "devDependencies": {
     "@bigtest/effection-express": "^0.9.1",

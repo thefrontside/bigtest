@@ -3,7 +3,7 @@
   "version": "0.13.0",
   "description": "Utilities for with BigTest projects",
   "main": "dist/index.js",
-  "typings": "dist/index.d.js",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
@@ -12,9 +12,10 @@
     "README.md"
   ],
   "scripts": {
+    "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "prepack": "tsc --outdir dist --declaration --sourcemap --module commonjs"
+    "prepack": "tsc --build"
   },
   "dependencies": {
     "@bigtest/driver": "^0.5.4",

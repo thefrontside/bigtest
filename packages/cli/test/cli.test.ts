@@ -22,8 +22,8 @@ async function run(...args: string[]): Promise<TestProcess> {
   }));
 
   let stdin = { write: (data: string) => cli.stdin.send(data) };
-  let stdout = await World.spawn(Stream.of(cli.stdout, !!process.env['LOG_CLI']));
-  let stderr = await World.spawn(Stream.of(cli.stderr, !!process.env['LOG_CLI']));
+  let stdout = await World.spawn(Stream.of(cli.stdout, !!process.env.LOG_CLI));
+  let stderr = await World.spawn(Stream.of(cli.stderr, !!process.env.LOG_CLI));
   let join = () => World.spawn(cli.join()) as unknown as Promise<ExitStatus>;
   let expect = () => World.spawn(cli.expect()) as unknown as Promise<ExitStatus>;
 

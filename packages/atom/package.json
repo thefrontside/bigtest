@@ -3,7 +3,7 @@
   "version": "0.11.0",
   "description": "State atom used by BigTest",
   "main": "dist/index.js",
-  "typings": "dist/index.d.js",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
@@ -12,12 +12,13 @@
     "README.md"
   ],
   "scripts": {
+    "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "mocha": "mocha -r ts-node/register",
     "test:unit": "mocha -r ts-node/register test/**/*.test.ts",
     "test:types": "dtslint test-dts --localTs ../../node_modules/typescript/lib --expectOnly",
     "test": "yarn test:unit && yarn test:types",
-    "prepack": "tsc --outdir dist --declaration --sourcemap"
+    "prepack": "tsc --build"
   },
   "devDependencies": {
     "@bigtest/performance": "^0.5.0",

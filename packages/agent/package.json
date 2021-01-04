@@ -3,7 +3,7 @@
   "version": "0.15.1",
   "description": "Agent for connecting test environments (browsers) to BigTest",
   "main": "dist/src/index.js",
-  "typings": "dist/src/index.d.ts",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
@@ -12,13 +12,14 @@
     "README.md"
   ],
   "scripts": {
+    "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{app,bin,src,test}/**/*.ts\"",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "mocha": "mocha -r ts-node/register",
     "start": "parcel serve --out-dir dist/app app/index.html app/harness.ts",
     "prepack:app": "parcel build --public-url ./ --no-minify --out-dir dist/app app/index.html app/test-frame.html app/harness.ts",
-    "prepack:tsc": "tsc --project tsconfig.dist.json --outdir dist --declaration --sourcemap",
-    "prepack": "yarn prepack:app && yarn prepack:tsc",
+    "prepack:tsc": "yarn tsc --build ./tsconfig.dist.json",
+    "prepack": "yarn prepack:tsc && yarn prepack:app",
     "pretest:manifest": "parcel build test/fixtures/manifest.js test/fixtures/app.html --out-dir tmp/test --no-minify --global __bigtestManifest",
     "pretest:app": "parcel build --public-url ./ --no-minify --out-dir tmp/test app/index.html app/test-frame.html app/harness.ts",
     "pretest": "yarn pretest:manifest && yarn pretest:app"

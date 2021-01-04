@@ -4,14 +4,13 @@ import { promises as fs, existsSync } from 'fs';
 import expect from 'expect';
 import rmrf from 'rimraf';
 import { subscribe } from '@effection/subscription';
-
 import { spawn } from './world';
 import { Bundler } from '../src/index';
 
 describe("Bundler", function() {
   let bundler: Bundler;
 
-  beforeEach((done) => rmrf('./build', done));
+  beforeEach((done) => rmrf('./build', done));  
   beforeEach(async () => {
     await fs.mkdir("./build/test/sources", { recursive: true });
     await fs.mkdir("./build/test/output", { recursive: true });
@@ -92,7 +91,7 @@ describe("Bundler", function() {
           watch: false,
           entry: "./build/test/sources/input.ts",
           outFile: "./build/test/output/manifest.js",
-          globalName: "__bigtestManifest",
+          globalName: "__bigtestManifest"
         }));
 
         await spawn(subscribe(bundler).match({ type: 'UPDATE' }).first());
@@ -111,7 +110,7 @@ describe("Bundler", function() {
           watch: false,
           entry: "./build/test/sources/input.ts",
           outFile: "./build/test/output/manifest.js",
-          globalName: "__bigtestManifest",
+          globalName: "__bigtestManifest"
         }));
       });
 

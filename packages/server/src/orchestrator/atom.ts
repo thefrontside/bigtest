@@ -1,6 +1,6 @@
 import { createAtom } from "@bigtest/atom";
 import { OrchestratorState } from "./state";
-import { ProjectOptions } from '@bigtest/project/dist';
+import { ProjectOptions } from '@bigtest/project';
 import path = require('path');
 import { AgentServerConfig } from '@bigtest/agent';
 

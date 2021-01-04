@@ -1,7 +1,15 @@
 {
-  "extends": "@frontside/tsconfig",
+  "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+    "outDir": "dist/cjs",
+    "rootDir": "./src",
+    "declarationDir": "dist"
+  },
   "include": [
     "src/**/*.ts",
     "bin/*.ts"
+  ],
+  "references": [
+    { "path": "../suite" }
   ]
 }

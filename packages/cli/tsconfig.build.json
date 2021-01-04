@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "./src"
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "../../node_modules"
+  ],
+  "references": [
+    { "path": "../client"},
+    { "path": "../globals"},
+    { "path": "../logging"},
+    { "path": "../effection" },
+    { "path": "../project" },
+    { "path": "../server" },
+    { "path": "../suite"}
+  ]
+}
+

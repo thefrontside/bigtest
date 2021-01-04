@@ -3,7 +3,7 @@
   "version": "0.12.0",
   "description": "Effection wrappers for working with a bundler",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
@@ -12,9 +12,10 @@
     "README.md"
   ],
   "scripts": {
+    "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\"",
     "test": "mocha -r ts-node/register --timeout 60000 test/**/*.test.ts",
-    "prepack": "tsc --outDir dist --declaration --sourcemap --module commonjs"
+    "prepack": "tsc --build ./tsconfig.build.json"
   },
   "dependencies": {
     "@babel/core": "^7.12.9",

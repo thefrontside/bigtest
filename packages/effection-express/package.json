@@ -3,7 +3,7 @@
   "version": "0.9.1",
   "description": "Makes it easy to use Express from Effection",
   "main": "dist/index.js",
-  "typings": "dist/index.d.js",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
@@ -12,10 +12,11 @@
     "README.md"
   ],
   "scripts": {
+    "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "mocha": "mocha -r ts-node/register",
-    "prepack": "tsc --outdir dist --declaration --sourcemap --module commonjs"
+    "prepack": "tsc --build"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^1.1.2",
@@ -27,6 +28,7 @@
     "ts-node": "*"
   },
   "dependencies": {
+    "@bigtest/effection": "^0.6.0",
     "@effection/events": "^0.7.8",
     "@effection/subscription": "^0.11.0",
     "@types/express-ws": "^3.0.0",

@@ -1,6 +1,15 @@
 {
-  "extends": "@frontside/tsconfig",
+  "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "./src",
+    "declarationDir": "dist"
+  },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "bin/**/*.ts"
+  ],
+  "references": [
+    { "path": "../effection-express" }
   ]
 }

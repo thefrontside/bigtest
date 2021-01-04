@@ -1,11 +1,16 @@
 {
-  "extends": "@frontside/tsconfig",
+  "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "esModuleInterop": true,
-    "types": ["cypress"]
+    "types": ["cypress"],
+    "outDir": "dist/cjs",
+    "rootDir": "./src",
+    "declarationDir": "dist"
   },
   "include": [
-    "src/**/*.ts",
-    "bin/*.ts"
+    "src/**/*.ts"
+  ],
+  "references": [
+    { "path": "../globals" }
   ]
 }
