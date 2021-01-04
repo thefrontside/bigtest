@@ -8,7 +8,9 @@ BigTest's Interactors make your UI tests easier to write, faster, and more relia
 
 By the end of this quick start, you will be testing one of your own apps with Interactors.
 
-> If you need help or have questions along the way, please let us know in [the Discord chat](https://discord.gg/r6AvtnU).
+:::note We're here to help
+ If you need help or have questions along the way, please let us know in [the Discord chat](https://discord.gg/r6AvtnU) or [open a discussion](https://github.com/thefrontside/bigtest/discussions/) on Github.
+:::
 
 ## Prerequisites
 
@@ -128,7 +130,9 @@ Make sure to substitute "Sign In" with your own button text.
 
 Now, run your tests! Congratulations, you used your first Interactor.
 
-> There's more to BigTest than Interactors. BigTest can also run your tests on any _real_ browser! We have built a new integrated platform from the ground up to help you test more with less effort. And yes, it's free and Open Source too! [Check it out](/platform), and let us know what you think.
+:::note The BigTest Platform
+ There's more to BigTest than Interactors. BigTest can also run your tests on any _real_ browser! We have built a new integrated platform from the ground up to help you test more with less effort. And yes, it's free and Open Source too! [Check it out](/platform), and let us know what you think.
+:::
 
 ## Making test assertions
 

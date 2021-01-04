@@ -7,7 +7,12 @@ Nearly every app has at least one user interaction that is unusual or special, l
 
 In this section, you will learn how to create a new Interactor for any interface and use it in your tests. We will start with a simple example for learning purposes, level up to a more complex example, and then cover common questions.
 
-> :exclamation: There are new, exciting changes in the works for the `createInteractor()` API. Those changes will deprecate the syntax you see in the examples below, but the refactoring process will be very simple. We will output clear instructions in your console on how you can update to the new syntax so you can use Interactors today without worrying too much about tomorrow.
+:::info Heads up
+
+There are new, exciting changes in the works for the `createInteractor()` API. Those changes will deprecate the syntax you see in the examples below, but the refactoring process will be very simple. We will output clear instructions in your console on how you can update to the new syntax so you can use Interactors today without worrying too much about tomorrow.
+
+:::
+
 
 ## Writing your first interactor
 
@@ -36,7 +41,9 @@ export const TextField = createInteractor<HTMLInputElement>('my-textfield-intera
 });
 ```
 
-> `fillIn` is a function exported by `bigtest`. See the implementation [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/fill-in.ts). You can use any of the functions defined by BigTest or implement your own.
+:::note
+ `fillIn` is a function exported by `bigtest`. See the implementation [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/fill-in.ts). You can use any of the functions defined by BigTest or implement your own.
+:::
 
 In this example we've configured the selector as `input[type=text]` which will search for all `<input type='text'>` elements in your testing environment. Filters and locators are used to narrow down the list of results.
 
@@ -236,7 +243,9 @@ export const TableCell = createInteractor('table cell')({
 });
 ```
 
-> This example uses [optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) which is available in Node >=14.
+:::note Check your node version
+ This example uses [optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) which is available in Node >=14.
+:::
 
 You'll notice we created `columnTitle` and `rowNumber` filters that will access its parent elements to get the appropriate value we're looking for. The locator was not specified, so it will default to `element.textContent`.
 
