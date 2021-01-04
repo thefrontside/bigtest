@@ -3,7 +3,7 @@ name: Preview
 on:
   pull_request:
     branches:
-      - '!v[0-9]+'
+      - 'v[0-9]+'
 
 jobs:
   publish-previews:
