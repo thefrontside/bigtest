@@ -1,5 +1,6 @@
 import { describe, it, beforeEach } from 'mocha';
 import { daemon, exec, ExitStatus } from '@effection/node';
+import { defaultTSConfig } from '@bigtest/project';
 
 import * as expect from 'expect';
 import * as process from 'process';
@@ -333,7 +334,7 @@ describe('@bigtest/cli', function() {
     });
   });
 
-  describe('init', () => {
+  describe.only('init', () => {
     describe('running the init command', () => {
       let child: TestProcess;
       let status: ExitStatus;
@@ -343,6 +344,7 @@ describe('@bigtest/cli', function() {
 
         await child.stdout.detect('Which port would you like to run BigTest on?');
         child.stdin.write('not-a-port\n');
+
         await child.stdout.detect('Not a number!');
         child.stdin.write('1234\n');
 
@@ -362,12 +364,23 @@ describe('@bigtest/cli', function() {
         child.stdin.write('\n');
 
         await World.spawn(child.stdout?.waitFor('Do you want to write your tests in TypeScript?'));
-        child.stdin?.write('no\n');
+        child.stdin?.write('yes\n');
+
+        await World.spawn(child.stdout?.waitFor('Do you want to set up a separate TypeScript `tsconfig` file for BigTest?'));
+        child.stdin?.write('yes\n');
+
+        await World.spawn(child.stdout?.waitFor('Where should the custom `tsconfig` be located?'));
+        child.stdin?.write('\n');
 
         status = await child.join();
       });
 
-      it('exits successfully and writes a new config file', async () => {
+      afterEach(async () => {
+        await fs.rename('./bigtest.tsconfig.json', './tmp/bigtest.tsconfig.json');
+        await fs.rmdir('./tmp/', { recursive: true });
+      });
+
+      it('exits successfully and writes a bigtest and typescript config files', async () => {
         expect(status.code).toEqual(0);
         let buffer = await fs.readFile('./tmp/bigtest-config-test.json');
         let config = JSON.parse(buffer.toString());
@@ -376,6 +389,10 @@ describe('@bigtest/cli', function() {
         expect(config.app.command).toEqual('yarn run-my-app');
         expect(config.app.env.PORT).toEqual(9000);
         expect(config.app.url).toEqual('http://localhost:9000');
+        expect(config.tsconfig).toEqual('./bigtest.tsconfig.json');
+        
+        let generatedTSConfig = await fs.readFile('./bigtest.tsconfig.json');
+        expect(JSON.parse(generatedTSConfig.toString())).toEqual(defaultTSConfig());
       });
     });
   });
