@@ -72,7 +72,7 @@ export function* init(configFile: string): Operation<void> {
     if(yield prompt.boolean('Do you want to set up a separate TypeScript `tsconfig` file for BigTest?', { defaultValue: true })) {
       options.tsconfig = yield prompt.string('Where should the custom `tsconfig` be located?', {
         name: 'tsconfig',
-        defaultValue: options.tsconfig || './tsconfig.bigtest.ts',
+        defaultValue: options.tsconfig || './bigtest.tsconfig.json',
       })
     }
   }
