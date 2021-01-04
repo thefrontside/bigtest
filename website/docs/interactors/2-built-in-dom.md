@@ -35,7 +35,9 @@ Page.has({ title: 'BigTest Example App' });
 ```
 _The `Page` interactor is instantiated differently than the other built-in interactors so you do not need to call it `Page()` unless you want to pass in an argument._
 
-> We've introduced `.exists()` and `.absent()` in the previous section but there are also `.has()` and `.is()` Interactor assertion methods. We will discuss its details on the [locators filters actions](/docs/interactors/locators-filters-actions) page.
+:::note Heads up
+ We've introduced `.exists()` and `.absent()` in the previous section but there are also `.has()` and `.is()` Interactor assertion methods. We will discuss its details on the [locators filters actions](/docs/interactors/locators-filters-actions) page.
+:::
 
 And when using BigTest platform, the Page interactor can be used to navigate between routes:
 

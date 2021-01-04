@@ -41,14 +41,16 @@ Another way of narrowing down the element that you want to reference is with Fil
 TextField('Username:', { id: 'username-id' }).exists();
 ```
 
-> The locator of the `TextField` interactor is the textContent of its associated label:
-> ```html
-><label>
->  Username:
->  <input type='text' id='username-id'/>
-></label>
-> ```
-> _See the source code of the TextField interactor [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts)_.
+:::note How is the textfield located?
+ The locator of the `TextField` interactor is the textContent of its associated label:
+ ```html
+<label>
+  Username:
+  <input type='text' id='username-id'/>
+</label>
+ ```
+ _See the source code of the TextField interactor [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts)_.
+:::
 
 You can think of locators as the "default filter" because filters and locators both serve the same functionality. The reason why we offer both solutions is for your convenience because having to pass in an object for each interactor can be repetitive.
 
@@ -80,9 +82,11 @@ If you take a look at the [TextField source code](https://github.com/thefrontsid
 ### Asserting with filters
 Filters can be very convenient for finding matching UI elements, but where they really shine is in making assertions about what you expect your application to be showing.
 
-In the [quick start](/docs/interactors/#making-test-assertions) we briefly touched on the assertion methods that are available on all interactors, `exists()` and `absent()`. There is also `has()` which allows you pass in a filter as its argument. 
+In the [quick start](/docs/interactors/#making-test-assertions) we briefly touched on the assertion methods that are available on all interactors, `exists()` and `absent()`. There is also `has()` which allows you pass in a filter as its argument.
 
-> These assertion methods are equivalents of Jest's `expect` and Cypress' `should`. When refactoring your test with Interactors, you would replace those constructs with the interactors' assertion methods.
+:::note
+ These assertion methods are equivalents of Jest's `expect` and Cypress' `should`. When refactoring your test with Interactors, you would replace those constructs with the interactors' assertion methods.
+:::
 
 Continuing from the last example, this is how we would assert the placeholder against a textfield:
 
