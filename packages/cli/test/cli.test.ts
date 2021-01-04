@@ -334,7 +334,7 @@ describe('@bigtest/cli', function() {
     });
   });
 
-  describe.only('init', () => {
+  describe('init', () => {
     describe('running the init command', () => {
       let child: TestProcess;
       let status: ExitStatus;
