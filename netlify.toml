@@ -1,3 +1,8 @@
 [build]
   base = "website/"
-  publish = "landing-page-oct-2020/"
+  command = "yarn build"
+  publish = "public/"
+
+[[redirects]]
+  from = "/*"
+  to = "/bigtest/:splat"
