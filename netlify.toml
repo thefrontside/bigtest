@@ -6,3 +6,9 @@
 [[redirects]]
   from = "/*"
   to = "/bigtest/:splat"
+
+[[headers]]
+  for = "/bigtest/asciinema/iframes/cross-platform.html"
+
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
