@@ -4,10 +4,10 @@ import { express } from "@bigtest/effection-express";
 import { static as staticMiddleware } from 'express';
 import { restartable } from './effection/restartable'
 
-import * as proxy from 'http-proxy';
-import * as http from 'http';
-import * as Trumpet from 'trumpet';
-import * as zlib from 'zlib';
+import  proxy from 'http-proxy';
+import  http from 'http';
+import  Trumpet from 'trumpet';
+import  zlib from 'zlib';
 import { ProxyStatus, Service, ProxyOptions, ServiceState, AppOptions } from './orchestrator/state';
 import { Slice } from '@bigtest/atom';
 import { assert } from 'assert-ts';

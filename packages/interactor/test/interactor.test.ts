@@ -67,7 +67,7 @@ describe('@bigtest/interactor', () => {
         'link "Foo" matches multiple elements:', '',
         '- <a href="/foo">',
         '- <a href="/bar&quot;">',
-      ].join('\n'))
+      ].join('\n'));
     });
 
     it('throws an error if runner is currently in assertion state', async () => {
@@ -114,7 +114,7 @@ describe('@bigtest/interactor', () => {
         'link "Foo" matches multiple elements:', '',
         '- <a href="/foo">',
         '- <a href="/bar&quot;">',
-      ].join('\n'))
+      ].join('\n'));
     });
 
     it('can be used normally if runner is currently in assertion state', async () => {

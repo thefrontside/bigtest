@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect'
+import  expect from 'expect'
 
 import { express } from '@bigtest/effection-express';
 import { Request, Response } from 'express';

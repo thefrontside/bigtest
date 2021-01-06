@@ -14,7 +14,7 @@ export function compile(pattern: unknown): (target: unknown) => boolean {
   };
 }
 
-export function any(type: unknown) {
+export function any(type: unknown): (value: unknown) => boolean {
   if(type === "array") {
     return function anyMatcher(value: unknown) {
       return Array.isArray(value);

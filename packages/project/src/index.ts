@@ -1,8 +1,8 @@
 import { Operation } from 'effection';
 import { DriverSpec } from '@bigtest/driver';
-import * as path from 'path';
+import  path from 'path';
 import { existsSync } from 'fs';
-import * as fs from 'fs';
+import  fs from 'fs';
 
 const { readFile } = fs.promises;
 

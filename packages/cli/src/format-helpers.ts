@@ -1,4 +1,4 @@
-import * as chalk from 'chalk';
+import  chalk from 'chalk';
 import { Printer } from './printer';
 import { RunResultEvent, TestResults, ResultCounts } from './query'
 import { ErrorDetails, ResultStatus, TestResult, StepResult, AssertionResult, LogEvent } from '@bigtest/suite'

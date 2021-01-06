@@ -11,7 +11,7 @@ const LinkInteractor = createInteractor<HTMLLinkElement>('link')({
     focused
   },
   actions: {
-    click: perform((element) => { element.click(); }),
+    click: perform((element) => { element.click() }),
     focus,
     blur
   },

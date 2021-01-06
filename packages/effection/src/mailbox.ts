@@ -32,15 +32,15 @@ export class Mailbox<T = any> {
     let mailbox: Mailbox<R> = new Mailbox();
 
     return yield resource(mailbox, function*() {
-      yield subscriptionSubscribe(source).forEach(function*(m) { mailbox.send(m) })
+      yield subscriptionSubscribe(source).forEach(function*(m) { mailbox.send(m) });
     });
   }
 
-  setMaxListeners(value: number) {
+  setMaxListeners(value: number): void {
     this.subscriptions.setMaxListeners(value);
   }
 
-  send(message: T) {
+  send(message: T): void {
     this.messages.add(message);
     setTimeout(() => this.subscriptions.emit('message', message), 0);
   }
@@ -55,12 +55,12 @@ export class Mailbox<T = any> {
           resume(message);
           return true;
         }
-      }
+      };
 
       for (let message of this.messages) {
         if (dispatch(message)) {
           return;
-        };
+        }
       }
 
       this.subscriptions.on('message', dispatch);
@@ -68,7 +68,9 @@ export class Mailbox<T = any> {
     };
   }
 
-  *pipe(other: Mailbox<T>) {
+  // TODO: not sure what T, TReturn or TNext are here
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  *pipe(other: Mailbox<T>): Generator<Operation<unknown>, any, unknown> {
     let that = this; // eslint-disable-line @typescript-eslint/no-this-alias
     return yield spawn(function*(): Operation<unknown> {
       while(true) {

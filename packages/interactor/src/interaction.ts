@@ -39,18 +39,18 @@ export function interaction<T>(description: string, action: () => Promise<T>): I
     action,
     [Symbol.toStringTag]: `[interaction ${description}]`,
     then(onFulfill, onReject) {
-      if(!promise) { promise = action(); }
+      if(!promise) { promise = action() }
       return promise.then(onFulfill, onReject);
     },
     catch(onReject) {
-      if(!promise) { promise = action(); }
+      if(!promise) { promise = action() }
       return promise.catch(onReject);
     },
     finally(handler) {
-      if(!promise) { promise = action(); }
+      if(!promise) { promise = action() }
       return promise.finally(handler);
     }
-  }
+  };
 }
 
 export function check<T>(description: string, check: () => Promise<T>): ReadonlyInteraction<T> {

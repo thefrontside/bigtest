@@ -5,5 +5,5 @@ import { Operation } from 'effection';
 export function ensure(fn: () => void): Operation {
   return ({ resume, spawn }) => {
     resume(spawn(({ ensure }) => ensure(fn)));
-  }
+  };
 }

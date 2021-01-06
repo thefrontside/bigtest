@@ -1,4 +1,4 @@
-import * as chalk from 'chalk';
+import  chalk from 'chalk';
 import { Operation, spawn, timeout } from 'effection';
 import { MainError } from '@effection/node';
 import { Mailbox, readyResource } from '@bigtest/effection';

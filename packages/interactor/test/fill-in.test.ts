@@ -199,13 +199,13 @@ describe('fillIn', () => {
     // monkey patch input.value to effectively disable setting it javascript.
     Object.defineProperty(input, 'value', {
       //ignore sets,
-      set() { return; },
+      set() { return },
       //use the original gets
       get() {
         let prop = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(this), 'value');
         return prop?.get?.call(this);
       }
-    })
+    });
     await TextField('Name').fillIn('changed');
     await Heading('success changed').exists();
   });

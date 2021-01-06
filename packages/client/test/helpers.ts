@@ -43,17 +43,17 @@ export class TestConnection {
     return yield resource(connection, function*() {
       yield subscribe(socket).forEach(function*(message) {
         connection.incoming.send(message);
-      })
+      });
     });
   }
 
   constructor(private socket: Socket) {}
 
-  receive() {
+  receive(): Promise<Message> {
     return run(subscribe(this.incoming).first());
   }
 
-  send(response: Response) {
+  send(response: Response): Promise<void> {
     return run(this.socket.send(response));
   }
 
@@ -74,7 +74,7 @@ export class TestServer {
     return server;
   }
 
-  async connection() {
+  async connection(): Promise<TestConnection> {
     let connection = await run(subscribe(this.connections).first());
     if (!connection) {
       throw new Error(`connection stream closed while still waiting`);

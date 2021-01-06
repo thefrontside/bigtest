@@ -1,5 +1,5 @@
-import * as os from 'os';
-import * as chalk from 'chalk';
+import  os from 'os';
+import  chalk from 'chalk';
 import { Writable } from 'stream';
 
 type Color = 'red' | 'grey' | 'white' | 'yellow' | 'green' | 'blue';

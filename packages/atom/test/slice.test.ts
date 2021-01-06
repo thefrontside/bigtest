@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect';
+import expect from 'expect';
 import { createAtom } from '../src/atom';
 import { spawn, when } from './helpers';
 import { Subscription, subscribe, ChainableSubscription } from '@effection/subscription';
@@ -29,7 +29,7 @@ describe('@bigtest/atom Slice', () => {
       expect(slice.get()).toBeUndefined();
     });
   });
-  
+
   describe('with data', () => {
     let atom: Slice<{ outer: Data }>;
     let slice: Slice<Data>;
@@ -45,14 +45,14 @@ describe('@bigtest/atom Slice', () => {
 
     it('should set the slice and atom', () => {
       slice.set({ data: 'bar' });
-      
+
       expect(slice.get()).toEqual({ data: 'bar' });
       expect(atom.get()).toEqual({ outer: { data: 'bar' } });
     });
 
     it('should update the slice', () => {
       slice.update((prev) => ({ data: `${prev.data}-bar` }));
-      
+
       expect(slice.get()).toEqual({ data: 'baz-bar' });
       expect(atom.get()).toEqual({ outer: { data: 'baz-bar' } });
     });
@@ -67,7 +67,7 @@ describe('@bigtest/atom Slice', () => {
       atom = createAtom({ outer: { data: "baz" } });
       slice1 = atom.slice('outer');
       slice2 = slice1.slice('data');
-    })
+    });
 
     it('further slices the slice', async () => {
       expect(slice2.get()).toEqual('baz');
@@ -76,7 +76,7 @@ describe('@bigtest/atom Slice', () => {
     describe('updating the returned slice', () => {
       beforeEach(() => {
         slice2.update(() => {
-          return 'blah'
+          return 'blah';
         });
       });
 
@@ -168,9 +168,9 @@ describe('@bigtest/atom Slice', () => {
       result = [];
 
       subscription = await spawn(subscribe(slice));
-      
-      spawn(subscription.forEach(function*(state) { 
-        result.push(state); 
+
+      spawn(subscription.forEach(function*(state) {
+        result.push(state);
       }));
 
       // foo is the initial value
@@ -209,12 +209,12 @@ describe('@bigtest/atom Slice', () => {
   type AtomState = {
     testRuns: Record<string, TestRunState>;
   }
-  
+
   describe('deep slices', () => {
     let subject: AtomState = {
       testRuns: {}
     };
-  
+
     let atom: Slice<AtomState>;
     let slice: Slice<TestRunState>;
 
@@ -222,7 +222,7 @@ describe('@bigtest/atom Slice', () => {
       atom = createAtom(subject);
       slice = atom.slice('testRuns', 'testRunId');
 
-      slice.set({ 
+      slice.set({
         testRunId: 'test-run-1',
         status: 'pending',
         agents: {
@@ -256,9 +256,9 @@ describe('@bigtest/atom Slice', () => {
             }
           }
         }
-      })
+      });
     });
-  
+
     it('should resolve deeply nested properties with slice call at each step', () => {
       expect(slice.slice('agents').slice('agent-1').slice('result').slice('steps').slice(0).slice('status').get()).toBe('pending');
     });
@@ -273,11 +273,11 @@ describe('@bigtest/atom Slice', () => {
 
         // precondition
         expect(slice.slice('agents', 'agent-1').get().agent).toBeTruthy();
-        
+
         agent.remove();
 
         expect(slice.slice('agents', 'agent-1').get()).toBeUndefined();
-      })
+      });
     });
 
   });

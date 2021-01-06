@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect'
+import expect from 'expect';
 
 import { test }from '../src';
 import example from './fixtures/example';
@@ -39,17 +39,17 @@ describe('dsl', () => {
   });
 
   it('prevents adding steps after adding assertions', () => {
-    let base = test('an assertion').assertion("hello", noop)
-    expect(() => base.step('foo', noop)).toThrowError()
+    let base = test('an assertion').assertion("hello", noop);
+    expect(() => base.step('foo', noop)).toThrowError();
   });
 
   it('prevents adding steps after adding child', () => {
-    let base = test('an assertion').child('foo', (test) => test)
-    expect(() => base.step('foo', noop)).toThrowError()
+    let base = test('an assertion').child('foo', (test) => test);
+    expect(() => base.step('foo', noop)).toThrowError();
   });
 
   it('prevents adding assertions after adding child', () => {
-    let base = test('an assertion').child('foo', (test) => test)
-    expect(() => base.assertion('foo', noop)).toThrowError()
+    let base = test('an assertion').child('foo', (test) => test);
+    expect(() => base.assertion('foo', noop)).toThrowError();
   });
-})
+});

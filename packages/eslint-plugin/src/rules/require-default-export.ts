@@ -23,9 +23,9 @@ export const requireDefaultTextExport = createRule({
   create(context) {
     // ignore non-modules
     if (context.parserOptions.sourceType !== 'module') {
-      return {}
+      return {};
     }
-    
+
     let defaultExport: TSESTree.ExportDefaultDeclaration;
     let namedExport: TSESTree.ExportNamedDeclaration;
     let hasDefaultTestDeclaration = false;
@@ -35,13 +35,13 @@ export const requireDefaultTextExport = createRule({
         if(hasDefaultTestDeclaration){
           return;
         }
-        
+
         if (defaultExport) {
-          context.report({ node: defaultExport || namedExport, messageId: 'exportIsNotTest'});
+          context.report({ node: defaultExport || namedExport, messageId: 'exportIsNotTest' });
           return;
         }
 
-        context.report({ node: context.getSourceCode().ast, messageId: 'namedExport' })
+        context.report({ node: context.getSourceCode().ast, messageId: 'namedExport' });
       },
 
       ExportNamedDeclaration(
@@ -65,7 +65,7 @@ export const requireDefaultTextExport = createRule({
         if(node.parent.type !== AST_NODE_TYPES.AssignmentExpression) {
           return;
         }
-        
+
         if(node.parent.operator !== '=') {
           return;
         }

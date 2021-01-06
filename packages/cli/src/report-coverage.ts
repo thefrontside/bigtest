@@ -1,5 +1,5 @@
 import { join } from 'path';
-import * as chalk from 'chalk';
+import  chalk from 'chalk';
 import { Operation } from 'effection';
 import { ProjectOptions } from '@bigtest/project';
 import { createContext, ReportBase } from 'istanbul-lib-report';

@@ -1,10 +1,10 @@
 import { describe, beforeEach, it } from 'mocha';
-import * as expect from 'expect';
+import expect from 'expect';
 
 import { timeout } from 'effection';
 import { Channel } from '@effection/channel';
 import { subscribe, ChainableSubscription } from '@effection/subscription';
-import * as WebSocket from 'ws';
+import WebSocket from 'ws';
 
 import { run } from './helpers';
 import { Socket, express, CloseEvent } from '../src';
@@ -46,7 +46,7 @@ describe('websocket server', () => {
           expect(client.readyState).toEqual(client.CONNECTING);
           yield timeout(10);
         }
-      })
+      });
 
       client.send(JSON.stringify({ message: "Hello World!" }));
       client.send(JSON.stringify({ message: "Goodbye World!" }));
@@ -61,15 +61,15 @@ describe('websocket server', () => {
       let close: CloseEvent;
       beforeEach(async () => {
         client.close(4000, 'an application defined status code');
-        close = await run(messages.forEach(function*() { return; }));
+        close = await run(messages.forEach(function*() { return }));
       });
 
       it('finishes the subscription with the close event', async () => {
         expect(close.code).toEqual(4000);
-        expect(close.reason).toEqual('an application defined status code')
+        expect(close.reason).toEqual('an application defined status code');
       });
     });
   });
 
 
-})
+});

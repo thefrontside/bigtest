@@ -24,14 +24,14 @@
     "effection": "^0.7.0"
   },
   "devDependencies": {
-    "@frontside/eslint-config": "^1.1.2",
-    "@frontside/typescript": "^1.1.0",
+    "@frontside/eslint-config": "^2.0.0",
+    "@frontside/typescript": "^1.1.1",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
     "expect": "^24.9.0",
     "jsdom": "^16.2.2",
     "mocha": "^6.2.2",
-    "ts-node": "*"
+    "ts-node": "^9.1.1"
   },
   "volta": {
     "node": "12.16.0",

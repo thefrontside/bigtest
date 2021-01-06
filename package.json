@@ -40,7 +40,7 @@
     "prepack:tsc": "tsc --build ./tsconfig.monorepo.json",
     "prepack": "yarn workspaces run prepack",
     "test": "yarn workspaces run test",
-    "lint": "yarn workspaces run lint",
+    "lint": "yarn workspaces run lint --fix",
     "watch": "yarn prepack:tsc && yarn tsc -b ./tsconfig.monorepo.json --watch"
   },
   "volta": {

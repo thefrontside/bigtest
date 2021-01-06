@@ -1,8 +1,8 @@
 import { Operation, resource, spawn } from 'effection';
-import * as actualExpress from 'express';
-import * as WebSocket from 'ws';
-import * as ews from 'express-ws';
-import * as util from 'util';
+import actualExpress from 'express';
+import WebSocket from 'ws';
+import ews from 'express-ws';
+import util from 'util';
 import { Server } from 'http';
 
 import { throwOnErrorEvent, once, on } from '@effection/events';
@@ -28,7 +28,7 @@ export class Socket implements Subscribable<any, CloseEvent> {
 
   *send(data: unknown): Operation<void> {
     if(this.raw.readyState === 1) {
-      yield util.promisify(this.raw.send.bind(this.raw))(JSON.stringify(data));
+      yield util.promisify<string, void>(this.raw.send.bind(this.raw))(JSON.stringify(data));
     }
   }
 
@@ -45,7 +45,7 @@ export class Socket implements Subscribable<any, CloseEvent> {
                   }));
 
       let [close]: [CloseEvent] = yield once(raw, 'close');
-      return { code: close.code || 1006, reason: close.reason || ''};
+      return { code: close.code || 1006, reason: close.reason || '' };
     });
   }
 }
@@ -55,7 +55,7 @@ export class Express {
 
   constructor(public raw: ews.Application) {}
 
-  *use(handler: OperationRequestHandler): Operation<{}> {
+  *use(handler: OperationRequestHandler): Operation<void> {
     return yield resource({}, (controls) => {
       this.raw.use((req, res) => {
         controls.spawn(function*() {
@@ -65,7 +65,7 @@ export class Express {
     });
   }
 
-  *get(path: string, handler: OperationRequestHandler): Operation<{}> {
+  *get(path: string, handler: OperationRequestHandler): Operation<void> {
     return yield resource({}, (controls) => {
       this.raw.get(path, (req, res) => {
         controls.spawn(function*() {
@@ -75,7 +75,7 @@ export class Express {
     });
   }
 
-  *ws(path: string, handler: WsOperationRequestHandler): Operation<{}> {
+  *ws(path: string, handler: WsOperationRequestHandler): Operation<void> {
     return yield resource({}, (controls) => {
       this.raw.ws(path, (socket, req) => {
         controls.spawn(function*(): Operation<void> {
@@ -86,8 +86,8 @@ export class Express {
             req.destroy();
           }
         });
-      })
-    })
+      });
+    });
   }
 
   *listen(port: number): Operation<Server> {

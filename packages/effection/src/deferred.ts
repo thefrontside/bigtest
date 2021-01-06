@@ -11,7 +11,7 @@ export function Deferred<T>(): Deferred<T> {
     resolve,
     reject,
     promise
-  }
+  };
 }
 
 export interface Deferred<T> {

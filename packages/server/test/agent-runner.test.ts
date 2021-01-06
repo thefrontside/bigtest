@@ -1,5 +1,5 @@
 import { describe, beforeEach, it } from 'mocha';
-import * as expect from 'expect';
+import  expect from 'expect';
 
 import { Mailbox, DuplexChannel, createDuplexChannel } from '@bigtest/effection';
 import { Slice } from '@bigtest/atom';

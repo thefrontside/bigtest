@@ -40,7 +40,7 @@ export const bigtestGlobals = {
   get document(): Document {
     let testFrame = options().testFrame;
     let doc = options().document || (testFrame && testFrame.contentDocument) || globalThis.document;
-    if(!doc) { throw new Error('no document found') };
+    if(!doc) { throw new Error('no document found') }
     return doc;
   },
 
@@ -88,7 +88,7 @@ export const bigtestGlobals = {
     options().appUrl = value;
   },
 
-  reset() {
+  reset(): void {
     delete globalThis.__bigtest;
     delete globalThis.__bigtestManifest;
   }

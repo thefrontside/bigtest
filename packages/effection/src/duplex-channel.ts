@@ -25,5 +25,5 @@ export function createDuplexChannel<Tx, Rx>(options: { maxListeners?: number } =
     Object.assign(subscribe(tx), {
       send: (value: Rx) => rx.send(value)
     }),
-  ]
+  ];
 }

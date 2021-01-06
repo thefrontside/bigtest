@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect'
+import expect from 'expect';
 
 import { subscribe, ChainableSubscription } from '@effection/subscription';
 
@@ -24,7 +24,7 @@ describe("createDuplexChannel", () => {
     });
 
     it('is received on rx', async () => {
-      await expect(run(subscription.expect())).resolves.toEqual("hello")
+      await expect(run(subscription.expect())).resolves.toEqual("hello");
     });
   });
 
@@ -37,7 +37,7 @@ describe("createDuplexChannel", () => {
     });
 
     it('is received on rx', async () => {
-      await expect(run(subscription.expect())).resolves.toEqual(123)
+      await expect(run(subscription.expect())).resolves.toEqual(123);
     });
   });
 });

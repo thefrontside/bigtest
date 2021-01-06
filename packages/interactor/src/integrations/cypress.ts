@@ -25,7 +25,7 @@ function interact(
       displayName: runnerState,
       message: interaction.description
     });
-  })
+  });
 }
 
 if (typeof Cypress !== 'undefined' ) {
@@ -38,7 +38,7 @@ if (typeof Cypress !== 'undefined' ) {
       interact(interaction, 'step');
     }
   });
-  
+
   Cypress.Commands.add('expect', (
     interaction: ReadonlyInteraction<void> | ReadonlyInteraction<void>[]
   ) => {

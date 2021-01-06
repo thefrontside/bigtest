@@ -1,4 +1,4 @@
-import * as path from 'path';
+import  path from 'path';
 import { fork, Operation, spawn } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { AgentServerConfig } from '@bigtest/agent';

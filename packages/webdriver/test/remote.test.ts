@@ -3,7 +3,7 @@ import { Context, main } from 'effection';
 import { daemon } from '@effection/node';
 import { express } from '@bigtest/effection-express';
 import { Request, Response } from 'express';
-import * as expect from 'expect';
+import  expect from 'expect';
 
 import { spawn } from './helpers';
 import { findAvailablePortNumber } from '../src/find-available-port-number';

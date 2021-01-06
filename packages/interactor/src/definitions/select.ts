@@ -44,7 +44,7 @@ const SelectInteractor = createInteractor<HTMLSelectElement>('select box')({
     focused
   },
   actions: {
-    click: perform((element) => { element.click(); }),
+    click: perform((element) => { element.click() }),
     focus,
     blur,
     choose: async (interactor, value: string) => {

@@ -9,9 +9,9 @@ export function focused(element: Element): boolean {
 
 /**
  * Helper function for focus action, performs `element.focus()` on the selected element.
- * 
+ *
  * Can be used with object property value shorthand in your interactor actions.
- * 
+ *
  * ```js
  * actions: {
  *   focus,
@@ -24,9 +24,9 @@ export const focus = perform(<E extends HTMLElement>(element: E) => {
 
 /**
  * Helper function for blur action, performs `element.blur()` on the selected element.
- * 
+ *
  * Can be used with object property value shorthand in your interactor actions.
- * 
+ *
  * ```js
  * actions: {
  *   focus,

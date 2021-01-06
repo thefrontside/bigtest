@@ -1,8 +1,7 @@
 {
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
-    "target": "esnext",
-    "esModuleInterop": true,
+    "target": "ESNext",
     "outDir": "dist",
     "rootDirs": ["./app", "./shared", "./src"]
   },

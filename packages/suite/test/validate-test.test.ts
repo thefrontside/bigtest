@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect'
+import expect from 'expect';
 
 import { test, validateTest } from '../src/index';
 
@@ -31,7 +31,7 @@ describe('validateTest', () => {
           .step('child step two', noop)
           .assertion('child assertion one', noop)
           .assertion('child assertion two', noop)
-        )
+        );
 
     expect(validateTest(example)).toEqual(true);
   });
@@ -42,7 +42,7 @@ describe('validateTest', () => {
         .step('step', noop)
         .step('step', noop)
         .step('step', noop)
-        .assertion('assertion one', noop)
+        .assertion('assertion one', noop);
 
     expect(validateTest(example)).toEqual(true);
   });
@@ -51,18 +51,18 @@ describe('validateTest', () => {
     let example =
       test('foo')
         .assertion('assertion', noop)
-        .assertion('assertion', noop)
+        .assertion('assertion', noop);
 
-    expect(() => { validateTest(example) }).toThrowError('Invalid Test')
+    expect(() => { validateTest(example) }).toThrowError('Invalid Test');
   });
 
   it('is invalid with multiple children with same description', async () => {
     let example =
       test('foo')
         .child('child', test => test)
-        .child('child', test => test)
+        .child('child', test => test);
 
-    expect(() => { validateTest(example) }).toThrowError('Invalid Test')
+    expect(() => { validateTest(example) }).toThrowError('Invalid Test');
   });
 
   it('is invalid with an invalid child', async () => {
@@ -71,9 +71,9 @@ describe('validateTest', () => {
         .child('child two', test => test
           .assertion('assertion', noop)
           .assertion('assertion', noop)
-        )
+        );
 
-    expect(() => { validateTest(example) }).toThrowError('Invalid Test')
+    expect(() => { validateTest(example) }).toThrowError('Invalid Test');
   });
 
   it('is invalid if it exceeds maximum depth', async () => {
@@ -89,8 +89,8 @@ describe('validateTest', () => {
                       .child('child', test => test
                         .child('child', test => test
                           .child('child', test => test
-                            .child('child', test => test)))))))))))
+                            .child('child', test => test)))))))))));
 
-    expect(() => { validateTest(example) }).toThrowError('Invalid Test')
+    expect(() => { validateTest(example) }).toThrowError('Invalid Test');
   });
-})
+});

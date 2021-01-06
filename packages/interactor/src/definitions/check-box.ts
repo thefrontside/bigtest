@@ -20,10 +20,10 @@ const CheckBoxInteractor = createInteractor<HTMLInputElement>('check box')({
     focused
   },
   actions: {
-    click: perform((element) => { element.click(); }),
+    click: perform((element) => { element.click() }),
     check: perform((element) => { if(!element.checked) element.click(); }),
     uncheck: perform((element) => { if(element.checked) element.click(); }),
-    toggle: perform((element) => { element.click(); }),
+    toggle: perform((element) => { element.click() }),
     focus,
     blur
   },

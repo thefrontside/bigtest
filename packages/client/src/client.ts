@@ -2,6 +2,7 @@ import { w3cwebsocket } from 'websocket';
 import { resource, Operation, spawn } from 'effection';
 import { on, once } from '@effection/events';
 import { createSubscription } from '@effection/subscription';
+import type { ChainableSubscribable } from '@effection/subscription';
 
 import { Variables, Response, isErrorResponse, isDataResponse, isDoneResponse } from './protocol';
 import { NoServerError } from './errors';
@@ -51,11 +52,11 @@ export class Client {
     return this.send<T>("mutation", source, false, variables).expect();
   }
 
-  liveQuery<T>(source: string, variables?: Variables) {
+  liveQuery<T>(source: string, variables?: Variables): ChainableSubscribable<T, unknown> {
     return this.send<T>("query", source, true, variables);
   }
 
-  subscription<T, TReturn>(source: string, variables?: Variables) {
+  subscription<T, TReturn>(source: string, variables?: Variables): ChainableSubscribable<T, TReturn> {
     return this.send<T, TReturn>("subscription", source, false, variables);
   }
 
@@ -64,7 +65,7 @@ export class Client {
 
     return createSubscription<T, TReturn>(function*(publish) {
       let messages = yield on<[MessageEvent]>(socket, "message")
-        .map(([event]) => JSON.parse(event.data) as Response)
+        .map(([event]) => JSON.parse(event.data) as Response);
 
 
       let responseId = `${responseIds++}`; //we'd want a UUID to avoid hijacking?
@@ -78,10 +79,10 @@ export class Client {
           let response = next.value;
           if (isErrorResponse(response)) {
             let messages = response.errors.map(error => error.message);
-            throw new Error(messages.join("\n"));;
+            throw new Error(messages.join("\n"));
           }
           if (isDataResponse(response)) {
-            publish(response.data as T)
+            publish(response.data as T);
           }
           if (isDoneResponse(response)) {
             return response.data as TReturn;

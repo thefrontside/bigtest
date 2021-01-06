@@ -27,7 +27,7 @@ const ButtonInteractor = createInteractor<HTMLInputElement | HTMLButtonElement>(
     focused
   },
   actions: {
-    click: perform((element) => { element.click(); }),
+    click: perform((element) => { element.click() }),
     focus,
     blur
   },

@@ -286,8 +286,8 @@ describe('@bigtest/interactor', () => {
           </p>
 `);
 
-        await CheckBox({id: 'focused'}).is({ focused: true });
-        await CheckBox({id: 'not-focused', focused: true }).absent();
+        await CheckBox({ id: 'focused' }).is({ focused: true });
+        await CheckBox({ id: 'not-focused', focused: true }).absent();
       });
     });
 

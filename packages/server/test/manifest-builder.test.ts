@@ -1,8 +1,8 @@
 import { describe as suite, beforeEach, it } from 'mocha';
-import * as expect from 'expect';
-import * as path from 'path';
-import * as rmrf from 'rimraf';
-import * as fs from 'fs';
+import  expect from 'expect';
+import  path from 'path';
+import  rmrf from 'rimraf';
+import  fs from 'fs';
 
 import { Slice } from '@bigtest/atom';
 

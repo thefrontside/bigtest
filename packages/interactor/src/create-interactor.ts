@@ -65,5 +65,5 @@ export function createInteractor<E extends Element>(interactorName: string): Int
     }
 
     return initInteractor;
-  }
+  };
 }

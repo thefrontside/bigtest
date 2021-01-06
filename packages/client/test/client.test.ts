@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect';
+import expect from 'expect';
 import { ChainableSubscription } from '@effection/subscription';
 import { TestConnection, TestServer, run } from './helpers';
 import { Client, Message, Response, isQuery } from '../src';
@@ -49,11 +49,12 @@ describe('@bigtest/client', () => {
       });
 
       describe('when the server responds', () => {
+        // eslint-disable-next-line @typescript-eslint/ban-types
         let response: {};
         beforeEach(async () => {
           await connection.send({
             done: true,
-            data: { echo: { message: "Hello World" }},
+            data: { echo: { message: "Hello World" } },
             responseId: message?.responseId
           });
 
@@ -62,7 +63,7 @@ describe('@bigtest/client', () => {
 
         it('returns the data to the original query', () => {
           expect(response).toBeDefined();
-          expect(response).toEqual({echo: { message: "Hello World" }});
+          expect(response).toEqual({ echo: { message: "Hello World" } });
         });
       });
 
@@ -73,7 +74,7 @@ describe('@bigtest/client', () => {
             errors: [
               { message: 'failed' }
             ]
-          })
+          });
         });
 
         it('rejects the original response', async () => {
@@ -102,14 +103,14 @@ describe('@bigtest/client', () => {
         beforeEach(async () => {
           await connection.send({
             responseId: message?.responseId,
-            data: {echo: { message: "Hello World" }}
-          })
+            data: { echo: { message: "Hello World" } }
+          });
           response = await run(subscription.expect());
         });
 
         it('is delivered to the query mailbox', () => {
           expect(response).toBeDefined();
-          expect(response).toEqual({echo: { message: "Hello World" }});
+          expect(response).toEqual({ echo: { message: "Hello World" } });
         });
       });
     });
@@ -130,7 +131,7 @@ describe('@bigtest/client', () => {
           await connection.send({
             responseId: message?.responseId,
             data: { run: 'TestRun:1' }
-          })
+          });
         });
 
         it('returns the mutation to the client', async () => {
@@ -139,6 +140,6 @@ describe('@bigtest/client', () => {
       });
     });
 
-  })
+  });
 
 });

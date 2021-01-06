@@ -7,7 +7,7 @@ export class Filter<E extends Element, F extends Filters<E>> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public specification: InteractorSpecification<E, F, any>,
     public filters: FilterParams<E, F>,
-  ) {};
+  ) {}
 
   get description(): string {
     let entries = Object.entries(this.filters);
@@ -22,7 +22,7 @@ export class Filter<E extends Element, F extends Filters<E>> {
             return `which is not ${noCase(key)}`;
           }
         } else {
-          return `with ${noCase(key)} ${JSON.stringify(value)}`
+          return `with ${noCase(key)} ${JSON.stringify(value)}`;
         }
       }).join(' and ');
     }

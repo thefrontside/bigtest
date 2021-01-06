@@ -11,7 +11,7 @@ import { createOrchestrator } from '../src/index';
 import { createOrchestratorAtom, OrchestratorAtomOptions } from '../src/orchestrator/atom';
 import { AppOptions, OrchestratorState } from '../src/orchestrator/state';
 import { Manifest, BundlerState } from '../src/orchestrator/state';
-import * as merge from 'deepmerge';
+import  merge from 'deepmerge';
 
 export type DeepPartial<T> = { [P in keyof T]?: DeepPartial<T[P]> };
 

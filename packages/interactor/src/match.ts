@@ -31,7 +31,7 @@ export class Match<E extends Element, F extends Filters<E>> {
 
   asTableRow(): string[] {
     if(this.matchLocator) {
-      return [this.matchLocator.format(), ...this.matchFilter.asTableRow()]
+      return [this.matchLocator.format(), ...this.matchFilter.asTableRow()];
     } else {
       return this.matchFilter.asTableRow();
     }
@@ -44,7 +44,7 @@ export class Match<E extends Element, F extends Filters<E>> {
   elementDescription(): string {
     let tag = this.element.tagName.toLowerCase();
     let attrs = Array.from(this.element.attributes).map((attr) => {
-      return `${attr.name}="${escapeHtml(attr.value)}"`
+      return `${attr.name}="${escapeHtml(attr.value)}"`;
     });
     return `<${[tag, ...attrs].join(' ')}>`;
   }
@@ -86,9 +86,9 @@ export class MatchFilter<E extends Element, F extends Filters<E>> {
     public filter: Filter<E, F>,
   ) {
     this.items = Object.entries(filter.all).map(([key, expected]) => {
-      return new MatchFilterItem(element, filter, key, expected)
+      return new MatchFilterItem(element, filter, key, expected);
     });
-    this.matches = this.items.every((match) => match.matches)
+    this.matches = this.items.every((match) => match.matches);
   }
 
   asTableRow(): string[] {

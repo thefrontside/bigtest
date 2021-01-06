@@ -23,7 +23,7 @@ const TextFieldInteractor = createInteractor<HTMLInputElement | HTMLTextAreaElem
     focused
   },
   actions: {
-    click: perform((element) => { element.click(); }),
+    click: perform((element) => { element.click() }),
     focus,
     blur,
     fillIn: perform(fillIn),

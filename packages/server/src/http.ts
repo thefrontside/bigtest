@@ -1,4 +1,4 @@
-import * as http from 'http';
+import  http from 'http';
 import { Operation, fork } from 'effection';
 import { once } from '@effection/events';
 

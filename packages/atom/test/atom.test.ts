@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect';
+import expect from 'expect';
 import { createAtom, DefaultChannelMaxListeners, resetAtom } from '../src/atom';
 import { spawn, when, never } from './helpers';
 import { ChainableSubscription, subscribe, Subscription } from '@effection/subscription';
@@ -44,7 +44,7 @@ describe('@bigtest/atom createAtom', () => {
     beforeEach(() => {
       subject = createAtom(undefined);
     });
-    
+
     describe('.get()', () => {
       it('gets the current state', () => {
         expect(subject.get()).toBeUndefined();
@@ -72,7 +72,7 @@ describe('@bigtest/atom createAtom', () => {
     });
 
     beforeEach(() => {
-      subject.set({...state, status: "off"});
+      subject.set({ ...state, status: "off" });
     });
 
     it('updates the current state', () => {
@@ -88,7 +88,7 @@ describe('@bigtest/atom createAtom', () => {
     beforeEach(() => {
       subject.update(previous => {
         expect(previous).toEqual(state);
-        return {...previous, status: "off"}
+        return { ...previous, status: "off" };
       });
     });
 
@@ -122,7 +122,7 @@ describe('@bigtest/atom createAtom', () => {
       result.set('errored');
 
       expect(result.get()).toBe('errored');
-    })
+    });
   });
 
 
@@ -132,7 +132,7 @@ describe('@bigtest/atom createAtom', () => {
     let subscription: Subscription<State, undefined>;
 
     beforeEach(async () => {
-      subject = createAtom({foo: 'bar'});
+      subject = createAtom({ foo: 'bar' });
       subscription = await spawn(subscribe(subject));
 
       subject.update(() => ({ foo: 'bar' }));
@@ -153,7 +153,7 @@ describe('@bigtest/atom createAtom', () => {
 
     describe('when initial state matches', () => {
       beforeEach(async () => {
-        subject = createAtom({foo: 'bar'});
+        subject = createAtom({ foo: 'bar' });
         result = spawn(subject.once((state) => state.foo === 'bar'));
 
         subject.update(() => ({ foo: 'baz' }));
@@ -188,12 +188,12 @@ describe('@bigtest/atom createAtom', () => {
   describe('.reset()', () => {
     let subject: Slice<State>;
     beforeEach(() => {
-      subject = createAtom({foo: 'bar'});
+      subject = createAtom({ foo: 'bar' });
     });
-    
-    describe('without an initializer', () => { 
+
+    describe('without an initializer', () => {
       beforeEach(async () => {
-        subject.update(() => ({ foo: 'baz'}));
+        subject.update(() => ({ foo: 'baz' }));
 
         resetAtom(subject);
       });
@@ -211,7 +211,7 @@ describe('@bigtest/atom createAtom', () => {
 
         resetAtom(subject, (initial: State, current: State) => {
           initializerArgs = [initial, current];
-          return { foo: 'baz'};
+          return { foo: 'baz' };
         });
       });
 
@@ -231,8 +231,8 @@ describe('@bigtest/atom createAtom', () => {
         result = [];
 
         let subscription = await spawn(subscribe(subject));
-        spawn(subscription.forEach(function*(state) { 
-          result.push(state); 
+        spawn(subscription.forEach(function*(state) {
+          result.push(state);
         }));
 
         subject.update(() => ({ foo: 'state before reset' }));
@@ -269,8 +269,8 @@ describe('@bigtest/atom createAtom', () => {
 
       subscription = await spawn(subscribe(subject));
 
-      spawn(subscription.forEach(function*(state) { 
-        result.push(state); 
+      spawn(subscription.forEach(function*(state) {
+        result.push(state);
       }));
 
       subject.update(() => bar);
@@ -284,7 +284,7 @@ describe('@bigtest/atom createAtom', () => {
     it('should only publish unique state changes', async () => {
       await when(() => {
         expect(result).toHaveLength(3);
-        expect(result).toEqual([{ foo: 'baz'}, { foo: 'qux'}, { foo: 'bar' }]);
+        expect(result).toEqual([{ foo: 'baz' }, { foo: 'qux' }, { foo: 'bar' }]);
       });
     });
   });
@@ -303,5 +303,5 @@ describe('@bigtest/atom createAtom', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expect((atom as any)._channelMaxListeners).toBe(33);
     });
-  })
+  });
 });

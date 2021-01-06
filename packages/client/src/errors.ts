@@ -1,3 +1,3 @@
 export class NoServerError extends Error {
-  get name() { return 'NoServerError' }
+  get name(): string { return 'NoServerError' }
 }

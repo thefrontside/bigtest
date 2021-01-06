@@ -63,4 +63,4 @@ export const NoDefaultExportTest = test('Failing Test')
       errors: [{ messageId: 'namedExport' }],
     },
   ],
-});  
+});

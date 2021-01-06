@@ -11,4 +11,4 @@ export const configs = {
       'bigtest/require-default-export': 2
     }
   }
-}
+};

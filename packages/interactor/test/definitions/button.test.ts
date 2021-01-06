@@ -111,7 +111,7 @@ describe('@bigtest/interactor', () => {
         await Button('Foo').focus();
         await Button('Foo').blur();
         await Heading('Success').exists();
-        await Button('Foo').is({ focused: false })
+        await Button('Foo').is({ focused: false });
       });
     });
 

@@ -136,7 +136,7 @@ describe('@bigtest/interactor', () => {
     });
 
     it('can return description', () => {
-      expect(Link('Foo Bar').exists().description).toEqual('link "Foo Bar" exists')
+      expect(Link('Foo Bar').exists().description).toEqual('link "Foo Bar" exists');
     });
   });
 
@@ -150,7 +150,7 @@ describe('@bigtest/interactor', () => {
       await expect(Link('Foo Bar').absent()).rejects.toHaveProperty('message', [
         'link "Foo Bar" exists but should not:', '',
         '- <a href="/foobar">',
-      ].join('\n'))
+      ].join('\n'));
     });
 
     it('throws if element exists multiple times', async () => {
@@ -163,7 +163,7 @@ describe('@bigtest/interactor', () => {
         'link "Foo" exists but should not:', '',
         '- <a href="/foo1">',
         '- <a href="/foo2">',
-      ].join('\n'))
+      ].join('\n'));
     });
 
     // See this issue for a discussion of and explanation for this behaviour:
@@ -188,7 +188,7 @@ describe('@bigtest/interactor', () => {
     });
 
     it('can return description', () => {
-      expect(Link('Foo Bar').absent().description).toEqual('link "Foo Bar" does not exist')
+      expect(Link('Foo Bar').absent().description).toEqual('link "Foo Bar" does not exist');
     });
   });
 
@@ -306,7 +306,7 @@ describe('@bigtest/interactor', () => {
         '┃ value: "incorrect@example.com" ┃ enabled: true ┃',
         '┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫',
         '┃ ⨯ "jonas@example.com"          ┃ ✓ true        ┃',
-      ].join('\n'))
+      ].join('\n'));
     });
   });
 
@@ -322,7 +322,7 @@ describe('@bigtest/interactor', () => {
         '┃ value: "incorrect@example.com" ┃ enabled: true ┃',
         '┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫',
         '┃ ⨯ "jonas@example.com"          ┃ ✓ true        ┃',
-      ].join('\n'))
+      ].join('\n'));
     });
   });
 
@@ -425,7 +425,7 @@ describe('@bigtest/interactor', () => {
         'link "Foo" matches multiple elements:', '',
         '- <a href="/foo">',
         '- <a href="/bar&quot;">',
-      ].join('\n'))
+      ].join('\n'));
     });
 
     it('throws an error if runner is currently in assertion state', async () => {
@@ -454,7 +454,7 @@ describe('@bigtest/interactor', () => {
         '┃ text field ┃ value: "incorrect@example.com" ┃ enabled: true ┃',
         '┣━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫',
         '┃ ✓ "Email"  ┃ ⨯ "jonas@example.com"          ┃ ✓ true        ┃',
-      ].join('\n'))
+      ].join('\n'));
     });
 
     it('can apply default values', async () => {
@@ -469,14 +469,14 @@ describe('@bigtest/interactor', () => {
         '┣━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫',
         '┃ ✓ "Password" ┃ ⨯ false       ┃',
         '┃ ⨯ "Email"    ┃ ✓ true        ┃',
-      ].join('\n'))
+      ].join('\n'));
       await expect(TextField('Password', { enabled: true }).exists()).rejects.toHaveProperty('message', [
         'did not find text field "Password" which is enabled, did you mean one of:', '',
         '┃ text field   ┃ enabled: true ┃',
         '┣━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫',
         '┃ ✓ "Password" ┃ ⨯ false       ┃',
         '┃ ⨯ "Email"    ┃ ✓ true        ┃',
-      ].join('\n'))
+      ].join('\n'));
       await expect(TextField('Password', { enabled: false }).exists()).resolves.toBeUndefined();
     });
 
@@ -492,14 +492,14 @@ describe('@bigtest/interactor', () => {
         '┣━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━┫',
         '┃ ✓ "Password" ┃ ✓ false        ┃ ⨯ "test1234"          ┃',
         '┃ ⨯ "Email"    ┃ ⨯ true         ┃ ⨯ "jonas@example.com" ┃',
-      ].join('\n'))
+      ].join('\n'));
       await expect(TextField('Password', { enabled: true, value: 'test1234' }).exists()).rejects.toHaveProperty('message', [
         'did not find text field "Password" which is enabled and with value "test1234", did you mean one of:', '',
         '┃ text field   ┃ enabled: true ┃ value: "test1234"     ┃',
         '┣━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━┫',
         '┃ ✓ "Password" ┃ ⨯ false       ┃ ✓ "test1234"          ┃',
         '┃ ⨯ "Email"    ┃ ✓ true        ┃ ⨯ "jonas@example.com" ┃',
-      ].join('\n'))
+      ].join('\n'));
       await expect(TextField('Password', { enabled: false, value: 'test1234' }).exists()).resolves.toBeUndefined();
     });
   });

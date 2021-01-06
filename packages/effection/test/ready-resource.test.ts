@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect'
+import expect from 'expect';
 
 import { timeout, contextOf, Context } from 'effection';
 
@@ -24,7 +24,7 @@ describe('readyResource', () => {
         yield timeout(2);
         list.push('after-ready');
       });
-    };
+    }
 
     context = spawn(function*() {
       someResource = yield makeSomeResource();

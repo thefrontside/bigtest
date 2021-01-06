@@ -226,8 +226,8 @@ describe('@bigtest/interactor', () => {
           </p>
 `);
 
-        await RadioButton({id: 'focused'}).is({ focused: true });
-        await RadioButton({id: 'not-focused', focused: true }).absent();
+        await RadioButton({ id: 'focused' }).is({ focused: true });
+        await RadioButton({ id: 'not-focused', focused: true }).absent();
       });
     });
   });

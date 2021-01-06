@@ -1,7 +1,7 @@
 import { describe, beforeEach, it } from 'mocha';
-import * as expect from 'expect';
+import  expect from 'expect';
 
-import * as zlib from 'zlib';
+import  zlib from 'zlib';
 
 import { Operation } from 'effection';
 import { Slice } from '@bigtest/atom';

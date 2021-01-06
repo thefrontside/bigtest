@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect'
+import expect from 'expect';
 
 import { Context, Operation } from 'effection';
 import { EventEmitter } from 'events';
@@ -33,7 +33,7 @@ describe("Mailbox", () => {
       });
 
       it('receives the message on the other end', async () => {
-        expect(await context).toEqual("hello")
+        expect(await context).toEqual("hello");
       });
     });
   });
@@ -61,7 +61,7 @@ describe("Mailbox", () => {
       });
 
       it('does not cause message to be received', async () => {
-        expect(message).toEqual(undefined)
+        expect(message).toEqual(undefined);
       });
 
       describe('receiving the non matching message', () => {
@@ -110,7 +110,7 @@ describe("Mailbox", () => {
 
     it('receives the message only once', async () => {
       let result = await Promise.race([context1, context2]);
-      expect(result).toEqual("hello")
+      expect(result).toEqual("hello");
       // one of message and otherMessage should be received, but not both
       expect(message1 && message2).toBeFalsy();
       expect(message1 || message2).toBeTruthy();

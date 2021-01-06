@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect'
+import expect from 'expect';
 
 import { Context, resource } from 'effection';
 
@@ -18,7 +18,7 @@ describe("ensure()", () => {
     beforeEach(async () => {
       context = spawn(function*() {
         yield ensure(() => didRun = true);
-        yield
+        yield;
       });
     });
 
@@ -48,8 +48,8 @@ describe("ensure()", () => {
     });
 
     it('runs', async () => {
-      expect(result).toEqual(123)
-      expect(didRun).toEqual(true)
+      expect(result).toEqual(123);
+      expect(didRun).toEqual(true);
     });
   });
 
@@ -68,8 +68,8 @@ describe("ensure()", () => {
     });
 
     it('runs', async () => {
-      expect(error.message).toEqual("moo")
-      expect(didRun).toEqual(true)
+      expect(error.message).toEqual("moo");
+      expect(didRun).toEqual(true);
     });
   });
 

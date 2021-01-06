@@ -3,7 +3,7 @@ export interface TableOptions {
   rows: string[][];
 }
 
-const MAX_COLUMN_WIDTH = 40
+const MAX_COLUMN_WIDTH = 40;
 
 function formatValue(value: string, width: number) {
   if(value.length > width) {
@@ -20,11 +20,11 @@ export function formatTable(options: TableOptions) {
 
   let formatRow = (cells: string[]) => {
     return '┃ ' + cells.map((c, index) => formatValue(c, columnWidths[index])).join(' ┃ ') + ' ┃';
-  }
+  };
 
   let spacerRow = () => {
     return '┣━' + columnWidths.map((w) => "━".repeat(w)).join('━╋━') + '━┫';
-  }
+  };
 
   return [
     formatRow(options.headers),

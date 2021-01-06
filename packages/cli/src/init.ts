@@ -1,8 +1,8 @@
 import { Operation } from 'effection';
 import { ProjectOptions, getConfigFilePath, defaultTSConfig } from '@bigtest/project';
 import { promises as fs, existsSync } from 'fs';
-import * as path from 'path';
-import * as chalk from 'chalk';
+import  path from 'path';
+import  chalk from 'chalk';
 
 import { Prompt } from './prompt';
 

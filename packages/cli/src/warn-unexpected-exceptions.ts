@@ -1,5 +1,5 @@
 import { Operation } from 'effection';
-import * as terminalLink from 'terminal-link';
+import  terminalLink from 'terminal-link';
 
 export function warnUnexpectedExceptions<T>(operation: (argv: string[]) => Operation<T>): (argv: string[]) => Operation<T> {
   return function*(argv: string[]) {

@@ -1,4 +1,4 @@
-import * as Bowser from 'bowser';
+import  Bowser from 'bowser';
 import { QueryParams } from './query-params';
 import { Agent } from '../shared/agent';
 import { run } from './runner';

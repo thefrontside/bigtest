@@ -23,14 +23,14 @@ describe('@bigtest/interactor', function() {
 
         app.get('/', (req, res) => {
           setTimeout(function() {
-            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.writeHead(200, { 'Content-Type': 'text/html' });
             res.write('<!doctype html><html><h1>Homepage</h1></html>');
             res.end();
           }, 20);
         });
 
         app.get('/foobar', (req, res) => {
-          res.writeHead(200, {'Content-Type': 'text/html'});
+          res.writeHead(200, { 'Content-Type': 'text/html' });
           res.write('<!doctype html><html><h1>On foobar!</h1></html>');
           res.end();
         });
@@ -84,7 +84,7 @@ describe('@bigtest/interactor', function() {
           '┃ title: "Does Not Exist" ┃',
           '┣━━━━━━━━━━━━━━━━━━━━━━━━━┫',
           '┃ ⨯ "Hello World"         ┃',
-        ].join('\n'))
+        ].join('\n'));
 
       });
     });
@@ -99,7 +99,7 @@ describe('@bigtest/interactor', function() {
           '┃ url: "does-not-exist" ┃',
           '┣━━━━━━━━━━━━━━━━━━━━━━━┫',
           '┃ ⨯ "about:blank"       ┃',
-        ].join('\n'))
+        ].join('\n'));
       });
     });
   });

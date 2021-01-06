@@ -1,8 +1,8 @@
 import { describe, beforeEach, it } from 'mocha';
-import * as expect from 'expect';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as rmrf from 'rimraf';
+import  expect from 'expect';
+import  fs from 'fs';
+import  path from 'path';
+import  rmrf from 'rimraf';
 
 import { timeout } from 'effection';
 import { Test } from '@bigtest/suite';
