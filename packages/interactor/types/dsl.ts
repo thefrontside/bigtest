@@ -19,9 +19,9 @@ const TextField = createInteractor<HTMLInputElement>('text field')({
 test("using interactors")
   .step(TextField("username").fillIn("cowboyd"))
   .step(TextField("password").fillIn("secret"))
-  .assertion(TextField("username").exists())
+  .assertion(TextField("username").exists());
 
 test("bad interactor usage")
   // cannot use side-effect interactions in an assertion
   // $ExpectError
-  .assertion(TextField("username").fillIn('cowboyd'))
+  .assertion(TextField("username").fillIn('cowboyd'));

@@ -2,8 +2,9 @@
 
 import { Interactor } from './interactor';
 import { Interaction } from './interaction';
+import { Empty } from './types';
 
-export type ActionFn<E extends Element> = (interactor: InteractorInstance<E, {}, {}>, ...args: any[]) => Promise<unknown>;
+export type ActionFn<E extends Element> = (interactor: InteractorInstance<E, Empty, Empty>, ...args: any[]) => Promise<unknown>;
 
 export type FilterFn<T, E extends Element> = (element: E) => T;
 
@@ -49,7 +50,7 @@ export type InteractorSpecification<E extends Element, F extends Filters<E>, A e
 }
 
 export type ActionMethods<E extends Element, A extends Actions<E>> = {
-  [P in keyof A]: A[P] extends ((interactor: InteractorInstance<E, {}, {}>, ...args: infer TArgs) => Promise<infer TReturn>)
+  [P in keyof A]: A[P] extends ((interactor: InteractorInstance<E, Empty, Empty>, ...args: infer TArgs) => Promise<infer TReturn>)
     ? ((...args: TArgs) => Interaction<TReturn>)
     : never;
 }
@@ -128,5 +129,5 @@ export interface InteractorBuilder<E extends Element> {
    * @typeParam F the filters of this interactor, this is usually inferred from the specification
    * @typeParam A the actions of this interactor, this is usually inferred from the specification
    */
-  <F extends Filters<E> = {}, A extends Actions<E> = {}>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, F, A>;
+  <F extends Filters<E> = Empty, A extends Actions<E> = Empty>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, F, A>;
 }
