@@ -72,12 +72,6 @@ body {
   padding-left: var(--ifm-spacing-horizontal);
   padding-right: var(--ifm-spacing-horizontal);
 }
-.navbar.navbar--fixed-top {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-}
 
 .navbar__link[href$="interactors"] {
   width: 164px;
