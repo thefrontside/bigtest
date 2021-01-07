@@ -38,8 +38,8 @@ const state: TestRunState = {
   }
 };
 
-describe('@bigtest/atom createAtom', () => {
-  describe('Atom with none', () => {
+describe.only('@bigtest/atom createAtom', () => {
+  describe.only('Atom with none', () => {
     let subject: Slice<undefined>;
     beforeEach(() => {
       subject = createAtom(undefined);

@@ -10,7 +10,7 @@ import { Bundler } from '../src/index';
 describe("Bundler", function() {
   let bundler: Bundler;
 
-  beforeEach((done) => rmrf('./build', done));  
+  beforeEach((done) => rmrf('./build', done));
   beforeEach(async () => {
     await fs.mkdir("./build/test/sources", { recursive: true });
     await fs.mkdir("./build/test/output", { recursive: true });
@@ -42,7 +42,7 @@ describe("Bundler", function() {
         });
 
         it('emits an error event', async () => {
-          let message = spawn(subscribe(bundler).match({ type: 'ERROR' }).first())
+          let message = spawn(subscribe(bundler).match({ type: 'ERROR' }).first());
           await expect(message).resolves.toHaveProperty('type', 'ERROR');
         });
       });
@@ -61,7 +61,7 @@ describe("Bundler", function() {
       });
 
       it('emits an error', async () => {
-        let message = spawn(subscribe(bundler).match({ type: 'ERROR' }).first())
+        let message = spawn(subscribe(bundler).match({ type: 'ERROR' }).first());
 
         await expect(message).resolves.toHaveProperty('type', 'ERROR');
       });
@@ -74,7 +74,7 @@ describe("Bundler", function() {
         });
 
         it('emits an update event', async () => {
-          let message = spawn(subscribe(bundler).match({ type: 'UPDATE' }).first())
+          let message = spawn(subscribe(bundler).match({ type: 'UPDATE' }).first());
 
           await expect(message).resolves.toHaveProperty('type', 'UPDATE');
         });
@@ -115,11 +115,11 @@ describe("Bundler", function() {
       });
 
       it('fails on type error', async () => {
-        let message = spawn(subscribe(bundler).match({ type: 'ERROR' }).first())
+        let message = spawn(subscribe(bundler).match({ type: 'ERROR' }).first());
 
         await expect(message).resolves.toHaveProperty('type', 'ERROR');
       });
-    })
+    });
   });
 
   describe('editing the sources', () => {
@@ -137,7 +137,7 @@ describe("Bundler", function() {
     });
 
     it('notifies that a new build is available', async () => {
-      let message = spawn(subscribe(bundler).match({ type: 'UPDATE' }).first())
+      let message = spawn(subscribe(bundler).match({ type: 'UPDATE' }).first());
 
       await expect(message).resolves.toHaveProperty('type', 'UPDATE');
     });
@@ -176,9 +176,9 @@ describe("Bundler", function() {
       });
 
       it('emits an error event', async () => {
-        let message = spawn(subscribe(bundler).match({ type: 'ERROR' }).first())
+        let message = spawn(subscribe(bundler).match({ type: 'ERROR' }).first());
         await expect(message).resolves.toHaveProperty('type', 'ERROR');
       });
     });
   });
-})
+});

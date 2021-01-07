@@ -9,7 +9,7 @@ interface ManifestServerOptions {
   port: number;
   proxyPort: number;
   atom: Slice<OrchestratorState>;
-};
+}
 
 export function* createManifestServer(options: ManifestServerOptions): Operation {
   let status = options.atom.slice('manifestServer', 'status');
@@ -27,5 +27,5 @@ export function* createManifestServer(options: ManifestServerOptions): Operation
 
   status.set({ type: 'started' });
 
-  yield
+  yield;
 }

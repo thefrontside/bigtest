@@ -1,6 +1,6 @@
 import { Test } from '@bigtest/suite';
-import  path from 'path';
-import  fs from 'fs';
+import path from 'path';
+import fs from 'fs';
 
 interface Options {
   files: string[];
@@ -23,11 +23,11 @@ export function filterTest(test: Test, options: Options): Test {
       } else if(fs.existsSync(file)) {
         let patterns = options.testFiles?.map((p) => JSON.stringify(p)).join(', ') || '';
         throw new Error(`file with path ${JSON.stringify(path.resolve(file))} exists but does not match the \`testFiles\` pattern(s) ${patterns}`.trim() +
-          '. If you want to include this file in your test suite you can adjust the `testFiles` setting in `bigtest.json`.')
+          '. If you want to include this file in your test suite you can adjust the `testFiles` setting in `bigtest.json`.');
       } else {
         throw new Error(`file with path ${JSON.stringify(path.resolve(file))} does not exist`);
       }
-    };
+    }
   } else {
     children = test.children;
   }

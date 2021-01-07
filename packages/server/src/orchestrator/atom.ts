@@ -1,4 +1,4 @@
-import { createAtom } from "@bigtest/atom";
+import { createAtom, Slice } from "@bigtest/atom";
 import { OrchestratorState } from "./state";
 import { ProjectOptions } from '@bigtest/project';
 import path = require('path');
@@ -8,7 +8,7 @@ import { AgentServerConfig } from '@bigtest/agent';
 // But until then we can just pick the bits we need.
 export type OrchestratorAtomOptions = Pick<ProjectOptions, 'app' |'watchTestFiles' | 'cacheDir' | 'testFiles' | 'proxy'>
 
-export const createOrchestratorAtom = (project: OrchestratorAtomOptions) => {
+export const createOrchestratorAtom = (project: OrchestratorAtomOptions): Slice<OrchestratorState> => {
   let manifestSrcDir = path.resolve(project.cacheDir, 'manifest/src');
   let manifestSrcPath = path.resolve(manifestSrcDir, 'manifest.js');
   let agentServerConfig = new AgentServerConfig(project.proxy);
@@ -38,7 +38,7 @@ export const createOrchestratorAtom = (project: OrchestratorAtomOptions) => {
       options: project.app,
     },
     proxyService: {
-      status: {type: 'unstarted'},
+      status: { type: 'unstarted' },
       options: {
         port: project.proxy.port,
         prefix: agentServerConfig.options.prefix,
@@ -72,4 +72,4 @@ export const createOrchestratorAtom = (project: OrchestratorAtomOptions) => {
   });
 
   return atom;
-}
+};

@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import  expect from 'expect';
+import expect from 'expect';
 
 import { TestResult } from '@bigtest/suite';
 import { resultSummary } from '../src/result-summary';
@@ -34,16 +34,16 @@ const RESULT: TestResult = {
       children: []
     }
   ]
-}
+};
 
 describe('result summary', () => {
   it('counts steps and assertions', async () => {
     let summary = resultSummary(RESULT);
-    expect(summary.stepCounts.ok).toEqual(3)
-    expect(summary.stepCounts.failed).toEqual(1)
-    expect(summary.stepCounts.disregarded).toEqual(2)
-    expect(summary.assertionCounts.ok).toEqual(1)
-    expect(summary.assertionCounts.failed).toEqual(2)
-    expect(summary.assertionCounts.disregarded).toEqual(3)
+    expect(summary.stepCounts.ok).toEqual(3);
+    expect(summary.stepCounts.failed).toEqual(1);
+    expect(summary.stepCounts.disregarded).toEqual(2);
+    expect(summary.assertionCounts.ok).toEqual(1);
+    expect(summary.assertionCounts.failed).toEqual(2);
+    expect(summary.assertionCounts.disregarded).toEqual(3);
   });
 });

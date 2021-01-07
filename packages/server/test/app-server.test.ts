@@ -1,5 +1,5 @@
 import { describe, beforeEach, it } from 'mocha';
-import  expect from 'expect';
+import expect from 'expect';
 import type { AppServiceStatus, OrchestratorState, ServiceState, AppOptions } from '../src/orchestrator/state';
 import type { Slice } from '@bigtest/atom';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
@@ -47,7 +47,7 @@ describe('app service', () => {
       appStatus = atom.slice('appService');
 
       actions.fork(function * () {
-        yield appServer(appStatus)
+        yield appServer(appStatus);
       });
     });
 
@@ -60,9 +60,9 @@ describe('app service', () => {
 
       let current = appStatus.get();
 
-      assertStatus(current.type, {is: 'exited'});
+      assertStatus(current.type, { is: 'exited' });
 
       expect(current.exitStatus.code).toBe(1);
-    })
-  })
-})
+    });
+  });
+});

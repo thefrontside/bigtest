@@ -1,22 +1,22 @@
 import { timeout, spawn } from 'effection';
 import { fetch } from '@effection/fetch';
 import { exec, Process } from '@effection/node';
-import  process from 'process';
+import process from 'process';
 import { AppOptions, Service, AppServiceStatus, ServiceState } from './orchestrator/state';
 import { Slice } from '@bigtest/atom';
-import { restartable } from './effection/restartable'
+import { restartable } from './effection/restartable';
 import { assert } from 'assert-ts';
 
 export const appServer: Service<AppServiceStatus, AppOptions> = (serviceSlice) => {
   let appOptions = serviceSlice.slice('options');
 
   return restartable(appOptions, startApp(serviceSlice));
-}
+};
 
 const startApp = (serviceSlice: Slice<ServiceState<AppServiceStatus, AppOptions>>) => function* (options: AppOptions) {
   assert(!!options.url, 'no app url given');
 
-  let appServiceStatus = serviceSlice.slice('status')
+  let appServiceStatus = serviceSlice.slice('status');
 
   if (options.command) {
     let child: Process = yield exec(options.command as string, {
@@ -40,7 +40,7 @@ const startApp = (serviceSlice: Slice<ServiceState<AppServiceStatus, AppOptions>
   appServiceStatus.set({ type: 'available' });
 
   yield;
-}
+};
 
 function* isReachable(url: string) {
   try {

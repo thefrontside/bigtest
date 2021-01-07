@@ -1,7 +1,7 @@
 import { Operation } from 'effection';
-import { Channel } from '@effection/channel'
-import { once } from '@effection/events'
-import { subscribe } from '@effection/subscription'
+import { Channel } from '@effection/channel';
+import { once } from '@effection/events';
+import { subscribe } from '@effection/subscription';
 import { Test } from '@bigtest/suite';
 
 import { Agent } from '../shared/agent';
@@ -45,7 +45,7 @@ function* runLane(agent: Agent, command: Run, path: string[]): Operation<void> {
     });
 
   } finally {
-    agent.send({ type: 'lane:end', testRunId, path })
+    agent.send({ type: 'lane:end', testRunId, path });
   }
 }
 

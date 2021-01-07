@@ -18,7 +18,7 @@ export interface RunnerOptions {
   proxyPort: number;
   manifestPort: number;
   testFiles?: string[];
-};
+}
 
 export interface RunOptions {
   testRunId: string;
@@ -36,14 +36,14 @@ export class AgentRunner implements Runner {
 
   run(options: RunOptions): PromiseLike<void> {
     return this.options.context.spawn(this._run(options));
-  };
+  }
 
   async *subscribe(id: string): AsyncIterator<TestEvent> {
     let slice = this.options.atom.slice('testRuns', id);
 
     let scope = this.options.context.spawn(undefined) as SpawnContext;
 
-    let subscription = await scope.spawn(resultStream(id, slice))
+    let subscription = await scope.spawn(resultStream(id, slice));
 
     try {
       while(true) {
@@ -166,5 +166,5 @@ function resultsFor(tree: Test): TestResult {
       status: 'pending'
     })),
     children: tree.children.map(resultsFor)
-  }
+  };
 }

@@ -11,7 +11,7 @@ import { createOrchestrator } from '../src/index';
 import { createOrchestratorAtom, OrchestratorAtomOptions } from '../src/orchestrator/atom';
 import { AppOptions, OrchestratorState } from '../src/orchestrator/state';
 import { Manifest, BundlerState } from '../src/orchestrator/state';
-import  merge from 'deepmerge';
+import merge from 'deepmerge';
 
 export type DeepPartial<T> = { [P in keyof T]?: DeepPartial<T[P]> };
 
@@ -31,9 +31,9 @@ const TestProjectOptions: OrchestratorAtomOptions = {
     port: 24001,
     prefix: '/__bigtest/'
   }
-}
+};
 
-export const getTestProjectOptions = (overrides: DeepPartial<OrchestratorAtomOptions> = {}) =>
+export const getTestProjectOptions = (overrides: DeepPartial<OrchestratorAtomOptions> = {}): OrchestratorAtomOptions =>
   merge(TestProjectOptions, overrides) as OrchestratorAtomOptions;
 
 export const actions = {
@@ -43,7 +43,7 @@ export const actions = {
     return currentWorld.fork(operation);
   },
 
-  receive(mailbox: Mailbox, pattern: unknown) {
+  receive(mailbox: Mailbox, pattern: unknown): Context {
     return actions.fork(mailbox.receive(pattern));
   },
 
@@ -51,7 +51,7 @@ export const actions = {
     return actions.fork(currentWorld.fetch(resource, init));
   },
 
-  async createAgent(agentId: string) {
+  async createAgent(agentId: string): Promise<Context> {
     // the types are broken in the 'websocket' package.... the `w3cwebsocket` class
     // _is_ in fact an EventTarget, but it is not declared as such. So we have
     // to dynamically cast it.
@@ -65,7 +65,7 @@ export const actions = {
     }));
   },
 
-  updateApp(appOptions: AppOptions) {
+  updateApp(appOptions: AppOptions): void {
     actions.atom
       .slice("appService", "options")
       .update(() => appOptions);
@@ -75,7 +75,7 @@ export const actions = {
       .update(() => appOptions);
   },
 
-  async startOrchestrator() {
+  async startOrchestrator(): Promise<Context> {
     if(!orchestratorPromise) {
       let delegate = new Mailbox();
 
@@ -114,7 +114,7 @@ export const actions = {
       return cxt;
     });
   }
-}
+};
 
 let globalWorld = new World();
 let currentWorld: World;

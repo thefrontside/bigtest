@@ -10,6 +10,7 @@
     "src/**/*.ts"
   ],
   "references": [
-    { "path": "../globals" }
+    { "path": "../globals" },
+    { "path": "../todomvc" }
   ]
 }

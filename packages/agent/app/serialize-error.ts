@@ -1,5 +1,5 @@
-import  getSource from 'get-source';
-import  ErrorStackParser from 'error-stack-parser';
+import getSource from 'get-source';
+import ErrorStackParser from 'error-stack-parser';
 import { StackFrame } from 'error-stack-parser';
 import { Operation, spawn, join } from 'effection';
 import { ErrorDetails, ErrorStackFrame } from '@bigtest/suite';
@@ -65,9 +65,9 @@ export function *serializeError(error: unknown): Operation<ErrorDetails> {
     } else {
       return {
         message: error ? `${error}` : 'unknown error'
-      }
+      };
     }
   } catch {
-    return { message: 'unknown error' }
+    return { message: 'unknown error' };
   }
 }

@@ -1,6 +1,8 @@
 import './globals';
 import { TestImplementation } from '@bigtest/suite';
 
+export type { EmptyObject } from './types';
+
 export type RunnerState = 'pending' | 'step' | 'assertion';
 
 interface BigtestOptions {

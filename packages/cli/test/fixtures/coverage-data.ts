@@ -497,4 +497,4 @@ export const coverageData: unknown = {
     "_coverageSchema": "43e27e138ebf9cfc5966b082cf9a028302ed4184",
     "hash": "6d1d2ef67e3789df0449b0b0eb1531530ccfbe2c"
   }
-}
+};

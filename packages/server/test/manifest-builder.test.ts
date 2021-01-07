@@ -1,8 +1,8 @@
 import { describe as suite, beforeEach, it } from 'mocha';
-import  expect from 'expect';
-import  path from 'path';
-import  rmrf from 'rimraf';
-import  fs from 'fs';
+import expect from 'expect';
+import path from 'path';
+import rmrf from 'rimraf';
+import fs from 'fs';
 
 import { Slice } from '@bigtest/atom';
 
@@ -48,13 +48,13 @@ describe('manifest builder', () => {
 
     resultPath = (bundlerState?.type === 'GREEN' && bundlerState.path) as string;
 
-    atom.slice('bundler').update(() => ({ type: 'BUILDING', warnings: []}));
+    atom.slice('bundler').update(() => ({ type: 'BUILDING', warnings: [] }));
   });
 
   describe('retrieving test file manifest from disk', () => {
     let body: string;
     beforeEach(async () => {
-      body = await readFile(path.resolve(DIST_DIR, resultPath), 'utf8')
+      body = await readFile(path.resolve(DIST_DIR, resultPath), 'utf8');
     });
 
     it('contains the built manifest', () => {
@@ -72,7 +72,7 @@ describe('manifest builder', () => {
 
       resultPath = (!!bundle && bundle.type === 'GREEN' && bundle.path) as string;
 
-      body = await readFile(path.resolve(DIST_DIR, resultPath), 'utf8')
+      body = await readFile(path.resolve(DIST_DIR, resultPath), 'utf8');
     });
 
     it('contains the built manifest', () => {
@@ -136,7 +136,7 @@ describe('manifest builder', () => {
   describe('updating the manifest and then reading it', () => {
     beforeEach(async () => {
       await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
-      await actions.fork(atom.slice('bundler').once(({ type }) => type === 'GREEN'))
+      await actions.fork(atom.slice('bundler').once(({ type }) => type === 'GREEN'));
     });
 
     it('returns the updated manifest from the state', () => {
@@ -156,13 +156,13 @@ describe('manifest builder', () => {
 
       // this could be a custom expect
       // assert is used to type narrow also and does more than just assert
-      assertBundlerState(bundlerState.type, {is: 'ERRORED'})
+      assertBundlerState(bundlerState.type, { is: 'ERRORED' });
 
       let error = bundlerState.error;
 
       expect(error).toBeInstanceOf(SyntaxError);
     });
-  })
+  });
 
   describe('importing the manifest with an error adds the error to the state', () => {
     beforeEach(async () => {
@@ -175,11 +175,11 @@ describe('manifest builder', () => {
 
       // this could be a custom expect
       // assert is used to type narrow also and does more than just assert
-      assertBundlerState(bundlerState.type, {is: 'ERRORED'})
+      assertBundlerState(bundlerState.type, { is: 'ERRORED' });
 
       let error = bundlerState.error;
 
-      expect(error.message).toEqual('bork')
+      expect(error.message).toEqual('bork');
     });
-  })
+  });
 });

@@ -1,5 +1,5 @@
-import  os from 'os';
-import  chalk from 'chalk';
+import os from 'os';
+import chalk from 'chalk';
 import { Writable } from 'stream';
 
 type Color = 'red' | 'grey' | 'white' | 'yellow' | 'green' | 'blue';
@@ -36,10 +36,10 @@ export class Printer {
     return new Printer(this.stream, this.basePrefix, this.trailingPrefix, value);
   }
 
-  get red() { return this.color('red'); }
-  get grey() { return this.color('grey'); }
-  get white() { return this.color('white'); }
-  get yellow() { return this.color('yellow'); }
-  get green() { return this.color('green'); }
-  get blue() { return this.color('blue'); }
+  get red() { return this.color('red') }
+  get grey() { return this.color('grey') }
+  get white() { return this.color('white') }
+  get yellow() { return this.color('yellow') }
+  get green() { return this.color('green') }
+  get blue() { return this.color('blue') }
 }

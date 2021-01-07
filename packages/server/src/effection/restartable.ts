@@ -1,4 +1,4 @@
-import { spawn, Context, Operation } from 'effection'
+import { spawn, Context, Operation } from 'effection';
 import { subscribe, ChainableSubscription } from '@effection/subscription';
 import { Slice } from "@bigtest/atom";
 

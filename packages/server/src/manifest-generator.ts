@@ -1,12 +1,12 @@
-import  chokidar from 'chokidar';
+import chokidar from 'chokidar';
 import { ensure } from '@bigtest/effection';
 import { throwOnErrorEvent, once, on } from '@effection/events';
-import  fs from 'fs';
-import  globby from 'globby';
-import  path from 'path';
+import fs from 'fs';
+import globby from 'globby';
+import path from 'path';
 import { ManifestGeneratorOptions, ManifestGeneratorStatus, Service } from './orchestrator/state';
 import { spawn } from 'effection';
-import {Channel} from '@effection/channel';
+import { Channel } from '@effection/channel';
 import { subscribe } from '@effection/subscription';
 import { assert } from 'assert-ts';
 
@@ -37,7 +37,7 @@ module.exports = {
   assertions: [],
   children: children,
 }
-`
+`;
   yield mkdir(path.dirname(destinationPath), { recursive: true });
   yield writeFile(destinationPath, manifest);
 }
@@ -65,24 +65,24 @@ export const manifestGenerator: Service<ManifestGeneratorStatus, ManifestGenerat
     yield once(watcher, 'ready');
     yield writeManifest({ files, destinationPath });
 
-    console.debug("[manifest generator] manifest ready, watching for updates")
+    console.debug("[manifest generator] manifest ready, watching for updates");
 
     serviceStatus.update(() => ({ type: 'ready' }));
-    
+
     let fileChanges = new Channel<void>();
 
     let writeOperation = function *() {
       fileChanges.send();
       console.debug("[manifest generator] manifest updated");
-      serviceStatus.update(() => ({ type: 'ready' }))
-    }
+      serviceStatus.update(() => ({ type: 'ready' }));
+    };
 
     yield spawn(on(watcher, 'add').forEach(writeOperation));
     yield spawn(on(watcher, 'unlink').forEach(writeOperation));
-    
+
     yield subscribe(fileChanges).forEach(() => writeManifest(writeOptions));
   } else {
     yield writeManifest(writeOptions);
     serviceStatus.update(() => ({ type: 'ready' }));
   }
-}
+};

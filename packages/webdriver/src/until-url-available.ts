@@ -15,7 +15,7 @@ export function* untilURLAvailable(url: string): Operation<void> {
       let response: Response = yield function*() {
         yield spawn(function* () {
           yield timeout(200);
-          throw new TimeoutError('request timed out')
+          throw new TimeoutError('request timed out');
         });
         return yield fetch(url);
       };

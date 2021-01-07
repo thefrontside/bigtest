@@ -5,14 +5,14 @@ import { AbortController } from 'abort-controller';
 export class World {
   execution: Context & Controls;
   constructor() {
-    this.execution = main(function*() { yield; }) as Context & Controls;
+    this.execution = main(function*() { yield }) as Context & Controls;
   }
 
-  destroy() {
+  destroy(): void {
     this.execution.halt();
   }
 
-  ensure(hook: () => void) {
+  ensure(hook: () => void): void {
     this.execution.ensure(hook);
   }
 

@@ -1,4 +1,4 @@
-import  path from 'path';
+import path from 'path';
 import { fork, Operation, spawn } from 'effection';
 import { Mailbox } from '@bigtest/effection';
 import { AgentServerConfig } from '@bigtest/agent';
@@ -123,8 +123,8 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     yield fork(function* () {
       yield browserManager.ready();
       console.debug('[orchestrator] browser manager ready');
-    })
-  }
+    });
+  };
 
   console.log("[orchestrator] running!");
 

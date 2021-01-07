@@ -1,6 +1,7 @@
 import { fork } from 'effection';
 import { getIndexedDBConfig } from './indexed-db-config';
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function* clearPersistentStorage() {
   localStorage.clear();
   sessionStorage.clear();
@@ -24,12 +25,12 @@ function* clearIndexedDB() {
   window.indexedDB.open = function open(name: string, version?: number) {
     openedDBNames.add(name);
     return originalOpen.call(window.indexedDB, name, version);
-  }
+  };
 }
 
 function idbRequest<T>(request: IDBRequest<T>): Promise<T> {
   return new Promise((resolve, reject) => {
     request.onerror = () => reject(request.error);
     request.onsuccess = () => resolve(request.result);
-  })
+  });
 }

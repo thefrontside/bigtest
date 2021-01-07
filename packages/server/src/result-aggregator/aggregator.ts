@@ -27,6 +27,7 @@ export abstract class Aggregator<T extends {status: unknown }, O extends Aggrega
     return this.options.events;
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   get statusSlice() {
     return this.slice.slice('status');
   }
@@ -35,7 +36,7 @@ export abstract class Aggregator<T extends {status: unknown }, O extends Aggrega
     throw new Error("override me in subclass");
   }
 
-  *run() {
+  *run(): Generator<Operation<ResultStatus>> {
     try {
       return yield this.perform();
     } finally {

@@ -1,6 +1,8 @@
 import { Operation } from 'effection';
-import  terminalLink from 'terminal-link';
+import terminalLink from 'terminal-link';
 
+// TODO: need to review this, I think all the argv arguments apart from line 7 are unused
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function warnUnexpectedExceptions<T>(operation: (argv: string[]) => Operation<T>): (argv: string[]) => Operation<T> {
   return function*(argv: string[]) {
     try {
@@ -11,7 +13,7 @@ export function warnUnexpectedExceptions<T>(operation: (argv: string[]) => Opera
       }
       throw error;
     }
-  }
+  };
 }
 
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,7 +24,7 @@ shutdown. And yes, in case you're wondering, this is definitely on us. It would
 help us a lot to improve BigTest if you'd take the time to report the problem.
 
 ${terminalLink.stderr('Submit an issue to the BigTest repository', newIssueLink(error, argv))}
-`
+`;
 
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
 function newIssueLink(error: any, argv: string[]) {
@@ -53,7 +55,7 @@ Stack
 ${error && error.stack ? error.stack : 'none'}
 
 </details>
-`
+`;
 
 function uriEncode(strings: TemplateStringsArray, ...values: string[]) {
   let encoded = values.map(encodeURIComponent);

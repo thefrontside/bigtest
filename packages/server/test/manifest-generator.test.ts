@@ -1,8 +1,8 @@
 import { describe, beforeEach, it } from 'mocha';
-import  expect from 'expect';
-import  fs from 'fs';
-import  path from 'path';
-import  rmrf from 'rimraf';
+import expect from 'expect';
+import fs from 'fs';
+import path from 'path';
+import rmrf from 'rimraf';
 
 import { timeout } from 'effection';
 import { Test } from '@bigtest/suite';
@@ -15,8 +15,8 @@ const { mkdir, writeFile, unlink } = fs.promises;
 import { join } from 'path';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 
-const TEST_DIR = "./tmp/manifest-generator"
-const MANIFEST_PATH = "./tmp/manifest-generator/manifest.js"
+const TEST_DIR = "./tmp/manifest-generator";
+const MANIFEST_PATH = "./tmp/manifest-generator/manifest.js";
 
 async function loadManifest() {
   let fullPath = path.resolve(MANIFEST_PATH);
@@ -43,7 +43,7 @@ describe('manifest-generator', () => {
     await writeFile(join(TEST_DIR, "/test1.t.js"), "module.exports = { default: { description: 'hello' }};");
     await writeFile(join(TEST_DIR, "/test2.t.js"), "module.exports = { default: { description: 'monkey' }};");
   });
-  
+
   describe('watching', () => {
     beforeEach(async() => {
       actions.fork(manifestGenerator(manifestGeneratorState));
@@ -58,7 +58,7 @@ describe('manifest-generator', () => {
       });
 
       it('writes the manifest', () => {
-        expect(manifest.children.length).toEqual(2)
+        expect(manifest.children.length).toEqual(2);
         expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
         expect(manifest.children[1]).toEqual({ path: './tmp/manifest-generator/test2.t.js', description: 'monkey' });
       });
@@ -74,7 +74,7 @@ describe('manifest-generator', () => {
       });
 
       it('rewrites the manifest', () => {
-        expect(manifest.children.length).toEqual(3)
+        expect(manifest.children.length).toEqual(3);
         expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
         expect(manifest.children[1]).toEqual({ path: './tmp/manifest-generator/test2.t.js', description: 'monkey' });
         expect(manifest.children[2]).toEqual({ path: './tmp/manifest-generator/test3.t.js', description: 'test' });
@@ -91,7 +91,7 @@ describe('manifest-generator', () => {
       });
 
       it('rewrites the manifest', () => {
-        expect(manifest.children.length).toEqual(1)
+        expect(manifest.children.length).toEqual(1);
         expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
       });
     });
@@ -124,7 +124,7 @@ describe('manifest-generator', () => {
       });
 
       it('writes the manifest', () => {
-        expect(manifest.children.length).toEqual(2)
+        expect(manifest.children.length).toEqual(2);
         expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
         expect(manifest.children[1]).toEqual({ path: './tmp/manifest-generator/test2.t.js', description: 'monkey' });
       });
@@ -140,7 +140,7 @@ describe('manifest-generator', () => {
       });
 
       it('does nothing', () => {
-        expect(manifest.children.length).toEqual(2)
+        expect(manifest.children.length).toEqual(2);
         expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
         expect(manifest.children[1]).toEqual({ path: './tmp/manifest-generator/test2.t.js', description: 'monkey' });
       });

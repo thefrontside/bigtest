@@ -7,8 +7,8 @@ import { Deferred } from '@bigtest/effection';
 import { Bundler } from '@bigtest/bundler';
 import { Slice } from '@bigtest/atom';
 import { createFingerprint } from 'fprint';
-import  path from 'path';
-import  fs from 'fs';
+import path from 'path';
+import fs from 'fs';
 import { OrchestratorState } from './orchestrator/state';
 import { assertBundlerState, assertCanTransition } from '../src/assertions/bundler-assertions';
 
@@ -22,7 +22,7 @@ interface ManifestBuilderOptions {
   buildDir: string;
   distDir: string;
   tsconfig?: string;
-};
+}
 
 function* ftruncate(fd: number, len: number): Operation<void> {
   let { resolve, reject, promise } = Deferred<void>();
@@ -51,7 +51,7 @@ function* truncate(path: string, len: number): Operation {
 
 export function* updateSourceMapURL(filePath: string, sourcemapName: string): Operation{
   let { size } = yield stat(filePath);
-  let readStream = fs.createReadStream(filePath, {start: size - 16});
+  let readStream = fs.createReadStream(filePath, { start: size - 16 });
   let [currentURL]: [Buffer] = yield once(readStream, 'data');
 
   if (currentURL.toString().trim() === 'manifest.js.map') {
@@ -59,7 +59,7 @@ export function* updateSourceMapURL(filePath: string, sourcemapName: string): Op
     yield appendFile(filePath, sourcemapName);
   } else {
     throw new Error(`Expected a sourcemapping near the end of the generated test bundle, but found "${currentURL}" instead.`);
-  };
+  }
 }
 
 function* processManifest(options: ManifestBuilderOptions): Operation {
@@ -137,11 +137,11 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
         console.debug("received bundle warning", message.warning);
 
         bundlerSlice.update((previous) => {
-          assertBundlerState(previous.type, {is: ['BUILDING', 'GREEN']});
+          assertBundlerState(previous.type, { is: ['BUILDING', 'GREEN'] });
 
           let warnings = !!previous.warnings ? [...previous.warnings, message.warning] : [message.warning];
 
-          return {...previous, warnings };
+          return { ...previous, warnings };
         });
         break;
     }

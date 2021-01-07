@@ -12,7 +12,7 @@ describe('express', () => {
 
     app = express();
 
-    await run(app.use(function*(req, res) {
+    await run(app.use(function*(_, res) {
       res.send("hello");
       res.end();
     }));

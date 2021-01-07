@@ -21,7 +21,7 @@ const formatter: FormatterConstructor = (printer) => {
     footer(results) {
       printStandardFooter(printer, results);
     }
-  }
+  };
 };
 
 export default formatter;

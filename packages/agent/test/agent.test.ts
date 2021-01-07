@@ -102,7 +102,7 @@ describe("@bigtest/agent", function() {
           expect(await run(events.match({
             type: 'assertion:result',
             path: ['tests', 'test with failing assertion', 'successful assertion']
-          }).first())).toBeDefined()
+          }).first())).toBeDefined();
         });
 
         it('receives failure results', async () => {
@@ -239,8 +239,9 @@ describe("@bigtest/agent", function() {
           it('is reported with the run:end event', () => {
             expect(end).toMatchObject({
               type: 'run:end',
+              // eslint-disable-next-line @typescript-eslint/no-var-requires
               coverage: require('./fixtures/coverage-data').coverageData
-            })
+            });
           });
         });
 

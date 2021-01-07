@@ -1,7 +1,7 @@
 import { describe, beforeEach, it } from 'mocha';
-import  expect from 'expect';
-import { daemon } from '@effection/node'
-import  getPort from 'get-port';
+import expect from 'expect';
+import { daemon } from '@effection/node';
+import getPort from 'get-port';
 import { Response } from 'node-fetch';
 
 import { actions } from './helpers';
@@ -25,7 +25,7 @@ describe('orchestrator', () => {
     });
 
     it('contains the ping text', () => {
-      expect(body).toEqual({"data": {"echo": "Hello World"}})
+      expect(body).toEqual({ "data": { "echo": "Hello World" } });
     });
   });
 

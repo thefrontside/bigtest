@@ -1,4 +1,4 @@
-import  path  from 'path';
+import path from 'path';
 import {
   objectType,
   unionType,
@@ -75,7 +75,7 @@ export const schema = makeSchema({
             id: stringArg({ required: true }),
           },
           resolve: (state, { id }) => state.testRuns[id]
-        })
+        });
       }
     }),
     mutationType({
@@ -87,7 +87,7 @@ export const schema = makeSchema({
           resolve(_source, { files }, cxt) {
             return cxt.runTest({ files: files || [] });
           }
-        })
+        });
       }
     }),
     objectType({
@@ -128,7 +128,7 @@ export const schema = makeSchema({
         t.field("platform", {
           nullable: true,
           type: "Platform"
-        })
+        });
         t.field("browser", {
           nullable: true,
           type: "Browser",
@@ -136,7 +136,7 @@ export const schema = makeSchema({
         t.field("engine", {
           nullable: true,
           type: "Engine"
-        })
+        });
       }
     }),
     objectType({
@@ -149,7 +149,7 @@ export const schema = makeSchema({
     }),
     objectType({
       name: "Platform",
-      definition(t)  {
+      definition(t) {
         t.string("type");
         t.string("vendor");
       }
@@ -183,7 +183,7 @@ export const schema = makeSchema({
         });
         t.list.field("children", {
           type: "Test"
-        })
+        });
       }
     }),
     enumType({
@@ -211,7 +211,7 @@ export const schema = makeSchema({
         t.list.field("warnings", {
           type: "Error",
           nullable: true
-        })
+        });
       }
     }),
     objectType({
@@ -239,7 +239,7 @@ export const schema = makeSchema({
         t.string("coverage", {
           nullable: true,
           resolve: testRun => JSON.stringify(testRun.coverage)
-        })
+        });
         t.list.field("agents", {
           type: "TestRunAgent",
           resolve: (testRun) => Object.values(testRun.agents)
@@ -283,7 +283,7 @@ export const schema = makeSchema({
         });
         t.list.field("children", {
           type: "TestResult"
-        })
+        });
       }
     }),
     objectType({
@@ -294,7 +294,7 @@ export const schema = makeSchema({
         t.field("error", {
           type: "Error",
           nullable: true
-        })
+        });
         t.list.field("logEvents", { type: "LogEvent", nullable: true });
         t.boolean("timeout", { nullable: true });
       }
@@ -416,4 +416,4 @@ export const schema = makeSchema({
       }
     })
   ]
-})
+});

@@ -1,8 +1,9 @@
-import  Bowser from 'bowser';
+import Bowser from 'bowser';
 import { QueryParams } from './query-params';
 import { Agent } from '../shared/agent';
 import { run } from './runner';
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function* createAgent(queryParams: QueryParams) {
   console.log('[agent] connecting to', queryParams.connectTo);
 

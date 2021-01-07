@@ -1,8 +1,9 @@
 import { Operation } from 'effection';
 import { DriverSpec } from '@bigtest/driver';
-import  path from 'path';
+import path from 'path';
 import { existsSync } from 'fs';
-import  fs from 'fs';
+import fs from 'fs';
+import { CompilerOptions, ScriptTarget } from 'typescript';
 
 const { readFile } = fs.promises;
 
@@ -128,15 +129,15 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
       reports: [],
       directory: "./coverage"
     }
-  }
-};
+  };
+}
 
-export function defaultTSConfig() {
+export function defaultTSConfig(): { compilerOptions: Pick<CompilerOptions, 'skipLibCheck' | 'target' | 'lib'> } {
   return {
     compilerOptions: {
       skipLibCheck: true,
-      target: "es6",
+      target: ScriptTarget.ES2015,
       lib: ["esnext", "dom"]
     }
-  }
+  };
 }

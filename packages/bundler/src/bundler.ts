@@ -1,6 +1,6 @@
 import { Operation, resource, timeout } from 'effection';
 import { on } from '@effection/events';
-import { Subscribable, SymbolSubscribable } from '@effection/subscription';
+import { Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
 import { Channel } from '@effection/channel';
 import { watch, rollup, OutputOptions, InputOptions, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'rollup';
 import { defaultTSConfig } from '@bigtest/project';
@@ -20,13 +20,13 @@ interface BundleOptions {
   globalName?: string;
   tsconfig?: string;
   watch?: boolean;
-};
+}
 
 function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMessage>): InputOptions {
   return {
     input: bundle.entry,
     onwarn(warning){
-      channel.send({ type: 'WARN', warning })
+      channel.send({ type: 'WARN', warning });
     },
     plugins: [
       resolve({
@@ -57,7 +57,7 @@ function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMess
         NODE_ENV: 'production'
       }),
     ]
-  }
+  };
 }
 
 function prepareOutputOptions(bundle: BundleOptions): OutputOptions {
@@ -66,7 +66,7 @@ function prepareOutputOptions(bundle: BundleOptions): OutputOptions {
     name: bundle.globalName || undefined,
     sourcemap: true,
     format: 'umd',
-  }
+  };
 }
 
 function prepareWatchOptions(bundle: BundleOptions, channel: Channel<BundlerMessage>): RollupWatchOptions {
@@ -76,7 +76,7 @@ function prepareWatchOptions(bundle: BundleOptions, channel: Channel<BundlerMess
     watch: {
       exclude: [/node_modules/]
     },
-  }
+  };
 }
 
 export class Bundler implements Subscribable<BundlerMessage, undefined> {
@@ -92,9 +92,9 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
     }
   }
 
-  constructor(public options: BundleOptions) {};
+  constructor(public options: BundleOptions) {}
 
-  [SymbolSubscribable]() {
+  [SymbolSubscribable](): Operation<Subscription<BundlerMessage, undefined>> {
     return this.channel[SymbolSubscribable]();
   }
 

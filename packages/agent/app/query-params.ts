@@ -14,7 +14,7 @@ function parseQueryParams(): QueryParams {
   return {
     connectTo,
     agentId: url.searchParams.get('agentId') || undefined
-  }
+  };
 }
 
 export const queryParams = parseQueryParams();

@@ -1,11 +1,12 @@
-import  chalk from 'chalk';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import chalk from 'chalk';
 import { Printer } from './printer';
-import { RunResultEvent, TestResults, ResultCounts } from './query'
-import { ErrorDetails, ResultStatus, TestResult, StepResult, AssertionResult, LogEvent } from '@bigtest/suite'
+import { RunResultEvent, TestResults, ResultCounts } from './query';
+import { ErrorDetails, ResultStatus, TestResult, StepResult, AssertionResult, LogEvent } from '@bigtest/suite';
 
-export { RunResultEvent, TestResults, ResultSummary, ResultCounts } from './query'
+export { RunResultEvent, TestResults, ResultSummary, ResultCounts } from './query';
 
-export const UNKNOWN_ERROR = 'Unknown error occurred: This is likely a bug in BigTest and should be reported at https://github.com/thefrontside/bigtest/issues.'
+export const UNKNOWN_ERROR = 'Unknown error occurred: This is likely a bug in BigTest and should be reported at https://github.com/thefrontside/bigtest/issues.';
 
 export function formatCounts(counts: ResultCounts): string {
   return [
@@ -37,7 +38,7 @@ export function printStackTrace(printer: Printer, error: ErrorDetails) {
         stackLine += location.fileName;
       }
       if(location.line) {
-        stackLine += `:${location.line}`
+        stackLine += `:${location.line}`;
         if(location.column) {
           stackLine += `:${location.column}`;
         }
@@ -145,7 +146,7 @@ export function printStandardFooter(printer: Printer, { testRun }: TestResults) 
   if(testRun.status === 'ok') {
     printer.green.line('✓ SUCCESS');
   } else {
-    printer.red.line('⨯ FAILURE')
+    printer.red.line('⨯ FAILURE');
   }
 }
 

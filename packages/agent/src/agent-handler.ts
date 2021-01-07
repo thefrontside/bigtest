@@ -68,7 +68,7 @@ export function* createAgentHandler(port: number): Operation<ChainableSubscripti
         });
         events.close(close);
       } finally {
-        events.close({code: 1005, reason: "agent shutdown"});
+        events.close({ code: 1005, reason: "agent shutdown" });
       }
     });
 

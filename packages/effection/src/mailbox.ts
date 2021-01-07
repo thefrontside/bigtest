@@ -70,7 +70,7 @@ export class Mailbox<T = any> {
 
   // TODO: not sure what T, TReturn or TNext are here
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  *pipe(other: Mailbox<T>): Generator<Operation<unknown>, any, unknown> {
+  *pipe(other: Mailbox<T>): Generator<Operation<unknown>> {
     let that = this; // eslint-disable-line @typescript-eslint/no-this-alias
     return yield spawn(function*(): Operation<unknown> {
       while(true) {

@@ -1,8 +1,8 @@
 import { Operation } from 'effection';
 import { defaultConfig, getConfigFilePath, loadConfigFile, ProjectOptions } from '@bigtest/project';
-import  merge from 'deepmerge';
-import  path from 'path';
-import  chalk from 'chalk';
+import merge from 'deepmerge';
+import path from 'path';
+import chalk from 'chalk';
 import { StartArgs } from './cli';
 import { MainError } from '@effection/node';
 

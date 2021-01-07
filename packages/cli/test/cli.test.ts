@@ -2,14 +2,15 @@ import { describe, it, beforeEach } from 'mocha';
 import { daemon, exec, ExitStatus } from '@effection/node';
 import { defaultTSConfig } from '@bigtest/project';
 
-import  expect from 'expect';
-import  process from 'process';
+import expect from 'expect';
+import process from 'process';
 import { promises as fs } from 'fs';
 
 import { World } from './helpers/world';
 import { Stream } from './helpers/stream';
 
 export interface TestProcess {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   stdin: { write(data: string): void };
   stdout: Stream;
   stderr: Stream;
@@ -104,7 +105,7 @@ describe('@bigtest/cli', function() {
 
       it('exits successfully', async () => {
         expect(status.code).toEqual(0);
-        expect(runChild.stdout.output).toContain("SUCCESS")
+        expect(runChild.stdout.output).toContain("SUCCESS");
       });
     });
 
@@ -125,7 +126,7 @@ describe('@bigtest/cli', function() {
 
       it('exits with error code', async () => {
         expect(status.code).toEqual(1);
-        expect(runChild.stdout.output).toContain("FAILURE")
+        expect(runChild.stdout.output).toContain("FAILURE");
       });
     });
 
@@ -147,9 +148,9 @@ describe('@bigtest/cli', function() {
 
       it('exits with error code', async () => {
         expect(status.code).toEqual(1);
-        expect(runChild.stdout.output).toContain('Cannot run tests due to build errors in the test suite')
-        expect(runChild.stdout.output).toContain('test/fixtures/syntax.broken.ts')
-        expect(runChild.stdout.output).toContain('⨯ FAILURE')
+        expect(runChild.stdout.output).toContain('Cannot run tests due to build errors in the test suite');
+        expect(runChild.stdout.output).toContain('test/fixtures/syntax.broken.ts');
+        expect(runChild.stdout.output).toContain('⨯ FAILURE');
       });
     });
   });
@@ -167,7 +168,7 @@ describe('@bigtest/cli', function() {
 
       it('exits successfully', async () => {
         expect(status.code).toEqual(0);
-        expect(child.stdout.output).toContain("✓ SUCCESS")
+        expect(child.stdout.output).toContain("✓ SUCCESS");
       });
     });
 
@@ -183,8 +184,8 @@ describe('@bigtest/cli', function() {
 
       it('exits with error code', async () => {
         expect(status.code).toEqual(1);
-        expect(child.stdout.output).toContain("test/fixtures/failing.test.ts:15")
-        expect(child.stdout.output).toContain("⨯ FAILURE")
+        expect(child.stdout.output).toContain("test/fixtures/failing.test.ts:15");
+        expect(child.stdout.output).toContain("⨯ FAILURE");
       });
 
       it('prints the error tree', async () => {
@@ -209,9 +210,9 @@ describe('@bigtest/cli', function() {
 
       it('exits with error code', async () => {
         expect(status.code).toEqual(1);
-        expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite')
-        expect(child.stdout?.output).toContain('test/fixtures/syntax.broken.ts')
-        expect(child.stdout?.output).toContain('⨯ FAILURE')
+        expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite');
+        expect(child.stdout?.output).toContain('test/fixtures/syntax.broken.ts');
+        expect(child.stdout?.output).toContain('⨯ FAILURE');
       });
     });
 
@@ -227,10 +228,10 @@ describe('@bigtest/cli', function() {
 
       it('exits with error code', async () => {
         expect(status.code).toEqual(1);
-        expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite')
-        expect(child.stdout?.output).toContain('test/fixtures/typescript.broken.ts')
-        expect(child.stdout?.output).toContain('Type \'string\' is not assignable to type \'number\'')
-        expect(child.stdout?.output).toContain('⨯ FAILURE')
+        expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite');
+        expect(child.stdout?.output).toContain('test/fixtures/typescript.broken.ts');
+        expect(child.stdout?.output).toContain('Type \'string\' is not assignable to type \'number\'');
+        expect(child.stdout?.output).toContain('⨯ FAILURE');
       });
     });
 
@@ -245,10 +246,10 @@ describe('@bigtest/cli', function() {
 
       it('exits with error code', async () => {
         expect(status.code).toEqual(1);
-        expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite')
-        expect(child.stdout?.output).toContain('Invalid Test: contains duplicate test: "duplicate child"')
-        expect(child.stdout?.output).toContain('test/fixtures/duplicate.broken.ts')
-        expect(child.stdout?.output).toContain('⨯ FAILURE')
+        expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite');
+        expect(child.stdout?.output).toContain('Invalid Test: contains duplicate test: "duplicate child"');
+        expect(child.stdout?.output).toContain('test/fixtures/duplicate.broken.ts');
+        expect(child.stdout?.output).toContain('⨯ FAILURE');
       });
     });
 
@@ -263,10 +264,10 @@ describe('@bigtest/cli', function() {
 
       it('exits with error code', async () => {
         expect(status.code).toEqual(1);
-        expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite')
-        expect(child.stdout?.output).toContain('Invalid Test: is too deeply nested, maximum allowed depth of nesting is 10')
-        expect(child.stdout?.output).toContain('test/fixtures/too-deep.broken.ts')
-        expect(child.stdout?.output).toContain('⨯ FAILURE')
+        expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite');
+        expect(child.stdout?.output).toContain('Invalid Test: is too deeply nested, maximum allowed depth of nesting is 10');
+        expect(child.stdout?.output).toContain('test/fixtures/too-deep.broken.ts');
+        expect(child.stdout?.output).toContain('⨯ FAILURE');
       });
     });
 
@@ -281,9 +282,9 @@ describe('@bigtest/cli', function() {
 
       it('exits with error code', async () => {
         expect(status.code).toEqual(1);
-        expect(child.stdout?.output).toContain('Application exited unexpectedly with exit code 1 with the following output:')
-        expect(child.stdout?.output).toContain('Cannot find module')
-        expect(child.stdout?.output).toContain('⨯ FAILURE')
+        expect(child.stdout?.output).toContain('Application exited unexpectedly with exit code 1 with the following output:');
+        expect(child.stdout?.output).toContain('Cannot find module');
+        expect(child.stdout?.output).toContain('⨯ FAILURE');
       });
     });
   });
@@ -390,7 +391,7 @@ describe('@bigtest/cli', function() {
         expect(config.app.env.PORT).toEqual(9000);
         expect(config.app.url).toEqual('http://localhost:9000');
         expect(config.tsconfig).toEqual('./bigtest.tsconfig.json');
-        
+
         let generatedTSConfig = await fs.readFile('./bigtest.tsconfig.json');
         expect(JSON.parse(generatedTSConfig.toString())).toEqual(defaultTSConfig());
       });

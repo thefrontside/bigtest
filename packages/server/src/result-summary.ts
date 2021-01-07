@@ -1,4 +1,4 @@
-import { TestResult } from '@bigtest/suite'
+import { TestResult } from '@bigtest/suite';
 
 export type Counts = { ok: number; failed: number; disregarded: number };
 
@@ -15,7 +15,7 @@ function addSummaries(a: Summary, b: Summary): Summary {
   return {
     stepCounts: addCounts(a.stepCounts, b.stepCounts),
     assertionCounts: addCounts(a.assertionCounts, b.assertionCounts),
-  }
+  };
 }
 
 export function resultSummary(testResult: TestResult): Summary {
@@ -30,7 +30,7 @@ export function resultSummary(testResult: TestResult): Summary {
       failed: testResult.assertions.filter((s) => s.status === 'failed').length,
       disregarded: testResult.assertions.filter((s) => s.status === 'disregarded').length,
     }
-  }
+  };
 
   return testResult.children.map((c) => resultSummary(c)).reduce(addSummaries, own);
 }

@@ -1,4 +1,4 @@
-import { fork } from 'effection';
+import { Context, fork, Operation } from 'effection';
 import { OrchestratorState } from './orchestrator/state';
 import { Slice } from '@bigtest/atom';
 import { subscribe } from '@effection/subscription';
@@ -8,7 +8,7 @@ export interface LoggerOptions {
   out: <A extends unknown[]>(...args: A) => void;
 }
 
-export function* createLogger({ atom, out }: LoggerOptions) {
+export function* createLogger({ atom, out }: LoggerOptions): Generator<Operation<Context<undefined>>, void, unknown> {
   yield fork(subscribe(atom.slice('bundler')).forEach(function* (event) {
     if(event.type === 'ERRORED'){
       out("[manifest builder] build error:");
@@ -24,7 +24,7 @@ export function* createLogger({ atom, out }: LoggerOptions) {
       out("[app] successfully connected to application!");
     }
     if(status.type === 'exited') {
-      out(`[app] application has exited with status code ${status.exitStatus.code}`)
+      out(`[app] application has exited with status code ${status.exitStatus.code}`);
     }
   }));
 }

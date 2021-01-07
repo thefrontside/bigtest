@@ -1,10 +1,10 @@
+import type { EmptyObject } from '@bigtest/globals';
 import { bigtestGlobals } from '@bigtest/globals';
 import { InteractorSpecification, InteractorBuilder, InteractorConstructor, FilterParams, Filters, Actions, InteractorInstance, LocatorFn } from './specification';
 import { Locator } from './locator';
 import { Filter } from './filter';
 import { Interactor } from './interactor';
 import { interaction } from './interaction';
-import { Empty } from './types';
 
 const defaultLocator: LocatorFn<Element> = (element) => element.textContent || "";
 
@@ -28,7 +28,7 @@ const defaultLocator: LocatorFn<Element> = (element) => element.textContent || "
  * @returns You will need to call the returned builder to create an interactor.
  */
 export function createInteractor<E extends Element>(interactorName: string): InteractorBuilder<E> {
-  return function<F extends Filters<E> = Empty, A extends Actions<E> = Empty>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, F, A> {
+  return function<F extends Filters<E> = EmptyObject, A extends Actions<E> = EmptyObject>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, F, A> {
     let InteractorClass = class extends Interactor<E, F, A> {};
 
     for(let [actionName, action] of Object.entries(specification.actions || {})) {

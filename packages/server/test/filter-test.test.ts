@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
-import  expect from 'expect';
-import  path from 'path';
+import expect from 'expect';
+import path from 'path';
 
 import { Test } from '@bigtest/suite';
 import { filterTest } from '../src/filter-test';
@@ -17,16 +17,16 @@ describe('filter test', () => {
         { description: 'child two', path: './bar.ts', steps: [], assertions: [], children: [] },
         { description: 'child three', path: './baz.ts', steps: [], assertions: [], children: [] },
       ]
-    }
+    };
 
     it('returns all children when list of files is empty', async () => {
       let filtered = filterTest(test, { files: [] });
-      expect(filtered.children.length).toEqual(3)
+      expect(filtered.children.length).toEqual(3);
     });
 
     it('filters list of files by normalized file name', async () => {
       let filtered = filterTest(test, { files: ['foo.ts', path.resolve('bar.ts')] });
-      expect(filtered.children.length).toEqual(2)
+      expect(filtered.children.length).toEqual(2);
       expect(filtered.children.map((c) => c.description)).toEqual(['child one', 'child two']);
     });
 

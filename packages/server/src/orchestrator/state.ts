@@ -2,6 +2,7 @@ import type { Test, TestResult, ResultStatus, ErrorDetails } from '@bigtest/suit
 import type { BundlerError, BundlerWarning } from '@bigtest/bundler';
 import type { Slice } from '@bigtest/atom';
 import { Operation } from 'effection';
+import { EmptyObject } from '@bigtest/globals';
 
 export type AgentState = {
   agentId: string;
@@ -44,7 +45,7 @@ export type Key = string | number | symbol;
 export type BundlerState =
   | { type: 'UNBUNDLED' }
   | { type: 'BUILDING'; warnings: BundlerWarning[] }
-  | { type: 'GREEN'; path: string;  warnings: BundlerWarning[] }
+  | { type: 'GREEN'; path: string; warnings: BundlerWarning[] }
   | { type: 'ERRORED'; error: BundlerError }
 
 export type BundlerTypes = Pick<BundlerState, 'type'>['type'];
@@ -60,11 +61,11 @@ export type ServiceState<S extends ServiceStatus, O> = {
 
 export type Service<S extends ServiceStatus, O> = {
   (state: Slice<ServiceState<S, O>>): Operation<void>;
-};  
-
-export interface Manifest extends Test  {
-  fileName: string;
 };
+
+export interface Manifest extends Test {
+  fileName: string;
+}
 
 export type AppOptions = {
   url?: string;
@@ -111,7 +112,7 @@ export interface ManifestGeneratorOptions {
   files?: string[];
   mode: 'idle' | 'watch' | 'build';
   destinationPath?: string;
-};
+}
 
 export type ConnectionStatus = {
   type: 'unstarted' | 'starting' | 'started';
@@ -139,11 +140,9 @@ export type OrchestratorState = {
   bundler: BundlerState;
   testRuns: Record<string, TestRunState>;
   manifestGenerator: ServiceState<ManifestGeneratorStatus, ManifestGeneratorOptions>;
-  manifestServer: ServiceState<ManifestServerStatus, {}>;
+  manifestServer: ServiceState<ManifestServerStatus, EmptyObject>;
   appService: ServiceState<AppServiceStatus, AppOptions>;
   proxyService: ServiceState<ProxyStatus, ProxyOptions>;
-  connectionService: ServiceState<ConnectionStatus, {}>;
-  commandService: ServiceState<CommandStatus, {}>;
+  connectionService: ServiceState<ConnectionStatus, EmptyObject>;
+  commandService: ServiceState<CommandStatus, EmptyObject>;
 }
-
-declare const o: OrchestratorState;

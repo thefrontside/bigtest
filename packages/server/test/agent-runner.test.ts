@@ -1,5 +1,5 @@
 import { describe, beforeEach, it } from 'mocha';
-import  expect from 'expect';
+import expect from 'expect';
 
 import { Mailbox, DuplexChannel, createDuplexChannel } from '@bigtest/effection';
 import { Slice } from '@bigtest/atom';
@@ -55,7 +55,7 @@ describe('agent runner', () => {
       atom.slice('bundler', 'type').set('GREEN');
       runner.run({ testRunId: 'test-id-1', files: [] });
       pendingMessage = await actions.fork(messages.receive({ type: 'run' }));
-      connections.send({type: 'run:end', testRunId: 'test-id-1', agentId: 'agent-1' });
+      connections.send({ type: 'run:end', testRunId: 'test-id-1', agentId: 'agent-1' });
       testRun = await actions.fork(atom.slice('testRuns', 'test-id-1').once((testRun) => testRun?.status === 'ok'));
     });
 
@@ -91,7 +91,7 @@ describe('agent runner', () => {
     let testRun: TestRunState;
 
     beforeEach(async () => {
-      atom.slice('bundler').set({ type: 'ERRORED', error: { message: 'it broke' }});
+      atom.slice('bundler').set({ type: 'ERRORED', error: { message: 'it broke' } });
       runner.run({ testRunId: 'test-id-1', files: [] });
       testRun = await actions.fork(atom.slice('testRuns', 'test-id-1').once((testRun) => testRun?.status === 'failed'));
     });

@@ -31,7 +31,7 @@ const fragments = `
       error { ...ErrorDetails }
     }
   }
-`
+`;
 
 export function run() {
   return fragments + `
@@ -51,7 +51,7 @@ export function run() {
         error { ...ErrorDetails }
         logEvents @include(if: $showLog) { ...LogDetails }
       }
-    }`
+    }`;
 }
 
 export function test() {
@@ -131,7 +131,7 @@ export function test() {
         }
       }
     }
-  `
+  `;
 }
 
 export type RunResultEvent = {

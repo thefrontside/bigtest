@@ -6,7 +6,7 @@ export const create: DriverFactory<string, number> = (spec) => {
     return {
       description: `Driver<${spec.options}>`,
       data: 42,
-      *connect() { return; }
-    }
-  }
-}
+      *connect() { return }
+    };
+  };
+};

@@ -62,7 +62,7 @@ function* streamTestRun(slice: Slice<TestRunState>, publish: Publish, options: S
   for(let agentId in slice.get().agents) {
     let testRunAgentSlice = slice.slice('agents', agentId);
     yield fork(streamTestRunAgent(testRunAgentSlice, publish, { agentId, ...options }));
-  };
+  }
   yield streamResults('testRun', slice, publish, options);
 }
 
@@ -102,9 +102,9 @@ function* streamTest(slice: Slice<TestResult>, publish: Publish, options: Stream
 }
 
 function* streamStep(slice: Slice<StepResult>, publish: Publish, options: StreamerTestOptions): Operation<void> {
-  yield streamResults('step', slice, publish, options)
+  yield streamResults('step', slice, publish, options);
 }
 
 function* streamAssertion(slice: Slice<AssertionResult>, publish: Publish, options: StreamerTestOptions): Operation<void> {
-  yield streamResults('assertion', slice, publish, options)
+  yield streamResults('assertion', slice, publish, options);
 }

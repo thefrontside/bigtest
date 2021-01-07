@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
-import  expect from 'expect';
-import  jest from 'jest-mock';
+import expect from 'expect';
+import jest from 'jest-mock';
 import { Context } from 'effection';
 import { MainError } from '@effection/node';
 import { Deferred } from '@bigtest/effection';
@@ -50,9 +50,9 @@ describe('unexpected errors', () => {
 
   describe('when the process completes with an expected error', () => {
     beforeEach(async () => {
-      suspense.reject(new MainError({ exitCode: 30}));
+      suspense.reject(new MainError({ exitCode: 30 }));
       return await context;
-    })
+    });
 
     it('does not print any warnings', () => {
       expect(warn).not.toHaveBeenCalled();

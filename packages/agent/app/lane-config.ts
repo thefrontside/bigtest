@@ -22,7 +22,7 @@ interface LaneConfigurable {
  * Set information about the lane to run so that the test frame can retrieve it.
  * should only be called from the agent frame.
  */
-export function setLaneConfigFromAgentFrame(config: LaneConfig) {
+export function setLaneConfigFromAgentFrame(config: LaneConfig): void {
   let context: typeof globalThis = window.window;
   let bigtest: LaneConfigurable = context.__bigtest as LaneConfigurable;
   if (!bigtest) {
@@ -38,10 +38,10 @@ export function getLaneConfigFromTestFrame(): LaneConfig {
   let bigtest: LaneConfigurable = window.parent?.window.__bigtest as LaneConfigurable;
 
   if (!bigtest) {
-    throw new Error(`CRITICAL: tried to get a lane configuration in order to run, but it does not exist.`)
+    throw new Error(`CRITICAL: tried to get a lane configuration in order to run, but it does not exist.`);
   }
   if (!bigtest.currentLaneConfig) {
-    throw new Error(`CRITICAL: tried to get a lane configuration in order to run, but it does not exist.`)
+    throw new Error(`CRITICAL: tried to get a lane configuration in order to run, but it does not exist.`);
   }
   return bigtest.currentLaneConfig;
 }

@@ -12,4 +12,4 @@ afterEach(() => {
     console.error(World.result);
   }
   World.halt();
-})
+});

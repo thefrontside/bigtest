@@ -1,6 +1,6 @@
 import { Operation, resource } from 'effection';
-import  chalk from 'chalk';
-import  readline from 'readline';
+import chalk from 'chalk';
+import readline from 'readline';
 import { ReadLine } from 'readline';
 
 export class Prompt {
@@ -35,7 +35,7 @@ export class Prompt {
       }
       question = question + chalk.white(' > ');
       this.rl.question(question, (value) => resume(value));
-    }
+    };
   }
 
   private writeQuestion(text: string) {

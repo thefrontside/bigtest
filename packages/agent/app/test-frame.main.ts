@@ -9,4 +9,4 @@ import { runLane } from './run-lane';
  * It's meant to be a one-shot operation
  */
 main(runLane(getLaneConfigFromTestFrame()))
-  .catch((error: Error) => console.error(error))
+  .catch((error: Error) => console.error(error));

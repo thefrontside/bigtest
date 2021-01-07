@@ -27,7 +27,7 @@ export class TestRunAggregator extends Aggregator<TestRunState, AggregatorOption
           current.merge(data);
           return current;
         }
-      }, undefined)
+      }, undefined);
 
     this.slice.update(state => ({ ...state, status, coverage }));
     return status;

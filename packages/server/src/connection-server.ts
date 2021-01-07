@@ -15,7 +15,7 @@ interface ConnectionServerOptions {
   port: number;
   proxyPort: number;
   manifestPort: number;
-};
+}
 
 interface ConnectionServer {
   channel: ConnectionChannel;

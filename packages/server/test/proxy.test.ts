@@ -1,7 +1,7 @@
 import { describe, beforeEach, it } from 'mocha';
-import  expect from 'expect';
+import expect from 'expect';
 
-import  zlib from 'zlib';
+import zlib from 'zlib';
 
 import { Operation } from 'effection';
 import { Slice } from '@bigtest/atom';
@@ -40,7 +40,7 @@ function* startAppServer(): Operation<void> {
 
   yield appServer.listen(APP_PORT);
 
-  yield
+  yield;
 }
 
 describe('proxy', () => {
@@ -137,7 +137,7 @@ describe('proxy', () => {
           port: PROXY_PORT
         }
       }));
-      
+
       actions.fork(proxyServer(atom.slice('proxyService')));
 
       await actions.fork(atom.once((s) => s.proxyService.status.type === 'started'));

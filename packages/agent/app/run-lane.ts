@@ -3,8 +3,6 @@ import { on } from '@effection/events';
 import { bigtestGlobals } from '@bigtest/globals';
 import { TestImplementation, Context as TestContext } from '@bigtest/suite';
 
-import { TestEvent } from '../shared/protocol';
-
 import { findIFrame } from './find-iframe';
 import { LaneConfig } from './lane-config';
 import { loadManifest } from './manifest';
@@ -15,10 +13,7 @@ import { setLogConfig, getLogConfig } from './log-config';
 import { clearPersistentStorage } from './clear-persistent-storage';
 import { addCoverageMap } from './coverage';
 
-interface TestEvents {
-  send(event: TestEvent): void;
-}
-
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function* runLane(config: LaneConfig) {
   setLogConfig({ events: [] });
 
@@ -27,7 +22,7 @@ export function* runLane(config: LaneConfig) {
 
   let context: TestContext = {};
 
-  let originalConsole = wrapConsole((message) => getLogConfig()?.events.push({ type: 'message', occurredAt: new Date().toString(), message }))
+  let originalConsole = wrapConsole((message) => getLogConfig()?.events.push({ type: 'message', occurredAt: new Date().toString(), message }));
 
   try {
     yield spawn(
@@ -43,7 +38,7 @@ export function* runLane(config: LaneConfig) {
     yield clearPersistentStorage();
 
     let test: TestImplementation = yield loadManifest(manifestUrl);
-    yield runLaneSegment(test, path.slice(1), [], stepTimeout)
+    yield runLaneSegment(test, path.slice(1), [], stepTimeout);
   } finally {
     addCoverageMap(bigtestGlobals.testFrame);
     events.close();
@@ -58,7 +53,7 @@ export function* runLane(config: LaneConfig) {
     let currentPath = prefix.concat(test.description);
 
     originalConsole.debug('[agent] running test', currentPath);
-    events.send({ testRunId, type: 'test:running', path: currentPath })
+    events.send({ testRunId, type: 'test:running', path: currentPath });
 
     if (bigtestGlobals.defaultInteractorTimeout >= stepTimeout) {
       originalConsole.warn(`[agent] the interactor timeout should be less than, but is greater than or equal to, the step timeout of ${stepTimeout}`);
@@ -71,11 +66,11 @@ export function* runLane(config: LaneConfig) {
         events.send({ testRunId, type: 'step:running', path: stepPath });
 
         bigtestGlobals.runnerState = 'step';
-        let result: TestContext | void = yield timebox(Promise.resolve(step.action(context)), stepTimeout)
+        let result: TestContext | void = yield timebox(Promise.resolve(step.action(context)), stepTimeout);
         bigtestGlobals.runnerState = 'pending';
 
         if (result != null) {
-          context = {...context, ...result};
+          context = { ...context, ...result };
         }
         events.send({
           testRunId,
@@ -93,7 +88,7 @@ export function* runLane(config: LaneConfig) {
             timeout: true,
             path: stepPath,
             logEvents: getLogConfig()?.events,
-          })
+          });
         } else {
           events.send({
             testRunId,
@@ -118,7 +113,7 @@ export function* runLane(config: LaneConfig) {
             events.send({ testRunId, type: 'assertion:running', path: assertionPath });
 
             bigtestGlobals.runnerState = 'assertion';
-            yield timebox(Promise.resolve(assertion.check(context)), stepTimeout)
+            yield timebox(Promise.resolve(assertion.check(context)), stepTimeout);
             bigtestGlobals.runnerState = 'pending';
 
             events.send({
@@ -140,7 +135,7 @@ export function* runLane(config: LaneConfig) {
           }
         });
       }
-    }
+    };
 
     if (remainingPath.length > 0) {
       for (let child of test.children) {

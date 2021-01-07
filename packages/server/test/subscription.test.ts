@@ -1,4 +1,4 @@
-import  expect from 'expect';
+import expect from 'expect';
 import { Agent, Command, generateAgentId } from '@bigtest/agent';
 import { Client } from '@bigtest/client';
 import { ChainableSubscription } from '@effection/subscription';
@@ -32,7 +32,7 @@ describe('running tests with subscription on an agent', () => {
   let client: Client;
   let agent: Agent;
   let agentId = generateAgentId();
-  let agentsSubscription: ChainableSubscription<AgentsQuery, unknown>;;
+  let agentsSubscription: ChainableSubscription<AgentsQuery, unknown>;
 
   beforeEach(async () => {
     await actions.startOrchestrator();
@@ -79,7 +79,7 @@ describe('running tests with subscription on an agent', () => {
           status: 'ok',
           testRunId: runCommand.testRunId,
           path: ['All tests', 'Signing In', '1:when I fill in the login form']
-        })
+        });
       });
 
       it('sends an event for that step', async () => {
@@ -106,7 +106,7 @@ describe('running tests with subscription on an agent', () => {
           error: {
             message: 'this step failed',
           }
-        })
+        });
       });
 
       it('sends an event for that step', async () => {
@@ -160,7 +160,7 @@ describe('running tests with subscription on an agent', () => {
             path: ['All tests', 'Signing In', 'when I log out'],
           }
         }).first());
-      })
+      });
 
     });
   });

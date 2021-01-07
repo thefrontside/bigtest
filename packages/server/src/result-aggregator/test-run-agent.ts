@@ -32,7 +32,7 @@ export class TestRunAgentAggregator extends Aggregator<TestRunAgentState, Aggreg
       testRunId: this.options.testRunId
     });
 
-    this.slice.update(state => ({ ...state, status, coverage: end.coverage }))
+    this.slice.update(state => ({ ...state, status, coverage: end.coverage }));
 
     return status;
   }

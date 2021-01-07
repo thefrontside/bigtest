@@ -1,8 +1,8 @@
 import { Operation } from 'effection';
 import { ProjectOptions, getConfigFilePath, defaultTSConfig } from '@bigtest/project';
 import { promises as fs, existsSync } from 'fs';
-import  path from 'path';
-import  chalk from 'chalk';
+import path from 'path';
+import chalk from 'chalk';
 
 import { Prompt } from './prompt';
 
@@ -35,18 +35,18 @@ export function* init(configFile: string): Operation<void> {
     defaultValue: options.port,
     min: 0,
     max: 65535,
-  })
+  });
 
   options.testFiles = [yield prompt.string('Where are your test files located?', {
     name: 'testFiles',
     defaultValue: (options.testFiles || [])[0] || 'test/**/*.test.{ts,js}',
-  })]
+  })];
 
   if(yield prompt.boolean('Do you want BigTest to start your application for you?', { defaultValue: true })) {
     options.app.command = yield prompt.string('What command do you run to start your application?', {
       name: 'app.command',
       defaultValue: options.app.command || (isYarn ? 'yarn start' : 'npm start'),
-    })
+    });
     options.app.env = {
       PORT: yield prompt.number('Which port would you like to run your application on?', {
         name: 'app.env.PORT',
@@ -54,7 +54,7 @@ export function* init(configFile: string): Operation<void> {
         min: 0,
         max: 65535,
       })
-    }
+    };
     options.app.url = yield prompt.string('Which URL do you use to access your application?', {
       name: 'app.url',
       defaultValue: options.app.url || `http://localhost:${options.app.env.PORT}`,
@@ -73,7 +73,7 @@ export function* init(configFile: string): Operation<void> {
       options.tsconfig = yield prompt.string('Where should the custom `tsconfig` be located?', {
         name: 'tsconfig',
         defaultValue: options.tsconfig || './bigtest.tsconfig.json',
-      })
+      });
     }
   }
 

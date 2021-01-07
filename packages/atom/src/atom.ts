@@ -1,11 +1,11 @@
 import O from "fp-ts/Option";
-import Op from "monocle-ts/lib/Optional";
-import { pipe } from 'fp-ts/function';
+import Op from 'monocle-ts/lib/Optional';
 import { Channel } from '@effection/channel';
 import { MakeSlice, AtomConfig, Slice } from './types';
 import { Operation } from 'effection';
 import { subscribe, Subscription, SymbolSubscribable } from '@effection/subscription';
 import { unique } from './unique';
+import { pipe } from 'fp-ts/lib/function';
 
 export const DefaultChannelMaxListeners = 100000;
 

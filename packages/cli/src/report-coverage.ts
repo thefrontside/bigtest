@@ -1,5 +1,5 @@
 import { join } from 'path';
-import  chalk from 'chalk';
+import chalk from 'chalk';
 import { Operation } from 'effection';
 import { ProjectOptions } from '@bigtest/project';
 import { createContext, ReportBase } from 'istanbul-lib-report';
@@ -11,14 +11,14 @@ import { TestResults } from './query';
 export function* reportCoverage(config: ProjectOptions, results: TestResults): Operation<void> {
   let coverageData = results.testRun.coverage;
   if (!coverageData) {
-    console.warn("\u26a0️" + chalk.yellowBright('  coverage reporting was requested, but no coverage metrics were present in your application. This usually means that it has not been instrumented. See https://github.com/thefrontside/bigtest/issues/569 for details on how to integrate code coverage with BigTest'))
+    console.warn("\u26a0️" + chalk.yellowBright('  coverage reporting was requested, but no coverage metrics were present in your application. This usually means that it has not been instrumented. See https://github.com/thefrontside/bigtest/issues/569 for details on how to integrate code coverage with BigTest'));
   } else if (config.coverage.reports.length < 1) {
     console.warn("\u26a0️" + chalk.yellowBright('  coverage reporting was requested, but no reports were specified in your project config. To enable reporting, add at least one report to the coverage.reports field of bigtest.json, e.g. ["lcov", "json"]'));
   } else {
     yield renderReports(config, coverageData);
     console.log(
       chalk.cyan.bold('@bigtest/coverage') + ': ' +
-        chalk.cyan(`${config.coverage.reports.join(',')} reported to -> ${config.coverage.directory}`))
+        chalk.cyan(`${config.coverage.reports.join(',')} reported to -> ${config.coverage.directory}`));
   }
 }
 

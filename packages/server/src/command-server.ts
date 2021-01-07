@@ -1,7 +1,7 @@
 import { Operation, spawn, fork } from 'effection';
 import { subscribe } from '@effection/subscription';
 import { express, Socket } from '@bigtest/effection-express';
-import  graphqlHTTP from 'express-graphql';
+import graphqlHTTP from 'express-graphql';
 import { parse as parseGraphql, graphql as executeGraphql, subscribe as executeGraphqlSubscription, ExecutionResult } from 'graphql';
 
 import { schema } from './schema';
@@ -17,7 +17,7 @@ interface CommandServerOptions {
   runner: Runner;
   atom: Slice<OrchestratorState>;
   port: number;
-};
+}
 
 function isAsyncIterator(value: AsyncIterableIterator<unknown> | ExecutionResult<unknown>): value is AsyncIterableIterator<unknown> {
   return value && ("next" in value) && typeof(value["next"]) === 'function';
@@ -34,7 +34,7 @@ export function* createCommandServer(options: CommandServerOptions): Operation {
   let spawnContext: SpawnContext = yield spawn(undefined);
 
   app.raw.use(graphqlHTTP(async () => await spawnContext.spawn(function* getOptionsData() {
-    return { ...graphqlOptions(options, options.atom.get()), graphiql: true};
+    return { ...graphqlOptions(options, options.atom.get()), graphiql: true };
   })));
 
   yield app.listen(options.port);
@@ -50,7 +50,7 @@ export function* createCommandServer(options: CommandServerOptions): Operation {
  */
 function* graphql(source: string, variables: Variables | undefined, options: CommandServerOptions, state: OrchestratorState): Operation {
   let opts = graphqlOptions(options, state);
-  return yield executeGraphql({...opts, contextValue: opts.context, source, variableValues: variables });
+  return yield executeGraphql({ ...opts, contextValue: opts.context, source, variableValues: variables });
 }
 
 /**
@@ -136,5 +136,5 @@ function handleSocketConnection(options: CommandServerOptions): (socket: Socket)
         }
       }
     }
-  }
+  };
 }

@@ -1,5 +1,5 @@
 import { describe, beforeEach, it } from 'mocha';
-import  expect from 'expect';
+import expect from 'expect';
 import { Mailbox } from '@bigtest/effection';
 import { Slice } from '@bigtest/atom';
 import { Test } from '@bigtest/suite';
@@ -10,6 +10,7 @@ import { createCommandServer } from '../src/command-server';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { AgentState, Manifest } from '../src/orchestrator/state';
 import { RunOptions } from '../src/runner';
+import type { EmptyObject } from '@bigtest/globals';
 
 let COMMAND_PORT = 24200;
 
@@ -52,7 +53,7 @@ describe('command server', () => {
   });
 
   describe('running the entire suite', () => {
-    let result: GraphQLPayload<{run: {}}>;
+    let result: GraphQLPayload<{run: EmptyObject}>;
     beforeEach(async () => {
       result = await mutation('run');
     });
@@ -63,7 +64,7 @@ describe('command server', () => {
 
     it('sends a message to the orchestrator telling it to start the test run', async () => {
       let message = await actions.fork(runs.receive());
-      expect(message.testRunId).toEqual(result.data.run)
+      expect(message.testRunId).toEqual(result.data.run);
     });
   });
 
@@ -105,7 +106,7 @@ describe('command server', () => {
             }
           ]
         }
-      })
+      });
     });
 
     describe('over websockets', () => {
@@ -187,7 +188,7 @@ describe('command server', () => {
             }]
           }
         }
-      })
+      });
     });
   });
 
@@ -259,7 +260,7 @@ async function query<T>(text: string): Promise<GraphQLPayload<T>> {
 }
 
 async function mutation<T>(text: string): Promise<GraphQLPayload<T>> {
-  let body = `mutation { ${text} }`
+  let body = `mutation { ${text} }`;
   let response = await actions.fetch(`http://localhost:${COMMAND_PORT}`, {
     method: "POST",
     headers: {

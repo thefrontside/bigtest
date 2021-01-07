@@ -14,12 +14,12 @@ export function* findAvailablePortNumber(): Operation<number> {
   let server = createServer();
   yield throwOnErrorEvent(server);
 
-  server.listen()
+  server.listen();
 
   try {
     yield once(server, 'listening');
 
-    let address =  server.address() as AddressInfo;
+    let address = server.address() as AddressInfo;
     return address.port;
   } finally {
     server.close();

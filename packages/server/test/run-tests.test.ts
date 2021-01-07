@@ -1,4 +1,4 @@
-import  expect from 'expect';
+import expect from 'expect';
 import { Agent, Command, generateAgentId } from '@bigtest/agent';
 import { Client } from '@bigtest/client';
 import { ResultStatus } from '@bigtest/suite';
@@ -82,7 +82,7 @@ describe('running tests on an agent', () => {
   let client: Client;
   let agent: Agent;
   let agentId = generateAgentId();
-  let agentsSubscription: ChainableSubscription<AgentsQuery, unknown>;;
+  let agentsSubscription: ChainableSubscription<AgentsQuery, unknown>;
 
   beforeEach(async () => {
     await actions.startOrchestrator();
@@ -92,7 +92,7 @@ describe('running tests on an agent', () => {
     agentsSubscription = await actions.fork(client.liveQuery(`{ agents { agentId } }`));
 
     await actions.fork(agentsSubscription.filter(({ agents }) => {
-      return agents && agents.length === 1
+      return agents && agents.length === 1;
     }).first());
   });
 
@@ -114,7 +114,7 @@ describe('running tests on an agent', () => {
     });
 
     it('is marks the run as pending', async () => {
-      await actions.fork(results.match({ testRun: { status: 'pending' }}).expect());
+      await actions.fork(results.match({ testRun: { status: 'pending' } }).expect());
     });
 
     describe('when the agent reports that it is running', () => {
@@ -126,7 +126,7 @@ describe('running tests on an agent', () => {
       });
 
       it('is marks the agent as running', async () => {
-        await actions.fork(results.match({ testRun: { agent: { status: 'running' } }}).expect());
+        await actions.fork(results.match({ testRun: { agent: { status: 'running' } } }).expect());
       });
     });
 
@@ -151,7 +151,7 @@ describe('running tests on an agent', () => {
           status: 'ok',
           testRunId: runCommand.testRunId,
           path: ['All tests', "Signing In", "1:when I fill in the login form"]
-        })
+        });
       });
 
       it('marks that step as ok', async () => {
@@ -173,7 +173,7 @@ describe('running tests on an agent', () => {
           error: {
             message: "this step failed",
           }
-        })
+        });
       });
 
       it('marks that step as failed', async () => {
@@ -215,7 +215,7 @@ describe('running tests on an agent', () => {
           status: 'ok',
           testRunId: runCommand.testRunId,
           path: ['All tests', 'Signing In', 'then I am logged in']
-        })
+        });
       });
 
       it('marks that assertion as ok', async () => {
@@ -237,7 +237,7 @@ describe('running tests on an agent', () => {
           error: {
             message: 'this assertion failed',
           }
-        })
+        });
       });
 
       it('marks that assertion as failed', async () => {
@@ -256,26 +256,26 @@ describe('running tests on an agent', () => {
           status: 'ok',
           testRunId: runCommand.testRunId,
           path: ['All tests', 'Signing In', 'when I log out', '0:when I click on the logout button']
-        })
+        });
         agent.send({
           type: 'assertion:result',
           status: 'ok',
           testRunId: runCommand.testRunId,
           path: ['All tests', 'Signing In', 'when I log out', 'it takes me back to the homepage']
-        })
+        });
         agent.send({
           type: 'assertion:result',
           status: 'ok',
           testRunId: runCommand.testRunId,
           path: ['All tests', 'Signing In', 'when I log out', 'My username is no longer in the top bar']
-        })
+        });
       });
 
       it('marks that test as ok', async () => {
         await actions.fork(results.filter(({ testRun }) => {
           return testRun.agent.result.children
             .find(child => child.description === 'Signing In')?.children
-            .find(child => child.description === 'when I log out')?.status === 'ok'
+            .find(child => child.description === 'when I log out')?.status === 'ok';
         }).expect());
       });
     });
@@ -287,26 +287,26 @@ describe('running tests on an agent', () => {
           status: 'ok',
           testRunId: runCommand.testRunId,
           path: ['All tests', 'Signing In', 'when I log out', '0:when I click on the logout button']
-        })
+        });
         agent.send({
           type: 'assertion:result',
           status: 'failed',
           testRunId: runCommand.testRunId,
           path: ['All tests', 'Signing In', 'when I log out', 'it takes me back to the homepage']
-        })
+        });
         agent.send({
           type: 'assertion:result',
           status: 'ok',
           testRunId: runCommand.testRunId,
           path: ['All tests', 'Signing In', 'when I log out', 'My username is no longer in the top bar']
-        })
+        });
       });
 
       it('marks that test as failed', async () => {
         await actions.fork(results.filter(({ testRun }) => {
           return testRun.agent.result.children
             .find(child => child.description === 'Signing In')?.children
-            .find(child => child.description === 'when I log out')?.status === 'failed'
+            .find(child => child.description === 'when I log out')?.status === 'failed';
         }).expect());
       });
     });
@@ -318,43 +318,43 @@ describe('running tests on an agent', () => {
           status: 'ok',
           testRunId: runCommand.testRunId,
           path: ['All tests', 'Signing In', '0:given a user']
-        })
+        });
         agent.send({
           type: 'step:result',
           status: 'ok',
           testRunId: runCommand.testRunId,
           path: ['All tests', 'Signing In', '1:when I fill in the login form']
-        })
+        });
         agent.send({
           type: 'step:result',
           status: 'ok',
           testRunId: runCommand.testRunId,
           path: ['All tests', 'Signing In', '2:when I press the submit button']
-        })
+        });
         agent.send({
           type: 'assertion:result',
           status: 'ok',
           testRunId: runCommand.testRunId,
           path: ['All tests', 'Signing In', 'then I am logged in']
-        })
+        });
         agent.send({
           type: 'assertion:result',
           status: 'ok',
           testRunId: runCommand.testRunId,
           path: ['All tests', 'Signing In', 'then I am on the homepage']
-        })
+        });
         agent.send({
           type: 'step:result',
           status: 'failed',
           testRunId: runCommand.testRunId,
           path: ['All tests', 'Signing In', 'when I log out', '0:when I click on the logout button']
-        })
+        });
         agent.send({
           type: 'step:result',
           status: 'ok',
           testRunId: runCommand.testRunId,
           path: ['All tests', 'Signing In', 'when I go to the main navigation page', '0:I click the hamburger button']
-        })
+        });
         agent.send({
           type: 'assertion:result',
           status: 'ok',
@@ -364,7 +364,7 @@ describe('running tests on an agent', () => {
         agent.send({
           type: 'run:end',
           testRunId: runCommand.testRunId
-        })
+        });
       });
 
       it('marks that test as failed', async () => {
@@ -386,7 +386,7 @@ describe('running tests on an agent', () => {
       secondAgent = await actions.createAgent(secondAgentId);
 
       await actions.fork(agentsSubscription.filter(({ agents }) => {
-        return agents && agents.length === 2
+        return agents && agents.length === 2;
       }).expect());
 
       await actions.fork(client.query(`mutation { run }`));
@@ -424,7 +424,7 @@ describe('running tests on an agent', () => {
         return testRun.agent.result.children
           .find(child => child.description === "Signing In" )?.steps
           .find(child => child.description === "when I fill in the login form")?.status === 'ok';
-      }
+      };
 
       await actions.fork(secondAgentResults.filter(matchSucess).first());
     });

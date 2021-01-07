@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import  expect from 'expect'
+import expect from 'expect';
 
 import { express } from '@bigtest/effection-express';
 import { Request, Response } from 'express';
@@ -56,4 +56,4 @@ describe("Running a local wedriver", () => {
       });
     });
   }
-})
+});

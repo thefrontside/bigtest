@@ -2,12 +2,12 @@ import { fork, spawn, Operation } from 'effection';
 import { throwOnErrorEvent, once, on } from '@effection/events';
 import { express } from "@bigtest/effection-express";
 import { static as staticMiddleware } from 'express';
-import { restartable } from './effection/restartable'
+import { restartable } from './effection/restartable';
 
-import  proxy from 'http-proxy';
-import  http from 'http';
-import  Trumpet from 'trumpet';
-import  zlib from 'zlib';
+import proxy from 'http-proxy';
+import http from 'http';
+import Trumpet from 'trumpet';
+import zlib from 'zlib';
 import { ProxyStatus, Service, ProxyOptions, ServiceState, AppOptions } from './orchestrator/state';
 import { Slice } from '@bigtest/atom';
 import { assert } from 'assert-ts';
@@ -16,7 +16,7 @@ export const proxyServer: Service<ProxyStatus, ProxyOptions> = (serviceSlice) =>
   let appOptions = serviceSlice.slice('options', 'appOptions');
 
   return restartable(appOptions, startProxyServer(serviceSlice));
-}
+};
 
 export const startProxyServer = (serviceSlice: Slice<ServiceState<ProxyStatus, ProxyOptions>>) => function* ({ url: target }: AppOptions): Operation {
   let proxyStatus = serviceSlice.slice('status');
@@ -24,7 +24,7 @@ export const startProxyServer = (serviceSlice: Slice<ServiceState<ProxyStatus, P
 
   function* handleRequest(proxyRes: http.IncomingMessage, req: http.IncomingMessage, res: http.ServerResponse): Operation {
     console.debug('[proxy]', 'start', req.method, req.url);
-    
+
     for(let [key, value = ''] of Object.entries(proxyRes.headers)) {
       res.setHeader(key, value);
     }
@@ -91,7 +91,7 @@ export const startProxyServer = (serviceSlice: Slice<ServiceState<ProxyStatus, P
       yield once(proxyRes, 'end');
     }
     console.debug('[proxy]', 'finish', req.method, req.url);
-  };
+  }
 
   proxyStatus.set({ type: 'starting' });
 
@@ -101,10 +101,10 @@ export const startProxyServer = (serviceSlice: Slice<ServiceState<ProxyStatus, P
 
   // TODO: validating the config could be done much earlier and in 1 step for the whole config
   assert(!!proxyConfig.prefix, 'must set prefix');
-  
+
   server.raw.use(proxyConfig.prefix, staticMiddleware(proxyConfig.appDir));
 
-  
+
   // proxy http requests
   yield server.use(function*(req, res) {
     try {
@@ -112,20 +112,20 @@ export const startProxyServer = (serviceSlice: Slice<ServiceState<ProxyStatus, P
         res.writeHead(502, { 'Content-Type': 'text/plain' });
         res.end(`Proxy error: ${err}`);
       }));
-      
-      proxyServer.web(req, res)
-      
+
+      proxyServer.web(req, res);
+
       yield once(res, 'close');
     } finally {
       req.destroy();
     }
   });
-  
+
   // proxy ws requests
   yield server.ws('*', function*(socket, req) {
     proxyServer.ws(req, socket.raw, null);
   });
-  
+
   try {
     yield server.listen(proxyConfig.port);
     proxyStatus.set({ type: "started" });

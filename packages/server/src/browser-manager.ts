@@ -22,8 +22,8 @@ export function* createBrowserManager(options: CreateOptions): Operation<Browser
   let ready = Deferred<void>();
 
   let manager: BrowserManager = {
-    *ready() { yield ready.promise; }
-  }
+    *ready() { yield ready.promise }
+  };
 
   return yield resource(manager, function*() {
 
@@ -33,11 +33,11 @@ export function* createBrowserManager(options: CreateOptions): Operation<Browser
     }
 
     for (let launch of options.launch) {
-      yield options.atom.once(state => state.agents[launch] != null)
+      yield options.atom.once(state => state.agents[launch] != null);
     }
 
     ready.resolve();
 
     yield;
-  })
+  });
 }

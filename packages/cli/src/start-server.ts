@@ -1,4 +1,4 @@
-import  chalk from 'chalk';
+import chalk from 'chalk';
 import { Operation, spawn, timeout } from 'effection';
 import { MainError } from '@effection/node';
 import { Mailbox, readyResource } from '@bigtest/effection';
@@ -24,7 +24,7 @@ export function* startServer(project: ProjectOptions, options: Options) {
       });
 
       yield delegate.receive({ status: 'ready' });
-    }
+    };
     ready();
     yield;
   });
