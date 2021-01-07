@@ -96,7 +96,7 @@ function parseArgs(argv: readonly string[]): Args {
         type: 'number',
         default: 120000
       });
-  };
+  }
 
   function runArgs(yargs: Argv) {
     return yargs
@@ -126,7 +126,7 @@ function parseArgs(argv: readonly string[]): Args {
         type: 'boolean',
         default: false
       });
-  };
+  }
 
   let parsed = yargs
     .scriptName('bigtest')

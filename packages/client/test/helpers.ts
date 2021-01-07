@@ -6,6 +6,7 @@ import { express, Socket } from '@bigtest/effection-express';
 import { beforeEach } from 'mocha';
 
 import { Message, Response } from '../src';
+import { assert } from 'assert-ts';
 
 interface World {
   halt(): void;
@@ -49,7 +50,10 @@ export class TestConnection {
 
   constructor(private socket: Socket) {}
 
-  receive(): Promise<Message> {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  receive() {
+    assert(!!this.incoming, "this.incoming undefined in client/helpers");
+
     return run(subscribe(this.incoming).first());
   }
 

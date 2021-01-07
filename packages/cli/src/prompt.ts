@@ -20,7 +20,7 @@ export class Prompt {
 
   private constructor(private rl: ReadLine) {}
 
-  write(data: string) {
+  write(data: string): void {
     process.stdout.write(data);
   }
 

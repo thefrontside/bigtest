@@ -9,7 +9,7 @@ interface CoverageHolder {
 
 export default test('Coverage Test')
   .step("add coverage data", async() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     let window = bigtestGlobals.testFrame.contentWindow.window as CoverageHolder;
     window.__coverage__ = coverageData;

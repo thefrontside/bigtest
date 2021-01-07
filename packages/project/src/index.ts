@@ -132,11 +132,11 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
   };
 }
 
-export function defaultTSConfig(): { compilerOptions: Pick<CompilerOptions, 'skipLibCheck' | 'target' | 'lib'> } {
+export function defaultTSConfig() {
   return {
     compilerOptions: {
       skipLibCheck: true,
-      target: ScriptTarget.ES2015,
+      target: "ES6" as unknown as ScriptTarget,
       lib: ["esnext", "dom"]
     }
   };

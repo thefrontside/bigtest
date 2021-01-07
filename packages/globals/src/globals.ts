@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-var */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prefer-let/prefer-let */
 
 // NOTE: this file must not have any imports or exports, so that TypeScript

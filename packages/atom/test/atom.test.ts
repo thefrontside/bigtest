@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import expect from 'expect';
+import * as expect from 'expect';
 import { createAtom, DefaultChannelMaxListeners, resetAtom } from '../src/atom';
 import { spawn, when, never } from './helpers';
 import { ChainableSubscription, subscribe, Subscription } from '@effection/subscription';
@@ -38,8 +38,8 @@ const state: TestRunState = {
   }
 };
 
-describe.only('@bigtest/atom createAtom', () => {
-  describe.only('Atom with none', () => {
+describe('@bigtest/atom createAtom', () => {
+  describe('Atom with none', () => {
     let subject: Slice<undefined>;
     beforeEach(() => {
       subject = createAtom(undefined);

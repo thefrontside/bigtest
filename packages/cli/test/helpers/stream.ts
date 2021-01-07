@@ -1,4 +1,4 @@
-import { resource, Operation } from 'effection';
+import { resource, Operation, Context } from 'effection';
 import { subscribe } from '@effection/subscription';
 import { Channel } from '@effection/channel';
 
@@ -7,14 +7,14 @@ import { World } from './world';
 export class Stream {
   public output = "";
   private semaphore = new Channel<true>();
-  append = (chunk: string) => this.output += chunk;
+  append = (chunk: string): string => this.output += chunk;
 
   static *of(channel: Channel<string>, verbose = false): Operation<Stream> {
     let testStream = new Stream(channel, verbose);
     return yield resource(testStream, testStream.run());
   }
 
-  constructor(private channel: Channel<string>, private verbose = false) {};
+  constructor(private channel: Channel<string>, private verbose = false) {}
 
   *run(): Operation<void> {
     let { semaphore, verbose, append } = this;
@@ -35,7 +35,7 @@ export class Stream {
     return;
   }
 
-  detect(text: string) {
+  detect(text: string): Context<void> {
     return World.spawn(this.waitFor(text));
   }
 }

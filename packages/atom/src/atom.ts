@@ -1,5 +1,5 @@
-import O from "fp-ts/Option";
-import Op from 'monocle-ts/lib/Optional';
+import * as O from "fp-ts/Option";
+import * as Op from 'monocle-ts/lib/Optional';
 import { Channel } from '@effection/channel';
 import { MakeSlice, AtomConfig, Slice } from './types';
 import { Operation } from 'effection';

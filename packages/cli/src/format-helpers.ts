@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import chalk from 'chalk';
 import { Printer } from './printer';
 import { RunResultEvent, TestResults, ResultCounts } from './query';
@@ -29,7 +28,7 @@ export function statusIcon(status: ResultStatus, okayIcon = '✓'): string {
 export const stepStatusIcon = (status: ResultStatus): string => statusIcon(status, '↪');
 export const assertionStatusIcon = (status: ResultStatus): string => statusIcon(status, '✓');
 
-export function printStackTrace(printer: Printer, error: ErrorDetails) {
+export function printStackTrace(printer: Printer, error: ErrorDetails): void {
   if(error.stack) {
     for(let stackFrame of error.stack) {
       let location = stackFrame.source || stackFrame;
@@ -54,7 +53,7 @@ export function printStackTrace(printer: Printer, error: ErrorDetails) {
   }
 }
 
-export function printError(printer: Printer, error?: ErrorDetails) {
+export function printError(printer: Printer, error?: ErrorDetails): void {
   if(error) {
     printer.red.words('ERROR', error.name, error.message);
 
@@ -64,7 +63,7 @@ export function printError(printer: Printer, error?: ErrorDetails) {
   }
 }
 
-export function printLogEvent(printer: Printer, event: LogEvent) {
+export function printLogEvent(printer: Printer, event: LogEvent): void {
   if(event.type === 'error') {
     printError(printer.prefix(chalk.red('⨯ '), chalk.red('│ ')), event.error);
   } else {
@@ -79,7 +78,7 @@ export function printLogEvent(printer: Printer, event: LogEvent) {
   }
 }
 
-export function printLog(printer: Printer, events?: LogEvent[]) {
+export function printLog(printer: Printer, events?: LogEvent[]): void {
   if(!events) return;
   printer.blue.line(chalk.blue('┌ Console'));
 
@@ -88,7 +87,7 @@ export function printLog(printer: Printer, events?: LogEvent[]) {
   }
 }
 
-export function printStepResult(printer: Printer, step: StepResult) {
+export function printStepResult(printer: Printer, step: StepResult): void {
   printer.words(stepStatusIcon(step.status), step.description);
 
   if(step.status === 'failed') {
@@ -97,7 +96,7 @@ export function printStepResult(printer: Printer, step: StepResult) {
   }
 }
 
-export function printAssertionResult(printer: Printer, assertion: AssertionResult) {
+export function printAssertionResult(printer: Printer, assertion: AssertionResult): void {
   printer.words(assertionStatusIcon(assertion.status), assertion.description);
 
   if(assertion.status === 'failed') {
@@ -106,7 +105,7 @@ export function printAssertionResult(printer: Printer, assertion: AssertionResul
   }
 }
 
-export function printResults(printer: Printer, result: TestResult) {
+export function printResults(printer: Printer, result: TestResult): void {
   if(result.status !== 'ok') {
     printer.line(`☲ ${result.description}`);
 
@@ -124,7 +123,7 @@ export function printResults(printer: Printer, result: TestResult) {
   }
 }
 
-export function printStandardFooter(printer: Printer, { testRun }: TestResults) {
+export function printStandardFooter(printer: Printer, { testRun }: TestResults): void {
   testRun.agents.forEach(({ agent, summary, result }) => {
     printer.grey.line('────────────────────────────────────────────────────────────────────────────────');
     printer.line(`${agent.agentId}`);

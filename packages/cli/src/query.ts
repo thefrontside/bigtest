@@ -33,7 +33,7 @@ const fragments = `
   }
 `;
 
-export function run() {
+export function run(): string {
   return fragments + `
     subscription(
       $files: [String!]! = [],
@@ -54,7 +54,7 @@ export function run() {
     }`;
 }
 
-export function test() {
+export function test(): string {
   return fragments + `
     fragment TestDetails on TestResult {
       description

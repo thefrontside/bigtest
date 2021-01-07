@@ -11,7 +11,7 @@ interface Options {
 
 // TODO: this is what the server package should be doing in the first place
 // See: https://github.com/thefrontside/bigtest/issues/295
-export function* startServer(project: ProjectOptions, options: Options) {
+export function* startServer(project: ProjectOptions, options: Options): Generator {
   return yield readyResource({}, function*(ready) {
     let delegate = new Mailbox();
     let atom = createOrchestratorAtom(project);

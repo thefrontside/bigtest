@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import expect from 'expect';
+import * as expect from 'expect';
 import { createAtom } from '../src/atom';
 import { spawn, when } from './helpers';
 import { Subscription, subscribe, ChainableSubscription } from '@effection/subscription';
