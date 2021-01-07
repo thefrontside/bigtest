@@ -94,6 +94,9 @@ module.exports = {
       ],
       copyright: `Copyright © ${new Date().getFullYear()} The Frontside Software, Inc.`,
     },
+    googleAnalytics: {
+      trackingID: 'UA-44597640-4'
+    },
   },
   presets: [
     [
