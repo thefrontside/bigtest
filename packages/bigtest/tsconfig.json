@@ -13,7 +13,7 @@
     "../../node_modules"
   ],
   "references": [
-    { "path": "../cli" },
+    { "path": "../cli/tsconfig.build.json" },
     { "path": "../interactor" },
     { "path": "../suite" }
   ]
