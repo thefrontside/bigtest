@@ -4,8 +4,8 @@ import App from '../App';
 import { Button } from 'bigtest';
 
 describe('Interactor with Jest', () => {
-  beforeEach(() => render(<App />))
   it('displays submitted data from modal', async () => {
+    render(<App />)
     await Button('SIGN IN').click();
   });
 });
