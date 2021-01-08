@@ -25,7 +25,7 @@ const PageInteractorInstance = Object.assign(PageInteractor(), {
         let url = new URL(appUrl);
         url.pathname = path;
         testFrame.src = url.toString();
-        await new Promise((resolve, reject) => {
+        await new Promise<void>((resolve, reject) => {
           let listener = () => {
             clearTimeout(timeout);
             testFrame.removeEventListener('load', listener);

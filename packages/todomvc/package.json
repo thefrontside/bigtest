@@ -23,9 +23,10 @@
     "bigtest-todomvc": "bin/start.js"
   },
   "devDependencies": {
-    "@frontside/eslint-config": "^1.1.2",
-    "@frontside/typescript": "^1.1.0",
-    "@types/express": "^4.17.2",
+    "@frontside/eslint-config": "^2.0.0",
+    "@frontside/tsconfig": "^1.2.0",
+    "@frontside/typescript": "^1.1.1",
+    "@types/express": "^4.17.6",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
     "@types/node-fetch": "^2.5.4",
@@ -38,7 +39,7 @@
     "react-dom": "^16.13.0",
     "react-scripts": "^3.4.1",
     "todomvc-app-css": "^2.0.6",
-    "ts-node": "*",
+    "ts-node": "^9.1.1",
     "webpack": "4.41.2"
   },
   "dependencies": {
