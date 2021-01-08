@@ -1,17 +1,18 @@
 {
   "name": "bigtest-sample",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "BigTest Sample App",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "start": "parcel src/index.html --no-source-maps --port 3000",
+    "start": "node bin/start.js -Y",
     "build": "parcel build src/index.html --no-cache",
+    "lint": "echo no-op",
     "cypress:run": "yarn cypress run --spec 'src/test/cypress.spec.js'",
     "test:jest": "jest 'src/test/jest.test.js'",
-    "test:cypress": "start-server-and-test start http://localhost:3000 cypress:run",
+    "test:cypress": "start-server-and-test 'yarn start -p 3000' http://localhost:3000 cypress:run",
     "test:bigtest": "yarn bigtest ci"
   },
   "bin": {
@@ -28,8 +29,9 @@
     "@babel/preset-react": "^7.12.10",
     "@testing-library/react": "^11.1.0",
     "babel-jest": "^26.6.3",
-    "bigtest": "^0.6.1",
+    "bigtest": "*",
     "cypress": "^6.0.1",
+    "eslint": "^7.17.0",
     "eslint-plugin-cypress": "^2.11.2",
     "jest": "^26.6.3",
     "jest-css-modules-transform": "^4.1.0",
@@ -47,7 +49,8 @@
     ]
   },
   "browserslist": [
-    "defaults"
+    "defaults",
+    "not op_mob > 1"
   ],
   "babel": {
     "presets": [
