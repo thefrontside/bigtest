@@ -72,12 +72,6 @@ body {
   padding-left: var(--ifm-spacing-horizontal);
   padding-right: var(--ifm-spacing-horizontal);
 }
-.navbar.navbar--fixed-top {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-}
 
 .navbar__link[href$="interactors"] {
   width: 164px;
@@ -144,7 +138,6 @@ body {
   max-width: var(--ifm-container-width);
   margin-left: auto;
   margin-right: auto;
-  padding-top: var(--ifm-navbar-height);
 }
 
 .docSidebarContainer_node_modules-\@docusaurus-theme-classic-lib-theme-DocPage- {
@@ -189,7 +182,7 @@ body {
   margin-bottom: 2px;
 }
 
-.markdown a.hash-link {
+.markdown a.hash-link, a.hash-link {
   color: var(--fs-pink);
   border: none;
 }
