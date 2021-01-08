@@ -24,13 +24,11 @@ export interface CloseEvent {
 // of the subscription
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class Socket implements Subscribable<any, CloseEvent> {
-  constructor(public raw: WebSocket) {
-    this.send = util.promisify<string, void>(this.raw.send.bind(this.raw));
-  }
+  constructor(public raw: WebSocket) {}
 
   *send(data: unknown): Operation<void> {
     if(this.raw.readyState === 1) {
-      yield this.send(JSON.stringify(data));
+      yield util.promisify<string, void>(this.raw.send.bind(this.raw))(JSON.stringify(data));
     }
   }
 

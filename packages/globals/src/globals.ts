@@ -1,5 +1,4 @@
-/* eslint-disable no-var */
-/* eslint-disable prefer-let/prefer-let */
+/* eslint-disable @typescript-eslint/no-unused-vars, no-var, prefer-let/prefer-let */
 
 // NOTE: this file must not have any imports or exports, so that TypeScript
 // recognizes it as running in the global scope.

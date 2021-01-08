@@ -12,14 +12,6 @@ import { RunArgs } from './cli';
 import checks from './formatters/checks';
 import lines from './formatters/lines';
 
-interface Options {
-  formatterName: string;
-  files: string[];
-  showFullStack: boolean;
-  showLog: boolean;
-  coverage: boolean;
-}
-
 const BUILTIN_FORMATTERS: Record<string, Formatter | FormatterConstructor> = { checks, lines };
 
 function initFormatter(input: Formatter | FormatterConstructor): Formatter {

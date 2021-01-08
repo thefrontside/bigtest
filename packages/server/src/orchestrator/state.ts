@@ -145,5 +145,3 @@ export type OrchestratorState = {
   connectionService: ServiceState<ConnectionStatus, {}>;
   commandService: ServiceState<CommandStatus, {}>;
 }
-
-declare const o: OrchestratorState;
