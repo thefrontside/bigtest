@@ -5,14 +5,14 @@ const fs = require('fs');
 const rmrf = require('rimraf');
 const spawn = require('cross-spawn');
 
-const { message, yarn, TARGET_DIR, SOURCE_DIR } = require('./constants');
+const { message, yarn, TARGET_DIR, SOURCE_DIR, startScript } = require('./constants');
 const Spinner = require('./helper');
 const { version } = require('../package.json');
 
 const animate = (msgs) => new Spinner(msgs);
 
 function populate(message) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     if (fs.existsSync(TARGET_DIR)) {
       reject('directory \'bigtest-sample\' already exists');
     } else {
@@ -51,6 +51,8 @@ function migrate(messages) {
           main, scripts, devDependencies, eslintConfig, browserslist,
           babel, jest
         } = require(`${SOURCE_DIR}/${file}`);
+
+        scripts.start = startScript;
 
         const pkgjson = {
           name, version, private: true, description, repository, author, 
