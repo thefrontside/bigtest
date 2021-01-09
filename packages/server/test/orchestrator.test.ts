@@ -1,7 +1,7 @@
 import { describe, beforeEach, it } from 'mocha';
-import * as expect from 'expect';
+import expect from 'expect';
 import { daemon } from '@effection/node'
-import * as getPort from 'get-port';
+import getPort from 'get-port';
 import { Response } from 'node-fetch';
 
 import { actions } from './helpers';

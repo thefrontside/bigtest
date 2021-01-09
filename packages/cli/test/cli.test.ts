@@ -31,7 +31,7 @@ async function run(...args: string[]): Promise<TestProcess> {
   return { stdin, stdout, stderr, join, expect };
 }
 
-describe.only('@bigtest/cli', function() {
+describe('@bigtest/cli', function() {
   this.timeout(process.env.CI ? 120000 : 30000);
 
   describe('start', () => {
@@ -87,7 +87,7 @@ describe.only('@bigtest/cli', function() {
       });
     });
 
-    describe.only('running the suite successfully', () => {
+    describe('running the suite successfully', () => {
       let startChild: TestProcess;
       let runChild: TestProcess;
       let status: ExitStatus;
@@ -102,7 +102,7 @@ describe.only('@bigtest/cli', function() {
         status = await runChild.join();
       });
 
-      it.only('exits successfully', async () => {
+      it('exits successfully', async () => {
         expect(status.code).toEqual(0);
         expect(runChild.stdout.output).toContain("SUCCESS")
       });

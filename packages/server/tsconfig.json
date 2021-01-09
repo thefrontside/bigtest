@@ -3,8 +3,7 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDirs": ["./src", "./bin"],
-    "typeRoots" : ["./node_modules/@types", "./typings"],
-    "esModuleInterop": false
+    "typeRoots" : ["./node_modules/@types", "./typings"]
   },
   "include": [
     "src/**/*.ts",

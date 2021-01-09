@@ -1,9 +1,9 @@
-import * as chokidar from 'chokidar';
+import chokidar from 'chokidar';
 import { ensure } from '@bigtest/effection';
 import { throwOnErrorEvent, once, on } from '@effection/events';
-import * as fs from 'fs';
-import * as globby from 'globby';
-import * as path from 'path';
+import fs from 'fs';
+import globby from 'globby';
+import path from 'path';
 import { ManifestGeneratorOptions, ManifestGeneratorStatus, Service } from './orchestrator/state';
 import { spawn } from 'effection';
 import {Channel} from '@effection/channel';

@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect';
-import * as path from 'path';
+import expect from 'expect';
+import path from 'path';
 
 import { Test } from '@bigtest/suite';
 import { filterTest } from '../src/filter-test';

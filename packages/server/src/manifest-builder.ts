@@ -7,8 +7,8 @@ import { Deferred } from '@bigtest/effection';
 import { Bundler } from '@bigtest/bundler';
 import { Slice } from '@bigtest/atom';
 import { createFingerprint } from 'fprint';
-import * as path from 'path';
-import * as fs from 'fs';
+import path from 'path';
+import fs from 'fs';
 import { OrchestratorState } from './orchestrator/state';
 import { assertBundlerState, assertCanTransition } from '../src/assertions/bundler-assertions';
 

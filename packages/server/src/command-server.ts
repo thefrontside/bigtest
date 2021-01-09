@@ -1,7 +1,7 @@
 import { Operation, spawn, fork } from 'effection';
 import { subscribe } from '@effection/subscription';
 import { express, Socket } from '@bigtest/effection-express';
-import * as graphqlHTTP from 'express-graphql';
+import graphqlHTTP from 'express-graphql';
 import { parse as parseGraphql, graphql as executeGraphql, subscribe as executeGraphqlSubscription, ExecutionResult } from 'graphql';
 
 import { schema } from './schema';
