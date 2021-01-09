@@ -1,4 +1,4 @@
-import * as expect from 'expect';
+import expect from 'expect';
 import { spawn } from './helpers';
 
 import { Driver, load } from '../index';

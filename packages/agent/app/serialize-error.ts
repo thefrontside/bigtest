@@ -1,5 +1,5 @@
-import * as getSource from 'get-source';
-import * as ErrorStackParser from 'error-stack-parser';
+import getSource from 'get-source';
+import ErrorStackParser from 'error-stack-parser';
 import { StackFrame } from 'error-stack-parser';
 import { Operation, spawn, join } from 'effection';
 import { ErrorDetails, ErrorStackFrame } from '@bigtest/suite';

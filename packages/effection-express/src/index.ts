@@ -1,8 +1,8 @@
 import { Operation, resource, spawn } from 'effection';
-import * as actualExpress from 'express';
-import * as WebSocket from 'ws';
-import * as ews from 'express-ws';
-import * as util from 'util';
+import actualExpress from 'express';
+import WebSocket from 'ws';
+import ews from 'express-ws';
+import { promisify } from 'util';
 import { Server } from 'http';
 
 import { throwOnErrorEvent, once, on } from '@effection/events';
@@ -28,7 +28,7 @@ export class Socket implements Subscribable<any, CloseEvent> {
 
   *send(data: unknown): Operation<void> {
     if(this.raw.readyState === 1) {
-      yield util.promisify<string, void>(this.raw.send.bind(this.raw))(JSON.stringify(data));
+      yield promisify<string, void>(this.raw.send.bind(this.raw))(JSON.stringify(data));
     }
   }
 

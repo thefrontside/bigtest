@@ -1,7 +1,6 @@
 {
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
-    "esModuleInterop": true,
     "types": ["cypress"],
     "outDir": "dist/cjs",
     "rootDir": "./src",

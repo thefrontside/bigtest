@@ -1,6 +1,6 @@
 import { main, Operation, Context, Controls } from 'effection';
 import { describe, it } from 'mocha';
-import * as expect from 'expect'
+import expect from 'expect'
 import fetch, { Response } from 'node-fetch';
 import { todomvc } from '../dist/index';
 

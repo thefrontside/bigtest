@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect';
+import expect from 'expect';
 import { createAtom, DefaultChannelMaxListeners, resetAtom } from '../src/atom';
 import { spawn, when, never } from './helpers';
 import { ChainableSubscription, subscribe, Subscription } from '@effection/subscription';
