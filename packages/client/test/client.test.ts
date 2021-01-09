@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect';
+import expect from 'expect';
 import { ChainableSubscription } from '@effection/subscription';
 import { TestConnection, TestServer, run } from './helpers';
 import { Client, Message, Response, isQuery } from '../src';

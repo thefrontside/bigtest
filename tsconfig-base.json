@@ -6,7 +6,6 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "esModuleInterop": false,
     "paths": {
       "@bigtest/agent": ["packages/agent/src"],
       "@bigtest/atom": ["packages/atom/src"],

@@ -1,2 +1,2 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, no-var, prefer-let/prefer-let */
+/* eslint-disable prefer-let/prefer-let, no-var */
 declare var __coverage__: unknown;

@@ -3,6 +3,8 @@ import { on } from '@effection/events';
 import { bigtestGlobals } from '@bigtest/globals';
 import { TestImplementation, Context as TestContext } from '@bigtest/suite';
 
+import { TestEvent } from '../shared/protocol';
+
 import { findIFrame } from './find-iframe';
 import { LaneConfig } from './lane-config';
 import { loadManifest } from './manifest';
@@ -12,6 +14,10 @@ import { wrapConsole } from './wrap-console';
 import { setLogConfig, getLogConfig } from './log-config';
 import { clearPersistentStorage } from './clear-persistent-storage';
 import { addCoverageMap } from './coverage';
+
+interface TestEvents {
+  send(event: TestEvent): void;
+}
 
 export function* runLane(config: LaneConfig) {
   setLogConfig({ events: [] });

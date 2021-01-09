@@ -55,6 +55,7 @@ export class Express {
 
   constructor(public raw: ews.Application) {}
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   *use(handler: OperationRequestHandler): Operation<{}> {
     return yield resource({}, (controls) => {
       this.raw.use((req, res) => {
@@ -65,6 +66,7 @@ export class Express {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   *get(path: string, handler: OperationRequestHandler): Operation<{}> {
     return yield resource({}, (controls) => {
       this.raw.get(path, (req, res) => {
@@ -75,6 +77,7 @@ export class Express {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   *ws(path: string, handler: WsOperationRequestHandler): Operation<{}> {
     return yield resource({}, (controls) => {
       this.raw.ws(path, (socket, req) => {
