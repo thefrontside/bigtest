@@ -1,4 +1,4 @@
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import { Operation } from 'effection';
 import { ProjectOptions } from '@bigtest/project';
 import { Client } from '@bigtest/client';

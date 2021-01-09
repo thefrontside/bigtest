@@ -1,6 +1,6 @@
 import { Operation, resource } from 'effection';
-import * as chalk from 'chalk';
-import * as readline from 'readline';
+import chalk from 'chalk';
+import readline from 'readline';
 import { ReadLine } from 'readline';
 
 export class Prompt {

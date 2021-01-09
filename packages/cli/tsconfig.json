@@ -1,8 +1,7 @@
 {
   "extends": "@frontside/tsconfig",
   "compilerOptions": {
-    "outDir": "dist",
-    "esModuleInterop": false
+    "outDir": "dist"
   },
   "include": [
     "src/**/*.ts"

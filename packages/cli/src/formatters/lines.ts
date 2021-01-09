@@ -1,4 +1,4 @@
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import { FormatterConstructor, stepStatusIcon, assertionStatusIcon, printStandardFooter } from '../format-helpers';
 
 const formatter: FormatterConstructor = (printer) => {
