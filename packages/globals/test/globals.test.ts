@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect'
+import expect from 'expect'
 import { JSDOM } from 'jsdom';
 
 import { bigtestGlobals } from '../src/index';
@@ -11,7 +11,7 @@ function makeDocument(body = ''): Document {
 describe('@bigtest/globals', () => {
   beforeEach(() => {
     bigtestGlobals.reset();
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     delete globalThis.document;
   });

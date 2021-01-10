@@ -128,7 +128,8 @@ function parseArgs(argv: readonly string[]): Args {
       });
   };
 
-  let parsed = yargs({})
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let parsed = yargs({} as any)
     .scriptName('bigtest')
     .option('log-level', {
       default: 'info',

@@ -239,6 +239,7 @@ describe("@bigtest/agent", function() {
           it('is reported with the run:end event', () => {
             expect(end).toMatchObject({
               type: 'run:end',
+              // eslint-disable-next-line @typescript-eslint/no-var-requires
               coverage: require('./fixtures/coverage-data').coverageData
             })
           });

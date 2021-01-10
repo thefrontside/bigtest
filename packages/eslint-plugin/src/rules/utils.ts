@@ -1,7 +1,7 @@
 import {
   ESLintUtils,
 } from '@typescript-eslint/experimental-utils';
-import * as path from 'path';
+import path from 'path';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('../../package.json');

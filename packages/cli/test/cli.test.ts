@@ -2,8 +2,8 @@ import { describe, it, beforeEach } from 'mocha';
 import { daemon, exec, ExitStatus } from '@effection/node';
 import { defaultTSConfig } from '@bigtest/project';
 
-import * as expect from 'expect';
-import * as process from 'process';
+import expect from 'expect';
+import process from 'process';
 import { promises as fs } from 'fs';
 
 import { World } from './helpers/world';

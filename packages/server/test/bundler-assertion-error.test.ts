@@ -1,5 +1,5 @@
 import { BundlerAssertionError } from '../src/assertions/bundler-assertions';
-import * as expect from 'expect';
+import expect from 'expect';
 
 describe('BundlerAssertionError', () => {
   it('should instantiate error', () => {

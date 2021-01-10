@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect';
+import expect from 'expect';
 
 import { TestResult } from '@bigtest/suite';
 import { resultSummary } from '../src/result-summary';

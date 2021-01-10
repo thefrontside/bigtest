@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect'
+import expect from 'expect'
 
 import { test }from '../src';
 import example from './fixtures/example';

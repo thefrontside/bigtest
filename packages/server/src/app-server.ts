@@ -1,7 +1,7 @@
 import { timeout, spawn } from 'effection';
 import { fetch } from '@effection/fetch';
 import { exec, Process } from '@effection/node';
-import * as process from 'process';
+import process from 'process';
 import { AppOptions, Service, AppServiceStatus, ServiceState } from './orchestrator/state';
 import { Slice } from '@bigtest/atom';
 import { restartable } from './effection/restartable'

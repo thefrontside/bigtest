@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect';
+import expect from 'expect';
 import { actions, getTestProjectOptions } from './helpers';
 import { createLogger } from '../src/logger';
 import { createOrchestratorAtom } from '../src';
