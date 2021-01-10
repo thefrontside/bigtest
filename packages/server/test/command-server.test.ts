@@ -52,7 +52,7 @@ describe('command server', () => {
   });
 
   describe('running the entire suite', () => {
-    let result: GraphQLPayload<{run: {}}>;
+    let result: GraphQLPayload<{run: unknown}>;
     beforeEach(async () => {
       result = await mutation('run');
     });

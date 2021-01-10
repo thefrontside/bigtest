@@ -19,7 +19,7 @@ interface LogConfigurable {
  * Set information about the lane to run so that the test frame can retrieve it.
  * should only be called from the agent frame.
  */
-export function setLogConfig(config: LogConfig) {
+export function setLogConfig(config: LogConfig): void {
   let context: typeof globalThis = window.window;
   let bigtest: LogConfigurable = context.__bigtest as LogConfigurable;
   if (!bigtest) {

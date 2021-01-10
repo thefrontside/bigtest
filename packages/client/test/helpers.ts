@@ -49,7 +49,7 @@ export class TestConnection {
 
   constructor(private socket: Socket) {}
 
-  receive(): Promise<Message> {
+  receive(): Promise<Message | undefined> {
     return run(subscribe(this.incoming).first());
   }
 

@@ -27,7 +27,7 @@ export function *loadOptions(filePath?: string): Operation<ProjectOptions> {
   });
 }
 
-export function applyStartArgs(options: ProjectOptions, args: StartArgs) {
+export function applyStartArgs(options: ProjectOptions, args: StartArgs): void {
   if(args.launch) {
     options.launch = args.launch;
   }
@@ -45,7 +45,7 @@ export function applyStartArgs(options: ProjectOptions, args: StartArgs) {
   }
 }
 
-export function validateOptions(options: ProjectOptions) {
+export function validateOptions(options: ProjectOptions): void {
   if (!options.app?.url) {
     throw new MainError({
       exitCode: 1,

@@ -46,7 +46,7 @@ export type InteractorSpecification<E extends Element, F extends Filters<E>, A e
    * returned from the locator function.
    */
   locator?: LocatorFn<E>;
-}
+} 
 
 export type ActionMethods<E extends Element, A extends Actions<E>> = {
   [P in keyof A]: A[P] extends ((interactor: InteractorInstance<E, Record<string, never>, Record<string, never>>, ...args: infer TArgs) => Promise<infer TReturn>)
@@ -128,5 +128,7 @@ export interface InteractorBuilder<E extends Element> {
    * @typeParam F the filters of this interactor, this is usually inferred from the specification
    * @typeParam A the actions of this interactor, this is usually inferred from the specification
    */
+  // <F extends Filters<E> = {}, A extends Actions<E> = {}>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, F, A>;
+  // eslint-disable-next-line @typescript-eslint/ban-types
   <F extends Filters<E> = {}, A extends Actions<E> = {}>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, F, A>;
 }

@@ -1,4 +1,4 @@
-import { Operation, fork, spawn } from 'effection';
+import { Operation, fork, spawn, OperationFn, Sequence, Controller, Context } from 'effection';
 import { on } from '@effection/events';
 import { bigtestGlobals } from '@bigtest/globals';
 import { TestImplementation, Context as TestContext } from '@bigtest/suite';
@@ -13,7 +13,19 @@ import { setLogConfig, getLogConfig } from './log-config';
 import { clearPersistentStorage } from './clear-persistent-storage';
 import { addCoverageMap } from './coverage';
 
-export function* runLane(config: LaneConfig) {
+// union of types yielded from runLane  
+type RunLaneValues = 
+  | OperationFn<void>
+  | Sequence<void>
+  | PromiseLike<void>
+  | Controller<void>
+  | OperationFn<TestImplementation>
+  | Operation<TestImplementation>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  | Generator<Generator<Operation<Context<any>>>>
+  | undefined;
+
+export function* runLane(config: LaneConfig): Generator<RunLaneValues, void, TestImplementation> {
   setLogConfig({ events: [] });
 
   let { events, command, path } = config;
