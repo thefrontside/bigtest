@@ -36,11 +36,11 @@ export class Mailbox<T = any> {
     });
   }
 
-  setMaxListeners(value: number) {
+  setMaxListeners(value: number): void {
     this.subscriptions.setMaxListeners(value);
   }
 
-  send(message: T) {
+  send(message: T): void {
     this.messages.add(message);
     setTimeout(() => this.subscriptions.emit('message', message), 0);
   }
@@ -68,7 +68,7 @@ export class Mailbox<T = any> {
     };
   }
 
-  *pipe(other: Mailbox<T>) {
+  *pipe(other: Mailbox<T>): Generator<Operation<unknown>> {
     let that = this; // eslint-disable-line @typescript-eslint/no-this-alias
     return yield spawn(function*(): Operation<unknown> {
       while(true) {

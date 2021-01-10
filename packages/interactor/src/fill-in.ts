@@ -60,7 +60,7 @@ function setValue(element: TextFieldElement, value: string): void {
  * @param element The element to fill in text in
  * @param value The text value to fill in
  */
-export function fillIn(element: TextFieldElement, value: string) {
+export function fillIn(element: TextFieldElement, value: string): void {
   let originalValue = element.value;
 
   element.focus();

@@ -49,7 +49,7 @@ describe('@bigtest/client', () => {
       });
 
       describe('when the server responds', () => {
-        let response: {};
+        let response: Response;
         beforeEach(async () => {
           await connection.send({
             done: true,

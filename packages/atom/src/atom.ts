@@ -142,7 +142,7 @@ export function createAtom<S>(init: S, { channelMaxListeners = DefaultChannelMax
 }
 
 // This is purely for testing purposes
-export function resetAtom<S>(atom: Slice<S>, initializer?: (initial: S, curr: S) => S | undefined) {
+export function resetAtom<S>(atom: Slice<S>, initializer?: (initial: S, curr: S) => S | undefined): void {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (atom as any)._reset(initializer)
 }

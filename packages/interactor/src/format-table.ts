@@ -13,7 +13,7 @@ function formatValue(value: string, width: number) {
   }
 }
 
-export function formatTable(options: TableOptions) {
+export function formatTable(options: TableOptions): string {
   let columnWidths = options.headers.map((h, index) => {
     return Math.min(MAX_COLUMN_WIDTH, Math.max(h.length, ...options.rows.map((r) => r[index].length)));
   });

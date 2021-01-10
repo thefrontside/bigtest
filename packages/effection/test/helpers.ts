@@ -3,7 +3,7 @@ import { main, Context, Operation, Controls } from 'effection';
 type World<T = unknown> = Context<T> & Controls<T>;
 
 let World: World;
-export function spawn<T>(operation: Operation) {
+export function spawn<T>(operation: Operation): Context<T> {
   return World.spawn<T>(operation);
 }
 
