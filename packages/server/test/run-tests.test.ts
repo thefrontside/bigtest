@@ -1,4 +1,4 @@
-import * as expect from 'expect';
+import expect from 'expect';
 import { Agent, Command, generateAgentId } from '@bigtest/agent';
 import { Client } from '@bigtest/client';
 import { ResultStatus } from '@bigtest/suite';

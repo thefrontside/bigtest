@@ -1,7 +1,7 @@
 import { describe, beforeEach, it } from 'mocha';
-import * as expect from 'expect';
+import expect from 'expect';
 
-import * as zlib from 'zlib';
+import { gzipSync } from 'zlib';
 
 import { Operation } from 'effection';
 import { Slice } from '@bigtest/atom';
@@ -30,7 +30,7 @@ function* startAppServer(): Operation<void> {
 
   yield appServer.get('/zipped', function*(req, res) {
     res.set({ 'Content-Type': 'text/html', 'Content-Encoding': 'gzip' });
-    res.send(zlib.gzipSync('<!doctype html><html><head></head><body><h1>Hello zip world</h1></body></html>'));
+    res.send(gzipSync('<!doctype html><html><head></head><body><h1>Hello zip world</h1></body></html>'));
   });
 
   yield appServer.get('/asset', function*(req, res) {

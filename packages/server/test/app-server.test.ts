@@ -1,5 +1,5 @@
 import { describe, beforeEach, it } from 'mocha';
-import * as expect from 'expect';
+import expect from 'expect';
 import type { AppServiceStatus, OrchestratorState, ServiceState, AppOptions } from '../src/orchestrator/state';
 import type { Slice } from '@bigtest/atom';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';

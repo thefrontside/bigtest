@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
-import * as expect from 'expect';
-import * as jest from 'jest-mock';
+import expect from 'expect';
+import jest from 'jest-mock';
 import { Context } from 'effection';
 import { MainError } from '@effection/node';
 import { Deferred } from '@bigtest/effection';

@@ -1,4 +1,4 @@
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import { Operation } from 'effection';
 import { ProjectOptions } from '@bigtest/project';
 import { Client } from '@bigtest/client';
@@ -11,14 +11,6 @@ import { RunArgs } from './cli';
 
 import checks from './formatters/checks';
 import lines from './formatters/lines';
-
-interface Options {
-  formatterName: string;
-  files: string[];
-  showFullStack: boolean;
-  showLog: boolean;
-  coverage: boolean;
-}
 
 const BUILTIN_FORMATTERS: Record<string, Formatter | FormatterConstructor> = { checks, lines };
 

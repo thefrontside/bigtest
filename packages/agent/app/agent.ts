@@ -1,4 +1,4 @@
-import * as Bowser from 'bowser';
+import { parse } from 'bowser';
 import { QueryParams } from './query-params';
 import { Agent } from '../shared/agent';
 import { run } from './runner';
@@ -10,7 +10,7 @@ export function* createAgent(queryParams: QueryParams) {
   let agent: Agent = yield Agent.start({
     createSocket,
     agentId: queryParams.agentId,
-    data: Bowser.parse(navigator.userAgent)
+    data: parse(navigator.userAgent)
   });
 
   yield agent.commands.forEach(function*(command) {
