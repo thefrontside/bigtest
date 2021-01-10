@@ -111,6 +111,9 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
         bundlerSlice.update(() => ({ type: 'BUILDING', warnings: [] }));
         break;
       case 'UPDATE':
+        if(bundlerSlice.get().type === 'ERRORED') {
+          break;
+        }
         console.debug("[manifest builder] received bundle update");
 
         try {
