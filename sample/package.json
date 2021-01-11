@@ -1,6 +1,6 @@
 {
   "name": "bigtest-sample",
-  "version": "0.0.3",
+  "version": "0.0.2",
   "description": "BigTest Sample App",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
@@ -27,6 +27,8 @@
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-react": "^7.12.10",
+    "@effection/events": "^0.7.8",
+    "@effection/node": "^0.9.1",
     "@testing-library/react": "^11.1.0",
     "babel-jest": "^26.6.3",
     "bigtest": "*",
