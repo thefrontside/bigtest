@@ -128,7 +128,6 @@ export interface InteractorBuilder<E extends Element> {
    * @typeParam F the filters of this interactor, this is usually inferred from the specification
    * @typeParam A the actions of this interactor, this is usually inferred from the specification
    */
-  // <F extends Filters<E> = {}, A extends Actions<E> = {}>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, F, A>;
   // eslint-disable-next-line @typescript-eslint/ban-types
   <F extends Filters<E> = {}, A extends Actions<E> = {}>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, F, A>;
 }
