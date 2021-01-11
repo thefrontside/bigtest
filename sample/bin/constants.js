@@ -8,7 +8,7 @@ const SOURCE_DIR = `${TARGET_DIR}/node_modules/${PACKAGE_NAME}`;
 const yarn = process.argv.includes('-Y') || process.argv.includes('-yarn') ? true : false;
 const command = yarn ? 'yarn': 'npm run';
 
-const message = {
+const messages = {
   creating_dir: chalk`\n{blueBright ✓} {green Directory created}`,
   downloading_repo: [
     chalk`{grey Downloading project...}`,
@@ -32,7 +32,7 @@ const message = {
 
 module.exports = {
   startScript,
-  message,
+  messages,
   yarn,
   TARGET_DIR,
   SOURCE_DIR

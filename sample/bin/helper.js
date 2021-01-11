@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const sprintf = require('util').format;
 
-module.exports = function Spinner(messages) {
+function Spinner(messages) {
   this.start = () => {
     const spinner = ['⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷'];
     let i = 0;
@@ -22,7 +22,20 @@ module.exports = function Spinner(messages) {
 
   this.stop = () => {
     process.stdout.write('\u001b[0G\u001b[2K');
-    console.log(chalk.blueBright('✓'), messages[1]);
     clearInterval(this.timer);
   };
+};
+
+const formatErr = (err) => {
+  return chalk`\n{red Error}: {yellow ${err}}\n`
+};
+
+const logSuccess = (message) => {
+  console.log(chalk.blueBright('✓'), message);
+};
+
+module.exports = {
+  formatErr,
+  logSuccess,
+  Spinner
 };
