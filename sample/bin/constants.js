@@ -9,7 +9,7 @@ const yarn = process.argv.includes('-Y') || process.argv.includes('-yarn') ? tru
 const command = yarn ? 'yarn': 'npm run';
 
 const messages = {
-  creating_dir: chalk`\n{blueBright ✓} {green Directory created}`,
+  creating_dir: chalk.green('Directory created'),
   downloading_repo: [
     chalk`{grey Downloading project...}`,
     chalk`{green Download complete\n}`
@@ -23,8 +23,8 @@ const messages = {
     chalk`{green Installation complete\n}`
   ],
   deleting: [
-    chalk`{grey Deleting generated files...}`,
-    chalk`{grey Cleanup complete}`
+    chalk`{red Deleting generated files...}`,
+    chalk`{red Removed generated files because of error}`
   ],
   success: chalk`{white Setup is complete!}\n\nNow you can start exploring:\n\n  {magentaBright cd} {white bigtest-sample}\n\n  {magentaBright ${command}} test:{blueBright bigtest}\n  {magentaBright ${command}} test:{redBright jest}\n  {magentaBright ${command}} test:{green cypress}\n\n{yellow Have any questions?}\nReach us at: {cyan https://discord.gg/RKss6jw2}\n`,
   abort: `Please rename the existing 'bigtest-sample' directory and rerun the command\n`

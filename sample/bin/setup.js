@@ -9,14 +9,16 @@ const { once } = require('@effection/events');
 const { 
   messages, yarn, TARGET_DIR, SOURCE_DIR, startScript
 } = require('./constants');
-const { formatErr, logSuccess, Spinner } = require('./helper');
+const { formatErr, formatSuccess, Spinner } = require('./helper');
 const { version } = require('../package.json');
 
 const animate = (msgs) => new Spinner(msgs);
 
 async function populate(message) {
   if (fs.existsSync(TARGET_DIR)) {
-    throw new MainError({message: `${formatErr('directory \'bigtest-sample\' already exists')}\n${messages.abort}`});
+    throw new MainError({ 
+      message: `${formatErr('directory \'bigtest-sample\' already exists')}\n${messages.abort}`
+    });
   } else {
     fs.mkdirSync(TARGET_DIR);
     const installer = {
@@ -30,7 +32,7 @@ async function populate(message) {
       `${TARGET_DIR}/package.json`,
       JSON.stringify(installer, null, 2)
     );
-    console.log(message);
+    console.log(`\n${formatSuccess(message)}`);
   };
 };
 
@@ -67,7 +69,7 @@ async function migrate(messages) {
 
   rmrf.sync(`${TARGET_DIR}/node_modules/`);
   loading.stop();
-  logSuccess(messages[1]);
+  console.log(formatSuccess(messages[1]));
 };
 
 function* install(messages) {
@@ -81,12 +83,12 @@ function* install(messages) {
     });
     let [code] = yield once(install, 'close');
     if (code !== 0) {
-      throw new MainError({ message: `${formatErr('Error while installing')}` });
+      throw new MainError({ message: `${formatErr('Error while installing')}`});
     };
   } finally {
     loading.stop();
   };
-  logSuccess(messages[1]);
+  console.log(formatSuccess(messages[1]));
 };
 
 function clean(e){
@@ -98,8 +100,8 @@ function clean(e){
   } finally {
     loading.stop();
   };
-  logSuccess(message[1]);
-  throw new MainError(e);
+  console.log(formatSuccess(message[1]));
+  throw new MainError({ message: e.message })
 };
 
 function* run() {
@@ -108,10 +110,10 @@ function* run() {
     yield install(messages.downloading_repo);
     yield migrate(messages.organizing_files);
     yield install(messages.installing_dep);
+    console.log(messages.success);
   } catch(e) {
     clean(e);
-  }
-  console.log(messages.success);
+  };
 };
 
 main(run);
