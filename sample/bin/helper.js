@@ -30,12 +30,12 @@ const formatErr = (err) => {
   return chalk`\n{red Error}: {yellow ${err}}\n`
 };
 
-const logSuccess = (message) => {
-  console.log(chalk.blueBright('✓'), message);
+const formatSuccess = (message) => {
+  return chalk`{blueBright ✓} ${message}`;
 };
 
 module.exports = {
   formatErr,
-  logSuccess,
+  formatSuccess,
   Spinner
 };
