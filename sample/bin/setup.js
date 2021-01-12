@@ -3,14 +3,13 @@
 const fs = require('fs');
 const rmrf = require('rmfr');
 const rmrfsync = require('rimraf').sync;
-const spawn = require('cross-spawn');
 const { main, MainError } = require('@effection/node');
-const { once } = require('@effection/events');
 
 const { 
   messages, yarn, TARGET_DIR, SOURCE_DIR, startScript
 } = require('./constants');
-const { formatErr, formatSuccess, spin } = require('./helper');
+const { formatErr, formatSuccess, spin } = require('./console-helpers');
+const { install } = require('./install');
 const { version } = require('../package.json');
 
 async function populate(message) {
@@ -71,18 +70,8 @@ function* migrate(messages) {
   console.log(formatSuccess(messages.after));
 };
 
-function* install(messages) {
-  yield spin(messages.before, function* (){
-    let command = yarn ? 'yarn' : 'npm';
-    const install = spawn(command, ['install'], {
-      cwd: TARGET_DIR,
-      stdio: 'ignore'
-    });
-    let [code] = yield once(install, 'close');
-    if (code !== 0) {
-      throw new MainError({ message: `${formatErr('Error while installing')}`});
-    }
-  });
+function* download(messages) {
+  yield spin(messages.before, install(TARGET_DIR));
   console.log(formatSuccess(messages.after));
 };
 
@@ -90,17 +79,17 @@ function* run() {
   let rollback = true;
   yield populate(messages.creating_dir);
   try {
-    yield install(messages.downloading_repo);
+    yield download(messages.downloading_repo);
     yield migrate(messages.organizing_files);
-    yield install(messages.installing_dep);
+    yield download(messages.installing_dep);
     console.log(messages.success);
     rollback = false;
   } finally {
     if(rollback){
       rmrfsync(TARGET_DIR);
       console.log(formatSuccess(messages.cleanup));
-    }
-  }
+    };
+  };
 };
 
 main(run);
