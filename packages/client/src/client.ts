@@ -1,3 +1,4 @@
+import type { ChainableSubscribable } from '@effection/subscription'
 import { w3cwebsocket } from 'websocket';
 import { resource, Operation, spawn } from 'effection';
 import { on, once } from '@effection/events';
@@ -51,11 +52,11 @@ export class Client {
     return this.send<T>("mutation", source, false, variables).expect();
   }
 
-  liveQuery<T>(source: string, variables?: Variables) {
+  liveQuery<T>(source: string, variables?: Variables): ChainableSubscribable<T, unknown> {
     return this.send<T>("query", source, true, variables);
   }
 
-  subscription<T, TReturn>(source: string, variables?: Variables) {
+  subscription<T, TReturn>(source: string, variables?: Variables): ChainableSubscribable<T, TReturn> {
     return this.send<T, TReturn>("subscription", source, false, variables);
   }
 

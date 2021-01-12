@@ -8,11 +8,11 @@ export class World {
     this.execution = main(function*() { yield; }) as Context & Controls;
   }
 
-  destroy() {
+  destroy(): void {
     this.execution.halt();
   }
 
-  ensure(hook: () => void) {
+  ensure(hook: () => void): void {
     this.execution.ensure(hook);
   }
 

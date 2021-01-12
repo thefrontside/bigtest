@@ -9,11 +9,11 @@ export class WebDriver implements Driver<WDSession> {
 
   constructor(public serverURL: string) { }
 
-  get description() {
+  get description(): string {
     return `WebDriver<${this.serverURL}/session/${this.session.sessionId}>`;
   }
 
-  get data() { return this.session; }
+  get data(): WDSession { return this.session; }
 
   connect(agentURL: string): Operation<void> {
     return this.navigateTo(agentURL);

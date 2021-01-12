@@ -27,7 +27,7 @@ export abstract class Aggregator<T extends {status: unknown }, O extends Aggrega
     return this.options.events;
   }
 
-  get statusSlice() {
+  get statusSlice(): Slice<T["status"]> {
     return this.slice.slice('status');
   }
 
@@ -35,7 +35,7 @@ export abstract class Aggregator<T extends {status: unknown }, O extends Aggrega
     throw new Error("override me in subclass");
   }
 
-  *run() {
+  *run(): Operation<ResultStatus> {
     try {
       return yield this.perform();
     } finally {

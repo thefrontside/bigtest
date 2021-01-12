@@ -1,7 +1,7 @@
 import { Operation, resource, spawn } from 'effection';
 import { on, once } from '@effection/events';
-import { createSubscription } from '@effection/subscription';
-import { AgentProtocol, AgentEvent, Command } from './protocol';
+import { ChainableSubscribable, createSubscription } from '@effection/subscription';
+import { AgentProtocol, AgentEvent, Command, Run } from './protocol';
 
 export * from './protocol';
 
@@ -43,7 +43,7 @@ export class Agent implements AgentProtocol {
     return agent;
   }
 
-  get commands() {
+  get commands(): ChainableSubscribable<Run, void> {
     let { socket } = this;
     return createSubscription<Command, void>(function*(publish) {
       yield spawn(
@@ -59,7 +59,7 @@ export class Agent implements AgentProtocol {
     });
   }
 
-  send(message: AgentEvent) {
+  send(message: AgentEvent): void {
     this.socket.send(JSON.stringify({ ...message, agentId: this.options.agentId }));
   }
 

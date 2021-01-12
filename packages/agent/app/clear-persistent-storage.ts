@@ -1,7 +1,7 @@
-import { fork } from 'effection';
+import { fork, Operation } from 'effection';
 import { getIndexedDBConfig } from './indexed-db-config';
 
-export function* clearPersistentStorage() {
+export function* clearPersistentStorage(): Operation<void> {
   localStorage.clear();
   sessionStorage.clear();
 

@@ -13,7 +13,7 @@ import { setLogConfig, getLogConfig } from './log-config';
 import { clearPersistentStorage } from './clear-persistent-storage';
 import { addCoverageMap } from './coverage';
 
-export function* runLane(config: LaneConfig) {
+export function* runLane(config: LaneConfig): Operation<TestImplementation> {
   setLogConfig({ events: [] });
 
   let { events, command, path } = config;
