@@ -26,6 +26,16 @@ function Spinner(messages) {
   };
 };
 
+function* spin(msg, operation){
+  let spinner = new Spinner(msg);
+  spinner.start();
+  try {
+    return yield operation;
+  } finally {
+    spinner.stop();
+  };
+};
+
 const formatErr = (err) => {
   return chalk`\n{red Error}: {yellow ${err}}\n`
 };
@@ -37,5 +47,6 @@ const formatSuccess = (message) => {
 module.exports = {
   formatErr,
   formatSuccess,
-  Spinner
+  Spinner,
+  spin
 };

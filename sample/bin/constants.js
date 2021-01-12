@@ -19,7 +19,7 @@ const messages = {
     chalk`{green Files organized}`
   ],
   installing_dep: [
-    chalk`{white.dim Installing dependencies... (this will take a few minutes)}`, 
+    chalk`{grey Installing dependencies... (this will take a few minutes)}`, 
     chalk`{green Installation complete\n}`
   ],
   deleting: [
