@@ -2,17 +2,9 @@ import { parse } from 'bowser';
 import { QueryParams } from './query-params';
 import { Agent } from '../shared/agent';
 import { run } from './runner';
-import { Controller, Operation, OperationFn, Sequence } from 'effection';
+import { Operation } from 'effection';
 
-// union of values that is yielded from createAgent
-type CreateAgentValue =
-  | Operation<Agent>
-  | OperationFn<void>
-  | Sequence<void> 
-  | PromiseLike<void> 
-  | Controller<void>;
-
-export function* createAgent(queryParams: QueryParams): Generator<CreateAgentValue, void, Agent> {
+export function* createAgent(queryParams: QueryParams): Operation<void> {
   console.log('[agent] connecting to', queryParams.connectTo);
 
   let createSocket = () => new WebSocket(queryParams.connectTo);
