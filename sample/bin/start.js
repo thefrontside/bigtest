@@ -1,23 +1,10 @@
 #!/usr/bin/env node
 
 const { main, MainError } = require('@effection/node');
-const { once } = require('@effection/events');
 
-const { yarn, formatErr } = require('./constants');
+const { formatErr } = require('./constants');
+const { install } = require('./install');
 const spawn = require('cross-spawn');
-
-function* install() {  
-  let command = yarn ? 'yarn' : 'npm';
-  const install = spawn(command, ['install'], {
-    stdio: 'inherit'
-  });
-  let [code] = yield once(install, 'close');  
-  if (code !== 0) {
-    throw new MainError({ 
-      message: `${formatErr('Error while installing')}`
-    });
-  };
-};
 
 async function start() {
   try {
