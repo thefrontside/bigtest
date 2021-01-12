@@ -35,7 +35,7 @@ export abstract class Aggregator<T extends {status: unknown }, O extends Aggrega
     throw new Error("override me in subclass");
   }
 
-  *run(): Generator<Operation<ResultStatus>> {
+  *run(): Operation<ResultStatus> {
     try {
       return yield this.perform();
     } finally {
