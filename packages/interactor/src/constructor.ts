@@ -208,5 +208,5 @@ export function createConstructor<E extends Element, F extends Filters<E>, A ext
     return instantiateInteractor({ name, specification, filter, locator, ancestors: [] });
   }
 
-  return makeBuilder(initInteractor);
+  return makeBuilder(initInteractor, name, specification);
 }
