@@ -71,7 +71,7 @@ function* migrate(messages) {
 };
 
 function* download(messages) {
-  yield spin(messages.before, install(TARGET_DIR));
+  yield spin(messages.before, install({ cwd: TARGET_DIR }));
   console.log(formatSuccess(messages.after));
 };
 
