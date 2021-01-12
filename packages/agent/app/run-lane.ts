@@ -13,19 +13,7 @@ import { setLogConfig, getLogConfig } from './log-config';
 import { clearPersistentStorage } from './clear-persistent-storage';
 import { addCoverageMap } from './coverage';
 
-// union of types yielded from runLane  
-type RunLaneValues = 
-  | OperationFn<void>
-  | Sequence<void>
-  | PromiseLike<void>
-  | Controller<void>
-  | OperationFn<TestImplementation>
-  | Operation<TestImplementation>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | Generator<Generator<Operation<Context<any>>>>
-  | undefined;
-
-export function* runLane(config: LaneConfig): Generator<RunLaneValues, void, TestImplementation> {
+export function* runLane(config: LaneConfig): Operation<TestImplementation> {
   setLogConfig({ events: [] });
 
   let { events, command, path } = config;
