@@ -4,6 +4,8 @@ import { Filter } from './filter';
 import { Locator } from './locator';
 import { Interaction, ReadonlyInteraction } from './interaction';
 
+export type EmptyObject = Record<never, never>;
+
 export type ActionsImplementationFn = (...args: any) => Interaction<any>;
 
 export type FiltersImplementation = Record<string, any>;
@@ -124,7 +126,7 @@ export interface Interactor<E extends Element, F extends FiltersImplementation> 
   is(filters: F): ReadonlyInteraction<void>;
 }
 
-export type ActionFn<E extends Element> = (interactor: Interactor<E, {}>, ...args: any[]) => Promise<unknown>;
+export type ActionFn<E extends Element> = (interactor: Interactor<E, EmptyObject>, ...args: any[]) => Promise<unknown>;
 export type FilterFn<T, E extends Element> = (element: E) => T;
 
 /**
@@ -169,7 +171,7 @@ export type InteractorSpecification<E extends Element, F extends Filters<E>, A e
 }
 
 export type ActionMethods<E extends Element, A extends Actions<E>> = {
-  [P in keyof A]: A[P] extends ((interactor: Interactor<E, {}>, ...args: infer TArgs) => Promise<infer TReturn>)
+  [P in keyof A]: A[P] extends ((interactor: Interactor<E, EmptyObject>, ...args: infer TArgs) => Promise<infer TReturn>)
     ? ((...args: TArgs) => Interaction<TReturn>)
     : never;
 }
@@ -247,7 +249,7 @@ export interface InteractorBuilder<E extends Element> {
    * @typeParam A the actions of this interactor, this is usually inferred from the specification
    */
   // eslint-disable-next-line @typescript-eslint/ban-types
-  <F extends Filters<E> = {}, A extends Actions<E> = {}>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, F, A>;
+  <F extends Filters<E> = EmptyObject, A extends Actions<E> = EmptyObject>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, F, A>;
 }
 
 export type InteractorOptions<E extends Element, F extends Filters<E>, A extends Actions<E>> = {
