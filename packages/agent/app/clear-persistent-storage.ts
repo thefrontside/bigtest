@@ -2,7 +2,7 @@ import { Context, fork, Operation } from 'effection';
 import { getIndexedDBConfig } from './indexed-db-config';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function* clearPersistentStorage(): Generator<Generator<Operation<Context<any>>>> {
+export function* clearPersistentStorage(): Operation<void> {
   localStorage.clear();
   sessionStorage.clear();
 
