@@ -91,7 +91,7 @@ function* install(messages) {
   console.log(formatSuccess(messages[1]));
 };
 
-function clean(e){
+async function clean(e){
   let message = messages.deleting;
   let loading = animate(message[0]);
   try {
@@ -112,7 +112,7 @@ function* run() {
     yield install(messages.installing_dep);
     console.log(messages.success);
   } catch(e) {
-    clean(e);
+    yield clean(e);
   };
 };
 
