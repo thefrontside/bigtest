@@ -8,7 +8,7 @@ export interface LoggerOptions {
   out: <A extends unknown[]>(...args: A) => void;
 }
 
-export function* createLogger({ atom, out }: LoggerOptions): Generator<Operation<Context<undefined>>> {
+export function* createLogger({ atom, out }: LoggerOptions): Operation<void> {
   yield fork(subscribe(atom.slice('bundler')).forEach(function* (event) {
     if(event.type === 'ERRORED'){
       out("[manifest builder] build error:");
