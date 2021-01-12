@@ -1,31 +1,35 @@
 #!/usr/bin/env node
 
-const { main, MainError } = require('@effection/node');
+const { daemon, main } = require('@effection/node');
+const { spawn } = require('effection');
+const { subscribe } = require('@effection/subscription');
 
-const { formatErr } = require('./constants');
 const { install } = require('./install');
-const spawn = require('cross-spawn');
+const { yarn } = require('./constants');
 
-async function start() {
-  try {
-    let port;
-    if(process.argv.includes('-p')){
-      port = process.argv.indexOf('-p');
-    };
-    let args = ['./node_modules/parcel/bin/cli', './src/index.html'];
-    if(port){
-      args.push(...process.argv.slice(port, port + 2))
-    };
-    spawn.sync('node', args, {
-      stdio: 'inherit'
-    });
-  } catch(e) {
-    throw new MainError({ message: `${formatErr(e)}`});
-  }
+function* start() {
+  let command = yarn ? 'yarn' : 'npx';
+
+  let port;
+  let args = ['parcel', './src/index.html'];
+
+  if(process.argv.includes('-p')){
+    port = process.argv.indexOf('-p');
+    args.push(...process.argv.slice(port, port + 2))
+  };
+
+  let { stdout } = yield daemon(`${command} ${args.join(' ')}`);
+
+  yield spawn(subscribe(stdout).forEach((data) => {
+    process.stdout.write(data);
+    return Promise.resolve();
+  }));
+
+  yield;
 };
 
 function* run() {
-  yield install();
+  yield install({ stdio: 'inherit' });
   yield start();
 };
 
