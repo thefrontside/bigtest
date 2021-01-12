@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - 'v[0-9]+'
+    paths-ignore:
+      - 'website/**'
+      - '**.md'
 
 jobs:
   prepack:
@@ -92,4 +95,4 @@ jobs:
         with:
           working-directory: packages/interactor/
           start: yarn bigtest-todomvc 3000
-          wait-on: 'http://localhost:3000' 
+          wait-on: 'http://localhost:3000'
