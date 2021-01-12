@@ -10,22 +10,22 @@ const command = yarn ? 'yarn': 'npm run';
 
 const messages = {
   creating_dir: chalk.green('Directory created'),
-  downloading_repo: [
-    chalk`{grey Downloading project...}`,
-    chalk`{green Download complete\n}`
-  ],
-  organizing_files: [
-    chalk`{grey Organizing files...}`,
-    chalk`{green Files organized}`
-  ],
-  installing_dep: [
-    chalk`{grey Installing dependencies... (this will take a few minutes)}`, 
-    chalk`{green Installation complete\n}`
-  ],
-  deleting: [
-    chalk`{red Deleting generated files...}`,
-    chalk`{red Removed generated files because of error}`
-  ],
+  downloading_repo: {
+    before: chalk`{grey Downloading project...}`,
+    after: chalk`{green Download complete\n}`
+  },
+  organizing_files: {
+    before: chalk`{grey Organizing files...}`,
+    after: chalk`{green Files organized}`
+  },
+  installing_dep: {
+    before: chalk`{grey Installing... (this'll take a few minutes)}`, 
+    after: chalk`{green Installation complete\n}`
+  },
+  deleting: {
+    before: chalk`{red Deleting generated files...}`,
+    after: chalk`{red Removed generated files because of error}`
+  },
   success: chalk`{white Setup is complete!}\n\nNow you can start exploring:\n\n  {magentaBright cd} {white bigtest-sample}\n\n  {magentaBright ${command}} test:{blueBright bigtest}\n  {magentaBright ${command}} test:{redBright jest}\n  {magentaBright ${command}} test:{green cypress}\n\n{yellow Have any questions?}\nReach us at: {cyan https://discord.gg/RKss6jw2}\n`,
   abort: `Please rename the existing 'bigtest-sample' directory and rerun the command\n`
 };

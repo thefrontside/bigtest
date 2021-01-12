@@ -1,39 +1,21 @@
 const chalk = require('chalk');
-const sprintf = require('util').format;
+const { spawn, timeout } = require('effection');
 
-function Spinner(messages) {
-  this.start = () => {
+function* spin(message, operation){
+  yield spawn(function* () {
     const spinner = ['⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷'];
-    let i = 0;
-    const play = (arr, speed) => {
-      let drawTick = () => {
-        let str = arr[i++ % arr.length];
-        process.stdout.write('\u001b[0G' + str + '\u001b[90m' + messages[0] + '\u001b[0m');
+    let frameNumber = 0;
+    try {
+      while(true) {
+        let spinnerGlyph = chalk`{yellow ${spinner[frameNumber++ % spinner.length]}}`;
+        process.stdout.write('\u001b[0G' + spinnerGlyph + ' ' + message + '\u001b[0m');
+        yield timeout(30);
       };
-      this.timer = setInterval(drawTick, speed);
+    } finally {
+      process.stdout.write('\u001b[0G\u001b[2K');
     };
-
-    const frames = spinner => spinner.map(frame => {
-      return sprintf('\u001b[96m%s ', chalk.yellow(frame));
-    });
-    
-    play(frames(spinner), 30);
-  };
-
-  this.stop = () => {
-    process.stdout.write('\u001b[0G\u001b[2K');
-    clearInterval(this.timer);
-  };
-};
-
-function* spin(msg, operation){
-  let spinner = new Spinner(msg);
-  spinner.start();
-  try {
-    return yield operation;
-  } finally {
-    spinner.stop();
-  };
+  });
+  return yield operation;
 };
 
 const formatErr = (err) => {
@@ -47,6 +29,5 @@ const formatSuccess = (message) => {
 module.exports = {
   formatErr,
   formatSuccess,
-  Spinner,
   spin
 };
