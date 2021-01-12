@@ -24,5 +24,8 @@ export function createInteractor<E extends Element>(name: string): InteractorSpe
   let cons = function<F extends Filters<E> = EmptyObject, A extends Actions<E> = EmptyObject>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, F, A> {
     return createConstructor(name, specification);
   }
-  return makeBuilder(cons);
+  return makeBuilder(cons, name, {
+    actions: {},
+    filters: {},
+  });
 }

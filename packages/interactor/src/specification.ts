@@ -186,7 +186,8 @@ export type FilterParams<E extends Element, F extends Filters<E>> = keyof F exte
 }
 
 export interface InteractorBuilder<E extends Element, F extends Filters<E>, A extends Actions<E>> {
-  selector(value: string): InteractorBuilder<E, F, A>;
+  selector(value: string): InteractorConstructor<E, F, A>;
+  locator(value: LocatorFn<E>): InteractorConstructor<E, F, A>;
   filters<FR extends Filters<E>>(filters: FR): InteractorConstructor<E, F & FR, A>;
   actions<AR extends Actions<E>>(actions: AR): InteractorConstructor<E, F, A & AR>;
 }

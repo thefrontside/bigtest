@@ -1,6 +1,6 @@
 import { createInteractor, perform } from '../src/index';
 
-createInteractor<HTMLLinkElement>('link')
+let Link = createInteractor<HTMLLinkElement>('link')
   .selector('a')
   .actions({
     click: perform(element => { element.click() }),
@@ -16,3 +16,23 @@ createInteractor<HTMLLinkElement>('link')
     },
   })
 
+const Div = createInteractor('div')
+  .locator((element) => element.id || "")
+
+Link('foo').click();
+
+Link('foo').setHref('blah');
+
+// cannot use wrong type of argument on action
+// $ExpectError
+Link('foo').setHref(123);
+
+// cannot use action which is not defined
+// $ExpectError
+Div('foo').click();
+
+// $ExpectError
+Link('foo').blah();
+
+// $ExpectError
+Div('foo').blah();

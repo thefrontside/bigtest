@@ -5,65 +5,58 @@ import { bigtestGlobals } from '@bigtest/globals';
 
 import { createInteractor, perform } from '../src/index';
 
-const Link = createInteractor<HTMLLinkElement>('link')({
-  selector: 'a',
-  filters: {
+const Link = createInteractor<HTMLLinkElement>('link')
+  .selector('a')
+  .filters({
     href: (element) => element.href,
     title: (element) => element.title,
-  },
-  actions: {
+  })
+  .actions({
     click: perform(element => { element.click() }),
     setHref: perform((element, value: string) => { element.href = value })
-  }
-});
+  })
 
-const Header = createInteractor('header')({
-  selector: 'h1,h2,h3,h4,h5,h6',
-});
+const Header = createInteractor('header')
+  .selector('h1,h2,h3,h4,h5,h6')
 
-const Div = createInteractor('div')({
-  locator: (element) => element.id || "",
-});
+const Div = createInteractor('div')
+  .locator((element) => element.id || "")
 
-const Details = createInteractor<HTMLDetailsElement>('details')({
-  selector: 'details',
-  locator: (element) => element.querySelector('summary')?.textContent || ''
-});
+const Details = createInteractor<HTMLDetailsElement>('details')
+  .selector('details')
+  .locator((element) => element.querySelector('summary')?.textContent || '')
 
-const TextField = createInteractor<HTMLInputElement>('text field')({
-  selector: 'input',
-  locator: (element) => element.id,
-  filters: {
+const TextField = createInteractor<HTMLInputElement>('text field')
+  .selector('input')
+  .locator((element) => element.id)
+  .filters({
     placeholder: element => element.placeholder,
     enabled: {
       apply: (element) => !element.disabled,
       default: true
     },
     value: (element) => element.value
-  },
-  actions: {
+  })
+  .actions({
     fillIn: perform((element, value: string) => { element.value = value }),
     click: perform(element => { element.click() })
-  }
-});
+  })
 
-const Datepicker = createInteractor<HTMLDivElement>("datepicker")({
-  selector: "div.datepicker",
-  locator: element => element.querySelector("label")?.textContent || "",
-  filters: {
+const Datepicker = createInteractor<HTMLDivElement>("datepicker")
+  .selector("div.datepicker")
+  .locator(element => element.querySelector("label")?.textContent || "")
+  .filters({
     open: element => !!element.querySelector("div.calendar"),
     month: element => element.querySelector("div.calendar h4")?.textContent
-  },
-  actions: {
+  })
+  .actions({
     toggle: async interactor => {
       await interactor.find(TextField({ placeholder: "YYYY-MM-DD" })).click();
     }
-  }
-});
+  });
 
-const MainNav = createInteractor('main nav')({
-  selector: 'nav'
-});
+const MainNav = createInteractor('main nav')
+  .selector('nav')
 
 describe('@bigtest/interactor', () => {
   describe('.exists', () => {
