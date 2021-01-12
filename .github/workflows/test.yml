@@ -3,10 +3,10 @@ name: Test
 on:
   pull_request:
     branches:
-      - "v[0-9]+"
+      - 'v[0-9]+'
     paths-ignore:
-      - "website/**"
-      - "**.md"
+      - 'website/**'
+      - '**.md'
 
 jobs:
   prepack:
@@ -47,21 +47,7 @@ jobs:
       matrix:
         platform: [ubuntu-latest, windows-latest]
         # keeping platform as a single item so test-*.yml files can be identical except for this value
-        package:
-          [
-            agent,
-            cli,
-            effection,
-            logging,
-            bundler,
-            project,
-            server,
-            suite,
-            interactor,
-            todomvc,
-            atom,
-            webdriver,
-          ]
+        package: [agent, cli, effection, logging, bundler, project, server, suite, interactor, todomvc, atom, webdriver]
     steps:
       - uses: actions/checkout@v2
       - name: Get yarn cache directory path
@@ -109,4 +95,4 @@ jobs:
         with:
           working-directory: packages/interactor/
           start: yarn bigtest-todomvc 3000
-          wait-on: "http://localhost:3000"
+          wait-on: 'http://localhost:3000'
