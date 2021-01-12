@@ -1,4 +1,4 @@
-import { Context, fork, Operation } from 'effection';
+import { fork, Operation } from 'effection';
 import { getIndexedDBConfig } from './indexed-db-config';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
