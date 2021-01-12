@@ -1,4 +1,4 @@
-import { InteractorBuilder, InteractorSpecification, InteractorConstructor, Filters, Actions } from './specification';
+import { EmptyObject, InteractorBuilder, InteractorSpecification, InteractorConstructor, Filters, Actions } from './specification';
 import { createConstructor } from './constructor';
 
 /**
@@ -20,7 +20,7 @@ import { createConstructor } from './constructor';
  * @returns You will need to call the returned builder to create an interactor.
  */
 export function createInteractor<E extends Element>(name: string): InteractorBuilder<E> {
-  return function<F extends Filters<E> = {}, A extends Actions<E> = {}>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, F, A> {
+  return function<F extends Filters<E> = EmptyObject, A extends Actions<E> = EmptyObject>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, F, A> {
     return createConstructor(name, specification);
   }
 }
