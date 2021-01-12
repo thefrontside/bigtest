@@ -2,6 +2,7 @@
 
 import { bigtestGlobals } from '@bigtest/globals';
 import { converge } from './converge';
+import { makeBuilder } from './builder';
 import { InteractorOptions, ActionMethods, LocatorFn, InteractorConstructor, Interactor, Filters, Actions, FilterParams, InteractorSpecification } from './specification';
 import { Filter } from './filter';
 import { Locator } from './locator';
@@ -207,9 +208,5 @@ export function createConstructor<E extends Element, F extends Filters<E>, A ext
     return instantiateInteractor({ name, specification, filter, locator, ancestors: [] });
   }
 
-  return Object.assign(initInteractor, {
-    selector: () => { throw new Error('not implemented') },
-    filters: () => { throw new Error('not implemented') },
-    actions: () => { throw new Error('not implemented') },
-  });
+  return makeBuilder(initInteractor);
 }
