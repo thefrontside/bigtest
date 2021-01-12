@@ -68,7 +68,7 @@ export class Mailbox<T = any> {
     };
   }
 
-  *pipe(other: Mailbox<T>): Generator<Operation<unknown>> {
+  *pipe(other: Mailbox<T>): Operation<Context<void>> {
     let that = this; // eslint-disable-line @typescript-eslint/no-this-alias
     return yield spawn(function*(): Operation<unknown> {
       while(true) {
