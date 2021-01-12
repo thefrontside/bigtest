@@ -88,7 +88,7 @@ export const bigtestGlobals = {
     options().appUrl = value;
   },
 
-  reset() {
+  reset(): void {
     delete globalThis.__bigtest;
     delete globalThis.__bigtestManifest;
   }

@@ -33,7 +33,7 @@ const TestProjectOptions: OrchestratorAtomOptions = {
   }
 }
 
-export const getTestProjectOptions = (overrides: DeepPartial<OrchestratorAtomOptions> = {}) =>
+export const getTestProjectOptions = (overrides: DeepPartial<OrchestratorAtomOptions> = {}): OrchestratorAtomOptions =>
   merge(TestProjectOptions, overrides) as OrchestratorAtomOptions;
 
 export const actions = {
@@ -43,7 +43,7 @@ export const actions = {
     return currentWorld.fork(operation);
   },
 
-  receive(mailbox: Mailbox, pattern: unknown) {
+  receive(mailbox: Mailbox, pattern: unknown): Context {
     return actions.fork(mailbox.receive(pattern));
   },
 
@@ -51,7 +51,7 @@ export const actions = {
     return actions.fork(currentWorld.fetch(resource, init));
   },
 
-  async createAgent(agentId: string) {
+  async createAgent(agentId: string): Promise<Agent> {
     // the types are broken in the 'websocket' package.... the `w3cwebsocket` class
     // _is_ in fact an EventTarget, but it is not declared as such. So we have
     // to dynamically cast it.
@@ -65,7 +65,7 @@ export const actions = {
     }));
   },
 
-  updateApp(appOptions: AppOptions) {
+  updateApp(appOptions: AppOptions): void {
     actions.atom
       .slice("appService", "options")
       .update(() => appOptions);
@@ -75,7 +75,7 @@ export const actions = {
       .update(() => appOptions);
   },
 
-  async startOrchestrator() {
+  async startOrchestrator(): Promise<any> {
     if(!orchestratorPromise) {
       let delegate = new Mailbox();
 

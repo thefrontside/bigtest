@@ -27,7 +27,7 @@ const defaultLocator: LocatorFn<Element> = (element) => element.textContent || "
  * @returns You will need to call the returned builder to create an interactor.
  */
 export function createInteractor<E extends Element>(interactorName: string): InteractorBuilder<E> {
-  return function<F extends Filters<E> = {}, A extends Actions<E> = {}>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, F, A> {
+  return function<F extends Filters<E> = Record<string, never>, A extends Actions<E> = Record<string, never>>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, F, A> {
     let InteractorClass = class extends Interactor<E, F, A> {};
 
     for(let [actionName, action] of Object.entries(specification.actions || {})) {

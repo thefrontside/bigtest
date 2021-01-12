@@ -8,14 +8,14 @@ interface Options {
 export class AgentServerConfig {
   constructor(public options: Options) {}
 
-  url() {
+  url(): string {
     let url = new URL('http://localhost');
     url.port = this.options.port.toString();
     url.pathname = this.options.prefix || '/';
     return url.toString();
   }
 
-  agentUrl(connectionUrl: string, agentId?: string) {
+  agentUrl(connectionUrl: string, agentId?: string): string {
     let url = new URL(this.url());
     url.pathname = url.pathname + 'index.html';
     url.searchParams.append('connectTo', connectionUrl);
@@ -25,11 +25,11 @@ export class AgentServerConfig {
     return url.toString();
   }
 
-  harnessUrl() {
+  harnessUrl(): string {
     return `${this.url()}harness.js`;
   }
 
-  appDir() {
+  appDir(): string {
     return Path.join(__dirname, '../app');
   }
 }

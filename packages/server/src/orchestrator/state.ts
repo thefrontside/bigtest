@@ -53,10 +53,8 @@ export type ServiceStatus = {
   type: string;
 };
 
-export type ServiceState<S extends ServiceStatus, O> = {
-  options: O;
-  status: S;
-};
+export type ServiceState<S extends ServiceStatus, O = never> =
+  [O] extends [never] ? { status: S } : { status: S; options: O }
 
 export type Service<S extends ServiceStatus, O> = {
   (state: Slice<ServiceState<S, O>>): Operation<void>;
@@ -139,9 +137,9 @@ export type OrchestratorState = {
   bundler: BundlerState;
   testRuns: Record<string, TestRunState>;
   manifestGenerator: ServiceState<ManifestGeneratorStatus, ManifestGeneratorOptions>;
-  manifestServer: ServiceState<ManifestServerStatus, {}>;
+  manifestServer: ServiceState<ManifestServerStatus>;
   appService: ServiceState<AppServiceStatus, AppOptions>;
   proxyService: ServiceState<ProxyStatus, ProxyOptions>;
-  connectionService: ServiceState<ConnectionStatus, {}>;
-  commandService: ServiceState<CommandStatus, {}>;
+  connectionService: ServiceState<ConnectionStatus>;
+  commandService: ServiceState<CommandStatus>;
 }

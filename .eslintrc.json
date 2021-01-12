@@ -1,8 +1,6 @@
 {
   "extends": "@frontside",
   "rules": {
-    "@typescript-eslint/ban-types": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off",
     "eol-last": "off",
     "@typescript-eslint/no-extra-semi": "off",
     "no-multi-spaces": "off",

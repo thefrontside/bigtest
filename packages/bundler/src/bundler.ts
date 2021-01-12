@@ -1,6 +1,6 @@
 import { Operation, resource, timeout } from 'effection';
 import { on } from '@effection/events';
-import { Subscribable, SymbolSubscribable } from '@effection/subscription';
+import { Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
 import { Channel } from '@effection/channel';
 import { watch, rollup, OutputOptions, InputOptions, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'rollup';
 import { defaultTSConfig } from '@bigtest/project';
@@ -94,7 +94,7 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
 
   constructor(public options: BundleOptions) {};
 
-  [SymbolSubscribable]() {
+  [SymbolSubscribable](): Operation<Subscription<BundlerMessage, undefined>> {
     return this.channel[SymbolSubscribable]();
   }
 

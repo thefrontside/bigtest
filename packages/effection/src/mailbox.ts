@@ -1,4 +1,4 @@
-import { Operation, spawn, fork, resource } from 'effection';
+import { Operation, spawn, fork, resource, Context } from 'effection';
 import { EventEmitter } from 'events';
 
 import { compile } from './pattern';
@@ -36,11 +36,11 @@ export class Mailbox<T = any> {
     });
   }
 
-  setMaxListeners(value: number) {
+  setMaxListeners(value: number): void {
     this.subscriptions.setMaxListeners(value);
   }
 
-  send(message: T) {
+  send(message: T): void {
     this.messages.add(message);
     setTimeout(() => this.subscriptions.emit('message', message), 0);
   }
@@ -68,7 +68,7 @@ export class Mailbox<T = any> {
     };
   }
 
-  *pipe(other: Mailbox<T>) {
+  *pipe(other: Mailbox<T>): Operation<Context<void>> {
     let that = this; // eslint-disable-line @typescript-eslint/no-this-alias
     return yield spawn(function*(): Operation<unknown> {
       while(true) {

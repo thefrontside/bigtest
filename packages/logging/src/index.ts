@@ -9,14 +9,14 @@ const HIDDEN_LOGS = {
 
 const { debug, log, warn, error } = console;
 
-export function resetLogLevel() {
+export function resetLogLevel(): void {
   console.debug = debug
   console.log = log
   console.warn = warn
   console.error = error
 }
 
-export function setLogLevel(level: Levels) {
+export function setLogLevel(level: Levels): void {
   resetLogLevel();
   HIDDEN_LOGS[level].forEach((level) => {
     console[level as Levels] = function() {

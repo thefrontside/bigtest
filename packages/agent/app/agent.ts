@@ -2,8 +2,9 @@ import { parse } from 'bowser';
 import { QueryParams } from './query-params';
 import { Agent } from '../shared/agent';
 import { run } from './runner';
+import { Operation } from 'effection';
 
-export function* createAgent(queryParams: QueryParams) {
+export function* createAgent(queryParams: QueryParams): Operation<void> {
   console.log('[agent] connecting to', queryParams.connectTo);
 
   let createSocket = () => new WebSocket(queryParams.connectTo);

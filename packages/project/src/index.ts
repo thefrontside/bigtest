@@ -3,6 +3,8 @@ import { DriverSpec } from '@bigtest/driver';
 import path from 'path';
 import { existsSync } from 'fs';
 import fs from 'fs';
+import type { CompilerOptions } from 'typescript';
+import { ScriptTarget } from 'typescript';
 
 const { readFile } = fs.promises;
 
@@ -131,11 +133,11 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
   }
 };
 
-export function defaultTSConfig() {
+export function defaultTSConfig(): {compilerOptions: Pick<CompilerOptions, 'skipLibCheck' | 'target' | 'lib'>} {
   return {
     compilerOptions: {
       skipLibCheck: true,
-      target: "es6",
+      target: "es6" as unknown as ScriptTarget,
       lib: ["esnext", "dom"]
     }
   }

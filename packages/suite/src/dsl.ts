@@ -8,7 +8,7 @@ import { TestImplementation, Context, Step, Assertion } from './interfaces';
  * @param description The description to apply to the test, a human readable text which describes the test's purpose.
  * @typeParam C test steps and assertions receive a context as an argument, and can extend this context through their return values, the context usually starts out empty.
  */
-export function test<C extends Context = {}>(description: string): TestBuilder<C> {
+export function test<C extends Context = Record<string, unknown>>(description: string): TestBuilder<C> {
   return new TestBuilder<C>({
     description,
     steps: [],
