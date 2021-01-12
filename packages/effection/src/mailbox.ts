@@ -1,4 +1,4 @@
-import { Operation, spawn, fork, resource } from 'effection';
+import { Operation, spawn, fork, resource, Context } from 'effection';
 import { EventEmitter } from 'events';
 
 import { compile } from './pattern';
