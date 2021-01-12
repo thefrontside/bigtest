@@ -35,7 +35,7 @@ async function populate(message) {
 };
 
 function* migrate(messages) {
-  yield spin(messages, function*() {
+  yield spin(messages.before, function*() {
     const lockfile = yarn ? 'yarn.lock' : 'package-lock.json';
     yield rmrf(`${TARGET_DIR}/${lockfile}`);
     yield rmrf(`${TARGET_DIR}/package.json`);
@@ -67,11 +67,11 @@ function* migrate(messages) {
     yield rmrf(`${TARGET_DIR}/node_modules/`);
   });
 
-  console.log(formatSuccess(messages[1]));
+  console.log(formatSuccess(messages.after));
 };
 
 function* install(messages) {
-  yield spin(messages, function* (){
+  yield spin(messages.before, function* (){
     let command = yarn ? 'yarn' : 'npm';
     const install = spawn(command, ['install'], {
       cwd: TARGET_DIR,
@@ -82,14 +82,14 @@ function* install(messages) {
       throw new MainError({ message: `${formatErr('Error while installing')}`});
     }
   });
-  console.log(formatSuccess(messages[1]));
+  console.log(formatSuccess(messages.after));
 };
 
 function* clean(e, messages){
-  yield spin(messages, function*(){
+  yield spin(messages.before, function*(){
     yield rmrf(TARGET_DIR);
   });
-  console.log(formatSuccess(messages[1]));
+  console.log(formatSuccess(messages.after));
   throw new MainError({ message: e.message })
 };
 
