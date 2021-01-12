@@ -1,5 +1,6 @@
 import { EmptyObject, InteractorSpecificationBuilder, InteractorSpecification, InteractorConstructor, Filters, Actions } from './specification';
 import { createConstructor } from './constructor';
+import { makeBuilder } from './builder';
 
 /**
  * Create a custom interactor. Due to TypeScript inference issues, this creates an
@@ -23,9 +24,5 @@ export function createInteractor<E extends Element>(name: string): InteractorSpe
   let cons = function<F extends Filters<E> = EmptyObject, A extends Actions<E> = EmptyObject>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, F, A> {
     return createConstructor(name, specification);
   }
-  return Object.assign(cons, {
-    selector: () => { throw new Error('not implemented') },
-    filters: () => { throw new Error('not implemented') },
-    actions: () => { throw new Error('not implemented') },
-  });
+  return makeBuilder(cons);
 }
