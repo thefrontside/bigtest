@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const rmrf = require('rmfr');
+const rmrfsync = require('rimraf').sync;
 const spawn = require('cross-spawn');
 const { main, MainError } = require('@effection/node');
 const { once } = require('@effection/events');
@@ -85,24 +86,21 @@ function* install(messages) {
   console.log(formatSuccess(messages.after));
 };
 
-function* clean(e, messages){
-  yield spin(messages.before, function*(){
-    yield rmrf(TARGET_DIR);
-  });
-  console.log(formatSuccess(messages.after));
-  throw new MainError({ message: e.message })
-};
-
 function* run() {
+  let rollback = true;
   yield populate(messages.creating_dir);
   try {
     yield install(messages.downloading_repo);
     yield migrate(messages.organizing_files);
     yield install(messages.installing_dep);
     console.log(messages.success);
-  } catch(e) {
-    yield clean(e, messages.deleting);
-  };
+    rollback = false;
+  } finally {
+    if(rollback){
+      rmrfsync(TARGET_DIR);
+      console.log(formatSuccess(messages.cleanup));
+    }
+  }
 };
 
 main(run);
