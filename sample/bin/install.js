@@ -3,7 +3,7 @@ const { subscribe } = require('@effection/subscription');
 const { spawn } = require('effection');
 const { yarn } = require('./constants');
 
-function* install({ cwd, stdio = 'ignore' }) {  
+function* install({ cwd, stdio }) {  
   let command = yarn ? 'yarn' : 'npm';
   let install = yield exec(`${command} install`, { cwd });
   if(stdio === 'inherit'){
