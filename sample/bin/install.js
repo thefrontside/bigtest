@@ -11,6 +11,10 @@ function* install({ cwd, stdio }) {
       process.stdout.write(data);
       return Promise.resolve();
     }));
+    yield spawn(subscribe(install.stderr).forEach((data) => {
+      process.stderr.write(data);
+      return Promise.resolve();
+    }));
   };
   yield install.expect();
 };
