@@ -247,7 +247,7 @@ export interface InteractorConstructor<E extends Element, F extends Filters<E>, 
  *
  * @typeParam E The type of DOM Element that this interactor operates on. By specifying the element type, actions and filters defined for the interactor can be type checked against the actual element type.
  */
-export interface InteractorSpecificationBuilder<E extends Element> extends InteractorBuilder<E, {}, {}> {
+export interface InteractorSpecificationBuilder<E extends Element> extends InteractorBuilder<E, EmptyObject, EmptyObject> {
   /**
    * Calling the builder will create an interactor.
    *
