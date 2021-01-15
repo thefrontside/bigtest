@@ -18,10 +18,15 @@ function* start() {
     args.push(...process.argv.slice(port, port + 2))
   };
 
-  let { stdout } = yield daemon(`${command} ${args.join(' ')}`);
+  let { stdout, stderr } = yield daemon(`${command} ${args.join(' ')}`);
 
   yield spawn(subscribe(stdout).forEach((data) => {
     process.stdout.write(data);
+    return Promise.resolve();
+  }));
+  
+  yield spawn(subscribe(stderr).forEach((data) => {
+    process.stderr.write(data);
     return Promise.resolve();
   }));
 
