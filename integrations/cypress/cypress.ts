@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /// <reference types="cypress" />
 import { bigtestGlobals, RunnerState } from '@bigtest/globals';
-import { Interaction, ReadonlyInteraction } from '../interaction';
+import { Interaction, ReadonlyInteraction } from '@bigtest/interactor';
 
 declare global {
   namespace Cypress {
