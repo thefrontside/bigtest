@@ -7,9 +7,10 @@
     "declarationDir": "dist"
   },
   "include": [
-    "src/**/*.ts"
+    "src/*.ts"
   ],
   "references": [
-    { "path": "../globals" }
+    { "path" : "../../packages/interactor" },
+    { "path" : "../../packages/globals" }
   ]
 }
