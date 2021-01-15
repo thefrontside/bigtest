@@ -1,4 +1,4 @@
-import { TextField, Heading } from '../../../../src/';
+import { TextField, Heading } from '../../src/index';
 
 describe('Cypress with Interactors', () => {
   beforeEach(() => {
