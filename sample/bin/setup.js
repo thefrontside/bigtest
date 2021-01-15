@@ -4,12 +4,14 @@ const { main, MainError } = require('@effection/node');
 const rmrfsync = require('rimraf').sync;
 const fs = require('fs');
 const fsp = fs.promises;
+const path = require('path');
 
-const { 
-  messages, TARGET_DIR, SOURCE_DIR, startScript
-} = require('./constants');
+const { messages } = require('./constants');
 const { formatErr, formatSuccess, spin } = require('./console-helpers');
 const { install } = require('./install');
+
+const SOURCE_DIR = path.dirname(__dirname);
+const TARGET_DIR = `${process.cwd()}/'bigtest-sample'`;
 
 async function createDirectory(message) {
   if (fs.existsSync(TARGET_DIR)) {
@@ -32,7 +34,7 @@ function* migrate(messages) {
           babel, jest
         } = require(`${SOURCE_DIR}/${file}`);
   
-        scripts.start = startScript;
+        scripts.start = 'parcel src/index.html';
   
         const pkgjson = {
           name, version, private: true, description, repository, author, 
