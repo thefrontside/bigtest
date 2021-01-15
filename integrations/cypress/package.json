@@ -1,47 +1,35 @@
 {
-  "name": "@bigtest/interactor",
-  "version": "0.23.0",
-  "description": "Interactors for working with applications",
-  "main": "dist/cjs/index.js",
-  "browser": "dist/esm/index.js",
-  "types": "dist/index.d.ts",
+  "name": "@bigtest/cypress",
+  "version": "0.0.1",
+  "description": "Cypress Integration for BigTest Interactors",
+  "main": "cypress.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "cypress.ts",
     "README.md"
   ],
+  "dependencies": {
+    "@bigtest/globals": "^0.7.3",
+    "@bigtest/interactor": "^0.23.0",
+    "cypress": "^5.6.0"
+  },
   "scripts": {
     "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{src,test}/**/*.ts\"",
-    "mocha": "mocha -r ts-node/register",
-    "test:unit": "mocha -r ts-node/register \"test/**/*.test.ts\"",
+    "test:unit": "yarn bigtest-todomvc 3000 & wait-on http://localhost:3000 & yarn cypress run --spec 'test/integrations/cypress/integration/*.spec.ts'",
     "test:types": "dtslint types --localTs ../../node_modules/typescript/lib --expectOnly",
     "test": "yarn test:unit && yarn test:types",
     "prepack": "tsc --build && tsc --outdir dist/esm --module es2015 && tsc --outdir dist/cjs --module commonjs"
   },
-  "dependencies": {
-    "@bigtest/globals": "^0.7.3",
-    "@bigtest/performance": "^0.5.0",
-    "change-case": "^4.1.1",
-    "element-is-visible": "^1.0.0",
-    "lodash.isequal": "^4.5.0"
-  },
   "devDependencies": {
+    "@bigtest/todomvc": "^0.5.6",
     "@frontside/eslint-config": "^2.0.0",
     "@frontside/tsconfig": "^1.2.0",
     "@frontside/typescript": "^1.1.1",
-    "@types/jsdom": "^16.2.3",
-    "@types/lodash.isequal": "^4.5.5",
-    "@types/mocha": "^7.0.1",
-    "@types/node": "^13.13.4",
     "dtslint": "^4.0.5",
-    "expect": "^24.9.0",
-    "express": "^4.17.1",
-    "jsdom": "^16.2.2",
-    "mocha": "^6.2.2",
+    "start-server-and-test": "^1.11.7",
     "ts-node": "^9.1.1"
   },
   "volta": {
