@@ -1,8 +1,7 @@
-import { Interactor } from "./interactor";
-import { Filters, Actions } from "./specification";
+import { Interactor, FiltersImplementation } from './specification';
 
-export function perform<E extends Element, F extends Filters<E>, A extends Actions<E>, T extends unknown[]>(fn: (element: E, ...args: T) => void) {
-  return async (interactor: Interactor<E, F, A>, ...args: T): Promise<void> => {
+export function perform<E extends Element, F extends FiltersImplementation, T extends unknown[]>(fn: (element: E, ...args: T) => void): (interactor: Interactor<E, F>, ...args: T) => Promise<void> {
+  return async (interactor: Interactor<E, F>, ...args: T) => {
     return await interactor.perform(element => {
       fn(element, ...args);
     });
