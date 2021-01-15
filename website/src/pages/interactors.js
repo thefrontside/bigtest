@@ -98,7 +98,7 @@ function Interactors() {
   return (
     <Layout
       title="Interactors"
-      description="Test your app as a person uses it">
+      description="Test your app as real people use it">
       <header>
         <div className={clsx("container", styles.heroContainer)}>
           <div className={styles.heroText}>
