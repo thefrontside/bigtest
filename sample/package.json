@@ -19,20 +19,21 @@
     "sample": "./bin/setup.js"
   },
   "dependencies": {
-    "chalk": "^4.1.0"
+    "@effection/events": "^0.7.8",
+    "@effection/node": "^0.9.1",
+    "@effection/subscription": "^0.11.1",
+    "chalk": "^4.1.0",
+    "effection": "^0.7.0",
+    "rimraf": "^3.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-react": "^7.12.10",
-    "@effection/events": "^0.7.8",
-    "@effection/node": "^0.9.1",
-    "@effection/subscription": "^0.11.1",
     "@testing-library/react": "^11.1.0",
     "babel-jest": "^26.6.3",
     "bigtest": "*",
     "cypress": "^6.0.1",
-    "effection": "^0.7.0",
     "eslint": "^7.17.0",
     "eslint-plugin-cypress": "^2.11.2",
     "jest": "^26.6.3",
@@ -41,8 +42,6 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-test-renderer": "^17.0.1",
-    "rimraf": "^3.0.2",
-    "rmfr": "^2.0.0",
     "start-server-and-test": "^1.11.6",
     "ts-jest": "^26.4.4"
   },
