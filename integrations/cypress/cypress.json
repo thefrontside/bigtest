@@ -3,11 +3,11 @@
   "video": false,
   "screenshotOnRunFailure": false,
   "defaultCommandTimeout": 20000,
-  "fixturesFolder": "test/integrations/cypress/fixtures",
-  "integrationFolder": "test/integrations/cypress/integration",
-  "pluginsFile": "test/integrations/cypress/plugins/index.js",
-  "screenshotsFolder": "test/integrations/cypress/screenshots",
-  "videosFolder": "test/integrations/cypress/videos",
-  "supportFile": "test/integrations/cypress/support/index.js",
-  "configFile": "test/integrations/cypress/tsconfig.json"
+  "fixturesFolder": "cypress/fixtures",
+  "integrationFolder": "cypress/integration",
+  "pluginsFile": "cypress/plugins/index.js",
+  "screenshotsFolder": "cypress/screenshots",
+  "videosFolder": "cypress/videos",
+  "supportFile": "cypress/support/index.js",
+  "configFile": "cypress/tsconfig.json"
 }
