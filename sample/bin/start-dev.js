@@ -5,7 +5,6 @@ const { spawn } = require('effection');
 const { subscribe } = require('@effection/subscription');
 const fs = require('fs');
 const fsp = fs.promises;
-const rmrf = require('rmfr');
 
 const { install } = require('./install');
 const { yarn } = require('./constants');
@@ -13,16 +12,17 @@ const { yarn } = require('./constants');
 function* dev() {
   let command = yarn ? 'yarn' : 'npx';
 
-  let port;
-  let args = ['--cwd app start'];
-
+  let appStartScript = JSON.parse(fs.readFileSync('./app-pkg.json')).scripts.start;
+  let args = [appStartScript];
+  
+  let portIndex;
   if(process.argv.includes('-p')){
-    port = process.argv.indexOf('-p');
-    args.push(...process.argv.slice(port, port + 2))
+    portIndex = process.argv.indexOf('-p');
+    args.push(...process.argv.slice(portIndex, portIndex + 2))
   };
 
-  yield fsp.copyFile('app/app-pkg.json', 'app/package.json');
-  yield install({ cwd: 'app/', stdio: 'inherit' });
+  yield fsp.copyFile('app-pkg.json', 'package.json');
+  yield install({ stdio: 'inherit' });
 
   let { stdout, stderr } = yield daemon(`${command} ${args.join(' ')}`);
 
