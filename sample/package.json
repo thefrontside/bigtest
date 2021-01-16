@@ -6,7 +6,7 @@
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "scripts": {
-    "start": "node bin/start-dev.js -Y -p 3333",
+    "start": "cd app && node ../bin/start-dev.js -p 3333",
     "lint": "echo no-op",
     "test:jest": "yarn --cwd app/ test:jest",
     "test:cypress": "yarn --cwd app/ test:cypress",
@@ -21,8 +21,7 @@
     "@effection/subscription": "^0.11.1",
     "chalk": "^4.1.0",
     "effection": "^0.7.0",
-    "rimraf": "^3.0.2",
-    "rmfr": "^2.0.0"
+    "rimraf": "^3.0.2"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^2.0.0",
