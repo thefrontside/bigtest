@@ -5,18 +5,15 @@
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
-  "main": "index.js",
   "scripts": {
-    "start": "node bin/start.js -Y -p 3333",
-    "build": "parcel build src/index.html --no-cache",
+    "start": "node bin/start-dev.js -Y -p 3333",
     "lint": "echo no-op",
-    "cypress:run": "yarn cypress run --spec 'src/test/cypress.spec.js'",
-    "test:jest": "jest 'src/test/jest.test.js'",
-    "test:cypress": "start-server-and-test 'yarn start -p 3000' http://localhost:3000 cypress:run",
-    "test:bigtest": "yarn bigtest ci"
+    "test:jest": "yarn --cwd app/ test:jest",
+    "test:cypress": "yarn --cwd app/ test:cypress",
+    "test:bigtest": "yarn --cwd app/ test:bigtest"
   },
   "bin": {
-    "sample": "./bin/setup.js"
+    "sample": "./bin/create-sample-app.js"
   },
   "dependencies": {
     "@effection/events": "^0.7.8",
@@ -24,56 +21,17 @@
     "@effection/subscription": "^0.11.1",
     "chalk": "^4.1.0",
     "effection": "^0.7.0",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "rmfr": "^2.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
-    "@babel/preset-react": "^7.12.10",
-    "@testing-library/react": "^11.1.0",
-    "babel-jest": "^26.6.3",
-    "bigtest": "*",
-    "cypress": "^6.0.1",
-    "eslint": "^7.17.0",
-    "eslint-plugin-cypress": "^2.11.2",
-    "jest": "^26.6.3",
-    "jest-css-modules-transform": "^4.1.0",
-    "parcel": "^1.12.4",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-test-renderer": "^17.0.1",
-    "start-server-and-test": "^1.11.6",
-    "ts-jest": "^26.4.4"
+    "@frontside/eslint-config": "^2.0.0",
+    "eslint": "^7.18.0"
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "plugin:cypress/recommended"
+      "@frontside/eslint-config"
     ]
-  },
-  "browserslist": [
-    "defaults",
-    "not op_mob > 1"
-  ],
-  "babel": {
-    "presets": [
-      [
-        "@babel/preset-env",
-        {
-          "targets": {
-            "node": true
-          }
-        }
-      ],
-      "@babel/preset-react"
-    ]
-  },
-  "jest": {
-    "preset": "ts-jest/presets/js-with-babel",
-    "transform": {
-      "^.+\\.js$": "babel-jest",
-      ".+\\.(css|styl|less|sass|scss)$": "jest-css-modules-transform"
-    }
   },
   "volta": {
     "node": "12.16.0",
