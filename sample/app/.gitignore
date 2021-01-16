@@ -1,0 +1,5 @@
+.bigtest
+.cache
+dist
+node_modules
+package.json
