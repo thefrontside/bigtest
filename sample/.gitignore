@@ -1,3 +1,4 @@
 .bigtest
 .cache
-.dist
+dist
+app/package.json
