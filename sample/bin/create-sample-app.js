@@ -10,8 +10,8 @@ const { messages } = require('./constants');
 const { formatErr, formatSuccess, spin } = require('./console-helpers');
 const { install } = require('./install');
 
-const SOURCE_DIR = path.dirname(__dirname);
-const TARGET_DIR = `${process.cwd()}/'bigtest-sample'`;
+const SOURCE_DIR = `${path.dirname(__dirname)}/app`;
+const TARGET_DIR = `${process.cwd()}/bigtest-sample`;
 
 async function createDirectory(message) {
   if (fs.existsSync(TARGET_DIR)) {
@@ -26,24 +26,10 @@ async function createDirectory(message) {
 
 function* migrate(messages) {
   yield spin(messages.before, function* () {  
-    yield fsp.readdir(SOURCE_DIR).then(files => files.forEach(file => {
-      if(file === 'package.json'){
-        const {
-          name, version, description, repository, author, license, 
-          main, scripts, devDependencies, eslintConfig, browserslist,
-          babel, jest
-        } = require(`${SOURCE_DIR}/${file}`);
-  
-        scripts.start = 'parcel src/index.html';
-  
-        const pkgjson = {
-          name, version, private: true, description, repository, author, 
-          license, main, scripts, devDependencies, eslintConfig, browserslist,
-          babel, jest
-        };
-  
-        fs.writeFileSync(`${TARGET_DIR}/package.json`, JSON.stringify(pkgjson, null, 2));
-      } else if(file !== 'bin') {
+    yield fsp.readdir(SOURCE_DIR).then(files => files.forEach((file) => {
+      if(file === 'app-pkg.json'){
+        fs.renameSync(`${SOURCE_DIR}/app-pkg.json`, `${TARGET_DIR}/package.json`);
+      } else {
         fs.renameSync(`${SOURCE_DIR}/${file}`, `${TARGET_DIR}/${file}`);
       };
     }));
