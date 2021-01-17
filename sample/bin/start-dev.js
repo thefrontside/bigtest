@@ -5,12 +5,10 @@ const { spawn } = require('effection');
 const { subscribe } = require('@effection/subscription');
 const fs = require('fs');
 const fsp = fs.promises;
-
 const { install } = require('./install');
-const { yarn } = require('./constants');
 
 function* dev() {
-  let command = yarn ? 'yarn' : 'npx';
+  let command = process.argv.includes('-Y') || process.argv.includes('-yarn') ? 'yarn' : 'npx';
 
   let appStartScript = JSON.parse(fs.readFileSync('./app-pkg.json')).scripts.start;
   let args = [appStartScript];
