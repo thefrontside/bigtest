@@ -1,0 +1,39 @@
+{
+  "name": "bigtest-sample",
+  "version": "0.0.3",
+  "description": "BigTest Sample App",
+  "repository": "https://github.com/thefrontside/bigtest.git",
+  "author": "Frontside Engineering <engineering@frontside.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "cd app && node ../bin/start-dev.js -p 3333",
+    "lint": "echo no-op",
+    "test:jest": "yarn --cwd app/ test:jest",
+    "test:cypress": "yarn --cwd app/ test:cypress",
+    "test:bigtest": "yarn --cwd app/ test:bigtest"
+  },
+  "bin": {
+    "sample": "./bin/create-sample-app.js"
+  },
+  "dependencies": {
+    "@effection/events": "^0.7.8",
+    "@effection/node": "^0.9.1",
+    "@effection/subscription": "^0.11.1",
+    "chalk": "^4.1.0",
+    "effection": "^0.7.0",
+    "rimraf": "^3.0.2"
+  },
+  "devDependencies": {
+    "@frontside/eslint-config": "^2.0.0",
+    "eslint": "^7.18.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@frontside/eslint-config"
+    ]
+  },
+  "volta": {
+    "node": "12.16.0",
+    "yarn": "1.19.1"
+  }
+}
