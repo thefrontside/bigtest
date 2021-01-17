@@ -1,6 +1,5 @@
 const chalk = require('chalk');
-const yarn = process.argv.includes('-Y') || process.argv.includes('-yarn') ? true : false;
-const command = yarn ? 'yarn': 'npm run';
+const command = process.argv.includes('-Y') || process.argv.includes('-yarn') ? 'yarn' : 'npm run';
 
 const messages = {
   creating_dir: chalk.green('Directory created'),
@@ -18,6 +17,5 @@ const messages = {
 };
 
 module.exports = {
-  messages,
-  yarn
+  messages
 };

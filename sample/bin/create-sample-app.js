@@ -6,7 +6,7 @@ const fs = require('fs');
 const fsp = fs.promises;
 const path = require('path');
 
-const { messages } = require('./constants');
+const { messages } = require('./messages');
 const { formatErr, formatSuccess, spin } = require('./console-helpers');
 const { install } = require('./install');
 
