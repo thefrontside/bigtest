@@ -7,7 +7,7 @@ on:
 
 defaults:
   run:
-    working-directory: integrations/
+    working-directory: ./integrations/
 
 jobs:
   create-release-pr:
@@ -17,6 +17,8 @@ jobs:
     - uses: actions/checkout@v1
     - name: Install Dependencies
       run: yarn
+    - run: ls
+    - run: pwd
     - name: Create Release Pull Request
       uses: changesets/action@master
       with:
