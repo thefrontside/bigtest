@@ -4,13 +4,14 @@ on:
   push:
     branches:
       - 'v[0-9]+'
-    paths-ignore:
-      - 'integrations/**'
 
 jobs:
   create-release-pr:
     name: Create Changeset PR
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: integrations/
     steps:
     - uses: actions/checkout@v1
     - name: Install Dependencies
