@@ -4,7 +4,7 @@
   "commit": false,
   "linked": [],
   "access": "restricted",
-  "baseBranch": "cypress-dog-house",
+  "baseBranch": "v0",
   "updateInternalDependencies": "patch",
   "ignore": []
 }
