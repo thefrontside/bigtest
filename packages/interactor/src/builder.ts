@@ -16,5 +16,8 @@ export function makeBuilder<T, E extends Element, FP extends FilterParams<any, a
     actions: <AR extends Actions<E>>(actions: AR): InteractorConstructor<E, FP, AM & ActionMethods<E, AR>> => {
       return createConstructor(name, { ...specification, actions: Object.assign({}, specification.actions, actions) });
     },
+    extend: <ER extends Element = E>(newName: string): InteractorConstructor<ER, FP, AM> => {
+      return createConstructor(newName, specification) as unknown as InteractorConstructor<ER, FP, AM>;
+    },
   });
 }

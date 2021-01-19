@@ -190,6 +190,7 @@ export interface InteractorBuilder<E extends Element, FP extends FilterParams<an
   locator(value: LocatorFn<E>): InteractorConstructor<E, FP, AM>;
   filters<FR extends Filters<E>>(filters: FR): InteractorConstructor<E, FP & FilterParams<E, FR>, AM>;
   actions<AR extends Actions<E>>(actions: AR): InteractorConstructor<E, FP, AM & ActionMethods<E, AR>>;
+  extend<ER extends Element = E>(name: string): InteractorConstructor<ER, FP, AM>;
 }
 
 /**
