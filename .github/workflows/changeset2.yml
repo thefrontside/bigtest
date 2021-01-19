@@ -3,7 +3,7 @@ name: Changeset
 on:
   push:
     branches:
-      - 'v[0-9]+'
+      - 'cypress-dog-house'
 
 jobs:
   create-release-pr:
@@ -18,5 +18,7 @@ jobs:
       run: yarn
     - name: Create Release Pull Request
       uses: changesets/action@master
+      with:
+        title: Test integrations changeset
       env:
         GITHUB_TOKEN: ${{ secrets.FRONTSIDEJACK_GITHUB_TOKEN }}
