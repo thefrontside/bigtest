@@ -2,6 +2,7 @@
 
 import { bigtestGlobals } from '@bigtest/globals';
 import { converge } from './converge';
+import { makeBuilder } from './builder';
 import { InteractorOptions, ActionMethods, LocatorFn, InteractorConstructor, Interactor, Filters, Actions, FilterParams, InteractorSpecification } from './specification';
 import { Filter } from './filter';
 import { Locator } from './locator';
@@ -196,7 +197,7 @@ export function createConstructor<E extends Element, F extends Filters<E>, A ext
   name: string,
   specification: InteractorSpecification<E, F, A>,
 ): InteractorConstructor<E, F, A> {
-  return function initInteractor(...args: any[]) {
+  function initInteractor(...args: any[]) {
     let locator, filter;
     if(typeof(args[0]) === 'string') {
       locator = new Locator(specification.locator || defaultLocator, args[0]);
@@ -206,4 +207,6 @@ export function createConstructor<E extends Element, F extends Filters<E>, A ext
     }
     return instantiateInteractor({ name, specification, filter, locator, ancestors: [] });
   }
+
+  return makeBuilder(initInteractor, name, specification);
 }
