@@ -1,5 +1,15 @@
 # @bigtest/globals
 
+## 0.7.4
+
+### Patch Changes
+
+- 4d7c43f9: enable eslint rules from the latest @typescript-eslint/recommended
+- d85e5e95: upgrade eslint, typescript and @frontside packages
+- Updated dependencies [4d7c43f9]
+- Updated dependencies [d85e5e95]
+  - @bigtest/suite@0.11.2
+
 ## 0.7.3
 
 ### Patch Changes

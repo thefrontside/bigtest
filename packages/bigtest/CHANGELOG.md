@@ -1,5 +1,23 @@
 # bigtest
 
+## 0.8.0
+
+### Minor Changes
+
+- d39028e2: implement typescript project references in all packages that have a compiled output
+
+### Patch Changes
+
+- d85e5e95: upgrade eslint, typescript and @frontside packages
+- Updated dependencies [74f4b33c]
+- Updated dependencies [4d7c43f9]
+- Updated dependencies [06f915b0]
+- Updated dependencies [0aed40e9]
+- Updated dependencies [d85e5e95]
+  - @bigtest/cli@0.17.0
+  - @bigtest/interactor@0.24.0
+  - @bigtest/suite@0.11.2
+
 ## 0.7.0
 
 ### Minor Changes

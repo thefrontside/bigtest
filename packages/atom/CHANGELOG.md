@@ -1,5 +1,16 @@
 # @bigtest/atom
 
+## 0.12.0
+
+### Minor Changes
+
+- d39028e2: implement typescript project references in all packages that have a compiled output
+
+### Patch Changes
+
+- 4d7c43f9: enable eslint rules from the latest @typescript-eslint/recommended
+- d85e5e95: upgrade eslint, typescript and @frontside packages
+
 ## 0.11.0
 
 ### Minor Changes

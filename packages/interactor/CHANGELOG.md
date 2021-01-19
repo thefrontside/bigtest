@@ -1,5 +1,20 @@
 # @bigtest/interactor
 
+## 0.24.0
+
+### Minor Changes
+
+- 0aed40e9: Extract cypress integration out of interactor as a standalone package
+
+### Patch Changes
+
+- 4d7c43f9: enable eslint rules from the latest @typescript-eslint/recommended
+- 06f915b0: Refactor internals to remove Interactor class
+- d85e5e95: upgrade eslint, typescript and @frontside packages
+- Updated dependencies [4d7c43f9]
+- Updated dependencies [d85e5e95]
+  - @bigtest/globals@0.7.4
+
 ## 0.23.0
 
 ### Minor Changes

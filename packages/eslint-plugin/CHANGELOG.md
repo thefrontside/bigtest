@@ -1,5 +1,11 @@
 # @bigtest/eslint-plugin
 
+## 0.3.1
+
+### Patch Changes
+
+- d85e5e95: upgrade eslint, typescript and @frontside packages
+
 ## 0.3.0
 
 ### Minor Changes

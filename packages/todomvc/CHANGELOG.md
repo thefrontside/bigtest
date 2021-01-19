@@ -1,5 +1,14 @@
 # @bigtest/todomvc
 
+## 0.5.7
+
+### Patch Changes
+
+- d85e5e95: upgrade eslint, typescript and @frontside packages
+- Updated dependencies [4d7c43f9]
+- Updated dependencies [d85e5e95]
+  - @bigtest/effection-express@0.9.2
+
 ## 0.5.6
 
 ### Patch Changes
