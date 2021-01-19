@@ -1,21 +1,10 @@
-import { createInteractor, focused, focus, blur } from '../index';
-import { isVisible } from 'element-is-visible';
+import { HTML } from './html';
 
-const LinkInteractor = createInteractor<HTMLLinkElement>('link')({
-  selector: 'a[href]',
-  filters: {
-    title: (element) => element.title,
+const LinkInteractor = HTML.extend<HTMLLinkElement>('link')
+  .selector('a[href]')
+  .filters({
     href: (element) => element.href,
-    id: (element) => element.id,
-    visible: { apply: isVisible, default: true },
-    focused
-  },
-  actions: {
-    click: ({ perform }) => perform((element) => { element.click(); }),
-    focus,
-    blur
-  },
-});
+  })
 
 /**
  * Call this {@link InteractorConstructor} to initialize a link {@link Interactor}.

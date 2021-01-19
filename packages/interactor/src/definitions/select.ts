@@ -1,18 +1,18 @@
-import { createInteractor, focused, focus, blur } from '../index';
-import { isVisible } from 'element-is-visible';
 import { dispatchChange, dispatchInput } from '../dispatch';
 import { getSelect } from '../get-select';
+import { HTML } from './html';
+import { FormField } from './form-field';
 
-const SelectOption = createInteractor<HTMLOptionElement>('option')({
-  selector: 'option',
-  locator: (element) => element.label,
-  filters: {
+const SelectOption = HTML.extend<HTMLOptionElement>('option')
+  .selector('option')
+  .locator((element) => element.label)
+  .filters({
     disabled: {
       apply: (element) => element.disabled,
       default: false
     }
-  },
-  actions: {
+  })
+  .actions({
     choose: ({ perform }) => perform((element) => {
       let select = getSelect(element);
 
@@ -22,36 +22,18 @@ const SelectOption = createInteractor<HTMLOptionElement>('option')({
         dispatchInput(select);
       }
     }),
-  },
-});
+  })
 
-const SelectInteractor = createInteractor<HTMLSelectElement>('select box')({
-  selector: 'select:not([multiple])',
-  locator: (element) => element.labels ? (Array.from(element.labels)[0]?.textContent || '') : '',
-  filters: {
-    title: (element) => element.title,
-    id: (element) => element.id,
-    valid: (element) => element.validity.valid,
+const SelectInteractor = FormField.extend<HTMLSelectElement>('select box')
+  .selector('select:not([multiple])')
+  .filters({
     value: (element) => element.selectedOptions[0]?.label || '',
-    visible: {
-      apply: (element) => isVisible(element) || (element.labels && Array.from(element.labels).some(isVisible)),
-      default: true
-    },
-    disabled: {
-      apply: (element) => element.disabled,
-      default: false
-    },
-    focused
-  },
-  actions: {
-    click: ({ perform }) => perform((element) => { element.click(); }),
-    focus,
-    blur,
+  })
+  .actions({
     choose: async (interactor, value: string) => {
       await interactor.find(SelectOption(value)).choose();
     },
-  },
-});
+  })
 
 /**
  * Call this {@link InteractorConstructor} to initialize an {@link Interactor}

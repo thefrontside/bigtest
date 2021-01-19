@@ -1,34 +1,20 @@
-import { createInteractor, fillIn, focused, focus, blur } from '../index';
-import { isVisible } from 'element-is-visible';
+import { fillIn } from '../index';
+import { FormField } from './form-field';
 
 const selector = 'textarea, input' + [
   'button', 'checkbox', 'color', 'date', 'datetime-local', 'file', 'hidden',
   'image', 'month', 'radio', 'range', 'reset', 'submit', 'time', 'datetime'
 ].map((t) => `:not([type=${t}])`).join('');
 
-const TextFieldInteractor = createInteractor<HTMLInputElement | HTMLTextAreaElement>('text field')({
-  selector,
-  locator: (element) => element.labels ? (Array.from(element.labels)[0]?.textContent || '') : '',
-  filters: {
-    title: (element) => element.title,
-    id: (element) => element.id,
-    visible: { apply: isVisible, default: true },
+const TextFieldInteractor = FormField.extend<HTMLInputElement | HTMLTextAreaElement>('text field')
+  .selector(selector)
+  .filters({
     value: (element) => element.value,
     placeholder: (element) => element.placeholder,
-    valid: (element) => element.validity.valid,
-    disabled: {
-      apply: (element) => element.disabled,
-      default: false
-    },
-    focused
-  },
-  actions: {
-    click: ({ perform }) => perform((element) => { element.click(); }),
-    focus,
-    blur,
+  })
+  .actions({
     fillIn: ({ perform }, value: string) => perform((element) => fillIn(element, value)),
-  },
-});
+  })
 
 /**
  * Call this {@link InteractorConstructor} to initialize a text field {@link

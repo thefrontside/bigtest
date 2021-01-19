@@ -1,13 +1,12 @@
-import { createInteractor, focused, focus, blur } from '../index';
-import { isVisible } from 'element-is-visible';
+import { HTML } from './html';
 
 function isButtonElement(element: HTMLInputElement | HTMLButtonElement): element is HTMLButtonElement {
   return element.tagName === 'BUTTON';
 }
 
-const ButtonInteractor = createInteractor<HTMLInputElement | HTMLButtonElement>('button')({
-  selector: 'button,input[type=button],input[type=submit],input[type=reset],input[type=image]',
-  locator(element) {
+const ButtonInteractor = HTML.extend<HTMLInputElement | HTMLButtonElement>('button')
+  .selector('button,input[type=button],input[type=submit],input[type=reset],input[type=image]')
+  .locator((element) => {
     if(isButtonElement(element)) {
       return element.textContent || '';
     } else if(element.type === 'image') {
@@ -15,23 +14,13 @@ const ButtonInteractor = createInteractor<HTMLInputElement | HTMLButtonElement>(
     } else {
       return element.value;
     }
-  },
-  filters: {
-    title: (element) => element.title,
-    id: (element) => element.id,
-    visible: { apply: isVisible, default: true },
+  })
+  .filters({
     disabled: {
       apply: (element) => element.disabled,
       default: false
     },
-    focused
-  },
-  actions: {
-    click: ({ perform }) => perform((element) => { element.click(); }),
-    focus,
-    blur
-  },
-});
+  })
 
 /**
  * Call this {@link InteractorConstructor} to initialize a button {@link Interactor}.

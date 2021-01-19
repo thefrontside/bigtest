@@ -8,6 +8,8 @@ export { fillIn } from './fill-in';
 export { focused, focus, blur } from './focused';
 export { isVisible } from 'element-is-visible';
 
+export { HTML } from './definitions/html';
+export { FormField } from './definitions/form-field';
 export { Link } from './definitions/link';
 export { Heading } from './definitions/heading';
 export { Button } from './definitions/button';
