@@ -27,7 +27,7 @@ There are four things to decide:
 Putting this information together, we can make this new Interactor:
 
 ```js
-import { createInteractor, perform, fillIn } from 'bigtest';
+import { createInteractor, fillIn } from 'bigtest';
 
 export const TextField = createInteractor<HTMLInputElement>('my-textfield-interactor')({
   selector: 'input[type=text]',
@@ -36,7 +36,7 @@ export const TextField = createInteractor<HTMLInputElement>('my-textfield-intera
     value: (element) => element.value
   },
   actions: {
-    fillIn: perform(fillIn)
+    fillIn: (interactor) => interactor.perform(fillIn)
   }
 });
 ```
@@ -55,25 +55,25 @@ _An example of the console output when a test is unable to locate the interactor
 
 And also note that locators, filters, and actions are optional when creating your own interactor. If you create an interactor without a locator, it will default to `locator: element => element.textContent`. The locator for the `TextField` interactor offered by BigTest uses the `textContent` of the associated label as we mentioned in the [previous page](/docs/interactors/locators-filters-actions#filters). The example above has its locator configured as `element.placeholder`; this is just to demonstrate that you can set these properties to anything that suits your needs.
 
-Lastly, you might be wondering what `perform()` does. The `perform()` function is just a short way of writing interactions. A click action written like this...
+Lastly, you might be wondering what `interactor.perform()` does: it is a method on the interactor which ensures that there are no race conditions when working directly with elements. You can use it like this:
 
 ```js
 actions: {
-  click: perform(element => element.click())
+  async click(interactor){
+    await interactor.perform(element => element.click())
+  };
 }
 ```
 
-...is the same as this:
+Or you could use destructuring to make this a bit shorter:
 
 ```js
 actions: {
-  click: async (interactor) => {
-    await interactor.click();
-  }
+  click: ({ perform }) => perform(element => element.click());
 }
 ```
 
-The latter syntax is necessary if you want to write an action that delegates to other interactors' actions. For example, imagine that you want to create a form interactor that has a submit action. You could take this approach:
+The former syntax is necessary if you want to write an action that delegates to other interactors' actions. For example, imagine that you want to create a form interactor that has a submit action. You could take this approach:
 
 ```js
 import { Button, createInteractor } from 'bigtest';
@@ -210,7 +210,7 @@ First, let's look at the markup we are trying to filter through:
 Here is one way to create the `TableCell` interactor:
 
 ```js
-import { createInteractor, perform } from 'bigtest';
+import { createInteractor } from 'bigtest';
 
 export const TableCell = createInteractor('table cell')({
   selector: '[role=gridcell]',
