@@ -2,7 +2,7 @@
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "types": ["cypress"],
-    "outDir": "dist/cjs",
+    "outDir": "dist/",
     "rootDir": "./src",
     "declarationDir": "dist"
   },

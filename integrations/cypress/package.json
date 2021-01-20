@@ -2,12 +2,15 @@
   "name": "@bigtest/cypress",
   "version": "0.0.1",
   "description": "Cypress Integration for BigTest Interactors",
-  "main": "cypress.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "files": [
-    "cypress.ts",
+    "dist/**/*",
+    "src/**/*",
     "README.md"
   ],
   "dependencies": {
@@ -19,7 +22,8 @@
     "start": "cd ../../packages/todomvc/ && yarn && yarn prepack && yarn bigtest-todomvc 3000",
     "cypress:run": "yarn cypress run --spec 'cypress/integration/*.spec.ts'",
     "test": "start-server-and-test 'yarn start' http://localhost:3000 cypress:run",
-    "prepack": "tsc --build && tsc --outdir dist/esm --module es2015 && tsc --outdir dist/cjs --module commonjs"
+    "build": "tsc --build",
+    "prepack": "cd .. && yarn prepack"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^2.0.0",
