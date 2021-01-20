@@ -1,5 +1,5 @@
 import { test } from '@bigtest/suite';
-import { createInteractor, perform } from '../src/index';
+import { createInteractor } from '../src/index';
 
 const TextField = createInteractor<HTMLInputElement>('text field')({
   selector: 'input',
@@ -12,7 +12,7 @@ const TextField = createInteractor<HTMLInputElement>('text field')({
     value: (element) => element.value
   },
   actions: {
-    fillIn: perform((element, value: string) => { element.value = value })
+    fillIn: ({ perform }, value: string) => perform((element) => { element.value = value })
   }
 });
 
