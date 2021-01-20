@@ -3,7 +3,7 @@ import expect from 'expect';
 import { dom } from './helpers';
 import { bigtestGlobals } from '@bigtest/globals';
 
-import { createInteractor, perform } from '../src/index';
+import { createInteractor } from '../src/index';
 
 const Link = createInteractor<HTMLLinkElement>('link')
   .selector('a')
@@ -12,8 +12,8 @@ const Link = createInteractor<HTMLLinkElement>('link')
     title: (element) => element.title,
   })
   .actions({
-    click: perform(element => { element.click() }),
-    setHref: perform((element, value: string) => { element.href = value })
+    click: ({ perform }) => perform(element => { element.click() }),
+    setHref: ({ perform }, value: string) => perform((element) => { element.href = value })
   })
 
 const Header = createInteractor('header')
@@ -38,8 +38,8 @@ const TextField = createInteractor<HTMLInputElement>('text field')
     value: (element) => element.value
   })
   .actions({
-    fillIn: perform((element, value: string) => { element.value = value }),
-    click: perform(element => { element.click() })
+    fillIn: ({ perform }, value: string) => perform((element) => { element.value = value }),
+    click: ({ perform }) => perform(element => { element.click() })
   })
 
 const Datepicker = createInteractor<HTMLDivElement>("datepicker")

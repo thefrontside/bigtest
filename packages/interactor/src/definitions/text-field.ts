@@ -1,4 +1,4 @@
-import { createInteractor, perform, fillIn, focused, focus, blur } from '../index';
+import { createInteractor, fillIn, focused, focus, blur } from '../index';
 import { isVisible } from 'element-is-visible';
 
 const selector = 'textarea, input' + [
@@ -23,10 +23,10 @@ const TextFieldInteractor = createInteractor<HTMLInputElement | HTMLTextAreaElem
     focused
   },
   actions: {
-    click: perform((element) => { element.click(); }),
+    click: ({ perform }) => perform((element) => { element.click(); }),
     focus,
     blur,
-    fillIn: perform(fillIn),
+    fillIn: ({ perform }, value: string) => perform((element) => fillIn(element, value)),
   },
 });
 

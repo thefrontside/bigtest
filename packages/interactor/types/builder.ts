@@ -1,10 +1,10 @@
-import { createInteractor, perform } from '../src/index';
+import { createInteractor } from '../src/index';
 
 let Link = createInteractor<HTMLLinkElement>('link')
   .selector('a')
   .actions({
-    click: perform(element => { element.click() }),
-    setHref: perform((element, value: string) => { element.href = value })
+    click: ({ perform }) => perform(element => { element.click() }),
+    setHref: ({ perform }, value: string) => perform((element) => { element.href = value })
   })
   .filters({
     title: (element) => element.title,

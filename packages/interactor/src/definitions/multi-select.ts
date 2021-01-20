@@ -1,4 +1,4 @@
-import { createInteractor, perform, focused, focus, blur } from '../index';
+import { createInteractor, focused, focus, blur } from '../index';
 import { isVisible } from 'element-is-visible';
 import { dispatchChange, dispatchInput } from '../dispatch';
 import { getSelect } from '../get-select';
@@ -13,7 +13,7 @@ const MultiSelectOption = createInteractor<HTMLOptionElement>('option')({
     }
   },
   actions: {
-    choose: perform((element) => {
+    choose: ({ perform }) => perform((element) => {
       let select = getSelect(element);
 
       if(select.value !== element.value) {
@@ -22,7 +22,7 @@ const MultiSelectOption = createInteractor<HTMLOptionElement>('option')({
         dispatchInput(select);
       }
     }),
-    select: perform((element) => {
+    select: ({ perform }) => perform((element) => {
       let select = getSelect(element);
 
       if(!element.selected) {
@@ -31,7 +31,7 @@ const MultiSelectOption = createInteractor<HTMLOptionElement>('option')({
         dispatchInput(select);
       }
     }),
-    deselect: perform((element) => {
+    deselect: ({ perform }) => perform((element) => {
       let select = getSelect(element);
 
       if(element.selected) {
@@ -59,7 +59,7 @@ const MultiSelectInteractor = createInteractor<HTMLSelectElement>('select box')(
     focused
   },
   actions: {
-    click: perform((element) => { element.click(); }),
+    click: ({ perform }) => perform((element) => { element.click(); }),
     focus,
     blur,
     choose: async (interactor, text: string) => {
