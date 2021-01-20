@@ -26,7 +26,7 @@ function interact(
       message: interaction.description
     });
   })
-}
+};
 
 if (typeof Cypress !== 'undefined' ) {
   Cypress.Commands.add('do', (
@@ -48,4 +48,4 @@ if (typeof Cypress !== 'undefined' ) {
       interact(interaction, 'assertion');
     }
   });
-}
+};
