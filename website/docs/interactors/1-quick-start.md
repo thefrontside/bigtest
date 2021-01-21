@@ -58,6 +58,32 @@ import TabItem from '@theme/TabItem';
   </TabItem>
 </Tabs>
 
+:::note Cypress
+If you are using Cypress, you will only need to install `@bigtest/cypress`:
+
+<Tabs
+  defaultValue="npm"
+  values={[
+    {label: 'NPM', value: 'npm'},
+    {label: 'Yarn', value: 'yarn'}
+]}>
+  <TabItem value="npm">
+
+  ```
+  $ npm install @bigtest/cypress --save-dev
+  ```
+
+  </TabItem>
+  <TabItem value="yarn">
+
+  ```
+  $ yarn add @bigtest/cypress --dev
+  ```
+
+  </TabItem>
+</Tabs>
+:::
+
 ## Import Interactors in your test suite
 
 Interactors can do a lot, but let's keep things simple and start with testing one of the most common user interactions - a button click.
@@ -96,7 +122,7 @@ Click on the tabs below to see some examples within different testing frameworks
   <TabItem value="cypress">
 
   ```js
-  import { Button } from 'bigtest';
+  import { Button } from '@bigtest/cypress';
 
   describe('Interactors with Cypress', () => {
     beforeEach(() => cy.visit('/'));
@@ -237,7 +263,7 @@ Here's an example of what a test for an airline datepicker interface could look 
   <TabItem value="cypress">
 
   ```js
-  import { Heading, RadioButton, TextField } from 'bigtest';
+  import { Heading, RadioButton, TextField } from '@bigtest/cypress';
   import { DatePicker, Modal } from './MyInteractors';
 
   describe('Interactors with Cypress', () => {
