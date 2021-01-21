@@ -4,6 +4,7 @@ import { Filter } from './filter';
 import { Locator } from './locator';
 import { Interaction, ReadonlyInteraction } from './interaction';
 import { MergeObjects } from './merge-objects';
+import { MaybeMatcher } from './matcher';
 
 export type EmptyObject = Record<never, never>;
 
@@ -180,9 +181,9 @@ export type ActionMethods<E extends Element, A extends Actions<E>> = {
 export type FilterParams<E extends Element, F extends Filters<E>> = keyof F extends never ? never : {
   [P in keyof F]?:
     F[P] extends FilterFn<infer TArg, E> ?
-    TArg :
+    MaybeMatcher<TArg> :
     F[P] extends FilterObject<infer TArg, E> ?
-    TArg :
+    MaybeMatcher<TArg> :
     never;
 }
 
@@ -239,7 +240,7 @@ export interface InteractorConstructor<E extends Element, FP extends FilterParam
    * @param value The locator value, which should match the value of applying the locator function defined in the {@link InteractorSpecification} to the element.
    * @param filters An object describing a set of filters to apply, which should match the value of applying the filters defined in the {@link InteractorSpecification} to the element.
    */
-  (value: string, filters?: FP): Interactor<E, FP> & AM;
+  (value: MaybeMatcher<string>, filters?: FP): Interactor<E, FP> & AM;
 }
 
 /**

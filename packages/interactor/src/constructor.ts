@@ -12,6 +12,7 @@ import { FilterNotMatchingError } from './errors';
 import { interaction, check, Interaction, ReadonlyInteraction } from './interaction';
 import { Match } from './match';
 import { NoSuchElementError, NotAbsentError, AmbiguousElementError } from './errors';
+import { isMatcher } from './matcher';
 
 const defaultLocator: LocatorFn<Element> = (element) => element.textContent || "";
 const defaultSelector = 'div';
@@ -199,7 +200,7 @@ export function createConstructor<E extends Element, FP extends FilterParams<any
 ): InteractorConstructor<E, FP, AM> {
   function initInteractor(...args: any[]) {
     let locator, filter;
-    if(typeof(args[0]) === 'string') {
+    if(typeof(args[0]) === 'string' || isMatcher(args[0])) {
       locator = new Locator(specification.locator || defaultLocator, args[0]);
       filter = new Filter(specification, args[1] || {});
     } else {
