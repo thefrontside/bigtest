@@ -46,7 +46,7 @@
     "install:integrations": "yarn --cwd integrations install",
     "prepack:integrations": "yarn --cwd integrations prepack",
     "test:integrations": "yarn --cwd integrations test",
-    "test:lint": "yarn --cwd integrations lint"
+    "lint:integrations": "yarn --cwd integrations lint"
   },
   "volta": {
     "node": "12.11.1",
