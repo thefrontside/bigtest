@@ -13,7 +13,8 @@
   },
   "scripts": {
     "prepack": "yarn workspaces run build",
-    "test": "yarn workspaces run test"
+    "test": "yarn workspaces run test",
+    "lint": "yarn workspaces run lint"
   },
   "volta": {
     "node": "12.11.1",

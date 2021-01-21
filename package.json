@@ -41,11 +41,12 @@
     "prepack:tsc": "tsc --build ./tsconfig.monorepo.json",
     "prepack": "yarn workspaces run prepack && yarn prepack:integrations",
     "test": "yarn workspaces run test",
-    "lint": "yarn workspaces run lint",
+    "lint": "yarn workspaces run lint && yarn lint:integrations",
     "watch": "yarn prepack:tsc && yarn tsc -b ./tsconfig.monorepo.json --watch",
     "install:integrations": "yarn --cwd integrations install",
     "prepack:integrations": "yarn --cwd integrations prepack",
-    "test:integrations": "yarn --cwd integrations test"
+    "test:integrations": "yarn --cwd integrations test",
+    "test:lint": "yarn --cwd integrations lint"
   },
   "volta": {
     "node": "12.11.1",
