@@ -1,9 +1,5 @@
 {
-  "extends": "../tsconfig",
   "compilerOptions": {
     "sourceMap": false
-  },
-  "include": [
-    "integration/**/*.ts"
-  ]
+  }
 }
