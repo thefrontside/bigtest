@@ -50,7 +50,7 @@ In Cypress, interactors fit right in, though you may need some slight configurat
 Interactors can be used with the `cy.do()` and `cy.expect()` commands for interactions and assertions respectively. These Cypress commands are automatically registered whenever you are importing or creating interactors. You can use interactors in Cypress tests like this:
 
 ```jsx
-import { Button } from 'bigtest';
+import { Button } from '@bigtest/cypress';
 
 describe('Interactors with Cypress', () => {
   beforeEach(() => cy.visit('/'));
