@@ -45,6 +45,10 @@ export const TextField = createInteractor<HTMLInputElement>('my-textfield-intera
  `fillIn` is a function exported by `bigtest`. See the implementation [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/fill-in.ts). You can use any of the functions defined by BigTest or implement your own.
 :::
 
+:::note Cypress
+If you're using Cypress, all of the built-in Interactors and Interactor functions will need to be imported from `@bigtest/cypress` and not `bigtest`.
+:::
+
 In this example we've configured the selector as `input[type=text]` which will search for all `<input type='text'>` elements in your testing environment. Filters and locators are used to narrow down the list of results.
 
 The string argument to `createInteractor()` is the name of the interactor your console will print if there's a failing test:
@@ -135,7 +139,7 @@ import TabItem from '@theme/TabItem';
   <TabItem value="cypress">
 
   ```js
-  import { Button, Heading } from 'bigtest';
+  import { Button, Heading } from '@bigtest/cypress';
   import { TextField } from './MyTextField';
 
   describe('email subscription form', () => {

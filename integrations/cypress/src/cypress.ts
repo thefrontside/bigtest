@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /// <reference types="cypress" />
 import { bigtestGlobals, RunnerState } from '@bigtest/globals';
-import { Interaction, ReadonlyInteraction } from '../interaction';
+import { Interaction, ReadonlyInteraction } from '@bigtest/interactor';
 
 declare global {
   namespace Cypress {
@@ -26,7 +26,7 @@ function interact(
       message: interaction.description
     });
   })
-}
+};
 
 if (typeof Cypress !== 'undefined' ) {
   Cypress.Commands.add('do', (
@@ -48,4 +48,4 @@ if (typeof Cypress !== 'undefined' ) {
       interact(interaction, 'assertion');
     }
   });
-}
+};

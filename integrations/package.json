@@ -1,0 +1,30 @@
+{
+  "name": "bigtest-integrations",
+  "version": "0.0.0-monorepo",
+  "description": "Integrations for BigTest",
+  "repository": "git@github.com:thefrontside/bigtest.git",
+  "author": "Frontside Engineering <engineering@frontside.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "cypress/"
+    ]
+  },
+  "scripts": {
+    "prepack": "yarn workspaces run build",
+    "build": "yarn workspaces run install && yarn prepack",
+    "test": "yarn workspaces run test",
+    "lint": "yarn workspaces run lint"
+  },
+  "volta": {
+    "node": "12.11.1",
+    "yarn": "1.22.4"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.8.0"
+  },
+  "resolutions": {
+    "typescript": "^4.1.3"
+  }
+}

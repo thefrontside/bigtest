@@ -93,6 +93,6 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          working-directory: packages/interactor/
-          start: yarn bigtest-todomvc 3000
+          working-directory: integrations/cypress/
+          start: yarn start
           wait-on: 'http://localhost:3000'

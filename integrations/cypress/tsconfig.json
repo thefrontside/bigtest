@@ -1,14 +1,16 @@
 {
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
-    "outDir": "dist/cjs",
+    "types": ["cypress"],
+    "outDir": "dist/",
     "rootDir": "./src",
     "declarationDir": "dist"
   },
   "include": [
-    "src/**/*.ts"
+    "src/*.ts"
   ],
   "references": [
-    { "path": "../globals" }
+    { "path" : "../../packages/interactor" },
+    { "path" : "../../packages/globals" }
   ]
 }
