@@ -45,6 +45,7 @@
     "watch": "yarn prepack:tsc && yarn tsc -b ./tsconfig.monorepo.json --watch",
     "install:integrations": "yarn --cwd integrations install",
     "prepack:integrations": "yarn --cwd integrations prepack",
+    "build:integrations": "yarn --cwd integrations build",
     "test:integrations": "yarn --cwd integrations test",
     "lint:integrations": "yarn --cwd integrations lint"
   },
