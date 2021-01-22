@@ -2,7 +2,6 @@ import { createInteractor, Matcher } from '../src/index';
 
 function shouted(value: string): Matcher<string> {
   return {
-    bigtestMatcher: true,
     match(actual: string): boolean {
       return actual === value.toUpperCase();
     },
@@ -13,7 +12,6 @@ function shouted(value: string): Matcher<string> {
 }
 
 let isEven: Matcher<number> = {
-  bigtestMatcher: true,
   match(actual: number): boolean {
     return actual % 2 === 0;
   },

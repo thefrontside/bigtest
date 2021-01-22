@@ -1,7 +1,6 @@
 import { describe, it } from 'mocha';
 import expect from 'expect';
 import { dom } from './helpers';
-import { bigtestGlobals } from '@bigtest/globals';
 
 import { createInteractor, Matcher } from '../src/index';
 
@@ -13,7 +12,6 @@ const Link = createInteractor<HTMLLinkElement>('link')
 
 function shouted(value: string): Matcher<string> {
   return {
-    bigtestMatcher: true,
     match(actual: string): boolean {
       return actual === value.toUpperCase();
     },

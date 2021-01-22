@@ -1,9 +1,8 @@
-import isEqual from 'lodash.isequal';
 import { Locator } from './locator';
 import { Filter } from './filter';
 import { Filters } from './specification';
 import { escapeHtml } from './escape-html';
-import { MaybeMatcher, isMatcher } from './matcher';
+import { MaybeMatcher, applyMatcher } from './matcher';
 
 const check = (value: unknown): string => value ? "✓" : "⨯";
 
@@ -62,11 +61,7 @@ export class MatchLocator<E extends Element> {
   ) {
     this.expected = locator.value;
     this.actual = locator.locatorFn(element);
-    if(isMatcher(this.expected)) {
-      this.matches = this.expected.match(this.actual);
-    } else {
-      this.matches = isEqual(this.actual, this.expected);
-    }
+    this.matches = applyMatcher(this.expected, this.actual);
   }
 
   formatActual(): string {
@@ -122,11 +117,7 @@ export class MatchFilterItem<T, E extends Element, F extends Filters<E>> {
       } else {
         this.actual = definition.apply(this.element) as T;
       }
-      if(isMatcher(this.expected)) {
-        this.matches = this.expected.match(this.actual);
-      } else {
-        this.matches = isEqual(this.actual, this.expected);
-      }
+      this.matches = applyMatcher(this.expected, this.actual);
     } else {
       throw new Error(`interactor does not define a filter named ${JSON.stringify(this.key)}`);
     }
