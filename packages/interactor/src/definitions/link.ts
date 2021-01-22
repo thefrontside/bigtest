@@ -1,4 +1,4 @@
-import { createInteractor, perform, focused, focus, blur } from '../index';
+import { createInteractor, focused, focus, blur } from '../index';
 import { isVisible } from 'element-is-visible';
 
 const LinkInteractor = createInteractor<HTMLLinkElement>('link')({
@@ -11,7 +11,7 @@ const LinkInteractor = createInteractor<HTMLLinkElement>('link')({
     focused
   },
   actions: {
-    click: perform((element) => { element.click(); }),
+    click: ({ perform }) => perform((element) => { element.click(); }),
     focus,
     blur
   },

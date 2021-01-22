@@ -117,7 +117,7 @@ export function instantiateInteractor<E extends Element, F extends Filters<E>, A
     },
 
     perform(fn: (element: E) => void): Interaction<void> {
-      return interaction(`${this.description} performs`, async () => {
+      return interaction(`${description(options)} performs`, async () => {
         if(bigtestGlobals.runnerState === 'assertion') {
           throw new Error(`tried to run perform on ${this.description} in an assertion, perform should only be run in steps`);
         }

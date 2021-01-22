@@ -1,4 +1,4 @@
-import { createInteractor, perform, focused, focus, blur } from '../index';
+import { createInteractor, focused, focus, blur } from '../index';
 import { isVisible } from 'element-is-visible';
 
 function isButtonElement(element: HTMLInputElement | HTMLButtonElement): element is HTMLButtonElement {
@@ -27,7 +27,7 @@ const ButtonInteractor = createInteractor<HTMLInputElement | HTMLButtonElement>(
     focused
   },
   actions: {
-    click: perform((element) => { element.click(); }),
+    click: ({ perform }) => perform((element) => { element.click(); }),
     focus,
     blur
   },

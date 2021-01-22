@@ -1,4 +1,4 @@
-import { createInteractor, perform, focused, focus, blur } from '../index';
+import { createInteractor, focused, focus, blur } from '../index';
 import { isVisible } from 'element-is-visible';
 
 const RadioButtonInteractor = createInteractor<HTMLInputElement>('radio button')({
@@ -20,8 +20,8 @@ const RadioButtonInteractor = createInteractor<HTMLInputElement>('radio button')
     focused
   },
   actions: {
-    click: perform((element) => { element.click(); }),
-    choose: perform((element) => { element.click(); }),
+    click: ({ perform }) => perform((element) => { element.click(); }),
+    choose: ({ perform }) => perform((element) => { element.click(); }),
     focus,
     blur
   },
