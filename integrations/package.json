@@ -13,6 +13,7 @@
   },
   "scripts": {
     "prepack": "yarn workspaces run build",
+    "build": "yarn workspaces run install && yarn prepack",
     "test": "yarn workspaces run test",
     "lint": "yarn workspaces run lint"
   },
