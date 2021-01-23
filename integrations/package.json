@@ -8,7 +8,8 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "cypress/"
+      "cypress/",
+      "material-ui"
     ]
   },
   "scripts": {

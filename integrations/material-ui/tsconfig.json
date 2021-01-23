@@ -1,3 +1,6 @@
 {
-  "extends": "@frontside/tsconfig"
+  "extends": "@frontside/tsconfig",
+  "compilerOptions": {
+    "jsx": "react-jsx"
+  }
 }
