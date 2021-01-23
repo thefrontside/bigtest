@@ -20,6 +20,7 @@
       "packages/agent",
       "packages/driver",
       "packages/webdriver",
+      "packages/playwright",
       "packages/project",
       "packages/bundler",
       "packages/todomvc",

@@ -8,5 +8,14 @@
   "coverage": {
     "directory": "./tmp/coverage",
     "reports": ["lcov", "html"]
+  },
+  "drivers": {
+    "playwright": {
+      "module": "@bigtest/playwright",
+      "options": {
+        "browser": "chromium",
+        "headless": false
+      }
+    }
   }
 }

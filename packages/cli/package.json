@@ -23,6 +23,7 @@
     "bigtest": "bin/bigtest.js"
   },
   "devDependencies": {
+    "@bigtest/playwright": "^0.1.0",
     "@bigtest/todomvc": "^0.5.6",
     "@effection/channel": "^0.6.7",
     "@effection/events": "^0.7.8",
