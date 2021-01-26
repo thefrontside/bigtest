@@ -2,14 +2,14 @@ import { describe, it } from 'mocha';
 import expect from 'expect';
 import { dom } from './helpers';
 
-import { createInteractor, perform } from '../src/index';
+import { createInteractor } from '../src/index';
 
 const HTML = createInteractor<HTMLElement>('element')
   .filters({
     title: (element) => element.title,
   })
   .actions({
-    click: perform(element => { element.click() }),
+    click: ({ perform }) => perform(element => { element.click() }),
   });
 
 const Link = HTML.extend<HTMLLinkElement>('link')
@@ -18,7 +18,7 @@ const Link = HTML.extend<HTMLLinkElement>('link')
     href: (element) => element.href,
   })
   .actions({
-    setHref: perform((element, value: string) => { element.href = value })
+    setHref: ({ perform }, value: string) => perform((element) => { element.href = value })
   })
 
 const Thing = HTML.extend<HTMLLinkElement>('div')
