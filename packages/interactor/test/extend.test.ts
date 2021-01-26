@@ -22,6 +22,19 @@ const Link = HTML.extend<HTMLLinkElement>('link')
     setHref: perform((element, value: string) => { element.href = value })
   })
 
+const Thing = HTML.extend<HTMLLinkElement>('div')
+  .selector('div')
+  .filters({
+    title: (element) => parseInt(element.dataset.title || '0'),
+  })
+  .actions({
+    click(interactor, value: number) {
+      return interactor.perform((element) => {
+        element.dataset.title = value.toString();
+      });
+    }
+  })
+
 const Header = createInteractor('header')
   .selector('h1,h2,h3,h4,h5,h6')
 
@@ -77,6 +90,15 @@ describe('@bigtest/interactor', () => {
 
       await Link('Foo Bar').setHref('/monkey');
       await Link({ href: '/monkey' }).exists();
+    });
+
+    it('can use overridden filters and actions', async () => {
+      dom(`
+        <div></div>
+      `);
+
+      await Thing().click(4);
+      await Thing().has({ title: 4 });
     });
   });
 });
