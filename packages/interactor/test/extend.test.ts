@@ -1,7 +1,6 @@
 import { describe, it } from 'mocha';
 import expect from 'expect';
 import { dom } from './helpers';
-import { bigtestGlobals } from '@bigtest/globals';
 
 import { createInteractor, perform } from '../src/index';
 
@@ -20,6 +19,19 @@ const Link = HTML.extend<HTMLLinkElement>('link')
   })
   .actions({
     setHref: perform((element, value: string) => { element.href = value })
+  })
+
+const Thing = HTML.extend<HTMLLinkElement>('div')
+  .selector('div')
+  .filters({
+    title: (element) => parseInt(element.dataset.title || '0'),
+  })
+  .actions({
+    click(interactor, value: number) {
+      return interactor.perform((element) => {
+        element.dataset.title = value.toString();
+      });
+    }
   })
 
 const Header = createInteractor('header')
@@ -77,6 +89,15 @@ describe('@bigtest/interactor', () => {
 
       await Link('Foo Bar').setHref('/monkey');
       await Link({ href: '/monkey' }).exists();
+    });
+
+    it('can use overridden filters and actions', async () => {
+      dom(`
+        <div></div>
+      `);
+
+      await Thing().click(4);
+      await Thing().has({ title: 4 });
     });
   });
 });

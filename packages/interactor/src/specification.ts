@@ -3,6 +3,7 @@
 import { Filter } from './filter';
 import { Locator } from './locator';
 import { Interaction, ReadonlyInteraction } from './interaction';
+import { MergeObjects } from './merge-objects';
 
 export type EmptyObject = Record<never, never>;
 
@@ -188,8 +189,8 @@ export type FilterParams<E extends Element, F extends Filters<E>> = keyof F exte
 export interface InteractorBuilder<E extends Element, FP extends FilterParams<any, any>, AM extends ActionMethods<any, any>> {
   selector(value: string): InteractorConstructor<E, FP, AM>;
   locator(value: LocatorFn<E>): InteractorConstructor<E, FP, AM>;
-  filters<FR extends Filters<E>>(filters: FR): InteractorConstructor<E, FP & FilterParams<E, FR>, AM>;
-  actions<AR extends Actions<E>>(actions: AR): InteractorConstructor<E, FP, AM & ActionMethods<E, AR>>;
+  filters<FR extends Filters<E>>(filters: FR): InteractorConstructor<E, MergeObjects<FP, FilterParams<E, FR>>, AM>;
+  actions<AR extends Actions<E>>(actions: AR): InteractorConstructor<E, FP, MergeObjects<AM, ActionMethods<E, AR>>>;
   extend<ER extends E = E>(name: string): InteractorConstructor<ER, FP, AM>;
 }
 
