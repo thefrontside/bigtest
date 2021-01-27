@@ -1,6 +1,7 @@
 export type LocatorFn<E extends Element> = (element: E) => string;
 import { Filters, FilterFn, FilterObject, FilterParams, InteractorSpecification } from './specification';
 import { noCase } from 'change-case';
+import { formatMatcher } from './matcher';
 
 export class Filter<E extends Element, F extends Filters<E>> {
   constructor(
@@ -22,7 +23,7 @@ export class Filter<E extends Element, F extends Filters<E>> {
             return `which is not ${noCase(key)}`;
           }
         } else {
-          return `with ${noCase(key)} ${JSON.stringify(value)}`
+          return `with ${noCase(key)} ${formatMatcher(value)}`
         }
       }).join(' and ');
     }
@@ -40,6 +41,6 @@ export class Filter<E extends Element, F extends Filters<E>> {
   }
 
   asTableHeader(): string[] {
-    return Object.entries(this.all).map(([key, value]) => `${key}: ${JSON.stringify(value)}`);
+    return Object.entries(this.all).map(([key, value]) => `${key}: ${formatMatcher(value)}`);
   }
 }
