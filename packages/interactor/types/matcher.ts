@@ -52,8 +52,11 @@ Link().has({ href: isEven });
 
 Link(shouted("Foobar"));
 
-// $ExpectError
+// TODO: this should be rejected, but it will require breaking backward compatibility with the specification syntax
 Link(isEven);
+
+// $ExpectError
+Link(isEven, { href: "foo" });
 
 // $ExpectError
 Link({ not: "a matcher" });
