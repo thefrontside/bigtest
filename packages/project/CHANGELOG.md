@@ -1,5 +1,14 @@
 # @bigtest/project
 
+## 0.13.1
+
+### Patch Changes
+
+- 4d7c43f9: enable eslint rules from the latest @typescript-eslint/recommended
+- d85e5e95: upgrade eslint, typescript and @frontside packages
+- Updated dependencies [d85e5e95]
+  - @bigtest/driver@0.5.5
+
 ## 0.13.0
 
 ### Minor Changes
