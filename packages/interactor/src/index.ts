@@ -7,6 +7,7 @@ export { perform } from './perform';
 export { fillIn } from './fill-in';
 export { focused, focus, blur } from './focused';
 export { isVisible } from 'element-is-visible';
+export { Matcher } from './matcher';
 
 export { HTML } from './definitions/html';
 export { FormField } from './definitions/form-field';
@@ -18,4 +19,9 @@ export { CheckBox } from './definitions/check-box';
 export { RadioButton } from './definitions/radio-button';
 export { Select } from './definitions/select';
 export { MultiSelect } from './definitions/multi-select';
-export { Matcher } from './matcher';
+
+export { includes } from './matchers/includes';
+export { matches } from './matchers/matches';
+export { and } from './matchers/and';
+export { or } from './matchers/or';
+export { not } from './matchers/not';
