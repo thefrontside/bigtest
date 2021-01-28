@@ -24,7 +24,7 @@ There are four things to decide when creating an interactor:
 3. The locator and filters, which helps users be able to narrow down the element they want to reference
 4. The action or actions that a test should `perform` when using the interactor (like `click`)
 
-In this case, let's call our Interactor ‘MyTextField’, and we’ll label it as ‘my-textfield-interactor’ to distinguish it from the build-in one. Let’s say that MyTextField will target a regular input with a custom class `.my-input`, which means its HTML selector would be `input[type=text].my-input`. For locator we’ll use the input’s placeholder, and we’ll define a value filter. Finally, we’ll define a `fillIn` action for MyTextField interactor. Putting this together, we get the following definition of an Interactor:
+In this case, let's call our Interactor ‘MyTextField’, and we’ll label it as ‘my-textfield-interactor’ to distinguish it from the built-in one. Let’s say that MyTextField will target a regular input with a custom class `.my-input`, which means its HTML selector would be `input[type=text].my-input`. For locator we’ll use the input’s placeholder, and we’ll define a value filter. Finally, we’ll define a `fillIn` action for MyTextField interactor. Putting this together, we get the following definition of an Interactor:
 
 ```js
 import { createInteractor, fillIn } from 'bigtest';
@@ -85,10 +85,10 @@ import { Button, createInteractor } from 'bigtest';
 
 export const Form = createInteractor<HTMLFormElement>('form')({
   selector: 'form',
-  actions: {
-	async submit(interactor){
-  	  await interactor.find(Button('Submit')).click();
-	}
+    actions: {
+      async submit(interactor){
+      await interactor.find(Button('Submit')).click();
+    }
   }
 })
 ```
@@ -98,7 +98,7 @@ There’s two peculiarities about this example. First, notice we’re not using 
 Why would you want to delegate actions within an Interactor action definition? Well, it can help you avoid repeating yourself and to keep Interactors as black boxes. For example, let’s say we wanted to test that a user submits a form, without delegation we can reach in in the Form Interactor and issue a click action:
 
 ```js
-Form.find(Button(‘Submit')).click();
+Form.find(Button('Submit')).click();
 ```
 
 But if the Form component changes and now the button that submits is no longer `Submit` but `Send` we’d have to update all our tests to reflect that change. Instead we can encapsulate that detail in the `submit` action of `Form` and delegate the click action to the responsible party. Instead of reaching into internal component elements, who ever is using Form to test the form simply as:
@@ -359,15 +359,13 @@ For example, let's say that you want to replace a custom datepicker with a popul
 
 ### I have an interaction that is really difficult to test. What should I do?
 
-A good test suite helps you uncover hidden problems.
-Often, difficult UI tests are your early warning system for areas of your app that may have accessibility issues.
+A good test suite helps you uncover hidden problems. Often, difficult UI tests are your early warning system for areas of your app that may have accessibility issues.
 
 The first step is to see if you can go through the interaction yourself in the browser by using only [keyboard navigation](https://webaim.org/techniques/keyboard/).
 If you cannot get to the end successfully, then you just found a bug in your app.
 Although many people navigate an interface by sight and clicking,
 others may use assistive technology such as screen readers and keyboard support is critical.
-For example, a click can mistakenly be attached to a `div` instead of a button.
-Those types of errors can make your app unusable to some people and also difficult to test.
+For example, a click can mistakenly be attached to a `div` instead of a button. Those types of errors can make your app unusable to some people and also difficult to test.
 
 Another way to find some bugs is to use automated tools such as [Lighthouse](https://github.com/GoogleChrome/lighthouse) to find problems in your HTML markup like missing input labels or misconfigured `aria` attributes.
 

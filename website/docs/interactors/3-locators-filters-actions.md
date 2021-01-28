@@ -9,7 +9,7 @@ Whether they are built-in or written by you, all interactors have some things in
 
 One benefit of Interactors is that they help you align your tests with how a user actually interacts with the app, starting with finding what to act upon. A locator is the simplest way to find a specific element in a user interface.
 
-When you use an Interactor in a test, you can pass it a string. This string argument would be the Locator - like "Submit" in the example below.:
+When you use an Interactor in a test, you can pass it a string. This string argument would be the Locator - like "Submit" in the example below:
 
 ```js
 Button('Submit').exists();
@@ -50,7 +50,7 @@ TextField('Username:', { id: 'username-id' }).exists();
  _See the source code of the TextField interactor [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts)_.
 :::
 
-You can think of the locator as the "default filter" because filters and locators both provide the same functionality. The reason why BigTest offers both solutions is convenience, because having to pass in an object for each interactor can get repetitive – unless you use a filter.
+You can think of the locator as the "default filter" because filters and locators both provide the same functionality. The reason why BigTest offers both solutions is convenience, because having to pass in an object for each interactor can get repetitive.
 
 Filters are useful in a variety of contexts. For example, most forms have multiple textfields. You would need to use a filter if they do not have labels or if there are multiple labels with the same value, as a locator would not work in such a scenario.
 

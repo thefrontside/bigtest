@@ -150,12 +150,13 @@ Interactors have methods like `click` that mimic user actions. If you are using 
   </TabItem>
 </Tabs>
 
-If you are using the sample project, you can find these examples at `bigtest-sample/src/test/jest.test..js`,  `bigtest-sample/src/test/cypress.spec.js` and  `bigtest-sample/src/test/bigtest.test.js`.
+If you are using the sample project, you can find these examples at `bigtest-sample/src/test/jest.test..js`, `bigtest-sample/src/test/cypress.spec.js` and `bigtest-sample/src/test/bigtest.test.js`.
 
 Now run your tests as you usually would or use any of the sample project options. Congratulations – you used your first Interactor!
 
 :::note The BigTest Platform
- There's more to BigTest than just Interactors. BigTest can also run your tests on any _real_ browser – just like your users use. We have built a new integrated platform from the ground up to help you test more with less effort. And best of all it's free and Open Source! [Check it out](/platform), and let us know what you think..
+ There's more to BigTest than just Interactors. BigTest can also run your tests on any _real_ browser – just like your users use. We have built a new integrated platform from the ground up to help you test more with less effort. And best of all it's free and Open Source! [Check it out](/platform), and let us know what you think.
+
 :::
 
 ## Making test assertions
@@ -312,7 +313,7 @@ As you can see, Interactors not only make it simple to use DOM elements like Rad
 
 Try using more of the [Built-in Interactors](2-built-in-dom.md) within your tests such as `Link`, `Checkbox`, `TextField`, and more.
 
-You’ll quickly realize how much more powerful Interactors when combined with [Locators, Filters, and Actions](3-locators-filters-actions.md).
+You’ll quickly realize how much more powerful Interactors are when combined with [Locators, Filters, and Actions](3-locators-filters-actions.md).
 
 Once you are comfortable with those, you’ll want to [write your own Interactors](4-write-your-own.md) to explore just how useful they can be.
 ### Join the BigTest community
