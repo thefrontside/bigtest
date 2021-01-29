@@ -63,7 +63,7 @@ Take for instance, this example of a form with textfields that do not have label
 </form>
 ```
 
-We cannot specify a locator based on the label, so using `TextField()` would return two elements and therefore produce an error. We can narrow  down from two TextFields to one using either the `id` or `placeholder` filters provided by the BigTest `TextField` interactor:
+We cannot specify a locator based on the label, so using `TextField()` would return two elements and therefore produce an error. We can narrow down from two TextFields to one using either the `id` or `placeholder` filters provided by the BigTest `TextField` interactor:
 
 ```js
 TextField({ id: 'username-id' }).exists();
@@ -103,9 +103,9 @@ TextField().has({ placeholder: 'USERNAME' });
 
 It would fail on account of the textfield that has the placeholder value `PASSWORD`. You therefore need to choose the assertion method that is most appropriate for your tests.
 
-Lastly, there is also the `is()` method, which functions in an almost identical way to `has()`. The only difference is in the semantics so that your tests can read better.
+Lastly, there is also the `is()` method, which works just as `has()` does. The only difference is in the semantics so that your tests can read better.
 
-For instance, if we wanted to test if a textfield is visible, `has()` would work perfectly fine; but writing the test using `is()` would look slightly differently like this:
+For instance, if we wanted to test if a textfield is visible, `has()` would work perfectly fine; but writing the test using `is()` would look more natural like this:
 
 ```js
 TextField({ id: 'username-id' }).is({ visible: true });
