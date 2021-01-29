@@ -4,7 +4,7 @@ title: Quick Start
 slug: /interactors
 ---
 
-BigTest's Interactors makes writing your UI tests easier, faster, and more reliable. You can use them across many different testing frameworks.
+BigTest's Interactors make writing your UI tests easier, faster, and more reliable. You can use them across many different testing frameworks.
 
 By the end of this page you will be testing one of your own apps with Interactors.
 
@@ -27,7 +27,7 @@ Run the following command to install a sample project which includes a simple ap
 $ npx bigtest-sample
 ```
 
-After you’ve installed the project, you’ll be able to run the test suite you desire. For example, for running the Jest suite you can use `npm run test:jest`. More details are available in the welcome message for the project.
+After you’ve installed the project, you’ll be able to run the test suite of your choice. For example, for running the Jest suite you can use `npm run test:jest`. More details are available in the welcome message for the project.
 
 ## Installation
 

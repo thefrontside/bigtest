@@ -98,13 +98,13 @@ There’s two peculiarities about this example. First, notice we’re not using 
 Why would you want to delegate actions within an Interactor action definition? Well, it can help you avoid repeating yourself and to keep Interactors as black boxes. For example, let’s say we wanted to test that a user submits a form, without delegation we can reach in in the Form Interactor and issue a click action:
 
 ```js
-Form.find(Button('Submit')).click();
+Form().find(Button('Submit')).click();
 ```
 
 But if the Form component changes and now the button that submits is no longer `Submit` but `Send` we’d have to update all our tests to reflect that change. Instead we can encapsulate that detail in the `submit` action of `Form` and delegate the click action to the responsible party. Instead of reaching into internal component elements, who ever is using Form to test the form simply as:
 
 ```js
-Form.submit();
+Form().submit();
 ```
 
 Let's get back to our example and add the new TextField interactor to a test. In this example we are testing an email subscription form by first filling in the email text field, clicking the `Subscribe` button, and then asserting for the success header.
@@ -185,13 +185,13 @@ Check out the source code of [createInteractor()](https://github.com/thefrontsid
 
 ## Writing a more complex interactor
 
-One of the greatest benefits of Interactors is that you can turn complex testing scenarios into readable assertions. Let’s illustrate how that looks like with a commonly cumbersome UI piece: a table. We want to be able to easily assert the contents of our tables, and that means that we should be able to know the value in a cell given its column and row. Once we’re done creating a TableCell Interactor, we’ll be able to make that happen and have it look like this:
+One of the greatest benefits of Interactors is that you can turn complex testing scenarios into readable assertions. Let’s illustrate how that looks like with an historically cumbersome UI piece: a table. We want to be able to easily assert the contents of our tables, and that means that we should be able to know the value in a cell given its column and row. Once we’re done creating a TableCell Interactor, we’ll be able to make that happen and have it look like this:
 
 ```js
 TableCell({ columnTitle: 'Name', rowNumber: 2 }).has({ value: 'Marge Simpson' });
 ```
 
-First, consider a table markup defined as follows:
+First, consider some table markup defined as follows:
 
 ```html
 <div role="grid">
