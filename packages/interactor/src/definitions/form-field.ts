@@ -14,8 +14,8 @@ const FormFieldInteractor = HTML.extend<FieldTypes>('form field')
 
 /**
  * Use this {@link InteractorConstructor} as a base for creating interactors which
- * work with form field. This provides some basic functionality which is convenient
- * for most form fields.
+ * work with form fields. This allows you to use field labels as locators, and also provides
+ * some basic filters which are convenient for most form fields.
  *
  * Locates the form field by its label.
  *
