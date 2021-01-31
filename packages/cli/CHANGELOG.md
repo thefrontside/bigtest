@@ -1,5 +1,23 @@
 # @bigtest/cli
 
+## 0.17.0
+
+### Minor Changes
+
+- 74f4b33c: Modify default name of generated tsconfig of bigtest cli init command
+
+### Patch Changes
+
+- 4d7c43f9: enable eslint rules from the latest @typescript-eslint/recommended
+- d85e5e95: upgrade eslint, typescript and @frontside packages
+- Updated dependencies [4d7c43f9]
+- Updated dependencies [d39028e2]
+- Updated dependencies [d85e5e95]
+  - @bigtest/client@0.3.1
+  - @bigtest/effection@0.6.1
+  - @bigtest/project@0.13.1
+  - @bigtest/server@0.22.0
+
 ## 0.16.2
 
 ### Patch Changes

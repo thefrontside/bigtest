@@ -1,5 +1,17 @@
 # @bigtest/webdriver
 
+## 0.7.2
+
+### Patch Changes
+
+- 4d7c43f9: enable eslint rules from the latest @typescript-eslint/recommended
+- d85e5e95: upgrade eslint, typescript and @frontside packages
+- Updated dependencies [4d7c43f9]
+- Updated dependencies [d39028e2]
+- Updated dependencies [d85e5e95]
+  - @bigtest/atom@0.12.0
+  - @bigtest/driver@0.5.5
+
 ## 0.7.1
 
 ### Patch Changes

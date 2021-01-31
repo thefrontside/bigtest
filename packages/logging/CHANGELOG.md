@@ -1,5 +1,12 @@
 # @bigtest/logging
 
+## 0.5.3
+
+### Patch Changes
+
+- 4d7c43f9: enable eslint rules from the latest @typescript-eslint/recommended
+- d85e5e95: upgrade eslint, typescript and @frontside packages
+
 ## 0.5.2
 
 ### Patch Changes

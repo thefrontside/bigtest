@@ -1,5 +1,31 @@
 # bigtest
 
+## 0.8.0
+
+### Minor Changes
+
+- d39028e2: implement typescript project references in all packages that have a compiled output
+- 42931105: Add `extend` method to interactor builder API, to downcast to a subtype of the element
+- ea04c546: Deprecate the `perform` function, use pattern matching instead!
+- 052bf8f3: Add builder API for creating interactors
+- ee5bf789: Add matchers to interactors, for more flexible matching
+
+### Patch Changes
+
+- d85e5e95: upgrade eslint, typescript and @frontside packages
+- Updated dependencies [74f4b33c]
+- Updated dependencies [4d7c43f9]
+- Updated dependencies [06f915b0]
+- Updated dependencies [42931105]
+- Updated dependencies [0aed40e9]
+- Updated dependencies [ea04c546]
+- Updated dependencies [052bf8f3]
+- Updated dependencies [d85e5e95]
+- Updated dependencies [ee5bf789]
+  - @bigtest/cli@0.17.0
+  - @bigtest/interactor@0.24.0
+  - @bigtest/suite@0.11.2
+
 ## 0.7.0
 
 ### Minor Changes

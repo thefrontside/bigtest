@@ -1,5 +1,11 @@
 # @bigtest/driver
 
+## 0.5.5
+
+### Patch Changes
+
+- d85e5e95: upgrade eslint, typescript and @frontside packages
+
 ## 0.5.4
 
 ### Patch Changes

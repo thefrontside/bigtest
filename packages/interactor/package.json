@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/interactor",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "description": "Interactors for working with applications",
   "main": "dist/cjs/index.js",
   "browser": "dist/esm/index.js",
@@ -23,7 +23,7 @@
     "prepack": "tsc --build && tsc --outdir dist/esm --module es2015 && tsc --outdir dist/cjs --module commonjs"
   },
   "dependencies": {
-    "@bigtest/globals": "^0.7.3",
+    "@bigtest/globals": "^0.7.4",
     "@bigtest/performance": "^0.5.0",
     "change-case": "^4.1.1",
     "element-is-visible": "^1.0.0",

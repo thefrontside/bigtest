@@ -1,5 +1,16 @@
 # @bigtest/bundler
 
+## 0.12.1
+
+### Patch Changes
+
+- 4d7c43f9: enable eslint rules from the latest @typescript-eslint/recommended
+- d85e5e95: upgrade eslint, typescript and @frontside packages
+- Updated dependencies [4d7c43f9]
+- Updated dependencies [d85e5e95]
+  - @bigtest/effection@0.6.1
+  - @bigtest/project@0.13.1
+
 ## 0.12.0
 
 ### Minor Changes
