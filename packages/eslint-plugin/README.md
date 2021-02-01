@@ -6,27 +6,14 @@
 yarn add --dev eslint @bigtest/eslint-plugin
 ```
 
-## Usage
+## Configuration
 
-Add `@bigtest` to the plugins section of your `.eslintrc` configuration file.
-```json
-{
-  "plugins": ["@bigtest"]
-}
-```
-
-## Shareable configurations
-
-### Recommended
-
-This plugin exports a recommended configuration.
-
-To enable this configuration use the `extends` property in your `.eslintrc`
-config file:
+Create an `.eslintrc.json` or `.eslintrc.js` in your bigtest test directory, e.g. `./test` and populate it with the following:
 
 ```json
 {
-  "extends": ["plugin:@bigtest/recommended"]
+  "extends": ["plugin:@bigtest/recommended"],
+  "plugins": [ "@bigtest" ]
 }
 ```
 
