@@ -1,6 +1,5 @@
 import { ProjectOptions } from '@bigtest/project';
 import fs from 'fs';
-import path from 'path';
 
 export const ensureConfiguration = (config: ProjectOptions) => {
   if (typeof config.tsconfig !== 'undefined' && fs.existsSync(config.tsconfig) === false) {
