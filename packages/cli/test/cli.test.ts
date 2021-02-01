@@ -8,7 +8,6 @@ import { promises as fs } from 'fs';
 
 import { World } from './helpers/world';
 import { Stream } from './helpers/stream';
-import path from 'path';
 
 export interface TestProcess {
   stdin: { write(data: string): void };
@@ -203,7 +202,6 @@ describe('@bigtest/cli', function() {
       let status: ExitStatus
 
       beforeEach(async () => {
-        let config = path.resolve
         child = await run('ci', '--config-file', './test/config/invalid-tsconfig-path.json',  './test/fixtures');
         status = await child.join();
       });
