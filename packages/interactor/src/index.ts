@@ -20,8 +20,8 @@ export { RadioButton } from './definitions/radio-button';
 export { Select } from './definitions/select';
 export { MultiSelect } from './definitions/multi-select';
 
-export { includes } from './matchers/includes';
-export { matches } from './matchers/matches';
+export { including } from './matchers/including';
+export { matching } from './matchers/matching';
 export { and } from './matchers/and';
 export { or } from './matchers/or';
 export { not } from './matchers/not';

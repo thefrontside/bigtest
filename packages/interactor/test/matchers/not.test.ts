@@ -2,12 +2,12 @@ import { describe, it } from 'mocha';
 import expect from 'expect';
 import { dom } from '../helpers';
 
-import { HTML, not, includes } from '../../src/index';
+import { HTML, not, including } from '../../src/index';
 
 describe('@bigtest/interactor', () => {
   describe('not', () => {
     it('can provide description', () => {
-      expect(not(includes('bar')).format()).toEqual('not includes "bar"');
+      expect(not(including('bar')).format()).toEqual('not including "bar"');
       expect(not('bar').format()).toEqual('not "bar"');
     });
 
@@ -16,8 +16,8 @@ describe('@bigtest/interactor', () => {
         <div title="hello cruel world"></div>
       `);
 
-      await HTML({ title: not(includes('monkey')) }).exists();
-      await expect(HTML({ title: not(includes('world')) }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError')
+      await HTML({ title: not(including('monkey')) }).exists();
+      await expect(HTML({ title: not(including('world')) }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError')
     });
 
     it('can check whether the filter does not match the given literal value', async () => {

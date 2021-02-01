@@ -2,12 +2,12 @@ import { describe, it } from 'mocha';
 import expect from 'expect';
 import { dom } from '../helpers';
 
-import { HTML, and, includes } from '../../src/index';
+import { HTML, and, including } from '../../src/index';
 
 describe('@bigtest/interactor', () => {
   describe('and', () => {
     it('can provide description', () => {
-      expect(and('foo', includes('bar')).format()).toEqual('"foo" and includes "bar"');
+      expect(and('foo', including('bar')).format()).toEqual('"foo" and including "bar"');
     });
 
     it('can check whether the given value matches all of the given matchers', async () => {
@@ -15,10 +15,10 @@ describe('@bigtest/interactor', () => {
         <div title="hello cruel world"></div>
       `);
 
-      await HTML({ title: and(includes('world'), includes('hello')) }).exists();
-      await HTML({ title: and(includes('world'), includes('hello'), includes('cruel')) }).exists();
-      await expect(HTML({ title: and(includes('world'), includes('monkey')) }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError')
-      await expect(HTML({ title: and(includes('monkey'), includes('hello')) }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError')
+      await HTML({ title: and(including('world'), including('hello')) }).exists();
+      await HTML({ title: and(including('world'), including('hello'), including('cruel')) }).exists();
+      await expect(HTML({ title: and(including('world'), including('monkey')) }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError')
+      await expect(HTML({ title: and(including('monkey'), including('hello')) }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError')
     });
 
     it('can check whether the given value matches all of the given actual values', async () => {
