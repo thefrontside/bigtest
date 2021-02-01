@@ -1,4 +1,4 @@
-export default {
+export = {
   parserOptions: { sourceType: 'module' },
   plugins: ['@bigtest'],
   rules: {
