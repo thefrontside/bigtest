@@ -25,3 +25,5 @@ export { matching } from './matchers/matching';
 export { and } from './matchers/and';
 export { or } from './matchers/or';
 export { not } from './matchers/not';
+export { some } from './matchers/some';
+export { every } from './matchers/every';
