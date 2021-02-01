@@ -36,4 +36,4 @@ config file:
 
 | Rule                                                                         | Description                                                     | Configurations   | Fixable      |
 | ---------------------------------------------------------------------------- | --------------------------------------------------------------- | ---------------- | ------------ |
-| [require-default-export](docs/rules/require-default-test-export)                       | Each test file must have a default export. 
+| [@bigtest/require-default-export](docs/rules/require-default-export)                       | Each test file must have a default export. 
