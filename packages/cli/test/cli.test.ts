@@ -8,6 +8,7 @@ import { promises as fs } from 'fs';
 
 import { World } from './helpers/world';
 import { Stream } from './helpers/stream';
+import path from 'path';
 
 export interface TestProcess {
   stdin: { write(data: string): void };
@@ -194,6 +195,22 @@ describe('@bigtest/cli', function() {
         expect(child.stdout.output).toContain('↪ third step');
         expect(child.stdout.output).toContain('✓ check the thing');
         expect(child.stdout.output).toContain('⨯ child second step');
+      });
+    });
+
+    describe('running with an invalid tsconfig.json file',  () => {
+      let child: TestProcess;
+      let status: ExitStatus
+
+      beforeEach(async () => {
+        let config = path.resolve
+        child = await run('ci', '--config-file', './test/config/invalid-tsconfig-path.json',  './test/fixtures');
+        status = await child.join();
+      });
+
+      it('exits with error code', async () => {
+        expect(status.code).toEqual(1);
+        expect(child.stderr.output).toContain('./does-not-exist.json');
       });
     });
 
