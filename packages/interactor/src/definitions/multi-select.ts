@@ -1,18 +1,18 @@
-import { createInteractor, focused, focus, blur } from '../index';
-import { isVisible } from 'element-is-visible';
 import { dispatchChange, dispatchInput } from '../dispatch';
 import { getSelect } from '../get-select';
+import { HTML } from './html';
+import { FormField } from './form-field';
 
-const MultiSelectOption = createInteractor<HTMLOptionElement>('option')({
-  selector: 'option',
-  locator: (element) => element.label,
-  filters: {
+const MultiSelectOption = HTML.extend<HTMLOptionElement>('option')
+  .selector('option')
+  .locator((element) => element.label)
+  .filters({
     disabled: {
       apply: (element) => element.disabled,
       default: false
     }
-  },
-  actions: {
+  })
+  .actions({
     choose: ({ perform }) => perform((element) => {
       let select = getSelect(element);
 
@@ -40,28 +40,14 @@ const MultiSelectOption = createInteractor<HTMLOptionElement>('option')({
         dispatchInput(select);
       }
     }),
-  },
-});
+  })
 
-const MultiSelectInteractor = createInteractor<HTMLSelectElement>('select box')({
-  selector: 'select[multiple]',
-  locator: (element) => element.labels ? (Array.from(element.labels)[0]?.textContent || '') : '',
-  filters: {
-    title: (element) => element.title,
-    id: (element) => element.id,
-    valid: (element) => element.validity.valid,
+const MultiSelectInteractor = FormField.extend<HTMLSelectElement>('select box')
+  .selector('select[multiple]')
+  .filters({
     values: (element) => Array.from(element.selectedOptions).map((o) => o.label),
-    visible: { apply: isVisible, default: true },
-    disabled: {
-      apply: (element) => element.disabled,
-      default: false
-    },
-    focused
-  },
-  actions: {
-    click: ({ perform }) => perform((element) => { element.click(); }),
-    focus,
-    blur,
+  })
+  .actions({
     choose: async (interactor, text: string) => {
       await interactor.find(MultiSelectOption(text)).choose();
     },
@@ -71,8 +57,7 @@ const MultiSelectInteractor = createInteractor<HTMLSelectElement>('select box')(
     deselect: async (interactor, text: string) => {
       await interactor.find(MultiSelectOption(text)).deselect();
     },
-  },
-});
+  })
 
 /**
  * Call this {@link InteractorConstructor} to initialize an {@link Interactor}

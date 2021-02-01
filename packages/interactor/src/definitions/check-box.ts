@@ -1,33 +1,20 @@
-import { createInteractor, focused, focus, blur } from '../index';
 import { isVisible } from 'element-is-visible';
+import { FormField } from './form-field';
 
-const CheckBoxInteractor = createInteractor<HTMLInputElement>('check box')({
-  selector: 'input[type=checkbox]',
-  locator: (element) => element.labels ? (Array.from(element.labels)[0]?.textContent || '') : '',
-  filters: {
-    title: (element) => element.title,
-    id: (element) => element.id,
-    valid: (element) => element.validity.valid,
+const CheckBoxInteractor = FormField.extend<HTMLInputElement>('check box')
+  .selector('input[type=checkbox]')
+  .filters({
     checked: (element) => element.checked,
     visible: {
       apply: (element) => isVisible(element) || (element.labels && Array.from(element.labels).some(isVisible)),
       default: true
     },
-    disabled: {
-      apply: (element) => element.disabled,
-      default: false
-    },
-    focused
-  },
-  actions: {
-    click: ({ perform }) => perform((element) => { element.click(); }),
+  })
+  .actions({
     check: ({ perform }) => perform((element) => { if(!element.checked) element.click(); }),
     uncheck: ({ perform }) => perform((element) => { if(element.checked) element.click(); }),
     toggle: ({ perform }) => perform((element) => { element.click(); }),
-    focus,
-    blur
-  },
-});
+  })
 
 /**
  * Call this {@link InteractorConstructor} to initialize a checkbox {@link Interactor}.

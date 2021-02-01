@@ -1,31 +1,18 @@
-import { createInteractor, focused, focus, blur } from '../index';
 import { isVisible } from 'element-is-visible';
+import { FormField } from './form-field';
 
-const RadioButtonInteractor = createInteractor<HTMLInputElement>('radio button')({
-  selector: 'input[type=radio]',
-  locator: (element) => element.labels ? (Array.from(element.labels)[0]?.textContent || '') : '',
-  filters: {
-    title: (element) => element.title,
-    id: (element) => element.id,
-    valid: (element) => element.validity.valid,
+const RadioButtonInteractor = FormField.extend<HTMLInputElement>('radio button')
+  .selector('input[type=radio]')
+  .filters({
     checked: (element) => element.checked,
     visible: {
       apply: (element) => isVisible(element) || (element.labels && Array.from(element.labels).some(isVisible)),
       default: true
     },
-    disabled: {
-      apply: (element) => element.disabled,
-      default: false
-    },
-    focused
-  },
-  actions: {
-    click: ({ perform }) => perform((element) => { element.click(); }),
+  })
+  .actions({
     choose: ({ perform }) => perform((element) => { element.click(); }),
-    focus,
-    blur
-  },
-});
+  })
 
 /**
  * Call this {@link InteractorConstructor} to initialize a radio button {@link Interactor}.
