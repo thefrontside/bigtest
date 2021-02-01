@@ -128,6 +128,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
         } catch(error) {
           console.debug("[manifest builder] error loading manifest");
           bundlerSlice.update(() => ({ type: 'ERRORED', error }));
+          throw error;
         }
 
         break;
