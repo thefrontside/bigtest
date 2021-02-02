@@ -2,4 +2,4 @@
 "@bigtest/server": patch
 ---
 
-ensure bundler errors go right up the stack
+validate test implementation instances in `validate-test`.
