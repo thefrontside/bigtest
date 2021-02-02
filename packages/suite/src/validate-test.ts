@@ -64,7 +64,7 @@ export function validateTest(test: Test): true {
     }
 
     if ( validateTestKeys(test, ['assertions', 'children'], some) === false) {
-      throw new TestValidationError(`Invalid Test: Test contains no assertions or children.\n\nTest: ${[test.description].join(' → ')}`, test.path);
+      throw new TestValidationError(`Invalid Test: Test contains no assertions or children.\n\nTest: ${path.join(' → ')}`, test.path);
     }
 
     findDuplicates(test.assertions.map((a) => a.description), (duplicate) => {
