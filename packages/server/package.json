@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/server",
-  "version": "0.22.0",
+  "version": "0.22.1",
   "description": "BigTest Server",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",

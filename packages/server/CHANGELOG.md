@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.22.1
+
+### Patch Changes
+
+- 67681235: Add `changeOrigin` flag to proxy server so that app urls served over SSL will work properly
+
 ## 0.22.0
 
 ### Minor Changes
