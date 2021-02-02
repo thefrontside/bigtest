@@ -1,4 +1,4 @@
-import { describe, beforeEach, it } from 'mocha';
+import { describe as suite, beforeEach, it } from 'mocha';
 import expect from 'expect';
 import path from 'path';
 import rmrf from 'rimraf';
@@ -21,7 +21,7 @@ const FIXTURES_DIR = path.resolve('test', 'fixtures');
 
 const { mkdir, copyFile, readFile } = fs.promises;
 
-// const describe = process.platform === 'win32' ? suite.skip : suite;
+const describe = process.platform === 'win32' ? suite.skip : suite;
 describe('manifest builder', () => {
   let manifest: Slice<Manifest>;
   let status: Slice<BundlerState>;
