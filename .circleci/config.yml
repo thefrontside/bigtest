@@ -1,0 +1,131 @@
+version: 2.1
+orbs:
+  win: circleci/windows@2.2.0
+executors:
+  linux:
+    docker:
+      - image: circleci/node:15-browsers
+commands:
+  yarn_install:
+    steps:
+      - restore_cache:
+          name: Restoring dependency cache
+          key: yarn-v7-{{ checksum "yarn.lock" }}
+      - run:
+          name: Installing dependencies
+          command: yarn install --frozen-lockfile
+      - save_cache:
+          name: Saving dependency cache
+          key: yarn-v7-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+            - ~/AppData/Local/Yarn/Cache
+  prepack:
+    steps:
+      - run:
+          name: Prepack
+          command: yarn prepack
+
+jobs:
+  prepack:
+    executor: <<parameters.executor>>
+    parameters:
+      executor:
+        type: executor
+        default: "linux"
+    steps:
+      - checkout
+      - yarn_install
+      - prepack
+      - persist_to_workspace:
+          root: .
+          paths:
+            - "packages/*/dist"
+  test:
+    executor: <<parameters.executor>>
+    parameters:
+      package:
+        type: string
+      executor:
+        type: executor
+        default: "linux"
+      prepack:
+        type: boolean
+        default: true
+    steps:
+      - checkout
+      - yarn_install
+      - when:
+          condition: <<parameters.prepack>>
+          steps:
+            - prepack
+      - attach_workspace:
+          at: .
+      - run:
+          name: Running tests
+          command: yarn workspace @bigtest/<<parameters.package>> test
+  lint:
+    executor: <<parameters.executor>>
+    parameters:
+      executor:
+        type: executor
+        default: "linux"
+      prepack:
+        type: boolean
+        default: true
+    steps:
+      - checkout
+      - yarn_install
+      - when:
+          condition: <<parameters.prepack>>
+          steps:
+            - prepack
+      - attach_workspace:
+          at: .
+      - run:
+          name: Running lint
+          command: yarn lint
+workflows:
+  test:
+    jobs:
+      - prepack
+      - test:
+          name: "test-<<matrix.package>>"
+          prepack: false
+          matrix:
+            parameters:
+              package:
+                - agent
+                - atom
+                - bundler
+                - cli
+                - client
+                - driver
+                - effection
+                - effection-express
+                - eslint-plugin
+                - globals
+                - interactor
+                - logging
+                - performance
+                - project
+                - server
+                - suite
+                - todomvc
+                - webdriver
+          requires:
+            - prepack
+      - lint:
+          prepack: false
+          requires:
+            - prepack
+      - test:
+          executor:
+            name: "win/default"
+            size: "large"
+          name: "test-cli-windows"
+          pre-steps:
+            - run:
+                name: "Install Microsoft Edge"
+                command: choco install microsoft-edge
+          package: cli
