@@ -95,7 +95,7 @@ export const startProxyServer = (serviceSlice: Slice<ServiceState<ProxyStatus, P
 
   proxyStatus.set({ type: 'starting' });
 
-  let proxyServer = proxy.createProxyServer({ target: target, selfHandleResponse: true });
+  let proxyServer = proxy.createProxyServer({ target: target, selfHandleResponse: true, changeOrigin: true });
 
   let server = express();
 
