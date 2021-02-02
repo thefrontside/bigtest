@@ -4,7 +4,7 @@
     "url": "http://localhost:36000"
   },
   "testFiles": ["./test/fixtures/*.test.{ts,js}"],
-  "launch": ["chrome.headless"],
+  "launch": ["default"],
   "coverage": {
     "directory": "./tmp/coverage",
     "reports": ["lcov", "html"]

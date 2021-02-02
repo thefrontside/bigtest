@@ -10,7 +10,10 @@ import { findAvailablePortNumber } from '../src/find-available-port-number';
 import { untilURLAvailable } from '../src/until-url-available';
 
 import { converge } from '../../interactor/src/converge';
-import { WebDriver, Remote } from '../src/index';
+import { WebDriver, Remote, parseBrowserName } from '../src/index';
+import { getDriverPath } from '../src/local';
+
+const BROWSER = parseBrowserName(process.env.BROWSER);
 
 describe('Connecting to a remote webdriver', () => {
   let server = express();
@@ -52,7 +55,8 @@ describe('Connecting to a remote webdriver', () => {
     driverURL = `http://localhost:${port}`;
 
     driverProcessContext = main(function*() {
-      yield daemon(`chromedriver --port=${port}`);
+      let bin = yield getDriverPath(BROWSER);
+      yield daemon(`${bin} --port=${port}`);
       yield;
     });
   });
@@ -75,6 +79,6 @@ describe('Connecting to a remote webdriver', () => {
 
   it('can navigate to a url', () => {
     expect(latestRequest).toBeDefined();
-    expect(latestRequest.headers['user-agent']).toMatch('Chrome');
+    expect(latestRequest.headers['user-agent']).toMatch('Mozilla');
   });
 });

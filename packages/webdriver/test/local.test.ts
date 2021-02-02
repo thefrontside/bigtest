@@ -31,19 +31,31 @@ describe("Running a local wedriver", () => {
 
   });
 
-  describe('with chromedriver', () => {
-    beforeEach(async () => {
-      driver = await spawn(Local({ type: 'local', browserName: 'chrome', headless: true }));
-      await spawn(driver.navigateTo(serverURL));
+  if (process.platform === 'win32') {
+    describe('with edgedriver', () => {
+      beforeEach(async () => {
+        driver = await spawn(Local({ type: 'local', browserName: 'edge', headless: true }));
+        await spawn(driver.navigateTo(serverURL));
+      });
+
+      it('can navigate to a url', () => {
+        expect(latestRequest).toBeDefined();
+        expect(latestRequest.headers['user-agent']).toMatch('Chrome');
+      });
+    });
+  } else {
+    describe('with chromedriver', () => {
+      beforeEach(async () => {
+        driver = await spawn(Local({ type: 'local', browserName: 'chrome', headless: true }));
+        await spawn(driver.navigateTo(serverURL));
+      });
+
+      it('can navigate to a url', () => {
+        expect(latestRequest).toBeDefined();
+        expect(latestRequest.headers['user-agent']).toMatch('Chrome');
+      });
     });
 
-    it('can navigate to a url', () => {
-      expect(latestRequest).toBeDefined();
-      expect(latestRequest.headers['user-agent']).toMatch('Chrome');
-    });
-  });
-
-  if (process.platform !== 'win32') {
     describe('with geckodriver', () => {
       beforeEach(async () => {
         driver = await spawn(Local({ type: 'local', browserName: 'firefox', headless: true }));

@@ -19,8 +19,8 @@
   },
   "devDependencies": {
     "@bigtest/effection-express": "^0.9.2",
-    "@frontside/tsconfig": "^1.2.0",
     "@frontside/eslint-config": "^2.0.0",
+    "@frontside/tsconfig": "^1.2.0",
     "@frontside/typescript": "^1.1.1",
     "@types/express": "^4.17.6",
     "@types/mocha": "^7.0.1",
@@ -38,6 +38,7 @@
     "chromedriver": ">=87.0.0",
     "effection": "^0.7.0",
     "geckodriver": ">=1.21.0",
+    "ms-chromium-edge-driver": "^0.3.0",
     "node-fetch": "^2.6.0"
   }
 }

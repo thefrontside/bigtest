@@ -24,7 +24,7 @@ export function* init(configFile: string): Operation<void> {
   } catch {
     options = {
       port: 28000,
-      launch: ['chrome.headless']
+      launch: ['default']
     };
   }
 
