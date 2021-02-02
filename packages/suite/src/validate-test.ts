@@ -19,9 +19,10 @@ export class TestValidationError extends Error {
   }
 }
 
-type ArrayValidationFn = typeof Array.prototype.some | typeof Array.prototype.every;
+const every = Array.prototype.every;
+const some = Array.prototype.some;
 
-function validateTestKeys (test: Test, keys: (keyof Test)[], validationFn: ArrayValidationFn): boolean {
+function validateTestKeys (test: Test, keys: (keyof Test)[], validationFn: typeof some | typeof every): boolean {
   // the disable comment below is because eslint is not recognising k as used in !!test?.[k].
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return validationFn.call(keys, (k: keyof Test) => !!test?.[k]);
@@ -58,11 +59,11 @@ export function validateTest(test: Test): true {
       throw new TestValidationError(`Invalid Test: is too deeply nested, maximum allowed depth of nesting is ${MAXIMUM_DEPTH}\n\nTest: ${path.join(' → ')}`, file)
     }
 
-    if ( validateTestKeys(test, ['description'], Array.prototype.every) === false) {
+    if ( validateTestKeys(test, ['description'], every) === false) {
       throw new TestValidationError(`Invalid Test: Test contains no description.\n\nDoes the test file contain a default export? Test: ${path.join(' → ')}`, file);
     }
 
-    if ( validateTestKeys(test, ['assertions', 'children'], Array.prototype.some) === false) {
+    if ( validateTestKeys(test, ['assertions', 'children'], some) === false) {
       throw new TestValidationError(`Invalid Test: Test contains no assertions or children.\n\nTest: ${[test.description].join(' → ')}`, test.path);
     }
 
