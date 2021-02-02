@@ -1,5 +1,11 @@
 # @bigtest/interactor
 
+## 0.25.0
+
+### Minor Changes
+
+- ad8e7468: Add HTML and FormField base interactors
+
 ## 0.24.0
 
 ### Minor Changes

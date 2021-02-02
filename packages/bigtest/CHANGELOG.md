@@ -1,5 +1,17 @@
 # bigtest
 
+## 0.9.0
+
+### Minor Changes
+
+- ad8e7468: Add HTML and FormField base interactors
+
+### Patch Changes
+
+- 67681235: Add `changeOrigin` flag to proxy server so that app urls served over SSL will work properly
+- Updated dependencies [ad8e7468]
+  - @bigtest/interactor@0.25.0
+
 ## 0.8.0
 
 ### Minor Changes
