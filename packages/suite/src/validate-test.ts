@@ -19,6 +19,14 @@ export class TestValidationError extends Error {
   }
 }
 
+type ArrayValidationFn = typeof Array.prototype.some | typeof Array.prototype.every;
+
+function validateTestKeys (test: Test, keys: (keyof Test)[], validationFn: ArrayValidationFn): boolean {
+  // the disable comment below is because eslint is not recognising k as used in !!test?.[k].
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  return validationFn.call(keys, (k: keyof Test) => !!test?.[k]);
+}
+
 function findDuplicates<T>(array: T[], callback: (value: T) => void) {
   let ledger = new Set();
   for(let element of array) {
@@ -50,6 +58,14 @@ export function validateTest(test: Test): true {
       throw new TestValidationError(`Invalid Test: is too deeply nested, maximum allowed depth of nesting is ${MAXIMUM_DEPTH}\n\nTest: ${path.join(' → ')}`, file)
     }
 
+    if ( validateTestKeys(test, ['description'], Array.prototype.every) === false) {
+      throw new TestValidationError(`Invalid Test: Test contains no description.\n\nDoes the test file contain a default export? Test: ${path.join(' → ')}`, file);
+    }
+
+    if ( validateTestKeys(test, ['assertions', 'children'], Array.prototype.some) === false) {
+      throw new TestValidationError(`Invalid Test: Test contains no assertions or children.\n\nTest: ${[test.description].join(' → ')}`, test.path);
+    }
+
     findDuplicates(test.assertions.map((a) => a.description), (duplicate) => {
       throw new TestValidationError(`Invalid Test: contains duplicate assertion: ${JSON.stringify(duplicate)}\n\nTest: ${path.join(' → ')}`, file)
     });
@@ -64,5 +80,6 @@ export function validateTest(test: Test): true {
 
     return true;
   }
+
   return validateTestInner(test, [test.description], test.path);
 }
