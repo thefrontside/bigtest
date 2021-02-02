@@ -1,4 +1,5 @@
 ---
+"@bigtest/agent": patch
 "@bigtest/server": patch
 ---
 
