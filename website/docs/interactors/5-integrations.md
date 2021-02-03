@@ -43,6 +43,10 @@ If an interactor's assertion fails, the error will be received by Jest and you w
 
 Note that the interactors are asynchronous, and so you need to mark your test function as `async`, and you should `await` the interactors and their assertions.
 
+:::info Events in JSDOM
+JSDOM versions 15 and below do not have support for `InputEvent` on which interactors rely. If you are using one of these older versions, which unfortunately was the case for `create-react-app` prior to `v4.0.0`, you will need to make sure your tests are running in `JSDOM >= 16.0.0`.
+:::
+
 ## Cypress
 
 In Cypress, interactors fit right in, though you may need some slight configuration for ES Modules and TypeScript, which we will cover below.
