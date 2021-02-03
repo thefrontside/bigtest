@@ -999,6 +999,15 @@
     effection "^0.7.0"
     websocket "^1.0.31"
 
+"@bigtest/cypress@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@bigtest/cypress/-/cypress-0.0.2.tgz#bc24cf17de0b68ca203f2b9edff587b4ea890cf6"
+  integrity sha512-hu953aeEUx91xNNClVuhXlPLCxLDWtVm9rgviQK8GiM9JWM6+NDSLoVX18T44x5he6otn1wI/o+n0nx+cI2k2Q==
+  dependencies:
+    "@bigtest/globals" "^0.7.3"
+    "@bigtest/interactor" "^0.23.0"
+    cypress "^5.6.0"
+
 "@bigtest/driver@^0.5.4":
   version "0.5.4"
   resolved "https://registry.yarnpkg.com/@bigtest/driver/-/driver-0.5.4.tgz#7ca15bccea4dc40c6ebab261d0417168ad485f2a"
@@ -1036,7 +1045,7 @@
     "@bigtest/suite" "^0.11.1"
     effection "^0.7.0"
 
-"@bigtest/interactor@0.23.0":
+"@bigtest/interactor@0.23.0", "@bigtest/interactor@^0.23.0":
   version "0.23.0"
   resolved "https://registry.yarnpkg.com/@bigtest/interactor/-/interactor-0.23.0.tgz#41a01c16e23a6ef0dfa5f76816f77654cd80e619"
   integrity sha512-Q07Tc3gniyCwpvmOBxv+gk8ulzUBJPTH0p6AlNVtW3HUR7vdT6mZYYHNqqMx9xSZqWyDz7oxg51et8XvjpvaLg==
@@ -3497,10 +3506,10 @@ ctrlc-windows@^1.0.0:
     neon-cli "^0.5.0"
     node-pre-gyp "^0.16.0"
 
-cypress@^6.0.1:
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/cypress/-/cypress-6.2.1.tgz#27d5fbcf008c698c390fdb0c03441804176d06c4"
-  integrity sha512-OYkSgzA4J4Q7eMjZvNf5qWpBLR4RXrkqjL3UZ1UzGGLAskO0nFTi/RomNTG6TKvL3Zp4tw4zFY1gp5MtmkCZrA==
+cypress@^5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/cypress/-/cypress-5.6.0.tgz#6781755c3ddfd644ce3179fcd7389176c0c82280"
+  integrity sha512-cs5vG3E2JLldAc16+5yQxaVRLLqMVya5RlrfPWkC72S5xrlHFdw7ovxPb61s4wYweROKTyH01WQc2PFzwwVvyQ==
   dependencies:
     "@cypress/listr-verbose-renderer" "^0.4.1"
     "@cypress/request" "^2.88.5"

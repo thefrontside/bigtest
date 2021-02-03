@@ -11,6 +11,9 @@ This script `cd`'s into `app/` and executes `start-dev.js` script which will mak
 
 The reason why we're using `cd` instead of `--cwd app/` is because that syntax is only available when using `yarn`.
 
+### Modifying Sample App
+To add dependencies to the sample app, you will need to modify `./app/app-pkg.json` because `./app/package.json` does not get published.
+
 ## Run Tests
 ```
 $ npm run test:jest
@@ -28,3 +31,6 @@ You can use `--yarn` or `-Y` flags to use yarn instead:
 ```
 $ npx bigtest-sample --yarn
 ```
+
+## Publishing BigTest Sample
+If you make changes to this package, please bump the package version manually.
