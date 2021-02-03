@@ -6,7 +6,7 @@ import { daemon } from '@effection/node';
 
 import { findAvailablePortNumber } from './find-available-port-number';
 import { untilURLAvailable } from './until-url-available';
-import { WebDriver, LocalOptions, connect } from './web-driver';
+import { WebDriver, LocalOptions, BrowserName, connect, parseBrowserName } from './web-driver';
 
 /**
  * Create a local `WebDriver` resource based on `driverName` (either 'geckodriver' or
@@ -25,9 +25,7 @@ export function * Local(options: LocalOptions): Operation<WebDriver> {
   let port: number = yield findAvailablePortNumber();
   let driverURL = `http://localhost:${port}`;
 
-  let pkg = yield import(driverNameFor(options.browserName));
-
-  let bin = pkg.path.replace(/\\/g, '/');
+  let bin = yield getDriverPath(parseBrowserName(options.browserName));
 
   let driver = yield resource(new WebDriver(driverURL), function*() {
     yield daemon(`${bin} --port=${port}`);
@@ -42,10 +40,17 @@ export function * Local(options: LocalOptions): Operation<WebDriver> {
   return driver;
 }
 
-function driverNameFor(browserName: LocalOptions["browserName"]) {
-  if (browserName == 'firefox') {
-    return 'geckodriver';
+type DriverInfo = {
+  path: string;
+}
+
+export function *getDriverPath(browserName: BrowserName): Operation<DriverInfo> {
+  if (browserName == 'edge') {
+    let { installDriver } = yield import('ms-chromium-edge-driver');
+    let edgePaths = yield installDriver();
+    return edgePaths.driverPath.replace(/\\/g, '/');
   } else {
-    return `${browserName}driver`;
+    let pkg = yield import(browserName === 'firefox' ? 'geckodriver' : `${browserName}driver`);
+    return pkg.path.replace(/\\/g, '/');
   }
 }

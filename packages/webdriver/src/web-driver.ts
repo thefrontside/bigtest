@@ -2,6 +2,7 @@ import { Operation } from 'effection';
 import { createAtom } from '@bigtest/atom';
 import { fetch } from '@effection/fetch';
 import { Driver } from '@bigtest/driver';
+import { assert } from 'assert-ts';
 
 export class WebDriver implements Driver<WDSession> {
 
@@ -91,10 +92,28 @@ function* post(url: string, params: Record<string, unknown>): Operation<WDRespon
   });
 }
 
+export enum BrowserName {
+  chrome = 'chrome',
+  firefox = 'firefox',
+  safari = 'safari',
+  edge = 'edge',
+}
+
+export function parseBrowserName(name?: string): BrowserName {
+  if(name) {
+    assert(!!BrowserName[name], `not a known browser: ${name}`)
+    return name as BrowserName;
+  } else if(process.platform === 'win32') {
+    return BrowserName.edge;
+  } else {
+    return BrowserName.chrome;
+  }
+}
+
 export type LocalOptions = {
   type: 'local';
   headless: boolean;
-  browserName: 'chrome' | 'firefox' | 'safari';
+  browserName?: string;
 };
 
 export type RemoteOptions = {

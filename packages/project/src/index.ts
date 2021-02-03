@@ -84,6 +84,13 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
     cacheDir: path.resolve(path.dirname(configFilePath), '.bigtest'),
     watchTestFiles: true,
     drivers: {
+      default: {
+        module: "@bigtest/webdriver",
+        options: {
+          type: 'local',
+          headless: true
+        }
+      },
       chrome: {
         module: "@bigtest/webdriver",
         options: {
