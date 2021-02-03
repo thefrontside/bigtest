@@ -45,17 +45,20 @@ export function createAtom<S>(init: S, { channelMaxListeners = DefaultChannelMax
     setState(initializer(initialState, O.toUndefined(getState()) as S));
   }
 
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let sliceMaker = <A>(parentOptional: Op.Optional<O.Option<S>, A> = lens as unknown as Op.Optional<O.Option<S>, A>): MakeSlice<any> =>
     <P extends keyof A>(...path: P[]): Slice<A[P]> => {
-      let getters = [
-        parentOptional,
-        Op.fromNullable,
-        ...(path || []).map(p => (typeof p === 'number') ? Op.index(p) : Op.prop<A, P>(p))
-      ];
+      // The [any, any] cast is needed as `pipe` expects more than 2 arguments
+      // typescript cannot work out if the `getters` array has 0 or more elements
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any 
+      let getters = (path || []).map(p => (typeof p === 'number') ? Op.index(p) : Op.prop<A, P>(p)) as [any, any];
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let sliceOptional = (pipe as any)(...getters) as unknown as Op.Optional<O.Option<S>, A[P]>;
+      let sliceOptional = pipe(
+         parentOptional,
+         Op.fromNullable, 
+         ...getters
+      ) as Op.Optional<O.Option<S>, A[P]>;
 
       function getOption(): O.Option<A[P]> {
         let current = pipe(
