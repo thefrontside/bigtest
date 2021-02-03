@@ -3,13 +3,12 @@ import {
 } from '@typescript-eslint/experimental-utils';
 import path from 'path';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { version } = require('../../package.json');
-
-const REPO_URL = 'https://github.com/thefrontside/bigtest/eslint-plugin';
+const REPO_URL = 'https://github.com/thefrontside/bigtest';
 
 export const createRule = ESLintUtils.RuleCreator(name => {
   let ruleName = path.parse(name).name;
 
-  return `${REPO_URL}/blob/v${version}/docs/rules/${ruleName}.md`;
+  // TODO: can we get the v0 programmatically?
+  // there is no sane way to get the base branch in git
+  return `${REPO_URL}/blob/v0/packages/eslint-plugin/docs/rules/${ruleName}.md`;
 });

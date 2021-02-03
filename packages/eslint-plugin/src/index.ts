@@ -1,14 +1,17 @@
-import { requireDefaultTextExport } from './rules/require-default-export';
+import base from './configs/base';
+import { all } from './configs/all';
+import { recommended} from './configs/recommended';
+import { rules } from './rules';
 
-export const rules = {
-  'require-default-export': requireDefaultTextExport
-};
+export { rules } from './rules';
 
 export const configs = {
-  root: true,
-  recommended: {
-    rules: {
-      'bigtest/require-default-export': 2
-    }
-  }
+  all,
+  base,
+  recommended,
+};
+
+export default {
+  rules,
+  configs
 }
