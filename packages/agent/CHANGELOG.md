@@ -1,5 +1,15 @@
 # @bigtest/agent
 
+## 0.17.0
+
+### Minor Changes
+
+- d0097929: Add support for edge on windows and use it as the default driver
+
+### Patch Changes
+
+- a7afe9b7: ensure tsconfig config option is present and gets passed to the bundler
+
 ## 0.16.0
 
 ### Minor Changes

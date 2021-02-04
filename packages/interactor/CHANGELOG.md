@@ -1,5 +1,11 @@
 # @bigtest/interactor
 
+## 0.26.0
+
+### Minor Changes
+
+- a1d66276: Add built in matchers: includes, matches, and, or, not
+
 ## 0.25.0
 
 ### Minor Changes

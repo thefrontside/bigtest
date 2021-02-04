@@ -1,5 +1,11 @@
 # @bigtest/webdriver
 
+## 0.8.0
+
+### Minor Changes
+
+- d0097929: Add support for edge on windows and use it as the default driver
+
 ## 0.7.2
 
 ### Patch Changes

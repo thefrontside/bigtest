@@ -1,5 +1,19 @@
 # bigtest
 
+## 0.10.0
+
+### Minor Changes
+
+- a1d66276: Add built in matchers: includes, matches, and, or, not
+- d0097929: Add support for edge on windows and use it as the default driver
+
+### Patch Changes
+
+- Updated dependencies [a1d66276]
+- Updated dependencies [d0097929]
+  - @bigtest/interactor@0.26.0
+  - @bigtest/cli@0.18.0
+
 ## 0.9.0
 
 ### Minor Changes
