@@ -22,15 +22,15 @@ export class TestValidationError extends Error {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ensureIsTest (test: any, path: string[] = [], file?: string): test is Test {
   if(!test) {
-    throw new TestValidationError("Test contains no description.\n\nDoes the test file contain a default export?", path, file)
+    throw new TestValidationError("contains no description.\n\nDoes the test file contain a default export?", path, file)
   }
  
   if(!test.description) {
-    throw new TestValidationError("Test contains no description.\n\nDoes the test file contain a default export?", path, file)
+    throw new TestValidationError("contains no description.\n\nDoes the test file contain a default export?", path, file)
   }
 
   if(!test?.children || !test?.assertions) {
-    throw new TestValidationError('Test contains no assertions or children.');
+    throw new TestValidationError('contains no assertions or children.');
   }
 
   return true;
@@ -64,7 +64,7 @@ export const MAXIMUM_DEPTH = 10;
 export function validateTest(test: unknown): true {
   function validateTestInner(test: unknown, path?: string[], file?: string, depth = 0): true {
     if(depth > MAXIMUM_DEPTH) {
-      throw new TestValidationError(`Invalid Test: is too deeply nested, maximum allowed depth of nesting is ${MAXIMUM_DEPTH}`, [], file)
+      throw new TestValidationError(`is too deeply nested, maximum allowed depth of nesting is ${MAXIMUM_DEPTH}`, [], file)
     }
     
     if(!ensureIsTest(test, path, file)) {
@@ -75,11 +75,11 @@ export function validateTest(test: unknown): true {
     file = file ?? test.path;
 
     findDuplicates(test.assertions.map((a) => a.description), (duplicate) => {
-      throw new TestValidationError(`Invalid Test: contains duplicate assertion: ${JSON.stringify(duplicate)}`, path, file)
+      throw new TestValidationError(`contains duplicate assertion: ${JSON.stringify(duplicate)}`, path, file)
     });
 
     findDuplicates(test.children.map((c) => c.description), (duplicate) => {
-      throw new TestValidationError(`Invalid Test: contains duplicate test: ${JSON.stringify(duplicate)}`, path, file)
+      throw new TestValidationError(`contains duplicate test: ${JSON.stringify(duplicate)}`, path, file)
     });
 
     for(let child of test.children) {
