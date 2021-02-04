@@ -21,7 +21,6 @@
     { "path": "../logging" },
     { "path": "../project" },
     { "path": "../suite" },
-    { "path": "../todomvc" },
     { "path": "../webdriver" }
   ]
 }
