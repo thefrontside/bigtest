@@ -51,7 +51,7 @@ describe('@bigtest/cli', function() {
       let child: TestProcess;
 
       beforeEach(async () => {
-        await World.spawn(daemon('yarn bigtest-todomvc 36001'));
+        await World.spawn(daemon('yarn test:app:start 36001'));
         child = await run('server', '--app.url', 'http://localhost:36001', '--no-app.command');
       });
 
@@ -64,7 +64,7 @@ describe('@bigtest/cli', function() {
       let child: TestProcess;
 
       beforeEach(async () => {
-        child = await run('server', '--app.url', 'http://localhost:36001', '--app.command', '"yarn bigtest-todomvc 36001"');
+        child = await run('server', '--app.url', 'http://localhost:36001', '--app.command', '"yarn test:app:start 36001"');
       });
 
       it('outputs that the server was started successfully', async () => {
@@ -405,7 +405,7 @@ describe('@bigtest/cli', function() {
         expect(config.app.env.PORT).toEqual(9000);
         expect(config.app.url).toEqual('http://localhost:9000');
         expect(config.tsconfig).toEqual('./bigtest.tsconfig.json');
-        
+
         let generatedTSConfig = await fs.readFile('./bigtest.tsconfig.json');
         expect(JSON.parse(generatedTSConfig.toString())).toEqual(defaultTSConfig());
       });
