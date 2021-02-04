@@ -153,7 +153,7 @@ describe('manifest builder', () => {
     });
   });
 
-  describe('importing the manifest with a syntax error adds the error to the state', () => {
+  describe('importing the manifest with an error adds the error to the state', () => {
     beforeEach(async () => {
       await copyFile(path.join(FIXTURES_DIR, 'exceptions', 'error.t.js'), MANIFEST_PATH);
       await actions.fork(status.once(({ type }) => type === 'ERRORED'));
@@ -184,37 +184,9 @@ describe('manifest builder', () => {
       // assert is used to type narrow also and does more than just assert
       assertBundlerState(bundlerState.type, {is: 'ERRORED'})
 
-      expect(bundlerState.error.message).toEqual('bork')
+      let error = bundlerState.error;
+
+      expect(error.message).toEqual('bork')
     });
-  });
-
-  describe('importing a test with no default export adds the error to the state', () => {
-    beforeEach(async () => {
-      await copyFile(path.join(FIXTURES_DIR, 'exceptions', 'no-default-export.t.js'), MANIFEST_PATH);
-      await actions.fork(atom.slice('bundler').once(({ type }) => type === 'ERRORED'));
-    });
-
-    it('should update the global state with the error detail', () => {
-      let bundlerState = atom.get().bundler;
-
-      assertBundlerState(bundlerState.type, {is: 'ERRORED'})
-
-      expect(bundlerState.error.message).toContain('default export')
-    });
-  });
-
-  describe('importing an invalid test object adds the error to the state', () => {
-    beforeEach(async () => {
-      await copyFile(path.join(FIXTURES_DIR, 'exceptions', 'invalid-test-object.t.js'), MANIFEST_PATH);
-      await actions.fork(atom.slice('bundler').once(({ type }) => type === 'ERRORED'));
-    });
-
-    it('should update the global state with the error detail', () => {
-      let bundlerState = atom.get().bundler;
-
-      assertBundlerState(bundlerState.type, {is: 'ERRORED'})
-
-      expect(bundlerState.error.message).toContain('Test contains no assertions or children')
-    });
-  });
+  })
 });

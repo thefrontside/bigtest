@@ -11,21 +11,29 @@ export class TestValidationError extends Error {
   /**
    * @hidden
    */
-  constructor(message: string, file?: string) {
-    super(message);
+  constructor(message: string, path: string[] = [], file?: string) {
+    super(`Invalid Test: ${message}\n\nTest: ${path.join(' → ')}`);
     if(file) {
       this.loc = { file }
     }
   }
 }
 
-const every = Array.prototype.every;
-const some = Array.prototype.some;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function ensureIsTest (test: any, path: string[] = [], file?: string): test is Test {
+  if(!test) {
+    throw new TestValidationError("Test contains no description.\n\nDoes the test file contain a default export?", path, file)
+  }
+ 
+  if(!test.description) {
+    throw new TestValidationError("Test contains no description.\n\nDoes the test file contain a default export?", path, file)
+  }
 
-function validateTestKeys (test: Test, keys: (keyof Test)[], validationFn: typeof some | typeof every): boolean {
-  // the disable comment below is because eslint is not recognising k as used in !!test?.[k].
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return validationFn.call(keys, (k: keyof Test) => !!test?.[k]);
+  if(!test?.children || !test?.assertions) {
+    throw new TestValidationError('Test contains no assertions or children.');
+  }
+
+  return true;
 }
 
 function findDuplicates<T>(array: T[], callback: (value: T) => void) {
@@ -53,26 +61,25 @@ export const MAXIMUM_DEPTH = 10;
  * @param test The test to validate
  * @returns `true` if the test is valid, otherwise it will throw an exception
  */
-export function validateTest(test: Test): true {
-  function validateTestInner(test: Test, path: string[] = [], file?: string, depth = 0): true {
+export function validateTest(test: unknown): true {
+  function validateTestInner(test: unknown, path?: string[], file?: string, depth = 0): true {
     if(depth > MAXIMUM_DEPTH) {
-      throw new TestValidationError(`Invalid Test: is too deeply nested, maximum allowed depth of nesting is ${MAXIMUM_DEPTH}\n\nTest: ${path.join(' → ')}`, file)
+      throw new TestValidationError(`Invalid Test: is too deeply nested, maximum allowed depth of nesting is ${MAXIMUM_DEPTH}`, [], file)
+    }
+    
+    if(!ensureIsTest(test, path, file)) {
+      throw new Error('Invalid test')
     }
 
-    if ( validateTestKeys(test, ['description'], every) === false) {
-      throw new TestValidationError(`Invalid Test: Test contains no description.\n\nDoes the test file contain a default export? Test: ${path.join(' → ')}`, file);
-    }
-
-    if ( validateTestKeys(test, ['assertions', 'children'], some) === false) {
-      throw new TestValidationError(`Invalid Test: Test contains no assertions or children.\n\nTest: ${path.join(' → ')}`, file);
-    }
+    path = path ?? [test.description];
+    file = file ?? test.path;
 
     findDuplicates(test.assertions.map((a) => a.description), (duplicate) => {
-      throw new TestValidationError(`Invalid Test: contains duplicate assertion: ${JSON.stringify(duplicate)}\n\nTest: ${path.join(' → ')}`, file)
+      throw new TestValidationError(`Invalid Test: contains duplicate assertion: ${JSON.stringify(duplicate)}`, path, file)
     });
 
     findDuplicates(test.children.map((c) => c.description), (duplicate) => {
-      throw new TestValidationError(`Invalid Test: contains duplicate test: ${JSON.stringify(duplicate)}\n\nTest: ${path.join(' → ')}`, file)
+      throw new TestValidationError(`Invalid Test: contains duplicate test: ${JSON.stringify(duplicate)}`, path, file)
     });
 
     for(let child of test.children) {
@@ -82,5 +89,5 @@ export function validateTest(test: Test): true {
     return true;
   }
 
-  return validateTestInner(test, [test.description], test.path);
+  return validateTestInner(test);
 }
