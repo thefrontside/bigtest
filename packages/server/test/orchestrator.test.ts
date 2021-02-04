@@ -68,6 +68,7 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
+      await actions.fork(actions.atom.slice('appService', 'status').once(status => status.type === 'available'));
 
       response = await actions.fetch('http://localhost:24100/');
       body = await response.text();
@@ -84,6 +85,8 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
+      await actions.fork(actions.atom.slice('appService', 'status').once(status => status.type === 'available'));
+
       response = await actions.fetch('http://localhost:24001/');
       body = await response.text();
     });
@@ -105,6 +108,8 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
+      await actions.fork(actions.atom.slice('bundler', 'type').once(type => type === 'GREEN'));
+
       let name = actions.atom.get().manifest.fileName;
       response = await actions.fetch(`http://localhost:24105/${name}`);
       body = await response.text();
