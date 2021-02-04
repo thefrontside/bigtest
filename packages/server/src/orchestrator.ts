@@ -114,10 +114,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       console.debug(`[orchestrator] app server ${status.type}`);
     });
     yield fork(function* () {
-      yield options.atom.slice('bundler').once(({ type }) => type === 'GREEN' || type === 'ERRORED');
-      console.debug('[orchestrator] manifest builder ready');
-    });
-    yield fork(function* () {
       yield options.atom.slice("manifestServer", "status").once(({ type }) => type === 'started');
       console.debug('[orchestrator] manifest server ready');
     });
