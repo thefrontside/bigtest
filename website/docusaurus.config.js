@@ -1,7 +1,7 @@
 module.exports = {
   title: 'BigTest',
   tagline: 'Truly cross-browser testing',
-  url: 'https://bigtestjs.io',
+  url: 'https://frontside.com',
   baseUrl: '/bigtest/',
   onBrokenLinks: 'throw',
   favicon: 'images/favicon.png',
@@ -97,6 +97,7 @@ module.exports = {
     googleAnalytics: {
       trackingID: 'UA-44597640-4'
     },
+    image: 'images/meta-image.png'
   },
   presets: [
     [
