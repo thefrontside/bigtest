@@ -3,28 +3,28 @@ id: write-your-own
 title: Writing Interactors
 ---
 
-Nearly every app has at least one user interaction that is unusual or special, like date pickers, drag and drop areas, masked radio buttons, modals, and more. It is normal to write your own Interactors, where you can make complex interactions as easy to test as a simple button click.
+Nearly every app has at least one user interaction that is unusual or special, like date pickers, drag and drop areas, masked radio buttons, modals, and more. Creating your own Interactors allows you to easily test complex interactions as easy to test as a button click.
 
-In this section, you will learn how to create a new Interactor for any interface and use it in your tests. We will start with a simple example for learning purposes, level up to a more complex example, and then cover common questions.
+In this section, you will learn how to write a new Interactor for any interface and use it in your tests. We will start with a simple example for learning purposes, level up to a more complex scenario, and then cover common questions.
 
 :::info Heads up
 
-There are new, exciting changes in the works for the `createInteractor()` API. Those changes will deprecate the syntax you see in the examples below, but the refactoring process will be very simple. We will output clear instructions in your console on how you can update to the new syntax so you can use Interactors today without worrying too much about tomorrow.
+There are new and exciting changes in the works for the `createInteractor()` API. Those changes will simplify the syntax you see in the examples below, but the refactoring process will be easy to adapt to. We will share clear instructions in your console on how you can update to the new syntax so you can use Interactors today without worrying about tomorrow’s easy-to-perform updates.
 
 :::
 
 
 ## Writing your first interactor
 
-In this tutorial, we will create our own `TextField` Interactor. Although BigTest has this type of interactor built-in, recreating it is a great way to learn all the pieces that make up an interactor, while using familiar examples.
+In this tutorial, we will create our own `TextField` Interactor. Although BigTest has this type of interactor built-in, recreating it is a great way to learn all the pieces that make up an interactor while using familiar examples.
 
-There are four things to decide:
+There are four things to decide when creating an interactor:
 1. What to name and label the interactor
 2. Which HTML element or elements to target
-3. The locator and filters, which helps users be able to narrow down the element they want to reference.
-4. Actions that a test should be able to `perform` on that element, like `click`
+3. The locator and filters, which helps users be able to narrow down the element they want to reference
+4. The action or actions that a test should `perform` when using the interactor (like `click`)
 
-Putting this information together, we can make this new Interactor:
+In this case, let's call our Interactor ‘MyTextField’, and we’ll label it as ‘my-textfield-interactor’ to distinguish it from the built-in one. Let’s say that MyTextField will target a regular input with a custom class `.my-input`, which means its HTML selector would be `input[type=text].my-input`. For locator we’ll use the input’s placeholder, and we’ll define a value filter. Finally, we’ll define a `fillIn` action for MyTextField interactor. Putting this together, we get the following definition of an Interactor:
 
 ```js
 import { createInteractor, fillIn } from 'bigtest';
@@ -49,17 +49,18 @@ export const TextField = createInteractor<HTMLInputElement>('my-textfield-intera
 If you're using Cypress, all of the built-in Interactors and Interactor functions will need to be imported from `@bigtest/cypress` and not `bigtest`.
 :::
 
-In this example we've configured the selector as `input[type=text]` which will search for all `<input type='text'>` elements in your testing environment. Filters and locators are used to narrow down the list of results.
+In this example, we've configured the selector as `input[type=text].my-input` which will search for all `<input type=‘text' class=“my-input”>` elements in your testing environment. Filters and locators are then used to narrow down the list of results.
 
-The string argument to `createInteractor()` is the name of the interactor your console will print if there's a failing test:
+The string argument, the label, to `createInteractor()` is the name of the interactor your console will print if there's a failing test:
+
 ```
 NoSuchElementError: did not find my-textfield-interactor "USERNAME"
 ```
 _An example of the console output when a test is unable to locate the interactor_
 
-And also note that locators, filters, and actions are optional when creating your own interactor. If you create an interactor without a locator, it will default to `locator: element => element.textContent`. The locator for the `TextField` interactor offered by BigTest uses the `textContent` of the associated label as we mentioned in the [previous page](/docs/interactors/locators-filters-actions#filters). The example above has its locator configured as `element.placeholder`; this is just to demonstrate that you can set these properties to anything that suits your needs.
+Locators, filters, and actions are optional when creating your own interactor. While the locator for the `TextField` interactor offered by BigTest uses the `textContent` of the associated label (as we explained on the [Locators, Filters, and Actions page](/docs/interactors/locators-filters-actions#filters)), the example above has its locator configured as `element.placeholder`. This is just to demonstrate that you can set the properties of Locators to anything that suits your needs. If you create an interactor without a locator, it will default to `locator: element => element.textContent`.
 
-Lastly, you might be wondering what `interactor.perform()` does: it is a method on the interactor which ensures that there are no race conditions when working directly with elements. You can use it like this:
+You might be wondering what `interactor.perform()` does: it is a method on the interactor which ensures that there are no race conditions when working directly with elements. You can use it like this:
 
 ```js
 actions: {
@@ -69,7 +70,7 @@ actions: {
 }
 ```
 
-Or you could use destructuring to make this a bit shorter:
+Or you could use destructuring to make it a bit shorter:
 
 ```js
 actions: {
@@ -77,32 +78,36 @@ actions: {
 }
 ```
 
-The former syntax is necessary if you want to write an action that delegates to other interactors' actions. For example, imagine that you want to create a form interactor that has a submit action. You could take this approach:
+The former syntax is necessary if you want to write an action that delegates to the actions of other interactors. For example, imagine that you want to create a form interactor that has a submit action. You could take this approach:
 
 ```js
 import { Button, createInteractor } from 'bigtest';
 
 export const Form = createInteractor<HTMLFormElement>('form')({
   selector: 'form',
-  actions: {
-    async submit(interactor){
+    actions: {
+      async submit(interactor){
       await interactor.find(Button('Submit')).click();
     }
   }
 })
 ```
 
-Delegating the click action will save you the hassle of having to implement the click separately, and there is also the added benefit of making your tests easier to read:
+There’s two peculiarities about this example. First, notice we’re not using `perform` which means that we’re not performing an action on any element directly. Secondly, within the submit action definition you’ll notice that we’re using `find` to access another Interactor and calling its action. That’s what we mean with ‘delegating’ an action.
+
+Why would you want to delegate actions within an Interactor action definition? Well, it can help you avoid repeating yourself and to keep Interactors as black boxes. For example, let’s say we wanted to test that a user submits a form, without delegation we can reach in in the Form Interactor and issue a click action:
 
 ```js
-Form.find(Button('Submit')).click();
-
-// versus
-
-Form.submit();
+Form().find(Button('Submit')).click();
 ```
 
-Now let's get back to our example and import the new TextField interactor from earlier and add it to a test:
+But if the Form component changes and now the button that submits is no longer `Submit` but `Send` we’d have to update all our tests to reflect that change. Instead we can encapsulate that detail in the `submit` action of `Form` and delegate the click action to the responsible party. Instead of reaching into internal component elements, who ever is using Form to test the form simply as:
+
+```js
+Form().submit();
+```
+
+Let's get back to our example and add the new TextField interactor to a test. In this example we are testing an email subscription form by first filling in the email text field, clicking the `Subscribe` button, and then asserting for the success header.
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -174,21 +179,19 @@ import TabItem from '@theme/TabItem';
   </TabItem>
 </Tabs>
 
-In this example we are testing an email subscription form by first filling in the email text field, clicking the `Subscribe` button, and then asserting for the success header.
-
-The [TextField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts) interactor from BigTest does a lot more than what we just wrote, but this small example is a good place to start for understanding how to use `createInteractor`.
+The [TextField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts) interactor from BigTest can do a lot more than this, but the example we just wrote is a good place to start when it comes to understanding how to use `createInteractor`.
 
 Check out the source code of [createInteractor()](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/create-interactor.ts) for more details.
 
-## Writing your second interactor
+## Writing a more complex interactor
 
-One of the greatest benefits of Interactors is that you can turn complex testing scenarios into readable assertions. Let's create an interactor for a table that navigates by row and column to make assertions about the table's data. Our goal is that when we are finished, we will be able to use it in our tests like this:
+One of the greatest benefits of Interactors is that you can turn complex testing scenarios into readable assertions. Let’s illustrate how that looks like with an historically cumbersome UI piece: a table. We want to be able to easily assert the contents of our tables, and that means that we should be able to know the value in a cell given its column and row. Once we’re done creating a TableCell Interactor, we’ll be able to make that happen and have it look like this:
 
 ```js
 TableCell({ columnTitle: 'Name', rowNumber: 2 }).has({ value: 'Marge Simpson' });
 ```
 
-First, let's look at the markup we are trying to filter through:
+First, consider some table markup defined as follows:
 
 ```html
 <div role="grid">
@@ -251,9 +254,13 @@ export const TableCell = createInteractor('table cell')({
  This example uses [optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) which is available in Node >=14.
 :::
 
-You'll notice we created `columnTitle` and `rowNumber` filters that will access its parent elements to get the appropriate value we're looking for. The locator was not specified, so it will default to `element.textContent`.
+You'll notice we created `columnTitle` and `rowNumber` filters that will access its parent elements to get the appropriate value we're looking for. The locator was not specified, so it will default to `element.textContent`. We can now effectively use the TableCell interactor as we stated in the beginning of this page:
 
-Now, let's pretend we're testing a Jeopardy chart where we have multiple tablecells with similar values:
+```js
+TableCell({ columnTitle: 'Name', rowNumber: 2 }).has({ value: 'Marge Simpson' });
+```
+
+Now that we have the TableCell Interactor ready, let’s put it in action to test a Jeopardy chart where we have multiple tablecells with similar values. We want to make sure that the $600 cell under ‘Politics’ of our Jeopardy table disappears when we click it. The following example shows how our new TableCell interactor makes that task trivial:
 
 <Tabs
   defaultValue="jest"
@@ -318,11 +325,13 @@ Now, let's pretend we're testing a Jeopardy chart where we have multiple tablece
   </TabItem>
 </Tabs>
 
-With some upfront thinking about how to test a data-driven UI, you can write interactors and tests that can be quickly modified as changes occur over the lifetime of your app. The approach above is flexible, and can handle changes like adding new columns, rearranging the order, changing table headings, and more.
+With some thinking beforehand about how to test a data-driven UI, you can write interactors and tests that can be quickly modified as changes occur over the lifetime of your app. The BigTest Interactor approach is flexible and can handle changes like adding new columns, rearranging the order, inserting table headings, and more.
 
-## find
+## Chaining interactors together
 
-One more building block available to you is the `find` method, which helps you chain interactors together. `find` returns a new interactor scoped within the current interactor, and is generally used for composing actions from primitives:
+One more building block available to you is the `find` method, which helps you chain interactors together. `find` returns a new interactor scoped within the current interactor, and is generally used for composing actions from primitives.
+
+Take for example the following DatePicker Interactor, in which we define an `open` action. We use `find` to target a button within `DatePicker`:
 
 ```js
 createInteractor('DatePicker')({
@@ -331,8 +340,7 @@ createInteractor('DatePicker')({
   }
 });
 ```
-
-You can also use the `find` method in your tests:
+You can also use the `find` method in your tests. Say you want to test a click on the 31st day of your DatePicker. Instead of creating an action for that event, we can reach into DatePicker and target the Button element with text `31` with `find`:
 
 ```js
 DatePicker().find(Button('31')).click();
@@ -345,22 +353,22 @@ DatePicker().find(Button('31')).click();
 If the built-in DOM Interactors work for your use case, they are probably the best choice.
 They are maintenance-free and support the most common user actions.
 
-When the built-ins are not enough, it is normal and encouraged for you to write your own Interactors!
-They will help you prevent duplicated logic in your tests, and if your interface changes, you only need to make the change in one place.
+When the built-in Interactors are not enough, we encourage you to write your own. They will help prevent duplicated logic in your tests, and if your interface changes, you only need to make changes to the Interactor instead of throughout the code.
 
-For example, let's say that you want to replace a custom datepicker with a popular third-party library instead.
-Although you may have many tests for flows with the date picker, only your Interactor needs to change.
+For example, let's say that you want to replace a custom datepicker with a popular third-party library instead. Although you may have many tests for flows with the date picker, only your Interactor needs to change.
 
 ### I have an interaction that is really difficult to test. What should I do?
 
-A good test suite helps you uncover hidden problems.
-Often, difficult UI tests are your early warning system for areas of your app that may have accessibility issues.
+A good test suite helps you uncover hidden problems. Often, difficult UI tests are your early warning system for areas of your app that may have accessibility issues.
 
 The first step is to see if you can go through the interaction yourself in the browser by using only [keyboard navigation](https://webaim.org/techniques/keyboard/).
-If you cannot get to the end successfully, then you just found a bug in your app!
+If you cannot get to the end successfully, then you just found a bug in your app.
 Although many people navigate an interface by sight and clicking,
-others may use assistive technology such as screen readers, and keyboard support is critical.
-For example, have you ever seen a click mistakenly attached to a `div` instead of a button?
-Those types of errors can make your app unusable to some people, and also difficult to test.
+others may use assistive technology such as screen readers and keyboard support is critical.
+For example, a click can mistakenly be attached to a `div` instead of a button. Those types of errors can make your app unusable to some people and also difficult to test.
 
-Another way to find some bugs is to use automated tools such as [Lighthouse](https://github.com/GoogleChrome/lighthouse) to find problems in your HTML markup, like missing input labels or misconfigured `aria` attributes.
+Another way to find some bugs is to use automated tools such as [Lighthouse](https://github.com/GoogleChrome/lighthouse) to find problems in your HTML markup like missing input labels or misconfigured `aria` attributes.
+
+## Up Next
+
+Now that you’ve seen some of the power of Interactors, you’ll be happy to know that you can start using them right now in your current test suite. Interactors are compatible with several test runners, and we’ve made it particularly easy for you to plug them into your [Jest and Cypress](/docs/interactors/integrations) setups.

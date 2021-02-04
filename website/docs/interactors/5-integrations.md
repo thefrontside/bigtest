@@ -3,22 +3,20 @@ id: integrations
 title: Jest & Cypress
 ---
 
-Interactors can be used within many different frameworks! They are designed to be framework-agnostic so that you can integrate them into your existing test suites.
+Interactors can be used within many different frameworks. They are designed to be framework-agnostic so that you can integrate them into your existing test suites.
 
-In this section, you can find examples for using Interactors in some of the most popular testing frameworks in the JavaScript ecosystem. You will also learn about helper methods that make your tests as readable as possible.
+In this section, you can find explanations for using Interactors in some of the most popular testing frameworks within the JavaScript ecosystem. You will also learn about helper methods that make your tests as readable as possible.
 
 If your testing framework is not on this list, you may still be able to use Interactors. They work best with testing tools that:
 
 - Are focused on testing user interactions, such as clicks and filling in forms
 - Rely on the DOM or a simulated DOM (such as [`jsdom`](https://github.com/jsdom/jsdom))
 
-If you would like to add some examples for your favorite testing tools to these guides, click the "Edit this page" link at the bottom of the page.
-
 ## Jest
 
 When you use interactors in Jest, there are only a few things you need to know to fit them in with the tests you have already written.
 
-First, interactors replace both user actions and test assertions:
+First, interactors replace both user actions and test assertions. That means that you will not need `expect` anymore. For instance, instead of making an assertion as `expect(‘button’).toBeTruthy()`  you can use `await Button('Log Out’).exists()`. The example below illustrates how to use Interactors within Jest:
 
 ```jsx
 import React from 'react';
@@ -37,8 +35,6 @@ describe('Interactors with Jest', () => {
 })
 ```
 
-Lines such as `await Button('Log Out').exists()` replace assertions like `expect(someElement).toBeTruthy()`.
-
 If an interactor's assertion fails, the error will be received by Jest and you will see it in your test output.
 
 Note that the interactors are asynchronous, and so you need to mark your test function as `async`, and you should `await` the interactors and their assertions.
@@ -49,9 +45,11 @@ JSDOM versions 15 and below do not have support for `InputEvent` on which intera
 
 ## Cypress
 
-In Cypress, interactors fit right in, though you may need some slight configuration for ES Modules and TypeScript, which we will cover below.
+Interactors fit right in with Cypress as well, though as we explain below you may need some slight configuration for ES Modules and TypeScript.
 
-Interactors can be used with the `cy.do()` and `cy.expect()` commands for interactions and assertions respectively. These Cypress commands are automatically registered whenever you are importing or creating interactors. You can use interactors in Cypress tests like this:
+Interactors can be used with the `cy.do()` and `cy.expect()` commands for interactions and assertions respectively. These Cypress commands are automatically registered whenever you are importing or creating interactors, and can take either a single interactor or an array of interactors. This helps your Cypress tests follow a arrange-act-assert pattern, which is inherent to [BigTest](/bigtest/docs/platform/architecture) and thus to Interactors.
+
+In the following example, we demonstrate how to to use `cy.do()` and `cy.expect()` in a Cypress test together with Interactors:
 
 ```jsx
 import { Button } from '@bigtest/cypress';
@@ -75,15 +73,15 @@ The `cy.do()` and `cy.expect()` commands can take either a single interactor or 
 
 ### ES Modules
 
-To use `import` and `export` in your tests, your project needs to support [ES Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules). You may already have this set up, but if you do not, you may see a warning like this if you try to `import` anything in your test:
+To use `import` and `export` in your tests, your project needs to support [ES Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules). You may already have this set up, but if you do not you may see a warning like this if you try to `import` anything in your test:
 
 > ParseError: 'import' and 'export' may appear only with 'sourceType: module'
 
-Follow [these steps](https://github.com/cypress-io/cypress/tree/master/npm/webpack-preprocessor#cypress-webpack-preprocessor) to get them working.
+Follow [these steps](https://github.com/cypress-io/cypress/tree/master/npm/webpack-preprocessor#cypress-webpack-preprocessor) to get ES Modules working.
 
 ### TypeScript
 
-Typescript users should make sure to add `cypress` to the types array in `tsconfig`:
+TypeScript users should make sure to add `cypress` to the types array in `tsconfig`:
 
 ```
 {
@@ -93,4 +91,4 @@ Typescript users should make sure to add `cypress` to the types array in `tsconf
 }
 ```
 
-See Cypress' guide on [Typescript support](https://docs.cypress.io/guides/tooling/typescript-support.html#Configure-tsconfig-json) for more details.
+See Cypress' guide on [TypeScript support](https://docs.cypress.io/guides/tooling/typescript-support.html#Configure-tsconfig-json) for more details.
