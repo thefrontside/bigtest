@@ -22,8 +22,7 @@
     "start": "cd ../../packages/todomvc/ && yarn && yarn prepack && yarn bigtest-todomvc 3000",
     "cypress:run": "yarn cypress run --spec 'cypress/integration/*.spec.ts'",
     "test": "start-server-and-test 'yarn start' http://localhost:3000 cypress:run",
-    "build": "tsc --build",
-    "prepack": "cd .. && yarn prepack",
+    "prepack": "tsc --build",
     "lint":  "eslint \"src/**/*.ts\""
   },
   "devDependencies": {
