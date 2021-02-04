@@ -6,14 +6,15 @@ import rmrf from 'rimraf';
 
 import { timeout } from 'effection';
 import { Test } from '@bigtest/suite';
+import { createAtom } from '@bigtest/atom';
 
-import { actions, getTestProjectOptions } from './helpers';
+import { actions } from './helpers';
 
+import { ManifestGeneratorStatus } from '../src/orchestrator/state';
 import { manifestGenerator } from '../src/manifest-generator';
 
 const { mkdir, writeFile, unlink } = fs.promises;
 import { join } from 'path';
-import { createOrchestratorAtom } from '../src/orchestrator/atom';
 
 const TEST_DIR = "./tmp/manifest-generator"
 const MANIFEST_PATH = "./tmp/manifest-generator/manifest.js"
@@ -25,17 +26,7 @@ async function loadManifest() {
 }
 
 describe('manifest-generator', () => {
-  let atom = createOrchestratorAtom(getTestProjectOptions());
-  let manifestGeneratorState = atom.slice('manifestGenerator');
-
-  manifestGeneratorState.update(prev => ({
-    ...prev,
-    options: {
-      files: [TEST_DIR + "/*.t.{js,ts}"],
-      destinationPath: MANIFEST_PATH,
-      mode: 'watch',
-    },
-  }));
+  let status = createAtom({ type: 'pending' } as ManifestGeneratorStatus);
 
   beforeEach((done) => rmrf(TEST_DIR, done));
   beforeEach(async () => {
@@ -43,17 +34,22 @@ describe('manifest-generator', () => {
     await writeFile(join(TEST_DIR, "/test1.t.js"), "module.exports = { default: { description: 'hello' }};");
     await writeFile(join(TEST_DIR, "/test2.t.js"), "module.exports = { default: { description: 'monkey' }};");
   });
-  
+
   describe('watching', () => {
     beforeEach(async() => {
-      actions.fork(manifestGenerator(manifestGeneratorState));
+      actions.fork(manifestGenerator({
+        status,
+        files: [TEST_DIR + "/*.t.{js,ts}"],
+        destinationPath: MANIFEST_PATH,
+        mode: 'watch',
+      }));
     });
 
     describe('starting', () => {
       let manifest: Test;
 
       beforeEach(async () => {
-        await actions.fork(atom.slice('manifestGenerator', 'status').once(({ type }) => type === 'ready'));
+        await actions.fork(status.once(({ type }) => type === 'ready'));
         manifest = await loadManifest();
       });
 
@@ -69,7 +65,7 @@ describe('manifest-generator', () => {
 
       beforeEach(async () => {
         await writeFile(join(TEST_DIR, "/test3.t.js"), "module.exports = { default: { description: 'test' } };");
-        await actions.fork(atom.slice('manifestGenerator', 'status').once(({ type }) => type === 'ready'));
+        await actions.fork(status.once(({ type }) => type === 'ready'));
         manifest = await loadManifest();
       });
 
@@ -86,7 +82,7 @@ describe('manifest-generator', () => {
 
       beforeEach(async () => {
         await unlink(join(TEST_DIR, "/test2.t.js"));
-        await actions.fork(atom.slice('manifestGenerator', 'status').once(({ type }) => type === 'ready'));
+        await actions.fork(status.once(({ type }) => type === 'ready'));
         manifest = await loadManifest();
       });
 
@@ -99,21 +95,16 @@ describe('manifest-generator', () => {
 
   describe('not watching', () => {
     beforeEach(async() => {
-      let atom = createOrchestratorAtom(getTestProjectOptions());
-      let manifestGeneratorState = atom.slice('manifestGenerator');
+      let status = createAtom({ type: 'pending' } as ManifestGeneratorStatus);
 
-      manifestGeneratorState.update(prev => ({
-        ...prev,
-        options: {
-          files: [TEST_DIR + "/*.t.{js,ts}"],
-          destinationPath: MANIFEST_PATH,
-          mode: 'build',
-        },
+      actions.fork(manifestGenerator({
+        status,
+        files: [TEST_DIR + "/*.t.{js,ts}"],
+        destinationPath: MANIFEST_PATH,
+        mode: 'build',
       }));
 
-      actions.fork(manifestGenerator(manifestGeneratorState));
-
-      await actions.fork(atom.slice('manifestGenerator', 'status').once(({ type }) => type === 'ready'));
+      await actions.fork(status.once(({ type }) => type === 'ready'));
     });
 
     describe('starting', () => {

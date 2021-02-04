@@ -1,28 +1,11 @@
 import { createAtom, Slice } from "@bigtest/atom";
 import { OrchestratorState } from "./state";
-import { ProjectOptions } from '@bigtest/project';
-import path = require('path');
-import { AgentServerConfig } from '@bigtest/agent';
+import merge from 'deepmerge';
 
-// TODO: eventually we can remove this type and just use ProjectOptions.
-// But until then we can just pick the bits we need.
-export type OrchestratorAtomOptions = Pick<ProjectOptions, 'app' |'watchTestFiles' | 'cacheDir' | 'testFiles' | 'proxy'>
+export type DeepPartial<T> = { [P in keyof T]?: DeepPartial<T[P]> };
 
-export const createOrchestratorAtom = (project: OrchestratorAtomOptions): Slice<OrchestratorState> => {
-  let manifestSrcDir = path.resolve(project.cacheDir, 'manifest/src');
-  let manifestSrcPath = path.resolve(manifestSrcDir, 'manifest.js');
-  let agentServerConfig = new AgentServerConfig(project.proxy);
-
-  let atom = createAtom<OrchestratorState>({
-    manifestGenerator: {
-      status: { type: 'pending' },
-
-      options: {
-        destinationPath: manifestSrcPath,
-        mode: project.watchTestFiles ? 'watch' : 'build',
-        files: project.testFiles
-      }
-    },
+export function createOrchestratorAtom(overrides?: DeepPartial<OrchestratorState>): Slice<OrchestratorState> {
+  let options: OrchestratorState = {
     manifest: {
       description: "None",
       fileName: "<init>",
@@ -30,43 +13,29 @@ export const createOrchestratorAtom = (project: OrchestratorAtomOptions): Slice<
       assertions: [],
       children: [],
     },
+    agents: {},
+    testRuns: {},
     bundler: {
       type: 'UNBUNDLED'
     },
-    appService: {
-      status: { type: 'pending' },
-      options: project.app,
+    manifestGenerator: {
+      type: 'pending',
     },
-    proxyService: {
-      status: {type: 'unstarted'},
-      options: {
-        port: project.proxy.port,
-        prefix: agentServerConfig.options.prefix,
-        appDir: agentServerConfig.appDir(),
-        harnessUrl: agentServerConfig.harnessUrl(),
-        // TODO: this is duplication because currently we can only pass 1 slice into a service
-        // Is this problematic?
-        appOptions: project.app
-      }
+    appServer: {
+      type: 'pending',
     },
-    connectionService: {
-      status: {
-        type: 'unstarted',
-      }
+    proxyServer: {
+      type: 'unstarted',
     },
-    commandService: {
-      status: {
-        type: 'unstarted',
-      }
+    connectionServer: {
+      type: 'unstarted',
+    },
+    commandServer: {
+      type: 'unstarted',
     },
     manifestServer: {
-      status: {
-        type: 'unstarted',
-      }
+      type: 'unstarted',
     },
-    agents: {},
-    testRuns: {},
-  });
-
-  return atom;
+  };
+  return createAtom<OrchestratorState>(merge(options, overrides || {}));
 }

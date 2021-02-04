@@ -4,13 +4,13 @@ import expect from 'expect';
 import { gzipSync } from 'zlib';
 
 import { Operation } from 'effection';
-import { Slice } from '@bigtest/atom';
+import { createAtom, Slice } from '@bigtest/atom';
 import { fetch } from '@effection/fetch';
+import { AgentServerConfig } from '@bigtest/agent';
 
-import { actions, getTestProjectOptions } from './helpers';
+import { actions } from './helpers';
 import { proxyServer } from '../src/proxy';
-import { OrchestratorState } from '../src/orchestrator/state';
-import { createOrchestratorAtom } from '../src/orchestrator/atom';
+import { ProxyServerStatus } from '../src/orchestrator/state';
 import { express } from '@bigtest/effection-express';
 
 const PROXY_PORT = 24202;
@@ -44,24 +44,24 @@ function* startAppServer(): Operation<void> {
 }
 
 describe('proxy', () => {
-  let atom: Slice<OrchestratorState>;
+  let status: Slice<ProxyServerStatus>;
+  let agentServerConfig: AgentServerConfig;
 
   describe('with working app server', () => {
     beforeEach(async () => {
       actions.fork(startAppServer);
 
-      atom = createOrchestratorAtom(getTestProjectOptions({
-        app: {
-          url: `http://localhost:${APP_PORT}`
-        },
-        proxy: {
-          port: PROXY_PORT,
-        }
+      agentServerConfig = new AgentServerConfig({ port: PROXY_PORT, prefix: '/__bigtest/' });
+      status = createAtom({ type: 'unstarted' } as ProxyServerStatus);
+
+      actions.fork(proxyServer({
+        status,
+        target: `http://localhost:${APP_PORT}`,
+        port: PROXY_PORT,
+        agentServerConfig,
       }));
 
-      actions.fork(proxyServer(atom.slice('proxyService')));
-
-      await actions.fork(atom.once((s) => s.proxyService.status.type === 'started'));
+      await actions.fork(status.once((s) => s.type === 'started'));
     });
 
     describe('retrieving html file', () => {
@@ -132,15 +132,18 @@ describe('proxy', () => {
     let body: string;
 
     beforeEach(async () => {
-      atom = createOrchestratorAtom(getTestProjectOptions({
-        proxy: {
-          port: PROXY_PORT
-        }
-      }));
-      
-      actions.fork(proxyServer(atom.slice('proxyService')));
+      agentServerConfig = new AgentServerConfig({ port: PROXY_PORT, prefix: '/__bigtest/' });
 
-      await actions.fork(atom.once((s) => s.proxyService.status.type === 'started'));
+      status = createAtom({ type: 'unstarted' } as ProxyServerStatus);
+
+      actions.fork(proxyServer({
+        status,
+        target: `http://localhost:${APP_PORT}`,
+        port: PROXY_PORT,
+        agentServerConfig,
+      }));
+
+      await actions.fork(status.once((s) => s.type === 'started'));
 
       response = await actions.fork(fetch(`http://localhost:${PROXY_PORT}/simple`));
       body = await actions.fork(response.text());

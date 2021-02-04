@@ -5,7 +5,7 @@ import { Slice } from '@bigtest/atom';
 import { Test } from '@bigtest/suite';
 import { Client } from '@bigtest/client';
 import { ChainableSubscription } from '@effection/subscription';
-import { actions, getTestProjectOptions } from './helpers';
+import { actions } from './helpers';
 import { createCommandServer } from '../src/command-server';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { AgentState, Manifest } from '../src/orchestrator/state';
@@ -20,11 +20,12 @@ describe('command server', () => {
 
   beforeEach(async () => {
     runs = new Mailbox();
-    let atom = createOrchestratorAtom(getTestProjectOptions());
+    let atom = createOrchestratorAtom();
     agents = atom.slice('agents');
     manifest = atom.slice('manifest');
 
     actions.fork(createCommandServer({
+      status: atom.slice('commandServer'),
       runner: {
         async run(options) {
           runs.send(options);
@@ -37,7 +38,7 @@ describe('command server', () => {
       port: COMMAND_PORT,
     }));
 
-    await actions.fork(atom.slice('commandService', 'status', 'type').once((t) => t === 'started'));
+    await actions.fork(atom.slice('commandServer', 'type').once((t) => t === 'started'));
   });
 
   describe('fetching the agents at the start', () => {

@@ -2,7 +2,7 @@ import { Operation, spawn, resource } from 'effection';
 import { subscribe, ChainableSubscription } from '@effection/subscription';
 import { createDuplexChannel, DuplexChannel } from '@bigtest/effection';
 import { Slice } from '@bigtest/atom';
-import { OrchestratorState } from './orchestrator/state';
+import { ConnectionServerStatus, AgentState } from './orchestrator/state';
 import { AgentConnection, createAgentHandler, Command, TestEvent } from '@bigtest/agent';
 
 export type Incoming = TestEvent & { agentId: string };
@@ -11,7 +11,8 @@ export type Outgoing = Command & { agentId: string };
 export type ConnectionChannel = DuplexChannel<Outgoing, Incoming>;
 
 interface ConnectionServerOptions {
-  atom: Slice<OrchestratorState>;
+  status: Slice<ConnectionServerStatus>;
+  agents: Slice<Record<string, AgentState>>;
   port: number;
   proxyPort: number;
   manifestPort: number;
@@ -25,19 +26,17 @@ export function* createConnectionServer(options: ConnectionServerOptions): Opera
   let [tx, rx] = createDuplexChannel<Outgoing, Incoming>({ maxListeners: 100000 });
 
   return yield resource({ channel: tx }, function*() {
-    let statusSlice = options.atom.slice('connectionService', 'status');
-
-    statusSlice.set({ type: 'starting' });
+    options.status.set({ type: 'starting' });
 
     let handler: ChainableSubscription<AgentConnection, void> = yield createAgentHandler(options.port);
 
-    statusSlice.set({ type: 'started' });
+    options.status.set({ type: 'started' });
 
     while(true) {
       let connection: AgentConnection = yield handler.expect();
       yield spawn(function*() {
         console.log(`[connection] connected ${connection.agentId}`);
-        let agent = options.atom.slice('agents', connection.agentId);
+        let agent = options.agents.slice(connection.agentId);
 
         agent.set({ ...connection.data, agentId: connection.agentId });
 

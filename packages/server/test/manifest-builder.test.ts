@@ -4,12 +4,11 @@ import path from 'path';
 import rmrf from 'rimraf';
 import fs from 'fs';
 
-import { Slice } from '@bigtest/atom';
+import { createAtom, Slice } from '@bigtest/atom';
 
-import { actions, getTestProjectOptions } from './helpers';
+import { actions } from './helpers';
 import { createManifestBuilder, updateSourceMapURL } from '../src/manifest-builder';
-import { createOrchestratorAtom } from '../src/orchestrator/atom';
-import { OrchestratorState } from '../src/orchestrator/state';
+import { Manifest, BundlerState } from '../src/orchestrator/state';
 import { assertBundlerState } from '../src/assertions/bundler-assertions';
 
 // be nice to windows
@@ -24,7 +23,8 @@ const { mkdir, copyFile, readFile } = fs.promises;
 
 const describe = process.platform === 'win32' ? suite.skip : suite;
 describe('manifest builder', () => {
-  let atom: Slice<OrchestratorState>;
+  let manifest: Slice<Manifest>;
+  let status: Slice<BundlerState>;
   let resultPath: string;
 
   beforeEach((done) => rmrf(TEST_DIR, done));
@@ -32,11 +32,13 @@ describe('manifest builder', () => {
     await mkdir(SRC_DIR, { recursive: true });
     await copyFile(path.join(FIXTURES_DIR, 'raw-tree-format.t.js'), MANIFEST_PATH);
 
-    atom = createOrchestratorAtom(getTestProjectOptions());
+    manifest = createAtom({ description: "None", fileName: "<init>", steps: [], assertions: [], children: [] } as Manifest);
+    status = createAtom({ type: 'UNBUNDLED' } as BundlerState);
 
     actions.fork(function*() {
       yield createManifestBuilder({
-        atom,
+        status,
+        manifest,
         watch: true,
         srcPath: MANIFEST_PATH,
         buildDir: BUILD_DIR,
@@ -44,11 +46,11 @@ describe('manifest builder', () => {
       });
     });
 
-    let bundlerState = await actions.fork(atom.slice('bundler').once(({ type }) => type === 'GREEN'));
+    let bundlerState = await actions.fork(status.once(({ type }) => type === 'GREEN'));
 
     resultPath = (bundlerState?.type === 'GREEN' && bundlerState.path) as string;
 
-    atom.slice('bundler').update(() => ({ type: 'BUILDING', warnings: []}));
+    status.set({ type: 'BUILDING', warnings: []});
   });
 
   describe('retrieving test file manifest from disk', () => {
@@ -68,7 +70,7 @@ describe('manifest builder', () => {
     beforeEach(async () => {
       await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
 
-      let bundle = await actions.fork(atom.slice('bundler').once(({ type }) => type === 'GREEN'));
+      let bundle = await actions.fork(status.once(({ type }) => type === 'GREEN'));
 
       resultPath = (!!bundle && bundle.type === 'GREEN' && bundle.path) as string;
 
@@ -82,8 +84,8 @@ describe('manifest builder', () => {
 
   describe('reading manifest from state on start', () => {
     it('returns the manifest from the state', () => {
-      expect(atom.get().manifest.fileName).toMatch(/manifest-[0-9a-f]+\.js/);
-      expect(atom.get().manifest.description).toEqual('Signing In');
+      expect(manifest.get().fileName).toMatch(/manifest-[0-9a-f]+\.js/);
+      expect(manifest.get().description).toEqual('Signing In');
     });
   });
 
@@ -101,7 +103,7 @@ describe('manifest builder', () => {
     });
 
     it('copies over the *.js.map file to dist/', () => {
-      expect(fs.existsSync(path.join(DIST_DIR, `${atom.get().manifest.fileName}.map`))).toBeTruthy();
+      expect(fs.existsSync(path.join(DIST_DIR, `${manifest.get().fileName}.map`))).toBeTruthy();
     });
     it('contains the sourcemapURL at the bottom of the manifest', () => {
       expect(buildMapURL).toEqual("sourceMappingURL=manifest.js.map");
@@ -136,23 +138,23 @@ describe('manifest builder', () => {
   describe('updating the manifest and then reading it', () => {
     beforeEach(async () => {
       await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
-      await actions.fork(atom.slice('bundler').once(({ type }) => type === 'GREEN'))
+      await actions.fork(status.once(({ type }) => type === 'GREEN'))
     });
 
     it('returns the updated manifest from the state', () => {
-      expect(atom.get().manifest.fileName).toMatch(/manifest-[0-9a-f]+\.js/);
-      expect(atom.get().manifest.description).toEqual('An empty test with no steps and no children');
+      expect(manifest.get().fileName).toMatch(/manifest-[0-9a-f]+\.js/);
+      expect(manifest.get().description).toEqual('An empty test with no steps and no children');
     });
   });
 
   describe('importing the manifest with an error adds the error to the state', () => {
     beforeEach(async () => {
       await copyFile(path.join(FIXTURES_DIR, 'exceptions', 'error.t.js'), MANIFEST_PATH);
-      await actions.fork(atom.slice('bundler').once(({ type }) => type === 'ERRORED'));
+      await actions.fork(status.once(({ type }) => type === 'ERRORED'));
     });
 
     it('should update the global state with the error detail', () => {
-      let bundlerState = atom.get().bundler;
+      let bundlerState = status.get();
 
       // this could be a custom expect
       // assert is used to type narrow also and does more than just assert
@@ -167,12 +169,11 @@ describe('manifest builder', () => {
   describe('importing the manifest with an error adds the error to the state', () => {
     beforeEach(async () => {
       await copyFile(path.join(FIXTURES_DIR, 'exceptions', 'throw.t.js'), MANIFEST_PATH);
-      await actions.fork(atom.slice('bundler').once(({ type }) => type === 'ERRORED'));
+      await actions.fork(status.once(({ type }) => type === 'ERRORED'));
     });
 
     it('should update the global state with the error detail', () => {
-      let bundlerState = atom.get().bundler;
-
+      let bundlerState = status.get();
       // this could be a custom expect
       // assert is used to type narrow also and does more than just assert
       assertBundlerState(bundlerState.type, {is: 'ERRORED'})

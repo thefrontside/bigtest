@@ -68,7 +68,7 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
-      await actions.fork(actions.atom.slice('appService', 'status').once(status => status.type === 'available'));
+      await actions.fork(actions.atom.slice('appServer').once(status => status.type === 'available'));
 
       response = await actions.fetch('http://localhost:24100/');
       body = await response.text();
@@ -85,7 +85,7 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
     beforeEach(async () => {
-      await actions.fork(actions.atom.slice('appService', 'status').once(status => status.type === 'available'));
+      await actions.fork(actions.atom.slice('appServer').once(status => status.type === 'available'));
 
       response = await actions.fetch('http://localhost:24001/');
       body = await response.text();
@@ -123,48 +123,55 @@ describe('orchestrator', () => {
       expect(body).toContain('Signing In');
     });
   });
+});
 
-  describe('an externally managed application', () => {
-    let port: number;
+describe('orchestrator with an externally managed application', () => {
+  let port: number;
 
-    beforeEach(async function() {
-      port = await getPort();
+  beforeEach(async function() {
+    this.timeout(20000);
 
-      actions.updateApp({ url: `http://localhost:${port}` });
+    port = await getPort();
 
-      await actions.fork(
-        actions.atom.slice('appService', 'status').once(status => ['started', 'exited'].includes(status.type))
-      );
-
-      await actions.fork(daemon(`yarn test:app:start ${port}`));
-
-      await actions.fork(
-        actions.atom.slice('appService', 'status').once(status => status.type === 'available')
-      );
+    await actions.startOrchestrator({
+      app: {
+        url: `http://localhost:${port}`,
+        command: undefined,
+      }
     });
 
-    describe('retrieving app', () => {
-      let response: Response;
+    await actions.fork(
+      actions.atom.slice('appServer').once(status => ['started', 'exited'].includes(status.type))
+    );
 
-      beforeEach(async () => {
-        response = await actions.fetch(`http://localhost:${port}/`);
-      });
+    await actions.fork(daemon(`yarn test:app:start ${port}`));
 
-      it('responds successfully', () => {
-        expect(response.ok).toEqual(true);
-      });
+    await actions.fork(
+      actions.atom.slice('appServer').once(status => status.type === 'available')
+    );
+  });
+
+  describe('retrieving app', () => {
+    let response: Response;
+
+    beforeEach(async () => {
+      response = await actions.fetch(`http://localhost:${port}/`);
     });
 
-    describe('retrieving app via proxy', () => {
-      let response: Response;
+    it('responds successfully', () => {
+      expect(response.ok).toEqual(true);
+    });
+  });
 
-      beforeEach(async () => {
-        response = await actions.fetch('http://localhost:24001/');
-      });
+  describe('retrieving app via proxy', () => {
+    let response: Response;
 
-      it('responds successfully', () => {
-        expect(response.status).toEqual(200);
-      });
+    beforeEach(async () => {
+      response = await actions.fetch('http://localhost:24001/');
+    });
+
+    it('responds successfully', () => {
+      expect(response.status).toEqual(200);
     });
   });
 });

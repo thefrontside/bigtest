@@ -4,7 +4,7 @@ import expect from 'expect';
 import { Mailbox, DuplexChannel, createDuplexChannel } from '@bigtest/effection';
 import { Slice } from '@bigtest/atom';
 
-import { actions, getTestProjectOptions } from './helpers';
+import { actions } from './helpers';
 import { AgentRunner, Runner } from '../src/runner';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { Incoming as ConnectionIncoming, Outgoing as ConnectionOutgoing } from '../src/connection-server';
@@ -15,32 +15,32 @@ import { OrchestratorState, TestRunState } from '../src/orchestrator/state';
 describe('agent runner', () => {
   let messages: Mailbox<ConnectionOutgoing>;
   let atom: Slice<OrchestratorState>;
-  let agents: DuplexChannel<ConnectionOutgoing, ConnectionIncoming>;
+  let channel: DuplexChannel<ConnectionOutgoing, ConnectionIncoming>;
   let connections: DuplexChannel<ConnectionIncoming, ConnectionOutgoing>;
   let runner: Runner;
 
   beforeEach(async () => {
-    [agents, connections] = createDuplexChannel<ConnectionOutgoing, ConnectionIncoming>({ maxListeners: 100000 });
+    [channel, connections] = createDuplexChannel<ConnectionOutgoing, ConnectionIncoming>({ maxListeners: 100000 });
 
     messages = await actions.fork(Mailbox.from(connections));
-    atom = createOrchestratorAtom(getTestProjectOptions());
-    atom.slice('agents', 'agent-1').set({
-      agentId: 'agent-1',
-      browser: { name: "Safari", version: "13.0.4" },
-      os: { name: "macOS", version: "10.15.2", versionName: "Catalina" },
-      platform: { type: "desktop", vendor: "Apple" },
-      engine: { name: "Gecko", version: "5.0" }
-    });
-    atom.slice('manifest').set({
-      fileName: 'manifest-1234.js',
-      description: 'the manifest',
-      steps: [],
-      assertions: [],
-      children: [],
+    atom = createOrchestratorAtom({
+      manifest: {
+        fileName: 'manifest-1234.js',
+        description: 'the manifest',
+      },
+      agents: {
+        'agent-1': {
+          agentId: 'agent-1',
+          browser: { name: "Safari", version: "13.0.4" },
+          os: { name: "macOS", version: "10.15.2", versionName: "Catalina" },
+          platform: { type: "desktop", vendor: "Apple" },
+          engine: { name: "Gecko", version: "5.0" }
+        },
+      }
     });
     runner = new AgentRunner({
       atom,
-      agents,
+      channel,
       context: actions.fork(function*() { yield }) as SpawnContext,
       proxyPort: 24201,
       manifestPort: 24202,

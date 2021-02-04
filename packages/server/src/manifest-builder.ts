@@ -9,15 +9,16 @@ import { Slice } from '@bigtest/atom';
 import { createFingerprint } from 'fprint';
 import path from 'path';
 import fs from 'fs';
-import { OrchestratorState } from './orchestrator/state';
+import { BundlerState, Manifest } from './orchestrator/state';
 import { assertBundlerState, assertCanTransition } from '../src/assertions/bundler-assertions';
 
 
 const { copyFile, mkdir, stat, appendFile, open } = fs.promises;
 
 interface ManifestBuilderOptions {
+  status: Slice<BundlerState>;
+  manifest: Slice<Manifest>;
   watch: boolean;
-  atom: Slice<OrchestratorState>;
   srcPath: string;
   buildDir: string;
   distDir: string;
@@ -83,17 +84,13 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
 
   validateTest(manifest);
 
-  let slice = options.atom.slice('manifest');
-
-  slice.update(() => ({ ...manifest }));
+  options.manifest.set(manifest);
 
   return distPath;
 }
 
 export function* createManifestBuilder(options: ManifestBuilderOptions): Operation {
-  let bundlerSlice = options.atom.slice('bundler');
-
-  bundlerSlice.set({ type: 'UNBUNDLED' });
+  options.status.set({ type: 'UNBUNDLED' });
 
   let bundler: Bundler = yield Bundler.create({
     watch: options.watch,
@@ -108,10 +105,10 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
       case 'START':
         console.debug("[manifest builder] received bundler start");
 
-        bundlerSlice.update(() => ({ type: 'BUILDING', warnings: [] }));
+        options.status.update(() => ({ type: 'BUILDING', warnings: [] }));
         break;
       case 'UPDATE':
-        if(bundlerSlice.get().type === 'ERRORED') {
+        if(options.status.get().type === 'ERRORED') {
           break;
         }
         console.debug("[manifest builder] received bundle update");
@@ -120,26 +117,26 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
           let path: string = yield processManifest(options);
 
           console.debug("[manifest builder] manifest ready");
-          bundlerSlice.update((previous) => {
+          options.status.update((previous) => {
             assertCanTransition(previous?.type, { to: 'BUILDING' });
 
             return { ...previous, type: 'GREEN', path };
           });
         } catch(error) {
           console.debug("[manifest builder] error loading manifest");
-          bundlerSlice.update(() => ({ type: 'ERRORED', error }));
+          options.status.update(() => ({ type: 'ERRORED', error }));
         }
 
         break;
       case 'ERROR':
         console.debug("[manifest builder] received bundle error");
 
-        bundlerSlice.update(() => ({ type: 'ERRORED', error: message.error }));
+        options.status.update(() => ({ type: 'ERRORED', error: message.error }));
         break;
       case 'WARN':
         console.debug("received bundle warning", message.warning);
 
-        bundlerSlice.update((previous) => {
+        options.status.update((previous) => {
           assertBundlerState(previous.type, {is: ['BUILDING', 'GREEN']});
 
           let warnings = !!previous.warnings ? [...previous.warnings, message.warning] : [message.warning];

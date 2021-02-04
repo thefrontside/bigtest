@@ -17,8 +17,8 @@ export function* startServer(project: ProjectOptions, options: Options): Operati
     let delegate = new Mailbox();
 
     ensureConfiguration(project);
-    
-    let atom = createOrchestratorAtom(project);
+
+    let atom = createOrchestratorAtom();
     yield spawn(createOrchestrator({ atom, delegate, project }));
 
     yield function*() {
