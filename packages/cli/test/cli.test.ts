@@ -197,6 +197,21 @@ describe('@bigtest/cli', function() {
       });
     });
 
+    describe('running with an invalid tsconfig.json file',  () => {
+      let child: TestProcess;
+      let status: ExitStatus
+
+      beforeEach(async () => {
+        child = await run('ci', '--config-file', './test/config/invalid-tsconfig-path.json',  './test/fixtures');
+        status = await child.join();
+      });
+
+      it('exits with error code', async () => {
+        expect(status.code).toEqual(1);
+        expect(child.stderr.output).toContain('./does-not-exist.json');
+      });
+    });
+
     describe('running the suite with build errors', () => {
       let child: TestProcess;
       let status: ExitStatus;

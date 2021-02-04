@@ -4,6 +4,7 @@ import { MainError } from '@effection/node';
 import { Mailbox, readyResource } from '@bigtest/effection';
 import { ProjectOptions } from '@bigtest/project';
 import { createOrchestratorAtom, createOrchestrator } from '@bigtest/server';
+import { ensureConfiguration } from './ensure-configuration';
 
 interface Options {
   timeout: number;
@@ -14,6 +15,9 @@ interface Options {
 export function* startServer(project: ProjectOptions, options: Options): Operation<Record<string, unknown>> {
   return yield readyResource({}, function*(ready) {
     let delegate = new Mailbox();
+
+    ensureConfiguration(project);
+    
     let atom = createOrchestratorAtom(project);
     yield spawn(createOrchestrator({ atom, delegate, project }));
 
