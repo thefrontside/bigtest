@@ -42,11 +42,11 @@
     "test": "yarn workspaces run test",
     "lint": "yarn workspaces run lint",
     "watch": "yarn prepack:tsc && yarn tsc -b ./tsconfig.monorepo.json --watch",
-    "install:integrations": "yarn --cwd integrations install",
-    "prepack:integrations": "yarn --cwd integrations prepack",
-    "build:integrations": "yarn --cwd integrations build",
-    "test:integrations": "yarn --cwd integrations test",
-    "lint:integrations": "yarn --cwd integrations lint"
+    "install:integrations": "yarn --cwd integrations/cypress install",
+    "prepack:integrations": "yarn --cwd integrations/cypress prepack",
+    "test:integrations": "yarn --cwd integrations/cypress test",
+    "lint:integrations": "yarn --cwd integrations/cypress lint",
+    "prepack:all": "yarn prepack && yarn install:integrations && yarn prepack:integrations"
   },
   "volta": {
     "node": "12.11.1",

@@ -66,6 +66,9 @@ jobs:
           name: Prepack integrations
           command: yarn prepack:integrations
       - run:
+          name: Lint integrations
+          command: yarn lint:integrations
+      - run:
           name: Running tests
           command: yarn test:integrations
   test:
