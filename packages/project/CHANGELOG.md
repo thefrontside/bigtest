@@ -1,5 +1,11 @@
 # @bigtest/project
 
+## 0.14.0
+
+### Minor Changes
+
+- d0097929: Add support for edge on windows and use it as the default driver
+
 ## 0.13.1
 
 ### Patch Changes

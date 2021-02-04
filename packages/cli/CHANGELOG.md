@@ -1,5 +1,18 @@
 # @bigtest/cli
 
+## 0.18.0
+
+### Minor Changes
+
+- d0097929: Add support for edge on windows and use it as the default driver
+
+### Patch Changes
+
+- Updated dependencies [a7afe9b7]
+- Updated dependencies [d0097929]
+  - @bigtest/server@0.22.2
+  - @bigtest/project@0.14.0
+
 ## 0.17.0
 
 ### Minor Changes

@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.22.2
+
+### Patch Changes
+
+- a7afe9b7: ensure tsconfig config option is present and gets passed to the bundler
+- Updated dependencies [a7afe9b7]
+- Updated dependencies [d0097929]
+  - @bigtest/agent@0.17.0
+  - @bigtest/project@0.14.0
+  - @bigtest/webdriver@0.8.0
+  - @bigtest/bundler@0.12.2
+
 ## 0.22.1
 
 ### Patch Changes

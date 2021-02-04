@@ -1,5 +1,11 @@
 # @bigtest/eslint-plugin
 
+## 0.3.2
+
+### Patch Changes
+
+- 2d7c0e7e: fix linking of @bigtest/eslint rule to docs
+
 ## 0.3.1
 
 ### Patch Changes
