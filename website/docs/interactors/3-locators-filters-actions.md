@@ -111,6 +111,12 @@ For instance, if we wanted to test if a textfield is visible, `has()` would work
 TextField({ id: 'username-id' }).is({ visible: true });
 ```
 
+It makes more sense to say "text field _is_ visible" rather than "text field _has_ visible". Generally, we recommend using `is()` if your assertion is an adjective, and use `has()` if your assertion is a noun. For example, if we wanted to assert for `visibility`, then it would sound more natural to use `has()` instead:
+
+```js
+TextField({ id: 'username-id' }).has({ visibility: true });
+```
+
 ## Actions
 
 Now that we’ve covered how you select the element you want to interact with, as well as how you assert its properties, let’s actually interact with it. Interactors come with actions that you can perform on them. The actions are what a user can usually do: `click`, `focus`, `fillIn`, much like in any other testing library. However, Interactors also allow you to define actions for your components as your user would think of them, like `closeModal` or `toggleMenu`.
