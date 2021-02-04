@@ -9,6 +9,7 @@ import styles from './styles.module.css';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CodeBlock from '@theme/CodeBlock';
+import SubscribeForm from '../components/subscribe-form';
 
 // // originally from interactors/getting-started/why-bigtest
 
@@ -217,6 +218,7 @@ function Interactors() {
                   </p>
           </div>
         </section>
+        <SubscribeForm highlight={true} />
       </main>
     </Layout>
   );

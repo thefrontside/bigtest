@@ -4,6 +4,7 @@ import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './styles.module.css';
+import SubscribeForm from '../components/subscribe-form';
 
 const features = [
   {
@@ -69,7 +70,7 @@ function Interactors() {
             <Link
               className={styles.ctaButton}
               to={useBaseUrl('docs/platform')}>
-              Get Started
+              Start exploring
             </Link>
           </div>
           <div className={clsx(styles.heroImage, styles.heroCrossPlatformIframe)}>
@@ -95,17 +96,10 @@ function Interactors() {
             }
           </>
         )}
-        <section className="text--center">
-          <Link
-            className={styles.ctaButton}
-            to={useBaseUrl('docs/platform')}>
-            Start testing big
-          </Link>
-        </section>
 
+        <SubscribeForm highlight={true} />
         <section>
           <div className={styles.textColumn}>
-            <img src={useBaseUrl('images/decor-dots-horizontal.png')} alt="" className={styles.topDecoration} />
             <h2>Why try BigTest?</h2>
 
             <p>
