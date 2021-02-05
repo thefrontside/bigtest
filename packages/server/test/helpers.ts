@@ -50,7 +50,6 @@ export const actions = {
       testFiles: ["test/fixtures/*.t.js"],
       app: {
         url: "http://localhost:24100",
-        command: "yarn test:app:start 24100",
       },
       proxy: {
         port: 24001,

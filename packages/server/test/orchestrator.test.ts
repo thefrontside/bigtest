@@ -64,6 +64,47 @@ describe('orchestrator', () => {
     });
   });
 
+  describe('retrieving test file manifest', () => {
+    let response: Response;
+    let body: string;
+    beforeEach(async () => {
+      await actions.fork(actions.atom.slice('bundler', 'type').once(type => type === 'GREEN'));
+
+      let name = actions.atom.get().manifest.fileName;
+      response = await actions.fetch(`http://localhost:24105/${name}`);
+      body = await response.text();
+    });
+
+    it('responds successfully', () => {
+      expect(response.ok).toEqual(true);
+    });
+
+    it('serves the application', () => {
+      expect(body).toContain('Signing In');
+    });
+  });
+});
+
+describe('orchestrator with an internally managed application', () => {
+  beforeEach(async function() {
+    this.timeout(20000);
+
+    await actions.startOrchestrator({
+      app: {
+        url: `http://localhost:24100`,
+        command: "yarn test:app:start 24100",
+      }
+    });
+
+    await actions.fork(
+      actions.atom.slice('appServer').once(status => ['started', 'exited'].includes(status.type))
+    );
+
+    await actions.fork(
+      actions.atom.slice('appServer').once(status => status.type === 'available')
+    );
+  });
+
   describe('retrieving app', () => {
     let response: Response;
     let body: string;
@@ -76,7 +117,9 @@ describe('orchestrator', () => {
 
     it('serves the application', () => {
       expect(response.ok).toEqual(true);
+    });
 
+    it('proxies to the application', () => {
       expect(body).toContain('<title>Test App</title>');
     });
   });
@@ -101,26 +144,6 @@ describe('orchestrator', () => {
 
     it('injects the harness script tag', () => {
       expect(body).toMatch(new RegExp(`<script src="http://localhost:\\d+/__bigtest/harness.js"></script>`, 'mg'));
-    });
-  });
-
-  describe('retrieving test file manifest', () => {
-    let response: Response;
-    let body: string;
-    beforeEach(async () => {
-      await actions.fork(actions.atom.slice('bundler', 'type').once(type => type === 'GREEN'));
-
-      let name = actions.atom.get().manifest.fileName;
-      response = await actions.fetch(`http://localhost:24105/${name}`);
-      body = await response.text();
-    });
-
-    it('responds successfully', () => {
-      expect(response.ok).toEqual(true);
-    });
-
-    it('serves the application', () => {
-      expect(body).toContain('Signing In');
     });
   });
 });
