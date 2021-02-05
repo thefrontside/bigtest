@@ -1,12 +1,37 @@
 import { Test } from './interfaces';
 
-export class TestValidationError extends Error {
-  name = 'TestValidationError'
+export class FileError extends Error {
+  name = 'FileError'
 
   /**
    * The location where this error occurred.
    */
   public loc?: { file: string };
+
+  /**
+   * @hidden
+   */
+  constructor(message: string, file?: string) {
+    super(message);
+    if(file) {
+      this.loc = { file }
+    }
+  }  
+}
+
+export class TestTypeError extends FileError {
+  name = 'TestTypeError'
+
+  /**
+   * @hidden
+   */
+  constructor(message: string, test?: Test, file?: string) {
+    super(`Test type error: ${message}\n\n${!!test ?? JSON.stringify(test)}`, file);
+  }
+}
+
+export class TestValidationError extends FileError {
+  name = 'TestValidationError'
 
   /**
    * @hidden
@@ -17,20 +42,20 @@ export class TestValidationError extends Error {
       this.loc = { file }
     }
   }
-}
+} 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function ensureIsTest (test: any, path: string[] = [], file?: string): test is Test {
+function ensureIsTest (test: any, file?: string): test is Test {
   if(!test) {
-    throw new TestValidationError("contains no description.\n\nDoes the test file contain a default export?", path, file)
+    throw new TestTypeError("contains no required fields.\n\nDoes the test file contain a default export?", test, file)
   }
  
   if(!test.description) {
-    throw new TestValidationError("contains no description.\n\nDoes the test file contain a default export?", path, file)
+    throw new TestTypeError("contains no description.\n\nDoes the test file contain a default export?", test, file)
   }
 
   if(!test?.children || !test?.assertions) {
-    throw new TestValidationError('contains no assertions or children.');
+    throw new TestTypeError('contains no assertions or children.');
   }
 
   return true;
@@ -67,7 +92,7 @@ export function validateTest(test: unknown): true {
       throw new TestValidationError(`is too deeply nested, maximum allowed depth of nesting is ${MAXIMUM_DEPTH}`, [], file)
     }
     
-    if(!ensureIsTest(test, path, file)) {
+    if(!ensureIsTest(test, file)) {
       throw new Error('Invalid test')
     }
 

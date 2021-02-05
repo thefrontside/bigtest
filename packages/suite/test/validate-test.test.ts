@@ -97,7 +97,7 @@ describe('validateTest', () => {
   it('is invalid with no required fields', () => {
     let example = { namedExport: test("No default export") }
 
-    expect(() => { validateTest(example) }).toThrowError('Invalid Test')
+    expect(() => { validateTest(example) }).toThrowError('Test type error')
   });
 
   it('is invalid with no children', () => {
@@ -106,7 +106,7 @@ describe('validateTest', () => {
       assertions: [noop]
     }
 
-    expect(() => { validateTest(example) }).toThrowError('Invalid Test')
+    expect(() => { validateTest(example) }).toThrowError('Test type error')
   });
 
 
@@ -116,6 +116,6 @@ describe('validateTest', () => {
       children: []
     }
 
-    expect(() => { validateTest(example) }).toThrowError('Invalid Test')
+    expect(() => { validateTest(example) }).toThrowError('Test type error')
   });
 })
