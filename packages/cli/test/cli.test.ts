@@ -9,6 +9,8 @@ import { promises as fs } from 'fs';
 import { World } from './helpers/world';
 import { Stream } from './helpers/stream';
 
+const DRIVER = process.env.DRIVER || 'default';
+
 export interface TestProcess {
   stdin: { write(data: string): void };
   stdout: Stream;
@@ -93,7 +95,7 @@ describe('@bigtest/cli', function() {
       let status: ExitStatus;
 
       beforeEach(async () => {
-        startChild = await run('server');
+        startChild = await run('server', '--launch', DRIVER);
 
         await startChild.stdout.detect("[orchestrator] running!");
 
@@ -114,7 +116,7 @@ describe('@bigtest/cli', function() {
       let status: ExitStatus;
 
       beforeEach(async () => {
-        startChild = await World.spawn(run('server'));
+        startChild = await World.spawn(run('server', '--launch', DRIVER));
 
         await startChild.stdout.detect("[orchestrator] running!");
 
@@ -135,7 +137,7 @@ describe('@bigtest/cli', function() {
       let status: ExitStatus;
 
       beforeEach(async () => {
-        startChild = await run('server', '--test-files', './test/fixtures/syntax.broken.ts');
+        startChild = await run('server', '--launch', DRIVER, '--test-files', './test/fixtures/syntax.broken.ts');
 
         await startChild.stdout.detect("[orchestrator] running!");
 
@@ -160,7 +162,7 @@ describe('@bigtest/cli', function() {
       let status: ExitStatus;
 
       beforeEach(async () => {
-        child = await run('ci', './test/fixtures/passing.test.ts');
+        child = await run('ci', './test/fixtures/passing.test.ts', '--launch', DRIVER);
         await child.stdout.detect("[orchestrator] running!");
         status = await child.join();
       });
@@ -176,7 +178,7 @@ describe('@bigtest/cli', function() {
       let status: ExitStatus;
 
       beforeEach(async () => {
-        child = await run('ci', './test/fixtures/failing.test.ts');
+        child = await run('ci', './test/fixtures/failing.test.ts', '--launch', DRIVER);
         await child.stdout.detect("[orchestrator] running!");
         status = await child.join();
       });
@@ -202,7 +204,7 @@ describe('@bigtest/cli', function() {
       let status: ExitStatus
 
       beforeEach(async () => {
-        child = await run('ci', '--config-file', './test/config/invalid-tsconfig-path.json',  './test/fixtures');
+        child = await run('ci', '--launch', DRIVER, '--config-file', './test/config/invalid-tsconfig-path.json',  './test/fixtures');
         status = await child.join();
       });
 
@@ -217,7 +219,7 @@ describe('@bigtest/cli', function() {
       let status: ExitStatus;
 
       beforeEach(async () => {
-        child = await run('ci', '--test-files', './test/fixtures/syntax.broken.ts');
+        child = await run('ci', '--launch', DRIVER, '--test-files', './test/fixtures/syntax.broken.ts');
         await child.stdout.detect("[orchestrator] running!");
         status = await child.join();
       });
@@ -235,7 +237,7 @@ describe('@bigtest/cli', function() {
       let status: ExitStatus;
 
       beforeEach(async () => {
-        child = await run('ci', '--test-files', './test/fixtures/typescript.broken.ts');
+        child = await run('ci', '--launch', DRIVER, '--test-files', './test/fixtures/typescript.broken.ts');
         await World.spawn(child.stdout?.waitFor('[orchestrator] running!'));
         status = await child.join();
       });
@@ -254,7 +256,7 @@ describe('@bigtest/cli', function() {
       let status: ExitStatus;
 
       beforeEach(async () => {
-        child = await run('ci', '--test-files', './test/fixtures/duplicate.broken.ts');
+        child = await run('ci', '--launch', DRIVER, '--test-files', './test/fixtures/duplicate.broken.ts');
         status = await child.join();
       });
 
@@ -272,7 +274,7 @@ describe('@bigtest/cli', function() {
       let status: ExitStatus;
 
       beforeEach(async () => {
-        child = await run('ci', '--test-files', './test/fixtures/too-deep.broken.ts');
+        child = await run('ci', '--launch', DRIVER, '--test-files', './test/fixtures/too-deep.broken.ts');
         status = await child.join();
       });
 
@@ -290,7 +292,7 @@ describe('@bigtest/cli', function() {
       let status: ExitStatus;
 
       beforeEach(async () => {
-        child = await run('ci', '--app-command', 'yarn node doesnotexist.js');
+        child = await run('ci', '--launch', DRIVER, '--app-command', 'yarn node doesnotexist.js');
         status = await child.join();
       });
 
@@ -311,7 +313,7 @@ describe('@bigtest/cli', function() {
     describe('when coverage output is requested', () => {
       let child: TestProcess;
       beforeEach(async () => {
-        child = await run('ci', '--coverage', './test/fixtures/coverage.test.ts');
+        child = await run('ci', '--launch', DRIVER, '--coverage', './test/fixtures/coverage.test.ts');
         await child.join();
       });
 
@@ -324,7 +326,7 @@ describe('@bigtest/cli', function() {
     describe('when requested, but there is no coverage data in the test run', () => {
       let child: TestProcess;
       beforeEach(async () => {
-        child = await run('ci', '--coverage', './test/fixtures/passing.test.ts');
+        child = await run('ci', '--launch', DRIVER, '--coverage', './test/fixtures/passing.test.ts');
         await child.join();
       });
 
@@ -336,7 +338,7 @@ describe('@bigtest/cli', function() {
     describe('when coverage data is present, but coverage output is not requested', () => {
       let child: TestProcess;
       beforeEach(async () => {
-        child = await run('ci', './test/fixtures/coverage.test.ts');
+        child = await run('ci', '--launch', DRIVER, './test/fixtures/coverage.test.ts');
         await child.join();
       });
 
@@ -405,7 +407,7 @@ describe('@bigtest/cli', function() {
         expect(config.app.env.PORT).toEqual(9000);
         expect(config.app.url).toEqual('http://localhost:9000');
         expect(config.tsconfig).toEqual('./bigtest.tsconfig.json');
-        
+
         let generatedTSConfig = await fs.readFile('./bigtest.tsconfig.json');
         expect(JSON.parse(generatedTSConfig.toString())).toEqual(defaultTSConfig());
       });
