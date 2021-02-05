@@ -10,13 +10,13 @@ commands:
     steps:
       - restore_cache:
           name: Restoring dependency cache
-          key: yarn-v7-{{ checksum "yarn.lock" }}
+          key: yarn-v9-{{arch}}-{{ checksum "yarn.lock" }}
       - run:
           name: Installing dependencies
           command: yarn install --frozen-lockfile
       - save_cache:
           name: Saving dependency cache
-          key: yarn-v7-{{ checksum "yarn.lock" }}
+          key: yarn-v9-{{arch}}-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
             - ~/AppData/Local/Yarn/Cache
@@ -76,12 +76,17 @@ jobs:
     parameters:
       package:
         type: string
+      driver:
+        type: string
+        default: "default"
       executor:
         type: executor
         default: "linux"
       prepack:
         type: boolean
         default: true
+    environment:
+      DRIVER: <<parameters.driver>>
     steps:
       - checkout
       - yarn_install
