@@ -168,3 +168,10 @@ workflows:
                 name: "Install Microsoft Edge"
                 command: choco install microsoft-edge
           package: cli
+      - test:
+          name: "test-cli-firefox"
+          driver: "firefox.headless"
+          package: cli
+          prepack: false
+          requires:
+            - prepack
