@@ -123,6 +123,22 @@ export function defaultConfig(configFilePath: string): ProjectOptions {
           headless: true
         }
       },
+      edge: {
+        module: "@bigtest/webdriver",
+        options: {
+          type: 'local',
+          browserName: "edge",
+          headless: false
+        }
+      },
+      "edge.headless": {
+        module: "@bigtest/webdriver",
+        options: {
+          type: 'local',
+          browserName: "edge",
+          headless: true
+        }
+      },
       "safari": {
         module: "@bigtest/webdriver",
         options: {
