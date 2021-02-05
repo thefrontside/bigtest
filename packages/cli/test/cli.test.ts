@@ -104,7 +104,7 @@ describe('@bigtest/cli', function() {
         status = await runChild.join();
       });
 
-      it.only('exits successfully', async () => {
+      it('exits successfully', async () => {
         expect(status.code).toEqual(0);
         expect(runChild.stdout.output).toContain("SUCCESS")
       });

@@ -46,9 +46,13 @@ describe('manifest builder', () => {
       });
     });
 
-    let bundlerState = await actions.fork(status.once(({ type }) => type === 'GREEN'));
+    let bundlerState = await actions.fork(status.once(({ type }) => type === 'GREEN' || type === 'ERRORED'));
 
-    resultPath = (bundlerState?.type === 'GREEN' && bundlerState.path) as string;
+    if(bundlerState.type === 'ERRORED') {
+      throw new Error(bundlerState.error?.message || 'invalid bundle');
+    } else if(bundlerState.type === 'GREEN') {
+      resultPath = bundlerState.path;
+    }
 
     status.set({ type: 'BUILDING', warnings: []});
   });
