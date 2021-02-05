@@ -76,7 +76,7 @@ describe('orchestrator', () => {
     it('serves the application', () => {
       expect(response.ok).toEqual(true);
 
-      expect(body).toContain('<title>React TodoMVC Example</title>');
+      expect(body).toContain('<title>Test App</title>');
     });
   });
 
@@ -93,7 +93,7 @@ describe('orchestrator', () => {
     });
 
     it('proxies to the application', () => {
-      expect(body).toContain('<title>React TodoMVC Example</title>');
+      expect(body).toContain('<title>Test App</title>');
     });
 
     it('injects the harness script tag', () => {

@@ -4786,6 +4786,18 @@ big.js@^5.2.2:
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
   integrity sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==
 
+bigtest-sample@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/bigtest-sample/-/bigtest-sample-0.0.5.tgz#790a3165a2b6ba8491affffe2b2a7e8dced19549"
+  integrity sha512-Nm1gowWsbkQPpYHBuF52RS141EhRUziN875K7DxASjokO6Ng/Re4TRfw6wxQ/NL6g3q2xpzARNBSA/LgltUzBQ==
+  dependencies:
+    "@effection/events" "^0.7.8"
+    "@effection/node" "^0.9.1"
+    "@effection/subscription" "^0.11.1"
+    chalk "^4.1.0"
+    effection "^0.7.0"
+    rimraf "^3.0.2"
+
 binary-extensions@^1.0.0:
   version "1.13.1"
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-1.13.1.tgz#598afe54755b2868a5330d2aff9d4ebb53209b65"

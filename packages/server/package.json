@@ -16,7 +16,7 @@
     "test": "mocha ./test/setup test/**/*.test.ts",
     "test:debug": "cross-env LOG_LEVEL=debug yarn test",
     "mocha": "mocha ./test/setup",
-    "test:app:start": "ts-node ./bin/todomvc.ts",
+    "test:app:start": "node ./bin/app.js",
     "generate:schema": "node generate-schema.js",
     "prepack": "yarn generate:schema && tsc --build"
   },
@@ -25,7 +25,6 @@
     "dist/**/*"
   ],
   "devDependencies": {
-    "@bigtest/todomvc": "^0.5.7",
     "@frontside/eslint-config": "^2.0.0",
     "@frontside/tsconfig": "^1.2.0",
     "@frontside/typescript": "^1.1.1",

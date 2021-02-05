@@ -1,6 +1,6 @@
 {
   "app": {
-    "command": "yarn bigtest-todomvc 36000",
+    "command": "yarn test:app:start 36000",
     "url": "http://localhost:36000"
   },
   "testFiles": ["./test/fixtures/*.test.{ts,js}"],
