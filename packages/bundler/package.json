@@ -44,6 +44,7 @@
     "@frontside/eslint-config": "^2.0.0",
     "@frontside/tsconfig": "^1.2.0",
     "@frontside/typescript": "^1.1.1",
+    "@types/babel__core": "^7.1.12",
     "@types/node": "^13.13.4",
     "@types/parcel-bundler": "^1.12.1",
     "expect": "^24.9.0",
