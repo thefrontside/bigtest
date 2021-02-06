@@ -44,9 +44,6 @@
       "path": "./packages/agent"
     },
     {
-      "path": "./packages/todomvc"
-    },
-    {
       "path": "./packages/server"
     }
   ]
