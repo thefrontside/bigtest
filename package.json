@@ -59,6 +59,5 @@
     "@typescript-eslint/eslint-plugin": "^4.12.0",
     "typescript": "^4.1.3",
     "yargs-parser": "^13.1.2"
-  },
-  "dependencies": {}
+  }
 }

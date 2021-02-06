@@ -1,5 +1,5 @@
 ---
-"@bigtest/server": patch
+"@bigtest/suite": patch
 ---
 
 validate test implementation instances in `validate-test`.
