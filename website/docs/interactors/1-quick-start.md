@@ -17,7 +17,7 @@ By the end of this page you will be testing one of your own apps with Interactor
 - [npm](https://www.npmjs.com/get-npm) or [yarn](https://classic.yarnpkg.com/en/docs/install)
 - A web app*
 
-*To follow along with this tutorial, you need an app that uses [Jest](https://jestjs.io/), [Cypress](https://www.cypress.io/), or BigTest. For the most informative learning experience you should use one of your own apps. If you don’t have one available you can use the sample app below
+* To follow along with this tutorial, you need an app that uses [Jest](https://jestjs.io/), [Cypress](https://www.cypress.io/), or BigTest. For the most informative learning experience you should use one of your own apps. If you don’t have one available you can use the sample app below
 
 ### Sample app
 
@@ -112,8 +112,8 @@ Interactors have methods like `click` that mimic user actions. If you are using 
     it('clicks button', async () => {
       await Button('Sign In').click();
       // the rest of your test that was already written
-    })
-  })
+    });
+  });
   ```
 
   </TabItem>
@@ -130,8 +130,8 @@ Interactors have methods like `click` that mimic user actions. If you are using 
         Button('Sign In').click();
       );
       // the rest of your test that was already written
-    })
-  })
+    });
+  });
   ```
 
   </TabItem>
@@ -150,13 +150,12 @@ Interactors have methods like `click` that mimic user actions. If you are using 
   </TabItem>
 </Tabs>
 
-If you are using the sample project, you can find these examples at `bigtest-sample/src/test/jest.test..js`, `bigtest-sample/src/test/cypress.spec.js` and `bigtest-sample/src/test/bigtest.test.js`.
+If you are using the sample project, you can find these examples inside `bigtest-sample/src/test/` directory.
 
 Now run your tests as you usually would or use any of the sample project options. Congratulations – you used your first Interactor!
 
 :::note The BigTest Platform
  There's more to BigTest than just Interactors. BigTest can also run your tests on any _real_ browser – just like your users use. We have built a new integrated platform from the ground up to help you test more with less effort. And best of all it's free and Open Source! [Check it out](/platform), and let us know what you think.
-
 :::
 
 ## Making test assertions
@@ -184,8 +183,8 @@ In the sample project, when you click the “Sign In” button it disappears and
       await Button('Sign In').click();
       await Button('Sign In').absent();
       await Button('Log Out').exists();
-    })
-  })
+    });
+  });
   ```
 
   </TabItem>
@@ -203,8 +202,8 @@ In the sample project, when you click the “Sign In” button it disappears and
         Button('Sign In').absent(),
         Button('Log Out').exists(),
       ]);
-    })
-  })
+    });
+  });
   ```
 
   </TabItem>
@@ -254,8 +253,8 @@ Here are examples of what a test for an airline datepicker interface could look 
       await DatePicker().select('June, 2022', '10'));
       await Modal({ id: 'loading' }).exists();
       await Heading('Departing flight').exists();
-    })
-  })
+    });
+  });
   ```
 
   </TabItem>
@@ -279,8 +278,8 @@ Here are examples of what a test for an airline datepicker interface could look 
         Modal({ id: 'loading' }).exists();
         Heading('Departing flight').exists();
       );
-    })
-  })
+    });
+  });
   ```
 
   </TabItem>

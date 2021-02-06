@@ -26,13 +26,13 @@ import App from './App';
 import { Button } from 'bigtest';
 
 describe('Interactors with Jest', () => {
-    beforeEach(() => render(<App />));
+  beforeEach(() => render(<App />));
 
-    it('clicks button', async () => {
-        await Button('Sign In').click();
-        await Button('Log Out').exists();
-    })
-})
+  it('clicks button', async () => {
+    await Button('Sign In').click();
+    await Button('Log Out').exists();
+  });
+});
 ```
 
 If an interactor's assertion fails, the error will be received by Jest and you will see it in your test output.
@@ -65,8 +65,8 @@ describe('Interactors with Cypress', () => {
       Button('Sign In').absent(),
       Button('Log Out').exists()
     ]);
-  })
-})
+  });
+});
 ```
 
 The `cy.do()` and `cy.expect()` commands can take either a single interactor or an array of interactors.
@@ -82,7 +82,6 @@ Follow [these steps](https://github.com/cypress-io/cypress/tree/master/npm/webpa
 ### TypeScript
 
 TypeScript users should make sure to add `cypress` to the types array in `tsconfig`:
-
 ```
 {
   "compilerOptions: {
@@ -90,5 +89,4 @@ TypeScript users should make sure to add `cypress` to the types array in `tsconf
   }
 }
 ```
-
 See Cypress' guide on [TypeScript support](https://docs.cypress.io/guides/tooling/typescript-support.html#Configure-tsconfig-json) for more details.
