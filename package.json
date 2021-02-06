@@ -22,7 +22,6 @@
       "packages/webdriver",
       "packages/project",
       "packages/bundler",
-      "packages/convergence",
       "packages/logging",
       "packages/server",
       "packages/cli",
