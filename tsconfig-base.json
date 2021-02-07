@@ -24,7 +24,6 @@
       "@bigtest/project": ["packages/project/src"],
       "@bigtest/server": ["packages/server/src"],
       "@bigtest/suite": ["packages/suite/src"],
-      "@bigtest/todomvc": ["packages/todomvc/src"],
       "@bigtest/webdriver": ["packages/webdriver/src"]
     }
   }

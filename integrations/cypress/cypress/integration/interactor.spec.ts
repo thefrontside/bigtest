@@ -1,4 +1,4 @@
-import { TextField, Heading } from '../../src';
+import { Button } from '../../src';
 
 describe('Cypress with Interactors', () => {
   beforeEach(() => {
@@ -6,18 +6,18 @@ describe('Cypress with Interactors', () => {
   })
   it('single interactor per command', () => {
     cy
-      .do(TextField().fillIn('hello'))
-      .expect(TextField({ value: 'hello' }).exists())
+      .do(Button('SIGN IN').click())
+      .expect(Button('LOG OUT').exists())
   });
   it('array of interactors', () => {
     cy
       .do([
-        TextField().fillIn('hello'),
-        TextField().fillIn('bye')
+        Button('SIGN IN').click(),
+        Button('LOG OUT').click()
       ])
       .expect([
-        TextField().has({ value: 'bye' }),
-        Heading('todos').exists()
+        Button('SIGN IN').exists(),
+        Button('LOG OUT').absent()
       ]);
   })
 });

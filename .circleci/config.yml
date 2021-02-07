@@ -146,7 +146,6 @@ workflows:
                 - project
                 - server
                 - suite
-                - todomvc
                 - webdriver
           requires:
             - prepack
