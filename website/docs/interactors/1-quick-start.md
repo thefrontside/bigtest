@@ -17,7 +17,7 @@ By the end of this page you will be testing one of your own apps with Interactor
 - [npm](https://www.npmjs.com/get-npm) or [yarn](https://classic.yarnpkg.com/en/docs/install)
 - A web app*
 
-* To follow along with this tutorial, you need an app that uses [Jest](https://jestjs.io/), [Cypress](https://www.cypress.io/), or BigTest. For the most informative learning experience you should use one of your own apps. If you don’t have one available you can use the sample app below
+\* To follow along with this tutorial, you need an app that uses [Jest](https://jestjs.io/), [Cypress](https://www.cypress.io/), or BigTest. For the most informative learning experience you should use one of your own apps. If you don’t have one available you can use the sample app below
 
 ### Sample app
 
