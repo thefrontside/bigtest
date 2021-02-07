@@ -81,6 +81,7 @@ The filters available are defined by each interactor, so look at the API docs fo
 Later on the [Writing Interactors](4-write-your-own.md) page you will learn how to add your own filters to Interactors.
 
 ### Asserting with filters
+
 Filters can be very convenient for finding matching UI elements, but where they really shine is in making assertions about what you expect your application to be showing.
 
 In the [Quick Start](/docs/interactors/#making-test-assertions) we briefly touched on the assertion methods that are available for all interactors - `exists()` and `absent()`. There is also `has()` which allows you pass in a filter as its argument.

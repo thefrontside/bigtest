@@ -7,13 +7,6 @@ Nearly every app has at least one user interaction that is unusual or special, l
 
 In this section, you will learn how to write a new Interactor for any interface and use it in your tests. We will start with a simple example for learning purposes, level up to a more complex scenario, and then cover common questions.
 
-:::info Heads up
-
-There are new and exciting changes in the works for the `createInteractor()` API. Those changes will simplify the syntax you see in the examples below, but the refactoring process will be easy to adapt to. We will share clear instructions in your console on how you can update to the new syntax so you can use Interactors today without worrying about tomorrow’s easy-to-perform updates.
-
-:::
-
-
 ## Writing your first interactor
 
 In this tutorial, we will create our own `TextField` Interactor. Although BigTest has this type of interactor built-in, recreating it is a great way to learn all the pieces that make up an interactor while using familiar examples.
@@ -29,16 +22,15 @@ In this case, let's call our Interactor ‘MyTextField’, and we’ll label it 
 ```js
 import { createInteractor, fillIn } from 'bigtest';
 
-export const TextField = createInteractor<HTMLInputElement>('my-textfield-interactor')({
-  selector: 'input[type=text]',
-  locator: (element) => element.placeholder,
-  filters: {
+export const TextField = createInteractor<HTMLInputElement>('my-textfield-interactor')
+  .selector('input[type=text]')
+  .locator((element) => element.placeholder)
+  .filters({
     value: (element) => element.value
-  },
-  actions: {
+  })
+  .actions({
     fillIn: (interactor) => interactor.perform(fillIn)
-  }
-});
+  });
 ```
 
 :::note
@@ -63,19 +55,21 @@ Locators, filters, and actions are optional when creating your own interactor. W
 You might be wondering what `interactor.perform()` does: it is a method on the interactor which ensures that there are no race conditions when working directly with elements. You can use it like this:
 
 ```js
-actions: {
-  async click(interactor){
-    await interactor.perform(element => element.click())
-  };
-}
+createInteractor('my interactor')
+  .actions({
+    async click(interactor){
+      await interactor.perform(element => element.click());
+    }
+  });
 ```
 
 Or you could use destructuring to make it a bit shorter:
 
 ```js
-actions: {
-  click: ({ perform }) => perform(element => element.click());
-}
+createInteractor('my interactor')
+  .actions({
+    click: ({ perform }) => perform(element => element.click())
+  });
 ```
 
 The former syntax is necessary if you want to write an action that delegates to the actions of other interactors. For example, imagine that you want to create a form interactor that has a submit action. You could take this approach:
@@ -83,14 +77,13 @@ The former syntax is necessary if you want to write an action that delegates to 
 ```js
 import { Button, createInteractor } from 'bigtest';
 
-export const Form = createInteractor<HTMLFormElement>('form')({
-  selector: 'form',
-    actions: {
-      async submit(interactor){
+export const Form = createInteractor<HTMLFormElement>('form')
+  .selector('form')
+  .actions({
+    async submit(interactor){
       await interactor.find(Button('Submit')).click();
     }
-  }
-})
+  });
 ```
 
 There’s two peculiarities about this example. First, notice we’re not using `perform` which means that we’re not performing an action on any element directly. Secondly, within the submit action definition you’ll notice that we’re using `find` to access another Interactor and calling its action. That’s what we mean with ‘delegating’ an action.
@@ -136,8 +129,8 @@ import TabItem from '@theme/TabItem';
       await TextField('EMAIL').fillIn('batman@gmail.com');
       await Button('Subscribe').click();
       await Heading('Success!').exists();
-    })
-  })
+    });
+  });
   ```
 
   </TabItem>
@@ -156,8 +149,8 @@ import TabItem from '@theme/TabItem';
         Button('Subscribe').click();
       ]);
       cy.expect(Heading('Success'))
-    })
-  })
+    });
+  });
   ```
 
   </TabItem>
@@ -219,9 +212,9 @@ Here is one way to create the `TableCell` interactor:
 ```js
 import { createInteractor } from 'bigtest';
 
-export const TableCell = createInteractor('table cell')({
-  selector: '[role=gridcell]',
-  filters: {
+export const TableCell = createInteractor('table cell')
+  .selector('[role=gridcell]')
+  .filters({
     columnTitle: element => {
       const siblingCells = Array.from(element.closest('[class=Row]')
         .querySelectorAll('[role=gridcell]'));
@@ -246,8 +239,7 @@ export const TableCell = createInteractor('table cell')({
       const offset = 1;
       return element.closest('[role=row]').getAttribute('aria-rowindex') - offset;
     }
-  }
-});
+  });
 ```
 
 :::note Check your node version
@@ -334,12 +326,12 @@ One more building block available to you is the `find` method, which helps you c
 Take for example the following DatePicker Interactor, in which we define an `open` action. We use `find` to target a button within `DatePicker`:
 
 ```js
-createInteractor('DatePicker')({
-  actions: {
+createInteractor('DatePicker')
+  .actions({
     open: (interactor) => interactor.find(Button).click()
-  }
-});
+  });
 ```
+
 You can also use the `find` method in your tests. Say you want to test a click on the 31st day of your DatePicker. Instead of creating an action for that event, we can reach into DatePicker and target the Button element with text `31` with `find`:
 
 ```js
