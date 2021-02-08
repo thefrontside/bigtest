@@ -93,4 +93,29 @@ describe('validateTest', () => {
 
     expect(() => { validateTest(example) }).toThrowError('Invalid Test')
   });
+
+  it('is invalid with no required fields', () => {
+    let example = { namedExport: test("No default export") }
+
+    expect(() => { validateTest(example) }).toThrowError('Test type error')
+  });
+
+  it('is invalid with no children', () => {
+    let example = {
+      description: 'foo',
+      assertions: [noop]
+    }
+
+    expect(() => { validateTest(example) }).toThrowError('Test type error')
+  });
+
+
+  it('is invalid with no assertions', () => {
+    let example = {
+      description: 'foo',
+      children: []
+    }
+
+    expect(() => { validateTest(example) }).toThrowError('Test type error')
+  });
 })
