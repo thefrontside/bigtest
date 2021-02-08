@@ -28,7 +28,9 @@ describe('manifest builder', () => {
   let resultPath: string;
 
   beforeEach((done) => rmrf(TEST_DIR, done));
-  beforeEach(async () => {
+  beforeEach(async function() {
+    this.timeout(30000);
+
     await mkdir(SRC_DIR, { recursive: true });
     await copyFile(path.join(FIXTURES_DIR, 'raw-tree-format.t.js'), MANIFEST_PATH);
 
