@@ -3,15 +3,9 @@
 </p>
 
 <p align="center">  
-  <a href="https://app.circleci.com/pipelines/github/thefrontside/bigtest?branch=v0">
-     <img alt="CircleCI" src="https://circleci.com/gh/thefrontside/bigtest.svg?style=shield"
-  </a>
-  <a href="https://discord.gg/r6AvtnU">
-    <img alt="Chat on Discord" src="https://img.shields.io/discord/700803887132704931?Label=Discord)](https://discord.gg/r6AvtnU" />
-  </a>
-  <a href="https://frontside.com">
-    <img alt="created by Frontside" src="https://img.shields.io/badge/created%20by-frontside-26abe8.svg" />
-  </a>
+  <a href="https://app.circleci.com/pipelines/github/thefrontside/bigtest?branch=v0"><img alt="CircleCI" src="https://circleci.com/gh/thefrontside/bigtest.svg?style=shield"/></a>
+  <a href="https://discord.gg/r6AvtnU"><img alt="Chat on Discord" src="https://img.shields.io/discord/700803887132704931?Label=Discord)](https://discord.gg/r6AvtnU"/></a>
+  <a href="https://frontside.com"><img alt="created by Frontside" src="https://img.shields.io/badge/created%20by-frontside-26abe8.svg"/></a>
 </p>
 
 <p align="center">
