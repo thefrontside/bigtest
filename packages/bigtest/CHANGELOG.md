@@ -1,5 +1,19 @@
 # bigtest
 
+## 0.11.0
+
+### Minor Changes
+
+- d28b494f: Add edge and edge.headless drivers by default
+- c19de909: Don't wait for manifest builder to start orchestrator
+
+### Patch Changes
+
+- 1da4bcfd: Fix path discovery of Safari driver
+- Updated dependencies [0dacf302]
+  - @bigtest/suite@0.11.3
+  - @bigtest/cli@0.18.1
+
 ## 0.10.0
 
 ### Minor Changes

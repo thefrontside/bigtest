@@ -1,5 +1,11 @@
 # @bigtest/project
 
+## 0.15.0
+
+### Minor Changes
+
+- d28b494f: Add edge and edge.headless drivers by default
+
 ## 0.14.0
 
 ### Minor Changes
