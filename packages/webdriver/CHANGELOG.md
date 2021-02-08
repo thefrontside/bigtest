@@ -1,5 +1,11 @@
 # @bigtest/webdriver
 
+## 0.8.1
+
+### Patch Changes
+
+- 1da4bcfd: Fix path discovery of Safari driver
+
 ## 0.8.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.3
+
+### Patch Changes
+
+- 0dacf302: validate test implementation instances in `validate-test`.
+
 ## 0.11.2
 
 ### Patch Changes

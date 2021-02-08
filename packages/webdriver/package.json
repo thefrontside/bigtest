@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/webdriver",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Control Webdriver instances",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.23.0
+
+### Minor Changes
+
+- c19de909: Don't wait for manifest builder to start orchestrator
+
+### Patch Changes
+
+- Updated dependencies [d28b494f]
+- Updated dependencies [1da4bcfd]
+- Updated dependencies [0dacf302]
+  - @bigtest/project@0.15.0
+  - @bigtest/webdriver@0.8.1
+  - @bigtest/suite@0.11.3
+  - @bigtest/bundler@0.12.3
+
 ## 0.22.2
 
 ### Patch Changes
