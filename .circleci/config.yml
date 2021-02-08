@@ -5,6 +5,9 @@ executors:
   linux:
     docker:
       - image: circleci/node:15-browsers
+  macos:
+    macos:
+      xcode: "12.4.0"
 commands:
   yarn_install:
     steps:
@@ -20,6 +23,7 @@ commands:
           paths:
             - ~/.cache/yarn
             - ~/AppData/Local/Yarn/Cache
+            - ~/Library/Caches/Yarn
   prepack:
     steps:
       - run:
@@ -174,3 +178,12 @@ workflows:
           prepack: false
           requires:
             - prepack
+      - test:
+          name: "test-cli-macos"
+          executor: macos
+          package: cli
+          driver: safari
+          pre-steps:
+            - run:
+                name: "Enable safaridriver"
+                command: defaults write com.apple.Safari AllowRemoteAutomation 1

@@ -45,12 +45,17 @@ type DriverInfo = {
 }
 
 export function *getDriverPath(browserName: BrowserName): Operation<DriverInfo> {
-  if (browserName == 'edge') {
+  let path;
+  if (browserName === 'edge') {
     let { installDriver } = yield import('ms-chromium-edge-driver');
     let edgePaths = yield installDriver();
-    return edgePaths.driverPath.replace(/\\/g, '/');
-  } else {
-    let pkg = yield import(browserName === 'firefox' ? 'geckodriver' : `${browserName}driver`);
-    return pkg.path.replace(/\\/g, '/');
+    path = edgePaths.driverPath
+  } else if(browserName === 'firefox') {
+    path = (yield import('geckodriver')).path
+  } else if(browserName === 'chrome') {
+    path = (yield import('chromedriver')).path
+  } else if(browserName === 'safari') {
+    path = 'safaridriver'; // always installed in $PATH on macOS
   }
+  return path.replace(/\\/g, '/');
 }
