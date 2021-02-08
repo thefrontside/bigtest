@@ -14,7 +14,7 @@ import { ConnectionChannel } from './connection-server';
 export interface RunnerOptions {
   context: SpawnContext;
   atom: Slice<OrchestratorState>;
-  agents: ConnectionChannel;
+  channel: ConnectionChannel;
   proxyPort: number;
   manifestPort: number;
   testFiles?: string[];
@@ -69,7 +69,7 @@ export class AgentRunner implements Runner {
     let bundler: BundlerState = yield bundlerSlice.once((state) => state.type === 'GREEN' || state.type === 'ERRORED');
 
     if(bundler.type === 'GREEN') {
-      let events = yield Mailbox.from(this.options.agents.match({ testRunId }));
+      let events = yield Mailbox.from(this.options.channel.match({ testRunId }));
 
       events.setMaxListeners(100000);
 
@@ -91,7 +91,7 @@ export class AgentRunner implements Runner {
         return;
       }
 
-      let appStatus = this.options.atom.slice("appService", "status").get();
+      let appStatus = this.options.atom.slice("appServer").get();
 
       if(appStatus.type === 'exited') {
         testRunSlice.set({
@@ -121,7 +121,7 @@ export class AgentRunner implements Runner {
         let { agentId } = agent;
 
         console.debug(`[command processor] starting test run ${testRunId} on agent ${agentId}`);
-        this.options.agents.send({ type: 'run', agentId, appUrl, manifestUrl, testRunId, tree: test, stepTimeout });
+        this.options.channel.send({ type: 'run', agentId, appUrl, manifestUrl, testRunId, tree: test, stepTimeout });
       }
 
       let aggregator = new TestRunAggregator(testRunSlice, { testRunId, events });

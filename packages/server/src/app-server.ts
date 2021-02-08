@@ -1,22 +1,21 @@
-import { timeout, spawn } from 'effection';
+import { Operation, timeout, spawn } from 'effection';
 import { fetch } from '@effection/fetch';
 import { exec, Process } from '@effection/node';
 import process from 'process';
-import { AppOptions, Service, AppServiceStatus, ServiceState } from './orchestrator/state';
+import { AppServerStatus } from './orchestrator/state';
 import { Slice } from '@bigtest/atom';
-import { restartable } from './effection/restartable'
 import { assert } from 'assert-ts';
 
-export const appServer: Service<AppServiceStatus, AppOptions> = (serviceSlice) => {
-  let appOptions = serviceSlice.slice('options');
-
-  return restartable(appOptions, startApp(serviceSlice));
+interface AppServerOptions {
+  status: Slice<AppServerStatus>;
+  url?: string;
+  command?: string;
+  env?: Record<string, string>;
+  dir?: string;
 }
 
-const startApp = (serviceSlice: Slice<ServiceState<AppServiceStatus, AppOptions>>) => function* (options: AppOptions) {
+export function* appServer(options: AppServerOptions): Operation<void> {
   assert(!!options.url, 'no app url given');
-
-  let appServiceStatus = serviceSlice.slice('status')
 
   if (options.command) {
     let child: Process = yield exec(options.command as string, {
@@ -27,17 +26,17 @@ const startApp = (serviceSlice: Slice<ServiceState<AppServiceStatus, AppOptions>
     yield spawn(function* () {
       let exitStatus = yield child.join();
 
-      appServiceStatus.set({ type: 'exited', exitStatus });
+      options.status.set({ type: 'exited', exitStatus });
     });
   }
 
-  appServiceStatus.set({ type: 'started' });
+  options.status.set({ type: 'started' });
 
   while(!(yield isReachable(options.url))) {
     yield timeout(100);
   }
 
-  appServiceStatus.set({ type: 'available' });
+  options.status.set({ type: 'available' });
 
   yield;
 }

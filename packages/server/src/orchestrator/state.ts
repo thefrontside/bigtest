@@ -1,7 +1,5 @@
 import type { Test, TestResult, ResultStatus, ErrorDetails } from '@bigtest/suite';
 import type { BundlerError, BundlerWarning } from '@bigtest/bundler';
-import type { Slice } from '@bigtest/atom';
-import { Operation } from 'effection';
 
 export type AgentState = {
   agentId: string;
@@ -49,29 +47,14 @@ export type BundlerState =
 
 export type BundlerTypes = Pick<BundlerState, 'type'>['type'];
 
-export type ServiceStatus = {
-  type: string;
-};
-
-export type ServiceState<S extends ServiceStatus, O = never> =
-  [O] extends [never] ? { status: S } : { status: S; options: O }
-
-export type Service<S extends ServiceStatus, O> = {
-  (state: Slice<ServiceState<S, O>>): Operation<void>;
-};  
-
 export interface Manifest extends Test  {
   fileName: string;
 };
 
 export type AppOptions = {
-  url?: string;
-  command?: string;
-  env?: Record<string, string>;
-  dir?: string;
 }
 
-export type AppServiceStatus =
+export type AppServerStatus =
   | {
       type: "pending";
     }
@@ -105,41 +88,27 @@ export type ManifestServerStatus = {
   type: 'unstarted' | 'starting' | 'started';
 }
 
-export interface ManifestGeneratorOptions {
-  files?: string[];
-  mode: 'idle' | 'watch' | 'build';
-  destinationPath?: string;
-};
-
-export type ConnectionStatus = {
+export type ConnectionServerStatus = {
   type: 'unstarted' | 'starting' | 'started';
 };
 
-export type ProxyStatus = {
+export type ProxyServerStatus = {
   type: 'unstarted' | 'starting' | 'started';
 }
 
-export type CommandStatus = {
+export type CommandServerStatus = {
   type: 'unstarted' | 'starting' | 'started';
 }
-
-export type ProxyOptions = {
-  port: number;
-  harnessUrl: string;
-  prefix?: string;
-  appDir: string;
-  appOptions: AppOptions;
-};
 
 export type OrchestratorState = {
   agents: Record<string, AgentState>;
   manifest: Manifest;
-  bundler: BundlerState;
   testRuns: Record<string, TestRunState>;
-  manifestGenerator: ServiceState<ManifestGeneratorStatus, ManifestGeneratorOptions>;
-  manifestServer: ServiceState<ManifestServerStatus>;
-  appService: ServiceState<AppServiceStatus, AppOptions>;
-  proxyService: ServiceState<ProxyStatus, ProxyOptions>;
-  connectionService: ServiceState<ConnectionStatus>;
-  commandService: ServiceState<CommandStatus>;
+  bundler: BundlerState;
+  manifestGenerator: ManifestGeneratorStatus;
+  manifestServer: ManifestServerStatus;
+  appServer: AppServerStatus;
+  proxyServer: ProxyServerStatus;
+  connectionServer: ConnectionServerStatus;
+  commandServer: CommandServerStatus;
 }

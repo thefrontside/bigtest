@@ -3,25 +3,20 @@ import expect from 'expect';
 
 import { ChainableSubscription } from '@effection/subscription';
 
-import { Slice } from '@bigtest/atom';
+import { createAtom, Slice } from '@bigtest/atom';
 
 import { resultStream } from '../src/result-stream';
-import { createOrchestratorAtom } from '../src/orchestrator/atom';
-import { OrchestratorState, TestRunState } from '../src/orchestrator/state';
+import { TestRunState } from '../src/orchestrator/state';
 import { TestEvent } from '../src/schema/test-event';
 
-import { actions, getTestProjectOptions } from './helpers';
+import { actions } from './helpers';
 
 describe('result stream', () => {
-  let atom: Slice<OrchestratorState>;
   let slice: Slice<TestRunState>;
   let subscription: ChainableSubscription<TestEvent, void>;
 
   beforeEach(async () => {
-    atom = createOrchestratorAtom(getTestProjectOptions());
-    slice = atom.slice('testRuns', 'test-run-1');
-
-    slice.set({
+    slice = createAtom({
       testRunId: 'test-run-1',
       status: 'pending',
       agents: {
@@ -55,7 +50,7 @@ describe('result stream', () => {
           }
         }
       }
-    });
+    } as TestRunState);
 
     subscription = await actions.fork(resultStream('test-run-1', slice));
   });

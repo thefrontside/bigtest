@@ -7,13 +7,14 @@ import { parse as parseGraphql, graphql as executeGraphql, subscribe as executeG
 import { schema } from './schema';
 import { GraphqlContext } from './schema/context';
 import { Slice } from '@bigtest/atom';
-import { OrchestratorState } from './orchestrator/state';
+import { OrchestratorState, CommandServerStatus } from './orchestrator/state';
 import { Runner } from './runner';
 import { SpawnContext } from './spawn-context';
 
 import { Variables, Message, Response, QueryMessage, MutationMessage, SubscriptionMessage, isQuery, isMutation, isSubscription } from '@bigtest/client';
 
 interface CommandServerOptions {
+  status: Slice<CommandServerStatus>;
   runner: Runner;
   atom: Slice<OrchestratorState>;
   port: number;
@@ -24,10 +25,9 @@ function isAsyncIterator(value: AsyncIterableIterator<unknown> | ExecutionResult
 }
 
 export function* createCommandServer(options: CommandServerOptions): Operation {
-  let status = options.atom.slice('commandService', 'status');
   let app = express();
 
-  status.set({ type: 'starting' });
+  options.status.set({ type: 'starting' });
 
   yield app.ws('*', handleSocketConnection(options));
 
@@ -39,7 +39,7 @@ export function* createCommandServer(options: CommandServerOptions): Operation {
 
   yield app.listen(options.port);
 
-  status.set({ type: 'started' });
+  options.status.set({ type: 'started' });
 
   yield;
 }

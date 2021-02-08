@@ -1,11 +1,12 @@
 import chokidar from 'chokidar';
+import { Slice } from '@bigtest/atom';
 import { ensure } from '@bigtest/effection';
 import { throwOnErrorEvent, once, on } from '@effection/events';
 import fs from 'fs';
 import globby from 'globby';
 import path from 'path';
-import { ManifestGeneratorOptions, ManifestGeneratorStatus, Service } from './orchestrator/state';
-import { spawn } from 'effection';
+import { ManifestGeneratorStatus } from './orchestrator/state';
+import { Operation, spawn } from 'effection';
 import {Channel} from '@effection/channel';
 import { subscribe } from '@effection/subscription';
 import { assert } from 'assert-ts';
@@ -42,10 +43,14 @@ module.exports = {
   yield writeFile(destinationPath, manifest);
 }
 
-export const manifestGenerator: Service<ManifestGeneratorStatus, ManifestGeneratorOptions> = function *(serviceSlice) {
-  let options = serviceSlice.slice('options').get();
-  let serviceStatus = serviceSlice.slice('status');
+export interface ManifestGeneratorOptions {
+  status: Slice<ManifestGeneratorStatus>;
+  files?: string[];
+  mode: 'idle' | 'watch' | 'build';
+  destinationPath?: string;
+};
 
+export function* manifestGenerator(options: ManifestGeneratorOptions): Operation<void> {
   assert(!!options.files, 'no files options in ManifestGeneratorOptions');
   assert(!!options.destinationPath, 'no destinationPath in ManifestGeneratorOptions');
 
@@ -53,7 +58,7 @@ export const manifestGenerator: Service<ManifestGeneratorStatus, ManifestGenerat
 
   let writeOptions: WriteOptions = { files, destinationPath } as const;
 
-  serviceStatus.set({ type: 'pending' });
+  options.status.set({ type: 'pending' });
 
   if(mode === 'watch') {
     let watcher = chokidar.watch(files, { ignoreInitial: true });
@@ -67,22 +72,22 @@ export const manifestGenerator: Service<ManifestGeneratorStatus, ManifestGenerat
 
     console.debug("[manifest generator] manifest ready, watching for updates")
 
-    serviceStatus.update(() => ({ type: 'ready' }));
-    
+    options.status.update(() => ({ type: 'ready' }));
+
     let fileChanges = new Channel<void>();
 
     let writeOperation = function *() {
       fileChanges.send();
       console.debug("[manifest generator] manifest updated");
-      serviceStatus.update(() => ({ type: 'ready' }))
+      options.status.update(() => ({ type: 'ready' }))
     }
 
     yield spawn(on(watcher, 'add').forEach(writeOperation));
     yield spawn(on(watcher, 'unlink').forEach(writeOperation));
-    
+
     yield subscribe(fileChanges).forEach(() => writeManifest(writeOptions));
   } else {
     yield writeManifest(writeOptions);
-    serviceStatus.update(() => ({ type: 'ready' }));
+    options.status.update(() => ({ type: 'ready' }));
   }
 }

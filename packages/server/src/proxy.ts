@@ -2,29 +2,27 @@ import { fork, spawn, Operation } from 'effection';
 import { throwOnErrorEvent, once, on } from '@effection/events';
 import { express } from "@bigtest/effection-express";
 import { static as staticMiddleware } from 'express';
-import { restartable } from './effection/restartable'
+import { AgentServerConfig } from '@bigtest/agent';
 
 import proxy from 'http-proxy';
 import http from 'http';
 import Trumpet from 'trumpet';
 import zlib from 'zlib';
-import { ProxyStatus, Service, ProxyOptions, ServiceState, AppOptions } from './orchestrator/state';
+import { ProxyServerStatus } from './orchestrator/state';
 import { Slice } from '@bigtest/atom';
 import { assert } from 'assert-ts';
 
-export const proxyServer: Service<ProxyStatus, ProxyOptions> = (serviceSlice) => {
-  let appOptions = serviceSlice.slice('options', 'appOptions');
-
-  return restartable(appOptions, startProxyServer(serviceSlice));
+interface ProxyServerOptions {
+  status: Slice<ProxyServerStatus>;
+  target?: string;
+  port: number;
+  agentServerConfig: AgentServerConfig;
 }
 
-export const startProxyServer = (serviceSlice: Slice<ServiceState<ProxyStatus, ProxyOptions>>) => function* ({ url: target }: AppOptions): Operation {
-  let proxyStatus = serviceSlice.slice('status');
-  let proxyConfig = serviceSlice.slice('options').get();
-
+export function* proxyServer(options: ProxyServerOptions): Operation<void> {
   function* handleRequest(proxyRes: http.IncomingMessage, req: http.IncomingMessage, res: http.ServerResponse): Operation {
     console.debug('[proxy]', 'start', req.method, req.url);
-    
+
     for(let [key, value = ''] of Object.entries(proxyRes.headers)) {
       res.setHeader(key, value);
     }
@@ -34,8 +32,8 @@ export const startProxyServer = (serviceSlice: Slice<ServiceState<ProxyStatus, P
 
     yield throwOnErrorEvent(proxyRes);
 
-    if(proxyRes.headers.location && target) {
-      let newLocation = proxyRes.headers.location.replace(target, `http://localhost:${proxyConfig.port}`);
+    if(proxyRes.headers.location && options.target) {
+      let newLocation = proxyRes.headers.location.replace(options.target, `http://localhost:${options.port}`);
       res.setHeader('location', newLocation);
     }
 
@@ -62,7 +60,7 @@ export const startProxyServer = (serviceSlice: Slice<ServiceState<ProxyStatus, P
       tr.select('head', (node) => {
         let rs = node.createReadStream();
         let ws = node.createWriteStream();
-        ws.write(`<script src="${proxyConfig.harnessUrl}"></script>`);
+        ws.write(`<script src="${options.agentServerConfig.harnessUrl()}"></script>`);
         rs.pipe(ws);
       });
 
@@ -93,18 +91,17 @@ export const startProxyServer = (serviceSlice: Slice<ServiceState<ProxyStatus, P
     console.debug('[proxy]', 'finish', req.method, req.url);
   };
 
-  proxyStatus.set({ type: 'starting' });
+  options.status.set({ type: 'starting' });
 
-  let proxyServer = proxy.createProxyServer({ target: target, selfHandleResponse: true, changeOrigin: true });
+  let proxyServer = proxy.createProxyServer({ target: options.target, selfHandleResponse: true, changeOrigin: true });
 
   let server = express();
 
   // TODO: validating the config could be done much earlier and in 1 step for the whole config
-  assert(!!proxyConfig.prefix, 'must set prefix');
-  
-  server.raw.use(proxyConfig.prefix, staticMiddleware(proxyConfig.appDir));
+  assert(!!options.agentServerConfig.options.prefix, 'must set prefix');
 
-  
+  server.raw.use(options.agentServerConfig.options.prefix, staticMiddleware(options.agentServerConfig.appDir()));
+
   // proxy http requests
   yield server.use(function*(req, res) {
     try {
@@ -112,23 +109,23 @@ export const startProxyServer = (serviceSlice: Slice<ServiceState<ProxyStatus, P
         res.writeHead(502, { 'Content-Type': 'text/plain' });
         res.end(`Proxy error: ${err}`);
       }));
-      
+
       proxyServer.web(req, res)
-      
+
       yield once(res, 'close');
     } finally {
       req.destroy();
     }
   });
-  
+
   // proxy ws requests
   yield server.ws('*', function*(socket, req) {
     proxyServer.ws(req, socket.raw, null);
   });
-  
+
   try {
-    yield server.listen(proxyConfig.port);
-    proxyStatus.set({ type: "started" });
+    yield server.listen(options.port);
+    options.status.set({ type: "started" });
 
     yield spawn(on(proxyServer, 'open').forEach(function*() {
       console.debug('[proxy] socket connection opened');
