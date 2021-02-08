@@ -2,8 +2,10 @@
   <img alt="BigTest" src="logo.svg" width="500">
 </p>
 
-<p align="center">
-  <img alt="Test Status" src="https://github.com/thefrontside/bigtest/workflows/Test%20Ubuntu/badge.svg" />
+<p align="center">  
+  <a href="https://app.circleci.com/pipelines/github/thefrontside/bigtest?branch=v0">
+     <img alt="CircleCI" src="https://circleci.com/gh/thefrontside/bigtest.svg?style=shield"
+  </a>
   <a href="https://discord.gg/r6AvtnU">
     <img alt="Chat on Discord" src="https://img.shields.io/discord/700803887132704931?Label=Discord)](https://discord.gg/r6AvtnU" />
   </a>
