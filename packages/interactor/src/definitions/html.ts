@@ -2,10 +2,14 @@ import { createInteractor, focused, focus, blur } from '../index';
 import { isVisible } from 'element-is-visible';
 
 const HTMLInteractor = createInteractor<HTMLElement>('element')
+  .selector('*')
   .filters({
+    text: (element) => element.textContent,
     title: (element) => element.title,
     id: (element) => element.id,
     visible: { apply: isVisible, default: true },
+    className: (element) => element.className,
+    classList: (element) => Array.from(element.classList.values()),
     focused
   })
   .actions({
