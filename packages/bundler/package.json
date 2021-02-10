@@ -25,7 +25,7 @@
     "@babel/runtime": "^7.12.5",
     "@bigtest/effection": "^0.6.1",
     "@bigtest/project": "^0.15.0",
-    "@effection/channel": "^0.6.7",
+    "@effection/channel": "^0.6.8",
     "@effection/events": "^0.7.8",
     "@rollup/plugin-babel": "^5.2.1",
     "@rollup/plugin-commonjs": "^16.0.0",
