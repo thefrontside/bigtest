@@ -22,7 +22,7 @@ In this case, let's call our Interactor ‘MyTextField’, and we’ll label it 
 ```js
 import { createInteractor, fillIn } from 'bigtest';
 
-export const TextField = createInteractor<HTMLInputElement>('my-textfield-interactor')
+export const TextField = createInteractor('my-textfield-interactor')
   .selector('input[type=text]')
   .locator((element) => element.placeholder)
   .filters({
@@ -77,7 +77,7 @@ The former syntax is necessary if you want to write an action that delegates to 
 ```js
 import { Button, createInteractor } from 'bigtest';
 
-export const Form = createInteractor<HTMLFormElement>('form')
+export const Form = createInteractor('form')
   .selector('form')
   .actions({
     async submit(interactor){
