@@ -1,4 +1,4 @@
-import { createInteractor, focused, focus, blur } from '../index';
+import { createInteractor } from '../index';
 import { isVisible } from 'element-is-visible';
 
 const HTMLInteractor = createInteractor<HTMLElement>('element')
@@ -10,12 +10,12 @@ const HTMLInteractor = createInteractor<HTMLElement>('element')
     visible: { apply: isVisible, default: true },
     className: (element) => element.className,
     classList: (element) => Array.from(element.classList),
-    focused
+    focused: (element) => element.ownerDocument.activeElement === element
   })
   .actions({
     click: ({ perform }) => perform((element) => { element.click(); }),
-    focus,
-    blur
+    focus: ({ perform }) => perform((element) => { element.focus(); }),
+    blur: ({ perform }) => perform((element) => { element.blur(); }),
   })
 
 /**
