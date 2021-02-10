@@ -23,7 +23,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 <Tabs
-  defaultValue="npm"
+  defaultValue="javascript"
   values={[
     {label: 'Javascript', value: 'javascript'},
     {label: 'Typescript', value: 'typescript'}
@@ -106,7 +106,7 @@ createInteractor('my interactor')
 The former syntax is necessary if you want to write an action that delegates to the actions of other interactors. For example, imagine that you want to create a form interactor that has a submit action. You could take this approach:
 
 <Tabs
-  defaultValue="npm"
+  defaultValue="javascript"
   values={[
     {label: 'Javascript', value: 'javascript'},
     {label: 'Typescript', value: 'typescript'}
