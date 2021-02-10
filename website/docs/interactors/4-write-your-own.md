@@ -47,7 +47,7 @@ import TabItem from '@theme/TabItem';
   </TabItem>
   <TabItem value="typescript">
 
-  ```js
+  ```ts
   import { createInteractor, fillIn } from 'bigtest';
 
   export const TextField = createInteractor<HTMLInputElement>('my-textfield-interactor')
@@ -128,7 +128,7 @@ The former syntax is necessary if you want to write an action that delegates to 
   </TabItem>
   <TabItem value="typescript">
 
-  ```js
+  ```ts
   import { Button, createInteractor } from 'bigtest';
 
   export const Form = createInteractor<HTMLFormElement>('form')
