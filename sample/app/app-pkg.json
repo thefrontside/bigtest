@@ -7,11 +7,11 @@
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "scripts": {
-    "start": "parcel src/index.html -p 3000",
+    "start": "parcel src/index.html",
     "build": "parcel build src/index.html --no-cache",
     "cypress:run": "npx cypress run --spec 'src/test/cypress.spec.js'",
     "test:jest": "jest 'src/test/jest.test.js'",
-    "test:cypress": "start-server-and-test 'npm run start' http://localhost:3000 cypress:run",
+    "test:cypress": "start-server-and-test 'npm run start -- -p 3000' http://localhost:3000 cypress:run",
     "test:bigtest": "bigtest ci"
   },
   "dependencies": {
