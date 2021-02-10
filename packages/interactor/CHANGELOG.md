@@ -1,5 +1,12 @@
 # @bigtest/interactor
 
+## 0.27.0
+
+### Minor Changes
+
+- 1e22a72e: Deprecate focus, blur and focused helpers
+- d12f2e6e: Add text, className and classList filters to html interactor
+
 ## 0.26.0
 
 ### Minor Changes
