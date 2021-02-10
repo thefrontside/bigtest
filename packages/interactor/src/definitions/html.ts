@@ -9,7 +9,7 @@ const HTMLInteractor = createInteractor<HTMLElement>('element')
     id: (element) => element.id,
     visible: { apply: isVisible, default: true },
     className: (element) => element.className,
-    classList: (element) => Array.from(element.classList.values()),
+    classList: (element) => Array.from(element.classList),
     focused
   })
   .actions({
@@ -35,8 +35,11 @@ const HTMLInteractor = createInteractor<HTMLElement>('element')
  *
  * ### Filters
  *
+ * - `classList`: *string[]* — Filter by the list of classes found in element's `className`
+ * - `className`: *string* — Filter by element's `className`
  * - `title`: *string* – Filter by title
  * - `id`: *string* – Filter by id
+ * - `text`: *string* –  Filter by the text content of this element.
  * - `visible`: *boolean* – Filter by visibility. Defaults to `true`. See {@link isVisible}.
  * - `focused`: *boolean* – Filter by whether the element is focused. See {@link focused}.
  *

@@ -4,7 +4,11 @@ import { dom } from '../helpers';
 
 import { HTML, not, including } from '../../src/index';
 
+
+const div = HTML({ id: "test-div" });
+
 describe('@bigtest/interactor', () => {
+
   describe('not', () => {
     it('can provide description', () => {
       expect(not(including('bar')).format()).toEqual('not including "bar"');
@@ -13,20 +17,20 @@ describe('@bigtest/interactor', () => {
 
     it('can check whether the filter does not match the given matcher', async () => {
       dom(`
-        <div title="hello cruel world"></div>
+        <div id="test-div" title="hello cruel world"></div>
       `);
 
-      await HTML({ title: not(including('monkey')) }).exists();
-      await expect(HTML({ title: not(including('world')) }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError')
+      await div.has({ title: not(including("monkey")) });
+      await expect(div.has({ title: not(including('world')) })).rejects.toHaveProperty('name', 'FilterNotMatchingError');
     });
 
     it('can check whether the filter does not match the given literal value', async () => {
       dom(`
-        <div title="hello"></div>
+        <div id="test-div" title="hello"></div>
       `);
 
-      await HTML({ title: not('monkey') }).exists();
-      await expect(HTML({ title: not('hello') }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError')
+      await div.has({ title: not('monkey') });
+      await expect(div.has({ title: not('hello') })).rejects.toHaveProperty('name', 'FilterNotMatchingError');
     });
   });
 });
