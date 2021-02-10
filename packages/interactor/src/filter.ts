@@ -2,6 +2,7 @@ export type LocatorFn<E extends Element> = (element: E) => string;
 import { Filters, FilterFn, FilterObject, FilterParams, InteractorSpecification } from './specification';
 import { noCase } from 'change-case';
 import { formatMatcher } from './matcher';
+import { whiteBright } from 'chalk';
 
 export class Filter<E extends Element, F extends Filters<E>> {
   constructor(
@@ -41,6 +42,6 @@ export class Filter<E extends Element, F extends Filters<E>> {
   }
 
   asTableHeader(): string[] {
-    return Object.entries(this.all).map(([key, value]) => `${key}: ${formatMatcher(value)}`);
+    return Object.entries(this.all).map(([key, value]) => `${whiteBright(key)}: ${formatMatcher(value)}`);
   }
 }

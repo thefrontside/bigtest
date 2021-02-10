@@ -1,0 +1,28 @@
+MatchError: text field with attributes { visible: false, disabled: false } does not match filter `value`:
+
+expected ┃ value: "2008-12-07T00:00:00.000+0000" ┃
+━━━━━━━━━┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋
+  actual ┃            "2008-04-17T00:00:00.000Z" ┃
+
+
+--------
+
+MatchError: text field with attributes { visible: false, disabled: false } does not match filters:
+
+expected value: "2008-12-07T00:00:00.000+0000"
+           was: "2008-04-17T00:00:00.000Z"
+
+expected disabled: true
+              was: false
+
+
+---------
+
+NotFoundError: did not find 'calendar days' with filters { visible: false, disabled: true }.
+
+But did find 2 others:
+
+              ┃ visible: false ┃ disabled: true ┃
+━━━━━━━━━━━━━━┣━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━┫
+ 1. Arrival   ┃              ✓ ┃          false ┃
+ 2. Departure ┃           true ┃          false ┃

@@ -25,9 +25,11 @@
   "dependencies": {
     "@bigtest/globals": "^0.7.4",
     "@bigtest/performance": "^0.5.0",
+    "chalk": "^4.1.0",
     "change-case": "^4.1.1",
     "element-is-visible": "^1.0.0",
-    "lodash.isequal": "^4.5.0"
+    "lodash.isequal": "^4.5.0",
+    "strip-ansi": "^6.0.0"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^2.0.0",

@@ -2,9 +2,10 @@ import { Locator } from './locator';
 import { Filter } from './filter';
 import { Filters } from './specification';
 import { escapeHtml } from './escape-html';
-import { MaybeMatcher, applyMatcher } from './matcher';
+import { MaybeMatcher, applyMatcher, formatMatcher } from './matcher';
+import { green, red } from 'chalk';
 
-const check = (value: unknown): string => value ? "✓" : "⨯";
+const check = (value: unknown): string => value ? green("✓") : red("⨯");
 
 export class Match<E extends Element, F extends Filters<E>> {
   public matchLocator?: MatchLocator<E>;
@@ -121,6 +122,10 @@ export class MatchFilterItem<T, E extends Element, F extends Filters<E>> {
     } else {
       throw new Error(`interactor does not define a filter named ${JSON.stringify(this.key)}`);
     }
+  }
+
+  formatExpected(): string {
+    return formatMatcher(this.expected);
   }
 
   formatActual(): string {

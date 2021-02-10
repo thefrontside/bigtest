@@ -13,6 +13,7 @@ import { interaction, check, Interaction, ReadonlyInteraction } from './interact
 import { Match } from './match';
 import { NoSuchElementError, NotAbsentError, AmbiguousElementError } from './errors';
 import { isMatcher } from './matcher';
+import { grey, red, green, whiteBright } from 'chalk';
 
 const defaultLocator: LocatorFn<Element> = (element) => element.textContent || "";
 const defaultSelector = 'div';
@@ -41,10 +42,10 @@ function findMatchesNonEmpty(parentElement: Element, interactor: InteractorOptio
     throw new NoSuchElementError(`did not find ${description(interactor)}`);
   } else {
     let table = formatTable({
-      headers: interactor.locator ? [interactor.name, ...interactor.filter.asTableHeader()] : interactor.filter.asTableHeader(),
+      headers: interactor.locator ? [whiteBright(interactor.name), ...interactor.filter.asTableHeader()] : interactor.filter.asTableHeader(),
       rows: matches.slice().sort((a, b) => b.sortWeight - a.sortWeight).map((m) => m.asTableRow()),
     });
-    throw new NoSuchElementError(`did not find ${description(interactor)}, did you mean one of:\n\n${table}`);
+    throw new NoSuchElementError(`did not find ${whiteBright(description(interactor))}, did you mean one of:\n\n${table}\n`);
   }
 }
 
@@ -163,8 +164,15 @@ export function instantiateInteractor<E extends Element, F extends Filters<E>, A
           let element = unsafeSyncResolveUnique(options);
           let match = new MatchFilter(element, filter);
           if(!match.matches) {
-            let table = formatTable({ headers: filter.asTableHeader(), rows: [match.asTableRow()] });
-            throw new FilterNotMatchingError(`${description(options)} does not match filters:\n\n${table}`);
+            // let table = formatTable({ headers: filter.asTableHeader(), rows: [match.asTableRow()] });
+            let table = match.items.filter((i) => !i.matches).map((i) => {
+              return [
+                `${grey('╒═')} Filter:   ${whiteBright(i.key)}`,
+                `${grey('├─')} Expected: ${green(i.formatExpected())}`,
+                `${grey('└─')} Received: ${red(i.formatActual())}`,
+              ].join('\n')
+            }).join('\n\n');
+            throw new FilterNotMatchingError(`${whiteBright(description(options))} does not match filters:\n\n${table}\n`);
           }
         });
       });
