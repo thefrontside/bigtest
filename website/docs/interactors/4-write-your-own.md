@@ -19,19 +19,50 @@ There are four things to decide when creating an interactor:
 
 In this case, let's call our Interactor ‘MyTextField’, and we’ll label it as ‘my-textfield-interactor’ to distinguish it from the built-in one. Let’s say that MyTextField will target a regular input with a custom class `.my-input`, which means its HTML selector would be `input[type=text].my-input`. For locator we’ll use the input’s placeholder, and we’ll define a value filter. Finally, we’ll define a `fillIn` action for MyTextField interactor. Putting this together, we get the following definition of an Interactor:
 
-```js
-import { createInteractor, fillIn } from 'bigtest';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-export const TextField = createInteractor<HTMLInputElement>('my-textfield-interactor')
-  .selector('input[type=text]')
-  .locator((element) => element.placeholder)
-  .filters({
-    value: (element) => element.value
-  })
-  .actions({
-    fillIn: (interactor) => interactor.perform(fillIn)
-  });
-```
+<Tabs
+  defaultValue="javascript"
+  values={[
+    {label: 'Javascript', value: 'javascript'},
+    {label: 'Typescript', value: 'typescript'}
+]}>
+  <TabItem value="javascript">
+
+  ```js
+  import { createInteractor, fillIn } from 'bigtest';
+
+  export const TextField = createInteractor('my-textfield-interactor')
+    .selector('input[type=text]')
+    .locator((element) => element.placeholder)
+    .filters({
+      value: (element) => element.value
+    })
+    .actions({
+      fillIn: (interactor) => interactor.perform(fillIn)
+    });
+  ```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+  ```ts
+  import { createInteractor, fillIn } from 'bigtest';
+
+  export const TextField = createInteractor<HTMLInputElement>('my-textfield-interactor')
+    .selector('input[type=text]')
+    .locator((element) => element.placeholder)
+    .filters({
+      value: (element) => element.value
+    })
+    .actions({
+      fillIn: (interactor) => interactor.perform(fillIn)
+    });
+  ```
+
+  </TabItem>
+</Tabs>
 
 :::note
  `fillIn` is a function exported by `bigtest`. See the implementation [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/fill-in.ts). You can use any of the functions defined by BigTest or implement your own.
@@ -74,17 +105,43 @@ createInteractor('my interactor')
 
 The former syntax is necessary if you want to write an action that delegates to the actions of other interactors. For example, imagine that you want to create a form interactor that has a submit action. You could take this approach:
 
-```js
-import { Button, createInteractor } from 'bigtest';
+<Tabs
+  defaultValue="javascript"
+  values={[
+    {label: 'Javascript', value: 'javascript'},
+    {label: 'Typescript', value: 'typescript'}
+]}>
+  <TabItem value="javascript">
 
-export const Form = createInteractor<HTMLFormElement>('form')
-  .selector('form')
-  .actions({
-    async submit(interactor){
-      await interactor.find(Button('Submit')).click();
-    }
-  });
-```
+  ```js
+  import { Button, createInteractor } from 'bigtest';
+
+  export const Form = createInteractor('form')
+    .selector('form')
+    .actions({
+      async submit(interactor){
+        await interactor.find(Button('Submit')).click();
+      }
+    });
+  ```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+  ```ts
+  import { Button, createInteractor } from 'bigtest';
+
+  export const Form = createInteractor<HTMLFormElement>('form')
+    .selector('form')
+    .actions({
+      async submit(interactor){
+        await interactor.find(Button('Submit')).click();
+      }
+    });
+  ```
+
+  </TabItem>
+</Tabs>
 
 There’s two peculiarities about this example. First, notice we’re not using `perform` which means that we’re not performing an action on any element directly. Secondly, within the submit action definition you’ll notice that we’re using `find` to access another Interactor and calling its action. That’s what we mean with ‘delegating’ an action.
 
@@ -101,9 +158,6 @@ Form().submit();
 ```
 
 Let's get back to our example and add the new TextField interactor to a test. In this example we are testing an email subscription form by first filling in the email text field, clicking the `Subscribe` button, and then asserting for the success header.
-
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 <Tabs
   defaultValue="jest"
