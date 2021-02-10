@@ -1,6 +1,6 @@
 {
   "name": "bigtest-sample",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "BigTest Sample App",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
@@ -8,9 +8,9 @@
   "scripts": {
     "start": "cd app && node ../bin/start-dev.js",
     "lint": "echo no-op",
-    "test:jest": "yarn --cwd app/ test:jest",
-    "test:cypress": "yarn --cwd app/ test:cypress",
-    "test:bigtest": "yarn --cwd app/ test:bigtest"
+    "test:jest": "cd app && npm run test:jest",
+    "test:cypress": "cd app && npm run test:cypress",
+    "test:bigtest": "cd app && npm run test:bigtest"
   },
   "bin": {
     "sample": "./bin/create-sample-app.js"
