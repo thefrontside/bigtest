@@ -4,7 +4,18 @@
     "url": "http://localhost:36000"
   },
   "testFiles": ["./test/fixtures/*.test.{ts,js}"],
-  "launch": [],
+  "launch": ["chrome.debug"],
+  "drivers": {
+    "chrome.debug": {
+      "module": "@bigtest/webdriver",
+      "options": {
+        "type": "local",
+        "browserName": "chrome",
+        "headless": false,
+        "args": ["auto-open-devtools-for-tabs"]
+      }
+    }
+  },
   "coverage": {
     "directory": "./tmp/coverage",
     "reports": ["lcov", "html"]

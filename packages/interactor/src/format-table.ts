@@ -11,7 +11,7 @@ const MAX_COLUMN_WIDTH = 40
 function formatValue(value: string, width: number) {
   let diff = width - strip(value).length;
   if(diff < 0) {
-    return value.slice(0, width - 1) + '…';
+    return value.slice(0, value.length + diff - 1) + '…';
   } else {
     return value.padEnd(value.length + diff);
   }
