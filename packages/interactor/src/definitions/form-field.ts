@@ -3,7 +3,7 @@ import { HTML } from './html';
 type FieldTypes = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | HTMLSelectElement
 
 const FormFieldInteractor = HTML.extend<FieldTypes>('form field')
-  .locator((element) => element.labels ? (Array.from(element.labels)[0]?.textContent || '') : '')
+  .locator((element) => element.labels ? (Array.from(element.labels)[0]?.innerText || '') : '')
   .filters({
     valid: (element) => element.validity.valid,
     disabled: {

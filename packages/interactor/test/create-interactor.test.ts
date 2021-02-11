@@ -24,7 +24,7 @@ const Div = createInteractor('div')
 
 const Details = createInteractor<HTMLDetailsElement>('details')
   .selector('details')
-  .locator((element) => element.querySelector('summary')?.textContent || '')
+  .locator((element) => element.querySelector('summary')?.innerText || '')
 
 const TextField = createInteractor<HTMLInputElement>('text field')
   .selector('input')
@@ -44,10 +44,10 @@ const TextField = createInteractor<HTMLInputElement>('text field')
 
 const Datepicker = createInteractor<HTMLDivElement>("datepicker")
   .selector("div.datepicker")
-  .locator(element => element.querySelector("label")?.textContent || "")
+  .locator(element => element.querySelector("label")?.innerText || "")
   .filters({
     open: element => !!element.querySelector("div.calendar"),
-    month: element => element.querySelector("div.calendar h4")?.textContent
+    month: element => element.querySelector("div.calendar h4")?.innerText
   })
   .actions({
     toggle: async interactor => {

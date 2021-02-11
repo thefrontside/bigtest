@@ -3,8 +3,9 @@ import { isVisible } from 'element-is-visible';
 
 const HTMLInteractor = createInteractor<HTMLElement>('element')
   .selector('*')
+  .locator((element) => element.innerText)
   .filters({
-    text: (element) => element.textContent,
+    text: (element) => element.innerText,
     title: (element) => element.title,
     id: (element) => element.id,
     visible: { apply: isVisible, default: true },
