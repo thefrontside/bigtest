@@ -25,7 +25,7 @@
     "pretest": "yarn pretest:manifest && yarn pretest:app"
   },
   "devDependencies": {
-    "@bigtest/interactor": "^0.27.0",
+    "@bigtest/interactor": "^0.28.0",
     "@bigtest/suite": "^0.11.2",
     "@bigtest/webdriver": "^0.8.0",
     "@frontside/tsconfig": "^1.2.0",
