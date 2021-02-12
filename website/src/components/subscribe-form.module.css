@@ -4,6 +4,8 @@
   flex-flow: row nowrap;
   justify-content: center;
   --link-color: var(--fs-skyblue);
+  padding-left: 33px;
+  padding-right: 33px;
 }
 
 .subscribe-form--title {
@@ -80,9 +82,15 @@
   }
   .subscribe-form--title__highlight {
     padding: 50px 50px 50px 89px;
-    background-position: 0% 65%, 40% 0%, 10% 90%;
+    background-position: 0% 65%, 200px 0%, 40px 90%;
   }
   .subscribe-form--inputs {
     padding-left: 0;
+  }
+  .subscribe-form--inputs > p + div, .subscribe-form--inputs > input {
+    min-width: 100%;
+  }
+  .subscribe-form button {
+    margin-top: 20px;
   }
 }
