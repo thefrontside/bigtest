@@ -1,5 +1,5 @@
 ---
-id: architecture
+id: accessibility
 title: Accessibility testing
 ---
 
