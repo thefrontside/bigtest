@@ -70,11 +70,14 @@
   color: #8a674f;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 1000px) {
   .subscribe-form {
     width: 100%;
+    max-width: 800px;
     display: block;
     margin-bottom: 40px;
+    margin-left: auto;
+    margin-right: auto;
   }
   .subscribe-form--title {
     text-align: left;
@@ -90,7 +93,7 @@
   .subscribe-form--inputs > p + div, .subscribe-form--inputs > input {
     min-width: 100%;
   }
-  .subscribe-form button {
+  .subscribe-form--inputs button {
     margin-top: 20px;
   }
 }
