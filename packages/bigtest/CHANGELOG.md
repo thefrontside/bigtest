@@ -1,5 +1,16 @@
 # bigtest
 
+## 0.13.0
+
+### Minor Changes
+
+- a3d27f06: Use innerText for html interactors instead of textContent
+
+### Patch Changes
+
+- Updated dependencies [a3d27f06]
+  - @bigtest/interactor@0.28.0
+
 ## 0.12.0
 
 ### Minor Changes

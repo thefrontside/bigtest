@@ -1,5 +1,11 @@
 # @bigtest/interactor
 
+## 0.28.0
+
+### Minor Changes
+
+- a3d27f06: Use innerText for html interactors instead of textContent
+
 ## 0.27.0
 
 ### Minor Changes
