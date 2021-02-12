@@ -81,7 +81,7 @@ NoSuchElementError: did not find my-textfield-interactor "USERNAME"
 ```
 _An example of the console output when a test is unable to locate the interactor_
 
-Locators, filters, and actions are optional when creating your own interactor. While the locator for the `TextField` interactor offered by BigTest uses the `textContent` of the associated label (as we explained on the [Locators, Filters, and Actions page](/docs/interactors/locators-filters-actions#filters)), the example above has its locator configured as `element.placeholder`. This is just to demonstrate that you can set the properties of Locators to anything that suits your needs. If you create an interactor without a locator, it will default to `locator: element => element.textContent`.
+Locators, filters, and actions are optional when creating your own interactor. While the locator for the `TextField` interactor offered by BigTest uses the `innerText` of the associated label (as we explained on the [Locators, Filters, and Actions page](/docs/interactors/locators-filters-actions#filters)), the example above has its locator configured as `element.placeholder`. This is just to demonstrate that you can set the properties of Locators to anything that suits your needs. If you create an interactor without a locator, it will default to `locator: element => element.textContent`.
 
 You might be wondering what `interactor.perform()` does: it is a method on the interactor which ensures that there are no race conditions when working directly with elements. You can use it like this:
 

@@ -8,7 +8,7 @@ const ButtonInteractor = HTML.extend<HTMLInputElement | HTMLButtonElement>('butt
   .selector('button,input[type=button],input[type=submit],input[type=reset],input[type=image]')
   .locator((element) => {
     if(isButtonElement(element)) {
-      return element.textContent || '';
+      return element.innerText || '';
     } else if(element.type === 'image') {
       return element.alt;
     } else {

@@ -17,7 +17,7 @@ Button('Submit').exists();
 
 A typical user identifies a button by the words printed across it, so in this example they would consider a button with the word 'Submit' on it as the "Submit" button. Interactors use locators to make that connection.
 
-What is going on behind the scenes? Just like the user, the built-in Button interactor provided by BigTest looks for a button with "Submit" on it. It uses [element.textContent](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/button.ts#L11-L12) to find the match. Or to put it another way, `Button('Submit')` returns a button element whose `element.textContent` is equal to `Submit`.
+What is going on behind the scenes? Just like the user, the built-in Button interactor provided by BigTest looks for a button with "Submit" on it. It uses [element.innerText](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/button.ts#L11-L12) to find the match. Or to put it another way, `Button('Submit')` returns a button element whose `element.innerText` is equal to `Submit`.
 
 ### The locator is optional
 
@@ -40,7 +40,7 @@ TextField('Username:', { id: 'username-id' }).exists();
 ```
 
 :::note How is the textfield located?
- The locator of the `TextField` interactor is the textContent of its associated label:
+ The locator of the `TextField` interactor is the `innerText` of its associated label:
  ```html
 <label>
   Username:
