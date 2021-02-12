@@ -11,5 +11,6 @@ module.exports = {
     'platform/writing-your-first-test',
     'platform/running-tests',
     'platform/architecture',
+    'platform/accessibility',
   ],
 };
