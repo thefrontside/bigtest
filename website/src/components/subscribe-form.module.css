@@ -4,7 +4,8 @@
   flex-flow: row nowrap;
   justify-content: center;
   --link-color: var(--fs-skyblue);
-  padding: 0 33px 33px 33px;
+  padding: 0;
+  margin: 33px 0;
 }
 
 .subscribe-form--title {
@@ -67,6 +68,27 @@
   font-style: italic;
   margin-top: 10px;
   color: #8a674f;
+}
+
+.subscribe-form__embedded {
+  width: 100%;
+  max-width: 800px;
+  display: block;
+  padding: 0;
+  margin: 20px 0;
+}
+.subscribe-form__embedded  > .subscribe-form--inputs {
+  padding-left: 0;
+}
+
+.subscribe-form__embedded > .subscribe-form--title {
+  text-align: left;
+  padding: 30px 10px;
+}
+.subscribe-form__embedded > .subscribe-form--title__highlight {
+  padding: 50px 50px 50px 89px;
+  background-position: 0% 65%, 200px 0%, 40px 90%;
+  background-size: 24px, 43px, 200px;
 }
 
 @media screen and (max-width: 1000px) {

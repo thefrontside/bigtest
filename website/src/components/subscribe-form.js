@@ -44,9 +44,10 @@ const addToMailchimp = function addToMailchimp(email) {
 
 SubscribeForm.propTypes = {
   highlight: PropTypes.bool,
+  embedded: PropTypes.bool
 };
 
-export default function SubscribeForm({ highlight }) {
+export default function SubscribeForm({ highlight, embedded }) {
   let [email, setEmail] = useState('');
   let [status, setStatus] = useState('');
 
@@ -62,7 +63,7 @@ export default function SubscribeForm({ highlight }) {
   }
 
   return (
-    <form className={clsx(styles['subscribe-form'])} onSubmit={handleSubmit}>
+    <form className={clsx(styles['subscribe-form'], ( embedded ? styles['subscribe-form__embedded'] : ''))} onSubmit={handleSubmit}>
       <h2 className={clsx(styles['subscribe-form--title'], (highlight ? styles['subscribe-form--title__highlight'] : ''))}>Join our <br /> newsletter</h2>
       <div className={clsx(styles['subscribe-form--inputs'], (status === 'sent' ? styles['subscribe-form--inputs__sent'] : ''))}>
         <p className={styles['subscribe-form--intro']}>
