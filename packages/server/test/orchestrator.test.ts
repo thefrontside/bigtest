@@ -96,9 +96,9 @@ describe('orchestrator with an internally managed application', () => {
       }
     });
 
-    await actions.fork(
-      actions.atom.slice('appServer').once(status => ['started', 'exited'].includes(status.type))
-    );
+    // await actions.fork(
+    //   actions.atom.slice('appServer').once(status => ['available', 'exited'].includes(status.type))
+    // );
 
     await actions.fork(
       actions.atom.slice('appServer').once(status => status.type === 'available')

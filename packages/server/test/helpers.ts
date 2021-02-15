@@ -41,7 +41,7 @@ export const actions = {
   },
 
   async startOrchestrator(overrides?: DeepPartial<ProjectOptions>): Promise<any> {
-    this.atom = createOrchestratorAtom();
+    let atom = this.atom = createOrchestratorAtom();
 
     let delegate = new Mailbox();
 
@@ -70,11 +70,13 @@ export const actions = {
 
     this.fork(createOrchestrator({
       delegate,
-      atom: this.atom,
+      atom,
       project: merge(options, overrides || {}),
     }));
-
     await this.receive(delegate, { status: 'ready' });
+    // await this.fork(atom.once(state => {
+    //   return state.commandServer.type === 'started'
+    // }))
   }
 }
 
