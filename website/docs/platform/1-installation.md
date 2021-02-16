@@ -24,6 +24,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 <Tabs
+  groupId="package-manager"
   defaultValue="npm"
   values={[
     {label: 'NPM', value: 'npm'},
@@ -48,6 +49,7 @@ import TabItem from '@theme/TabItem';
 Once that's finished installing, you can run the following command to generate the essential files:
 
 <Tabs
+  groupId="package-manager"
   defaultValue="npm"
   values={[
     {label: 'NPM', value: 'npm'},
