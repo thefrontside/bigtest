@@ -37,11 +37,11 @@ import TabItem from '@theme/TabItem';
 
   </TabItem>
   <TabItem value="yarn">
-  
+
   ```
   $ yarn add bigtest --dev
   ```
-  
+
   </TabItem>
 </Tabs>
 
@@ -61,11 +61,11 @@ Once that's finished installing, you can run the following command to generate t
 
   </TabItem>
   <TabItem value="yarn">
-  
+
   ```
   $ yarn bigtest init
   ```
-  
+
   </TabItem>
 </Tabs>
 
