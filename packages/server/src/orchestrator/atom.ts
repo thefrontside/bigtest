@@ -36,6 +36,9 @@ export function createOrchestratorAtom(overrides?: DeepPartial<OrchestratorState
     manifestServer: {
       type: 'unstarted',
     },
+    status: {
+      type: 'pending',
+    }
   };
   return createAtom<OrchestratorState>(merge(options, overrides || {}));
 }

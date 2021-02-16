@@ -43,8 +43,6 @@ export const actions = {
   async startOrchestrator(overrides?: DeepPartial<ProjectOptions>): Promise<any> {
     this.atom = createOrchestratorAtom();
 
-    let delegate = new Mailbox();
-
     let options: ProjectOptions = {
       port: 24102,
       testFiles: ["test/fixtures/*.t.js"],
@@ -69,12 +67,11 @@ export const actions = {
     };
 
     this.fork(createOrchestrator({
-      delegate,
       atom: this.atom,
       project: merge(options, overrides || {}),
     }));
 
-    await this.receive(delegate, { status: 'ready' });
+    await this.fork(this.atom.slice('status', 'type').once(type => type === 'ready'));
   }
 }
 
