@@ -47,9 +47,9 @@ describe('@bigtest/interactor', () => {
       await expect(Link('Foo Bar').has({ title: "Foo" })).resolves.toBeUndefined();
       await expect(Link('Foo Bar').has({ title: "Quox" })).rejects.toHaveProperty('message', [
         'link "Foo Bar" does not match filters:', '',
-        '┃ title: "Quox" ┃',
-        '┣━━━━━━━━━━━━━━━┫',
-        '┃ ⨯ "Foo"       ┃',
+        '╒═ Filter:   title',
+        '├─ Expected: "Quox"',
+        '└─ Received: "Foo"',
       ].join('\n'));
     });
 
@@ -61,9 +61,9 @@ describe('@bigtest/interactor', () => {
       await expect(Link('Foo Bar').has({ href: "/foobar" })).resolves.toBeUndefined();
       await expect(Link('Foo Bar').has({ href: "/quox" })).rejects.toHaveProperty('message', [
         'link "Foo Bar" does not match filters:', '',
-        '┃ href: "/quox" ┃',
-        '┣━━━━━━━━━━━━━━━┫',
-        '┃ ⨯ "/foobar"   ┃',
+        '╒═ Filter:   href',
+        '├─ Expected: "/quox"',
+        '└─ Received: "/foobar"',
       ].join('\n'));
     });
 

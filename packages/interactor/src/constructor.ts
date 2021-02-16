@@ -163,8 +163,7 @@ export function instantiateInteractor<E extends Element, F extends Filters<E>, A
           let element = unsafeSyncResolveUnique(options);
           let match = new MatchFilter(element, filter);
           if(!match.matches) {
-            let table = formatTable({ headers: filter.asTableHeader(), rows: [match.asTableRow()] });
-            throw new FilterNotMatchingError(`${description(options)} does not match filters:\n\n${table}`);
+            throw new FilterNotMatchingError(`${description(options)} does not match filters:\n\n${match.formatAsExpectations()}`);
           }
         });
       });
