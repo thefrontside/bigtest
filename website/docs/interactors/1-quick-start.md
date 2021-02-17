@@ -37,6 +37,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 <Tabs
+  groupId="package-manager"
   defaultValue="npm"
   values={[
     {label: 'NPM', value: 'npm'},
@@ -62,6 +63,7 @@ import TabItem from '@theme/TabItem';
 If you are using Cypress, you will only need to install `@bigtest/cypress`:
 
 <Tabs
+  groupId="package-manager"
   defaultValue="npm"
   values={[
     {label: 'NPM', value: 'npm'},
@@ -91,6 +93,7 @@ Interactors can do a lot, but let's keep things simple for now and begin testing
 Interactors have methods like `click` that mimic user actions. If you are using your own app, in your codebase find a test that already has a button click in it. In that test, import the `Button` interactor from `bigtest` and use it to replace the click interaction as exemplified below (make sure to substitute "Sign In" with your own button text):
 
 <Tabs
+  groupId="runner"
   defaultValue="jest"
   values={[
     {label: 'Jest', value: 'jest'},
@@ -167,6 +170,7 @@ Let’s build on top of the example you used in the last section. When a user cl
 In the sample project, when you click the “Sign In” button it disappears and a “Sign out” button appears in its place. If you’re following along your own test suite, find a test that asserts whether an element exists. Writing this kind of assertion would look like this with Interactors:
 
 <Tabs
+  groupId="runner"
   defaultValue="jest"
   values={[
     {label: 'Jest', value: 'jest'},
@@ -231,6 +235,7 @@ What if testing a more complex UI was as straightforward as using that button in
 Here are examples of what a test for an airline datepicker interface could look like that use interactors:
 
 <Tabs
+  groupId="runner"
   defaultValue="jest"
   values={[
     {label: 'Jest', value: 'jest'},

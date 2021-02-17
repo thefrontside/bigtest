@@ -23,6 +23,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 <Tabs
+  groupId="language"
   defaultValue="javascript"
   values={[
     {label: 'Javascript', value: 'javascript'},
@@ -106,6 +107,7 @@ createInteractor('my interactor')
 The former syntax is necessary if you want to write an action that delegates to the actions of other interactors. For example, imagine that you want to create a form interactor that has a submit action. You could take this approach:
 
 <Tabs
+  groupId="language"
   defaultValue="javascript"
   values={[
     {label: 'Javascript', value: 'javascript'},
@@ -160,6 +162,7 @@ Form().submit();
 Let's get back to our example and add the new TextField interactor to a test. In this example we are testing an email subscription form by first filling in the email text field, clicking the `Subscribe` button, and then asserting for the success header.
 
 <Tabs
+  groupId="runner"
   defaultValue="jest"
   values={[
     {label: 'Jest', value: 'jest'},
@@ -309,6 +312,7 @@ TableCell({ columnTitle: 'Name', rowNumber: 2 }).has({ value: 'Marge Simpson' })
 Now that we have the TableCell Interactor ready, let’s put it in action to test a Jeopardy chart where we have multiple tablecells with similar values. We want to make sure that the $600 cell under ‘Politics’ of our Jeopardy table disappears when we click it. The following example shows how our new TableCell interactor makes that task trivial:
 
 <Tabs
+  groupId="runner"
   defaultValue="jest"
   values={[
     {label: 'Jest', value: 'jest'},

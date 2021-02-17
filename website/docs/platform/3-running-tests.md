@@ -13,6 +13,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 <Tabs
+  groupId="package-manager"
   defaultValue="npm"
   values={[
     {label: 'NPM', value: 'npm'},
@@ -46,6 +47,7 @@ The browser also stays open after tests are running so that you can inspect and 
 First, start the server with this command:
 
 <Tabs
+  groupId="package-manager"
   defaultValue="npm"
   values={[
     {label: 'NPM', value: 'npm'},
@@ -70,6 +72,7 @@ First, start the server with this command:
 Once the server is running, run this command in a separate terminal:
 
 <Tabs
+  groupId="package-manager"
   defaultValue="npm"
   values={[
     {label: 'NPM', value: 'npm'},
