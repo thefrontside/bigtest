@@ -50,6 +50,7 @@ export type ProjectOptions = {
   proxy: {
     port: number;
     prefix: string;
+    agentDir?: string;
   };
   connection: {
     port: number;
