@@ -3,9 +3,9 @@ import { isVisible } from 'element-is-visible';
 
 const HTMLInteractor = createInteractor<HTMLElement>('element')
   .selector('*')
-  .locator((element) => element.innerText)
+  .locator(innerText)
   .filters({
-    text: (element) => element.innerText,
+    text: innerText,
     title: (element) => element.title,
     id: (element) => element.id,
     visible: { apply: isVisible, default: true },
@@ -18,6 +18,16 @@ const HTMLInteractor = createInteractor<HTMLElement>('element')
     focus: ({ perform }) => perform((element) => { element.focus(); }),
     blur: ({ perform }) => perform((element) => { element.blur(); }),
   })
+
+// Because JSDOM does not have any concept of flow or layout, it cannot actually implement
+// `innerText` correctly, so they have opted not to implement it at all. So, to make things
+// work use `textContent` as a backup for all `HTMLElement` subtypes if `innerText` is
+// undefined
+//
+// See details: https://github.com/jsdom/jsdom/issues/1245
+export function innerText(element?: HTMLElement): string {
+  return (element?.innerText != null ? element?.innerText :  element?.textContent) || '';
+}
 
 /**
  * Use this {@link InteractorConstructor} as a base for creating interactors which
