@@ -1,5 +1,12 @@
 # @bigtest/interactor
 
+## 0.28.1
+
+### Patch Changes
+
+- 0ef3571e: Fix the `text` filter and `innerText` based locators so that they work
+  out of the box with JSDOM
+
 ## 0.28.0
 
 ### Minor Changes
