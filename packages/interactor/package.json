@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/interactor",
-  "version": "0.28.0",
+  "version": "0.28.1",
   "description": "Interactors for working with applications",
   "main": "dist/cjs/index.js",
   "browser": "dist/esm/index.js",
