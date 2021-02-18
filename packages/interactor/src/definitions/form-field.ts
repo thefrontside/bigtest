@@ -1,9 +1,9 @@
-import { HTML } from './html';
+import { HTML, innerText } from './html';
 
 type FieldTypes = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | HTMLSelectElement
 
 const FormFieldInteractor = HTML.extend<FieldTypes>('form field')
-  .locator((element) => element.labels ? (Array.from(element.labels)[0]?.innerText || '') : '')
+  .locator((element) => element.labels ? innerText(Array.from(element.labels)[0]) : '')
   .filters({
     valid: (element) => element.validity.valid,
     disabled: {

@@ -1,4 +1,4 @@
-import { HTML } from './html';
+import { HTML, innerText } from './html';
 
 function isButtonElement(element: HTMLInputElement | HTMLButtonElement): element is HTMLButtonElement {
   return element.tagName === 'BUTTON';
@@ -8,7 +8,7 @@ const ButtonInteractor = HTML.extend<HTMLInputElement | HTMLButtonElement>('butt
   .selector('button,input[type=button],input[type=submit],input[type=reset],input[type=image]')
   .locator((element) => {
     if(isButtonElement(element)) {
-      return element.innerText || '';
+      return innerText(element);
     } else if(element.type === 'image') {
       return element.alt;
     } else {
