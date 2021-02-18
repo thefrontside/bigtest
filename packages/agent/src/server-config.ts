@@ -3,6 +3,7 @@ import Path from 'path';
 interface Options {
   port: number;
   prefix?: string;
+  agentDir?: string;
 }
 
 export class AgentServerConfig {
@@ -30,6 +31,6 @@ export class AgentServerConfig {
   }
 
   appDir(): string {
-    return Path.join(__dirname, '../app');
+    return this.options.agentDir ? this.options.agentDir : Path.join(__dirname, '../app');
   }
 }
