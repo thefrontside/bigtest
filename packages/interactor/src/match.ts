@@ -2,7 +2,7 @@ import { Locator } from './locator';
 import { Filter } from './filter';
 import { Filters } from './specification';
 import { escapeHtml } from './escape-html';
-import { MaybeMatcher, applyMatcher } from './matcher';
+import { MaybeMatcher, applyMatcher, formatMatcher } from './matcher';
 
 const check = (value: unknown): string => value ? "✓" : "⨯";
 
@@ -98,6 +98,10 @@ export class MatchFilter<E extends Element, F extends Filters<E>> {
   get sortWeight(): number {
     return this.items.reduce((agg, i) => agg + i.sortWeight, 0);
   }
+
+  formatAsExpectations(): string {
+    return this.items.filter((i) => !i.matches).map((i) => i.formatAsExpectation()).join('\n\n');
+  }
 }
 
 export class MatchFilterItem<T, E extends Element, F extends Filters<E>> {
@@ -127,8 +131,20 @@ export class MatchFilterItem<T, E extends Element, F extends Filters<E>> {
     return JSON.stringify(this.actual);
   }
 
+  formatExpected(): string {
+    return formatMatcher(this.expected);
+  }
+
   format(): string {
     return `${check(this.matches)} ${this.formatActual()}`;
+  }
+
+  formatAsExpectation(): string {
+    return [
+      `╒═ Filter:   ${this.key}`,
+      `├─ Expected: ${this.formatExpected()}`,
+      `└─ Received: ${this.formatActual()}`,
+    ].join('\n')
   }
 
   get sortWeight(): number {

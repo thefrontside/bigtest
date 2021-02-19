@@ -296,9 +296,9 @@ describe('@bigtest/interactor', () => {
       await expect(TextField('Email').is({ value: 'jonas@example.com' })).resolves.toBeUndefined();
       await expect(TextField('Email').is({ value: 'incorrect@example.com' })).rejects.toHaveProperty('message', [
         'text field "Email" does not match filters:', '',
-        '┃ value: "incorrect@example.com" ┃ enabled: true ┃',
-        '┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫',
-        '┃ ⨯ "jonas@example.com"          ┃ ✓ true        ┃',
+        '╒═ Filter:   value',
+        '├─ Expected: "incorrect@example.com"',
+        '└─ Received: "jonas@example.com"',
       ].join('\n'))
     });
   });
@@ -312,9 +312,9 @@ describe('@bigtest/interactor', () => {
       await expect(TextField('Email').has({ value: 'jonas@example.com' })).resolves.toBeUndefined();
       await expect(TextField('Email').has({ value: 'incorrect@example.com' })).rejects.toHaveProperty('message', [
         'text field "Email" does not match filters:', '',
-        '┃ value: "incorrect@example.com" ┃ enabled: true ┃',
-        '┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫',
-        '┃ ⨯ "jonas@example.com"          ┃ ✓ true        ┃',
+        '╒═ Filter:   value',
+        '├─ Expected: "incorrect@example.com"',
+        '└─ Received: "jonas@example.com"',
       ].join('\n'))
     });
   });

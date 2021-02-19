@@ -81,11 +81,10 @@ describe('@bigtest/interactor', function() {
         await expect(Page.has({ title: 'Hello World' })).resolves.toBeUndefined();
         await expect(Page.has({ title: 'Does Not Exist' })).rejects.toHaveProperty('message', [
           'page does not match filters:', '',
-          '┃ title: "Does Not Exist" ┃',
-          '┣━━━━━━━━━━━━━━━━━━━━━━━━━┫',
-          '┃ ⨯ "Hello World"         ┃',
+          '╒═ Filter:   title',
+          '├─ Expected: "Does Not Exist"',
+          '└─ Received: "Hello World"',
         ].join('\n'))
-
       });
     });
 
@@ -96,9 +95,9 @@ describe('@bigtest/interactor', function() {
         await expect(Page.has({ url: 'about:blank' })).resolves.toBeUndefined();
         await expect(Page.has({ url: 'does-not-exist' })).rejects.toHaveProperty('message', [
           'page does not match filters:', '',
-          '┃ url: "does-not-exist" ┃',
-          '┣━━━━━━━━━━━━━━━━━━━━━━━┫',
-          '┃ ⨯ "about:blank"       ┃',
+          '╒═ Filter:   url',
+          '├─ Expected: "does-not-exist"',
+          '└─ Received: "about:blank"',
         ].join('\n'))
       });
     });

@@ -64,9 +64,9 @@ describe('@bigtest/interactor', () => {
       await expect(Link('Foo Bar').has({ title: shouted('foo') })).resolves.toBeUndefined();
       await expect(Link('Foo Bar').has({ title: shouted('bar') })).rejects.toHaveProperty('message', [
         'link "Foo Bar" does not match filters:', '',
-        '┃ title: uppercase "BAR" ┃',
-        '┣━━━━━━━━━━━━━━━━━━━━━━━━┫',
-        '┃ ⨯ "FOO"                ┃',
+        '╒═ Filter:   title',
+        '├─ Expected: uppercase "BAR"',
+        '└─ Received: "FOO"',
       ].join('\n'));
     });
   });
