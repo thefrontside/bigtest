@@ -164,7 +164,7 @@ workflows:
       - test:
           executor:
             name: "win/default"
-            size: "large"
+            size: "medium"
           name: "test-cli-windows"
           pre-steps:
             - run:
