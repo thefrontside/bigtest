@@ -100,6 +100,10 @@ export type CommandServerStatus = {
   type: 'unstarted' | 'starting' | 'started';
 }
 
+export type OrchestratorStatus = {
+  type: 'pending' | 'ready';
+}
+
 export type OrchestratorState = {
   agents: Record<string, AgentState>;
   manifest: Manifest;
@@ -111,4 +115,5 @@ export type OrchestratorState = {
   proxyServer: ProxyServerStatus;
   connectionServer: ConnectionServerStatus;
   commandServer: CommandServerStatus;
+  status: OrchestratorStatus;
 }

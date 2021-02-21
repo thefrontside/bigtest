@@ -1,6 +1,5 @@
 import path from 'path';
 import { fork, Operation, spawn } from 'effection';
-import { Mailbox } from '@bigtest/effection';
 import { AgentServerConfig } from '@bigtest/agent';
 import { Slice } from '@bigtest/atom';
 import { ProjectOptions } from '@bigtest/project';
@@ -19,12 +18,13 @@ import { AgentRunner } from './runner';
 
 type OrchestratorOptions = {
   atom: Slice<OrchestratorState>;
-  delegate?: Mailbox;
   project: ProjectOptions;
 }
 
 export function* createOrchestrator(options: OrchestratorOptions): Operation {
   console.log('[orchestrator] starting');
+
+  let status = options.atom.slice('status');
 
   let agentServerConfig = new AgentServerConfig(options.project.proxy);
 
@@ -147,7 +147,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
   console.log(`[orchestrator] launch agents via: ${connectURL}`);
   console.log(`[orchestrator] show GraphQL dashboard via: ${commandUrl}`);
 
-  options.delegate && options.delegate.send({ status: 'ready' });
+  status.set({ type: 'ready' });
 
   try {
     yield;
