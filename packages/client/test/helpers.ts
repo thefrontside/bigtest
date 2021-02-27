@@ -1,4 +1,4 @@
-import { Operation, resource, main } from 'effection';
+import { Operation, resource, run as effectionRun } from 'effection';
 import { Channel } from '@effection/channel';
 import { subscribe } from '@effection/subscription';
 import { express, Socket } from '@bigtest/effection-express';
@@ -14,7 +14,7 @@ interface World {
 let currentWorld: World | null = null;
 
 beforeEach(() => {
-  currentWorld = main(undefined) as unknown as World;
+  currentWorld = effectionRun(undefined) as unknown as World;
 });
 
 afterEach(() => {

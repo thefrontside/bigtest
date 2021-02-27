@@ -1,11 +1,11 @@
-import { Context, Operation, main } from 'effection';
+import { Context, Operation, run } from 'effection';
 
 type World = Context & { spawn<T>(operation: Operation<T>): Promise<T> };
 
 let currentWorld: World;
 
 beforeEach(() => {
-  currentWorld = main(undefined) as World;
+  currentWorld = run(undefined) as World;
 });
 
 afterEach(() => {

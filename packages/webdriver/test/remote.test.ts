@@ -1,5 +1,5 @@
 import { describe } from 'mocha';
-import { Context, main } from 'effection';
+import { Context, run } from 'effection';
 import { daemon } from '@effection/node';
 import { express } from '@bigtest/effection-express';
 import { Request, Response } from 'express';
@@ -54,7 +54,7 @@ describe('Connecting to a remote webdriver', () => {
     let port = await spawn(findAvailablePortNumber());
     driverURL = `http://localhost:${port}`;
 
-    driverProcessContext = main(function*() {
+    driverProcessContext = run(function*() {
       let bin = yield getDriverPath(BROWSER);
       yield daemon(`${bin} --port=${port}`);
       yield;

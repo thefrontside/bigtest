@@ -1,4 +1,4 @@
-import { main, Operation } from 'effection';
+import { run, Operation } from 'effection';
 
 interface World {
   halt(): void;
@@ -8,7 +8,7 @@ interface World {
 let world: World;
 
 beforeEach(() => {
-  world = main(undefined) as unknown as World;
+  world = run(undefined) as unknown as World;
 });
 
 afterEach(() => {
