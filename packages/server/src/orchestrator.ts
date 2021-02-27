@@ -125,7 +125,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
     });
     yield fork(function*() {
       let status = yield options.atom.slice('appServer').once((status) => {
-        return status.type === 'available' || status.type === 'exited';
+        return status.type === 'started' || status.type === 'available' || status.type === 'exited';
       });
       console.debug(`[orchestrator] app server ${status.type}`);
     });
