@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@bigtest/driver": "^0.5.5",
-    "effection": "^0.7.0"
+    "effection": "^0.8.0"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^2.0.0",

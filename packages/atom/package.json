@@ -32,12 +32,12 @@
     "ts-node": "^9.1.1"
   },
   "dependencies": {
-    "@effection/channel": "^0.6.7",
-    "@effection/events": "^0.7.8",
-    "@effection/subscription": "^0.11.0",
+    "@effection/channel": "^0.6.8",
+    "@effection/events": "^0.7.9",
+    "@effection/subscription": "^0.12.0",
     "@frontside/tsconfig": "^1.2.0",
     "assert-ts": "^0.2.2",
-    "effection": "0.7.0",
+    "effection": "0.8.0",
     "fp-ts": "^2.8.2",
     "monocle-ts": "^2.3.3"
   },

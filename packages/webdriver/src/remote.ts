@@ -1,4 +1,4 @@
-import { Operation, resource, main } from 'effection';
+import { Operation, resource, run } from 'effection';
 
 import { WebDriver, RemoteOptions, connect, disconnect } from './web-driver';
 
@@ -13,7 +13,7 @@ export function* Remote(options: RemoteOptions): Operation<WebDriver> {
     } finally {
       // async shutdown not supported yet!
       // so we have to start a new effection tree
-      main(disconnect(driver))
+      run(disconnect(driver))
         .catch(error => {
           console.error('WARNING: failed to disconnect web driver session');
           console.error(error);

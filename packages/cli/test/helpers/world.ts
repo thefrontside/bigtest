@@ -1,10 +1,10 @@
 import { beforeEach, afterEach } from 'mocha';
-import { main, Context, Controls } from 'effection';
+import { run, Context, Controls } from 'effection';
 
 export let World: Context & Controls;
 
 beforeEach(() => {
-  World = main(undefined) as Context & Controls;
+  World = run(undefined) as Context & Controls;
 });
 
 afterEach(() => {
