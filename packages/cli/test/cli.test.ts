@@ -1,5 +1,5 @@
 import { describe, it, beforeEach } from 'mocha';
-import { daemon, exec, ExitStatus } from '@effection/node';
+import { exec, ExitStatus } from '@effection/node';
 import { defaultTSConfig } from '@bigtest/project';
 
 import expect from 'expect';
@@ -53,8 +53,7 @@ describe('@bigtest/cli', function() {
       let child: TestProcess;
 
       beforeEach(async () => {
-        await World.spawn(daemon('yarn test:app:start 36001'));
-        child = await run('server', '--app.url', 'http://localhost:36001', '--no-app.command');
+        child = await run('server', '--app-url', 'http://localhost:36001', '--app-command', '');
       });
 
       it('outputs that the server was started successfully', async () => {
@@ -66,7 +65,7 @@ describe('@bigtest/cli', function() {
       let child: TestProcess;
 
       beforeEach(async () => {
-        child = await run('server', '--app.url', 'http://localhost:36001', '--app.command', '"yarn test:app:start 36001"');
+        child = await run('server', '--app-url', 'http://localhost:36001', '--app-command', '"yarn test:app:start 36001"');
       });
 
       it('outputs that the server was started successfully', async () => {
