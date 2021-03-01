@@ -1,5 +1,11 @@
 # @bigtest/client
 
+## 0.3.2
+
+### Patch Changes
+
+- 08b07d78: Update effection to 0.8.0 and update subpackages
+
 ## 0.3.1
 
 ### Patch Changes

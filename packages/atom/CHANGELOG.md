@@ -1,5 +1,11 @@
 # @bigtest/atom
 
+## 0.12.1
+
+### Patch Changes
+
+- 08b07d78: Update effection to 0.8.0 and update subpackages
+
 ## 0.12.0
 
 ### Minor Changes

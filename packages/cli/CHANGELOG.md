@@ -1,5 +1,19 @@
 # @bigtest/cli
 
+## 0.18.2
+
+### Patch Changes
+
+- 08b07d78: Update effection to 0.8.0 and update subpackages
+- d801d1f6: Track orchstrator status in state, remove delegate
+- Updated dependencies [08b07d78]
+- Updated dependencies [22903431]
+- Updated dependencies [d801d1f6]
+  - @bigtest/client@0.3.2
+  - @bigtest/effection@0.6.2
+  - @bigtest/project@0.15.1
+  - @bigtest/server@0.24.0
+
 ## 0.18.1
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @bigtest/webdriver
 
+## 0.8.2
+
+### Patch Changes
+
+- 08b07d78: Update effection to 0.8.0 and update subpackages
+- Updated dependencies [08b07d78]
+  - @bigtest/atom@0.12.1
+  - @bigtest/driver@0.5.6
+
 ## 0.8.1
 
 ### Patch Changes

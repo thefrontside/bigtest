@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/agent",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "description": "Agent for connecting test environments (browsers) to BigTest",
   "main": "dist/src/index.js",
   "types": "dist/index.d.ts",
@@ -25,9 +25,9 @@
     "pretest": "yarn pretest:manifest && yarn pretest:app"
   },
   "devDependencies": {
-    "@bigtest/interactor": "^0.28.0",
+    "@bigtest/interactor": "^0.28.2",
     "@bigtest/suite": "^0.11.2",
-    "@bigtest/webdriver": "^0.8.0",
+    "@bigtest/webdriver": "^0.8.2",
     "@frontside/tsconfig": "^1.2.0",
     "@frontside/eslint-config": "^2.0.0",
     "@frontside/typescript": "^1.1.1",
@@ -51,9 +51,9 @@
     "ts-node": "^9.1.1"
   },
   "dependencies": {
-    "@bigtest/effection": "^0.6.1",
-    "@bigtest/effection-express": "^0.9.2",
-    "@bigtest/globals": "^0.7.4",
+    "@bigtest/effection": "^0.6.2",
+    "@bigtest/effection-express": "^0.9.3",
+    "@bigtest/globals": "^0.7.5",
     "@effection/events": "^0.7.9",
     "@effection/subscription": "^0.12.0",
     "bowser": "^2.9.0",

@@ -1,5 +1,13 @@
 # @bigtest/project
 
+## 0.15.1
+
+### Patch Changes
+
+- 08b07d78: Update effection to 0.8.0 and update subpackages
+- Updated dependencies [08b07d78]
+  - @bigtest/driver@0.5.6
+
 ## 0.15.0
 
 ### Minor Changes

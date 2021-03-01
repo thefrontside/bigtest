@@ -1,5 +1,13 @@
 # @bigtest/effection-express
 
+## 0.9.3
+
+### Patch Changes
+
+- 08b07d78: Update effection to 0.8.0 and update subpackages
+- Updated dependencies [08b07d78]
+  - @bigtest/effection@0.6.2
+
 ## 0.9.2
 
 ### Patch Changes

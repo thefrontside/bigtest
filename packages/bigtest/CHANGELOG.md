@@ -1,5 +1,18 @@
 # bigtest
 
+## 0.13.2
+
+### Patch Changes
+
+- eae849da: Improved format for filter not matching error
+- 08b07d78: Update effection to 0.8.0 and update subpackages
+- 22903431: Prevent race condition if app server becomes available too early
+- Updated dependencies [eae849da]
+- Updated dependencies [08b07d78]
+- Updated dependencies [d801d1f6]
+  - @bigtest/interactor@0.28.2
+  - @bigtest/cli@0.18.2
+
 ## 0.13.1
 
 ### Patch Changes
