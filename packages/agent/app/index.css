@@ -1,0 +1,39 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  position: relative;
+  background-color: #0d203b;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+}
+
+#header {
+  border-bottom: 1px rgb(71, 141, 206) solid;
+}
+
+#body {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+#splash,
+#test-frame {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  border: none;
+}
+
+#splash {
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#test-frame {
+  z-index: 2;
+}

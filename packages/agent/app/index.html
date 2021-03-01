@@ -3,49 +3,18 @@
 <html>
   <head>
     <title>BigTest</title>
-    <style>
-     body, html {
-       margin: 0;
-       padding: 0;
-       height: 100%;
-       position: relative;
-     }
-
-     #splash {
-       z-index: 1;
-       position: absolute;
-       top: 0;
-       left: 0;
-       border: none;
-       height: 100%;
-       width: 100%;
-       display: flex;
-       flex-align: center;
-       justify-content: center;
-     }
-
-     #splash img {
-       width: 80%;
-       max-width: 400px;
-     }
-
-     #test-frame {
-       z-index: 2;
-       position: absolute;
-       top: 0;
-       left: 0;
-       border: none;
-       height: 100%;
-       width: 100%;
-     }
-    </style>
+    <link rel="icon" type="image/png" href="/assets/favicon.png"/>
   </head>
-
   <body>
-    <div id="splash">
-      <img src="./assets/bigtest-logo.svg">
+    <link rel="stylesheet" href="index.css"/>
+    <div id="header"></div>
+    <script src="./toolbar/index.js"></script>
+    <div id="body">
+      <div id="splash">
+        <img src="./assets/bigtest-logo-dark.png" style="height:100px"/>
+      </div>
+      <iframe id="test-frame" src="about:blank"></iframe>
+      <script src="./main.ts"></script>
     </div>
-    <iframe id="test-frame" src="about:blank"></iframe>
-    <script src="./main.ts"></script>
   </body>
 </html>
