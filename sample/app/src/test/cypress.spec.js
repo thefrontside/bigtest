@@ -1,9 +1,17 @@
-import { Button } from '@bigtest/cypress';
+import { Button, Heading, Link } from '@bigtest/cypress';
 
 describe('Interactors with Cypress', () => {
-  it('Interactors with Cypress', () => {
+  beforeEach(() => {
     cy.visit('/');
+  });
+  it('click sign in button', () => {
     cy.do(Button('SIGN IN').click());
-    cy.expect(Button('SIGN IN').absent());
+    cy.expect(
+      Button('SIGN IN').absent(),
+      Button('LOG OUT').exists());
+  });
+  it('navigate to about page', () => {
+    cy.do(Link('/about').click());
+    cy.expect(Heading('About page').exists());
   });
 });

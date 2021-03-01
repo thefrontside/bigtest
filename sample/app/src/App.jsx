@@ -8,7 +8,8 @@ import {
 import './App.css';
 
 const App = () => {
-  let [isSignedIn, setIsSignedIn] = React.useState(false)
+  let [isSignedIn, setIsSignedIn] = React.useState(false);
+  
   return (
     <Router>
       <div className="App">
