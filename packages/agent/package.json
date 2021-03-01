@@ -16,7 +16,7 @@
     "lint": "eslint \"{app,bin,src,test}/**/*.ts\"",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "mocha": "mocha -r ts-node/register",
-    "start": "parcel serve --out-dir dist/app app/index.html app/harness.ts",
+    "watch": "parcel watch --public-url ./ --out-dir dist/app app/index.html app/test-frame.html app/harness.ts",
     "prepack:app": "parcel build --public-url ./ --no-minify --out-dir dist/app app/index.html app/test-frame.html app/harness.ts",
     "prepack:tsc": "yarn tsc --build ./tsconfig.dist.json",
     "prepack": "yarn prepack:tsc && yarn prepack:app",
@@ -60,7 +60,9 @@
     "effection": "^1.0.0",
     "error-stack-parser": "^2.0.6",
     "get-source": "^2.0.11",
-    "istanbul-lib-coverage": "^3.0.0"
+    "istanbul-lib-coverage": "^3.0.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   },
   "volta": {
     "node": "12.16.0",

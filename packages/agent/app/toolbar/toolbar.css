@@ -1,0 +1,34 @@
+#toolbar {
+  background-color: #161b20;
+  color: white;
+  display: flex;
+  align-items: center;
+}
+
+#toolbar img {
+  height: 40px;
+  margin: 10px 10px 10px 15px;
+}
+
+#toolbar button {
+  margin: 10px;
+  border-radius: 10px;
+  padding: 10px;
+  border: none;
+  outline: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #logo {
+    animation: spin infinite 4s linear;
+  }
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
