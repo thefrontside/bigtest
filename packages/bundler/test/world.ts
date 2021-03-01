@@ -1,4 +1,4 @@
-import { main, Context, Operation } from 'effection';
+import { run, Context, Operation } from 'effection';
 
 let World: Context;
 
@@ -10,7 +10,7 @@ export async function spawn<T>(operation: Operation): Promise<T> {
 
 
 beforeEach(() => {
-  World = main(undefined);
+  World = run(undefined);
 });
 
 afterEach(() => {

@@ -1,11 +1,11 @@
-import { main, Context, Operation, Controls } from 'effection';
+import { run, Context, Operation, Controls } from 'effection';
 import fetch, { Response, RequestInfo, RequestInit } from 'node-fetch';
 import { AbortController } from 'abort-controller';
 
 export class World {
   execution: Context & Controls;
   constructor() {
-    this.execution = main(function*() { yield; }) as Context & Controls;
+    this.execution = run(function*() { yield; }) as Context & Controls;
   }
 
   destroy(): void {

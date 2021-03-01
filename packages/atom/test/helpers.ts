@@ -1,4 +1,4 @@
-import { Context, Operation, main } from 'effection';
+import { Context, Operation, run } from 'effection';
 import { performance } from '@bigtest/performance';
 
 type World = Context & { spawn<T>(operation: Operation<T>): Promise<T> };
@@ -11,7 +11,7 @@ before(function() {
 });
 
 beforeEach(() => {
-  currentWorld = main(undefined) as World;
+  currentWorld = run(undefined) as World;
 });
 
 afterEach(() => {

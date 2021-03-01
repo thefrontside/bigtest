@@ -1,4 +1,4 @@
-import { main, Context, Operation, Controls } from 'effection';
+import { run, Context, Operation, Controls } from 'effection';
 
 type World<T = unknown> = Context<T> & Controls<T>;
 
@@ -8,7 +8,7 @@ export function spawn<T>(operation: Operation): Context<T> {
 }
 
 beforeEach(() => {
-  World = main(undefined) as World<unknown>;
+  World = run(undefined) as World<unknown>;
 });
 
 afterEach(() => {
