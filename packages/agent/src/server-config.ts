@@ -16,12 +16,15 @@ export class AgentServerConfig {
     return url.toString();
   }
 
-  agentUrl(connectionUrl: string, agentId?: string): string {
+  agentUrl(connectionUrl: string, agentId?: string, verBigTest?: string): string {
     let url = new URL(this.url());
     url.pathname = url.pathname + 'index.html';
     url.searchParams.append('connectTo', connectionUrl);
     if (agentId) {
       url.searchParams.append('agentId', agentId);
+    }
+    if (verBigTest) {
+      url.searchParams.append('ver', verBigTest);
     }
     return url.toString();
   }

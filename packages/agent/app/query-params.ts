@@ -1,6 +1,7 @@
 export interface QueryParams {
   connectTo: string;
   agentId?: string;
+  version?: string;
 }
 
 function parseQueryParams(): QueryParams {
@@ -13,7 +14,8 @@ function parseQueryParams(): QueryParams {
 
   return {
     connectTo,
-    agentId: url.searchParams.get('agentId') || undefined
+    agentId: url.searchParams.get('agentId') || undefined,
+    // version: url.searchParams.get('ver') || undefined
   }
 }
 
