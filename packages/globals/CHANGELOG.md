@@ -1,5 +1,11 @@
 # @bigtest/globals
 
+## 0.7.5
+
+### Patch Changes
+
+- 08b07d78: Update effection to 0.8.0 and update subpackages
+
 ## 0.7.4
 
 ### Patch Changes

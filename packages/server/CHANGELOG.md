@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.24.0
+
+### Minor Changes
+
+- d801d1f6: Track orchstrator status in state, remove delegate
+
+### Patch Changes
+
+- 08b07d78: Update effection to 0.8.0 and update subpackages
+- 22903431: Prevent race condition if app server becomes available too early
+- Updated dependencies [08b07d78]
+  - @bigtest/agent@0.17.1
+  - @bigtest/atom@0.12.1
+  - @bigtest/bundler@0.12.4
+  - @bigtest/client@0.3.2
+  - @bigtest/driver@0.5.6
+  - @bigtest/effection@0.6.2
+  - @bigtest/effection-express@0.9.3
+  - @bigtest/globals@0.7.5
+  - @bigtest/project@0.15.1
+  - @bigtest/webdriver@0.8.2
+
 ## 0.23.0
 
 ### Minor Changes

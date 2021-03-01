@@ -1,5 +1,13 @@
 # @bigtest/interactor
 
+## 0.28.2
+
+### Patch Changes
+
+- eae849da: Improved format for filter not matching error
+- Updated dependencies [08b07d78]
+  - @bigtest/globals@0.7.5
+
 ## 0.28.1
 
 ### Patch Changes

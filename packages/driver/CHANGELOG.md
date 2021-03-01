@@ -1,5 +1,11 @@
 # @bigtest/driver
 
+## 0.5.6
+
+### Patch Changes
+
+- 08b07d78: Update effection to 0.8.0 and update subpackages
+
 ## 0.5.5
 
 ### Patch Changes

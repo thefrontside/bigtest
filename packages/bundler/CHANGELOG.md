@@ -1,5 +1,14 @@
 # @bigtest/bundler
 
+## 0.12.4
+
+### Patch Changes
+
+- 08b07d78: Update effection to 0.8.0 and update subpackages
+- Updated dependencies [08b07d78]
+  - @bigtest/effection@0.6.2
+  - @bigtest/project@0.15.1
+
 ## 0.12.3
 
 ### Patch Changes
