@@ -38,9 +38,12 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield spawn(createLogger({ atom: options.atom, out: console.error }));
 
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  let { version } = require(`${__dirname}/../../../../bigtest/package.json`);
+
   let browserManager: BrowserManager = yield createBrowserManager({
     atom: options.atom,
-    connectURL: (agentId: string) => agentServerConfig.agentUrl(connectTo, agentId),
+    connectURL: (agentId: string) => agentServerConfig.agentUrl(connectTo, agentId, version),
     drivers: options.project.drivers,
     launch: options.project.launch
   });
