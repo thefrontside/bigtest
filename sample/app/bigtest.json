@@ -3,11 +3,14 @@
     "url": "http://localhost:3000",
     "command": "npm run start -- -p 3000"
   },
+  "proxy": {
+    "agentDir": "/Users/minkimcello/Projects/frontside/bigtest/packages/agent/dist/app"
+  },
   "testFiles": [
     "src/test/bigtest.test.js"
   ],
   "launch": [
-    "chrome.headless"
+    "chrome"
   ],
   "port": 3001
 }
