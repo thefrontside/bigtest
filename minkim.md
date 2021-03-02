@@ -39,3 +39,36 @@
         - alternative would be to somehow pass down the package version from `bigtest` into `bigtest/cli` but it's only a dependency and isn't connected any other way except that you just install `bigtest` and get access to the npx commands?
       - this means the tests need to be re-written because they are failing
     - the version is being passed into `agentServerConfig.agentUrl`
+
+
+
+So at the moment the agent of this PR looks like this:
+```html
+<html>
+  <head>...</head>
+  <body>
+    <AgentToolBar/>
+    <div id="body">
+      <splashimage/>
+      <iframe id="test-frame">
+        #document
+          <html>
+            <head>...</head>
+            <body>
+              <iframe id="app-frame">
+                #document
+                  <SampleApp/>
+              </iframe>
+              <script src="test-frame-main.ts"></script>
+            </body>
+          </html>
+      </iframe>
+      <script src="./main.ts"></script>
+    </div>
+  </body>
+</html>
+```
+
+I would like to subscribe to `document.querySelector('iframe[id=test-frame]').contentDocument.querySelector('iframe[id=app-frame]').contentWindow.location.href` from within `<AgentToolBar/>` but I'm not sure how I should go about it.
+
+I first fiddled with `useEffect()` and its second argument but that was no use because we're trying to observe elements outside its component. Then I messed around with `MutationObserver` in hopes of maybe detecting for DOM changes in the individual iframe so that it knows how and when to re-evaluate the `location.href` but that I wasn't able to get too far with that approach.
