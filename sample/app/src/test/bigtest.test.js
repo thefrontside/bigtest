@@ -9,4 +9,4 @@ export default test('Interactors with BigTest')
       Button('LOG OUT').exists()))
   .child('navigate to about page', test => test
     .step(Link('/about').click())
-    .assertion(Heading('About page').exists()))
+    .assertion(Heading('About page').exists()));
