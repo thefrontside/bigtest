@@ -13,7 +13,7 @@ const App = () => {
   return (
     <Router>
       <div className="App">
-        <div className="header">
+        <header className="header">
           <nav>
             <div className="label">
               Nav
@@ -36,8 +36,8 @@ const App = () => {
               </button>
             }
           </div>
-        </div>
-        <div className="body">
+        </header>
+        <main className="body">
           <Switch>
             <Route path="/about">
               <h1>About page</h1>
@@ -46,7 +46,7 @@ const App = () => {
               <h1>Home page</h1>
             </Route>
           </Switch>
-        </div>
+        </main>
       </div>
     </Router>
   );
