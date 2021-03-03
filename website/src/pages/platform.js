@@ -30,7 +30,7 @@ const features = [
     imageUrl: 'images/unified-platform.png',
     description: (
       <>
-        Today’s web UI testing harnesses are a cobbled together jumble of independent test runners (i.e. karma, mocha), assertion libraries (i.e. chai, assertjs, expect) and runtime platforms (i.e. nightmare, puppeteer, electron) that cannot be easily coordinated into a uniform testing experience. BigTest was designed from the ground up as a single, comprehensive testing platform, where every piece is optimized for the rest.
+        Today’s web UI testing harnesses are a cobbled together jumble of independent test runners (i.e. karma, mocha), assertion libraries (i.e. chai, assertjs, expect) and runtime environment (i.e. nightmare, puppeteer, electron) that cannot be easily coordinated into a uniform testing experience. BigTest was designed from the ground up as a single, comprehensive testing platform, where every piece is optimized for the rest.
       </>
     ),
   },
@@ -56,7 +56,7 @@ function Feature({ imageUrl, title, description }) {
 function Interactors() {
   return (
     <Layout
-      title="BigTest Platform"
+      title="BigTest Runner"
       description="Truly cross browser testing">
       <header>
         <div className={clsx("container", styles.heroContainer)}>
@@ -73,10 +73,10 @@ function Interactors() {
               Start exploring
             </Link>
           </div>
-          <div className={clsx(styles.heroImage, styles.heroCrossPlatformIframe)}>
+          <div className={clsx(styles.heroImage, styles.heroCrossRunnerIframe)}>
             <iframe
               src={useBaseUrl('/asciinema/iframes/cross-platform.html')}
-              className={styles.iframeCrossPlatform}
+              className={styles.iframeCrossRunner}
               scrolling="no"
             />
           </div>

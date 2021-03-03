@@ -154,7 +154,7 @@
   margin-bottom: 40px;
 }
 
-.iframeCrossPlatform {
+.iframeCrossRunner {
   width: 535px;
   height: 665px;
   outline: none;
@@ -182,7 +182,7 @@
 
 }
 
-.heroCrossPlatformIframe {
+.heroCrossRunnerIframe {
   text-align: center;
   background: url(/bigtest/images/iframe-bg.svg) no-repeat center top;
   background-size: contain;

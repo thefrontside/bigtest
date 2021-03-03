@@ -157,7 +157,7 @@ If you are using the sample project, you can find these examples inside `bigtest
 
 Now run your tests as you usually would or use any of the sample project options. Congratulations – you used your first Interactor!
 
-:::note The BigTest Platform
+:::note The BigTest Runner
  There's more to BigTest than just Interactors. BigTest can also run your tests on any _real_ browser – just like your users use. We have built a new integrated platform from the ground up to help you test more with less effort. And best of all it's free and Open Source! [Check it out](/platform), and let us know what you think.
 :::
 
