@@ -2664,7 +2664,7 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-bigtest@0.13.2:
+bigtest@*:
   version "0.13.2"
   resolved "https://registry.yarnpkg.com/bigtest/-/bigtest-0.13.2.tgz#99b9b644bd183865d7c60f6e91819b2f1715fee5"
   integrity sha512-x+9BXgMaq5v57FUEErNiBx4c1cBqG9SeKgJWP8/2ZPUOPppSYeXpZj78VAA53/DyEjNTx1V3tz/wPQv/PePjpg==

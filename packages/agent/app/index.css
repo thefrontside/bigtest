@@ -3,7 +3,7 @@ body, html {
   padding: 0;
   height: 100%;
   position: relative;
-  background-color: #0d203b;
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
@@ -17,6 +17,7 @@ body, html {
   position: relative;
   height: 100%;
   width: 100%;
+  display: flex;
 }
 
 #splash,
@@ -25,15 +26,28 @@ body, html {
   height: 100%;
   width: 100%;
   border: none;
+  align-self: center;
 }
 
 #splash {
+  background-image: url('./assets/bigtest-logo.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100px;
+  width: 100%;
   z-index: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 #test-frame {
   z-index: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #0d203b;
+  }
+
+  #splash {
+    background-image: url('./assets/bigtest-logo-dark.png')
+  }
 }
