@@ -13,7 +13,7 @@ const App = () => {
   return (
     <Router>
       <div className="App">
-        <header className="header">
+        <header>
           <nav>
             <div className="label">
               Nav
@@ -37,7 +37,7 @@ const App = () => {
             }
           </div>
         </header>
-        <main className="body">
+        <main>
           <Switch>
             <Route path="/about">
               <h1>About page</h1>

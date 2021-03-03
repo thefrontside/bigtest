@@ -57,7 +57,7 @@ header button {
   font-size: 15px;
 }
 
-.body {
+main {
   flex: 1;
   display: flex;
   align-items: center;
