@@ -1,18 +1,44 @@
 # BigTest
 
-The goal of the BigTest Project is to minimize the testing feedback loop while at the same time expanding the size of the system it can test.
+The goal of the BigTest Platform is to minimize the testing feedback loop while at the same time expanding the size of the system it can test.
 
-## Fast and Smart
+## Philosophy
+
+### Fast and Smart
 
 The length of the testing feedback loop is not determined by just how fast the test can report success or failure. Of course a test suite that can validate 800 assertions per minute has twice the throughput as a project that can only validate 400. But the critically important aspect of the speed of the testing feedback loop is how quickly and accurately you are able to understand why a test failed. A test that takes only 5 milliseconds to run but fails with an error message so inscrutable that it takes a further 90 minutes to figure out why is in fact excruciatingly slow. In order to make testing feedback loops as short as possible, BigTest components run quickly and provide failures that are precise and helpful.
 
-## Size = Value
+### Size = Value
 
 A test that is both fast and precise is not enough; it has to measure something of value as well. That's not to say a React component rendering its props correctly isn't useful; it's just that great tests would act as insurance for your business, for instance, checking the workflow of correctly transferring money from one user account to another. At Google they’ve [come to the realization][5] that "unit test," "functional test" and "end-to-end test" are arbitrary designations and what really matters is the relative size of a test. The larger a test, the more systems it integrates and thus the more business value it protects. The only hitch of course is that test size is in direct conflict with feedback loop speed.
 
 The BigTest project approaches every piece of its platform from the perspective of empowering development teams to master this tension and optimize testing feedback loops within the context of truly valuable tests.
 
-## Interactors (Beta)
+## Architecture
+
+### Distributed Agents
+
+Selenium's power and flexibility lies in the fact that it assumes nothing about the application nor where or how it is running. Selenium performs one HTTP request to the target browser for every interaction and assertion in the test script. It can therefore count with an agent on every browser that understands HTTP requests. In Selenium agents are also relatively easy to implement because they're dummy: they only follow the instructions provided to them by the server.  However, relying on HTTP requests for every single operation makes Selenium slow and prone to flakiness.
+
+Cypress is more reliable and faster because it runs the tests within the browser. Thus it has no HTTP round-trips and instead relies on direct process communication, which is almost fault-proof. Cypress spins up a node server that has a direct control of the browser where the tests run. But it is limited in that you can only use Cypress with browsers that the node process can control – namely electron Chrome and electron Firefox.
+
+BigTest takes the best of both Selenium and Cypress by implementing a smarter agent for the browser. BigTest first sends the entire test suite to the agent running in a real browser over HTTP. Because the agent is not dummy, it understands the test suite, runs it within the browser context and interprets the results, which it communicates to the BigTest server over websockets in real time.
+
+![Diagram describing the relationship between BigTest and the agents. 1) the app under test is loaded in an iframe within the target browser. 2) The orchestrator communicates the test bundle to the agent . 3)  BigTest receives information from the browser agent via websockets ](./assets/diagram-agents.png)
+
+
+### GraphQL as data protocol
+
+As a unified testing platform, BigTest has access to all the information about a test – before, during, and after it runs. There are no inaccessible information silos, opening up countless possibilities for optimizing tests, creating tools, and generating analytics.
+
+BigTest’s information is made available through a GraphQL server that allows you to receive updates in real time. You can not only read information from BigTest but also issue mutations to make BigTest run tests programmatically. For instance, BigTest's CLI is simple because it is nothing more than a GraphQL client.
+
+
+![Diagram describing BigTest's orchestrator and how it communicates with the agent and the CLI through GraphQL](./assets/diagram-full.png)
+
+## Projects
+
+### Interactors (Beta)
 
 The first element of our platform – BigTest Interactors – is a library designed to help you write UI tests from the outside in that are both efficient and valuable.
 
@@ -20,12 +46,12 @@ BigTest Interactors manipulate an HTML interface from the perspective of a user 
 
 Not only are BigTest Interactors valuable, but they’re fast and precise too. By using its unique [convergence strategy][1] and only coupling wait times to observable states, BigTest Interactors naturally use the minimum amount of synchronization time while performing actions and assertions. Because they are strongly associated with both the type and properties of the UI elements they actuate (e.g. Button, Checkbox, Input, ...), they quickly provide the next level in error messaging when something goes wrong or an assertion fails.
 
-## Runner (Alpha)
+### Runner (Alpha)
 
 The BigTest runner a tool designed to meet the needs of an entire organization's testing strategy. It can do this because BigTest has been built from the ground up to be completely environment independent. Rather that coupling to a single runtime like [Electron][2] or [WebDriver][3], it uses an Agent architecture that allows tests to be run environment that supports WebSockets (which is pretty much anything!). That means it can be used to test real web applications against real browsers on any number of devices including iOS and Android. But it also means it can be used to support testing on native apps, desktop apps, and even server side apps. And best of all: the BigTest runner enables radical transparency into the testing process by making all internal state available over a convenient GraphQL API (its CLI in fact is a GraphQL client).
 
 
-## Simulation (Researching)
+### Simulation (Researching)
 A key area of research in the BigTest project involves enabling tests for systems whose dependencies may or may not be available. This could be a frontend team that wants to develop against a backend that doesn't exist yet or is under heavy development, or perhaps a native developer that wants to make an app for a Bluetooth device that been designed but not manufactured. Whatever the reason, both testing and [the entire developer experience are always better off with a simulation strategy][4]
 
 We have deployed such simulators on a number of different projects and are busy investigating the best ways to package them as independent products. Frontside plans to release simulators for

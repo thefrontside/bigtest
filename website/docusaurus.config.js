@@ -75,10 +75,23 @@ module.exports = {
             {
               label: 'Introduction',
               to: 'docs/platform/',
+            }
+          ],
+        },
+        {
+          title: 'BigTest Platform',
+          items: [
+            {
+              label: 'About BigTest',
+              to: 'about/',
             },
             {
               label: 'Architecture',
-              to: 'docs/platform/',
+              to: 'about#architecture',
+            },
+            {
+              label: 'Projects',
+              to: 'about#projects',
             }
           ],
         },
