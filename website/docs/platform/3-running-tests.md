@@ -22,14 +22,14 @@ import TabItem from '@theme/TabItem';
   <TabItem value="npm">
 
   ```
-  $ npx bigtest ci
+  npx bigtest ci
   ```
 
   </TabItem>
   <TabItem value="yarn">
 
   ```
-  $ yarn bigtest ci
+  yarn bigtest ci
   ```
 
   </TabItem>
@@ -56,14 +56,14 @@ First, start the server with this command:
   <TabItem value="npm">
 
   ```
-  $ npx bigtest server --launch=chrome
+  npx bigtest server --launch=chrome
   ```
 
   </TabItem>
   <TabItem value="yarn">
 
   ```
-  $ yarn bigtest server --launch=chrome
+  yarn bigtest server --launch=chrome
   ```
 
   </TabItem>
@@ -81,14 +81,14 @@ Once the server is running, run this command in a separate terminal:
   <TabItem value="npm">
 
   ```
-  $ npx bigtest test
+  npx bigtest test
   ```
 
   </TabItem>
   <TabItem value="yarn">
 
   ```
-  $ yarn bigtest test
+  yarn bigtest test
   ```
 
   </TabItem>

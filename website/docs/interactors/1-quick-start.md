@@ -24,7 +24,7 @@ By the end of this page you will be testing one of your own apps with Interactor
 Run the following command to install a sample project which includes a simple app with test suites implemented for Jest, Cypress, and BigTest:
 
 ```
-$ npx bigtest-sample
+npx bigtest-sample
 ```
 
 After you’ve installed the project, you’ll be able to run the test suite of your choice. For example, for running the Jest suite you can use `npm run test:jest`. More details are available in the welcome message for the project.
@@ -46,14 +46,14 @@ import TabItem from '@theme/TabItem';
   <TabItem value="npm">
 
   ```
-  $ npm install bigtest --save-dev
+  npm install bigtest --save-dev
   ```
 
   </TabItem>
   <TabItem value="yarn">
 
   ```
-  $ yarn add bigtest --dev
+  yarn add bigtest --dev
   ```
 
   </TabItem>
@@ -72,14 +72,14 @@ If you are using Cypress, you will only need to install `@bigtest/cypress`:
   <TabItem value="npm">
 
   ```
-  $ npm install @bigtest/cypress --save-dev
+  npm install @bigtest/cypress --save-dev
   ```
 
   </TabItem>
   <TabItem value="yarn">
 
   ```
-  $ yarn add @bigtest/cypress --dev
+  yarn add @bigtest/cypress --dev
   ```
 
   </TabItem>
