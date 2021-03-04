@@ -2,7 +2,7 @@ const { exec } = require('@effection/node');
 const { subscribe } = require('@effection/subscription');
 const { spawn } = require('effection');
 
-function* install({ cwd, stdio }) {  
+function* install({ cwd, stdio }) {
   let command = process.argv.includes('-Y') || process.argv.includes('-yarn') ? 'yarn' : 'npm';
   let install = yield exec(`${command} install`, { cwd });
   if(stdio === 'inherit'){
@@ -14,9 +14,9 @@ function* install({ cwd, stdio }) {
       process.stderr.write(data);
       return Promise.resolve();
     }));
-  };
+  }
   yield install.expect();
-};
+}
 
 module.exports = {
   install

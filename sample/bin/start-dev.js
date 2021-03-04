@@ -12,12 +12,12 @@ function* dev() {
 
   let appStartScript = JSON.parse(fs.readFileSync('./app-pkg.json')).scripts.start;
   let args = [appStartScript];
-  
+
   let portIndex;
   if(process.argv.includes('-p')){
     portIndex = process.argv.indexOf('-p');
-    args.push(...process.argv.slice(portIndex, portIndex + 2))
-  };
+    args.push(...process.argv.slice(portIndex, portIndex + 2));
+  }
 
   yield fsp.copyFile('app-pkg.json', 'package.json');
   yield install({ stdio: 'inherit' });
@@ -28,13 +28,13 @@ function* dev() {
     process.stdout.write(data);
     return Promise.resolve();
   }));
-  
+
   yield spawn(subscribe(stderr).forEach((data) => {
     process.stderr.write(data);
     return Promise.resolve();
   }));
 
   yield;
-};
+}
 
 main(dev);

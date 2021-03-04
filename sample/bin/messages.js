@@ -8,7 +8,7 @@ const messages = {
     after: chalk`{green Files organized}`
   },
   installing_dep: {
-    before: chalk`{grey Installing... (this'll take a few minutes)}`, 
+    before: chalk`{grey Installing... (this'll take a few minutes)}`,
     after: chalk`{green Installation complete\n}`
   },
   cleanup: chalk`{red Removed generated files because of error\n}`,
