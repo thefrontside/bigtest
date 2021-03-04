@@ -30,7 +30,10 @@
   "eslintConfig": {
     "extends": [
       "@frontside/eslint-config"
-    ]
+    ],
+    "rules": {
+      "@typescript-eslint/no-var-requires": "off"
+    }
   },
   "volta": {
     "node": "12.16.0",
