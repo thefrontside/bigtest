@@ -28,16 +28,15 @@ async function createDirectory(message) {
 function* migrate(messages) {
   yield spin(messages.before, function* () {
     yield fsp.readdir(SOURCE_DIR).then(files => files.forEach((file) => {
-      if(process.argv.includes('-bo')){
-        yield bigtestOnly();
+      if(file === 'app-pkg.json'){
+        fs.renameSync(`${SOURCE_DIR}/app-pkg.json`, `${TARGET_DIR}/package.json`);
       } else {
-        if(file === 'app-pkg.json'){
-          fs.renameSync(`${SOURCE_DIR}/app-pkg.json`, `${TARGET_DIR}/package.json`);
-        } else {
-          fs.renameSync(`${SOURCE_DIR}/${file}`, `${TARGET_DIR}/${file}`);
-        }
+        fs.renameSync(`${SOURCE_DIR}/${file}`, `${TARGET_DIR}/${file}`);
       }
     }));
+    if(process.argv.includes('-bo')){
+      yield bigtestOnly(TARGET_DIR);
+    }
   });
   console.log(formatSuccess(messages.after));
 }
@@ -53,7 +52,9 @@ function* run() {
   try {
     yield migrate(messages.organizing_files);
     yield installDependencies(messages.installing_dep);
-    console.log(messages.success);
+    if(!process.argv.includes('-bo')){
+      console.log(messages.success);
+    }
     rollback = false;
   } finally {
     if(rollback){
