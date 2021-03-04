@@ -1,5 +1,11 @@
 # @bigtest/webdriver
 
+## 0.8.3
+
+### Patch Changes
+
+- 7228fc96: update chromedriver version to be compatible with latest version of chrome.
+
 ## 0.8.2
 
 ### Patch Changes
