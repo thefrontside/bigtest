@@ -33,14 +33,14 @@ import TabItem from '@theme/TabItem';
   <TabItem value="npm">
 
   ```
-  $ npm install bigtest --save-dev
+  npm install bigtest --save-dev
   ```
 
   </TabItem>
   <TabItem value="yarn">
 
   ```
-  $ yarn add bigtest --dev
+  yarn add bigtest --dev
   ```
 
   </TabItem>
@@ -58,14 +58,14 @@ Once that's finished installing, you can run the following command to generate t
   <TabItem value="npm">
 
   ```
-  $ npx bigtest init
+  npx bigtest init
   ```
 
   </TabItem>
   <TabItem value="yarn">
 
   ```
-  $ yarn bigtest init
+  yarn bigtest init
   ```
 
   </TabItem>
