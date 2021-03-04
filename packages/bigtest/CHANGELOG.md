@@ -1,5 +1,11 @@
 # bigtest
 
+## 0.13.3
+
+### Patch Changes
+
+- 7228fc96: update chromedriver version to be compatible with latest version of chrome.
+
 ## 0.13.2
 
 ### Patch Changes
