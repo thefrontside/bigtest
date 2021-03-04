@@ -12,10 +12,18 @@ By the end of this guide, you will learn how to test some common accessibility f
 
 ## Inputs and labels
 
-[Every input in your app needs an associated label](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Input#labels). One way you can ensure this is to use labels as the main way to locate inputs in your tests:
+[Every input in your app needs an associated label](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Input#labels). One way you can ensure this is to use labels as the main way to locate inputs in your tests, instead of looking up an input by `id`.
+The following test would fail if the input was not connected to its label.
 
 ```js
-TODO
+export default test('Email input')
+  .step(Page.visit('/'))
+  .step(TextField('Email').fillIn('something@example.com'));
+```
+
+```html
+<label for="input-email">Email</label>
+<input type="text" id="input-email" />
 ```
 
 If you have a hard time finding an input with your interactors, you may have caught an accessibility bug!
@@ -26,24 +34,37 @@ Whenever you are writing tests like these, it is best to test your app in the wa
 ## Focus management
 
 Focus lets users know what they can interact with.
-A Focused element typically has a special style, such as a bold blue ring around them. The ability to jump between and identify focusable elements is critical, especially for keyboard-only users and people who use assistive tech.
-
-Finding an element that has focus:
-
-```js
-TODO
-```
+A cocused element typically has a special style, such as a bold blue ring around them. The ability to jump between and identify focusable elements is critical, especially for keyboard-only users and people who use assistive tech.
 
 Bring focus to an element:
 
 ```js
-TODO
+export default test('Email input')
+  .step(Page.visit('/'))
+  .step(TextField('Email').focus())
+```
+
+Find the input element that has focus, using the filter `{ focused: true }`:
+
+```js
+export default test('Find focused input')
+  .step(Page.visit('/'))
+  .step(TextField('Email').focus())
+  .step(
+    TextField({ focused: true })
+      .fillIn('something@example.com')
+  )
 ```
 
 Assert that an element has focus:
 
 ```js
-TODO
+export default test('Focus')
+  .step(Page.visit('/'))
+  .step(TextField('Email').focus())
+  .assertion(
+    TextField('Email').is({ focused: true })
+  )
 ```
 
 Focus is just another property of an HTML element. Therefore, when testing for focus you can use an approach that is similar to how you would test other elements, such as whether a checkbox is checked or a button is enabled.
@@ -52,10 +73,22 @@ Focus is just another property of an HTML element. Therefore, when testing for f
 
 Every image in your app that has important meaning should have an alt property that describes it.
 
-Checking the value of an an image's `alt` text:
+Write an interactor for images that finds them by their alt text:
 
 ```js
-TODO
+const Image = createInteractor('image')
+  .selector('img')
+  .locator((element) => element['alt'])
+```
+
+Use this new interactor to find specific images:
+
+```js
+export default test('Image')
+  .step(Page.visit('/'))
+  .assertion(
+    Image('here is some alt text').exists()
+  )
 ```
 
 Again, this is a lot like testing any other property in the DOM.
@@ -68,8 +101,32 @@ In this way, accessibility checks can be woven right into other feature tests wi
 
 Checking if a menu is opened or closed, according to the [`aria-expanded` property](https://www.w3.org/WAI/tutorials/menus/application-menus/):
 
+```html
+<button aria-expanded="false">
+  Toggle
+</button>
+```
+
+Write an interactor that looks for the buttons that control toggling the open
+and close of a menu:
+
 ```js
-TODO
+export const Toggle = createInteractor('toggle')
+  .selector('button')
+  .locator((element) => element.innerHTML)
+  .filters({
+    ariaExpanded: (element) => element.ariaExpanded
+  })
+```
+
+Write an assertion using the `ariaExpanded` filter:
+
+```js
+export default test('Toggle to expand')
+  .step(Page.visit('/'))
+  .assertion(
+    Toggle('Expand', { ariaExpanded: "false" }).exists()
+  )
 ```
 
 You should especially write tests for changes made to aria properties as someone interacts with the UI - the addition of alerts, the state of a progress bar, or dynamically generated aria labels.
@@ -81,7 +138,11 @@ Every page in your app should have a unique title.
 Titles are often overlooked, especially in single page apps, and so they are great to test for!
 
 ```js
-TODO
+export default test('Home page')
+  .step(Page.visit('/'))
+  .assertion(
+    Page.has({ title: 'BigTest Example App' });
+  )
 ```
 
 
