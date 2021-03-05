@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@effection/events": "^1.0.0",
-    "@effection/node": "^1.0.0",
+    "@effection/node": "^1.0.1",
     "@effection/subscription": "^1.0.0",
     "chalk": "^4.1.0",
     "effection": "^1.0.0",

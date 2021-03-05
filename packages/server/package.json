@@ -62,7 +62,7 @@
     "@bigtest/webdriver": "^0.8.2",
     "@effection/events": "^1.0.0",
     "@effection/fetch": "^1.0.0",
-    "@effection/node": "^1.0.0",
+    "@effection/node": "^1.0.1",
     "@effection/subscription": "^1.0.0",
     "@nexus/schema": "^0.13.1",
     "assert-ts": "^0.2.2",

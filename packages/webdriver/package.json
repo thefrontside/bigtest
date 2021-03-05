@@ -33,7 +33,7 @@
     "@bigtest/atom": "^0.12.1",
     "@bigtest/driver": "^0.5.6",
     "@effection/fetch": "^1.0.0",
-    "@effection/node": "^1.0.0",
+    "@effection/node": "^1.0.1",
     "abort-controller": "^3.0.0",
     "chromedriver": ">=88.0.0",
     "effection": "^1.0.0",
