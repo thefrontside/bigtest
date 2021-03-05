@@ -13,12 +13,34 @@ export type ActionsImplementationFn = (...args: any) => Interaction<any>;
 export type FiltersImplementation = Record<string, any>;
 export type ActionsImplementation = Record<string, ActionsImplementationFn>;
 
-/**
- * Instances of an interactor returned by an {@link InteractorConstructor}, use
- * this class as its base. They are also extended with any additional actions
- * defined in their {@link InteractorSpecification}.
- */
-export interface Interactor<E extends Element, F extends FiltersImplementation> {
+export interface ExistsAssertionsImplementation {
+
+  /**
+   * An assertion which checks that an element matching the interactor exists.
+   * Throws an error if the element does not exist.
+   *
+   * ## Example
+   *
+   * ``` typescript
+   * await Link('Next').exists();
+   * ```
+   */
+  exists(): ReadonlyInteraction<void>;
+
+  /**
+   * An assertion which checks that an element matching the interactor does not
+   * exist. Throws an error if the element exists.
+   *
+   * ## Example
+   *
+   * ``` typescript
+   * await Link('Next').absent();
+   * ```
+   */
+  absent(): ReadonlyInteraction<void>;
+}
+
+export interface BaseInteractor<E extends Element, F extends FiltersImplementation> {
   /**
    * @hidden
    */
@@ -80,30 +102,6 @@ export interface Interactor<E extends Element, F extends FiltersImplementation> 
   assert(fn: (element: E) => void): Interaction<void>;
 
   /**
-   * An assertion which checks that an element matching the interactor exists.
-   * Throws an error if the element does not exist.
-   *
-   * ## Example
-   *
-   * ``` typescript
-   * await Link('Next').exists();
-   * ```
-   */
-  exists(): ReadonlyInteraction<void>;
-
-  /**
-   * An assertion which checks that an element matching the interactor does not
-   * exist. Throws an error if the element exists.
-   *
-   * ## Example
-   *
-   * ``` typescript
-   * await Link('Next').absent();
-   * ```
-   */
-  absent(): ReadonlyInteraction<void>;
-
-  /**
    * Checks that there is one element matching the interactor, and that this
    * element matches the given filters. The available filters are defined by
    * the {@link InteractorSpecification}.
@@ -127,6 +125,13 @@ export interface Interactor<E extends Element, F extends FiltersImplementation> 
    */
   is(filters: F): ReadonlyInteraction<void>;
 }
+
+/**
+ * Instances of an interactor returned by an {@link InteractorConstructor}, use
+ * this class as its base. They are also extended with any additional actions
+ * defined in their {@link InteractorSpecification}.
+ */
+export interface Interactor<E extends Element, F extends FiltersImplementation> extends BaseInteractor<E, F>, ExistsAssertionsImplementation {}
 
 export type ActionFn<E extends Element> = (interactor: Interactor<E, EmptyObject>, ...args: any[]) => Promise<unknown>;
 export type FilterFn<T, E extends Element> = (element: E) => T;
@@ -241,6 +246,11 @@ export interface InteractorConstructor<E extends Element, FP extends FilterParam
    * @param filters An object describing a set of filters to apply, which should match the value of applying the filters defined in the {@link InteractorSpecification} to the element.
    */
   (value: MaybeMatcher<string>, filters?: FP): Interactor<E, FP> & AM;
+
+  /**
+   * Finds all matched by selector elements and wraps each of them to intreactor
+   */
+  all(): (BaseInteractor<E, FP> & AM)[]
 }
 
 /**
