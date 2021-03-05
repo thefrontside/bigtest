@@ -30,7 +30,7 @@ function* migrate(messages) {
     yield fsp.readdir(SOURCE_DIR).then(files => files.forEach((file) => {
       if(file === 'app-pkg.json'){
         fs.renameSync(`${SOURCE_DIR}/app-pkg.json`, `${TARGET_DIR}/package.json`);
-      } else {
+      } else if(file !== '.npmignore') {
         fs.renameSync(`${SOURCE_DIR}/${file}`, `${TARGET_DIR}/${file}`);
       }
     }));

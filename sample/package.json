@@ -15,6 +15,7 @@
   "bin": {
     "sample": "./bin/create-sample-app.js"
   },
+  "files": ["*"],
   "dependencies": {
     "@effection/events": "^1.0.0",
     "@effection/node": "^1.0.1",
