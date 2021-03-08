@@ -3,7 +3,7 @@ const rmrfsync = require('rimraf').sync;
 
 function* bigtestOnly(dir) {
   let { dependencies } = require(`${dir}/package.json`);
-  let { bigtest, parcel, react, 'react-dom': reactDom } = dependencies;
+  let { bigtest, parcel, react, 'react-dom': reactDom, typescript } = dependencies;
 
   let pkgjson = JSON.stringify({
     "name": "bigtest-sample-app",
@@ -22,7 +22,8 @@ function* bigtestOnly(dir) {
       "bigtest": `${bigtest}`,
       "parcel": `${parcel}`,
       "react": `${react}`,
-      "react-dom": `${reactDom}`
+      "react-dom": `${reactDom}`,
+      "typescript": `${typescript}`
     },
     "volta": {
       "node": "12.16.0",
