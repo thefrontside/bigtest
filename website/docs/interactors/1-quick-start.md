@@ -315,11 +315,11 @@ As you can see, Interactors not only make it simple to use DOM elements like Rad
 
 ### Continue learning about Interactors
 
-Try using more of the [Built-in Interactors](2-built-in-dom.md) within your tests such as `Link`, `Checkbox`, `TextField`, and more.
+Try using more of the [Built-in Interactors](/docs/interactors/built-in-dom) within your tests such as `Link`, `Checkbox`, `TextField`, and more.
 
-You’ll quickly realize how much more powerful Interactors are when combined with [Locators, Filters, and Actions](3-locators-filters-actions.md).
+You’ll quickly realize how much more powerful Interactors are when combined with [Locators, Filters, and Actions](/docs/interactors/locators-filters-actions).
 
-Once you are comfortable with those, you’ll want to [write your own Interactors](4-write-your-own.md) to explore just how useful they can be.
+Once you are comfortable with those, you’ll want to [write your own Interactors](/docs/interactors/write-your-own) to explore just how useful they can be.
 ### Join the BigTest community
 
 If you want to know more about BigTest or run into any problem with Interactors, you can reach out to us on our Discord channel. We're eager to help you get started and hear your feedback on how to improve BigTest. [Join us today!](https://discord.gg/r6AvtnU)

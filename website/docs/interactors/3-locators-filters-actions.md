@@ -50,7 +50,7 @@ TextField('Username:', { id: 'username-id' }).exists();
  _See the source code of the TextField interactor [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts)_.
 :::
 
-You can think of the locator as the "default filter" because filters and locators both provide the same functionality. The reason why BigTest offers both solutions is convenience, because having to pass in an object for each interactor can get repetitive.
+You can think of the locator as the "default filter" since filters and locators both provide the same functionality. The reason why BigTest offers both solutions is convenience, because having to pass in an object for each interactor can get repetitive.
 
 Filters are useful in a variety of contexts. For example, most forms have multiple textfields. You would need to use a filter if they do not have labels or if there are multiple labels with the same value, as a locator would not work in such a scenario.
 
@@ -78,45 +78,8 @@ TextField({ id: 'username-id', placeholder: 'USERNAME', visible: true }).exists(
 
 The filters available are defined by each interactor, so look at the API docs for the built-in interactors or the code for your own interactors to know what is available. For example, if you take a look at the [TextField source code](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts), you'll see that the TextField interactor provides eight different filters.
 
-Later on the [Writing Interactors](4-write-your-own.md) page you will learn how to add your own filters to Interactors.
+Later on the [Writing Interactors](/docs/interactors/write-your-own) page you will learn how to add your own filters to Interactors.
 
-### Asserting with filters
-
-Filters can be very convenient for finding matching UI elements, but where they really shine is in making assertions about what you expect your application to be showing.
-
-In the [Quick Start](/docs/interactors/#making-test-assertions) we briefly touched on the assertion methods that are available for all interactors - `exists()` and `absent()`. There is also `has()` which allows you pass in a filter as its argument.
-
-:::note
- These different assertion methods are equivalents of Jest's `expect` and Cypress' `should`. When refactoring your test with Interactors, you would replace those constructs with the interactors' assertion methods.
-:::
-
-In the case of a form with textfields, you would assert the placeholder against a textfield like this:
-
-```js
-TextField({ id: 'username-id' }).has({ placeholder: 'USERNAME' });
-```
-
-The difference between this approach and using `exists()` is that `exists()` is less refined as it will succeed as long as there is at least one match. With the two textfields for the username and password, the assertion would fail on if we were to write a test like this:
-
-```js
-TextField().has({ placeholder: 'USERNAME' });
-```
-
-It would fail on account of the textfield that has the placeholder value `PASSWORD`. You therefore need to choose the assertion method that is most appropriate for your tests.
-
-Lastly, there is also the `is()` method, which works just as `has()` does. The only difference is in the semantics so that your tests can read better.
-
-For instance, if we wanted to test if a textfield is visible, `has()` would work perfectly fine; but writing the test using `is()` would look more natural like this:
-
-```js
-TextField({ id: 'username-id' }).is({ visible: true });
-```
-
-It makes more sense to say "text field _is_ visible" rather than "text field _has_ visible". Generally, we recommend using `is()` if your assertion is an adjective, and use `has()` if your assertion is a noun. For example, if we wanted to assert for `visibility`, then it would sound more natural to use `has()` instead:
-
-```js
-TextField({ id: 'username-id' }).has({ visibility: true });
-```
 
 ## Actions
 
@@ -130,7 +93,7 @@ Button('Submit').click();
 
 It’s that simple! Because Interactors can only match one element, there’s no ambiguity over which submit button you clicked. Additionally, the action will not occur if the Interactor is not there, so you don’t have to worry about checking if the button exists before issuing a click action.
 
-On the [Writing Interactors](4-write-your-own.md) page we'll also explain how you can construct your own actions to suit your needs when you create your own Interactors.
+On the [Writing Interactors](/docs/interactors/write-your-own) page we'll also explain how you can construct your own actions to suit your needs when you create your own Interactors.
 
 ## Up Next
 
