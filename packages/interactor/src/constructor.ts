@@ -193,10 +193,15 @@ export function instantiateInteractor<E extends Element, F extends Filters<E>, A
   return interactor as Interactor<E, FilterParams<E, F>> & ActionMethods<E, A>;
 }
 
-export function createConstructor<E extends Element, FP extends FilterParams<any, any>, AM extends ActionMethods<any, any>>(
+export function createConstructor<
+  E extends Element,
+  FP extends FilterParams<any, any>,
+  AM extends ActionMethods<any, any>,
+  IS extends InteractorSpecification<any, any, any>
+>(
   name: string,
-  specification: InteractorSpecification<E, any, any>,
-): InteractorConstructor<E, FP, AM> {
+  specification: IS,
+): InteractorConstructor<E, FP, AM, IS> {
   function initInteractor(...args: any[]) {
     let locator, filter;
     if(typeof(args[0]) === 'string' || isMatcher(args[0])) {
@@ -207,6 +212,7 @@ export function createConstructor<E extends Element, FP extends FilterParams<any
     }
     return instantiateInteractor({ name, specification, filter, locator, ancestors: [] });
   }
+  initInteractor.specification = specification
 
-  return makeBuilder(initInteractor, name, specification) as unknown as InteractorConstructor<E, FP, AM>;
+  return makeBuilder(initInteractor, name, specification) as unknown as InteractorConstructor<E, FP, AM, IS>;
 }

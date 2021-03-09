@@ -21,7 +21,7 @@ import { makeBuilder } from './builder';
  * @returns You will need to call the returned builder to create an interactor.
  */
 export function createInteractor<E extends Element>(name: string): InteractorSpecificationBuilder<E> {
-  let cons = function<F extends Filters<E> = EmptyObject, A extends Actions<E> = EmptyObject>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, FilterParams<E, F>, ActionMethods<E, A>> {
+  let cons = function<F extends Filters<E> = EmptyObject, A extends Actions<E> = EmptyObject>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, FilterParams<E, F>, ActionMethods<E, A>, InteractorSpecification<E, F, A>> {
     return createConstructor(name, specification);
   }
   return makeBuilder(cons, name, {
