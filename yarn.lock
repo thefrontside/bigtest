@@ -1991,16 +1991,16 @@
     effection "^0.8.0"
     shellwords "^0.1.1"
 
-"@effection/node@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@effection/node/-/node-1.0.0.tgz#448dc201e9741ebd97000fd23f9a8fbac6da9447"
-  integrity sha512-5DK/2Dsm1OaZJFan7uHBQ9/ZfFGoKlCMX883ipEQjvqsdkgwmThHLUxKKu5+jbBusVpKT+JatLXfiy3sleEmGw==
+"@effection/node@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@effection/node/-/node-1.0.1.tgz#ea37041046a592b1f02ca397810c6c811806948e"
+  integrity sha512-mbgpMeLhyLYcVFgInOWnXNb1DPC3ZnijIVdA+VFfa9tnzUuUP0ZpeAVMgdMcaclx1pD4f/WPmCCV93w37O/66Q==
   dependencies:
     "@effection/channel" "^1.0.0"
     "@effection/events" "^1.0.0"
     "@effection/subscription" "^1.0.0"
     cross-spawn "^7.0.3"
-    ctrlc-windows "^1.0.2"
+    ctrlc-windows "^1.0.3"
     effection "^1.0.0"
     shellwords "^0.1.1"
 
@@ -4448,6 +4448,14 @@ ctrlc-windows@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/ctrlc-windows/-/ctrlc-windows-1.0.2.tgz#4fd723f3611bd0760277689f8daef9ceed73d92d"
   integrity sha512-TbJhs5FhoJSMSP3V8MbV19L34/DX8GZAlKJ5ttgTi8PuycY+NAy+hc73QoqJSav3e1lE8SUggAS6q10J2M0DFA==
+  dependencies:
+    neon-cli "^0.5.0"
+    node-pre-gyp "^0.16.0"
+
+ctrlc-windows@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/ctrlc-windows/-/ctrlc-windows-1.0.3.tgz#ab00c48393a1ea2052cd6b7723025e29231709ff"
+  integrity sha512-Ld3g7vKQ9V5xWHYllbB+7k9bUy+MBAaVPGgUzLWsCY9S4UBj/rpGyf2ojRYgITe/1TccK2rXcNHr54kS90d5yA==
   dependencies:
     neon-cli "^0.5.0"
     node-pre-gyp "^0.16.0"
