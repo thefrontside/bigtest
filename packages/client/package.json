@@ -20,8 +20,8 @@
     "prepack": "tsc --build && tsc --outdir dist/esm --module es2015 && tsc --outdir dist/cjs --module commonjs"
   },
   "dependencies": {
-    "@effection/events": "^0.7.9",
-    "effection": "^0.8.0",
+    "@effection/events": "^1.0.0",
+    "effection": "^1.0.0",
     "websocket": "^1.0.31"
   },
   "devDependencies": {

@@ -1935,6 +1935,15 @@
     "@effection/subscription" "^0.12.0"
     effection "^0.8.0"
 
+"@effection/channel@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@effection/channel/-/channel-1.0.0.tgz#6f41e210d3bf88298784f6716a074d834246e381"
+  integrity sha512-uMzvWqGxWu9pBMEHKk/NqPuL4sg1Fg4W2nsdv14yn+y7JXl1lTAFMk0t8prwnZCLMGEew1NxwwdnFiD9Q6Mrhw==
+  dependencies:
+    "@effection/events" "^1.0.0"
+    "@effection/subscription" "^1.0.0"
+    effection "^1.0.0"
+
 "@effection/events@^0.7.8":
   version "0.7.8"
   resolved "https://registry.yarnpkg.com/@effection/events/-/events-0.7.8.tgz#3cb8ec5e96b0ad7719e82a2163975cf7d6a77d7d"
@@ -1951,14 +1960,22 @@
     "@effection/subscription" "^0.12.0"
     effection "^0.8.0"
 
-"@effection/fetch@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@effection/fetch/-/fetch-0.1.3.tgz#49afe1b5e00888efe54e5c910e0c5e592bddb989"
-  integrity sha512-cpkPGus2JFNrzPpZGhb9grU2XXyGgQ/+sIWh7fkvsLZKueNRTUqY0Hf78BxPVwIWUzyw4ynh6X3agEjwDTalmQ==
+"@effection/events@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@effection/events/-/events-1.0.0.tgz#4430ed538377bf04a5efd7c3b6d40a7b4e2b0607"
+  integrity sha512-IiQLoGktVBucpCGqWInhT35a7oMeeelIK7XmWTm/35D8ViL2KBLNH700gGcXe6pAQAR0NZghbTQf1s25nt/I4w==
+  dependencies:
+    "@effection/subscription" "^1.0.0"
+    effection "^1.0.0"
+
+"@effection/fetch@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@effection/fetch/-/fetch-1.0.0.tgz#9d868b880a744d5d2292664bb481ddb8fb3fb89a"
+  integrity sha512-G12wiCcUdypa2/KT7iKMpVQbrbM0omGnvPZgCHiv3P1zmVuPpiht557BL97dzypr9L5NFasuMjQDazGLk0ggFg==
   dependencies:
     abort-controller "^3.0.0"
     cross-fetch "^3.0.4"
-    effection "^0.8.0"
+    effection "^1.0.0"
     node-fetch "^2.6.1"
 
 "@effection/node@^0.9.2":
@@ -1972,6 +1989,19 @@
     cross-spawn "^7.0.3"
     ctrlc-windows "^1.0.2"
     effection "^0.8.0"
+    shellwords "^0.1.1"
+
+"@effection/node@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@effection/node/-/node-1.0.0.tgz#448dc201e9741ebd97000fd23f9a8fbac6da9447"
+  integrity sha512-5DK/2Dsm1OaZJFan7uHBQ9/ZfFGoKlCMX883ipEQjvqsdkgwmThHLUxKKu5+jbBusVpKT+JatLXfiy3sleEmGw==
+  dependencies:
+    "@effection/channel" "^1.0.0"
+    "@effection/events" "^1.0.0"
+    "@effection/subscription" "^1.0.0"
+    cross-spawn "^7.0.3"
+    ctrlc-windows "^1.0.2"
+    effection "^1.0.0"
     shellwords "^0.1.1"
 
 "@effection/subscription@^0.11.0":
@@ -1994,6 +2024,13 @@
   integrity sha512-SpMX+yjawyUvDgFcgrHDyH7q/2OFDdF8Zsm62zb4qw/8b+HLZV2yRP8MC7yNni9z6JapzVW6TORmC4VFGtf7RQ==
   dependencies:
     effection "^0.8.0"
+
+"@effection/subscription@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-1.0.0.tgz#331cc08f8ebc5a09be705532d93d4d308e31ff44"
+  integrity sha512-Uldp70Yv/i8vbP+f7vr7U14YMT7iZUm8yrsWKcNUCGOypM8kCPXX3ihtvJ+P3ZpFShecfFQQpjblIVaBEkx37g==
+  dependencies:
+    effection "^1.0.0"
 
 "@eslint/eslintrc@^0.2.2":
   version "0.2.2"
@@ -4798,15 +4835,20 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-effection@0.8.0, effection@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/effection/-/effection-0.8.0.tgz#55426e611825af610ac31858496853319d757126"
-  integrity sha512-sohyRJ+StqWnPWbTe+0n9SdZUzXlCphHRVjAIEpJZ1UXGe/RyWX5HL1woxQYcfD6HngBEnpLh2Knx0II2IT0Iw==
-
 effection@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/effection/-/effection-0.7.0.tgz#9cdb74d075021af0715c18124038d3b0dca01363"
   integrity sha512-p9Y1YiFI/WH5L1DzGJg/RFPFQgpXyHd1xKvGpFkzR8ah/nUGdcDtXHavj9wJgPpuHtxM2ef5YPXA7ySMmuEa1w==
+
+effection@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/effection/-/effection-0.8.0.tgz#55426e611825af610ac31858496853319d757126"
+  integrity sha512-sohyRJ+StqWnPWbTe+0n9SdZUzXlCphHRVjAIEpJZ1UXGe/RyWX5HL1woxQYcfD6HngBEnpLh2Knx0II2IT0Iw==
+
+effection@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/effection/-/effection-1.0.0.tgz#7c20ee4ea6e63fddb5a51461dda8009b649b4195"
+  integrity sha512-ITAAnuI7sJqKhjvYlnm66NHaW7zrXzqgsGsjVaaqFHYDWPN8WylVj46xASfkrtwq5wmklbzy6tvRYaj2C4rDHw==
 
 electron-to-chromium@^1.3.481:
   version "1.3.481"
