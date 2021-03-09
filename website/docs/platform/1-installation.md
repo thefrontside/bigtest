@@ -8,7 +8,7 @@ BigTest is a free, Open Source testing platform built from scratch for the moder
 
 After following along with these guides, you will be up and running with some new user interface tests.
 
-The BigTest platform and its documentation are in the alpha phase. We welcome any feedback or questions! Please feel free to reach out to us in [the Discord chat](https://discord.gg/r6AvtnU).
+The BigTest runner and its documentation are in the alpha phase. We welcome any feedback or questions! Please feel free to reach out to us in [the Discord chat](https://discord.gg/r6AvtnU).
 
 ## Prerequisites
 - [`npm`](https://www.npmjs.com/get-npm) or [`yarn`](https://classic.yarnpkg.com/en/docs/install)
