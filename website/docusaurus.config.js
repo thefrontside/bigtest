@@ -31,7 +31,7 @@ module.exports = {
         },{
           to: '/platform',
           activeBaseRegex: '(platform)|(docs\/platform)',
-          label: 'Platform',
+          label: 'Runner',
           position: 'left',
         }, {
           to: '/about',
@@ -66,15 +66,32 @@ module.exports = {
           ],
         },
         {
-          title: 'Platform',
+          title: 'Runner',
           items: [
             {
-              label: 'About the BigTest platform',
+              label: 'About the Runner',
               to: 'platform/',
             },
             {
               label: 'Introduction',
               to: 'docs/platform/',
+            }
+          ],
+        },
+        {
+          title: 'BigTest Platform',
+          items: [
+            {
+              label: 'About BigTest',
+              to: 'about/',
+            },
+            {
+              label: 'Architecture',
+              to: 'about#architecture',
+            },
+            {
+              label: 'Projects',
+              to: 'about#projects',
             }
           ],
         },
