@@ -8,11 +8,6 @@ import { MaybeMatcher } from './matcher';
 
 export type EmptyObject = Record<never, never>;
 
-export type ActionsImplementationFn = (...args: any) => Interaction<any>;
-
-export type FiltersImplementation = Record<string, any>;
-export type ActionsImplementation = Record<string, ActionsImplementationFn>;
-
 export interface ExistsAssertionsImplementation {
 
   /**
@@ -40,7 +35,7 @@ export interface ExistsAssertionsImplementation {
   absent(): ReadonlyInteraction<void>;
 }
 
-export interface BaseInteractor<E extends Element, F extends FiltersImplementation> {
+export interface BaseInteractor<E extends Element, F extends FilterParams<any, any>> {
   /**
    * @hidden
    */
@@ -50,24 +45,6 @@ export interface BaseInteractor<E extends Element, F extends FiltersImplementati
    * @returns a human readable description of this interactor
    */
   description: string;
-
-  /**
-   * Returns a copy of the given interactor which is scoped to this interactor.
-   * When there are multiple matches for an interactor, this makes it possible
-   * to make them more specific by limiting the interactor to a section of the
-   * page.
-   *
-   * ## Example
-   *
-   * ``` typescript
-   * await Fieldset('Owner').find(TextField('Name')).fillIn('Jonas');
-   * await Fieldset('Brand').find(TextField('Name')).fillIn('Volkswagen');
-   * ```
-   * @param interactor the interactor which should be scoped
-   * @returns a scoped copy of the initial interactor
-   * @typeParam T the type of the interactor that we are going to scope
-   */
-  find<T extends Interactor<any, any>>(interactor: T): T;
 
   /**
    * Perform a one-off action on the given interactor. Takes a function which
@@ -131,7 +108,25 @@ export interface BaseInteractor<E extends Element, F extends FiltersImplementati
  * this class as its base. They are also extended with any additional actions
  * defined in their {@link InteractorSpecification}.
  */
-export interface Interactor<E extends Element, F extends FiltersImplementation> extends BaseInteractor<E, F>, ExistsAssertionsImplementation {}
+export interface Interactor<E extends Element, F extends FilterParams<any, any>> extends BaseInteractor<E, F>, ExistsAssertionsImplementation {
+  /**
+   * Returns a copy of the given interactor which is scoped to this interactor.
+   * When there are multiple matches for an interactor, this makes it possible
+   * to make them more specific by limiting the interactor to a section of the
+   * page.
+   *
+   * ## Example
+   *
+   * ``` typescript
+   * await Fieldset('Owner').find(TextField('Name')).fillIn('Jonas');
+   * await Fieldset('Brand').find(TextField('Name')).fillIn('Volkswagen');
+   * ```
+   * @param interactor the interactor which should be scoped
+   * @returns a scoped copy of the initial interactor
+   * @typeParam T the type of the interactor that we are going to scope
+   */
+   find<T extends Interactor<any, any>>(interactor: T): T;
+}
 
 export type ActionFn<E extends Element> = (interactor: Interactor<E, EmptyObject>, ...args: any[]) => Promise<unknown>;
 export type FilterFn<T, E extends Element> = (element: E) => T;
@@ -246,11 +241,6 @@ export interface InteractorConstructor<E extends Element, FP extends FilterParam
    * @param filters An object describing a set of filters to apply, which should match the value of applying the filters defined in the {@link InteractorSpecification} to the element.
    */
   (value: MaybeMatcher<string>, filters?: FP): Interactor<E, FP> & AM;
-
-  /**
-   * Finds all matched by selector elements and wraps each of them to intreactor
-   */
-  all(): (BaseInteractor<E, FP> & AM)[]
 }
 
 /**

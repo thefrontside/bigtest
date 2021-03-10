@@ -3,7 +3,18 @@
 import { bigtestGlobals } from '@bigtest/globals';
 import { converge } from './converge';
 import { makeBuilder } from './builder';
-import { InteractorOptions, ActionMethods, LocatorFn, InteractorConstructor, Interactor, Filters, Actions, FilterParams, InteractorSpecification, BaseInteractor } from './specification';
+import {
+  InteractorOptions,
+  ActionMethods,
+  LocatorFn,
+  InteractorConstructor,
+  Interactor,
+  Filters,
+  Actions,
+  FilterParams,
+  InteractorSpecification,
+  BaseInteractor,
+} from './specification';
 import { Filter } from './filter';
 import { Locator } from './locator';
 import { MatchFilter } from './match';
@@ -17,7 +28,7 @@ import { isMatcher } from './matcher';
 const defaultLocator: LocatorFn<Element> = (element) => element.textContent || "";
 const defaultSelector = 'div';
 
-function findElements<E extends Element>(parentElement: Element, interactor: InteractorOptions<any, any, any>): E[] {
+export function findElements<E extends Element>(parentElement: Element, interactor: InteractorOptions<any, any, any>): E[] {
   if(interactor.specification.selector === ':root') {
     // this is a bit of a hack, because otherwise there isn't a good way of selecting the root element
     return [parentElement.ownerDocument.querySelector(':root') as E];
@@ -94,7 +105,7 @@ function description(options: InteractorOptions<any, any, any>): string {
   return ancestorsAndSelf.reverse().map(ownDescription).join(' within ');
 }
 
-function unsafeSyncResolveParent(options: InteractorOptions<any, any, any>): Element {
+export function unsafeSyncResolveParent(options: InteractorOptions<any, any, any>): Element {
   return options.ancestors.reduce(resolveUnique, bigtestGlobals.document.documentElement);
 }
 
@@ -102,19 +113,12 @@ function unsafeSyncResolveUnique<E extends Element>(options: InteractorOptions<E
   return resolveUnique(unsafeSyncResolveParent(options), options) as E;
 }
 
-function createInteractor<E extends Element, F extends Filters<E>, A extends Actions<E>>(
+export function instantiateBaseInteractor<E extends Element, F extends Filters<E>, A extends Actions<E>>(
   options: InteractorOptions<E, F, A>,
-  resolver: (options: InteractorOptions<E, any, any>) => E
+  resolver: (options: InteractorOptions<E, F, A>) => E
 ): BaseInteractor<E, FilterParams<E, F>> & ActionMethods<E, A> {
   let interactor = {
     options,
-
-    find<T extends Interactor<any, any>>(child: T): T {
-      return instantiateInteractor({
-        ...child.options,
-        ancestors: [...options.ancestors, options, ...child.options.ancestors]
-      }) as unknown as T;
-    },
 
     get description(): string {
       return description(options);
@@ -183,9 +187,16 @@ function createInteractor<E extends Element, F extends Filters<E>, A extends Act
 export function instantiateInteractor<E extends Element, F extends Filters<E>, A extends Actions<E>>(
   options: InteractorOptions<E, F, A>,
 ): Interactor<E, FilterParams<E, F>> & ActionMethods<E, A> {
-  let interactor = createInteractor(options, unsafeSyncResolveUnique)
+  let interactor = instantiateBaseInteractor(options, unsafeSyncResolveUnique)
 
   return Object.assign(interactor, {
+    find<T extends Interactor<any, any>>(child: T): T {
+      return instantiateInteractor({
+        ...child.options,
+        ancestors: [...options.ancestors, options, ...child.options.ancestors]
+      }) as unknown as T;
+    },
+
     exists(): ReadonlyInteraction<void> {
       return check(`${interactor.description} exists`, () => {
         return converge(() => {
@@ -217,11 +228,6 @@ export function createConstructor<E extends Element, FP extends FilterParams<any
       filter = new Filter(specification, args[0] || {});
     }
     return instantiateInteractor({ name, specification, filter, locator, ancestors: [] });
-  }
-  initInteractor.all = function() {
-    let options = { name, specification, filter: new Filter(specification, {}), ancestors: [] }
-    let elements = findElements<E>(unsafeSyncResolveParent(options), options)
-    return elements.map(element => createInteractor(options, () => element))
   }
 
   return makeBuilder(initInteractor, name, specification) as unknown as InteractorConstructor<E, FP, AM>;
