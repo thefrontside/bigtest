@@ -1,4 +1,4 @@
-import { Button } from '../../src';
+import { Button, including, matching } from '../../src';
 
 describe('Cypress with Interactors', () => {
   beforeEach(() => {
@@ -19,5 +19,12 @@ describe('Cypress with Interactors', () => {
         Button('SIGN IN').exists(),
         Button('LOG OUT').absent()
       ]);
-  })
+  });
+  it('interactors with matchers', () => {
+    cy
+      .expect([
+        Button(including('SIGN')).exists(),
+        Button(matching(/SI(.*)IN/)).exists()
+      ]);
+  });
 });
