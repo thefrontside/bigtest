@@ -8,17 +8,34 @@ import { MaybeMatcher } from './matcher';
 
 export type EmptyObject = Record<never, never>;
 
-export type ActionsImplementationFn = (...args: any) => Interaction<any>;
+export interface ExistsAssertionsImplementation {
 
-export type FiltersImplementation = Record<string, any>;
-export type ActionsImplementation = Record<string, ActionsImplementationFn>;
+  /**
+   * An assertion which checks that an element matching the interactor exists.
+   * Throws an error if the element does not exist.
+   *
+   * ## Example
+   *
+   * ``` typescript
+   * await Link('Next').exists();
+   * ```
+   */
+  exists(): ReadonlyInteraction<void>;
 
-/**
- * Instances of an interactor returned by an {@link InteractorConstructor}, use
- * this class as its base. They are also extended with any additional actions
- * defined in their {@link InteractorSpecification}.
- */
-export interface Interactor<E extends Element, F extends FiltersImplementation> {
+  /**
+   * An assertion which checks that an element matching the interactor does not
+   * exist. Throws an error if the element exists.
+   *
+   * ## Example
+   *
+   * ``` typescript
+   * await Link('Next').absent();
+   * ```
+   */
+  absent(): ReadonlyInteraction<void>;
+}
+
+export interface BaseInteractor<E extends Element, F extends FilterParams<any, any>> {
   /**
    * @hidden
    */
@@ -28,24 +45,6 @@ export interface Interactor<E extends Element, F extends FiltersImplementation> 
    * @returns a human readable description of this interactor
    */
   description: string;
-
-  /**
-   * Returns a copy of the given interactor which is scoped to this interactor.
-   * When there are multiple matches for an interactor, this makes it possible
-   * to make them more specific by limiting the interactor to a section of the
-   * page.
-   *
-   * ## Example
-   *
-   * ``` typescript
-   * await Fieldset('Owner').find(TextField('Name')).fillIn('Jonas');
-   * await Fieldset('Brand').find(TextField('Name')).fillIn('Volkswagen');
-   * ```
-   * @param interactor the interactor which should be scoped
-   * @returns a scoped copy of the initial interactor
-   * @typeParam T the type of the interactor that we are going to scope
-   */
-  find<T extends Interactor<any, any>>(interactor: T): T;
 
   /**
    * Perform a one-off action on the given interactor. Takes a function which
@@ -80,30 +79,6 @@ export interface Interactor<E extends Element, F extends FiltersImplementation> 
   assert(fn: (element: E) => void): Interaction<void>;
 
   /**
-   * An assertion which checks that an element matching the interactor exists.
-   * Throws an error if the element does not exist.
-   *
-   * ## Example
-   *
-   * ``` typescript
-   * await Link('Next').exists();
-   * ```
-   */
-  exists(): ReadonlyInteraction<void>;
-
-  /**
-   * An assertion which checks that an element matching the interactor does not
-   * exist. Throws an error if the element exists.
-   *
-   * ## Example
-   *
-   * ``` typescript
-   * await Link('Next').absent();
-   * ```
-   */
-  absent(): ReadonlyInteraction<void>;
-
-  /**
    * Checks that there is one element matching the interactor, and that this
    * element matches the given filters. The available filters are defined by
    * the {@link InteractorSpecification}.
@@ -126,6 +101,31 @@ export interface Interactor<E extends Element, F extends FiltersImplementation> 
    * ```
    */
   is(filters: F): ReadonlyInteraction<void>;
+}
+
+/**
+ * Instances of an interactor returned by an {@link InteractorConstructor}, use
+ * this class as its base. They are also extended with any additional actions
+ * defined in their {@link InteractorSpecification}.
+ */
+export interface Interactor<E extends Element, F extends FilterParams<any, any>> extends BaseInteractor<E, F>, ExistsAssertionsImplementation {
+  /**
+   * Returns a copy of the given interactor which is scoped to this interactor.
+   * When there are multiple matches for an interactor, this makes it possible
+   * to make them more specific by limiting the interactor to a section of the
+   * page.
+   *
+   * ## Example
+   *
+   * ``` typescript
+   * await Fieldset('Owner').find(TextField('Name')).fillIn('Jonas');
+   * await Fieldset('Brand').find(TextField('Name')).fillIn('Volkswagen');
+   * ```
+   * @param interactor the interactor which should be scoped
+   * @returns a scoped copy of the initial interactor
+   * @typeParam T the type of the interactor that we are going to scope
+   */
+   find<T extends Interactor<any, any>>(interactor: T): T;
 }
 
 export type ActionFn<E extends Element> = (interactor: Interactor<E, EmptyObject>, ...args: any[]) => Promise<unknown>;

@@ -1,6 +1,7 @@
 export { Interactor, InteractorSpecificationBuilder, InteractorConstructor, InteractorBuilder, InteractorSpecification } from './specification';
 export { Interaction, ReadonlyInteraction } from './interaction';
 export { createInteractor } from './create-interactor';
+export { createInspector } from './inspector'
 export { Page } from './page';
 export { App } from './app';
 export { perform } from './perform';

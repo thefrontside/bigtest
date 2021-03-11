@@ -3,7 +3,18 @@
 import { bigtestGlobals } from '@bigtest/globals';
 import { converge } from './converge';
 import { makeBuilder } from './builder';
-import { InteractorOptions, ActionMethods, LocatorFn, InteractorConstructor, Interactor, Filters, Actions, FilterParams, InteractorSpecification } from './specification';
+import {
+  InteractorOptions,
+  ActionMethods,
+  LocatorFn,
+  InteractorConstructor,
+  Interactor,
+  Filters,
+  Actions,
+  FilterParams,
+  InteractorSpecification,
+  BaseInteractor,
+} from './specification';
 import { Filter } from './filter';
 import { Locator } from './locator';
 import { MatchFilter } from './match';
@@ -17,15 +28,17 @@ import { isMatcher } from './matcher';
 const defaultLocator: LocatorFn<Element> = (element) => element.textContent || "";
 const defaultSelector = 'div';
 
-function findMatches(parentElement: Element, interactor: InteractorOptions<any, any, any>): Match<Element, any>[] {
-  let elements;
+export function findElements<E extends Element>(parentElement: Element, interactor: InteractorOptions<any, any, any>): E[] {
   if(interactor.specification.selector === ':root') {
     // this is a bit of a hack, because otherwise there isn't a good way of selecting the root element
-    elements = [parentElement.ownerDocument.querySelector(':root')];
+    return [parentElement.ownerDocument.querySelector(':root') as E];
   } else {
-    elements = Array.from(parentElement.querySelectorAll(interactor.specification.selector || defaultSelector));
+    return Array.from(parentElement.querySelectorAll(interactor.specification.selector || defaultSelector));
   }
-  return elements.map((e) => new Match(e, interactor.filter, interactor.locator));
+}
+
+function findMatches(parentElement: Element, interactor: InteractorOptions<any, any, any>): Match<Element, any>[] {
+  return findElements(parentElement, interactor).map((e) => new Match(e, interactor.filter, interactor.locator));
 }
 
 function findMatchesMatching(parentElement: Element, interactor: InteractorOptions<any, any, any>): Match<Element, any>[] {
@@ -92,7 +105,7 @@ function description(options: InteractorOptions<any, any, any>): string {
   return ancestorsAndSelf.reverse().map(ownDescription).join(' within ');
 }
 
-function unsafeSyncResolveParent(options: InteractorOptions<any, any, any>): Element {
+export function unsafeSyncResolveParent(options: InteractorOptions<any, any, any>): Element {
   return options.ancestors.reduce(resolveUnique, bigtestGlobals.document.documentElement);
 }
 
@@ -100,18 +113,12 @@ function unsafeSyncResolveUnique<E extends Element>(options: InteractorOptions<E
   return resolveUnique(unsafeSyncResolveParent(options), options) as E;
 }
 
-export function instantiateInteractor<E extends Element, F extends Filters<E>, A extends Actions<E>>(
+export function instantiateBaseInteractor<E extends Element, F extends Filters<E>, A extends Actions<E>>(
   options: InteractorOptions<E, F, A>,
-): Interactor<E, FilterParams<E, F>> & ActionMethods<E, A> {
+  resolver: (options: InteractorOptions<E, F, A>) => E
+): BaseInteractor<E, FilterParams<E, F>> & ActionMethods<E, A> {
   let interactor = {
     options,
-
-    find<T extends Interactor<any, any>>(child: T): T {
-      return instantiateInteractor({
-        ...child.options,
-        ancestors: [...options.ancestors, options, ...child.options.ancestors]
-      }) as unknown as T;
-    },
 
     get description(): string {
       return description(options);
@@ -123,7 +130,7 @@ export function instantiateInteractor<E extends Element, F extends Filters<E>, A
           throw new Error(`tried to run perform on ${this.description} in an assertion, perform should only be run in steps`);
         }
         return await converge(() => {
-          fn(unsafeSyncResolveUnique(options));
+          fn(resolver(options));
         });
       });
     },
@@ -131,23 +138,7 @@ export function instantiateInteractor<E extends Element, F extends Filters<E>, A
     assert(fn: (element: E) => void): Interaction<void> {
       return interaction(`${this.description} asserts`, () => {
         return converge(() => {
-          fn(unsafeSyncResolveUnique(options));
-        });
-      });
-    },
-
-    exists(): ReadonlyInteraction<void> {
-      return check(`${this.description} exists`, () => {
-        return converge(() => {
-          resolveNonEmpty(unsafeSyncResolveParent(options), options);
-        });
-      });
-    },
-
-    absent(): ReadonlyInteraction<void> {
-      return check(`${this.description} does not exist`, () => {
-        return converge(() => {
-          resolveEmpty(unsafeSyncResolveParent(options), options);
+          fn(resolver(options));
         });
       });
     },
@@ -160,7 +151,7 @@ export function instantiateInteractor<E extends Element, F extends Filters<E>, A
       let filter = new Filter(options.specification, filters);
       return check(`${this.description} matches filters: ${filter.description}`, () => {
         return converge(() => {
-          let element = unsafeSyncResolveUnique(options);
+          let element = resolver(options);
           let match = new MatchFilter(element, filter);
           if(!match.matches) {
             throw new FilterNotMatchingError(`${description(options)} does not match filters:\n\n${match.formatAsExpectations()}`);
@@ -190,7 +181,38 @@ export function instantiateInteractor<E extends Element, F extends Filters<E>, A
     });
   }
 
-  return interactor as Interactor<E, FilterParams<E, F>> & ActionMethods<E, A>;
+  return interactor as BaseInteractor<E, FilterParams<E, F>> & ActionMethods<E, A>;
+}
+
+export function instantiateInteractor<E extends Element, F extends Filters<E>, A extends Actions<E>>(
+  options: InteractorOptions<E, F, A>,
+): Interactor<E, FilterParams<E, F>> & ActionMethods<E, A> {
+  let interactor = instantiateBaseInteractor(options, unsafeSyncResolveUnique)
+
+  return Object.assign(interactor, {
+    find<T extends Interactor<any, any>>(child: T): T {
+      return instantiateInteractor({
+        ...child.options,
+        ancestors: [...options.ancestors, options, ...child.options.ancestors]
+      }) as unknown as T;
+    },
+
+    exists(): ReadonlyInteraction<void> {
+      return check(`${interactor.description} exists`, () => {
+        return converge(() => {
+          resolveNonEmpty(unsafeSyncResolveParent(options), options);
+        });
+      });
+    },
+
+    absent(): ReadonlyInteraction<void> {
+      return check(`${interactor.description} does not exist`, () => {
+        return converge(() => {
+          resolveEmpty(unsafeSyncResolveParent(options), options);
+        });
+      });
+    }
+  });
 }
 
 export function createConstructor<E extends Element, FP extends FilterParams<any, any>, AM extends ActionMethods<any, any>>(

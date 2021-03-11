@@ -1,4 +1,3 @@
-export type LocatorFn<E extends Element> = (element: E) => string;
 import { Filters, FilterFn, FilterObject, FilterParams, InteractorSpecification } from './specification';
 import { noCase } from 'change-case';
 import { formatMatcher } from './matcher';
