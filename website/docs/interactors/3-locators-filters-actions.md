@@ -100,4 +100,4 @@ On the [Writing Interactors](/docs/interactors/write-your-own) page we'll also e
 
 Locators, filters, and actions can be convenient for finding and interacting with matching UI elements, but where they really shine is in making assertions about what you expect your application to be showing.
 
-In the next page, [Assertions and Matchers](/docs/interactors/assertions-matchers), we will first introduce matchers that will help you further narrow down your UI elements in very specific cases, and then we will explore how you can use filters to make assertions.
+In the next page, [Assertions and Matchers](/docs/interactors/assertions-matchers), we will explore how you can use filters to make assertions, and then we will introduce matchers which will help you further narrow down your UI elements in very specific cases.
