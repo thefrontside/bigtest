@@ -158,7 +158,7 @@ If you are using the sample project, you can find these examples inside `bigtest
 Now run your tests as you usually would or use any of the sample project options. Congratulations – you used your first Interactor!
 
 :::note The BigTest Runner
- There's more to BigTest than just Interactors. BigTest can also run your tests on any _real_ browser – just like your users use. We have built a new integrated platform from the ground up to help you test more with less effort. And best of all it's free and Open Source! [Check it out](/platform), and let us know what you think.
+There's more to BigTest than just Interactors. BigTest can also run your tests on any _real_ browser – just like your users use. We have built a new integrated platform from the ground up to help you test more with less effort. And best of all it's free and Open Source! [Check it out](/platform), and let us know what you think.
 :::
 
 ## Making test assertions
@@ -320,6 +320,7 @@ Try using more of the [Built-in Interactors](/docs/interactors/built-in-dom) wit
 You’ll quickly realize how much more powerful Interactors are when combined with [Locators, Filters, and Actions](/docs/interactors/locators-filters-actions).
 
 Once you are comfortable with those, you’ll want to [write your own Interactors](/docs/interactors/write-your-own) to explore just how useful they can be.
+
 ### Join the BigTest community
 
 If you want to know more about BigTest or run into any problem with Interactors, you can reach out to us on our Discord channel. We're eager to help you get started and hear your feedback on how to improve BigTest. [Join us today!](https://discord.gg/r6AvtnU)
