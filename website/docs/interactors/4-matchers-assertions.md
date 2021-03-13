@@ -1,16 +1,15 @@
 ---
-id: assertions-matchers
-title: Assertions and Matchers
+id: matchers-assertions
+title: Matchers and Assertions
 ---
 
+## Matchers
+
 ## Assertions
-
-Filters can be very convenient for finding matching UI elements, but where they really shine is in making assertions about what you expect your application to be showing.
-
 In the [Quick Start](/docs/interactors/#making-test-assertions) we briefly touched on the assertion methods that are available for all interactors - `exists()` and `absent()`. There is also `has()` which allows you pass in a filter as its argument.
 
 :::note
- These different assertion methods are equivalents of Jest's `expect` and Cypress' `should`. When refactoring your test with Interactors, you would replace those constructs with the interactors' assertion methods.
+These different assertion methods are equivalents of Jest's `expect` and Cypress' `should`. When refactoring your test with Interactors, you would replace those constructs with the interactors' assertion methods.
 :::
 
 In the case of a form with textfields, you would assert the placeholder against a textfield like this:
@@ -41,20 +40,6 @@ It makes more sense to say "text field _is_ visible" rather than "text field _ha
 TextField({ id: 'username-id' }).has({ visibility: true });
 ```
 
-## Matchers
-### strings(substring?|regexp?)
-including `HTML({ title: including('') })`
-matching  `HTML({ title: matching(/he(llo|ck/)) })`
+## Up Next
 
-### iterables(matcher?)
-some `MultiSelect().has({ values: some('') })`
-every `MultiSelect().has({ values: every('') })`
-
-### combinators(matcher?)
-and `HTML({ title: and('', '') })`
-or `HTML({ title: or('', '') })`
-not `HTML({ title: not('') })`
-
-#### questions
-- do matchers only work as values of filters/locators? or can they be used AS filters/locators?
-  - HTML(or({id: ''}, {title:''}))
+By now you should have a much better understanding of how to locate, interact with, and make assertions with Interactors. But what if you keep running into a combination of locators, filters, and actions across your UI? [Writing your own Interactors](/docs/interactors/write-your-own) allows you to package a simple and reusable way of testing a component or element that you and your team can use in their test suites.
