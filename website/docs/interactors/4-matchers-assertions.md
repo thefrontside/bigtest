@@ -1,6 +1,6 @@
 ---
-id: matchers-assertions
-title: Matchers and Assertions
+id: assertions-matchers
+title: Assertions and Matchers
 ---
 
 The methods in which we use locators and filters, as we have illustrated in the previous page, are very explicit. There may be times when some flexibility in your interactors is necessary in order to write better tests. And that's where matchers come in. <!-- the paragraph above needs to be fact checked -->

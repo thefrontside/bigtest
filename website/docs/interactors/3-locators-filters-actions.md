@@ -80,7 +80,7 @@ TextField({ id: 'username-id', placeholder: 'USERNAME', visible: true }).exists(
 
 The filters available are defined by each interactor, so look at the API docs for the built-in interactors or the code for your own interactors to know what is available. For example, if you take a look at the [TextField source code](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts), you'll see that the TextField interactor provides eight different filters.
 
-The [Matchers and Assertions](/docs/interactors/matchers-assertions) page will cover how you can use filters to assert against Interactors in your tests. And later on the [Writing Interactors](/docs/interactors/write-your-own) page you will learn how to add your own filters to Interactors.
+The [Assertions and Matchers](/docs/interactors/assertions-matchers) page will cover how you can use filters to assert against Interactors in your tests. And later on the [Writing Interactors](/docs/interactors/write-your-own) page you will learn how to add your own filters to Interactors.
 
 ## Actions
 
@@ -100,4 +100,4 @@ On the [Writing Interactors](/docs/interactors/write-your-own) page we'll also e
 
 Locators, filters, and actions can be convenient for finding and interacting with matching UI elements, but where they really shine is in making assertions about what you expect your application to be showing.
 
-In the next page, [Matchers and Assertions](/docs/interactors/matchers-assertions), we will first introduce matchers that will help you further narrow down your UI elements in very specific cases, and then we will explore how you can use filters to make assertions.
+In the next page, [Assertions and Matchers](/docs/interactors/assertions-matchers), we will first introduce matchers that will help you further narrow down your UI elements in very specific cases, and then we will explore how you can use filters to make assertions.
