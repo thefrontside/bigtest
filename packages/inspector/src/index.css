@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bigtest-body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.bigtest-code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+.min-h-64 {
+  min-height: 16rem;
+}
+
+.min-w-32 {
+  min-width: 8rem;
+}
+
+.min-w-64 {
+  min-width: 16rem;
+}
+
+.max-h-128 {
+  max-height: 32rem;
+}

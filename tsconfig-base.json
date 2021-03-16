@@ -18,6 +18,7 @@
       "@bigtest/effection-express": ["packages/effection-express/src"],
       "@bigtest/eslint-plugin": ["packages/eslint-plugin/src"],
       "@bigtest/globals": ["packages/globals/src"],
+      "@bigtest/inspector": ["packages/inspector/src"],
       "@bigtest/interactor": ["packages/interactor/src"],
       "@bigtest/logging": ["packages/logging/src"],
       "@bigtest/performance": ["packages/performance/src"],
