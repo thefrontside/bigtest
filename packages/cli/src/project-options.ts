@@ -34,13 +34,13 @@ export function applyStartArgs(options: ProjectOptions, args: StartArgs): void {
   if(args.testFiles) {
     options.testFiles = args.testFiles;
   }
-  if(args.appCommand) {
+  if(args.appCommand != null) {
     options.app.command = args.appCommand;
   }
-  if(args.appUrl) {
+  if(args.appUrl != null) {
     options.app.url = args.appUrl;
   }
-  if(args.tsconfig) {
+  if(args.tsconfig != null) {
     options.tsconfig = args.tsconfig;
   }
 }
