@@ -1,5 +1,14 @@
 # @bigtest/bundler
 
+## 0.12.5
+
+### Patch Changes
+
+- 4762d0d9: Update effection dependencies to v1
+- Updated dependencies [4762d0d9]
+  - @bigtest/effection@0.6.3
+  - @bigtest/project@0.15.2
+
 ## 0.12.4
 
 ### Patch Changes

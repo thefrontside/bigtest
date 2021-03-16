@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/atom",
-  "version": "0.12.1",
+  "version": "0.12.2",
   "description": "State atom used by BigTest",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

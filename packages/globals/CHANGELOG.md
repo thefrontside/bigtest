@@ -1,5 +1,11 @@
 # @bigtest/globals
 
+## 0.7.6
+
+### Patch Changes
+
+- 4762d0d9: Update effection dependencies to v1
+
 ## 0.7.5
 
 ### Patch Changes

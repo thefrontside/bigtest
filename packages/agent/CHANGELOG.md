@@ -1,5 +1,15 @@
 # @bigtest/agent
 
+## 0.17.2
+
+### Patch Changes
+
+- 4762d0d9: Update effection dependencies to v1
+- Updated dependencies [4762d0d9]
+  - @bigtest/effection@0.6.3
+  - @bigtest/effection-express@0.9.4
+  - @bigtest/globals@0.7.6
+
 ## 0.17.1
 
 ### Patch Changes
