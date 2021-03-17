@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Button as BaseButton,
   CheckBox as BaseCheckBox,
@@ -8,8 +9,8 @@ import {
   RadioButton as BaseRadioButton,
   Select as BaseSelect,
   TextField as BaseTextField,
+  createInspector
 } from "@bigtest/interactor";
-import type { BaseInteractor } from "@bigtest/interactor/dist/specification";
 import { finder } from "@medv/finder";
 import { close, open } from "../actions";
 
@@ -26,9 +27,6 @@ export interface ResolvedInteractor {
   elements: InteractableElement[];
 }
 
-function isDefined<T>(value: T | null | undefined): value is T {
-  return value !== null && value !== undefined;
-}
 
 let watchingElements = new Map<Element, { selector: string; openHandler: () => void; closeHandler: () => void }>();
 const getExcludedContainers = () =>
@@ -75,22 +73,14 @@ async function resolveInteractor<T extends InteractorConstructor<any, any, any>>
   constructor: T,
   resolveSelector: (element: Element) => string
 ): Promise<ResolvedInteractor> {
-  const interactors = constructor.all() as BaseInteractor<Element, any>[];
-  const entries = await Promise.all(
-    interactors.map(async (interactor) => {
-      let element = null;
-      await interactor.perform((e) => (element = e));
-      if (element == null) return null;
-      return [interactor, element] as [BaseInteractor<Element, any>, Element];
-    })
-  );
+  let interactors = createInspector(constructor).all()
 
-  const elements = entries
-    .filter(isDefined)
-    .filter(([, element]) => excludedContainers.every((container) => !container?.contains(element)))
-    .map(([interactor, element]) => {
-      const { specification } = interactor.options;
-      const { locator, filters, actions } = specification;
+  let elements = interactors
+    .filter((interactor) => excludedContainers.every((container) => !container?.contains(interactor.element)))
+    .map((interactor) => {
+      let {options, element} = interactor
+      let { specification } = options;
+      let { locator, filters, actions } = specification;
       return {
         element,
         selector: resolveSelector(element),
@@ -119,13 +109,13 @@ async function resolveInteractor<T extends InteractorConstructor<any, any, any>>
 }
 
 export async function getInteractors(): Promise<[string, ResolvedInteractor][]> {
-  const newWatchingElements = new Map<
+  let newWatchingElements = new Map<
     Element,
     { selector: string; openHandler: () => void; closeHandler: () => void }
   >();
 
-  const resolveSelector = (element: Element) => {
-    const selector = finder(element);
+  let resolveSelector = (element: Element) => {
+    let selector = finder(element);
     let { openHandler, closeHandler } = watchingElements.get(element) ?? {};
 
     if (openHandler) element.removeEventListener("mouseenter", openHandler);
@@ -140,7 +130,7 @@ export async function getInteractors(): Promise<[string, ResolvedInteractor][]> 
   };
   excludedContainers = getExcludedContainers();
 
-  const interactors = Object.entries({
+  let interactors = Object.entries({
     Button: await resolveInteractor(Button, resolveSelector),
     CheckBox: await resolveInteractor(CheckBox, resolveSelector),
     Heading: await resolveInteractor(Heading, resolveSelector),

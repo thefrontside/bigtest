@@ -1,5 +1,5 @@
 import { useStore } from "effector-react";
-import { MouseEvent, useCallback, useEffect, useState } from "react";
+import { MouseEvent, useCallback, useState } from "react";
 import { $selector } from "../actions";
 import type { InteractableElement } from "./getInteractors";
 import { ElementView } from "./ElementView";
@@ -9,12 +9,12 @@ interface InteractorProps {
   elements: InteractableElement[];
 }
 
-export function Interactor({ name, elements }: InteractorProps) {
-  const selector = useStore($selector);
+export function Interactor({ name, elements }: InteractorProps): JSX.Element {
+  let selector = useStore($selector);
 
-  const [isOpen, setOpen] = useState(true);
+  let [isOpen, setOpen] = useState(true);
 
-  const toggle = useCallback((event: MouseEvent<HTMLElement, globalThis.MouseEvent>) => {
+  let toggle = useCallback((event: MouseEvent<HTMLElement, globalThis.MouseEvent>) => {
     event.preventDefault();
     event.stopPropagation();
     setOpen((x) => !x);

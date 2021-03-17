@@ -1,14 +1,15 @@
-import React, { useCallback, useMemo, useRef } from "react";
+import { useCallback, useRef } from "react";
 import { end, refresh, start } from "../actions";
 
 interface ActionButton {
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   action: (...args: any[]) => Promise<any>;
 }
 
-export function ActionComponent({ name, action }: ActionButton) {
-  const refs = Array.from({ length: action.length }).map(() => useRef<HTMLInputElement>(null));
-  const handleAction = useCallback(async () => {
+export function ActionComponent({ name, action }: ActionButton): JSX.Element {
+  let refs = Array.from({ length: action.length }).map(() => useRef<HTMLInputElement>(null));
+  let handleAction = useCallback(async () => {
     start();
     try {
       await action(...refs.map((ref) => ref.current?.value));
@@ -18,7 +19,7 @@ export function ActionComponent({ name, action }: ActionButton) {
       refs
         .map((ref) => ref.current)
         .filter(Boolean)
-        .forEach((el) => (el!.value = ""));
+        .forEach((el) => el && (el.value = ""));
       refresh()
       end();
     }

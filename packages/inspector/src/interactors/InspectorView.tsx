@@ -6,7 +6,7 @@ interface InspectorView {
   interactors: [string, ResolvedInteractor][];
 }
 
-export function InspectorView({ interactors }: InspectorView) {
+export function InspectorView({ interactors }: InspectorView): JSX.Element {
   return (
     <>
       <HighlightElement />

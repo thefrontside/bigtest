@@ -1,6 +1,6 @@
 import { useStore } from "effector-react";
 import { createInteractor } from "@bigtest/interactor";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { InspectorView } from "./interactors/InspectorView";
 import { ActionsEditor } from "./interactors/ActionsEditior";
 import { $code, $interactors, $isLoading, end, refresh, start } from "./actions";
@@ -15,12 +15,12 @@ import {
   TextField,
 } from "./interactors/getInteractors";
 
-export function App() {
-  const interactors = useStore($interactors);
-  const isLoading = useStore($isLoading);
-  const code = useStore($code);
+export function App(): JSX.Element {
+  let interactors = useStore($interactors);
+  let isLoading = useStore($isLoading);
+  let code = useStore($code);
 
-  const runHandler = useCallback(async () => {
+  let runHandler = useCallback(async () => {
     start();
     try {
       await eval(

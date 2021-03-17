@@ -3,16 +3,16 @@ import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { $target } from "../actions";
 
-export function HighlightElement() {
-  const target = useStore($target);
+export function HighlightElement(): JSX.Element | null {
+  let target = useStore($target);
 
-  const portalRef = useRef<HTMLDivElement>(null);
+  let portalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!target || !portalRef.current) return;
 
-    const { top, left, width, height } = target.getBoundingClientRect();
-    const portalStyle = portalRef.current.style;
+    let { top, left, width, height } = target.getBoundingClientRect();
+    let portalStyle = portalRef.current.style;
 
     portalStyle.backgroundColor = "cornflowerblue";
     portalStyle.opacity = "0.6";

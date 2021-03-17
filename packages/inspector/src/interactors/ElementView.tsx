@@ -1,5 +1,5 @@
 import { MouseEvent, useCallback, useEffect, useRef, useState } from "react";
-import { $selector, highlight, unhighlight } from "../actions";
+import { highlight, unhighlight } from "../actions";
 import { ActionComponent } from "./ActionButton";
 import type { InteractableElement } from "./getInteractors";
 
@@ -7,22 +7,22 @@ export interface ElementViewProps extends InteractableElement {
   isHighlighted: boolean;
 }
 
-export function ElementView({ element, selector, locator, actions, props, isHighlighted }: ElementViewProps) {
-  const [isOpen, setOpen] = useState(false);
+export function ElementView({ element, selector, locator, actions, props, isHighlighted }: ElementViewProps): JSX.Element {
+  let [isOpen, setOpen] = useState(false);
 
-  const detailsRef = useRef<HTMLElement>(null);
+  let detailsRef = useRef<HTMLElement>(null);
 
-  const toggle = useCallback((event: MouseEvent<HTMLElement, globalThis.MouseEvent>) => {
+  let toggle = useCallback((event: MouseEvent<HTMLElement, globalThis.MouseEvent>) => {
     event.preventDefault();
     event.stopPropagation();
     setOpen((x) => !x);
   }, []);
 
-  const mouseEnterHandler = useCallback(() => highlight(element), [element]);
-  const mouseLeaveHandler = useCallback(() => unhighlight(), []);
+  let mouseEnterHandler = useCallback(() => highlight(element), [element]);
+  let mouseLeaveHandler = useCallback(() => unhighlight(), []);
 
-  const plainActions = Object.entries(actions).filter(([, action]) => action.length == 0);
-  const complexActions = Object.entries(actions).filter(([, action]) => action.length != 0);
+  let plainActions = Object.entries(actions).filter(([, action]) => action.length == 0);
+  let complexActions = Object.entries(actions).filter(([, action]) => action.length != 0);
 
   useEffect(() => {
     if (isHighlighted) {

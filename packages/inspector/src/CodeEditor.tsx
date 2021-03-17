@@ -1,4 +1,5 @@
 // NOTE: Copy-paste from https://github.com/satya164/react-simple-code-editor
+/* eslint-disable */
 
 import {
   ChangeEventHandler,

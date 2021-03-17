@@ -4350,10 +4350,10 @@ effector-react@^21.2.1:
   resolved "https://registry.yarnpkg.com/effector-react/-/effector-react-21.2.1.tgz#b6d1c8a5c61ffee841b41f4b697ec069094798c8"
   integrity sha512-NvQBKnA6VQ14aZcHjag5muqvqnfr4H8g3Ry8/nuiEWqR/c9LkKK9mUoU1lyQU7m/eKlvuXSqeDQ1I4iBsobMqA==
 
-effector@^21.8.5:
-  version "21.8.7"
-  resolved "https://registry.yarnpkg.com/effector/-/effector-21.8.7.tgz#7a0a7824145a6b034d8fcb389ea5f0d2ed46041e"
-  integrity sha512-5C5FoXfMfhwNiMSRFjew7JYLDxKq1HiVYKNBqAgfgz+AbS5WMulcWge5DMbn1puHsWeTsJpPfc2k8NQ4kLvrqg==
+effector@21.8.5:
+  version "21.8.5"
+  resolved "https://registry.yarnpkg.com/effector/-/effector-21.8.5.tgz#6e20124e05d9dc913282508c0cf1d2d3846ceada"
+  integrity sha512-H6orDC4IOnfh2VJUZ4a5BcF1vlZhL1omWhK81QESXstVc7ePtHjoPcAOVYRe+jYa27+mX6GXKikGfY5durUqSQ==
 
 electron-to-chromium@^1.3.649:
   version "1.3.689"
@@ -10670,7 +10670,7 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^4.1.3, typescript@^4.2.3:
+typescript@^4.1.3:
   version "4.1.3"
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.1.3.tgz#519d582bd94cba0cf8934c7d8e8467e473f53bb7"
   integrity sha512-B3ZIOf1IKeH2ixgHhj6la6xdwR9QrLC5d1VKeCSY4tvkqhF2eqd9O7txNlS0PO3GrBAFIdr3L1ndNwteUbZLYg==

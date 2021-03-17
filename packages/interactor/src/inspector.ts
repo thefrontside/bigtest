@@ -23,7 +23,6 @@ export function createInspector<IC extends InteractorConstructor<any, any, any>>
   constructor: IC,
   parentElement?: Element
 ): Inspector<IC> {
-  // NOTE: Wait for https://github.com/thefrontside/bigtest/pull/895 to use specification instead
   let options = constructor().options as ReturnType<IC>['options']
   return {
     all() {

@@ -1,8 +1,7 @@
 import { createApi, createEffect, createStore } from "effector";
-import type { MouseEvent } from "react";
 import { getInteractors, ResolvedInteractor } from "./interactors/getInteractors";
 
-export const refresh = createEffect((_event?: MouseEvent<HTMLElement, globalThis.MouseEvent>) => getInteractors());
+export const refresh = createEffect(() => getInteractors());
 export const $interactors = createStore<[string, ResolvedInteractor][]>([]).on(
   refresh.doneData,
   (_, interactors) => interactors

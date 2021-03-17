@@ -15,6 +15,6 @@
   },
   "include": ["src"],
   "references": [
-    { "path": "../globals" }
+    { "path": "../interactor" },
   ]
 }

@@ -6,8 +6,8 @@ import { CodeEditor } from "../CodeEditor";
 import "prismjs/themes/prism.css";
 import "prismjs/components/prism-javascript";
 
-export function ActionsEditor() {
-  const code = useStore($code);
+export function ActionsEditor(): JSX.Element {
+  let code = useStore($code);
 
   return (
     <CodeEditor
