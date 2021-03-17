@@ -10,7 +10,8 @@
     "lint": "echo no-op",
     "test:jest": "cd app && npm run test:jest",
     "test:cypress": "cd app && npm run test:cypress",
-    "test:bigtest": "cd app && npm run test:bigtest"
+    "test:bigtest": "cd app && npm run test:bigtest",
+    "dev:build": "DEV_BUILD=true node bin/create-sample-app"
   },
   "bin": {
     "sample": "./bin/create-sample-app.js"
@@ -24,6 +25,8 @@
     "@effection/subscription": "^1.0.0",
     "chalk": "^4.1.0",
     "effection": "^1.0.0",
+    "lodash.merge": "^4.6.2",
+    "ncp": "^2.0.0",
     "rimraf": "^3.0.2"
   },
   "devDependencies": {
