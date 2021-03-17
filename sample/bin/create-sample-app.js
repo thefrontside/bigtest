@@ -5,20 +5,25 @@ const rmrfsync = require('rimraf').sync;
 const fs = require('fs');
 const fsp = fs.promises;
 const path = require('path');
+const ncp = require('ncp').ncp;
 
 const { messages } = require('./messages');
 const { formatErr, formatSuccess, spin } = require('./console-helpers');
 const { install } = require('./install');
-const { bigtestOnly } = require('./bigtest-only');
+const { processTemplate } = require('./template');
 
 const SOURCE_DIR = `${path.dirname(__dirname)}/app`;
-const TARGET_DIR = `${process.cwd()}/bigtest-sample`;
+const TARGET_DIR = process.env.DEV_BUILD ? `${path.dirname(__dirname)}/build`: `${process.cwd()}/bigtest-sample`;
 
 async function createDirectory(message) {
   if (fs.existsSync(TARGET_DIR)) {
-    throw new MainError({
-      message: `${formatErr('directory \'bigtest-sample\' already exists')}\n${messages.abort}`
-    });
+    if(!process.env.DEV_BUILD){
+      throw new MainError({
+        message: `${formatErr('directory \'bigtest-sample\' already exists')}\n${messages.abort}`
+      });
+    } else {
+      rmrfsync(`${TARGET_DIR}/*`);
+    }
   } else {
     await fsp.mkdir(TARGET_DIR);
     console.log(`\n${formatSuccess(message)}`);
@@ -27,16 +32,27 @@ async function createDirectory(message) {
 
 function* migrate(messages) {
   yield spin(messages.before, function* () {
-    yield fsp.readdir(SOURCE_DIR).then(files => files.forEach((file) => {
-      if(file === 'app-pkg.json'){
-        fs.renameSync(`${SOURCE_DIR}/app-pkg.json`, `${TARGET_DIR}/package.json`);
-      } else if(file !== '.npmignore') {
-        fs.renameSync(`${SOURCE_DIR}/${file}`, `${TARGET_DIR}/${file}`);
-      }
+    const { pkgjson, files, templateName } = processTemplate();
+    yield fsp.writeFile(`${TARGET_DIR}/package.json`, JSON.stringify(pkgjson, null, 2));
+    yield fsp.readdir(SOURCE_DIR).then(sourceFiles => sourceFiles.forEach((file) => {
+      if(files.includes(file)){
+        ncp(`${SOURCE_DIR}/${file}`, `${TARGET_DIR}/${file}`);
+      };
     }));
-    if(process.argv.includes('-bo')){
-      yield bigtestOnly(TARGET_DIR);
-    }
+    switch(templateName){
+      case 'cypress':
+        rmrfsync(`${TARGET_DIR}/src/test/*bigtest*`);
+        rmrfsync(`${TARGET_DIR}/src/test/*jest*`);
+        break;
+      case 'jest':
+        rmrfsync(`${TARGET_DIR}/src/test/*bigtest*`);
+        rmrfsync(`${TARGET_DIR}/src/test/*cypress*`);
+        break;
+      case 'bigtest':
+        rmrfsync(`${TARGET_DIR}/src/test/*cypress*`);
+        rmrfsync(`${TARGET_DIR}/src/test/*jest*`);
+        break;
+    };
   });
   console.log(formatSuccess(messages.after));
 }
@@ -52,9 +68,7 @@ function* run() {
   try {
     yield migrate(messages.organizing_files);
     yield installDependencies(messages.installing_dep);
-    if(!process.argv.includes('-bo')){
-      console.log(messages.success);
-    }
+    console.log(messages.success);
     rollback = false;
   } finally {
     if(rollback){
