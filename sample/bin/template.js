@@ -13,7 +13,7 @@ function processTemplate() {
     let onlyFlagIndex = process.argv.indexOf('--only');
     templateName = process.argv[onlyFlagIndex + 1];
     if(templateName !== 'cypress' && templateName !== 'bigtest' && templateName !== 'jest'){
-      throw new MainError({ message: `${formatErr(`The --only flag received an unrecognized framework.`)}` });
+      throw new MainError({ message: `${formatErr(`Expected value of ${chalk`{cyan --only}`} to be one of ${chalk`{cyan jest}`}, ${chalk`{cyan cypress}`}, or ${chalk`{cyan bigtest}`}, but received ${chalk`{red ${templateName}}`}`)}` });
     } else {
       switch(templateName){
         case 'cypress':
