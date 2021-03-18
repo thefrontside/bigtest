@@ -7,13 +7,15 @@ const fsp = fs.promises;
 const path = require('path');
 const ncp = require('ncp').ncp;
 
-const { messages } = require('./messages');
+const { messages, generateInstructions } = require('./messages');
 const { formatErr, formatSuccess, spin } = require('./console-helpers');
 const { install } = require('./install');
 const { processTemplate } = require('./template');
 
 const SOURCE_DIR = `${path.dirname(__dirname)}/app`;
 const TARGET_DIR = process.env.DEV_BUILD ? `${path.dirname(__dirname)}/build`: `${process.cwd()}/bigtest-sample`;
+
+let template;
 
 async function createDirectory(message) {
   if (fs.existsSync(TARGET_DIR)) {
@@ -33,6 +35,7 @@ async function createDirectory(message) {
 function* migrate(messages) {
   yield spin(messages.before, function* () {
     const { pkgjson, files, templateName } = processTemplate();
+    template = templateName;
     yield fsp.writeFile(`${TARGET_DIR}/package.json`, JSON.stringify(pkgjson, null, 2));
     yield fsp.readdir(SOURCE_DIR).then(sourceFiles => sourceFiles.forEach((file) => {
       if(files.includes(file)){
@@ -68,7 +71,8 @@ function* run() {
   try {
     yield migrate(messages.organizing_files);
     yield installDependencies(messages.installing_dep);
-    console.log(messages.success);
+    let successMessage = generateInstructions(template);
+    console.log(successMessage);
     rollback = false;
   } finally {
     if(rollback){
