@@ -1,4 +1,4 @@
-const bigTestTemplate = ({ dependencies }) => {
+const bigtestTemplate = ({ dependencies }) => {
   return {
     pkgjson: {
       "scripts": {
@@ -15,5 +15,5 @@ const bigTestTemplate = ({ dependencies }) => {
 };
 
 module.exports = {
-  bigTestTemplate
+  bigtestTemplate
 };

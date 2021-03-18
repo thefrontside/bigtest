@@ -3,7 +3,7 @@ const merge = require('lodash.merge');
 const chalk = require('chalk');
 
 const { formatErr } = require('./console-helpers');
-const { baseTemplate, bigTestTemplate, cypressTemplate, jestTemplate } = require('./templates');
+const { baseTemplate, bigtestTemplate, cypressTemplate, jestTemplate } = require('./templates');
 
 function processTemplate() {
   let pkgjson;
@@ -25,19 +25,19 @@ function processTemplate() {
           files = [...baseTemplate.files, ...jestTemplate.files];
           break;
         case 'bigtest':
-          pkgjson = merge(baseTemplate.pkgjson, bigTestTemplate.pkgjson);
-          files = [...baseTemplate.files, ...bigTestTemplate.files];
+          pkgjson = merge(baseTemplate.pkgjson, bigtestTemplate.pkgjson);
+          files = [...baseTemplate.files, ...bigtestTemplate.files];
           break;
       };
     }
   } else {
     pkgjson = merge(
       baseTemplate.pkgjson,
-      bigTestTemplate.pkgjson,
+      bigtestTemplate.pkgjson,
       cypressTemplate.pkgjson,
       jestTemplate.pkgjson
     );
-    files = [...baseTemplate.files, ...bigTestTemplate.files, ...jestTemplate.files, ...cypressTemplate.files];
+    files = [...baseTemplate.files, ...bigtestTemplate.files, ...jestTemplate.files, ...cypressTemplate.files];
   };
   
   return { 
