@@ -6,55 +6,73 @@ title: Assertions and Matchers
 This page will discuss the different ways you can assert with interactors. Afterwards, we will do a deep dive on how you can utilize matchers that are offered out-of-the-box with BigTest, and also go over how you can compose your own reusable matchers.
 
 ## Assertions
-In the [Quick Start](/docs/interactors/#making-test-assertions) we briefly touched on the assertion methods that are available for all interactors - `exists()` and `absent()`. There is also `has()` which allows you pass in a filter as its argument.
+
+There are four assertion methods available on all interactors:
+
+- `has()`
+- `is()`
+- `exists()`
+- `absent()`
+
+The assertion method you choose depends on what you are trying to test. Let's go through an example of each of these.
 
 :::note
 These different assertion methods are equivalents of Jest's `expect` and Cypress' `should`. When refactoring your test with Interactors, you would replace those constructs with the interactors' assertion methods.
 :::
 
-In the case of a form with textfields, you would assert the placeholder against a textfield like this:
+### Using `has()` to assert for one result
+
+If you expect that an interactor will only match one element, use `has()` to make your assertion.
 
 ```js
 TextField({ id: 'username-id' }).has({ placeholder: 'USERNAME' });
 ```
 
-The difference between this approach and using `exists()` is that `exists()` is less refined as it will succeed as long as there is at least one match. With the two textfields for the username and password, the assertion would fail on if we were to write a test like this:
+### Using `is()` for readability
 
-```js
-TextField().has({ placeholder: 'USERNAME' });
-```
+The `is()` method is an alias of `has()`. It works the same way as `has()` The only difference is in the semantics so that your tests can read better.
 
-It would fail on account of the textfield that has the placeholder value `PASSWORD`. You therefore need to choose the assertion method that is most appropriate for your tests.
-
-Lastly, there is also the `is()` method, which works just as `has()` does. The only difference is in the semantics so that your tests can read better.
-
-For instance, if we wanted to test if a textfield is visible, `has()` would work perfectly fine; but writing the test using `is()` would look more natural like this:
+For instance, if we wanted to test if a text field is visible, `has()` would work perfectly fine; but writing the test using `is()` would read more like a sentence:
 
 ```js
 TextField({ id: 'username-id' }).is({ visible: true });
 ```
 
-It makes more sense to say "text field _is_ visible" rather than "text field _has_ visible". Generally, we recommend using `is()` if your assertion is an adjective, and use `has()` if your assertion is a noun. For example, if we wanted to assert for `visibility`, then it would sound more natural to use `has()` instead:
+As a rule of thumb, use `is()` if your assertion is an adjective, and use `has()` if your assertion is a noun. For example, if we wanted to assert for `visibility`, then it would sound more natural to use `has()` instead:
 
 ```js
 TextField({ id: 'username-id' }).has({ visibility: true });
 ```
 
-## Matchers
+### Using `exists()` for multiple results
 
-The methods in which we use locators and filters, as we have illustrated in the previous page, are very explicit. There may be times when some flexibility in your interactors is necessary in order to write better tests. And that's where matchers come in. <!-- the paragraph above needs to be fact checked -->
+Use `exists` when you expect that the interactor will find multiple results. This assertion will still pass even if there are multiple `TextField`s found.
 
-If your tests are written against a simulated database, it might not be important what the randomized users' names are. Maybe you just want to assert for the successful login message to include the word 'welcome'. Or perhaps it does not matter what the name is but you still want to assert that a name is displayed. This is one of many situations where matchers would come in handy.
-
-We will start by going over the two most primitive matchers: `including()` and `matching()`.
-
-:::note
-Matchers are meant to be used for the _values_ of locators and filters and they cannot be substituted for the actual filters:
 ```js
-Heading().has({ id: or('foo', 'bar') }); // good
-Heading().has({ or(id: 'foo', id: 'bar') }); // bad
+TextField().exists({ placeholder: 'USERNAME' });
 ```
-:::
+
+### Using `absent()` for non-existant results
+
+If you want to assert that something is not visible on the page, use `absent()`. For example, when someone is logged in, maybe the sign in button should be hidden:
+
+```js
+Button('Sign In').absent();
+```
+
+## Writing flexible assertions using Matchers
+
+Matchers are methods that let you add logic or flexibility when you are searching for elements. They can be used within locators, filters, and assertions. In this section, you will learn how to use matchers to write better tests.
+
+Matchers include the following methods:
+
+- Text flexibility like `including()` and `matching()`
+- Conditionals like `and()`, `or()`, and `not()`
+- Iterables like `some()` and `every()`
+
+### When to use Matchers
+
+If your tests are written against a simulated database, it might not be important what the randomized users' names are. Maybe you just want to assert that a login success message includes the word "welcome", such as "Welcome, Taylor!" Or perhaps it does not matter what the name is, but you still want to assert that a name is displayed. These are situations where matchers would come in handy.
 
 ### including, matching
 
@@ -117,6 +135,14 @@ And last but not least of the three is the `not()` matcher. This one is also pre
 ```js
 Link(not('Google')).has({ href: 'https://twitter.com' });
 ```
+
+:::note
+Matchers are meant to be used for the _values_ of locators and filters and they cannot be substituted for the actual filters:
+```js
+Heading().has({ id: or('foo', 'bar') }); // good
+Heading().has({ or(id: 'foo', id: 'bar') }); // bad
+```
+:::
 
 ### some, every
 For when you need to assert against iterables, you will find the `some()` and `every()` matchers very helpful. We will use the [`MultiSelect`](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/multi-select.ts#L48) interactor for the next example because its `values` filter returns an array based on its options' label:
