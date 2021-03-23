@@ -86,6 +86,9 @@ jobs:
       executor:
         type: executor
         default: "linux"
+      nvm:
+        type: boolean
+        default: false
       prepack:
         type: boolean
         default: true
@@ -93,6 +96,15 @@ jobs:
       DRIVER: <<parameters.driver>>
     steps:
       - checkout
+      - when:
+          condition: <<parameters.nvm>>
+          steps:
+            - run:
+                name: Install NodeJS from .nvmrc
+                command: |
+                  type .\.nvmrc | %{$_ -replace "v",""} | %{nvm install $_}
+                  type .\.nvmrc | %{$_ -replace "v",""} | %{nvm use $_}
+                  npm install -g yarn
       - yarn_install
       - when:
           condition: <<parameters.prepack>>
@@ -162,6 +174,7 @@ workflows:
           requires:
             - prepack
       - test:
+          nvm: true
           executor:
             name: "win/default"
             size: "medium"

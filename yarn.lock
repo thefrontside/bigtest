@@ -4350,10 +4350,10 @@ effector-react@^21.2.1:
   resolved "https://registry.yarnpkg.com/effector-react/-/effector-react-21.2.1.tgz#b6d1c8a5c61ffee841b41f4b697ec069094798c8"
   integrity sha512-NvQBKnA6VQ14aZcHjag5muqvqnfr4H8g3Ry8/nuiEWqR/c9LkKK9mUoU1lyQU7m/eKlvuXSqeDQ1I4iBsobMqA==
 
-effector@21.8.5:
-  version "21.8.5"
-  resolved "https://registry.yarnpkg.com/effector/-/effector-21.8.5.tgz#6e20124e05d9dc913282508c0cf1d2d3846ceada"
-  integrity sha512-H6orDC4IOnfh2VJUZ4a5BcF1vlZhL1omWhK81QESXstVc7ePtHjoPcAOVYRe+jYa27+mX6GXKikGfY5durUqSQ==
+effector@^21.8.8:
+  version "21.8.8"
+  resolved "https://registry.yarnpkg.com/effector/-/effector-21.8.8.tgz#503e5d904568446ca595ce27247a94f0cffe10b7"
+  integrity sha512-y6z8LU+oKVFKplfb2Qu9MAtvQLqTp10+ZUyfGaA0nvb44H1qS9DfwpHN15szhMGfVMpcDsT9ohs2U+8rSGZtgA==
 
 electron-to-chromium@^1.3.649:
   version "1.3.689"

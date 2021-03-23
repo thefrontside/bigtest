@@ -1,6 +1,6 @@
 /** @type {import("webpack").Configuration } */
 module.exports = {
-  mode: process.env.NODE_ENV ?? 'development',
+  mode: process.env.NODE_ENV == undefined ? 'development' : process.env.NODE_ENV,
   entry: "./src/index.tsx",
   output: { path: `${__dirname}/dist` },
   module: {
@@ -22,7 +22,7 @@ module.exports = {
           "css-loader",
           {
             loader: "postcss-loader",
-            options: { postcssOptions: { plugins: [require("tailwindcss"), require("autoprefixer")] } }
+            options: { postcssOptions: { plugins: [require("autoprefixer")] } }
           }
         ],
       },

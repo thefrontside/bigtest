@@ -16,8 +16,8 @@
       "packages/atom",
       "packages/suite",
       "packages/globals",
-      "packages/inspector",
       "packages/interactor",
+      "packages/inspector",
       "packages/agent",
       "packages/driver",
       "packages/webdriver",
@@ -48,7 +48,7 @@
     "prepack:all": "yarn prepack && yarn install:integrations && yarn prepack:integrations"
   },
   "volta": {
-    "node": "12.11.1",
+    "node": "12.13.0",
     "yarn": "1.22.4"
   },
   "devDependencies": {
