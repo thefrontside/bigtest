@@ -43,6 +43,9 @@ class TestStructureError extends Error {
 
 type TestBuilderState = 'step' | 'assertion' | 'child';
 
+type AssertionTestBuilder<C extends Context> = Omit<TestBuilder<C>, 'step'>
+type ChildTestBuilder<C extends Context> = Omit<TestBuilder<C>, 'step' | 'assertion'>
+
 /**
  * A builder API for constructing BigTest tests. This is usually created via the {@link test} function.
  *
@@ -232,12 +235,12 @@ export class TestBuilder<C extends Context> implements TestImplementation {
    * @param description The description of this assertion
    * @param check An async function which receives the context. See {@link Check}.
    */
-  assertion(description: string, check: Check<C>): TestBuilder<C>;
+  assertion(description: string, check: Check<C>): AssertionTestBuilder<C>;
   /**
    * @param steps A list of assertion objects, each of which must have a `description` and `check` property.
    */
-  assertion(...assertions: AssertionList<C>): TestBuilder<C>;
-  assertion(...args: [string, Check<C>] | AssertionList<C>): TestBuilder<C> {
+  assertion(...assertions: AssertionList<C>): AssertionTestBuilder<C>;
+  assertion(...args: [string, Check<C>] | AssertionList<C>): AssertionTestBuilder<C> {
     if(this.state === 'child') {
       throw new TestStructureError(`Cannot add step after adding ${this.state}`);
     }
@@ -299,7 +302,7 @@ export class TestBuilder<C extends Context> implements TestImplementation {
    * @param description The description of this child test
    * @param childFn a callback function
    */
-  child(description: string, childFn: (inner: TestBuilder<C>) => TestBuilder<Context>): TestBuilder<C> {
+  child(description: string, childFn: (inner: TestBuilder<C>) => TestBuilder<Context> | AssertionTestBuilder<Context> | ChildTestBuilder<Context>): ChildTestBuilder<C> {
     let child = childFn(test(description));
     return new TestBuilder({
       ...this,
