@@ -173,10 +173,25 @@ In the two tests above we are passing in the `including()` and `matching()` matc
 
 Though the matchers are already ergonomic, you can make your tests even tidier and easier to read by creating your own matchers.
 
-## Creating matchers
+## Composing matchers
+
 There are two ways you can write your own matcher: by piggybacking on preexisting matchers or you can create your own from scratch. We will cover both methods in this section.
 
-Let us start by refactoring the last example by creating a matcher called `blueOrGreen`:
+Let us start by creating a matcher called `hasFoo`:
+
+```js
+import { including } from 'bigtest';
+
+export const hasFoo = including('Foo');
+```
+
+You can import and use the new matcher in your tests like so:
+
+```js
+Heading(hasFoo).exists()
+```
+
+You can compose a matcher using other matchers too. This is convenient because it delegates most of the matcher's logic as well as the error message. In the example below, you can see that we use `or`, `including`, and `every` to create a matcher for a MultiSelect.
 
 ```js
 import { including, or } from 'bigtest';
@@ -187,17 +202,15 @@ export const blueOrGreen = or(
 );
 ```
 
-You can then import and use the new matcher in your tests like so:
-
 ```js
 MultiSelect().has({ values: every(blueOrGreen) });
 ```
 
-Composing a matcher using other matchers, like we did for `blueOrGreen()`, is convenient because it delegates most of the matcher's logic as well as the error message.
+## Creating matchers from scratch
 
 To create your own matcher without the use of any of the preexisting ones, you will need to create a function that returns a `{ match(), format() }` object.
 
-The `match()` function is where you place all of the matcher logic. It takes an argument `actual` which represents the values from the interactors. Here's how the `including()` matcher is implemented:
+The `match()` function is where you place all of the matcher logic. It takes one argument, `actual`, which represents the values from the interactors. Here's how the `including()` matcher is implemented:
 
 ```js
 export function including(subString) {
