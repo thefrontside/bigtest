@@ -111,9 +111,6 @@ module.exports = {
       ],
       copyright: `Copyright © ${new Date().getFullYear()} The Frontside Software, Inc.`,
     },
-    googleAnalytics: {
-      trackingID: 'UA-44597640-4'
-    },
     image: 'images/meta-image.png'
   },
   presets: [
@@ -132,4 +129,12 @@ module.exports = {
   stylesheets: [
     'https://use.typekit.net/gyc5wys.css'
   ],
+  scripts: [
+    {
+      src: 'https://plausible.io/js/plausible.js',
+      async: true,
+      defer: true,
+      'data-domain': 'frontside.com/bigtest'
+    }
+  ]
 };
