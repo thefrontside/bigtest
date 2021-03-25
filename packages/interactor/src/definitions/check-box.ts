@@ -5,6 +5,7 @@ const CheckBoxInteractor = FormField.extend<HTMLInputElement>('check box')
   .selector('input[type=checkbox]')
   .filters({
     checked: (element) => element.checked,
+    indeterminate: (element) => element.indeterminate,
     visible: {
       apply: (element) => isVisible(element) || (element.labels && Array.from(element.labels).some(isVisible)),
       default: true
@@ -38,6 +39,7 @@ const CheckBoxInteractor = FormField.extend<HTMLInputElement>('check box')
  * - `visible`: *boolean* – Filter by visibility. Defaults to `true`. See {@link isVisible}.
  * - `valid`: *boolean* – Filter by whether the checkbox is valid.
  * - `checked`: *boolean* – Filter by whether the checkbox is checked.
+ * - `indeterminate`: *boolean* - Filter by whether the checkbox has indeterminate state.
  * - `disabled`: *boolean* – Filter by whether the checkbox is disabled. Defaults to `false`.
  * - `focused`: *boolean* – Filter by whether the checkbox is focused. See {@link focused}.
  *

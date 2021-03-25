@@ -215,6 +215,24 @@ describe('@bigtest/interactor', () => {
       });
     });
 
+    describe('filter `indeterminate`', () => {
+      it('filters `input` tags by whether they are indeterminate', async () => {
+        dom(`
+          <p>
+            <label for="accept-field">Accept</label>
+            <input type="checkbox" id="accept-field"/>
+          </p>
+        `);
+
+        // NOTE: No browser currently supports indeterminate as an attribute. It must be set via JavaScript.
+        // NOTE: See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox#indeterminate_state_checkboxes
+        await CheckBox('Accept').perform(e => e.indeterminate = true)
+
+        await expect(CheckBox('Accept', { indeterminate: true }).exists()).resolves.toBeUndefined();
+        await expect(CheckBox('Accept', { indeterminate: false }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+      });
+    });
+
     describe('filter `valid`', () => {
       it('filters `input` tags by their validity state', async () => {
         dom(`
