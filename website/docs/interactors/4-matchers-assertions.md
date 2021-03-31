@@ -171,13 +171,10 @@ MultiSelect().has({ values: every(matching(/^Neon/)) });
 
 In the two tests above we are passing in the `including()` and `matching()` matchers into `some()` and `every()`. Once again, `and()`, `or()`, `not()`, `some()`, and `every()` can take matchers as its arguments. This means you can chain them together multiple times to cater to your needs.
 
-Though the matchers are already ergonomic, you can make your tests even tidier and easier to read by creating your own matchers.
+Though the matchers are already ergonomic, you can make your tests even tidier and easier to read by creating your own matchers. There are two ways you can write your own matcher: by piggybacking on preexisting matchers or you can create your own from scratch. We will cover both methods next.
 
 ## Composing matchers
-
-There are two ways you can write your own matcher: by piggybacking on preexisting matchers or you can create your own from scratch. We will cover both methods in this section.
-
-Let us start by creating a matcher called `hasFoo`:
+We will first go over how you can compose matchers using preexisting matchers. Let us start by creating a matcher called `hasFoo`:
 
 ```js
 import { including } from 'bigtest';
