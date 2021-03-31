@@ -52,7 +52,7 @@ Use `exists` when you expect that the interactor will find multiple results. Thi
 TextField().exists({ placeholder: 'USERNAME' });
 ```
 
-### Using `absent()` for non-existant results
+### Using `absent()` for non-existent results
 
 If you want to assert that something is not visible on the page, use `absent()`. For example, when someone is logged in, maybe the sign in button should be hidden:
 
