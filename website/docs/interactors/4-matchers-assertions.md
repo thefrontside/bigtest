@@ -74,7 +74,7 @@ Matchers include the following methods:
 
 If your tests are written against a simulated database, it might not be important what the randomized users' names are. Maybe you just want to assert that a login success message includes the word "welcome", such as "Welcome, Taylor!" Or perhaps it does not matter what the name is, but you still want to assert that a name is displayed. These are situations where matchers would come in handy.
 
-### including, matching
+### String matchers
 
 The `including()` matcher invokes Javascript's `includes()` String method to check if the argument is included in the value of your interactors' locator or filter.
 
@@ -93,7 +93,7 @@ Heading(including('Foo')).exists();
 Heading(matching(/Bar$/)).exists();
 ```
 
-### and, or, not
+### Conditional matchers
 These next three matchers: `and()`, `or()`, and `not()` are different from the first two matchers in that they can take multiple arguments and the arguments can be either a value or another matcher.
 
 For the next few examples, we'll be using these two link elements:
@@ -144,7 +144,7 @@ Heading().has({ or(id: 'foo', id: 'bar') }); // bad
 ```
 :::
 
-### some, every
+### Iterable matchers
 For when you need to assert against iterables, you will find the `some()` and `every()` matchers very helpful. We will use the [`MultiSelect`](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/multi-select.ts#L48) interactor for the next example because its `values` filter returns an array based on its options' label:
 
 ```js
