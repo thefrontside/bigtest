@@ -24,7 +24,7 @@ const TextFieldInteractor = FormField.extend<HTMLInputElement | HTMLTextAreaElem
  * types are also considered text fields, as is any input field with an unknown
  * type.
  *
- * The text fied is located by the text of its label.
+ * The text field is located by the text of its label.
  *
  * ### Example
  *
