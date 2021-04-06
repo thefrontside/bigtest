@@ -23,42 +23,47 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@effection/channel@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@effection/channel/-/channel-1.0.0.tgz#6f41e210d3bf88298784f6716a074d834246e381"
-  integrity sha512-uMzvWqGxWu9pBMEHKk/NqPuL4sg1Fg4W2nsdv14yn+y7JXl1lTAFMk0t8prwnZCLMGEew1NxwwdnFiD9Q6Mrhw==
+"@effection/channel@2.0.0-preview.6":
+  version "2.0.0-preview.6"
+  resolved "https://registry.yarnpkg.com/@effection/channel/-/channel-2.0.0-preview.6.tgz#526859964f599377c1a0ffa9e2c1c613d7ecc121"
+  integrity sha512-8H/+YXl3JaTCic+9sSYK4HTcH4TU7fSZd4xHwY/GmA7f525CZQ960eR1mGfuosYtLYyNJ68rhUIbDnR5R6Vf4Q==
   dependencies:
-    "@effection/events" "^1.0.0"
-    "@effection/subscription" "^1.0.0"
-    effection "^1.0.0"
+    "@effection/core" "2.0.0-preview.6"
+    "@effection/events" "2.0.0-preview.5"
+    "@effection/subscription" "2.0.0-preview.6"
 
-"@effection/events@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@effection/events/-/events-1.0.0.tgz#4430ed538377bf04a5efd7c3b6d40a7b4e2b0607"
-  integrity sha512-IiQLoGktVBucpCGqWInhT35a7oMeeelIK7XmWTm/35D8ViL2KBLNH700gGcXe6pAQAR0NZghbTQf1s25nt/I4w==
-  dependencies:
-    "@effection/subscription" "^1.0.0"
-    effection "^1.0.0"
+"@effection/core@2.0.0-preview.6":
+  version "2.0.0-preview.6"
+  resolved "https://registry.yarnpkg.com/@effection/core/-/core-2.0.0-preview.6.tgz#73097a9d307b08ff7ed1b8b22cbabe515a2491f2"
+  integrity sha512-7zTTky6iw/iovzpxbiAcJ7PYudZUZO7wXYK74ajqx+N25eanj4FtjlYeQeR93bXoUNl+GtqlP0RzlsiSY1/39g==
 
-"@effection/node@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@effection/node/-/node-1.0.1.tgz#ea37041046a592b1f02ca397810c6c811806948e"
-  integrity sha512-mbgpMeLhyLYcVFgInOWnXNb1DPC3ZnijIVdA+VFfa9tnzUuUP0ZpeAVMgdMcaclx1pD4f/WPmCCV93w37O/66Q==
+"@effection/events@2.0.0-preview.5":
+  version "2.0.0-preview.5"
+  resolved "https://registry.yarnpkg.com/@effection/events/-/events-2.0.0-preview.5.tgz#11edf939712c062865b0bded2565d7327370ac4b"
+  integrity sha512-hJiYZ2po19aitkFHtHL1UhbqCtt6IV2mH5sJrLcoDi26EZesILW3KTtTz5hTeUERWeAMBjrSE2zSnbHPFD7SQw==
   dependencies:
-    "@effection/channel" "^1.0.0"
-    "@effection/events" "^1.0.0"
-    "@effection/subscription" "^1.0.0"
+    "@effection/core" "2.0.0-preview.6"
+    "@effection/subscription" "2.0.0-preview.6"
+
+"@effection/node@2.0.0-preview.7":
+  version "2.0.0-preview.7"
+  resolved "https://registry.yarnpkg.com/@effection/node/-/node-2.0.0-preview.7.tgz#594518d225ac8d2ba3f913f3f7b9bcb23ef155e9"
+  integrity sha512-ZBDN8VpY+jJ2W3L3NadMah8pY8mG8qdp5dSTucnhW7B8l5wEe+Hy1pR9a+o75WUdnnAurbpY9Q7uvmpqOs1OqQ==
+  dependencies:
+    "@effection/channel" "2.0.0-preview.6"
+    "@effection/core" "2.0.0-preview.6"
+    "@effection/events" "2.0.0-preview.5"
+    "@effection/subscription" "2.0.0-preview.6"
     cross-spawn "^7.0.3"
     ctrlc-windows "^1.0.3"
-    effection "^1.0.0"
     shellwords "^0.1.1"
 
-"@effection/subscription@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-1.0.0.tgz#331cc08f8ebc5a09be705532d93d4d308e31ff44"
-  integrity sha512-Uldp70Yv/i8vbP+f7vr7U14YMT7iZUm8yrsWKcNUCGOypM8kCPXX3ihtvJ+P3ZpFShecfFQQpjblIVaBEkx37g==
+"@effection/subscription@2.0.0-preview.6":
+  version "2.0.0-preview.6"
+  resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-2.0.0-preview.6.tgz#0a026491e4ea6fd1a0f3074fc206eac1ccc36611"
+  integrity sha512-LGt+36j1PcTDlcOOvmziGlKKAGWlPK5w5qSGnYlUXURZOc5iGKHK+h0KN1c0ihjl8M8Ma8ICYWZs6nlhU5+reA==
   dependencies:
-    effection "^1.0.0"
+    "@effection/core" "2.0.0-preview.6"
 
 "@eslint/eslintrc@^0.3.0":
   version "0.3.0"
@@ -502,10 +507,15 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-effection@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/effection/-/effection-1.0.0.tgz#7c20ee4ea6e63fddb5a51461dda8009b649b4195"
-  integrity sha512-ITAAnuI7sJqKhjvYlnm66NHaW7zrXzqgsGsjVaaqFHYDWPN8WylVj46xASfkrtwq5wmklbzy6tvRYaj2C4rDHw==
+effection@2.0.0-preview.7:
+  version "2.0.0-preview.7"
+  resolved "https://registry.yarnpkg.com/effection/-/effection-2.0.0-preview.7.tgz#0b648c3b798f07ff25d16bbf486377dc34a154d2"
+  integrity sha512-XI655DxwC7cQaq6jYf5IDX2nxGf5q90w4It5cjkOh0JzzPJzaEa/PFwMMBC50xMv2o3KJgsSjEKHGDRvN7nc/w==
+  dependencies:
+    "@effection/channel" "2.0.0-preview.6"
+    "@effection/core" "2.0.0-preview.6"
+    "@effection/events" "2.0.0-preview.5"
+    "@effection/subscription" "2.0.0-preview.6"
 
 emoji-regex@^8.0.0:
   version "8.0.0"

@@ -16,11 +16,11 @@
     "sample": "./bin/create-sample-app.js"
   },
   "dependencies": {
-    "@effection/events": "^1.0.0",
-    "@effection/node": "^1.0.1",
-    "@effection/subscription": "^1.0.0",
+    "@effection/events": "2.0.0-preview.5",
+    "@effection/node": "2.0.0-preview.7",
+    "@effection/subscription": "2.0.0-preview.6",
     "chalk": "^4.1.0",
-    "effection": "^1.0.0",
+    "effection": "2.0.0-preview.7",
     "rimraf": "^3.0.2"
   },
   "devDependencies": {
