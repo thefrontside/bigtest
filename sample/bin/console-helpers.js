@@ -3,7 +3,7 @@ const { sleep } = require('effection');
 
 function spin(message, operation){
   return function*(task){
-    yield task.spawn(function* () {
+    task.spawn(function* () {
       const spinner = ['⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷'];
       let frameNumber = 0;
       try {
