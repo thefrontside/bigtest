@@ -5,10 +5,10 @@ function install({ cwd, stdio }) {
     let command = process.argv.includes('-Y') || process.argv.includes('-yarn') ? 'yarn' : 'npm';
     let install = exec(`${command} install`, { cwd }).run(task);
     if(stdio === 'inherit'){
-      yield task.spawn(install.stdout.forEach((data) => {
+      task.spawn(install.stdout.forEach((data) => {
         process.stdout.write(data);
       }));
-      yield task.spawn(install.stderr.forEach((data) => {
+      task.spawn(install.stderr.forEach((data) => {
         process.stderr.write(data);
       }));
     };

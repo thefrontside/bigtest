@@ -26,7 +26,7 @@ async function createDirectory(message) {
 
 function migrate(messages) {
   return function*(){
-    yield spin(messages.before, function* () {  
+     yield spin(messages.before, function* () {
       yield fsp.readdir(SOURCE_DIR).then(files => files.forEach((file) => {
         if(file === 'app-pkg.json'){
           fs.renameSync(`${SOURCE_DIR}/app-pkg.json`, `${TARGET_DIR}/package.json`);

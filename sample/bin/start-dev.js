@@ -22,11 +22,11 @@ function* dev(task) {
 
   let { stdout, stderr } = daemon(`${command} ${args.join(' ')}`).run(task);
 
-  yield task.spawn(stdout.forEach((data) => {
+  task.spawn(stdout.forEach((data) => {
     process.stdout.write(data);
   }));
   
-  yield task.spawn(stderr.forEach((data) => {
+  task.spawn(stderr.forEach((data) => {
     process.stderr.write(data);
   }));
 
