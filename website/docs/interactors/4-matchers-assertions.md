@@ -117,18 +117,18 @@ Link({
 
 If there is no link that matches all three conditions, the test would fail on account of the interactor not returning any elements.
 
-In this next example, we will pass in one false value to `or()`:
+In this next example, we will pass in multiple TLDs to the `or()` matcher:
 
 ```js
 Link('Google').has({ 
   href: or(
-    'https://google.com',
-    'https://twitter.com'
+    'https://google.ca',
+    'https://google.co.uk'
   )
 });
 ```
 
-If we tried to assert that a link with an innerText value of `Google` has a `href` property of `https://twitter.com`, it would normally fail. But we are saying it just needs to be _either_ `https://google.com` or `https://twitter.com` so the test would pass in this case.
+If our Google link was `.ca` but we asserted that it was `.co.uk`, our test would fail. However, with the `or()` matcher, we can assert that it can be either `.ca` or `co.uk`.
 
 And last but not least of the three is the `not()` matcher. This one is also pretty straight forward:
 
