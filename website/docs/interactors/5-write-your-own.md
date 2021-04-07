@@ -66,7 +66,7 @@ import TabItem from '@theme/TabItem';
 </Tabs>
 
 :::note
- `fillIn` is a function exported by `bigtest`. See the implementation [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/fill-in.ts). You can use any of the functions defined by BigTest or implement your own.
+`fillIn` is a function exported by `bigtest`. See the implementation [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/fill-in.ts). You can use any of the functions defined by BigTest or implement your own.
 :::
 
 :::note Cypress
@@ -80,6 +80,7 @@ The string argument, the label, to `createInteractor()` is the name of the inter
 ```
 NoSuchElementError: did not find my-textfield-interactor "USERNAME"
 ```
+
 _An example of the console output when a test is unable to locate the interactor_
 
 Locators, filters, and actions are optional when creating your own interactor. While the locator for the `TextField` interactor offered by BigTest uses the `innerText` of the associated label (as we explained on the [Locators, Filters, and Actions page](/docs/interactors/locators-filters-actions#filters)), the example above has its locator configured as `element.placeholder`. This is just to demonstrate that you can set the properties of Locators to anything that suits your needs. If you create an interactor without a locator, it will default to `locator: element => element.textContent`.
@@ -300,7 +301,7 @@ export const TableCell = createInteractor('table cell')
 ```
 
 :::note Check your node version
- This example uses [optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) which is available in Node >=14.
+This example uses [optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) which is available in Node >=14.
 :::
 
 You'll notice we created `columnTitle` and `rowNumber` filters that will access its parent elements to get the appropriate value we're looking for. The locator was not specified, so it will default to `element.textContent`. We can now effectively use the TableCell interactor as we stated in the beginning of this page:
@@ -400,8 +401,7 @@ DatePicker().find(Button('31')).click();
 
 ### When should I write a new Interactor instead of using the Built In DOM interactors?
 
-If the built-in DOM Interactors work for your use case, they are probably the best choice.
-They are maintenance-free and support the most common user actions.
+If the built-in DOM Interactors work for your use case, they are probably the best choice. They are maintenance-free and support the most common user actions.
 
 When the built-in Interactors are not enough, we encourage you to write your own. They will help prevent duplicated logic in your tests, and if your interface changes, you only need to make changes to the Interactor instead of throughout the code.
 
@@ -411,11 +411,7 @@ For example, let's say that you want to replace a custom datepicker with a popul
 
 A good test suite helps you uncover hidden problems. Often, difficult UI tests are your early warning system for areas of your app that may have accessibility issues.
 
-The first step is to see if you can go through the interaction yourself in the browser by using only [keyboard navigation](https://webaim.org/techniques/keyboard/).
-If you cannot get to the end successfully, then you just found a bug in your app.
-Although many people navigate an interface by sight and clicking,
-others may use assistive technology such as screen readers and keyboard support is critical.
-For example, a click can mistakenly be attached to a `div` instead of a button. Those types of errors can make your app unusable to some people and also difficult to test.
+The first step is to see if you can go through the interaction yourself in the browser by using only [keyboard navigation](https://webaim.org/techniques/keyboard/). If you cannot get to the end successfully, then you just found a bug in your app. Although many people navigate an interface by sight and clicking, others may use assistive technology such as screen readers and keyboard support is critical. For example, a click can mistakenly be attached to a `div` instead of a button. Those types of errors can make your app unusable to some people and also difficult to test.
 
 Another way to find some bugs is to use automated tools such as [Lighthouse](https://github.com/GoogleChrome/lighthouse) to find problems in your HTML markup like missing input labels or misconfigured `aria` attributes.
 
