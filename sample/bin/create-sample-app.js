@@ -24,22 +24,26 @@ async function createDirectory(message) {
   };
 };
 
-function* migrate(messages) {
-  yield spin(messages.before, function* () {  
-    yield fsp.readdir(SOURCE_DIR).then(files => files.forEach((file) => {
-      if(file === 'app-pkg.json'){
-        fs.renameSync(`${SOURCE_DIR}/app-pkg.json`, `${TARGET_DIR}/package.json`);
-      } else {
-        fs.renameSync(`${SOURCE_DIR}/${file}`, `${TARGET_DIR}/${file}`);
-      };
-    }));
-  });
-  console.log(formatSuccess(messages.after));
+function migrate(messages) {
+  return function*(){
+     yield spin(messages.before, function* () {
+      yield fsp.readdir(SOURCE_DIR).then(files => files.forEach((file) => {
+        if(file === 'app-pkg.json'){
+          fs.renameSync(`${SOURCE_DIR}/app-pkg.json`, `${TARGET_DIR}/package.json`);
+        } else {
+          fs.renameSync(`${SOURCE_DIR}/${file}`, `${TARGET_DIR}/${file}`);
+        };
+      }));
+    });
+    console.log(formatSuccess(messages.after));
+  }
 };
 
-function* installDependencies(messages) {
-  yield spin(messages.before, install({ cwd: TARGET_DIR }));
-  console.log(formatSuccess(messages.after));
+function installDependencies(messages) {
+  return function*() {
+    yield spin(messages.before, install({ cwd: TARGET_DIR }));
+    console.log(formatSuccess(messages.after));
+  }
 };
 
 function* run() {
