@@ -32,38 +32,45 @@ async function createDirectory(message) {
   }
 }
 
-function* migrate(messages) {
-  yield spin(messages.before, function* () {
-    const { pkgjson, files, templateName } = processTemplate();
-    template = templateName;
-    yield fsp.writeFile(`${TARGET_DIR}/package.json`, JSON.stringify(pkgjson, null, 2));
-    yield fsp.readdir(SOURCE_DIR).then(sourceFiles => sourceFiles.forEach((file) => {
-      if(files.includes(file)){
-        ncp(`${SOURCE_DIR}/${file}`, `${TARGET_DIR}/${file}`);
+function migrate(messages) {
+  return function*(){
+     yield spin(messages.before, function* () {
+
+      const { pkgjson, files, templateName } = processTemplate();
+      template = templateName;
+      yield fsp.writeFile(`${TARGET_DIR}/package.json`, JSON.stringify(pkgjson, null, 2));
+
+      yield fsp.readdir(SOURCE_DIR).then(sourceFiles => sourceFiles.forEach((file) => {
+        if(files.includes(file)){
+          ncp(`${SOURCE_DIR}/${file}`, `${TARGET_DIR}/${file}`);
+        };
+      }));
+
+      switch(templateName){
+        case 'cypress':
+          rmrfsync(`${TARGET_DIR}/src/test/*bigtest*`);
+          rmrfsync(`${TARGET_DIR}/src/test/*jest*`);
+          break;
+        case 'jest':
+          rmrfsync(`${TARGET_DIR}/src/test/*bigtest*`);
+          rmrfsync(`${TARGET_DIR}/src/test/*cypress*`);
+          break;
+        case 'bigtest':
+          rmrfsync(`${TARGET_DIR}/src/test/*cypress*`);
+          rmrfsync(`${TARGET_DIR}/src/test/*jest*`);
+          break;
       };
-    }));
-    switch(templateName){
-      case 'cypress':
-        rmrfsync(`${TARGET_DIR}/src/test/*bigtest*`);
-        rmrfsync(`${TARGET_DIR}/src/test/*jest*`);
-        break;
-      case 'jest':
-        rmrfsync(`${TARGET_DIR}/src/test/*bigtest*`);
-        rmrfsync(`${TARGET_DIR}/src/test/*cypress*`);
-        break;
-      case 'bigtest':
-        rmrfsync(`${TARGET_DIR}/src/test/*cypress*`);
-        rmrfsync(`${TARGET_DIR}/src/test/*jest*`);
-        break;
-    };
-  });
-  console.log(formatSuccess(messages.after));
+    });
+    console.log(formatSuccess(messages.after));
+  }
 }
 
-function* installDependencies(messages) {
-  yield spin(messages.before, install({ cwd: TARGET_DIR }));
-  console.log(formatSuccess(messages.after));
-}
+function installDependencies(messages) {
+  return function*() {
+    yield spin(messages.before, install({ cwd: TARGET_DIR }));
+    console.log(formatSuccess(messages.after));
+  }
+};
 
 function* run() {
   let rollback = true;

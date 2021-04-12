@@ -18,6 +18,7 @@ export function* appServer(options: AppServerOptions): Operation<void> {
   assert(!!options.url, 'no app url given');
 
   if (options.command) {
+    console.debug('[app] starting app with command:', options.command);
     let child: Process = yield exec(options.command as string, {
       cwd: options.dir,
       env: Object.assign({}, process.env, options.env),

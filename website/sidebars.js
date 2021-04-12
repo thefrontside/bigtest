@@ -3,6 +3,7 @@ module.exports = {
     'interactors/quick-start',
     'interactors/built-in-dom',
     'interactors/locators-filters-actions',
+    'interactors/assertions-matchers',
     'interactors/write-your-own',
     'interactors/integrations'
   ],
