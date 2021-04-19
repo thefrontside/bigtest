@@ -21,7 +21,7 @@ function spin(message, operation){
 };
 
 const formatErr = (err) => {
-  return chalk`{red Error}: {yellow ${err}}\n`
+  return chalk`{red Error}: {yellow ${err}}\n`;
 };
 
 const formatSuccess = (message) => {

@@ -10,12 +10,12 @@ function* dev(task) {
 
   let appStartScript = JSON.parse(fs.readFileSync('./app-pkg.json')).scripts.start;
   let args = [appStartScript];
-  
+
   let portIndex;
   if(process.argv.includes('-p')){
     portIndex = process.argv.indexOf('-p');
-    args.push(...process.argv.slice(portIndex, portIndex + 2))
-  };
+    args.push(...process.argv.slice(portIndex, portIndex + 2));
+  }
 
   yield fsp.copyFile('app-pkg.json', 'package.json');
   yield install({ stdio: 'inherit' });
@@ -31,6 +31,6 @@ function* dev(task) {
   }));
 
   yield;
-};
+}
 
 main(dev);
