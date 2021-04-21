@@ -12,9 +12,22 @@ const CheckBoxInteractor = FormField.extend<HTMLInputElement>('check box')
     },
   })
   .actions({
-    check: ({ perform }) => perform((element) => { if(!element.checked) element.click(); }),
-    uncheck: ({ perform }) => perform((element) => { if(element.checked) element.click(); }),
-    toggle: ({ perform }) => perform((element) => { element.click(); }),
+    check: ({ perform }) => perform((element) => {
+      element.indeterminate = false;
+      if(!element.checked) element.click();
+    }),
+    uncheck: ({ perform }) => perform((element) => {
+      element.indeterminate = false;
+      if(element.checked) element.click();
+    }),
+    toggle: ({ perform }) => perform((element) => {
+      element.indeterminate = false;
+      element.click();
+    }),
+    click: ({ perform }) => perform((element) => {
+      element.indeterminate = false;
+      element.click();
+    }),
   })
 
 /**

@@ -216,7 +216,7 @@ describe('@bigtest/interactor', () => {
     });
 
     describe('filter `indeterminate`', () => {
-      it('filters `input` tags by whether they are indeterminate', async () => {
+      beforeEach(async () => {
         dom(`
           <p>
             <label for="accept-field">Accept</label>
@@ -227,9 +227,39 @@ describe('@bigtest/interactor', () => {
         // NOTE: No browser currently supports indeterminate as an attribute. It must be set via JavaScript.
         // NOTE: See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox#indeterminate_state_checkboxes
         await CheckBox('Accept').perform(e => e.indeterminate = true)
+      })
 
+      it('filters `input` tags by whether they are indeterminate', async () => {
         await expect(CheckBox('Accept', { indeterminate: true }).exists()).resolves.toBeUndefined();
         await expect(CheckBox('Accept', { indeterminate: false }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+      });
+
+      it('Reset indeterminate on toggle', async () => {
+        await CheckBox('Accept', { indeterminate: true }).toggle()
+
+        await expect(CheckBox('Accept', { indeterminate: false }).exists()).resolves.toBeUndefined();
+        await expect(CheckBox('Accept', { indeterminate: true }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+      });
+
+      it('Reset indeterminate on check', async () => {
+        await CheckBox('Accept', { indeterminate: true }).check()
+
+        await expect(CheckBox('Accept', { indeterminate: false }).exists()).resolves.toBeUndefined();
+        await expect(CheckBox('Accept', { indeterminate: true }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+      });
+
+      it('Reset indeterminate on uncheck', async () => {
+        await CheckBox('Accept', { indeterminate: true }).uncheck()
+
+        await expect(CheckBox('Accept', { indeterminate: false }).exists()).resolves.toBeUndefined();
+        await expect(CheckBox('Accept', { indeterminate: true }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+      });
+
+      it('Reset indeterminate on click', async () => {
+        await CheckBox('Accept', { indeterminate: true }).click()
+
+        await expect(CheckBox('Accept', { indeterminate: false }).exists()).resolves.toBeUndefined();
+        await expect(CheckBox('Accept', { indeterminate: true }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
       });
     });
 
@@ -302,7 +332,7 @@ describe('@bigtest/interactor', () => {
             <input required type="checkbox" id="not-focused"/>
             <script type="text/javascript">document.getElementById('focused').focus()</script>
           </p>
-`);
+        `);
 
         await CheckBox({id: 'focused'}).is({ focused: true });
         await CheckBox({id: 'not-focused', focused: true }).absent();
