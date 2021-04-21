@@ -18,7 +18,7 @@ When you use interactors in Jest, there are only a few things you need to know t
 
 First, interactors replace both user actions and test assertions. That means that you will not need `expect` anymore. For instance, instead of making an assertion as `expect(‘button’).toBeTruthy()`  you can use `await Button('Log Out’).exists()`. The example below illustrates how to use Interactors within Jest:
 
-```jsx
+```js
 import React from 'react';
 import { render } from '@testing-library/react';
 import App from './App';
@@ -51,7 +51,7 @@ Interactors can be used with the `cy.do()` and `cy.expect()` commands for intera
 
 In the following example, we demonstrate how to to use `cy.do()` and `cy.expect()` in a Cypress test together with Interactors:
 
-```jsx
+```js
 import { Button } from '@bigtest/cypress';
 
 describe('Interactors with Cypress', () => {
