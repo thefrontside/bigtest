@@ -7,7 +7,7 @@ import { HTML, matching } from '../../src/index';
 describe('@bigtest/interactor', () => {
   describe('matching', () => {
     it('can provide description', () => {
-      expect(matching(/hello/).format()).toEqual('matching /hello/');
+      expect(matching(/hello/).description()).toEqual('matching /hello/');
     });
 
     it('can check whether the given string matching', async () => {

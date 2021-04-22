@@ -7,7 +7,7 @@ import { HTML, and, including } from '../../src/index';
 describe('@bigtest/interactor', () => {
   describe('and', () => {
     it('can provide description', () => {
-      expect(and('foo', including('bar')).format()).toEqual('"foo" and including "bar"');
+      expect(and('foo', including('bar')).description()).toEqual('"foo" and including "bar"');
     });
 
     it('can check whether the given value matches all of the given matchers', async () => {

@@ -11,8 +11,8 @@ describe('@bigtest/interactor', () => {
 
   describe('not', () => {
     it('can provide description', () => {
-      expect(not(including('bar')).format()).toEqual('not including "bar"');
-      expect(not('bar').format()).toEqual('not "bar"');
+      expect(not(including('bar')).description()).toEqual('not including "bar"');
+      expect(not('bar').description()).toEqual('not "bar"');
     });
 
     it('can check whether the filter does not match the given matcher', async () => {
