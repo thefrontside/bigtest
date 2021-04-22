@@ -261,6 +261,40 @@ describe('@bigtest/interactor', () => {
         await expect(CheckBox('Accept', { indeterminate: false }).exists()).resolves.toBeUndefined();
         await expect(CheckBox('Accept', { indeterminate: true }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
       });
+
+      describe("Don't reset indeterminate on canceled click", () => {
+        beforeEach(async () => {
+          await CheckBox('Accept').perform(e => e.onclick = function (e) { e.preventDefault() })
+        })
+
+        it("Reset indeterminate on toggle", async () => {
+          await CheckBox('Accept', { indeterminate: true }).toggle()
+
+          await expect(CheckBox('Accept', { indeterminate: true }).exists()).resolves.toBeUndefined();
+          await expect(CheckBox('Accept', { indeterminate: false }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+        });
+
+        it("Reset indeterminate on check", async () => {
+          await CheckBox('Accept', { indeterminate: true }).check()
+
+          await expect(CheckBox('Accept', { indeterminate: true }).exists()).resolves.toBeUndefined();
+          await expect(CheckBox('Accept', { indeterminate: false }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+        });
+
+        it("Reset indeterminate on uncheck", async () => {
+          await CheckBox('Accept', { indeterminate: true }).uncheck()
+
+          await expect(CheckBox('Accept', { indeterminate: true }).exists()).resolves.toBeUndefined();
+          await expect(CheckBox('Accept', { indeterminate: false }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+        });
+
+        it("Reset indeterminate on click", async () => {
+          await CheckBox('Accept', { indeterminate: true }).click()
+
+          await expect(CheckBox('Accept', { indeterminate: true }).exists()).resolves.toBeUndefined();
+          await expect(CheckBox('Accept', { indeterminate: false }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+        });
+      })
     });
 
     describe('filter `valid`', () => {
