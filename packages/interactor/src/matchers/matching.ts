@@ -5,7 +5,7 @@ export function matching(regexp: RegExp): Matcher<string> {
     match(actual: string): boolean {
       return actual.match(regexp) != null;
     },
-    format(): string {
+    description(): string {
       return `matching ${regexp}`;
     },
   }
