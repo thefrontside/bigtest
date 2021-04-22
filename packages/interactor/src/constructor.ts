@@ -154,7 +154,7 @@ export function instantiateBaseInteractor<E extends Element, F extends Filters<E
           let element = resolver(options);
           let match = new MatchFilter(element, filter);
           if(!match.matches) {
-            throw new FilterNotMatchingError(`${description(options)} does not match filters:\n\n${match.formatAsExpectations()}`);
+            throw new FilterNotMatchingError(`${description(options)} does not match filters:\n\n${match.descriptionAsExpectations()}`);
           }
         });
       });

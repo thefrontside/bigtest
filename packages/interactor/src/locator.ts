@@ -1,10 +1,10 @@
 import { LocatorFn } from './specification';
-import { formatMatcher, MaybeMatcher } from './matcher';
+import { matcherDescription, MaybeMatcher } from './matcher';
 
 export class Locator<E extends Element> {
   constructor(public locatorFn: LocatorFn<E>, public value: MaybeMatcher<string>) {}
 
   get description(): string {
-    return formatMatcher(this.value);
+    return matcherDescription(this.value);
   }
 }

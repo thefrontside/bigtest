@@ -2,18 +2,18 @@ import isEqual from 'lodash.isequal';
 
 export interface Matcher<T> {
   match(actual: T): boolean;
-  format(): string;
+  description(): string;
 }
 
 export type MaybeMatcher<T> = Matcher<T> | T;
 
 export function isMatcher<T>(value: MaybeMatcher<T>): value is Matcher<T> {
-  return value && typeof (value as Matcher<T>).match === 'function' && typeof (value as Matcher<T>).format === 'function';
+  return value && typeof (value as Matcher<T>).match === 'function' && typeof (value as Matcher<T>).description === 'function';
 }
 
-export function formatMatcher<T>(value: MaybeMatcher<T>): string {
+export function matcherDescription<T>(value: MaybeMatcher<T>): string {
   if(isMatcher(value)) {
-    return value.format();
+    return value.description();
   } else {
     return JSON.stringify(value);
   }

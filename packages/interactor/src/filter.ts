@@ -1,6 +1,6 @@
 import { Filters, FilterFn, FilterObject, FilterParams, InteractorSpecification } from './specification';
 import { noCase } from 'change-case';
-import { formatMatcher } from './matcher';
+import { matcherDescription } from './matcher';
 
 export class Filter<E extends Element, F extends Filters<E>> {
   constructor(
@@ -22,7 +22,7 @@ export class Filter<E extends Element, F extends Filters<E>> {
             return `which is not ${noCase(key)}`;
           }
         } else {
-          return `with ${noCase(key)} ${formatMatcher(value)}`
+          return `with ${noCase(key)} ${matcherDescription(value)}`
         }
       }).join(' and ');
     }
@@ -40,6 +40,6 @@ export class Filter<E extends Element, F extends Filters<E>> {
   }
 
   asTableHeader(): string[] {
-    return Object.entries(this.all).map(([key, value]) => `${key}: ${formatMatcher(value)}`);
+    return Object.entries(this.all).map(([key, value]) => `${key}: ${matcherDescription(value)}`);
   }
 }
