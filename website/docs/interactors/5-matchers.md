@@ -150,7 +150,7 @@ MultiSelect().has({ values: every(blueOrGreen) });
 
 ## Creating matchers from scratch
 
-To create your own matcher without the use of any of the preexisting ones, you will need to create a function that returns a `{ match(), format() }` object.
+To create your own matcher without the use of any of the preexisting ones, you will need to create a function that returns a `{ match(), description() }` object.
 
 The `match()` function is where you place all of the matcher logic. It takes one argument, `actual`, which represents the values from the interactors. Here's how the `including()` matcher is implemented:
 
@@ -160,7 +160,7 @@ export function including(subString) {
     match(actual) {
       return actual.includes(subString);
     },
-    format() {
+    description() {
       return `including ${JSON.stringify(subString)}`;
     }
   };
@@ -169,7 +169,7 @@ export function including(subString) {
 
 _You can find the source code for the `including()` matcher [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/matchers/including.ts)._
 
-And the return value from the `format()` function is to display an error message for when no interactors are found:
+And the return value from the `description()` function is to display an error message for when no interactors are found:
 
 ```
 ERROR did not find heading with id including "foo" ...
@@ -193,7 +193,7 @@ export function greaterThan(number) {
     match(actual) {
       return actual > number
     },
-    format() {
+    description() {
       return `greater than ${number}`
     }
   };
