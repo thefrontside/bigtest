@@ -234,61 +234,61 @@ describe('@bigtest/interactor', () => {
         await expect(CheckBox('Accept', { indeterminate: false }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
       });
 
-      it('Reset indeterminate on toggle', async () => {
+      it('reset indeterminate on toggle', async () => {
         await CheckBox('Accept', { indeterminate: true }).toggle()
 
         await expect(CheckBox('Accept', { indeterminate: false }).exists()).resolves.toBeUndefined();
         await expect(CheckBox('Accept', { indeterminate: true }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
       });
 
-      it('Reset indeterminate on check', async () => {
+      it('reset indeterminate on check', async () => {
         await CheckBox('Accept', { indeterminate: true }).check()
 
         await expect(CheckBox('Accept', { indeterminate: false }).exists()).resolves.toBeUndefined();
         await expect(CheckBox('Accept', { indeterminate: true }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
       });
 
-      it('Reset indeterminate on uncheck', async () => {
+      it('reset indeterminate on uncheck', async () => {
         await CheckBox('Accept', { indeterminate: true }).uncheck()
 
         await expect(CheckBox('Accept', { indeterminate: false }).exists()).resolves.toBeUndefined();
         await expect(CheckBox('Accept', { indeterminate: true }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
       });
 
-      it('Reset indeterminate on click', async () => {
+      it('reset indeterminate on click', async () => {
         await CheckBox('Accept', { indeterminate: true }).click()
 
         await expect(CheckBox('Accept', { indeterminate: false }).exists()).resolves.toBeUndefined();
         await expect(CheckBox('Accept', { indeterminate: true }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
       });
 
-      describe("Don't reset indeterminate on canceled click", () => {
+      describe("don't reset indeterminate on canceled click", () => {
         beforeEach(async () => {
           await CheckBox('Accept').perform(e => e.onclick = function (e) { e.preventDefault() })
         })
 
-        it("Reset indeterminate on toggle", async () => {
+        it("on toggle", async () => {
           await CheckBox('Accept', { indeterminate: true }).toggle()
 
           await expect(CheckBox('Accept', { indeterminate: true }).exists()).resolves.toBeUndefined();
           await expect(CheckBox('Accept', { indeterminate: false }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
         });
 
-        it("Reset indeterminate on check", async () => {
+        it("on check", async () => {
           await CheckBox('Accept', { indeterminate: true }).check()
 
           await expect(CheckBox('Accept', { indeterminate: true }).exists()).resolves.toBeUndefined();
           await expect(CheckBox('Accept', { indeterminate: false }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
         });
 
-        it("Reset indeterminate on uncheck", async () => {
+        it("on uncheck", async () => {
           await CheckBox('Accept', { indeterminate: true }).uncheck()
 
           await expect(CheckBox('Accept', { indeterminate: true }).exists()).resolves.toBeUndefined();
           await expect(CheckBox('Accept', { indeterminate: false }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
         });
 
-        it("Reset indeterminate on click", async () => {
+        it("on click", async () => {
           await CheckBox('Accept', { indeterminate: true }).click()
 
           await expect(CheckBox('Accept', { indeterminate: true }).exists()).resolves.toBeUndefined();
