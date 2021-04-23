@@ -1,19 +1,36 @@
 import { isVisible } from 'element-is-visible';
+import { dispatchClick } from '../dispatch';
 import { FormField } from './form-field';
 
 const CheckBoxInteractor = FormField.extend<HTMLInputElement>('check box')
   .selector('input[type=checkbox]')
   .filters({
     checked: (element) => element.checked,
+    indeterminate: (element) => element.indeterminate,
     visible: {
       apply: (element) => isVisible(element) || (element.labels && Array.from(element.labels).some(isVisible)),
       default: true
     },
   })
   .actions({
-    check: ({ perform }) => perform((element) => { if(!element.checked) element.click(); }),
-    uncheck: ({ perform }) => perform((element) => { if(element.checked) element.click(); }),
-    toggle: ({ perform }) => perform((element) => { element.click(); }),
+    check: ({ perform }) => perform((element) => {
+      if((!element.checked || element.indeterminate))
+        if (dispatchClick(element))
+          element.indeterminate = false;
+    }),
+    uncheck: ({ perform }) => perform((element) => {
+      if((element.checked || element.indeterminate))
+        if (dispatchClick(element))
+          element.indeterminate = false;
+    }),
+    toggle: ({ perform }) => perform((element) => {
+      if (dispatchClick(element))
+        element.indeterminate = false;
+    }),
+    click: ({ perform }) => perform((element) => {
+      if (dispatchClick(element))
+        element.indeterminate = false;
+    }),
   })
 
 /**
@@ -38,6 +55,7 @@ const CheckBoxInteractor = FormField.extend<HTMLInputElement>('check box')
  * - `visible`: *boolean* – Filter by visibility. Defaults to `true`. See {@link isVisible}.
  * - `valid`: *boolean* – Filter by whether the checkbox is valid.
  * - `checked`: *boolean* – Filter by whether the checkbox is checked.
+ * - `indeterminate`: *boolean* - Filter by whether the checkbox has indeterminate state.
  * - `disabled`: *boolean* – Filter by whether the checkbox is disabled. Defaults to `false`.
  * - `focused`: *boolean* – Filter by whether the checkbox is focused. See {@link focused}.
  *

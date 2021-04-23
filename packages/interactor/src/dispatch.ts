@@ -17,3 +17,8 @@ export function dispatchKeyUp(element: HTMLElement, options: KeyboardEventInit =
   let KeyboardEvent = element.ownerDocument.defaultView?.KeyboardEvent || window.KeyboardEvent;
   return element.dispatchEvent(new KeyboardEvent('keyup', Object.assign({ bubbles: true, cancelable: true }, options)));
 }
+
+export function dispatchClick(element: HTMLElement, options: MouseEventInit = {}): boolean {
+  let MouseEvent = element.ownerDocument.defaultView?.MouseEvent || window.MouseEvent;
+  return element.dispatchEvent(new MouseEvent('click', Object.assign({ bubbles: true, cancelable: true }, options)));
+}
