@@ -64,12 +64,12 @@ export class MatchLocator<E extends Element> {
     this.matches = applyMatcher(this.expected, this.actual);
   }
 
-  descriptionActual(): string {
+  formatActual(): string {
     return JSON.stringify(this.actual);
   }
 
   description(): string {
-    return `${check(this.matches)} ${this.descriptionActual()}`;
+    return `${check(this.matches)} ${this.formatActual()}`;
   }
 
   get sortWeight(): number {
@@ -99,8 +99,8 @@ export class MatchFilter<E extends Element, F extends Filters<E>> {
     return this.items.reduce((agg, i) => agg + i.sortWeight, 0);
   }
 
-  descriptionAsExpectations(): string {
-    return this.items.filter((i) => !i.matches).map((i) => i.descriptionAsExpectation()).join('\n\n');
+  formatAsExpectations(): string {
+    return this.items.filter((i) => !i.matches).map((i) => i.formatAsExpectation()).join('\n\n');
   }
 }
 
@@ -127,23 +127,23 @@ export class MatchFilterItem<T, E extends Element, F extends Filters<E>> {
     }
   }
 
-  descriptionActual(): string {
+  formatActual(): string {
     return JSON.stringify(this.actual);
   }
 
-  descriptionExpected(): string {
+  formatExpected(): string {
     return matcherDescription(this.expected);
   }
 
   description(): string {
-    return `${check(this.matches)} ${this.descriptionActual()}`;
+    return `${check(this.matches)} ${this.formatActual()}`;
   }
 
-  descriptionAsExpectation(): string {
+  formatAsExpectation(): string {
     return [
       `╒═ Filter:   ${this.key}`,
-      `├─ Expected: ${this.descriptionExpected()}`,
-      `└─ Received: ${this.descriptionActual()}`,
+      `├─ Expected: ${this.formatExpected()}`,
+      `└─ Received: ${this.formatActual()}`,
     ].join('\n')
   }
 
