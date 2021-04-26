@@ -6,10 +6,6 @@ import { HTML, or, including } from '../../src/index';
 
 describe('@bigtest/interactor', () => {
   describe('or', () => {
-    it('can provide description', () => {
-      expect(or('foo', including('bar')).description()).toEqual('"foo" or including "bar"');
-    });
-
     it('can check whether the given value matches any of the given matchers', async () => {
       dom(`
         <div title="hello cruel world"></div>
