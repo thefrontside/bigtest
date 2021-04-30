@@ -49,7 +49,7 @@ The locator of the `TextField` interactor is the `innerText` of its associated l
 </label>
 ```
 
-_See the source code of the TextField interactor [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts). The TextField interactor extends the [FormField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/form-field.ts#L6) interactor which is where it inherits the locator function from._
+_See the source code for the TextField interactor [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts). The TextField interactor extends the [FormField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/form-field.ts#L6) interactor which is from where it inherits the locator function._
 :::
 
 You can think of the locator as the "default filter" since filters and locators both provide the same functionality. The reason why BigTest offers both solutions is convenience, because having to pass in an object for each interactor can get repetitive.
