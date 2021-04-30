@@ -9,7 +9,9 @@ These are the default interactors that are offered out-of-the-box with BigTest:
 
 - [Button](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/button.ts)
 - [CheckBox](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/check-box.ts)
+- [FormField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/form-field.ts)
 - [Heading](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/heading.ts)
+- [HTML](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/html.ts)
 - [Link](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/link.ts)
 - [MultiSelect](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/multi-select.ts)
 - [Page](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/page.ts)
@@ -48,6 +50,10 @@ export default test('BigTest Runner')
   .step(Page.visit('/contact'))
   .assertion(Page.has({ title: 'BigTest Example App'}));
 ```
+
+<!-- 
+### HTML
+todo -->
 
 ## Up Next
 
