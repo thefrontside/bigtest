@@ -30,6 +30,7 @@ Follow the links above to get more information on how to use these interactors t
 If your app has unique interfaces that are not covered by these built-in tools, you are encouraged to [write your own interactors](/docs/interactors/write-your-own).
 
 ### Page
+
 The `Page` interactor is unique. Unlike Big Test’s other built-in interactors, it's not designed to target one specific element but rather the whole page. It is useful for asserting for the url or title in your test environment:
 
 ```js
@@ -51,9 +52,13 @@ export default test('BigTest Runner')
   .assertion(Page.has({ title: 'BigTest Example App'}));
 ```
 
-<!-- 
 ### HTML
-todo -->
+
+The `HTML` interactor is not meant to be used directly in your tests but for _composing_ other interactors. How this interactor is used will make much more sense once you read the `Write Your Own Matchers` page. But for now you can think of the `HTML` interactor as the basic building block for all other interactors.
+
+We took many of the common HTML properties and interactions, such as `className` and `click`, and added them into the `HTML` interactor. This provides the convenience of not having to respecify these properties over and over again for each of your interactors.
+
+Take a look at the [source code](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/html.ts) for the `HTML` interactor to see which filters and actions were added.
 
 ## Up Next
 
