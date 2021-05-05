@@ -69,9 +69,9 @@ import TabItem from '@theme/TabItem';
 `fillIn` is a function exported by `bigtest`. See the implementation [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/fill-in.ts#L63-L76). You can use any of the functions defined by BigTest or implement your own.
 :::
 
-In the example above we're extending from the `HTML` interactor to compose the MyTextField interactor. If you take a look at the implementation of the built-in [TextField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts) interactor, you'll see that the `value` filter and `fillIn` action is already available.
+In the example above, we're extending from the `HTML` interactor to compose the MyTextField interactor. If you take a look at the implementation of the built-in [TextField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts) interactor, you'll see that the `value` filter and `fillIn` action are already available.
 
-In a more realistic scenario, if you want a TextField interactor that uses its placeholder value as its locator, you would just extend from the pre-existing TextField interactor like so:
+In a more realistic scenario, if you want a TextField interactor that uses its placeholder value as its locator, you should extend from the pre-existing TextField interactor:
 
 ```js
 import { TextField } from 'bigtest';
@@ -80,7 +80,7 @@ export const MyTextField = TextField.extend('my-textfield-interactor')
   .locator((element) => element.placeholder)
 ```
 
-This approach would allow your interactor to inherit the selector, locator, filters, and actions from the interactor it is extending from. Extending from another interactor provides the convenience of not having to rewrite common filters and actions. You can overwrite any of the inherited properties to suit your needs which is what we are doing with the locator in the example.
+This approach would allow your interactor to inherit the selector, locator, filters, and actions from the interactor it is extending from. Extending from another interactor provides the convenience of not having to rewrite common filters and actions. You can overwrite any of the inherited properties to suit your needs, which is what we are doing with the locator in the example.
 
 If we didn't provide the placeholder value as the locator, it would inherit the locator from BigTest's built-in TextField interactor which itself is inheriting its locator from the [FormField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/form-field.ts#L6) interactor.
 

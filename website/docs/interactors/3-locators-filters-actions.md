@@ -49,7 +49,7 @@ The locator of the `TextField` interactor is the `innerText` of its associated l
 </label>
 ```
 
-_See the source code for the TextField interactor [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts). The TextField interactor extends the [FormField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/form-field.ts#L6) interactor which is from where it inherits the locator function._
+_See the source code for the TextField interactor [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts). The TextField interactor extends the [FormField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/form-field.ts#L6) interactor, so it has a locator function._
 :::
 
 You can think of the locator as the "default filter" since filters and locators both provide the same functionality. The reason why BigTest offers both solutions is convenience, because having to pass in an object for each interactor can get repetitive.
@@ -78,10 +78,10 @@ The filter object can take as many properties as you want it to:
 TextField({ id: 'username-id', placeholder: 'USERNAME', visible: true }).exists();
 ```
 
-The filters available are defined by each interactor, so look at the source code for the built-in interactors or the code for your own interactors to know what is available. For example, if you take a look at the [TextField source code](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts), you'll see that the TextField interactor provides two filters.
+The filters available are defined by each interactor, so look at the source code for the built-in interactors to know what is available. For example, if you take a look at the [TextField source code](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts), you'll see that the TextField interactor provides two filters.
 
 :::note
-Since the TextField interactor extends on the [FormField interactor](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/form-field.ts) which extends from the [HTML interactor](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/html.ts), the TextField interactor inherits all of the FormField and HTML interactor properties. So in total there are actually eleven filters available for the TextField interactor. 
+There are many filters available for the TextField interactor. The TextField interactor inherits all of the [FormField interactor](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/form-field.ts) and [HTML interactor](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/html.ts) properties.
 
 We will be exploring this concept more in-depth on the [Writing Interactors](/docs/interactors/write-your-own) page.
 :::

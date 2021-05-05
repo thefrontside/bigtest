@@ -54,9 +54,9 @@ export default test('BigTest Runner')
 
 ### HTML
 
-The `HTML` interactor is not meant to be used directly in your tests but for _composing_ other interactors. How this interactor is used will make much more sense once you read the `Write Your Own Matchers` page. But for now you can think of the `HTML` interactor as the basic building block for all other interactors.
+You can think of the `HTML` interactor as the basic building block for all other interactors. The `HTML` interactor is not meant to be used directly in your tests but for _composing_ other interactors. How this interactor is used will make much more sense once you read the `Write Your Own Matchers` page.
 
-We took many of the common HTML properties and interactions, such as `className` and `click`, and added them into the `HTML` interactor. This provides the convenience of not having to respecify these properties over and over again for each of your interactors.
+Many common HTML properties and interactions, such as `className` and `click`, are included in the `HTML` interactor. This provides the convenience of not having to re-specify these properties over and over again for each of your interactors.
 
 Take a look at the [source code](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/html.ts) for the `HTML` interactor to see which filters and actions were added.
 
