@@ -5,7 +5,7 @@ export function including(subString: string): Matcher<string> {
     match(actual: string): boolean {
       return actual.includes(subString);
     },
-    format(): string {
+    description(): string {
       return `including ${JSON.stringify(subString)}`;
     },
   }

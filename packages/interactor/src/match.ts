@@ -2,7 +2,7 @@ import { Locator } from './locator';
 import { Filter } from './filter';
 import { Filters } from './specification';
 import { escapeHtml } from './escape-html';
-import { MaybeMatcher, applyMatcher, formatMatcher } from './matcher';
+import { MaybeMatcher, applyMatcher, matcherDescription } from './matcher';
 
 const check = (value: unknown): string => value ? "✓" : "⨯";
 
@@ -31,7 +31,7 @@ export class Match<E extends Element, F extends Filters<E>> {
 
   asTableRow(): string[] {
     if(this.matchLocator) {
-      return [this.matchLocator.format(), ...this.matchFilter.asTableRow()]
+      return [this.matchLocator.description(), ...this.matchFilter.asTableRow()]
     } else {
       return this.matchFilter.asTableRow();
     }
@@ -68,7 +68,7 @@ export class MatchLocator<E extends Element> {
     return JSON.stringify(this.actual);
   }
 
-  format(): string {
+  description(): string {
     return `${check(this.matches)} ${this.formatActual()}`;
   }
 
@@ -92,7 +92,7 @@ export class MatchFilter<E extends Element, F extends Filters<E>> {
   }
 
   asTableRow(): string[] {
-    return this.items.map((f) => f.format());
+    return this.items.map((f) => f.description());
   }
 
   get sortWeight(): number {
@@ -132,10 +132,10 @@ export class MatchFilterItem<T, E extends Element, F extends Filters<E>> {
   }
 
   formatExpected(): string {
-    return formatMatcher(this.expected);
+    return matcherDescription(this.expected);
   }
 
-  format(): string {
+  description(): string {
     return `${check(this.matches)} ${this.formatActual()}`;
   }
 

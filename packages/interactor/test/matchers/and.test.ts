@@ -6,10 +6,6 @@ import { HTML, and, including } from '../../src/index';
 
 describe('@bigtest/interactor', () => {
   describe('and', () => {
-    it('can provide description', () => {
-      expect(and('foo', including('bar')).format()).toEqual('"foo" and including "bar"');
-    });
-
     it('can check whether the given value matches all of the given matchers', async () => {
       dom(`
         <div title="hello cruel world"></div>

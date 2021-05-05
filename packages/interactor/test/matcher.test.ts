@@ -15,7 +15,7 @@ function shouted(value: string): Matcher<string> {
     match(actual: string): boolean {
       return actual === value.toUpperCase();
     },
-    format(): string {
+    description(): string {
       return `uppercase ${JSON.stringify(value.toUpperCase())}`;
     },
   }

@@ -5,7 +5,7 @@ function shouted(value: string): Matcher<string> {
     match(actual: string): boolean {
       return actual === value.toUpperCase();
     },
-    format(): string {
+    description(): string {
       return value.toUpperCase();
     }
   }
@@ -15,7 +15,7 @@ let isEven: Matcher<number> = {
   match(actual: number): boolean {
     return actual % 2 === 0;
   },
-  format(): string {
+  description(): string {
     return "is even";
   }
 }
