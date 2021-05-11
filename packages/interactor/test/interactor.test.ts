@@ -81,6 +81,14 @@ describe('@bigtest/interactor', () => {
         'tried to run perform on link "Foo" in an assertion, perform should only be run in steps'
       );
     });
+
+    it('returns a value outside', async () => {
+      dom(`
+        <a data-foo="bar" href="/foobar">Foo</a>
+      `);
+
+      await expect(Link('Foo').perform((e) => e.getAttribute('data-foo'))).resolves.toEqual('bar')
+    })
   });
 
   describe('.assert', () => {
