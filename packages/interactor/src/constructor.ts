@@ -14,6 +14,7 @@ import {
   FilterParams,
   InteractorSpecification,
   BaseInteractor,
+  FilterGetters,
 } from './specification';
 import { Filter } from './filter';
 import { Locator } from './locator';
@@ -116,7 +117,7 @@ function unsafeSyncResolveUnique<E extends Element>(options: InteractorOptions<E
 export function instantiateBaseInteractor<E extends Element, F extends Filters<E>, A extends Actions<E>>(
   options: InteractorOptions<E, F, A>,
   resolver: (options: InteractorOptions<E, F, A>) => E
-): BaseInteractor<E, FilterParams<E, F>> & ActionMethods<E, A> {
+): BaseInteractor<E, FilterParams<E, F>> & ActionMethods<E, A> & FilterGetters<E, A> {
   let interactor = {
     options,
 
@@ -161,6 +162,22 @@ export function instantiateBaseInteractor<E extends Element, F extends Filters<E
     },
   }
 
+  for (let [filterName, filter] of Object.entries(options.specification.filters ?? {})) {
+    Object.defineProperty(interactor, filterName, {
+      get() {
+        return interaction(`get ${filterName} from ${this.description}`, async () => {
+          if(bigtestGlobals.runnerState === 'assertion') {
+            throw new Error(`tried to get ${filterName} from ${this.description} in an assertion, getters should only be used in steps`);
+          }
+          let filterFn = typeof(filter) === 'function' ? filter : filter.apply
+          return await converge(() => filterFn(resolver(options)));
+        });
+      },
+      configurable: true,
+      enumerable: false,
+    })
+  }
+
   for(let [actionName, action] of Object.entries(options.specification.actions || {})) {
     Object.defineProperty(interactor, actionName, {
       value: function(...args: unknown[]) {
@@ -181,12 +198,12 @@ export function instantiateBaseInteractor<E extends Element, F extends Filters<E
     });
   }
 
-  return interactor as BaseInteractor<E, FilterParams<E, F>> & ActionMethods<E, A>;
+  return interactor as BaseInteractor<E, FilterParams<E, F>> & ActionMethods<E, A> & FilterGetters<E, A>;
 }
 
 export function instantiateInteractor<E extends Element, F extends Filters<E>, A extends Actions<E>>(
   options: InteractorOptions<E, F, A>,
-): Interactor<E, FilterParams<E, F>> & ActionMethods<E, A> {
+): Interactor<E, FilterParams<E, F>> & ActionMethods<E, A> & FilterGetters<E, A> {
   let interactor = instantiateBaseInteractor(options, unsafeSyncResolveUnique)
 
   return Object.assign(interactor, {
@@ -215,10 +232,10 @@ export function instantiateInteractor<E extends Element, F extends Filters<E>, A
   });
 }
 
-export function createConstructor<E extends Element, FP extends FilterParams<any, any>, AM extends ActionMethods<any, any>>(
+export function createConstructor<E extends Element, FP extends FilterParams<any, any>, AM extends ActionMethods<any, any>, FG extends FilterGetters<any, any>>(
   name: string,
   specification: InteractorSpecification<E, any, any>,
-): InteractorConstructor<E, FP, AM> {
+): InteractorConstructor<E, FP, AM, FG> {
   function initInteractor(...args: any[]) {
     let locator, filter;
     if(typeof(args[0]) === 'string' || isMatcher(args[0])) {
@@ -230,5 +247,5 @@ export function createConstructor<E extends Element, FP extends FilterParams<any
     return instantiateInteractor({ name, specification, filter, locator, ancestors: [] });
   }
 
-  return makeBuilder(initInteractor, name, specification) as unknown as InteractorConstructor<E, FP, AM>;
+  return makeBuilder(initInteractor, name, specification) as unknown as InteractorConstructor<E, FP, AM, FG>;
 }

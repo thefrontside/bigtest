@@ -30,6 +30,7 @@ const TextField = createInteractor<HTMLInputElement>('text field')
   .selector('input')
   .locator((element) => element.id)
   .filters({
+    id: element => element.id,
     placeholder: element => element.placeholder,
     enabled: {
       apply: (element) => !element.disabled,
@@ -496,4 +497,16 @@ describe('@bigtest/interactor', () => {
       await expect(TextField('Password', { enabled: false, value: 'test1234' }).exists()).resolves.toBeUndefined();
     });
   });
+
+  describe('getters', () => {
+    it('can return value by using filter function', async () => {
+      dom(`
+        <input id="Email" value='jonas@example.com'/>
+        <input id="Password" value='test1234'/>
+      `);
+
+      await expect(TextField('Password').value).resolves.toEqual('test1234')
+      await expect(TextField({ value: 'jonas@example.com' }).id).resolves.toEqual('Email')
+    })
+  })
 });
