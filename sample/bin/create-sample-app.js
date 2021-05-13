@@ -48,16 +48,16 @@ function migrate(messages) {
 
       switch(templateName){
         case 'cypress':
-          rmrfsync(`${TARGET_DIR}/src/test/*bigtest*`);
-          rmrfsync(`${TARGET_DIR}/src/test/*jest*`);
+          rmrfsync(`${TARGET_DIR}/src/test/bigtest.test.js`);
+          rmrfsync(`${TARGET_DIR}/src/test/jest.test.js`);
           break;
         case 'jest':
-          rmrfsync(`${TARGET_DIR}/src/test/*bigtest*`);
-          rmrfsync(`${TARGET_DIR}/src/test/*cypress*`);
+          rmrfsync(`${TARGET_DIR}/src/test/bigtest.test.js`);
+          rmrfsync(`${TARGET_DIR}/src/test/cypress.spec.js`);
           break;
         case 'bigtest':
-          rmrfsync(`${TARGET_DIR}/src/test/*cypress*`);
-          rmrfsync(`${TARGET_DIR}/src/test/*jest*`);
+          rmrfsync(`${TARGET_DIR}/src/test/cypress.spec.js`);
+          rmrfsync(`${TARGET_DIR}/src/test/jest.test.js`);
           break;
       };
     });
