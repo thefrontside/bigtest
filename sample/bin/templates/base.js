@@ -16,6 +16,7 @@ const baseTemplate = ({ dependencies }) => {
         "parcel": `${dependencies.parcel}`,
         "react": `${dependencies.react}`,
         "react-dom": `${dependencies['react-dom']}`,
+        "react-router-dom": `${dependencies['react-router-dom']}`,
         "typescript": `${dependencies.typescript}`,
         "eslint": `${dependencies.eslint}`
       },
