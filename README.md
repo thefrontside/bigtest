@@ -68,11 +68,11 @@ yarn bigtest init
 Add a test file in `test/my-test.test.js`:
 
 ``` javascript
-import { test, Page, Headline } from 'bigtest';
+import { test, Page, Heading } from 'bigtest';
 
 export default test('My Test')
-  .step(Page.visit('/'));
-  .step(Headline("My Application").exists());
+  .step(Page.visit('/'))
+  .step(Heading("My Application").exists());
 ```
 
 Start the BigTest server:
