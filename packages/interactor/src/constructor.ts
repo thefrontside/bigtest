@@ -109,7 +109,7 @@ export function unsafeSyncResolveParent(options: InteractorOptions<any, any, any
   return options.ancestors.reduce(resolveUnique, bigtestGlobals.document.documentElement);
 }
 
-function unsafeSyncResolveUnique<E extends Element>(options: InteractorOptions<E, any, any>): E {
+export function unsafeSyncResolveUnique<E extends Element>(options: InteractorOptions<E, any, any>): E {
   return resolveUnique(unsafeSyncResolveParent(options), options) as E;
 }
 
