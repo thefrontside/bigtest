@@ -16,8 +16,10 @@ const baseTemplate = ({ dependencies }) => {
         "parcel": `${dependencies.parcel}`,
         "react": `${dependencies.react}`,
         "react-dom": `${dependencies['react-dom']}`,
+        "react-router-dom": `${dependencies['react-router-dom']}`,
         "typescript": `${dependencies.typescript}`,
-        "eslint": `${dependencies.eslint}`
+        "eslint": `${dependencies.eslint}`,
+        "@babel/core": `${dependencies['@babel/core']}`,
       },
       "volta": {
         "node": "12.16.0",

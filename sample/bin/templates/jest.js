@@ -5,7 +5,6 @@ const jestTemplate = ({ dependencies, browserslist, babel, jest }) => {
         "test:jest": "jest 'src/test/jest.test.js'",
       },
       "dependencies": {
-        "@babel/core": `${dependencies['@babel/core']}`,
         "@babel/preset-env": `${dependencies['@babel/preset-env']}`,
         "@babel/preset-react": `${dependencies['@babel/preset-react']}`,
         "@testing-library/react": `${dependencies['@testing-library/react']}`,
