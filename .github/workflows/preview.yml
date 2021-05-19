@@ -9,6 +9,7 @@ jobs:
   publish-previews:
     name: Publish Preview Packages
     runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'preview')
     steps:
     - uses: actions/checkout@v1
     - name: Publish PR Preview
