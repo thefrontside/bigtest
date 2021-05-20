@@ -11,7 +11,6 @@ These are the default interactors that are offered out-of-the-box with BigTest:
 - [CheckBox](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/check-box.ts)
 - [FormField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/form-field.ts)
 - [Heading](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/heading.ts)
-- [HTML](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/html.ts)
 - [Link](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/link.ts)
 - [MultiSelect](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/multi-select.ts)
 - [Page](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/page.ts)
@@ -24,8 +23,6 @@ As you might have seen on the [Quick Start](/docs/interactors/) page, you can im
 ```js
 import { Button, TextField } from 'bigtest';
 ```
-
-Follow the links above to get more information on how to use these interactors to test your app.
 
 If your app has unique interfaces that are not covered by these built-in tools, you are encouraged to [write your own interactors](/docs/interactors/write-your-own).
 
@@ -42,7 +39,7 @@ _The `Page` interactor is instantiated differently than the other built-in inter
 We introduced `.exists()` and `.absent()` in the [Quick Start](/docs/interactors/) section but there are also `.has()` and `.is()` Interactor assertion methods. We will discuss their details on the [Assertions](/docs/interactors/assertions) page.
 :::
 
-And when using BigTest runner, the Page interactor can be used to navigate between routes:
+And when using the BigTest runner, the Page interactor can be used to navigate between routes:
 
 ```js
 import { Page, test } from 'bigtest';
@@ -51,14 +48,6 @@ export default test('BigTest Runner')
   .step(Page.visit('/contact'))
   .assertion(Page.has({ title: 'BigTest Example App'}));
 ```
-
-### HTML
-
-You can think of the `HTML` interactor as the basic building block for all other interactors. The `HTML` interactor is not meant to be used directly in your tests but for _composing_ other interactors. How this interactor is used will make much more sense once you read the `Write Your Own Matchers` page.
-
-Many common HTML properties and interactions, such as `className` and `click`, are included in the `HTML` interactor. This provides the convenience of not having to re-specify these properties over and over again for each of your interactors.
-
-Take a look at the [source code](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/html.ts) for the `HTML` interactor to see which filters and actions were added.
 
 ## Up Next
 
