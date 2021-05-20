@@ -9,11 +9,13 @@ describe('@bigtest/interactor', () => {
       dom(`
         <p>Foo</p>
         <button>Bar</button>
+        <svg id="spam"></svg>
       `);
 
       await expect(HTML('Foo').exists()).resolves.toBeUndefined();
       await expect(HTML('Bar').exists()).resolves.toBeUndefined();
       await expect(HTML('Blah').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+      await expect(HTML({ id: 'spam' }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
     });
 
     describe('.click', () => {

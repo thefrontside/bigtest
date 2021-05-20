@@ -2,7 +2,7 @@ import { createInteractor } from '../index';
 import { isVisible } from 'element-is-visible';
 
 const HTMLInteractor = createInteractor<HTMLElement>('element')
-  .selector('*')
+  .selector('*:not(svg), *:not(svg *)')
   .locator(innerText)
   .filters({
     text: innerText,
