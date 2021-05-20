@@ -37,6 +37,10 @@ const Thing = HTML.extend<HTMLLinkElement>('div')
 const Header = createInteractor('header')
   .selector('h1,h2,h3,h4,h5,h6')
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore
+const HTMLWithNoLabel = HTML.extend()
+
 describe('@bigtest/interactor', () => {
   describe('.extend', () => {
     it('can use filters from base interactor', async () => {
@@ -98,6 +102,14 @@ describe('@bigtest/interactor', () => {
 
       await Thing().click(4);
       await Thing().has({ title: 4 });
+    });
+
+    it('throws error if interactor has no label', async () => {
+      dom(`<p>Foo Bar</p>`);
+      await expect(HTMLWithNoLabel('Foo Bar').exists()).rejects.toHaveProperty('message', [
+        "The interactor used for this test was not given a label. Please provide a name for your interactor:",
+        "\tHTML.extend('my interactor') || createInteractor('my interactor')"
+      ].join('\n'));
     });
   });
 });
