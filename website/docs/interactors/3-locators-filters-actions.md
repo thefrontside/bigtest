@@ -49,7 +49,7 @@ The locator of the `TextField` interactor is the `innerText` of its associated l
 </label>
 ```
 
-_See the source code for the TextField interactor [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts). The TextField interactor extends the [FormField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/form-field.ts#L6) interactor, so it has a locator function._
+_This is just the way the built-in TextField interactor is configured. It is possible to modify pre-existing interactors such as this TextField interactor or create your own interactors from scratch to suit your needs. We will be going over how you can do all of this on the [Writing Interactors](/docs/interactors/write-your-own) page._
 :::
 
 You can think of the locator as the "default filter" since filters and locators both provide the same functionality. The reason why BigTest offers both solutions is convenience, because having to pass in an object for each interactor can get repetitive.
@@ -78,13 +78,7 @@ The filter object can take as many properties as you want it to:
 TextField({ id: 'username-id', placeholder: 'USERNAME', visible: true }).exists();
 ```
 
-The filters available are defined by each interactor, so look at the source code for the built-in interactors to know what is available. For example, if you take a look at the [TextField source code](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts), you'll see that the TextField interactor provides two filters.
-
-:::note
-There are many filters available for the TextField interactor. The TextField interactor inherits all of the [FormField interactor](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/form-field.ts) and [HTML interactor](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/html.ts) properties.
-
-We will be exploring this concept more in-depth on the [Writing Interactors](/docs/interactors/write-your-own) page.
-:::
+The filters available are defined by each interactor, so look at the source code for the built-in interactors to know what is available. For example, if you take a look at the [TextField source code](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts), you'll see that the TextField interactor provides two filters. In addition, TextField inherits all of the properties of the [FormField interactor](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/form-field.ts) and [HTML interactor](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/html.ts).
 
 ## Actions
 
@@ -97,8 +91,6 @@ Button('Submit').click();
 ```
 
 It’s that simple! Because Interactors can only match one element, there’s no ambiguity over which submit button you clicked. Additionally, the action will not occur if the Interactor is not there, so you don’t have to worry about checking if the button exists before issuing a click action.
-
-On the [Writing Interactors](/docs/interactors/write-your-own) page we'll also explain how you can construct your own actions to suit your needs when you create your own Interactors.
 
 ## Up Next
 
