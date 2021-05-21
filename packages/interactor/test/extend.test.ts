@@ -107,7 +107,7 @@ describe('@bigtest/interactor', () => {
     it('throws error if interactor has no label', async () => {
       dom(`<p>Foo Bar</p>`);
       await expect(HTMLWithNoLabel('Foo Bar').exists()).rejects.toHaveProperty('message', [
-        "The interactor used for this test was not given a label. Please provide a name for your interactor:",
+        "One of your interactors was created without a name. Please provide a label for your interactor:",
         "\tHTML.extend('my interactor') || createInteractor('my interactor')"
       ].join('\n'));
     });
