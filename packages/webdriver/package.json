@@ -37,7 +37,7 @@
     "abort-controller": "^3.0.0",
     "chromedriver": ">=89.0.0",
     "effection": "^1.0.0",
-    "geckodriver": ">=1.21.0",
+    "geckodriver": ">=1.22.2",
     "ms-chromium-edge-driver": "^0.3.0",
     "node-fetch": "^2.6.1"
   }
