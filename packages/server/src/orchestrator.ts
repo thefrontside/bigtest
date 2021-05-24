@@ -38,10 +38,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   yield spawn(createLogger({ atom: options.atom, out: console.error }));
 
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  let { version } = require(`${__dirname}/../../../../bigtest/package.json`);
-  console.log('version of bigtest is:', version);
-
   let browserManager: BrowserManager = yield createBrowserManager({
     atom: options.atom,
     connectURL: (agentId: string) => agentServerConfig.agentUrl(connectTo, agentId),
@@ -128,8 +124,6 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       console.debug('[orchestrator] connection server ready');
     });
     yield fork(function*() {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //@ts-ignore
       let status = yield options.atom.slice('appServer').once((status) => {
         return status.type === 'started' || status.type === 'available' || status.type === 'exited';
       });
