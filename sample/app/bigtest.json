@@ -10,7 +10,7 @@
     "src/test/bigtest.test.js"
   ],
   "launch": [
-    "firefox"
+    "chrome"
   ],
   "port": 3001
 }

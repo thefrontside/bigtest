@@ -40,10 +40,11 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
 
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   let { version } = require(`${__dirname}/../../../../bigtest/package.json`);
+  console.log('version of bigtest is:', version);
 
   let browserManager: BrowserManager = yield createBrowserManager({
     atom: options.atom,
-    connectURL: (agentId: string) => agentServerConfig.agentUrl(connectTo, agentId, version),
+    connectURL: (agentId: string) => agentServerConfig.agentUrl(connectTo, agentId),
     drivers: options.project.drivers,
     launch: options.project.launch
   });
@@ -127,6 +128,8 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation {
       console.debug('[orchestrator] connection server ready');
     });
     yield fork(function*() {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
       let status = yield options.atom.slice('appServer').once((status) => {
         return status.type === 'started' || status.type === 'available' || status.type === 'exited';
       });

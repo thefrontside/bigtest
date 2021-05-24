@@ -35,6 +35,11 @@
     "ts-jest": "^26.4.4",
     "typescript": "^4.2.2"
   },
+  "resolutions": {
+    "@bigtest/agent": "0.17.1-d907a0d7",
+    "@bigtest/project": "0.15.1-d907a0d7",
+    "@bigtest/server": "0.24.0-d907a0d7"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
