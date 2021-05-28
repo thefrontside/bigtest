@@ -6,7 +6,6 @@
     "rootDirs": ["./app", "./shared", "./src"]
   },
   "include": [
-    "app/**/*.ts",
     "shared/**/*.ts",
     "src/**/*.ts",
   ],
