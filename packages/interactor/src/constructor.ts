@@ -38,6 +38,9 @@ export function findElements<E extends Element>(parentElement: Element, interact
 }
 
 function findMatches(parentElement: Element, interactor: InteractorOptions<any, any, any>): Match<Element, any>[] {
+  if (!interactor.name) {
+    throw new Error('One of your interactors was created without a name. Please provide a label for your interactor:\n\tHTML.extend(\'my interactor\') || createInteractor(\'my interactor\')');
+  }
   return findElements(parentElement, interactor).map((e) => new Match(e, interactor.filter, interactor.locator));
 }
 
