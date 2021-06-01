@@ -7,7 +7,7 @@
     "agentDir": "/Users/minkimcello/Projects/frontside/bigtest/packages/agent/dist/app"
   },
   "testFiles": [
-    "src/test/bigtest.test.js"
+    "src/test/bigtest*.test.js"
   ],
   "launch": [
     "chrome"
