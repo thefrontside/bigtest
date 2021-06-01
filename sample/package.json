@@ -6,7 +6,9 @@
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "scripts": {
-    "start": "cd app && node ../bin/start-dev.js",
+    "start": "yarn --cwd ../packages/agent prepack && cd app && yarn install --force && yarn bigtest server",
+    "test": "yarn --cwd app bigtest test",
+    "start:app": "cd app && node ../bin/start-dev.js",
     "lint": "echo no-op",
     "test:jest": "cd app && npm run test:jest",
     "test:cypress": "cd app && npm run test:cypress",

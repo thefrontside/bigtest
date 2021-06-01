@@ -36,9 +36,8 @@
     "typescript": "^4.2.2"
   },
   "resolutions": {
-    "@bigtest/agent": "0.17.1-5e2dbc46",
-    "@bigtest/project": "0.15.1-5e2dbc46",
-    "@bigtest/server": "0.24.0-5e2dbc46"
+    "@bigtest/agent": "file:../../packages/agent",
+    "@bigtest/project": "0.15.1-5e2dbc46"
   },
   "eslintConfig": {
     "extends": [
