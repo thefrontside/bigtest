@@ -1,14 +1,5 @@
-```ts
-// pause
-// -- suspend at the next point
-// play
-//   -- unsuspend and you are now free to do
-// step
-//  -- unspend, but suspend at the next point
-
-import { main } from './main';
-import { once, Operation } from 'effection';
-import { EventEmitter } from 'events';
+import { run, Operation } from 'effection';
+import { once, EventEmitter } from 'events';
 
 interface Debugger {
   play(): void;
@@ -51,7 +42,7 @@ export function createDebugger(): [() => Operation<void>, Debugger] {
   return [debugpoint, debug]
 }
 
-main(function*() {
+run(function*() {
   let [debug, { step, pause, play }] = createDebugger();
 
   process.on('SIGUSR2', () => step())
@@ -66,4 +57,10 @@ main(function*() {
     yield debug();
   }
 })
-```
+
+// pause
+// -- suspend at the next point
+// play
+//   -- unsuspend and you are now free to do
+// step
+//  -- unspend, but suspend at the next point
