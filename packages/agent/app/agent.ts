@@ -3,6 +3,7 @@ import { QueryParams } from './query-params';
 import { Agent } from '../shared/agent';
 import { run } from './runner';
 import { Operation } from 'effection';
+import { Run } from '../shared/protocol';
 
 export function* createAgent(queryParams: QueryParams): Operation<void> {
   console.log('[agent] connecting to', queryParams.connectTo);
@@ -14,7 +15,7 @@ export function* createAgent(queryParams: QueryParams): Operation<void> {
     data: parse(navigator.userAgent)
   });
 
-  yield agent.commands.forEach(function*(command) {
+  yield agent.commands.forEach(function*(command: Run)  {
     console.log('[agent] received command', command);
 
     if (command.type === "run") {
