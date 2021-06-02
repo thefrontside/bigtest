@@ -1926,6 +1926,15 @@
     tar "^2.2.2"
     tar-stream "1.6.2"
 
+"@effection/channel@2.0.0-preview.15":
+  version "2.0.0-preview.15"
+  resolved "https://registry.yarnpkg.com/@effection/channel/-/channel-2.0.0-preview.15.tgz#628b01ca9de68dc0af50a6c5508063d27a7ee045"
+  integrity sha512-k4blZugWmOxf7NeHtIBZDC8QdFoEOeSLlyLd781RdyrZrrq4cff1Q7AUjDfbBQKk0TihRlcgibpOw2WtIxYDlg==
+  dependencies:
+    "@effection/core" "2.0.0-preview.12"
+    "@effection/events" "2.0.0-preview.13"
+    "@effection/subscription" "2.0.0-preview.14"
+
 "@effection/channel@^0.6.8":
   version "0.6.8"
   resolved "https://registry.yarnpkg.com/@effection/channel/-/channel-0.6.8.tgz#bda46bca960898d739f24c4614ffe1359178f0a0"
@@ -1943,6 +1952,19 @@
     "@effection/events" "^1.0.0"
     "@effection/subscription" "^1.0.0"
     effection "^1.0.0"
+
+"@effection/core@2.0.0-preview.12":
+  version "2.0.0-preview.12"
+  resolved "https://registry.yarnpkg.com/@effection/core/-/core-2.0.0-preview.12.tgz#f091284ecbf4063d5c5683b7133a6725ac3437b0"
+  integrity sha512-LI3P99fsyCGZ93xGuWDriGLfjzuDO1UnfaMc6N5CQLRFP8DAR8L5k5JDDvMkv74d109FfDir+jErf+P2ZwwqyQ==
+
+"@effection/events@2.0.0-preview.13":
+  version "2.0.0-preview.13"
+  resolved "https://registry.yarnpkg.com/@effection/events/-/events-2.0.0-preview.13.tgz#37bdd8fae26a3bcf4b678288ebe28369e63bd804"
+  integrity sha512-H7ti5oEJ8r1U6XgwiJHHULr2X+v206UsRsaaf77kj3QBLOAeJXsILmBM8Jg9oKNgkxhYDVHjkvM1aVtu2sZDXQ==
+  dependencies:
+    "@effection/core" "2.0.0-preview.12"
+    "@effection/subscription" "2.0.0-preview.14"
 
 "@effection/events@^0.7.8":
   version "0.7.8"
@@ -1978,6 +2000,15 @@
     effection "^1.0.0"
     node-fetch "^2.6.1"
 
+"@effection/main@2.0.0-preview.3":
+  version "2.0.0-preview.3"
+  resolved "https://registry.yarnpkg.com/@effection/main/-/main-2.0.0-preview.3.tgz#acb7bec65be8af0783ac19e80c59bb871170cabe"
+  integrity sha512-dB9iDm/E3U9d8TaORFN7TaAxm+vsY9nhSiCx9mJcXvaelBuaxM+ZwkJyr+CptqAdjxnKEE4yF0RcoYjPM4ZECQ==
+  dependencies:
+    "@effection/core" "2.0.0-preview.12"
+    chalk "^4.1.1"
+    stacktrace-parser "^0.1.10"
+
 "@effection/node@^0.9.2":
   version "0.9.2"
   resolved "https://registry.yarnpkg.com/@effection/node/-/node-0.9.2.tgz#3bfe5e70d5e6e240dbbadfffcce48d57d538684f"
@@ -2003,6 +2034,13 @@
     ctrlc-windows "^1.0.3"
     effection "^1.0.0"
     shellwords "^0.1.1"
+
+"@effection/subscription@2.0.0-preview.14":
+  version "2.0.0-preview.14"
+  resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-2.0.0-preview.14.tgz#73c9c061ce665cb2f444caf589c276d114d472de"
+  integrity sha512-kyx4VjZouAjQ2fa9ST/lZB9IF9WYtrqXcO+uA/Jyc2/YeYnmjr7kYwZ+osPTEi+6yhTS3WYgPaB17bZKUEyS5g==
+  dependencies:
+    "@effection/core" "2.0.0-preview.12"
 
 "@effection/subscription@^0.11.0":
   version "0.11.0"
@@ -3710,6 +3748,14 @@ chalk@^4.0.0, chalk@^4.1.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
+chalk@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/chalk/-/chalk-4.1.1.tgz#c80b3fab28bf6371e6863325eee67e618b77e6ad"
+  integrity sha512-diHzdDKxcU+bAsUboHLPEDQiw0qEe0qd7SYUn3HgcFlWgbDcfLGswOHYeGrHKzG9z6UYf01d9VFMfZxPM1xZSg==
+  dependencies:
+    ansi-styles "^4.1.0"
+    supports-color "^7.1.0"
+
 change-case@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/change-case/-/change-case-4.1.1.tgz#d5005709275952e7963fed7b91e4f9fdb6180afa"
@@ -4829,6 +4875,17 @@ ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
+
+effection@2.0.0-preview.16:
+  version "2.0.0-preview.16"
+  resolved "https://registry.yarnpkg.com/effection/-/effection-2.0.0-preview.16.tgz#be5b4f50e49427d3c2ad9ca9aaf906b80bb3272d"
+  integrity sha512-AP1MznD+zdGR61K/OWcFz0yfueVpAIPkgyrIc6WFK0ca1Kqo0ezT6tEtyzgigD8KS1naBWr90JrUXvQQOgGdiw==
+  dependencies:
+    "@effection/channel" "2.0.0-preview.15"
+    "@effection/core" "2.0.0-preview.12"
+    "@effection/events" "2.0.0-preview.13"
+    "@effection/main" "2.0.0-preview.3"
+    "@effection/subscription" "2.0.0-preview.14"
 
 effection@^0.7.0:
   version "0.7.0"
@@ -9930,6 +9987,13 @@ stackframe@^1.1.1:
   resolved "https://registry.yarnpkg.com/stackframe/-/stackframe-1.2.0.tgz#52429492d63c62eb989804c11552e3d22e779303"
   integrity sha512-GrdeshiRmS1YLMYgzF16olf2jJ/IzxXY9lhKOskuVziubpTYcYqyOwYeJKzQkwy7uN0fYSsbsC4RQaXf9LCrYA==
 
+stacktrace-parser@^0.1.10:
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/stacktrace-parser/-/stacktrace-parser-0.1.10.tgz#29fb0cae4e0d0b85155879402857a1639eb6051a"
+  integrity sha512-KJP1OCML99+8fhOHxwwzyWrlUuVX5GQ0ZpJTd1DFXhdkrvg1szxfHhawXUZ3g9TkXORQd4/WG68jMlQZ2p8wlg==
+  dependencies:
+    type-fest "^0.7.1"
+
 static-eval@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/static-eval/-/static-eval-2.1.0.tgz#a16dbe54522d7fa5ef1389129d813fd47b148014"
@@ -10644,6 +10708,11 @@ type-fest@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-0.3.1.tgz#63d00d204e059474fe5e1b7c011112bbd1dc29e1"
   integrity sha512-cUGJnCdr4STbePCgqNFbpVNCepa+kAVohJs1sLhxzdH+gnEoOd8VhbYa7pD3zZYGiURWM2xzEII3fQcRizDkYQ==
+
+type-fest@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-0.7.1.tgz#8dda65feaf03ed78f0a3f9678f1869147f7c5c48"
+  integrity sha512-Ne2YiiGN8bmrmJJEuTWTLJR32nh/JdL1+PSicowtNb0WFpn59GK8/lfD61bVtzguz7b3PBt74nxpv/Pw5po5Rg==
 
 type-fest@^0.8.1:
   version "0.8.1"

@@ -54,10 +54,8 @@
     "@bigtest/effection": "^0.6.2",
     "@bigtest/effection-express": "^0.9.3",
     "@bigtest/globals": "^0.7.5",
-    "@effection/events": "^1.0.0",
-    "@effection/subscription": "^1.0.0",
     "bowser": "^2.9.0",
-    "effection": "^1.0.0",
+    "effection": "2.0.0-preview.16",
     "error-stack-parser": "^2.0.6",
     "get-source": "^2.0.11",
     "istanbul-lib-coverage": "^3.0.0"
