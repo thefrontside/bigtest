@@ -1,7 +1,6 @@
-import { Operation, spawn } from 'effection';
+import { Channel, Operation, spawn } from 'effection';
 import { express, Socket, CloseEvent } from '@bigtest/effection-express';
 
-import { Channel } from '@effection/channel';
 import { createSubscription, subscribe, ChainableSubscription } from '@effection/subscription';
 
 import { TestEvent, AgentEvent, Command, Connect } from '../shared/protocol';

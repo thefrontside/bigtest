@@ -1,5 +1,4 @@
-import { Operation } from 'effection';
-import { Channel } from '@effection/channel'
+import { Channel, Operation } from 'effection';
 import { once } from '@effection/events'
 import { subscribe } from '@effection/subscription'
 import { Test } from '@bigtest/suite';
