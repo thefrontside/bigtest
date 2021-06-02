@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/bundler",
-  "version": "0.12.4",
+  "version": "0.12.5",
   "description": "Effection wrappers for working with a bundler",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,8 +23,8 @@
     "@babel/preset-env": "^7.12.7",
     "@babel/preset-typescript": "^7.12.7",
     "@babel/runtime": "^7.12.5",
-    "@bigtest/effection": "^0.6.2",
-    "@bigtest/project": "^0.15.1",
+    "@bigtest/effection": "^0.6.3",
+    "@bigtest/project": "^0.15.2",
     "@effection/channel": "^1.0.0",
     "@effection/events": "^1.0.0",
     "@rollup/plugin-babel": "^5.2.1",

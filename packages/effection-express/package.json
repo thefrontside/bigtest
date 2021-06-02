@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/effection-express",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "Makes it easy to use Express from Effection",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,7 +29,7 @@
     "ts-node": "^9.1.1"
   },
   "dependencies": {
-    "@bigtest/effection": "^0.6.2",
+    "@bigtest/effection": "^0.6.3",
     "@effection/events": "^1.0.0",
     "@effection/subscription": "^1.0.0",
     "@types/express-ws": "^3.0.0",

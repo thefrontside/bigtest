@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.24.1
+
+### Patch Changes
+
+- 4762d0d9: Update effection dependencies to v1
+- Updated dependencies [7a54cf02]
+- Updated dependencies [4762d0d9]
+  - @bigtest/webdriver@0.8.4
+  - @bigtest/agent@0.17.2
+  - @bigtest/atom@0.12.2
+  - @bigtest/bundler@0.12.5
+  - @bigtest/client@0.3.3
+  - @bigtest/driver@0.5.7
+  - @bigtest/effection@0.6.3
+  - @bigtest/effection-express@0.9.4
+  - @bigtest/globals@0.7.6
+  - @bigtest/project@0.15.2
+
 ## 0.24.0
 
 ### Minor Changes
