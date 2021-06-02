@@ -12,6 +12,7 @@ import { wrapConsole } from './wrap-console';
 import { setLogConfig, getLogConfig } from './log-config';
 import { clearPersistentStorage } from './clear-persistent-storage';
 import { addCoverageMap } from './coverage';
+import { createDebugger } from './debugger';
 
 export function* runLane(config: LaneConfig): Operation<TestImplementation> {
   setLogConfig({ events: [] });
@@ -48,8 +49,11 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
     remainingPath: string[],
     prefix: string[],
     stepTimeout: number
-  ): Operation<void> {
+  ): Operation<void> { 
     let currentPath = prefix.concat(test.description);
+
+    // instantiate debugger here so that it can be toggled in both steps and assertions
+    createDebugger();
 
     originalConsole.debug('[agent] running test', currentPath);
     events.send({ testRunId, type: 'test:running', path: currentPath })
@@ -59,6 +63,7 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
     }
 
     for(let [index, step] of test.steps.entries()) {
+      console.log('STEPPY HERE', step.description)
       let stepPath = currentPath.concat(`${index}:${step.description}`);
       try {
         originalConsole.debug('[agent] running step', step);
@@ -106,6 +111,7 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
     yield function*() {
       for(let assertion of test.assertions) {
         yield fork(function*() {
+          console.log('assertion HERE', assertion.description)
           let assertionPath = currentPath.concat(assertion.description);
           try {
             originalConsole.debug('[agent] running assertion', assertion);
