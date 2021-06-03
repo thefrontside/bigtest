@@ -1,22 +1,24 @@
 # files todos
 packages/agent/
   - [ ] readme.md
-  app/
+app/
   - [x] agent.ts
     - just needed to add an interface type
-  - [ ] clear-persistent-storage.ts
+  - [x] clear-persistent-storage.ts
     `fork`, `Operation` from effection
+      - updated import source and changed fork to spawn
   - [x] harness.ts
     - swap main() for run()
     - on.map() doesn't take an array anymore
     - gave yield function a type of `Operation<void>`
-  - [ ] lane-config.ts
-    `Channel` from channel
+  - [x] lane-config.ts
+      - import channel from new effection and not @effection/channel
   - [x] main.ts
     - swap main() for run()
-  - [ ] manifest.ts
+  - [x] manifest.ts
     `Operation` from effection
     `once` from events
+      - change import source to new effection
   - [ ] run-lane.ts
     `Operation`, `fork`, `spawn` from effection
     `on` from events
@@ -29,22 +31,23 @@ packages/agent/
     `Operation`, `spawn`, `join` from 'effection
   - [x] test-frame.main.ts
     - swap main() for run()
-  - [ ] timebox.ts
+  - [x] timebox.ts
     `operation`, `spawn`, `timeout` from effection
     - kept timeout instead of using sleep because we need it to throw an error if it reaches its limit; the new timeout throws the error so i removed the throw logic inside timebox.ts
-  shared/
+    - took out the generator function because new timeout has it built in
+shared/
   - [ ] agent.ts
       `operation`, `resource`, `spawn` from effection
       `on`, `once` from events
       `chainableSubscribbale`, `createSubscription` from subscription
   - [ ] protocol.ts
       `operation` from effection
-  src/
+src/
   - [ ] agent-handler.ts
       `channel` from effection/channel
       `createSubscription`, `subscribe`, `ChainableSubscription` from subscription
       `operation`, `spawn` from effection
-  test/
+test/
   - [ ] agent-test.ts
       `ChainableSubscription`, `subscribe` from subscription
   - [ ] helper.ts
