@@ -1,5 +1,18 @@
 # @bigtest/interactor
 
+## 0.29.0
+
+### Minor Changes
+
+- 448c034d: Deprecate matchers' format() for description()
+- 6d69281a: Add `read` function to simplify getting values from element by using filter functions
+- 0664aa51: Throw error if interactor is not given a label
+
+### Patch Changes
+
+- Updated dependencies [4762d0d9]
+  - @bigtest/globals@0.7.6
+
 ## 0.28.2
 
 ### Patch Changes

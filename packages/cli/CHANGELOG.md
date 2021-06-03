@@ -1,5 +1,20 @@
 # @bigtest/cli
 
+## 0.19.0
+
+### Minor Changes
+
+- e1395f56: Allow options to be cleared by providing an empty string
+
+### Patch Changes
+
+- 4762d0d9: Update effection dependencies to v1
+- Updated dependencies [4762d0d9]
+  - @bigtest/client@0.3.3
+  - @bigtest/effection@0.6.3
+  - @bigtest/project@0.15.2
+  - @bigtest/server@0.24.1
+
 ## 0.18.2
 
 ### Patch Changes

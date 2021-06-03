@@ -1,5 +1,15 @@
 # @bigtest/webdriver
 
+## 0.8.4
+
+### Patch Changes
+
+- 7a54cf02: Bump chromedriver to version 90
+- 4762d0d9: Update effection dependencies to v1
+- Updated dependencies [4762d0d9]
+  - @bigtest/atom@0.12.2
+  - @bigtest/driver@0.5.7
+
 ## 0.8.3
 
 ### Patch Changes
