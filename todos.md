@@ -6,10 +6,10 @@ packages/agent/
     - just needed to add an interface type
   - [ ] clear-persistent-storage.ts
     `fork`, `Operation` from effection
-  - [ ] harness.ts
+  - [x] harness.ts
     - swap main() for run()
-    `spawn` from effection
-    `on` from events
+    - on.map() doesn't take an array anymore
+    - gave yield function a type of `Operation<void>`
   - [ ] lane-config.ts
     `Channel` from channel
   - [x] main.ts
@@ -91,3 +91,9 @@ packages/agent/
       let { stdout } = whatever.run(task);
       task.spawn(stdout);
     }
+
+`on()`
+  - `on.map()` doesn't take an argument of array anymore
+  - used to return `createSubscription()` with an argument type of `Subscriber` which then returns `ChainableSubscribable`
+    - but this has been renamed to `createStream()` with `Callback` argument which returns `Stream`
+      - `ChainableSubscribable` and `Stream` seem to be identical-ish

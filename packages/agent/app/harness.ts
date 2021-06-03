@@ -1,7 +1,6 @@
 import 'regenerator-runtime/runtime';
 import { wrapConsole } from './wrap-console';
-import { run, spawn } from 'effection';
-import { on } from '@effection/events';
+import { run, spawn, on, Operation } from '../node_modules/effection';
 import { serializeError } from './serialize-error';
 import { getLogConfigFromAppFrame } from './log-config';
 
@@ -25,7 +24,7 @@ wrapConsole((message) => {
 
 run(function*() {
   yield spawn(
-    on(window, 'error').map(([e]) => e as ErrorEvent).forEach(function*(event) {
+    on(window, 'error').map((e) => e as ErrorEvent).forEach(function*(event): Operation<void> {
       getLogConfigFromAppFrame()?.events.push({ type: 'error', occurredAt: new Date().toString(), error: yield serializeError(event.error) });
     })
   );
