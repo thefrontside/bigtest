@@ -1,5 +1,5 @@
 import { Run, TestEvent } from '../shared/protocol';
-import { Channel } from '@effection/channel';
+import { Channel } from '../node_modules/effection';
 
 /**
  * This is brute-force way of communicating between the agent frame

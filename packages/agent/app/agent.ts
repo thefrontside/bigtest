@@ -2,7 +2,7 @@ import { parse } from 'bowser';
 import { QueryParams } from './query-params';
 import { Agent } from '../shared/agent';
 import { run } from './runner';
-import { Operation } from 'effection';
+import { Operation } from '../node_modules/effection';
 import { Run } from '../shared/protocol';
 
 export function* createAgent(queryParams: QueryParams): Operation<void> {

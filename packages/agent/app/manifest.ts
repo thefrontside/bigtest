@@ -1,7 +1,6 @@
-import { Operation } from 'effection';
+import { once, Operation } from '../node_modules/effection';
 import { TestImplementation } from '@bigtest/suite';
 import { bigtestGlobals } from '@bigtest/globals';
-import { once } from '@effection/events';
 
 export function* loadManifest(manifestUrl: string): Operation<TestImplementation> {
   let scriptElement = document.createElement('script') as HTMLScriptElement;
