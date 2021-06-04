@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/cli",
-  "version": "0.18.2",
+  "version": "0.19.0",
   "description": "Use BigTest",
   "repository": "https://github.com/thefrontside/bigtest.git",
   "author": "Frontside Engineering <engineering@frontside.com>",
@@ -46,11 +46,11 @@
     "ts-node": "^9.1.1"
   },
   "dependencies": {
-    "@bigtest/client": "^0.3.2",
-    "@bigtest/effection": "^0.6.2",
+    "@bigtest/client": "^0.3.3",
+    "@bigtest/effection": "^0.6.3",
     "@bigtest/performance": "^0.5.0",
-    "@bigtest/project": "^0.15.1",
-    "@bigtest/server": "^0.24.0",
+    "@bigtest/project": "^0.15.2",
+    "@bigtest/server": "^0.24.1",
     "@effection/node": "^1.0.1",
     "capture-console": "^1.0.1",
     "chalk": "^4.1.0",

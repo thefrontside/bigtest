@@ -1,5 +1,13 @@
 # @bigtest/effection-express
 
+## 0.9.4
+
+### Patch Changes
+
+- 4762d0d9: Update effection dependencies to v1
+- Updated dependencies [4762d0d9]
+  - @bigtest/effection@0.6.3
+
 ## 0.9.3
 
 ### Patch Changes

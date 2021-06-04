@@ -1,5 +1,11 @@
 # @bigtest/atom
 
+## 0.12.2
+
+### Patch Changes
+
+- 4762d0d9: Update effection dependencies to v1
+
 ## 0.12.1
 
 ### Patch Changes

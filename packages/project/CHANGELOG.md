@@ -1,5 +1,13 @@
 # @bigtest/project
 
+## 0.15.2
+
+### Patch Changes
+
+- 4762d0d9: Update effection dependencies to v1
+- Updated dependencies [4762d0d9]
+  - @bigtest/driver@0.5.7
+
 ## 0.15.1
 
 ### Patch Changes
