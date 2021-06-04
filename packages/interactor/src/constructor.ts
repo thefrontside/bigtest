@@ -127,14 +127,12 @@ export function instantiateBaseInteractor<E extends Element, F extends Filters<E
       return description(options);
     },
 
-    perform(fn: (element: E) => void): Interaction<void> {
+    perform<T>(fn: (element: E) => T): Interaction<T> {
       return interaction(`${description(options)} performs`, async () => {
         if(bigtestGlobals.runnerState === 'assertion') {
           throw new Error(`tried to run perform on ${this.description} in an assertion, perform should only be run in steps`);
         }
-        return await converge(() => {
-          fn(resolver(options));
-        });
+        return await converge(() => fn(resolver(options)));
       });
     },
 
