@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/webdriver",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "description": "Control Webdriver instances",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
     "prepack": "tsc --build"
   },
   "devDependencies": {
-    "@bigtest/effection-express": "^0.9.3",
+    "@bigtest/effection-express": "^0.9.4",
     "@frontside/eslint-config": "^2.0.0",
     "@frontside/tsconfig": "^1.2.0",
     "@frontside/typescript": "^1.1.1",
@@ -30,14 +30,14 @@
     "ts-node": "^9.1.1"
   },
   "dependencies": {
-    "@bigtest/atom": "^0.12.1",
-    "@bigtest/driver": "^0.5.6",
+    "@bigtest/atom": "^0.12.2",
+    "@bigtest/driver": "^0.5.7",
     "@effection/fetch": "^1.0.0",
     "@effection/node": "^1.0.1",
     "abort-controller": "^3.0.0",
-    "chromedriver": ">=89.0.0",
+    "chromedriver": ">=90.0.0",
     "effection": "^1.0.0",
-    "geckodriver": ">=1.21.0",
+    "geckodriver": ">=1.22.2",
     "ms-chromium-edge-driver": "^0.3.0",
     "node-fetch": "^2.6.1"
   }

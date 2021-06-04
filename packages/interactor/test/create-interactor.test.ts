@@ -3,7 +3,7 @@ import expect from 'expect';
 import { dom } from './helpers';
 import { bigtestGlobals } from '@bigtest/globals';
 
-import { createInteractor } from '../src/index';
+import { createInteractor, read } from '../src/index';
 
 const Link = createInteractor<HTMLLinkElement>('link')
   .selector('a')
@@ -30,6 +30,7 @@ const TextField = createInteractor<HTMLInputElement>('text field')
   .selector('input')
   .locator((element) => element.id)
   .filters({
+    id: element => element.id,
     placeholder: element => element.placeholder,
     enabled: {
       apply: (element) => !element.disabled,
@@ -496,4 +497,16 @@ describe('@bigtest/interactor', () => {
       await expect(TextField('Password', { enabled: false, value: 'test1234' }).exists()).resolves.toBeUndefined();
     });
   });
+
+  describe('getters', () => {
+    it('can return value by using filter function', async () => {
+      dom(`
+        <input id="Email" value='jonas@example.com'/>
+        <input id="Password" value='test1234'/>
+      `);
+
+      await expect(read(TextField('Password'), 'value')).resolves.toEqual('test1234')
+      await expect(read(TextField({ value: 'jonas@example.com' }), 'id')).resolves.toEqual('Email')
+    })
+  })
 });

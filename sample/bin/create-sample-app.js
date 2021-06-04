@@ -2,10 +2,9 @@
 
 const { main, MainError } = require('@effection/node');
 const rmrfsync = require('rimraf').sync;
-const fs = require('fs');
-const fsp = fs.promises;
+const fsp = require('fs').promises;
+const fse = require('fs-extra');
 const path = require('path');
-const ncp = require('ncp').ncp;
 
 const { messages, generateInstructions } = require('./messages');
 const { formatErr, formatSuccess, spin } = require('./console-helpers');
@@ -18,7 +17,7 @@ const TARGET_DIR = process.env.DEV_BUILD ? `${path.dirname(__dirname)}/build`: `
 let template;
 
 async function createDirectory(message) {
-  if (fs.existsSync(TARGET_DIR)) {
+  if (fse.existsSync(TARGET_DIR)) {
     if(!process.env.DEV_BUILD){
       throw new MainError({
         message: `${formatErr('directory \'bigtest-sample\' already exists')}\n${messages.abort}`
@@ -42,22 +41,22 @@ function migrate(messages) {
 
       yield fsp.readdir(SOURCE_DIR).then(sourceFiles => sourceFiles.forEach((file) => {
         if(files.includes(file)){
-          ncp(`${SOURCE_DIR}/${file}`, `${TARGET_DIR}/${file}`);
-        };
+          fse.copySync(`${SOURCE_DIR}/${file}`, `${TARGET_DIR}/${file}`);
+        }
       }));
 
       switch(templateName){
         case 'cypress':
-          rmrfsync(`${TARGET_DIR}/src/test/*bigtest*`);
-          rmrfsync(`${TARGET_DIR}/src/test/*jest*`);
+          rmrfsync(`${TARGET_DIR}/src/test/bigtest.test.js`);
+          rmrfsync(`${TARGET_DIR}/src/test/jest.test.js`);
           break;
         case 'jest':
-          rmrfsync(`${TARGET_DIR}/src/test/*bigtest*`);
-          rmrfsync(`${TARGET_DIR}/src/test/*cypress*`);
+          rmrfsync(`${TARGET_DIR}/src/test/bigtest.test.js`);
+          rmrfsync(`${TARGET_DIR}/src/test/cypress.spec.js`);
           break;
         case 'bigtest':
-          rmrfsync(`${TARGET_DIR}/src/test/*cypress*`);
-          rmrfsync(`${TARGET_DIR}/src/test/*jest*`);
+          rmrfsync(`${TARGET_DIR}/src/test/cypress.spec.js`);
+          rmrfsync(`${TARGET_DIR}/src/test/jest.test.js`);
           break;
       };
     });

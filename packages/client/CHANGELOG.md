@@ -1,5 +1,11 @@
 # @bigtest/client
 
+## 0.3.3
+
+### Patch Changes
+
+- 4762d0d9: Update effection dependencies to v1
+
 ## 0.3.2
 
 ### Patch Changes
