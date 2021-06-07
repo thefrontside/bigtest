@@ -1,11 +1,11 @@
-import { Context, Operation, run as effectionRun } from 'effection';
+import { Task, Operation, main } from 'effection';
 
-type World = Context & { spawn<T>(operation: Operation<T>): Promise<T> };
+type World = Task & { spawn<T>(operation: Operation<T>): Promise<T> };
 
 let currentWorld: World;
 
 beforeEach(() => {
-  currentWorld = effectionRun(undefined) as World;
+  currentWorld = main(undefined) as World;
 });
 
 afterEach(() => {

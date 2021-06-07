@@ -1,4 +1,4 @@
-import { Channel, Operation } from 'effection';
+import { Channel, Operation } from '../node_modules/effection';
 import { once } from '@effection/events'
 import { subscribe } from '@effection/subscription'
 import { Test } from '@bigtest/suite';

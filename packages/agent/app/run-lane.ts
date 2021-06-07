@@ -1,4 +1,4 @@
-import { Operation, fork, spawn } from 'effection';
+import { Operation, spawn } from '../node_modules/effection';
 import { on } from '@effection/events';
 import { bigtestGlobals } from '@bigtest/globals';
 import { TestImplementation, Context as TestContext } from '@bigtest/suite';
@@ -25,7 +25,7 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
 
   try {
     yield spawn(
-      on(window, 'error').map(([e]) => e as ErrorEvent).forEach(function*(event) {
+      on(window, 'error').map((e) => e as ErrorEvent).forEach(function*(event): Operation<void> {
         getLogConfig()?.events.push({ type: 'error', occurredAt: new Date().toString(), error: yield serializeError(event.error) });
       })
     );
@@ -105,7 +105,7 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
 
     yield function*() {
       for(let assertion of test.assertions) {
-        yield fork(function*() {
+        yield spawn(function*() {
           let assertionPath = currentPath.concat(assertion.description);
           try {
             originalConsole.debug('[agent] running assertion', assertion);

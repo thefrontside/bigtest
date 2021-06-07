@@ -1,4 +1,4 @@
-import { Operation } from 'effection';
+import { Operation } from '../node_modules/effection';
 import { Test, ResultStatus, ErrorDetails, LogEvent } from '@bigtest/suite';
 
 export interface AgentProtocol {

@@ -35,32 +35,37 @@ app/
     `operation`, `spawn`, `timeout` from effection
     - kept timeout instead of using sleep because we need it to throw an error if it reaches its limit; the new timeout throws the error so i removed the throw logic inside timebox.ts
     - took out the generator function because new timeout has it built in
+
 shared/
   - [ ] agent.ts
       `operation`, `resource`, `spawn` from effection
       `on`, `once` from events
       `chainableSubscribbale`, `createSubscription` from subscription
-  - [ ] protocol.ts
+  - [x] protocol.ts
       `operation` from effection
+      - updated import
+
 src/
   - [ ] agent-handler.ts
       `channel` from effection/channel
       `createSubscription`, `subscribe`, `ChainableSubscription` from subscription
       `operation`, `spawn` from effection
+
 test/
   - [ ] agent-test.ts
       `ChainableSubscription`, `subscribe` from subscription
-  - [ ] helper.ts
+  - [x] helper.ts
       `Context`, `Operation`, `run` from effection
+      - changed `Context` to `Task`(?)
 
 # imports listed
 `effection`
-  context
+  <!-- context -->
   fork
   join
   <!-- main -->
-  Operation
-  run
+  <!-- Operation -->
+  <!-- run -->
   resource
   spawn
   <!-- timeout -->
@@ -75,6 +80,12 @@ test/
   subscribe
 
 # cheat cheat
+change `run` to `main`
+
+i think `fork` can be swapped for `spawn` because the two in v1 are the same
+
+i think old `Context` is now `Task`?
+
 `operation` must return a yield function:
   function whateverIwant() {
     return function*() {
