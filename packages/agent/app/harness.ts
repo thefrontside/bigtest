@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime';
 import { wrapConsole } from './wrap-console';
-import { run, spawn, on, Operation } from '../node_modules/effection';
+import { run, spawn, on, Operation } from 'effection';
 import { serializeError } from './serialize-error';
 import { getLogConfigFromAppFrame } from './log-config';
 
