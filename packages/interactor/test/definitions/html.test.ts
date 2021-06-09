@@ -16,6 +16,21 @@ describe('@bigtest/interactor', () => {
       await expect(HTML('Blah').exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
     });
 
+    it('finds html elements only', async () => {
+      dom(`
+        <svg id="spam">
+          <circle class="circle" cx="40" cy="40" r="25" />
+          <foreignObject>
+            <div>Baz</div>
+          </foreignObject>
+        </svg>
+      `)
+
+      await expect(HTML('Baz').exists()).resolves.toBeUndefined();
+      await expect(HTML({ className: 'circle' }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+      await expect(HTML({ id: 'spam' }).exists()).rejects.toHaveProperty('name', 'NoSuchElementError');
+    })
+
     describe('.click', () => {
       it('clicks on element', async () => {
         dom(`
