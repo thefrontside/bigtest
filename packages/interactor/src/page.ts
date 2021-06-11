@@ -2,12 +2,20 @@ import { interaction, Interaction } from './interaction';
 import { bigtestGlobals } from '@bigtest/globals';
 import { createInteractor } from './create-interactor';
 
+let visitCounter = 1;
+
 const PageInteractor = createInteractor('page')({
   selector: ':root',
   filters: {
     title: (element) => element.ownerDocument.title,
-    url: (element) => element.ownerDocument.location.href,
-  }
+    url: (element) => {
+      let url = new URL(element.ownerDocument.location.href);
+      let search = new URLSearchParams(element.ownerDocument.location.search);
+      search.delete('bigtest-page-interactor-number');
+      url.search = search.toString();
+      return url.toString();
+    },
+  },
 });
 
 const PageInteractorInstance = Object.assign(PageInteractor(), {
@@ -23,7 +31,11 @@ const PageInteractorInstance = Object.assign(PageInteractor(), {
         throw new Error('no test frame defined');
       } else {
         let url = new URL(appUrl);
-        url.pathname = path;
+        let [pathname = '', hash = ''] = path.split('#');
+        url.pathname = pathname;
+        url.hash = hash;
+        url.searchParams.set('bigtest-page-interactor-number', String(visitCounter));
+        visitCounter += 1;
         testFrame.src = url.toString();
         await new Promise<void>((resolve, reject) => {
           let listener = () => {
