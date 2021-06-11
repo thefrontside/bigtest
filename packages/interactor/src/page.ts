@@ -11,7 +11,7 @@ const PageInteractor = createInteractor('page')({
     url: (element) => {
       let url = new URL(element.ownerDocument.location.href);
       let search = new URLSearchParams(element.ownerDocument.location.search);
-      search.delete('bigtest-page-interactor-number');
+      search.delete('bigtest-interactor-page-number');
       url.search = search.toString();
       return url.toString();
     },
@@ -34,7 +34,7 @@ const PageInteractorInstance = Object.assign(PageInteractor(), {
         let [pathname = '', hash = ''] = path.split('#');
         url.pathname = pathname;
         url.hash = hash;
-        url.searchParams.set('bigtest-page-interactor-number', String(visitCounter));
+        url.searchParams.set('bigtest-interactor-page-number', String(visitCounter));
         visitCounter += 1;
         testFrame.src = url.toString();
         await new Promise<void>((resolve, reject) => {
