@@ -8,7 +8,7 @@ import { JSDOM, ResourceLoader } from 'jsdom';
 
 import { dom } from './helpers';
 
-import { Page } from '../src/index';
+import { Page, read } from '../src/index';
 
 describe('@bigtest/interactor', function() {
   describe('Page', () => {
@@ -50,12 +50,19 @@ describe('@bigtest/interactor', function() {
 
       it('can load the app by visiting the root path', async () => {
         await Page.visit();
-        await expect(bigtestGlobals.testFrame?.src).toEqual('http://example.com/');
+        await expect(read(Page, 'url')).resolves.toEqual('http://example.com/');
       });
 
       it('can load the app by visiting the given path', async () => {
         await Page.visit('/foobar');
-        await expect(bigtestGlobals.testFrame?.src).toEqual('http://example.com/foobar');
+        await expect(read(Page, 'url')).resolves.toEqual('http://example.com/foobar');
+      });
+
+      it('can reload the app by visiting changed url hash', async () => {
+        await Page.visit('/#/foo');
+        await expect(read(Page, 'url')).resolves.toEqual('http://example.com/#/foo');
+        await Page.visit('/#/bar');
+        await expect(read(Page, 'url')).resolves.toEqual('http://example.com/#/bar');
       });
 
       it('is an interaction which can describe itself', async () => {
