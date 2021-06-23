@@ -1,6 +1,6 @@
 import { Locator } from './locator';
 import { Filter } from './filter';
-import { Filters } from './specification';
+import { Filters, ToFilter, FilterFn, FilterObject } from './specification';
 import { escapeHtml } from './escape-html';
 import { MaybeMatcher, applyMatcher, matcherDescription } from './matcher';
 
@@ -104,6 +104,20 @@ export class MatchFilter<E extends Element, F extends Filters<E>> {
   }
 }
 
+function isToFilter(definition: any): definition is ToFilter<any> {
+  return definition != null && typeof(definition.toFilter) === 'function';
+}
+
+export function applyFilter<T>(definition: FilterFn<T, any> | FilterObject<T, any> | ToFilter<T>, element: Element): T {
+  if(typeof(definition) === 'function') {
+    return definition(element) as T;
+  } else if(isToFilter(definition)) {
+    return definition.toFilter()(element) as T;
+  } else {
+    return definition.apply(element) as T;
+  }
+}
+
 export class MatchFilterItem<T, E extends Element, F extends Filters<E>> {
   public actual: T;
   public matches: boolean;
@@ -118,6 +132,8 @@ export class MatchFilterItem<T, E extends Element, F extends Filters<E>> {
       let definition = this.filter.specification.filters[this.key];
       if(typeof(definition) === 'function') {
         this.actual = definition(this.element) as T;
+      } else if(isToFilter(definition)) {
+        this.actual = definition.toFilter()(this.element) as T;
       } else {
         this.actual = definition.apply(this.element) as T;
       }

@@ -12,15 +12,17 @@ import {
   Filters,
   Actions,
   FilterParams,
+  FilterMethods,
   InteractorSpecification,
   BaseInteractor,
+  ToFilter,
 } from './specification';
 import { Filter } from './filter';
 import { Locator } from './locator';
-import { MatchFilter } from './match';
+import { MatchFilter, applyFilter } from './match';
 import { formatTable } from './format-table';
 import { FilterNotMatchingError } from './errors';
-import { interaction, check, Interaction, ReadonlyInteraction } from './interaction';
+import { interaction, interactionFilter, check, checkFilter, Interaction, ReadonlyInteraction } from './interaction';
 import { Match } from './match';
 import { NoSuchElementError, NotAbsentError, AmbiguousElementError } from './errors';
 import { isMatcher } from './matcher';
@@ -182,6 +184,26 @@ export function instantiateBaseInteractor<E extends Element, F extends Filters<E
     });
   }
 
+  for(let [filterName, filter] of Object.entries(options.specification.filters || {})) {
+    Object.defineProperty(interactor, filterName, {
+      value: function() {
+        return interactionFilter(`${filterName} of ${this.description}`, async () => {
+          return applyFilter(filter, resolver(options));
+        }, (element) => {
+          let matches = findMatchesMatching(element, options);
+          if(matches.length > 0) {
+            return applyFilter(filter, matches[0].element);
+          } else {
+            throw new Error('what should happen here?');
+          }
+        });
+      },
+      configurable: true,
+      writable: true,
+      enumerable: false,
+    });
+  }
+
   return interactor as BaseInteractor<E, FilterParams<E, F>> & ActionMethods<E, A>;
 }
 
@@ -198,28 +220,32 @@ export function instantiateInteractor<E extends Element, F extends Filters<E>, A
       }) as unknown as T;
     },
 
-    exists(): ReadonlyInteraction<void> {
-      return check(`${interactor.description} exists`, () => {
+    exists(): ReadonlyInteraction<void> & ToFilter<boolean> {
+      return checkFilter(`${interactor.description} exists`, () => {
         return converge(() => {
           resolveNonEmpty(unsafeSyncResolveParent(options), options);
         });
+      }, (element) => {
+        return findMatchesMatching(element, options).length > 0;
       });
     },
 
-    absent(): ReadonlyInteraction<void> {
-      return check(`${interactor.description} does not exist`, () => {
+    absent(): ReadonlyInteraction<void> & ToFilter<boolean> {
+      return checkFilter(`${interactor.description} does not exist`, () => {
         return converge(() => {
           resolveEmpty(unsafeSyncResolveParent(options), options);
         });
+      }, (element) => {
+        return findMatchesMatching(element, options).length === 0;
       });
     }
   });
 }
 
-export function createConstructor<E extends Element, FP extends FilterParams<any, any>, AM extends ActionMethods<any, any>>(
+export function createConstructor<E extends Element, FP extends FilterParams<any, any>, FM extends FilterMethods<any, any>, AM extends ActionMethods<any, any>>(
   name: string,
   specification: InteractorSpecification<E, any, any>,
-): InteractorConstructor<E, FP, AM> {
+): InteractorConstructor<E, FP, FM, AM> {
   function initInteractor(...args: any[]) {
     let locator, filter;
     if(typeof(args[0]) === 'string' || isMatcher(args[0])) {
@@ -231,5 +257,5 @@ export function createConstructor<E extends Element, FP extends FilterParams<any
     return instantiateInteractor({ name, specification, filter, locator, ancestors: [] });
   }
 
-  return makeBuilder(initInteractor, name, specification) as unknown as InteractorConstructor<E, FP, AM>;
+  return makeBuilder(initInteractor, name, specification) as unknown as InteractorConstructor<E, FP, FM, AM>;
 }

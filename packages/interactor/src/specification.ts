@@ -8,6 +8,10 @@ import { MaybeMatcher } from './matcher';
 
 export type EmptyObject = Record<never, never>;
 
+export interface ToFilter<T> {
+  toFilter(): (element: Element) => T
+}
+
 export interface ExistsAssertionsImplementation {
 
   /**
@@ -20,7 +24,7 @@ export interface ExistsAssertionsImplementation {
    * await Link('Next').exists();
    * ```
    */
-  exists(): ReadonlyInteraction<void>;
+  exists(): ReadonlyInteraction<void> & ToFilter<boolean>;
 
   /**
    * An assertion which checks that an element matching the interactor does not
@@ -32,7 +36,7 @@ export interface ExistsAssertionsImplementation {
    * await Link('Next').absent();
    * ```
    */
-  absent(): ReadonlyInteraction<void>;
+  absent(): ReadonlyInteraction<void> & ToFilter<boolean>;
 }
 
 export interface BaseInteractor<E extends Element, F extends FilterParams<any, any>> {
@@ -152,7 +156,7 @@ export type FilterObject<T, E extends Element> = {
   default?: T;
 }
 
-export type Filters<E extends Element> = Record<string, FilterFn<unknown, E> | FilterObject<unknown, E>>
+export type Filters<E extends Element> = Record<string, FilterFn<unknown, E> | FilterObject<unknown, E> | ToFilter<unknown>>
 
 export type Actions<E extends Element> = Record<string, ActionFn<E>>;
 
@@ -178,25 +182,32 @@ export type ActionMethods<E extends Element, A extends Actions<E>> = {
     : never;
 }
 
+export type FilterMethods<E extends Element, F extends Filters<E>> = {
+  [P in keyof F]:
+    F[P] extends ToFilter<infer TReturn> ? (() => Interaction<TReturn> & ToFilter<TReturn>) :
+    F[P] extends FilterFn<infer TReturn, any> ? (() => Interaction<TReturn> & ToFilter<TReturn>) :
+    F[P] extends FilterObject<infer TReturn, any> ? (() => Interaction<TReturn> & ToFilter<TReturn>) :
+    never;
+}
+
 export type FilterReturn<F> = {
   [P in keyof F]?: F[P] extends MaybeMatcher<infer T> ? T : never;
 }
 
 export type FilterParams<E extends Element, F extends Filters<E>> = keyof F extends never ? never : {
   [P in keyof F]?:
-    F[P] extends FilterFn<infer TArg, E> ?
-    MaybeMatcher<TArg> :
-    F[P] extends FilterObject<infer TArg, E> ?
-    MaybeMatcher<TArg> :
+    F[P] extends ToFilter<infer TArg> ? MaybeMatcher<TArg> :
+    F[P] extends FilterFn<infer TArg, E> ? MaybeMatcher<TArg> :
+    F[P] extends FilterObject<infer TArg, E> ? MaybeMatcher<TArg> :
     never;
 }
 
-export interface InteractorBuilder<E extends Element, FP extends FilterParams<any, any>, AM extends ActionMethods<any, any>> {
-  selector(value: string): InteractorConstructor<E, FP, AM>;
-  locator(value: LocatorFn<E>): InteractorConstructor<E, FP, AM>;
-  filters<FR extends Filters<E>>(filters: FR): InteractorConstructor<E, MergeObjects<FP, FilterParams<E, FR>>, AM>;
-  actions<AR extends Actions<E>>(actions: AR): InteractorConstructor<E, FP, MergeObjects<AM, ActionMethods<E, AR>>>;
-  extend<ER extends E = E>(name: string): InteractorConstructor<ER, FP, AM>;
+export interface InteractorBuilder<E extends Element, FP extends FilterParams<any, any>, FM extends FilterMethods<any, any>, AM extends ActionMethods<any, any>> {
+  selector(value: string): InteractorConstructor<E, FP, FM, AM>;
+  locator(value: LocatorFn<E>): InteractorConstructor<E, FP, FM, AM>;
+  filters<FR extends Filters<E>>(filters: FR): InteractorConstructor<E, MergeObjects<FP, FilterParams<E, FR>>, MergeObjects<FM, FilterMethods<E, FR>>, AM>;
+  actions<AR extends Actions<E>>(actions: AR): InteractorConstructor<E, FP, FM, MergeObjects<AM, ActionMethods<E, AR>>>;
+  extend<ER extends E = E>(name: string): InteractorConstructor<ER, FP, FM, AM>;
 }
 
 /**
@@ -211,7 +222,7 @@ export interface InteractorBuilder<E extends Element, FP extends FilterParams<an
  * @typeParam F the filters of this interactor, this is usually inferred from the specification
  * @typeParam A the actions of this interactor, this is usually inferred from the specification
  */
-export interface InteractorConstructor<E extends Element, FP extends FilterParams<any, any>, AM extends ActionMethods<any, any>> extends InteractorBuilder<E, FP, AM> {
+export interface InteractorConstructor<E extends Element, FP extends FilterParams<any, any>, FM extends FilterMethods<any, any>, AM extends ActionMethods<any, any>> extends InteractorBuilder<E, FP, FM, AM> {
   /**
    * The constructor can be called with filters only:
    *
@@ -227,7 +238,7 @@ export interface InteractorConstructor<E extends Element, FP extends FilterParam
    *
    * @param filters An object describing a set of filters to apply, which should match the value of applying the filters defined in the {@link InteractorSpecification} to the element.
    */
-  (filters?: FP): Interactor<E, FP> & AM;
+  (filters?: FP): Interactor<E, FP> & FM & AM;
   /**
    * The constructor can be called with a locator:
    *
@@ -244,7 +255,7 @@ export interface InteractorConstructor<E extends Element, FP extends FilterParam
    * @param value The locator value, which should match the value of applying the locator function defined in the {@link InteractorSpecification} to the element.
    * @param filters An object describing a set of filters to apply, which should match the value of applying the filters defined in the {@link InteractorSpecification} to the element.
    */
-  (value: MaybeMatcher<string>, filters?: FP): Interactor<E, FP> & AM;
+  (value: MaybeMatcher<string>, filters?: FP): Interactor<E, FP> & FM & AM;
 }
 
 /**
@@ -254,7 +265,7 @@ export interface InteractorConstructor<E extends Element, FP extends FilterParam
  *
  * @typeParam E The type of DOM Element that this interactor operates on. By specifying the element type, actions and filters defined for the interactor can be type checked against the actual element type.
  */
-export interface InteractorSpecificationBuilder<E extends Element> extends InteractorBuilder<E, EmptyObject, EmptyObject> {
+export interface InteractorSpecificationBuilder<E extends Element> extends InteractorBuilder<E, EmptyObject, EmptyObject, EmptyObject> {
   /**
    * Calling the builder will create an interactor.
    *
@@ -263,7 +274,7 @@ export interface InteractorSpecificationBuilder<E extends Element> extends Inter
    * @typeParam A the actions of this interactor, this is usually inferred from the specification
    */
   // eslint-disable-next-line @typescript-eslint/ban-types
-  <F extends Filters<E> = EmptyObject, A extends Actions<E> = EmptyObject>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, FilterParams<E, F>, ActionMethods<E, A>>;
+  <F extends Filters<E> = EmptyObject, A extends Actions<E> = EmptyObject>(specification: InteractorSpecification<E, F, A>): InteractorConstructor<E, FilterParams<E, F>, FilterMethods<E, F>, ActionMethods<E, A>>;
 }
 
 export type InteractorOptions<E extends Element, F extends Filters<E>, A extends Actions<E>> = {

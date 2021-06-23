@@ -1,3 +1,4 @@
+import type { ToFilter } from './specification';
 /**
  * An interaction represents some type of action or assertion that can be
  * taken on an {@link Interactor}.
@@ -55,4 +56,12 @@ export function interaction<T>(description: string, action: () => Promise<T>): I
 
 export function check<T>(description: string, check: () => Promise<T>): ReadonlyInteraction<T> {
   return { check, ...interaction(description, check) };
+}
+
+export function interactionFilter<T, Q>(description: string, action: () => Promise<T>, filter: (element: Element) => Q): Interaction<T> & ToFilter<Q> {
+  return { toFilter() { return filter }, ...interaction(description, action) };
+}
+
+export function checkFilter<T, Q>(description: string, action: () => Promise<T>, filter: (element: Element) => Q): ReadonlyInteraction<T> & ToFilter<Q> {
+  return { toFilter() { return filter } , ...check(description, action) };
 }
