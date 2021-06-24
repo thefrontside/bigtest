@@ -52,20 +52,20 @@ export class Match<E extends Element, F extends Filters<E>> {
 
 export class MatchLocator<E extends Element> {
   public matches: boolean;
-  public expected: MaybeMatcher<string> | null;
-  public actual: string | null;
+  public expected: MaybeMatcher<string>;
+  public actual: string[];
 
   constructor(
     public element: E,
     public locator: Locator<E>,
   ) {
     this.expected = locator.value;
-    this.actual = locator.locatorFn(element);
-    this.matches = applyMatcher(this.expected, this.actual);
+    this.actual = locator.locatorFn.map(fn => fn(element));
+    this.matches = this.actual.some(actual => applyMatcher(this.expected, actual));
   }
 
   formatActual(): string {
-    return JSON.stringify(this.actual);
+    return this.actual.filter(Boolean).map(actual => JSON.stringify(actual)).join(' or ');
   }
 
   description(): string {

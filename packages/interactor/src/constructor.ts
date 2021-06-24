@@ -25,7 +25,7 @@ import { Match } from './match';
 import { NoSuchElementError, NotAbsentError, AmbiguousElementError } from './errors';
 import { isMatcher } from './matcher';
 
-const defaultLocator: LocatorFn<Element> = (element) => element.textContent || "";
+const defaultLocator: LocatorFn<Element> = (element) => element.textContent ?? "";
 const defaultSelector = 'div';
 
 export function findElements<E extends Element>(parentElement: Element, interactor: InteractorOptions<any, any, any>): E[] {

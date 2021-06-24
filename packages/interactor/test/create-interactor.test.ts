@@ -59,6 +59,14 @@ const Datepicker = createInteractor<HTMLDivElement>("datepicker")
 const MainNav = createInteractor('main nav')
   .selector('nav')
 
+const ListItem = createInteractor<HTMLLIElement>('list item')
+  .selector('li')
+  .locator([
+    element => element.getAttribute('aria-label') ?? '',
+    element => element.textContent ?? ''
+  ])
+  .filters({ text: element => element.textContent });
+
 describe('@bigtest/interactor', () => {
   describe('.exists', () => {
     it('can determine whether an element exists based on the interactor', async () => {
@@ -74,6 +82,34 @@ describe('@bigtest/interactor', () => {
         '┣━━━━━━━━━━━━━┫',
         '┃ ⨯ "Foo Bar" ┃',
         '┃ ⨯ "Quox"    ┃',
+      ].join('\n'));
+    });
+
+    it('can use multiple locators', async () => {
+      dom(`
+        <ul>
+          <li><p>foo</p></li>
+          <li aria-label="bar"><p>text</p></li>
+          <li aria-label="baz"><p>text</p></li>
+          <li><p>baz</p></li>
+        </ul>
+      `);
+
+      await expect(ListItem('foo').exists()).resolves.toBeUndefined();
+      await expect(ListItem('bar').exists()).resolves.toBeUndefined();
+      await expect(ListItem('baz').has({ text: 'image' })).rejects.toHaveProperty('message', [
+        'list item "baz" matches multiple elements:', '',
+        '- <li aria-label="baz">',
+        '- <li>'
+      ].join('\n'));
+      await expect(ListItem('spam').exists()).rejects.toHaveProperty('message', [
+        'did not find list item "spam", did you mean one of:', '',
+        '┃ list item         ┃',
+        '┣━━━━━━━━━━━━━━━━━━━┫',
+        '┃ ⨯ "foo"           ┃',
+        '┃ ⨯ "bar" or "text" ┃',
+        '┃ ⨯ "baz" or "text" ┃',
+        '┃ ⨯ "baz"           ┃',
       ].join('\n'));
     });
 

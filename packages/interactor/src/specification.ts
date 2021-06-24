@@ -164,12 +164,12 @@ export type InteractorSpecification<E extends Element, F extends Filters<E>, A e
   actions?: A;
   filters?: F;
   /**
-   * A function which returns a string value for a matched element, which can
+   * A function(s) which return(s) a string value for a matched element, which can
    * be used to locate a specific instance of this interactor. The `value`
    * parameter of an {@link InteractorConstructor} must match the value
    * returned from the locator function.
    */
-  locator?: LocatorFn<E>;
+  locator?: LocatorFn<E> | LocatorFn<E>[];
 }
 
 export type ActionMethods<E extends Element, A extends Actions<E>> = {
@@ -193,7 +193,7 @@ export type FilterParams<E extends Element, F extends Filters<E>> = keyof F exte
 
 export interface InteractorBuilder<E extends Element, FP extends FilterParams<any, any>, AM extends ActionMethods<any, any>> {
   selector(value: string): InteractorConstructor<E, FP, AM>;
-  locator(value: LocatorFn<E>): InteractorConstructor<E, FP, AM>;
+  locator(value: LocatorFn<E> | LocatorFn<E>[]): InteractorConstructor<E, FP, AM>;
   filters<FR extends Filters<E>>(filters: FR): InteractorConstructor<E, MergeObjects<FP, FilterParams<E, FR>>, AM>;
   actions<AR extends Actions<E>>(actions: AR): InteractorConstructor<E, FP, MergeObjects<AM, ActionMethods<E, AR>>>;
   extend<ER extends E = E>(name: string): InteractorConstructor<ER, FP, AM>;
