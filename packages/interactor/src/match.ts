@@ -108,6 +108,7 @@ function isToFilter(definition: any): definition is ToFilter<any> {
   return definition != null && typeof(definition.toFilter) === 'function';
 }
 
+// NOTE Don't need toFilter
 export function applyFilter<T>(definition: FilterFn<T, any> | FilterObject<T, any> | ToFilter<T>, element: Element): T {
   if(typeof(definition) === 'function') {
     return definition(element) as T;

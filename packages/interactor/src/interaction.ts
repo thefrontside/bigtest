@@ -1,3 +1,5 @@
+import { bigtestGlobals } from '@bigtest/globals';
+import { converge } from './converge';
 import type { ToFilter } from './specification';
 /**
  * An interaction represents some type of action or assertion that can be
@@ -58,8 +60,22 @@ export function check<T>(description: string, check: () => Promise<T>): Readonly
   return { check, ...interaction(description, check) };
 }
 
-export function interactionFilter<T, Q>(description: string, action: () => Promise<T>, filter: (element: Element) => Q): Interaction<T> & ToFilter<Q> {
-  return { toFilter() { return filter }, ...interaction(description, action) };
+export function interactionAction<T>(description: string, action: () => Promise<T>): Interaction<T> {
+  return interaction(description, () => {
+    if(bigtestGlobals.runnerState === 'assertion') {
+      throw new Error(`tried to ${description} in an assertion, actions should only be performed in steps`);
+    }
+    return action();
+  })
+}
+
+export function interactionFilter<E extends Element, Q>(description: string, filter: (element?: E) => Q): Interaction<Q> & ((element?: E) => Q) {
+  return Object.assign(filter, interaction(description, async () => {
+    if(bigtestGlobals.runnerState === 'assertion') {
+      throw new Error(`tried to get ${description} in an assertion, getters should only be used in steps`);
+    }
+    return await converge(filter);
+  }))
 }
 
 export function checkFilter<T, Q>(description: string, action: () => Promise<T>, filter: (element: Element) => Q): ReadonlyInteraction<T> & ToFilter<Q> {

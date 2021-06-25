@@ -22,7 +22,7 @@ import { Locator } from './locator';
 import { MatchFilter, applyFilter } from './match';
 import { formatTable } from './format-table';
 import { FilterNotMatchingError } from './errors';
-import { interaction, interactionFilter, check, checkFilter, Interaction, ReadonlyInteraction } from './interaction';
+import { interaction, interactionFilter, check, checkFilter, Interaction, ReadonlyInteraction, interactionAction } from './interaction';
 import { Match } from './match';
 import { NoSuchElementError, NotAbsentError, AmbiguousElementError } from './errors';
 import { isMatcher } from './matcher';
@@ -171,12 +171,7 @@ export function instantiateBaseInteractor<E extends Element, F extends Filters<E
         if(args.length) {
           actionDescription += ` with ` + args.map((a) => JSON.stringify(a)).join(', ');
         }
-        return interaction(`${actionDescription} on ${this.description}`, async () => {
-          if(bigtestGlobals.runnerState === 'assertion') {
-            throw new Error(`tried to ${actionDescription} on ${this.description} in an assertion, actions should only be performed in steps`);
-          }
-          return action(this, ...args);
-        });
+        return interactionAction(`${actionDescription} on ${this.description}`, () => action(this, ...args))
       },
       configurable: true,
       writable: true,
@@ -186,20 +181,12 @@ export function instantiateBaseInteractor<E extends Element, F extends Filters<E
 
   for(let [filterName, filter] of Object.entries(options.specification.filters || {})) {
     Object.defineProperty(interactor, filterName, {
-      value: function() {
-        return interactionFilter(`${filterName} of ${this.description}`, async () => {
-          return applyFilter(filter, resolver(options));
-        }, (element) => {
-          let matches = findMatchesMatching(element, options);
-          if(matches.length > 0) {
-            return applyFilter(filter, matches[0].element);
-          } else {
-            throw new Error('what should happen here?');
-          }
-        });
+      get() {
+        return interactionFilter(
+          `${filterName} of ${this.description}`,
+          (element) => applyFilter(filter, element ? resolveUnique(element, options) : resolver(options)));
       },
       configurable: true,
-      writable: true,
       enumerable: false,
     });
   }

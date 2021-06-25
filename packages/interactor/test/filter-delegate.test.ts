@@ -5,6 +5,10 @@ import { dom } from './helpers';
 import { HTML } from '../src/index';
 
 
+// TODO I need to fix types, but the idea is to pass filter as a plain property without calling it
+// TODO by using getter under the hood
+// TODO And as an side-effect that prop could be used to read a value in other actions or steps
+// TODO See note in tests
 
 const Header = HTML.extend('header')
   .selector('h1,h2,h3,h4,h5,h6')
@@ -26,7 +30,7 @@ const Datepicker = HTML.extend<HTMLDivElement>("datepicker")
   .locator(element => element.querySelector("label")?.textContent || "")
   .filters({
     open: Calendar().exists(),
-    month: Calendar().find(Header()).text(),
+    month: Calendar().find(Header()).text,
   })
   .actions({
     toggle: async interactor => {
@@ -59,5 +63,6 @@ describe('@bigtest/interactor', () => {
     await Datepicker("Start Date").toggle();
     await expect(Datepicker("Start Date").has({ open: true })).resolves.toBeUndefined();
     await expect(Datepicker("Start Date").has({ month: "January" })).resolves.toBeUndefined();
+    await expect(Datepicker("Start Date").month).resolves.toEqual('January') // NOTE Like this
   });
 });
