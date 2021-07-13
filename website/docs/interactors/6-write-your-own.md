@@ -9,7 +9,7 @@ In this section, you will learn how to write a new Interactor for any interface 
 
 ## Writing your first interactor
 
-In this tutorial, we will create our own `TextField` Interactor. Although BigTest has this type of interactor built-in, recreating it is a great way to learn all the pieces that make up an interactor while using familiar examples.
+In this tutorial, we will create our own `TextField` interactor. Although there already is a [built-in TextField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts) interactor, recreating it is a great way to learn all the pieces that make up an interactor while using familiar examples.
 
 There are four things to decide when creating an interactor:
 1. What to name and label the interactor
@@ -17,7 +17,7 @@ There are four things to decide when creating an interactor:
 3. The locator and filters, which helps users be able to narrow down the element they want to reference
 4. The action or actions that a test should `perform` when using the interactor (like `click`)
 
-In this case, let's call our Interactor ‘MyTextField’, and we’ll label it as ‘my-textfield-interactor’ to distinguish it from the built-in one. Let’s say that MyTextField will target a regular input with a custom class `.my-input`, which means its HTML selector would be `input[type=text].my-input`. For locator we’ll use the input’s placeholder, and we’ll define a value filter. Finally, we’ll define a `fillIn` action for MyTextField interactor. Putting this together, we get the following definition of an Interactor:
+Putting this together, let's create a new Interactor called `MyTextField` with a label of 'my-textfield-interactor'. We'll specify the selector as `input[type=text]` so that it targets all the text input elements, define a `value` filter, and provide a `fillIn` action. And to differentiate from the built-in TextField interactor, we'll configure the placeholder value as its locator:
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -32,9 +32,9 @@ import TabItem from '@theme/TabItem';
   <TabItem value="javascript">
 
   ```js
-  import { createInteractor, fillIn } from 'bigtest';
+  import { fillIn, HTML } from 'bigtest';
 
-  export const TextField = createInteractor('my-textfield-interactor')
+  export const MyTextField = HTML.extend('my-textfield-interactor')
     .selector('input[type=text]')
     .locator((element) => element.placeholder)
     .filters({
@@ -49,9 +49,9 @@ import TabItem from '@theme/TabItem';
   <TabItem value="typescript">
 
   ```ts
-  import { createInteractor, fillIn } from 'bigtest';
+  import { fillIn, HTML } from 'bigtest';
 
-  export const TextField = createInteractor<HTMLInputElement>('my-textfield-interactor')
+  export const MyTextField = HTML.extend<HTMLInputElement>('my-textfield-interactor')
     .selector('input[type=text]')
     .locator((element) => element.placeholder)
     .filters({
@@ -65,17 +65,42 @@ import TabItem from '@theme/TabItem';
   </TabItem>
 </Tabs>
 
+Locators, filters, and actions are optional when creating your own interactor. While the locator for the `TextField` interactor offered by BigTest uses the `innerText` of the associated label, the example above has its locator configured as `element.placeholder`. This is just to demonstrate that you can set the properties of locators to anything that suits your needs. If you create an interactor without a locator, it would by default use the `innerText` value for its locator.
+
 :::note
-`fillIn` is a function exported by `bigtest`. See the implementation [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/fill-in.ts). You can use any of the functions defined by BigTest or implement your own.
+`fillIn` is a function exported by `bigtest`. See the implementation [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/fill-in.ts#L63-L76). You can use any of the functions defined by BigTest or implement your own.
 :::
 
 :::note Cypress
 If you're using Cypress, all of the built-in Interactors and Interactor functions will need to be imported from `@bigtest/cypress` and not `bigtest`.
 :::
 
-In this example, we've configured the selector as `input[type=text].my-input` which will search for all `<input type=‘text' class=“my-input”>` elements in your testing environment. Filters and locators are then used to narrow down the list of results.
+### `extend()` method
 
-The string argument, the label, to `createInteractor()` is the name of the interactor your console will print if there's a failing test:
+In the example above, we're extending from the `HTML` interactor to compose the `MyTextField` interactor, but if you take a look at the implementation of the [built-in TextField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts) interactor, you'll see that the `value` filter and `fillIn` action are already available.
+
+You could reimplement the `value` filter and `fillIn` action from scratch like we did in the example, however, it would be more practical to just extend from the built-in TextField interactor instead:
+
+```js
+import { TextField } from 'bigtest';
+
+export const MyTextField = TextField.extend('my-textfield-interactor')
+  .locator((element) => element.placeholder)
+```
+
+This approach would allow `MyTextField` to inherit the selector, locator, filters, and actions from the built-in `TextField`. You can overwrite any of the inherited properties to suit your needs, which is what we are doing with the locator in this instance.
+
+### `HTML` interactor
+
+You can think of the `HTML` interactor as the basic building block for all other interactors. The `HTML` interactor is not meant to be used directly in your tests but for _composing_ other interactors.
+
+Many common HTML properties and interactions, such as `className` and `click`, are included in the `HTML` interactor. This provides the convenience of not having to re-specify these properties over and over again for each of your interactors.
+
+Take a look at the [source code](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/html.ts) for the `HTML` interactor to see which filters and actions were added.
+
+### Interactor label
+
+The string argument to `extend()`, which we referred to as the "label" earlier, is the name of the interactor your console will print if there's a failing test:
 
 ```
 NoSuchElementError: did not find my-textfield-interactor "USERNAME"
@@ -83,12 +108,12 @@ NoSuchElementError: did not find my-textfield-interactor "USERNAME"
 
 _An example of the console output when a test is unable to locate the interactor_
 
-Locators, filters, and actions are optional when creating your own interactor. While the locator for the `TextField` interactor offered by BigTest uses the `innerText` of the associated label (as we explained on the [Locators, Filters, and Actions page](/docs/interactors/locators-filters-actions#filters)), the example above has its locator configured as `element.placeholder`. This is just to demonstrate that you can set the properties of Locators to anything that suits your needs. If you create an interactor without a locator, it will default to `locator: element => element.textContent`.
+### `perform()` method
 
-You might be wondering what `interactor.perform()` does: it is a method on the interactor which ensures that there are no race conditions when working directly with elements. You can use it like this:
+You might also be wondering what `interactor.perform()` does: it is a method on the interactor which ensures that there are no race conditions when working directly with elements. You can use it like this:
 
 ```js
-createInteractor('my interactor')
+HTML.extend('my interactor')
   .actions({
     async click(interactor){
       await interactor.perform(element => element.click());
@@ -99,7 +124,7 @@ createInteractor('my interactor')
 Or you could use destructuring to make it a bit shorter:
 
 ```js
-createInteractor('my interactor')
+HTML.extend('my interactor')
   .actions({
     click: ({ perform }) => perform(element => element.click())
   });
@@ -117,9 +142,9 @@ The former syntax is necessary if you want to write an action that delegates to 
   <TabItem value="javascript">
 
   ```js
-  import { Button, createInteractor } from 'bigtest';
+  import { Button, HTML } from 'bigtest';
 
-  export const Form = createInteractor('form')
+  export const Form = HTML.extend('my-form-interactor')
     .selector('form')
     .actions({
       async submit(interactor){
@@ -132,9 +157,9 @@ The former syntax is necessary if you want to write an action that delegates to 
   <TabItem value="typescript">
 
   ```ts
-  import { Button, createInteractor } from 'bigtest';
+  import { Button, HTML } from 'bigtest';
 
-  export const Form = createInteractor<HTMLFormElement>('form')
+  export const Form = HTML.extend<HTMLFormElement>('my-form-interactor')
     .selector('form')
     .actions({
       async submit(interactor){
@@ -146,7 +171,7 @@ The former syntax is necessary if you want to write an action that delegates to 
   </TabItem>
 </Tabs>
 
-There’s two peculiarities about this example. First, notice we’re not using `perform` which means that we’re not performing an action on any element directly. Secondly, within the submit action definition you’ll notice that we’re using `find` to access another Interactor and calling its action. That’s what we mean with ‘delegating’ an action.
+There are two peculiarities about this example. First, notice we’re not using `perform` which means that we’re not performing an action on the interactors' element directly. Secondly, within the submit action definition you’ll notice that we’re using `find` to access another Interactor and calling its action. That’s what we mean with ‘delegating’ an action.
 
 Why would you want to delegate actions within an Interactor action definition? Well, it can help you avoid repeating yourself and to keep Interactors as black boxes. For example, let’s say we wanted to test that a user submits a form, without delegation we can reach in in the Form Interactor and issue a click action:
 
@@ -160,7 +185,9 @@ But if the Form component changes and now the button that submits is no longer `
 Form().submit();
 ```
 
-Let's get back to our example and add the new TextField interactor to a test. In this example we are testing an email subscription form by first filling in the email text field, clicking the `Subscribe` button, and then asserting for the success header.
+### Using your interactor
+
+Let's get back to our example and add the new MyTextField interactor to a test. In this example we are testing an email subscription form by first filling in the email text field, clicking the `Subscribe` button, and then asserting for the success header:
 
 <Tabs
   groupId="runner"
@@ -178,13 +205,13 @@ Let's get back to our example and add the new TextField interactor to a test. In
   import App from './App';
 
   import { Button, Heading } from 'bigtest';
-  import { TextField } from './MyTextField';
+  import { MyTextField } from './MyTextField';
 
   describe('email subscription form', () => {
     beforeEach(() => render(<App />));
 
     it('fill and submit email address', async () => {
-      await TextField('EMAIL').fillIn('batman@gmail.com');
+      await MyTextField('EMAIL').fillIn('batman@gmail.com');
       await Button('Subscribe').click();
       await Heading('Success!').exists();
     });
@@ -196,14 +223,14 @@ Let's get back to our example and add the new TextField interactor to a test. In
 
   ```js
   import { Button, Heading } from '@bigtest/cypress';
-  import { TextField } from './MyTextField';
+  import { MyTextField } from './MyTextField';
 
   describe('email subscription form', () => {
     beforeEach(() => cy.visit('/'));
 
     it('fill and submit email address', () => {
       cy.do([
-        TextField('EMAIL').fillIn('batman@gmail.com');
+        MyTextField('EMAIL').fillIn('batman@gmail.com');
         Button('Subscribe').click();
       ]);
       cy.expect(Heading('Success'))
@@ -216,13 +243,13 @@ Let's get back to our example and add the new TextField interactor to a test. In
 
   ```js
   import { Button, Heading, Page, test } from 'bigtest';
-  import { TextField } from './MyTextField';
+  import { MyTextField } from './MyTextField';
 
   export default test('email subscription form')
     .step(Page.visit('/'))
     .child('fill and submit email address', test => test
       .step(
-        TextField('EMAIL').fillIn('batman@gmail.com'),
+        MyTextField('EMAIL').fillIn('batman@gmail.com'),
         Button('Subscribe').click())
       .assertion(Heading('Success!').exists()));
   ```
@@ -230,9 +257,14 @@ Let's get back to our example and add the new TextField interactor to a test. In
   </TabItem>
 </Tabs>
 
-The [TextField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts) interactor from BigTest can do a lot more than this, but the example we just wrote is a good place to start when it comes to understanding how to use `createInteractor`.
+By composing our own text field interactor, we are able to use it with its new locator value without which we would have needed to use a filter for each instance:
 
-Check out the source code of [createInteractor()](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/create-interactor.ts) for more details.
+```js
+TextField({ placeholder: 'email' }).fillIn('batman@gmail.com');
+MyTextField('email').fillIn('batman@gmail.com');
+```
+
+Although the built-in interactors may cover most use cases, the composability of interactors means there is no limit to how much you can optimize and tailor them to your needs.
 
 ## Writing a more complex interactor
 
@@ -268,9 +300,9 @@ First, consider some table markup defined as follows:
 Here is one way to create the `TableCell` interactor:
 
 ```js
-import { createInteractor } from 'bigtest';
+import { HTML } from 'bigtest';
 
-export const TableCell = createInteractor('table cell')
+export const TableCell = HTML.extend('table cell')
   .selector('[role=gridcell]')
   .filters({
     columnTitle: element => {
@@ -304,7 +336,9 @@ export const TableCell = createInteractor('table cell')
 This example uses [optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) which is available in Node >=14.
 :::
 
-You'll notice we created `columnTitle` and `rowNumber` filters that will access its parent elements to get the appropriate value we're looking for. The locator was not specified, so it will default to `element.textContent`. We can now effectively use the TableCell interactor as we stated in the beginning of this page:
+Once again, by extending from the `HTML` interactor, our new TableCell interactor inherits all of the pre-defined filters and actions of the `HTML` interactor as defined [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/html.ts). If we needed to access a table cell's `id` property in our tests, we would not need to create a separate filter for it as it is already available on the `HTML` interactor.
+
+Inside the TableCell interactor we created `columnTitle` and `rowNumber` filters that will access its parent elements to get the appropriate value we're looking for. The locator was not specified, so it will default to `element.innerText || element.textContent`. We can now effectively use the TableCell interactor as we stated at the beginning of this page:
 
 ```js
 TableCell({ columnTitle: 'Name', rowNumber: 2 }).has({ value: 'Marge Simpson' });
@@ -385,7 +419,7 @@ One more building block available to you is the `find` method, which helps you c
 Take for example the following DatePicker Interactor, in which we define an `open` action. We use `find` to target a button within `DatePicker`:
 
 ```js
-createInteractor('DatePicker')
+HTML.extend('DatePicker')
   .actions({
     open: (interactor) => interactor.find(Button).click()
   });

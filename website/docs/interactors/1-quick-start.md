@@ -315,7 +315,7 @@ As you can see, Interactors not only make it simple to use DOM elements like Rad
 
 ### Continue learning about Interactors
 
-Try using more of the [Built-in Interactors](/docs/interactors/built-in-dom) within your tests such as `Link`, `Checkbox`, `TextField`, and more.
+Try using more of the [Built-in Interactors](/docs/interactors/built-in-dom) within your tests such as `Link`, `CheckBox`, `TextField`, and more.
 
 You’ll quickly realize how much more powerful Interactors are when combined with [Locators, Filters, and Actions](/docs/interactors/locators-filters-actions).
 

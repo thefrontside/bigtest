@@ -90,6 +90,7 @@ Heading().has({ or(id: 'foo', id: 'bar') }); // bad
 :::
 
 ### Iterable matchers
+
 For when you need to assert against iterables, you will find the `some()` and `every()` matchers very helpful. We will use the [`MultiSelect`](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/multi-select.ts#L48) interactor for the next example because its `values` filter returns an array based on its options' label:
 
 ```js
@@ -119,6 +120,7 @@ In the two tests above we are passing in the `including()` and `matching()` matc
 Though the matchers are already ergonomic, you can make your tests even tidier and easier to read by creating your own matchers. There are two ways you can write your own matcher: by piggybacking on preexisting matchers or you can create your own from scratch. We will cover both methods next.
 
 ## Composing matchers
+
 We will first go over how you can compose matchers using preexisting matchers. Let us start by creating a matcher called `hasFoo`:
 
 ```js

@@ -9,6 +9,7 @@ These are the default interactors that are offered out-of-the-box with BigTest:
 
 - [Button](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/button.ts)
 - [CheckBox](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/check-box.ts)
+- [FormField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/form-field.ts)
 - [Heading](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/heading.ts)
 - [Link](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/link.ts)
 - [MultiSelect](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/multi-select.ts)
@@ -23,11 +24,10 @@ As you might have seen on the [Quick Start](/docs/interactors/) page, you can im
 import { Button, TextField } from 'bigtest';
 ```
 
-Follow the links above to get more information on how to use these interactors to test your app.
-
 If your app has unique interfaces that are not covered by these built-in tools, you are encouraged to [write your own interactors](/docs/interactors/write-your-own).
 
 ### Page
+
 The `Page` interactor is unique. Unlike Big Test’s other built-in interactors, it's not designed to target one specific element but rather the whole page. It is useful for asserting for the url or title in your test environment:
 
 ```js
@@ -39,7 +39,7 @@ _The `Page` interactor is instantiated differently than the other built-in inter
 We introduced `.exists()` and `.absent()` in the [Quick Start](/docs/interactors/) section but there are also `.has()` and `.is()` Interactor assertion methods. We will discuss their details on the [Assertions](/docs/interactors/assertions) page.
 :::
 
-And when using BigTest runner, the Page interactor can be used to navigate between routes:
+And when using the BigTest runner, the Page interactor can be used to navigate between routes:
 
 ```js
 import { Page, test } from 'bigtest';
