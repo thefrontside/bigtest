@@ -69,7 +69,7 @@ describe('Interactors with Cypress', () => {
 });
 ```
 
-The `cy.do()` and `cy.expect()` commands can take either a single interactor or an array of interactors.
+The `cy.do()` and `cy.expect()` commands can take either a single interaction or an array of interactions.
 
 ### ES Modules
 
