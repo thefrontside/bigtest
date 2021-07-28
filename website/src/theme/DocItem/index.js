@@ -16,7 +16,7 @@ import Head from '@docusaurus/Head';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import DocPaginator from '@theme/DocPaginator';
-import DocVersionSuggestions from '@theme/DocVersionSuggestions';
+import DocVersionBanner from '@theme/DocVersionBanner';
 import TOC from '@theme/TOC';
 import clsx from 'clsx';
 import styles from './styles.module.css';
@@ -29,7 +29,7 @@ import {
 function DocItem(props) {
   const {siteConfig} = useDocusaurusContext();
   const {url: siteUrl, title: siteTitle, titleDelimiter} = siteConfig;
-  const {content: DocContent} = props;
+  const {content: DocContent, versionMetadata} = props;
   const {metadata} = DocContent;
   const {
     description,
@@ -88,7 +88,7 @@ function DocItem(props) {
           className={clsx('col', {
             [styles.docItemCol]: !hideTableOfContents,
           })}>
-          <DocVersionSuggestions />
+          <DocVersionBanner versionMetadata={versionMetadata} />
           <div className={styles.docItemContainer}>
             <article>
               {showVersionBadge && (
