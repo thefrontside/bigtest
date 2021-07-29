@@ -3,6 +3,9 @@
   command = "yarn build"
   publish = "public/"
 
+[build.environment]
+  NODE_VERSION = "12"
+
 [dev]
   command = "yarn start"
   publish = "public/"

@@ -119,6 +119,11 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
+          versions: {
+            current: {
+              banner: "none",
+            },
+          }
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

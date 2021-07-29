@@ -19,8 +19,12 @@
   text-align: right;
 }
 
+/* prettier-ignore */
 .subscribe-form--title__highlight {
-  background-image: url(/bigtest/images/decor-sphere-all-focused2x.png), url(/bigtest/images/decor-sphere-all-focused2x.png), url(/bigtest/images/decor-shadow-duo2x.png);
+  background-image: 
+    /* webpackIgnore: true */ url(/bigtest/images/decor-sphere-all-focused2x.png),
+    /* webpackIgnore: true */ url(/bigtest/images/decor-sphere-all-focused2x.png),
+    /* webpackIgnore: true */ url(/bigtest/images/decor-shadow-duo2x.png);
   background-position: 0% 65%, 100% 0%, 50% 90%;
   background-size: 24px, 43px, 100%;
   background-repeat: no-repeat, no-repeat, no-repeat;
@@ -40,7 +44,8 @@
   margin-left: 10px;
 }
 
-.subscribe-form--inputs > p + div, .subscribe-form--inputs > input {
+.subscribe-form--inputs > p + div,
+.subscribe-form--inputs > input {
   margin-right: 10px;
   min-width: 400px;
   max-width: 100%;
@@ -77,7 +82,7 @@
   padding: 0;
   margin: 20px 0;
 }
-.subscribe-form__embedded  > .subscribe-form--inputs {
+.subscribe-form__embedded > .subscribe-form--inputs {
   padding-left: 0;
 }
 
@@ -112,7 +117,8 @@
   .subscribe-form--inputs {
     padding-left: 0;
   }
-  .subscribe-form--inputs > p + div, .subscribe-form--inputs > input {
+  .subscribe-form--inputs > p + div,
+  .subscribe-form--inputs > input {
     min-width: 100%;
   }
   .subscribe-form--inputs button {
