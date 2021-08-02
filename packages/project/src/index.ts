@@ -161,7 +161,17 @@ export function defaultTSConfig(): {compilerOptions: Pick<CompilerOptions, 'skip
     compilerOptions: {
       skipLibCheck: true,
       target: "es6" as unknown as ScriptTarget,
-      lib: ["esnext", "dom"]
+      lib: ["esnext", "dom"],
+    }
+  }
+}
+
+export function jsTSConfig(): {compilerOptions: Pick<CompilerOptions, 'allowJs' | 'skipLibCheck' | 'target'>} {
+  return {
+    compilerOptions: {
+      allowJs: true,
+      skipLibCheck: true,
+      target: "es5" as unknown as ScriptTarget,
     }
   }
 }

@@ -3,7 +3,7 @@ import { on } from '@effection/events';
 import { Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
 import { Channel } from '@effection/channel';
 import { watch, rollup, OutputOptions, InputOptions, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'rollup';
-import { defaultTSConfig } from '@bigtest/project';
+import { defaultTSConfig, jsTSConfig } from '@bigtest/project';
 import resolve, {
   DEFAULTS as RESOLVE_DEFAULTS,
 } from '@rollup/plugin-node-resolve';
@@ -23,6 +23,8 @@ interface BundleOptions {
 };
 
 function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMessage>): InputOptions {
+  let hasTsConfig = typeof bundle.tsconfig !== 'undefined'
+  
   return {
     input: bundle.entry,
     onwarn(warning){
@@ -36,7 +38,7 @@ function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMess
       commonjs(),
       typescript({
         tsconfig: bundle.tsconfig,
-        tsconfigDefaults: defaultTSConfig(),
+        tsconfigDefaults: hasTsConfig ? defaultTSConfig() : jsTSConfig(),
         tsconfigOverride: {
           compilerOptions: {
             module: "ESNext",
