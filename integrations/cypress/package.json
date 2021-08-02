@@ -15,8 +15,10 @@
   ],
   "dependencies": {
     "@bigtest/globals": "^0.7.6",
-    "@bigtest/interactor": "^0.29.0",
-    "cypress": "^7.7.0"
+    "@bigtest/interactor": "^0.29.0"
+  },
+  "peerDependencies": {
+    "cypress": "^8.0.0"
   },
   "scripts": {
     "start": "cd ../../sample/ && npm install && npm run start -- -p 3000",
