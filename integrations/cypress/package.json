@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/cypress",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Cypress Integration for BigTest Interactors",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -14,9 +14,9 @@
     "README.md"
   ],
   "dependencies": {
-    "@bigtest/globals": "^0.7.5",
-    "@bigtest/interactor": "^0.28.2",
-    "cypress": "^7.2.0"
+    "@bigtest/globals": "^0.7.6",
+    "@bigtest/interactor": "^0.29.0",
+    "cypress": "^7.7.0"
   },
   "scripts": {
     "start": "cd ../../sample/ && npm install && npm run start -- -p 3000",
