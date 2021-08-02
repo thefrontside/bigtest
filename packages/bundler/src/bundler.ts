@@ -2,7 +2,7 @@ import { Operation, resource, timeout } from 'effection';
 import { on } from '@effection/events';
 import { Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
 import { Channel } from '@effection/channel';
-import { watch, rollup, OutputOptions, InputOptions, RollupWatchOptions, RollupWatcherEvent, RollupWatcher } from 'rollup';
+import { watch, rollup, OutputOptions, InputOptions, RollupWatchOptions, RollupWatcherEvent, RollupWatcher, RollupBuild } from 'rollup';
 import { defaultTSConfig, jsTSConfig } from '@bigtest/project';
 import resolve, {
   DEFAULTS as RESOLVE_DEFAULTS,
@@ -23,7 +23,7 @@ interface BundleOptions {
 };
 
 function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMessage>): InputOptions {
-  let hasTsConfig = typeof bundle.tsconfig !== 'undefined'
+  let hasTsConfig = typeof bundle.tsconfig !== 'undefined';
   
   return {
     input: bundle.entry,
@@ -134,7 +134,7 @@ export class Bundler implements Subscribable<BundlerMessage, undefined> {
     yield timeout(0); // send start event asynchronously, so we have a chance to subscribe
     this.channel.send({ type: 'START' });
     try {
-      let result = yield rollup(prepareInputOptions(this.options, this.channel));
+      let result: RollupBuild = yield rollup(prepareInputOptions(this.options, this.channel));
       yield result.write(prepareOutputOptions(this.options));
 
       this.channel.send({ type: 'UPDATE' });
