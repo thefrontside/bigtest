@@ -1,5 +1,13 @@
 # @bigtest/interactor
 
+## 0.30.0
+
+### Minor Changes
+
+- 03cfbb11: Change `HTML` interactor selector to not match any SVG elements
+- 3dc81a09: Add ability to return value from `perform`
+- 5159aa40: `Page` interactor reloads page on url hash changes (fix [#936](https://github.com/thefrontside/bigtest/issues/936))
+
 ## 0.29.0
 
 ### Minor Changes

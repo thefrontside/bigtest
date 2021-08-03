@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/server",
-  "version": "0.24.1",
+  "version": "0.24.2",
   "description": "BigTest Server",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -50,7 +50,7 @@
     "@babel/preset-env": "^7.12.7",
     "@bigtest/agent": "^0.17.2",
     "@bigtest/atom": "^0.12.2",
-    "@bigtest/bundler": "^0.12.5",
+    "@bigtest/bundler": "^0.13.0",
     "@bigtest/client": "^0.3.3",
     "@bigtest/driver": "^0.5.7",
     "@bigtest/effection": "^0.6.3",

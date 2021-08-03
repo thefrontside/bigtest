@@ -1,5 +1,11 @@
 # @bigtest/bundler
 
+## 0.13.0
+
+### Minor Changes
+
+- 7d5e7d5b: add a jsTSConfig to the rollup typescript plugin if no tsconfig is found
+
 ## 0.12.5
 
 ### Patch Changes

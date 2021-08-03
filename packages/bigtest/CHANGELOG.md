@@ -1,5 +1,14 @@
 # bigtest
 
+## 0.14.1
+
+### Patch Changes
+
+- Updated dependencies [03cfbb11]
+- Updated dependencies [3dc81a09]
+- Updated dependencies [5159aa40]
+  - @bigtest/interactor@0.30.0
+
 ## 0.14.0
 
 ### Minor Changes
