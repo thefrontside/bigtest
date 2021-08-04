@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.24.2
+
+### Patch Changes
+
+- Updated dependencies [7d5e7d5b]
+  - @bigtest/bundler@0.13.0
+
 ## 0.24.1
 
 ### Patch Changes
