@@ -15,10 +15,10 @@ import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 
 export const FormSignIn = {
-  play: () => {
-    userEvent.type(screen.getById('email'), 'homer@gmail.com');
-    userEvent.type(screen.getById('password'), 'donuts123');
-    userEvent.click(screen.getByText('Sign In'));
+  play: async () => {
+    await userEvent.type(screen.getById('email'), 'homer@gmail.com');
+    await userEvent.type(screen.getById('password'), 'donuts123');
+    await userEvent.click(screen.getByText('Sign In'));
   }
 };
 ```
