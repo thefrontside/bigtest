@@ -9,20 +9,7 @@ This requires no additional setup. Just install `@bigtest/interactor` to your pr
 
 In the same way Interactors make tests more reliable and easier to read, it will also enhance your developer experience with Storybook.
 
-Here is an example of how a story can be written with interactors:
-```js
-import { Button, TextField } from '@bigtest/interactor';
-
-export const FormSignIn = {
-  play: async () => {
-    await TextField('Email').fillIn('homer@gmail.com');
-    await TextField('Password').fillIn('donuts123');
-    await Button('Sign In').click();
-  }
-};
-```
-
-And this is how you would normally write that story:
+Here is an example of how you would normally write a story:
 ```js
 import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
@@ -36,3 +23,15 @@ export const FormSignIn = {
 };
 ```
 
+And this is the same story but written with interactors:
+```js
+import { Button, TextField } from '@bigtest/interactor';
+
+export const FormSignIn = {
+  play: async () => {
+    await TextField('Email').fillIn('homer@gmail.com');
+    await TextField('Password').fillIn('donuts123');
+    await Button('Sign In').click();
+  }
+};
+```
