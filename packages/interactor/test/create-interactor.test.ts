@@ -474,6 +474,29 @@ describe('@bigtest/interactor', () => {
       await expect(TextField('Password', { enabled: false }).exists()).resolves.toBeUndefined();
     });
 
+    it('can override default values', async () => {
+      dom(`
+        <input id="Email" value='jonas@example.com'/>
+        <input id="Password" disabled="disabled" value='test1234'/>
+      `);
+
+      await expect(TextField('Password').is({ enabled: false })).resolves.toBeUndefined()
+      await expect(TextField('Password', { enabled: true }).is({ enabled: false })).rejects.toHaveProperty('message', [
+        'did not find text field "Password" which is enabled, did you mean one of:', '',
+        '┃ text field   ┃ enabled: true ┃',
+        '┣━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫',
+        '┃ ✓ "Password" ┃ ⨯ false       ┃',
+        '┃ ⨯ "Email"    ┃ ✓ true        ┃',
+      ].join('\n'))
+      await expect(TextField('Password').is({ value: 'test1234' })).rejects.toHaveProperty('message', [
+        'did not find text field "Password", did you mean one of:', '',
+        '┃ text field   ┃ enabled: true ┃',
+        '┣━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫',
+        '┃ ✓ "Password" ┃ ⨯ false       ┃',
+        '┃ ⨯ "Email"    ┃ ✓ true        ┃',
+      ].join('\n'))
+    });
+
     it('can apply multiple filters', async () => {
       dom(`
         <input id="Email" value='jonas@example.com'/>
