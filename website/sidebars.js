@@ -6,7 +6,8 @@ module.exports = {
     'interactors/assertions',
     'interactors/matchers',
     'interactors/write-your-own',
-    'interactors/integrations'
+    'interactors/integrations',
+    'interactors/storybook',
   ],
   platform: [
     'platform/installation',
