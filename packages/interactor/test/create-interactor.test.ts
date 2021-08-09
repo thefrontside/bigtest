@@ -474,7 +474,7 @@ describe('@bigtest/interactor', () => {
       await expect(TextField('Password', { enabled: false }).exists()).resolves.toBeUndefined();
     });
 
-    it('can override default values', async () => {
+    it('the values in an assertion override the default values for a filter', async () => {
       dom(`
         <input id="Email" value='jonas@example.com'/>
         <input id="Password" disabled="disabled" value='test1234'/>
