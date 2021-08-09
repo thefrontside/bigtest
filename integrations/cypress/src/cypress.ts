@@ -12,13 +12,16 @@ declare global {
   }
 }
 
+Object.defineProperty(bigtestGlobals, 'document', {
+  get: () => cy.$$('body')[0].ownerDocument
+});
+
 function interact(
   interaction: Interaction<void> | ReadonlyInteraction<void>,
   runnerState: RunnerState
 ) {
   bigtestGlobals.runnerState = runnerState;
-  return cy.document({ log: false }).then((doc: Document) => {
-    bigtestGlobals.document = doc;
+  return cy.then(() => {
     return interaction;
   }).then(() => {
     Cypress.log({
@@ -38,7 +41,7 @@ if (typeof Cypress !== 'undefined' ) {
       interact(interaction, 'step');
     }
   });
-  
+
   Cypress.Commands.add('expect', (
     interaction: ReadonlyInteraction<void> | ReadonlyInteraction<void>[]
   ) => {
