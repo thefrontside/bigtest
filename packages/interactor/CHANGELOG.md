@@ -1,5 +1,11 @@
 # @bigtest/interactor
 
+## 0.31.0
+
+### Minor Changes
+
+- 7089b975: Override filters appearing in lookup to the assertion filters (fix [#966](https://github.com/thefrontside/bigtest/issues/966))
+
 ## 0.30.0
 
 ### Minor Changes

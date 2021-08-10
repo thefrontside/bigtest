@@ -1,5 +1,11 @@
 # @bigtest/project
 
+## 0.15.3
+
+### Patch Changes
+
+- ec952b70: add jsTsconfig for js only projects
+
 ## 0.15.2
 
 ### Patch Changes

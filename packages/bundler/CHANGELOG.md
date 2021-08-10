@@ -1,5 +1,13 @@
 # @bigtest/bundler
 
+## 0.13.1
+
+### Patch Changes
+
+- 264fafcb: pin effection packages in bundler
+- Updated dependencies [ec952b70]
+  - @bigtest/project@0.15.3
+
 ## 0.13.0
 
 ### Minor Changes
