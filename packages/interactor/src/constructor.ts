@@ -108,6 +108,25 @@ function description(options: InteractorOptions<any, any, any>): string {
   return ancestorsAndSelf.reverse().map(ownDescription).join(' within ');
 }
 
+/**
+ * Removes any default values for a filter from the lookup if that filter is present in the 
+ * assertion. Otherwise, it is not possible to make an assertion on a filter that might conflict
+ * see https://github.com/thefrontside/bigtest/issues/966
+*/
+function getLookupFilterForAssertion<E extends Element, F extends Filters<E>>(filter: Filter<E, F>, filters: FilterParams<E, F>): Filter<E, F> {
+  let lookupFilter = new Filter(filter.specification, Object.assign({}, filter.filters));
+  let specFilters = lookupFilter.specification.filters;
+  for (let key in specFilters) {
+    if (typeof specFilters[key] !== 'function'
+    && 'default' in specFilters[key]
+    && key in filters
+    && !(key in lookupFilter.filters)) {
+      lookupFilter.filters[key] = filters[key];
+    }
+  }
+  return lookupFilter;
+}
+
 export function unsafeSyncResolveParent(options: InteractorOptions<any, any, any>): Element {
   return options.ancestors.reduce(resolveUnique, bigtestGlobals.document.documentElement);
 }
@@ -152,7 +171,7 @@ export function instantiateBaseInteractor<E extends Element, F extends Filters<E
       let filter = new Filter(options.specification, filters);
       return check(`${this.description} matches filters: ${filter.description}`, () => {
         return converge(() => {
-          let element = resolver(options);
+          let element = resolver({...options, filter: getLookupFilterForAssertion(options.filter, filters) });
           let match = new MatchFilter(element, filter);
           if(!match.matches) {
             throw new FilterNotMatchingError(`${description(options)} does not match filters:\n\n${match.formatAsExpectations()}`);
