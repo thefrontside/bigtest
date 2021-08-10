@@ -20,7 +20,7 @@ module.exports = {
       logo: {
         alt: 'BigTest',
         src: 'images/bigtest-logo.svg',
-        srcDark: 'images/logo-white.svg'
+        srcDark: 'images/bigtest-logo-white.svg'
       },
       items: [
         {

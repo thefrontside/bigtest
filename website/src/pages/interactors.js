@@ -214,7 +214,7 @@ function Interactors() {
         <section className={styles.featureDesignSystems}>
           <div className={styles.feature}>
             <div className={styles.featureImage}>
-              <img src='images/design-systems.png' alt='' />
+              <img src={useBaseUrl('images/design-systems.png')} alt='' />
             </div>
             <div className={styles.featureText}>
               <h2 className={styles.featureHeading}>
