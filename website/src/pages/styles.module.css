@@ -10,7 +10,8 @@
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
-  max-width: 100%;
+  /* in production, docusaurus imposes its styles over mine >:( */
+  max-width: 100% !important ;
 }
 
 .marginBottomLarge {
