@@ -56,15 +56,6 @@ const features = [
     ),
   },
   {
-    title: 'Optimized for design systems',
-    imageUrl: 'images/design-systems.png',
-    description: (
-      <>
-        More and more teams opt to use design systems to build their apps, which come with tricky components like date pickers or interactive tables. Eliminate hacky and fragile tests from those cases by shipping Interactors along with your design system components.
-      </>
-    ),
-  },
-  {
     title: 'UX & a11y centric',
     imageUrl: 'images/ux-centric.png',
     description: (
@@ -74,6 +65,19 @@ const features = [
     ),
   },
 ];
+
+const resources = [
+  {
+    title: 'BigTest Interactors: the design systems testing ally',
+    description: 'In this article, Charles and Jeffrey walks us through three testing advantages that Interactors bring to teams using Design Systems: composability, abstraction, and type-safety.',
+    link: 'https://frontside.com/blog/2021-08-04-interactors-design-systems/'
+  },
+  {
+    title: 'The Lesson of BigTest Interactors: never write a flaky test again!',
+    description: 'To prevent flaky tests, BigTest introduces the Interactor API, designed around the lessons learned in Capybara. In this article, Jonas explains how the event-loop is used by Interactors to reduce flakiness.',
+    link: 'https://frontside.com/blog/2020-07-16-the-lesson-of-bigtest-interactors/'
+  }
+]
 
 function Feature({ imageUrl, title, description }) {
   const imgUrl = useBaseUrl(imageUrl);
@@ -92,6 +96,24 @@ function Feature({ imageUrl, title, description }) {
   );
 }
 
+function Resource({ title, description, link }) {
+  return (
+    <div className={styles.resourceEntry}>
+      <h3>
+        <a href={link} target="_blank" rel="noopener">
+          {title}
+        </a>
+      </h3>
+      <p>
+        {description}
+      </p>
+      <a href={link} target="_blank" rel="noopener">
+        <strong>Continue reading</strong>
+      </a>
+    </div>
+  );
+}
+
 function Interactors() {
   const context = useDocusaurusContext();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -100,19 +122,42 @@ function Interactors() {
     <Layout
       title="Interactors"
       description="Test your app as real people use it">
+      <nav className={styles.pageNav}>
+        <span>Jump to:</span>
+        <Link
+          className={styles.pageNavLink}
+          to={useBaseUrl('docs/interactors')}>
+          Documentation
+        </Link>
+        <Link
+          className={styles.pageNavLink}
+          to={useBaseUrl('docs/interactors/write-your-own')}>
+          Writing Interactors
+        </Link>
+        <Link
+          className={styles.pageNavLink}
+          to={useBaseUrl('docs/interactors/integrations')}>
+          Cypress &amp; Jest
+        </Link>
+        <Link
+          className={styles.pageNavLink}
+          to={useBaseUrl('docs/interactors/storybook')}>
+          Storybook
+        </Link>
+      </nav>
       <header>
-        <div className={clsx("container", styles.heroContainer)}>
+        <div className={clsx('container', styles.heroContainer, styles.marginBottomLarge)}>
           <div className={styles.heroText}>
             <h1 className={styles.heroHeading}>
-              Test your app as real people use it
+             BigTest Interactors
             </h1>
             <p className={styles.heroSubheader}>
-              Interactors make it easy to test UIs at scale while keeping accessibility at the core.
+             Composable page objects for testing apps written with component libraries
             </p>
             <Link
               className={styles.ctaButton}
               to={useBaseUrl('docs/interactors')}>
-              Get Started
+              Try them out!
             </Link>
           </div>
           <div className={clsx(styles.heroImage, styles.interactorsHero, 'interactors-hero-tabs')}>
@@ -127,36 +172,36 @@ function Interactors() {
                 <TabItem value="jest">
                   <CodeBlock className='language-js'>
                     {`it('subscribes to newsletter', async () => {
-    await Input('email').fillIn('jorge@frontside.com');
-    await Button('Subscribe').click();
+  await Input('email').fillIn('jorge@frontside.com');
+  await Button('Subscribe').click();
 
-    await Heading('Thanks!').exists();
-  })`}
+  await Heading('Thanks!').exists();
+})`}
                   </CodeBlock>
                 </TabItem>
                 <TabItem value="cypress">
                   <CodeBlock className="language-js">
                     {`it('subscribes to newsletter', () => {
-    cy.do([
-      Input('email').fillIn('jorge@frontside.com'),
-      Button('Subscribe').click()
-    ]);
-    cy.expect([
-      Heading('Thanks!').exists();
-    ])
-  })`}
+  cy.do([
+    Input('email').fillIn('jorge@frontside.com'),
+    Button('Subscribe').click()
+  ]);
+  cy.expect([
+    Heading('Thanks!').exists();
+  ])
+})`}
                   </CodeBlock>
                 </TabItem>
                 <TabItem value="bigtest">
                   <CodeBlock className="language-js">
                     {`test('subscribes to newsletter')
-    .step([
-      Input('email').fillIn('jorge@frontside.com'),
-      Button('Subscribe').click()
-    ])
-    .assertion(
-      Heading('Thanks!').exists()
-    );`}
+  .step([
+    Input('email').fillIn('jorge@frontside.com'),
+    Button('Subscribe').click()
+  ])
+  .assertion(
+    Heading('Thanks!').exists()
+  );`}
                   </CodeBlock>
                 </TabItem>
               </Tabs>
@@ -164,7 +209,33 @@ function Interactors() {
           </div>
         </div>
       </header>
+
       <main>
+        <section className={styles.featureDesignSystems}>
+          <div className={styles.feature}>
+            <div className={styles.featureImage}>
+              <img src='images/design-systems.png' alt='' />
+            </div>
+            <div className={styles.featureText}>
+              <h2 className={styles.featureHeading}>
+              Testing a UI should be as easy as building it
+              </h2>
+              <p>
+              Interactors allow design systems maintainers to ship reusable and simplified testing practices alongside their components. Thus, their users can start testing right away without figuring out internal markup or selectors.
+              </p>
+            </div>
+          </div>
+          <div className={clsx(styles.bigQuoteWrapper, styles.wideBigQuote)}>
+            <blockquote className={styles.bigQuote}>
+              “No more worries over the tests of your dependent projects!<br />
+              <span className={styles.bigQuoteIndent}></span>It feels great to provide your library's consumers with such a great tool for their tests that will stay right in step with your code.<br />
+              <span className={styles.bigQuoteIndent}></span><strong>Gone are the days of fragile, hard-coded selectors or dependencies on mark-up structure.</strong>
+              ”
+            </blockquote>
+            <p className={styles.bigQuoteAuthor}>— John Coburn, Component Library Lead at FOLIO</p>
+          </div>
+        </section>
+
         {features && features.length > 0 && (
           <>
             {
@@ -182,40 +253,20 @@ function Interactors() {
             </Link>
         </section>
 
-        <section>
-          <div className={styles.textColumn}>
-            <img src={useBaseUrl('images/decor-dots-horizontal.png')} alt="" className={styles.topDecoration} />
-            <h2>Why use Interactors?</h2>
-            <p>
-              In many typical test suites, if you change something about
-              one button, you may have to change dozens of tests.
-              It can take more time to update the tests than to make the
-              change in the codebase.
-              Does that sound familiar?
-                  </p>
-            <p>
-              Interactors were designed to help solve this problem
-              and bring your user interface tests closer to what users
-              actually do.
-                  </p>
-            <p>
-              A user finds something they want to interact with,
-              takes action, and gets a result.
-              The code to accomplish these same steps in a test is in one
-              place as an Interactor.
-              These Interactors can then be reused in many different test
-              contexts.
-              You can even create your own Interactors that test for
-              whether a UI is accessible to people using assistive
-              technology or navigating by keyboard controls.
-                  </p>
-            <p>
-              Best of all, you do not need to throw out your existing
-              tests when you try out Interactors! They fit right in
-              with the work that you have already done.
-              Try out the Quick Start guide to see this in action
-              in your own app's test suite.
-                  </p>
+        <section className={styles.resourcesContainer}>
+          <img src={useBaseUrl('images/decor-dots-horizontal.png')} alt="" className={styles.topDecoration} />
+          <h2>Resources</h2>
+
+          <div className={styles.resourcesList}>
+            {resources && resources.length > 0 && (
+              <>
+                {
+                  resources.map((props, idx) => (
+                    <Resource key={idx} {...props} />
+                  ))
+                }
+              </>
+            )}
           </div>
         </section>
         <SubscribeForm highlight={true} />

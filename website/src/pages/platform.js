@@ -61,11 +61,11 @@ function Interactors() {
       <header>
         <div className={clsx("container", styles.heroContainer)}>
           <div className={styles.heroText}>
-            <h1 className={styles.heroHeading}>
-              Ensure your app works perfectly <em className={styles.pinkEmphasis}>across browsers</em>, including iOS Safari
+            <h1 className={clsx(styles.heroHeading)}>
+              Bigtest Runner
             </h1>
             <p className={styles.heroSubheader}>
-              BigTest is a free, Open Source testing platform built from scratch for the modern age — with no traces of Selenium, Playwright, or earlier tools.
+              A free, Open Source testing platform built from scratch for the modern age — with no traces of Selenium, Playwright, or earlier tools.
             </p>
             <Link
               className={styles.ctaButton}

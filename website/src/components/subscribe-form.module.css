@@ -4,7 +4,7 @@
   flex-flow: row nowrap;
   justify-content: center;
   --link-color: var(--fs-skyblue);
-  padding: 0;
+  padding: 20px;
   margin: 33px 0;
 }
 
@@ -21,7 +21,7 @@
 
 /* prettier-ignore */
 .subscribe-form--title__highlight {
-  background-image: 
+  background-image:
     /* webpackIgnore: true */ url(/bigtest/images/decor-sphere-all-focused2x.png),
     /* webpackIgnore: true */ url(/bigtest/images/decor-sphere-all-focused2x.png),
     /* webpackIgnore: true */ url(/bigtest/images/decor-shadow-duo2x.png);

@@ -10,6 +10,11 @@
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
+  max-width: 100%;
+}
+
+.marginBottomLarge {
+  margin-bottom: 120px;
 }
 
 .heroText {
@@ -27,22 +32,6 @@
   color: var(--fs-pink);
 }
 
-@media screen and (max-width: 997px) {
-  .heroContainer {
-    display: block;
-    padding-top: 40px;
-  }
-  .heroImage {
-    display: none;
-  }
-  .heroText {
-    width: 100%;
-  }
-  .heroImage {
-    width: 100%;
-  }
-}
-
 .heroHome {
   box-sizing: border-box;
   padding-top: 40px;
@@ -51,18 +40,24 @@
   background-position: 100% 50%;
   background-size: 53%;
   background-repeat: no-repeat;
+  text-transform: uppercase;
 }
 
 .heroHeading {
-  font-family: proxima-nova, sans-serif;
   box-sizing: border-box;
   margin: 0;
   margin-bottom: 34px;
   color: var(--ifm-heading-color);
-  font-size: 45px;
-  line-height: 50px;
+  font-size: 80px;
+  line-height: 80px;
   font-weight: 800;
   letter-spacing: -1px;
+  text-transform: uppercase;
+}
+
+.heroHeadingSmaller {
+  font-size: 60px;
+  line-height: 60px;
 }
 
 .heroSubheader {
@@ -70,8 +65,8 @@
   box-sizing: border-box;
   margin-top: 0;
   margin-bottom: 40px;
-  color: var(--ifm-sub-heading-color);
-  font-size: 27px;
+  color: var(--ifm-heading-color);
+  font-size: 29px;
   line-height: 32px;
 }
 
@@ -107,9 +102,9 @@
 
 .feature {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   width: 100%;
-  max-width: 1045px;
+  max-width: 1145px;
   padding: var(--ifm-spacing-horizontal);
   margin: 40px auto;
 }
@@ -120,13 +115,24 @@
 }
 
 .featureText {
-  margin-left: 40px;
+  margin-left: 60px;
+  color: var(--ifm-color-primary);
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+}
+
+.featureText > p {
+  font-size: 24px;
+  line-height: 34px;
+  letter-spacing: -0.2px;
 }
 
 .featureHeading {
-  font-size: 22px;
-  line-height: 27px;
-  font-weight: bolder;
+  font-size: 40px;
+  line-height: 43px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
 }
 
 @media screen and (max-width: 500px) {
@@ -210,7 +216,7 @@
 }
 
 .bigQuoteWrapper {
-  max-width: 780px;
+  max-width: 880px;
   margin: 0 auto -40px auto;
   padding: 80px 33px;
   background-image: /* webpackIgnore: true */ url(/bigtest/images/decor-subtler-background.svg);
@@ -219,14 +225,31 @@
   background-repeat: no-repeat;
 }
 
+.wideBigQuote {
+  box-sizing: border-box;
+  max-width: 1100px;
+  padding: 200px 150px;
+  margin: -120px auto -120px auto;
+}
+
 .bigQuote {
   padding: 10px 0;
   border-left-style: none;
   color: var(--ifm-color-primary);
-  font-size: 40px;
-  line-height: 45px;
-  font-weight: 800;
+  font-size: 45px;
+  line-height: 48px;
+  font-weight: bold;
   letter-spacing: -0.1px;
+}
+.bigQuoteIndent {
+  display: inline-block;
+  content: ' ';
+  width: 2rem;
+  height: 1rem;
+}
+
+.bigQuote > strong {
+  font-weight: 800;
 }
 
 .bigQuoteAuthor {
@@ -234,4 +257,89 @@
   font-size: 25px;
   line-height: 35px;
   font-weight: 400;
+}
+
+.pageNav {
+  background: #25aae819;
+  margin-top: 0;
+  border-radius: 0 0 20px 20px;
+  border-top: 1px solid #25abe852;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 15px 20px;
+  align-items: center;
+}
+
+.pageNavLink {
+  border: 1px solid #25aae85c;
+  border-radius: 50px;
+  padding: 5px 10px;
+  font-weight: bold;
+  font-size: 1rem;
+  color: var(--ifm-color-primary-dimmed);
+  margin-left: 1rem;
+}
+
+.resourcesContainer {
+  text-align: center;
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+
+.resourcesList {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.resourceEntry {
+  width: 400px;
+  text-align: left;
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  padding: 40px;
+  border: 1px solid var(--ifm-color-primary);
+  border-radius: 20px;
+}
+
+
+@media screen and (max-width: 997px) {
+  .heroContainer {
+    display: block;
+    padding-top: 40px;
+  }
+  .heroImage {
+    display: none;
+  }
+  .heroText {
+    width: 100%;
+  }
+  .heroImage {
+    width: 100%;
+  }
+  .heroHeading {
+    font-size: 40px;
+    line-height: 40px;
+  }
+  .featureHeading {
+    font-size: 30px;
+    line-height: 32px;
+  }
+  .wideBigQuote {
+    padding-left: 20px;
+    padding-right: 20px;
+    background-size: cover;
+  }
+  .bigQuote {
+    font-size: 30px;
+    line-height: 32px;
+  }
+  .pageNav {
+    display: none;
+  }
+  .marginBottomLarge {
+    margin-bottom: 40px;
+  }
 }

@@ -19,8 +19,8 @@ module.exports = {
       title: '',
       logo: {
         alt: 'BigTest',
-        src: 'images/bigtest-logo@2x.png',
-        srcDark: 'images/logo-dark@2x.png'
+        src: 'images/bigtest-logo.svg',
+        srcDark: 'images/logo-white.svg'
       },
       items: [
         {

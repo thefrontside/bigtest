@@ -15,12 +15,13 @@
   --ifm-color-primary-light: #14315D;
   --ifm-color-primary-lighter: #14315D;
   --ifm-color-primary-lightest: #14315D;
+  --ifm-color-primary-dimmed: rgba(20, 49, 93, 0.8);
   --color-over-primary: #fff;
   --ifm-code-font-size: 95%;
   --ifm-heading-color: #14315D;
   --ifm-sub-heading-color: #4f6586;
   --ifm-navbar-height: 80px;
-  --ifm-container-width: 1346px;
+  --ifm-container-width: 1440px;
   --ifm-spacing-horizontal: 33px;
   --ifm-toc-border-color: rgba(224, 224, 224, 0.5);
   --ifm-navbar-shadow: 0 1px 0px var(--ifm-toc-border-color);
@@ -43,6 +44,7 @@ html[data-theme='dark'] {
   --ifm-color-primary-light: white;
   --ifm-color-primary-lighter: white;
   --ifm-color-primary-lightest: white;
+  --ifm-color-primary-dimmed: rgba(255, 255, 255, 0.6);
   --color-over-primary: #14315D;
   --ifm-heading-color: white;
   --ifm-sub-heading-color: #95acce;
@@ -254,6 +256,10 @@ body {
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 0.8rem;
+}
+
+.interactors-hero-tabs code {
+  font-size: 1.2rem;
 }
 
 .interactors-hero-tabs .maybe-class-name {
