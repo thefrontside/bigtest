@@ -1,3 +1,5 @@
+export const isInteraction = Symbol.for('interaction');
+
 /**
  * An interaction represents some type of action or assertion that can be
  * taken on an {@link Interactor}.
@@ -18,6 +20,8 @@ export interface Interaction<T> extends Promise<T> {
    * Perform the interaction
    */
   action: () => Promise<T>;
+
+  [isInteraction]: true
 }
 
 /**
@@ -37,6 +41,7 @@ export function interaction<T>(description: string, action: () => Promise<T>): I
   return {
     description,
     action,
+    [isInteraction]: true,
     [Symbol.toStringTag]: `[interaction ${description}]`,
     then(onFulfill, onReject) {
       if(!promise) { promise = action(); }
