@@ -1,5 +1,5 @@
 export { Interactor, InteractorSpecificationBuilder, InteractorConstructor, InteractorBuilder, InteractorSpecification } from './specification';
-export { Interaction, ReadonlyInteraction } from './interaction';
+export { Interaction, ReadonlyInteraction, isInteraction } from './interaction';
 export { createInteractor } from './create-interactor';
 export { createInspector } from './inspector'
 export { Page } from './page';
