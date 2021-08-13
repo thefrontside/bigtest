@@ -1,30 +1,34 @@
-import { describe, beforeEach, it } from 'mocha';
+import { describe, beforeEach, it } from '@effection/mocha';
 import expect from 'expect';
-import { daemon } from '@effection/node'
+import { daemon } from '@effection/process'
+import { Slice } from '@effection/atom'
 import getPort from 'get-port';
-import { Response } from 'node-fetch';
+import fetch, { Response } from 'node-fetch';
 
-import { actions } from './helpers';
+import { startOrchestrator } from './helpers';
+import { OrchestratorState } from '../src/orchestrator/state';
 
 describe('orchestrator', () => {
-  beforeEach(async function() {
+  let atom: Slice<OrchestratorState>;
+
+  beforeEach(function*() {
     this.timeout(20000);
-    await actions.startOrchestrator();
+    atom = yield startOrchestrator();
   });
 
   describe('connecting to the command server', () => {
     let response: Response;
     let body: string;
-    beforeEach(async () => {
-      response = await actions.fetch('http://localhost:24102?query={echo(text:"Hello World")}');
-      body = await response.json();
+    beforeEach(function*() {
+      response = yield fetch('http://localhost:24102?query={echo(text:"Hello World")}');
+      body = yield response.json();
     });
 
-    it('responds successfully', () => {
+    it('responds successfully', function*() {
       expect(response.ok).toEqual(true);
     });
 
-    it('contains the ping text', () => {
+    it('contains the ping text', function*() {
       expect(body).toEqual({"data": {"echo": "Hello World"}})
     });
   });
@@ -33,16 +37,16 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
 
-    beforeEach(async () => {
-      response = await actions.fetch('http://localhost:24001/__bigtest/index.html');
-      body = await response.text();
+    beforeEach(function*() {
+      response = yield fetch('http://localhost:24001/__bigtest/index.html');
+      body = yield response.text();
     });
 
-    it('responds successfully', () => {
+    it('responds successfully', function*() {
       expect(response.ok).toEqual(true);
     });
 
-    it('returns the agent html', () => {
+    it('returns the agent html', function*() {
       expect(body).toContain('<title>BigTest</title>');
     });
   });
@@ -50,16 +54,16 @@ describe('orchestrator', () => {
   describe('retrieving harness', () => {
     let response: Response;
     let body: string;
-    beforeEach(async () => {
-      response = await actions.fetch('http://localhost:24001/__bigtest/harness.js');
-      body = await response.text();
+    beforeEach(function*() {
+      response = yield fetch('http://localhost:24001/__bigtest/harness.js');
+      body = yield response.text();
     });
 
-    it('responds successfully', () => {
+    it('responds successfully', function*() {
       expect(response.ok).toEqual(true);
     });
 
-    it('returns the harness script', () => {
+    it('returns the harness script', function*() {
       expect(body).toContain('harness');
     });
   });
@@ -67,59 +71,57 @@ describe('orchestrator', () => {
   describe('retrieving test file manifest', () => {
     let response: Response;
     let body: string;
-    beforeEach(async () => {
-      await actions.fork(actions.atom.slice('bundler', 'type').once(type => type === 'GREEN'));
+    beforeEach(function*() {
+      yield atom.slice('bundler').match({ type: 'GREEN' }).expect();
 
-      let name = actions.atom.get().manifest.fileName;
-      response = await actions.fetch(`http://localhost:24105/${name}`);
-      body = await response.text();
+      let name = atom.get().manifest.fileName;
+      response = yield fetch(`http://localhost:24105/${name}`);
+      body = yield response.text();
     });
 
-    it('responds successfully', () => {
+    it('responds successfully', function*() {
       expect(response.ok).toEqual(true);
     });
 
-    it('serves the application', () => {
+    it('serves the application', function*() {
       expect(body).toContain('Signing In');
     });
   });
 });
 
 describe('orchestrator with an internally managed application', () => {
-  beforeEach(async function() {
+  let atom: Slice<OrchestratorState>;
+
+  beforeEach(function*() {
     this.timeout(20000);
 
-    await actions.startOrchestrator({
+    atom = yield startOrchestrator({
       app: {
         url: `http://localhost:24100`,
         command: "yarn test:app:start 24100",
       }
     });
 
-    await actions.fork(
-      actions.atom.slice('appServer').once(status => ['started', 'exited'].includes(status.type))
-    );
+    yield atom.slice('appServer').filter(status => ['started', 'exited'].includes(status.type)).expect();
 
-    await actions.fork(
-      actions.atom.slice('appServer').once(status => status.type === 'available')
-    );
+    yield atom.slice('appServer').match({ type: 'available' }).expect();
   });
 
   describe('retrieving app', () => {
     let response: Response;
     let body: string;
-    beforeEach(async () => {
-      await actions.fork(actions.atom.slice('appServer').once(status => status.type === 'available'));
+    beforeEach(function*() {
+      yield atom.slice('appServer').match({ type: 'available' }).expect();
 
-      response = await actions.fetch('http://localhost:24100/');
-      body = await response.text();
+      response = yield fetch('http://localhost:24100/');
+      body = yield response.text();
     });
 
-    it('serves the application', () => {
+    it('serves the application', function*() {
       expect(response.ok).toEqual(true);
     });
 
-    it('proxies to the application', () => {
+    it('proxies to the application', function*() {
       expect(body).toContain('<title>Test App</title>');
     });
   });
@@ -127,22 +129,22 @@ describe('orchestrator with an internally managed application', () => {
   describe('retrieving app via proxy', () => {
     let response: Response;
     let body: string;
-    beforeEach(async () => {
-      await actions.fork(actions.atom.slice('appServer').once(status => status.type === 'available'));
+    beforeEach(function*() {
+      yield atom.slice('appServer').match({ type: 'available' }).expect();
 
-      response = await actions.fetch('http://localhost:24001/');
-      body = await response.text();
+      response = yield fetch('http://localhost:24001/');
+      body = yield response.text();
     });
 
-    it('responds successfully', () => {
+    it('responds successfully', function*() {
       expect(response.ok).toEqual(true);
     });
 
-    it('proxies to the application', () => {
+    it('proxies to the application', function*() {
       expect(body).toContain('<title>Test App</title>');
     });
 
-    it('injects the harness script tag', () => {
+    it('injects the harness script tag', function*() {
       expect(body).toMatch(new RegExp(`<script src="http://localhost:\\d+/__bigtest/harness.js"></script>`, 'mg'));
     });
   });
@@ -150,38 +152,35 @@ describe('orchestrator with an internally managed application', () => {
 
 describe('orchestrator with an externally managed application', () => {
   let port: number;
+  let atom: Slice<OrchestratorState>;
 
-  beforeEach(async function() {
+  beforeEach(function*() {
     this.timeout(20000);
 
-    port = await getPort();
+    port = yield getPort();
 
-    await actions.startOrchestrator({
+    atom = yield startOrchestrator({
       app: {
         url: `http://localhost:${port}`,
         command: undefined,
       }
     });
 
-    await actions.fork(
-      actions.atom.slice('appServer').once(status => ['started', 'exited'].includes(status.type))
-    );
+    yield atom.slice('appServer').filter(status => ['started', 'exited'].includes(status.type)).expect();
 
-    await actions.fork(daemon(`yarn test:app:start ${port}`));
+    yield daemon(`yarn test:app:start ${port}`);
 
-    await actions.fork(
-      actions.atom.slice('appServer').once(status => status.type === 'available')
-    );
+    yield atom.slice('appServer').match({ type: 'available' }).expect();
   });
 
   describe('retrieving app', () => {
     let response: Response;
 
-    beforeEach(async () => {
-      response = await actions.fetch(`http://localhost:${port}/`);
+    beforeEach(function*() {
+      response = yield fetch(`http://localhost:${port}/`);
     });
 
-    it('responds successfully', () => {
+    it('responds successfully', function*() {
       expect(response.ok).toEqual(true);
     });
   });
@@ -189,11 +188,11 @@ describe('orchestrator with an externally managed application', () => {
   describe('retrieving app via proxy', () => {
     let response: Response;
 
-    beforeEach(async () => {
-      response = await actions.fetch('http://localhost:24001/');
+    beforeEach(function*() {
+      response = yield fetch('http://localhost:24001/');
     });
 
-    it('responds successfully', () => {
+    it('responds successfully', function*() {
       expect(response.status).toEqual(200);
     });
   });

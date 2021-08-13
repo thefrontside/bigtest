@@ -1,34 +1,34 @@
-import { Local, WebDriver } from '@bigtest/webdriver';
-import { readyResource } from '@bigtest/effection';
-import { express, CloseEvent } from '@bigtest/effection-express';
+import { describe, it, beforeEach } from '@effection/mocha';
 
-import { ChainableSubscription, subscribe } from '@effection/subscription';
+import { createWebDriver, WebDriver } from '@bigtest/webdriver';
+import { express, Express } from '@bigtest/effection-express';
+
+import { Resource, Stream, createChannel, createQueue, Queue } from 'effection';
 import { static as staticMiddleware } from 'express';
 
-import { describe, it, beforeEach } from 'mocha';
 import expect from 'expect';
 import fetch from 'node-fetch';
 import fixtureManifest from './fixtures/manifest';
 
-import { AgentServerConfig, TestEvent, createAgentHandler, AgentConnection, AssertionResult, RunEnd } from '../src/index';
+import { AgentServerConfig, AgentEvent, createAgentHandler, AgentConnection, AssertionResult, RunEnd } from '../src/index';
 
-import { run } from './helpers';
 import { StepResult } from '@bigtest/suite';
 
-function* staticServer(port: number) {
-  let app = express();
-  return yield readyResource(app, function*(ready) {
-    app.raw.use(staticMiddleware("./tmp/test"));
-    yield app.listen(port);
-    ready();
-    yield;
-  });
+function staticServer(): Resource<Express> {
+  return {
+    *init() {
+      let app = yield express();
+      app.raw.use(staticMiddleware("./tmp/test"));
+      yield app.listen(8000);
+      return app;
+    }
+  }
 }
 
 let config = new AgentServerConfig({ port: 8000 });
 
 describe("@bigtest/agent", function() {
-  beforeEach(() => {
+  beforeEach(function*() {
     expect(fixtureManifest).toBeDefined();
   });
 
@@ -38,35 +38,39 @@ describe("@bigtest/agent", function() {
     this.timeout(process.env.CI ? 60000 : 10000);
   }
 
-
   describe('config', () => {
-    it('has an agent url where it will server the agent application', () => {
+    it('has an agent url where it will server the agent application', function*() {
       expect(config.harnessUrl()).toBeDefined();
     });
 
-    it('can genenrate the full connect URL', () => {
+    it('can genenrate the full connect URL', function*() {
       expect(config.agentUrl('ws://websocket-server.com')).toContain('websocket-server');
     });
   });
 
   describe('starting a new server', () => {
-    let connections: ChainableSubscription<AgentConnection, undefined>;
+    let connections: Queue<AgentConnection>;
 
-    beforeEach(async () => {
-      await run(staticServer(8000));
+    beforeEach(function*() {
+      connections = createQueue();
+      yield staticServer();
 
-      connections = await run(createAgentHandler(8001));
-
+      let handler = yield express();
+      handler.ws('*', createAgentHandler((connection) => function*() {
+        connections.send(connection);
+        yield;
+      }));
+      yield handler.listen(8001);
     });
 
     describe('fetching the harness', () => {
       let harnessBytes: string;
-      beforeEach(async () => {
-        let response = await fetch(config.harnessUrl());
-        harnessBytes = await response.text();
+      beforeEach(function*() {
+        let response = yield fetch(config.harnessUrl());
+        harnessBytes = yield response.text();
       });
 
-      it('has the javascripts', () => {
+      it('has the javascripts', function*() {
         expect(harnessBytes).toContain('harness');
       });
     });
@@ -74,42 +78,45 @@ describe("@bigtest/agent", function() {
     describe('connecting a browser to the agent URL', () => {
       let browser: WebDriver;
       let connection: AgentConnection;
-      let events: ChainableSubscription<TestEvent, CloseEvent>;
 
-      beforeEach(async function() {
-        browser = await run(Local({ type: 'local', headless: true }));
-        await run(browser.navigateTo(config.agentUrl(`ws://localhost:8001`)));
-        connection = await run(connections.expect());
-        events = await run(subscribe(connection.events));
+      beforeEach(function*() {
+        browser = yield createWebDriver({ type: 'local', headless: process.env.CI ? true : false });
+        yield browser.connect(config.agentUrl(`ws://localhost:8001`));
+        connection = yield connections.expect();
       });
 
-      it('sends a connection message with an agent id', () => {
+      it('sends a connection message with an agent id', function*() {
         expect(typeof connection.agentId).toEqual('string');
       });
 
       describe('sending a run message', () => {
         let testRunId = 'test-run-1';
+        let events: Stream<AgentEvent>;
 
-        beforeEach(async () => {
-          let manifestUrl = 'http://localhost:8000/manifest.js';
-          let appUrl = 'http://localhost:8000/';
+        beforeEach(function*(world) {
+          let channel = createChannel<AgentEvent>();
+          world.run(connection.forEach(channel.send));
+          events = channel.buffer(world);
+
+          let manifestUrl = 'http://localhost:8000/global-manifest.js';
+          let appUrl = 'http://localhost:8000/app';
           let stepTimeout = 500;
 
-          connection.send({ type: 'run', testRunId, manifestUrl, appUrl, tree: fixtureManifest, stepTimeout });
+          yield connection.send({ type: 'run', testRunId, manifestUrl, appUrl, tree: fixtureManifest, stepTimeout });
         });
 
-        it('receives success results', async () => {
-          expect(await run(events.match({
+        it('receives success results', function*() {
+          expect(yield events.match({
             type: 'assertion:result',
             path: ['tests', 'test with failing assertion', 'successful assertion']
-          }).first())).toBeDefined()
+          }).first()).toBeDefined()
         });
 
-        it('receives failure results', async () => {
-          let result = await run(events.match({
+        it('receives failure results', function*() {
+          let result: AssertionResult = yield events.match({
             type: 'assertion:result',
             path: ['tests', 'test with failing assertion', 'failing assertion']
-          }).first()) as AssertionResult;
+          }).first();
 
           expect(result.status).toEqual('failed');
           let error = result.error;
@@ -132,38 +139,38 @@ describe("@bigtest/agent", function() {
           }
         });
 
-        it('receives the run:end event', async () => {
-          expect(await run(events.match({ type: 'run:end', testRunId }).first())).toBeDefined();
+        it('receives the run:end event', function*() {
+          expect(yield events.match({ type: 'run:end', testRunId }).first()).toBeDefined();
         });
 
-        it('preserves test context all the way down the entire test run', async () => {
-          let checkContext = await run(events.match({
+        it('preserves test context all the way down the entire test run', function*() {
+          let checkContext = yield events.match({
             type: 'assertion:result',
             path: ['tests', 'tests that track context', 'contains entire context from all steps']
-          }).first());
+          }).first();
 
           expect(checkContext).toMatchObject({ status: 'ok' });
         });
 
-        it('preserves test context all the way down the entire test run without async', async () => {
-          let checkContext = await run(events.match({
+        it('preserves test context all the way down the entire test run without async', function*() {
+          let checkContext = yield events.match({
             type: 'assertion:result',
             path: ['tests', 'tests that track context without async', 'contains entire context from all steps']
-          }).first());
+          }).first();
 
           expect(checkContext).toMatchObject({ status: 'ok' });
         });
 
         describe('steps that timeout', () => {
           let longStep: StepResult;
-          beforeEach(async () => {
-            longStep = await run(events.match({
+          beforeEach(function*() {
+            longStep = yield events.match({
               type: 'step:result',
               path: ['tests', 'test step timeouts', '0:this takes literally forever']
-            }).first()) as unknown as StepResult;
+            }).first();
           });
 
-          it('cuts off steps that dont return within the given time period', () => {
+          it('cuts off steps that dont return within the given time period', function*() {
             expect(longStep).toMatchObject({
               status: 'failed',
               timeout: true
@@ -173,14 +180,14 @@ describe("@bigtest/agent", function() {
 
         describe('steps that mock fetch', () => {
           let step: StepResult;
-          beforeEach(async () => {
-            step = await run(events.match({
+          beforeEach(function*() {
+            step = yield events.match({
               type: 'step:result',
               path: ['tests', 'test fetch', '0:fetch is mocked']
-            }).first()) as unknown as StepResult;
+            }).first();
           });
 
-          it('succeeds', async () => {
+          it('succeeds', function*() {
             expect(step.status).toEqual('ok');
           });
         });
@@ -190,18 +197,18 @@ describe("@bigtest/agent", function() {
             let one: AssertionResult;
             let two: AssertionResult;
 
-            beforeEach(async () => {
-              one = await run(events.match({
+            beforeEach(function*() {
+              one = yield events.match({
                 type: 'assertion:result',
                 path: ['tests', 'local storage and session storage 1']
-              }).first()) as unknown as AssertionResult;
-              two = await run(events.match({
+              }).first();
+              two = yield events.match({
                 type: 'assertion:result',
                 path: ['tests', 'local storage and session storage 2']
-              }).first()) as unknown as AssertionResult;
+              }).first();
             });
 
-            it('is clean before every sequence of steps', () => {
+            it('is clean before every sequence of steps', function*() {
               expect(one.status).toEqual('ok');
               expect(two.status).toEqual('ok');
             });
@@ -210,18 +217,18 @@ describe("@bigtest/agent", function() {
             let one: AssertionResult;
             let two: AssertionResult;
 
-            beforeEach(async() => {
-              one = await run(events.match({
+            beforeEach(function*() {
+              one = yield events.match({
                 type: 'assertion:result',
                 path: ['tests', 'indexedDB 1']
-              }).first()) as unknown as AssertionResult;
-              two = await run(events.match({
+              }).first();
+              two = yield events.match({
                 type: 'assertion:result',
                 path: ['tests', 'indexedDB 2']
-              }).first()) as unknown as AssertionResult;
+              }).first();
             });
 
-            it('is clean before every sequence of steps', () => {
+            it('is clean before every sequence of steps', function*() {
               expect(one.status).toEqual('ok');
               expect(two.status).toEqual('ok');
             });
@@ -230,13 +237,13 @@ describe("@bigtest/agent", function() {
 
         describe('coverage', () => {
           let end: RunEnd;
-          beforeEach(async () => {
-            end = await run(events.match({
+          beforeEach(function*() {
+            end = yield events.match({
               type: 'run:end'
-            }).expect()) as RunEnd;
+            }).expect();
           });
 
-          it('is reported with the run:end event', () => {
+          it('is reported with the run:end event', function*() {
             expect(end).toMatchObject({
               type: 'run:end',
               // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -248,16 +255,9 @@ describe("@bigtest/agent", function() {
       });
 
       describe('closing browser connection', () => {
-        let closed: boolean;
-        beforeEach(async () => {
-          closed = false;
-          await run(browser.navigateTo('about:blank'));
-          await run(events.forEach(function*() { yield Promise.resolve()}));
-          closed = true;
-        });
-
-        it('sends a disconnect message', () => {
-          expect(closed).toEqual(true);
+        it('closes connection', function*() {
+          yield browser.connect('about:blank');
+          yield connection.join();
         });
       });
     });

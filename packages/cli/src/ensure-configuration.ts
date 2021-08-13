@@ -1,11 +1,11 @@
 import { ProjectOptions } from '@bigtest/project';
-import { MainError } from '@effection/node';
+import { MainError } from 'effection';
 import fs from 'fs';
 
-export const ensureConfiguration = (config: ProjectOptions): void => {
+export function ensureConfiguration(config: ProjectOptions): void {
   if (typeof config.tsconfig !== 'undefined' && fs.existsSync(config.tsconfig) === false) {
-    let message = `The \`tsconfig\` option of (\`${config.tsconfig}\`) is invalid.`;
-    
+    let message = `ERROR: The tsconfig file '${config.tsconfig}' does not exist.`;
+
     throw new MainError({ exitCode: 1, message });
   }
 }

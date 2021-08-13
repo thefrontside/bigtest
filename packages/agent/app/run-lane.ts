@@ -1,4 +1,4 @@
-import { Operation, fork, spawn } from 'effection';
+import { Operation, spawn, all, withTimeout } from 'effection';
 import { on } from '@effection/events';
 import { bigtestGlobals } from '@bigtest/globals';
 import { TestImplementation, Context as TestContext } from '@bigtest/suite';
@@ -6,7 +6,6 @@ import { TestImplementation, Context as TestContext } from '@bigtest/suite';
 import { findIFrame } from './find-iframe';
 import { LaneConfig } from './lane-config';
 import { loadManifest } from './manifest';
-import { timebox } from './timebox';
 import { serializeError } from './serialize-error';
 import { wrapConsole } from './wrap-console';
 import { setLogConfig, getLogConfig } from './log-config';
@@ -14,36 +13,7 @@ import { clearPersistentStorage } from './clear-persistent-storage';
 import { addCoverageMap } from './coverage';
 
 export function* runLane(config: LaneConfig): Operation<TestImplementation> {
-  setLogConfig({ events: [] });
-
-  let { events, command, path } = config;
-  let { testRunId, manifestUrl, appUrl, stepTimeout } = command;
-
-  let context: TestContext = {};
-
-  let originalConsole = wrapConsole((message) => getLogConfig()?.events.push({ type: 'message', occurredAt: new Date().toString(), message }))
-
-  try {
-    yield spawn(
-      on(window, 'error').map(([e]) => e as ErrorEvent).forEach(function*(event) {
-        getLogConfig()?.events.push({ type: 'error', occurredAt: new Date().toString(), error: yield serializeError(event.error) });
-      })
-    );
-
-    bigtestGlobals.runnerState = 'pending';
-    bigtestGlobals.appUrl = appUrl;
-    bigtestGlobals.testFrame = findIFrame('app-frame');
-
-    yield clearPersistentStorage();
-
-    let test: TestImplementation = yield loadManifest(manifestUrl);
-    yield runLaneSegment(test, path.slice(1), [], stepTimeout)
-  } finally {
-    addCoverageMap(bigtestGlobals.testFrame);
-    events.close();
-  }
-
-  function *runLaneSegment(
+  function* runLaneSegment(
     test: TestImplementation,
     remainingPath: string[],
     prefix: string[],
@@ -65,7 +35,7 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
         events.send({ testRunId, type: 'step:running', path: stepPath });
 
         bigtestGlobals.runnerState = 'step';
-        let result: TestContext | void = yield timebox(Promise.resolve(step.action(context)), stepTimeout)
+        let result: TestContext | void = yield withTimeout(stepTimeout, Promise.resolve(step.action(context)));
         bigtestGlobals.runnerState = 'pending';
 
         if (result != null) {
@@ -103,38 +73,34 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
       }
     }
 
-    yield function*() {
-      for(let assertion of test.assertions) {
-        yield fork(function*() {
-          let assertionPath = currentPath.concat(assertion.description);
-          try {
-            originalConsole.debug('[agent] running assertion', assertion);
-            events.send({ testRunId, type: 'assertion:running', path: assertionPath });
+    yield all(test.assertions.map(function*(assertion) {
+      let assertionPath = currentPath.concat(assertion.description);
+      try {
+        originalConsole.debug('[agent] running assertion', assertion);
+        events.send({ testRunId, type: 'assertion:running', path: assertionPath });
 
-            bigtestGlobals.runnerState = 'assertion';
-            yield timebox(Promise.resolve(assertion.check(context)), stepTimeout)
-            bigtestGlobals.runnerState = 'pending';
+        bigtestGlobals.runnerState = 'assertion';
+        yield withTimeout(stepTimeout, Promise.resolve(assertion.check(context)));
+        bigtestGlobals.runnerState = 'pending';
 
-            events.send({
-              testRunId,
-              type: 'assertion:result',
-              status: 'ok',
-              path: assertionPath
-            });
-          } catch(error) {
-            originalConsole.error('[agent] assertion failed', assertion, error);
-            events.send({
-              testRunId,
-              type: 'assertion:result',
-              status: 'failed',
-              error: yield serializeError(error),
-              path: assertionPath,
-              logEvents: getLogConfig()?.events,
-            });
-          }
+        events.send({
+          testRunId,
+          type: 'assertion:result',
+          status: 'ok',
+          path: assertionPath
+        });
+      } catch(error) {
+        originalConsole.error('[agent] assertion failed', assertion, error);
+        events.send({
+          testRunId,
+          type: 'assertion:result',
+          status: 'failed',
+          error: yield serializeError(error),
+          path: assertionPath,
+          logEvents: getLogConfig()?.events,
         });
       }
-    }
+    }));
 
     if (remainingPath.length > 0) {
       for (let child of test.children) {
@@ -143,5 +109,36 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
         }
       }
     }
+  }
+
+  setLogConfig({ events: [] });
+
+  let { events, command, path } = config;
+  let { testRunId, manifestUrl, appUrl, stepTimeout } = command;
+
+  let context: TestContext = {};
+
+  let originalConsole = wrapConsole((message) => getLogConfig()?.events.push({ type: 'message', occurredAt: new Date().toString(), message }))
+
+  try {
+    yield spawn(
+      on<ErrorEvent>(window, 'error').forEach((event) => function*() {
+        getLogConfig()?.events.push({ type: 'error', occurredAt: new Date().toString(), error: yield serializeError(event.error) });
+      })
+    );
+
+    bigtestGlobals.runnerState = 'pending';
+    bigtestGlobals.appUrl = appUrl;
+    bigtestGlobals.testFrame = findIFrame('app-frame');
+
+    yield clearPersistentStorage();
+
+    let test: TestImplementation = yield loadManifest(manifestUrl);
+    yield runLaneSegment(test, path.slice(1), [], stepTimeout)
+
+    return test;
+  } finally {
+    addCoverageMap(bigtestGlobals.testFrame);
+    events.close();
   }
 }

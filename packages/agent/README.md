@@ -16,7 +16,7 @@ To start an agent server in process, you can use the
 the bigtest server will be accepting connections from agents.
 
 ``` typescript
-import { main } from '@effection/node';
+import { main } from 'effection';
 import { AgentServer } from '@bigtest/agent';
 
 main(function* run() {

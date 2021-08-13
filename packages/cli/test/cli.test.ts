@@ -1,36 +1,24 @@
-import { describe, it, beforeEach } from 'mocha';
-import { exec, ExitStatus } from '@effection/node';
+import { describe, it, beforeEach, afterEach, captureError } from '@effection/mocha';
+import { Operation, Stream } from 'effection';
+import { daemon, exec, Exec, Process, ProcessResult } from '@effection/process';
 import { defaultTSConfig } from '@bigtest/project';
+import rmrf from 'rimraf';
 
 import expect from 'expect';
 import process from 'process';
 import { promises as fs } from 'fs';
 
-import { World } from './helpers/world';
-import { Stream } from './helpers/stream';
-
 const DRIVER = process.env.DRIVER || 'default';
 
-export interface TestProcess {
-  stdin: { write(data: string): void };
-  stdout: Stream;
-  stderr: Stream;
-  join(): Promise<ExitStatus>;
-  expect(): Promise<ExitStatus>;
+function command(...args: string[]): Exec {
+  return exec("yarn ts-node ./src/index.ts", {
+    arguments: args,
+    buffered: true,
+  });
 }
 
-async function run(...args: string[]): Promise<TestProcess> {
-  let cli = await World.spawn(exec("yarn ts-node ./src/index.ts", {
-    arguments: args
-  }));
-
-  let stdin = { write: (data: string) => cli.stdin.send(data) };
-  let stdout = await World.spawn(Stream.of(cli.stdout, !!process.env.LOG_CLI));
-  let stderr = await World.spawn(Stream.of(cli.stderr, !!process.env.LOG_CLI));
-  let join = () => World.spawn(cli.join()) as unknown as Promise<ExitStatus>;
-  let expect = () => World.spawn(cli.expect()) as unknown as Promise<ExitStatus>;
-
-  return { stdin, stdout, stderr, join, expect };
+const waitFor = (stream: Stream<string>, substring: string): Operation<void> => function*() {
+  yield stream.filter((s) => s.includes(substring)).expect();
 }
 
 describe('@bigtest/cli', function() {
@@ -38,367 +26,349 @@ describe('@bigtest/cli', function() {
 
   describe('start', () => {
     describe('starting the server', () => {
-      let child: { stdout: Stream; stderr: Stream };
+      let child: Process;
 
-      beforeEach(async () => {
-        child = await run('server');
+      beforeEach(function*() {
+        child = yield command('server');
       });
 
-      it('outputs that the server was started successfully', async () => {
-        await child.stdout.detect("[orchestrator] running!");
+      it('outputs that the server was started successfully', function*() {
+        yield waitFor(child.stdout, "[orchestrator] running!");
       });
     });
 
     describe('starting the server without a command', () => {
-      let child: TestProcess;
+      let child: Process;
 
-      beforeEach(async () => {
-        child = await run('server', '--app-url', 'http://localhost:36001', '--app-command', '');
+      beforeEach(function*() {
+        daemon('yarn test:app:start 36001');
+        child = yield command('server', '--app.url', 'http://localhost:36001', '--app.command', '');
       });
 
-      it('outputs that the server was started successfully', async () => {
-        await child.stdout.detect("[orchestrator] running!");
+      it('outputs that the server was started successfully', function*() {
+        yield waitFor(child.stdout, "[orchestrator] running!");
       });
     });
 
     describe('specifying the command via the cli', () => {
-      let child: TestProcess;
+      let child: Process;
 
-      beforeEach(async () => {
-        child = await run('server', '--app-url', 'http://localhost:36001', '--app-command', '"yarn test:app:start 36001"');
+      beforeEach(function*() {
+        child = yield command('server', '--app.url', 'http://localhost:36001', '--app.command', '"yarn test:app:start 36001"');
       });
 
-      it('outputs that the server was started successfully', async () => {
-        await child.stdout.detect("[orchestrator] running!");
+      it('outputs that the server was started successfully', function*() {
+        yield waitFor(child.stdout, "[orchestrator] running!");
       });
     });
   });
 
   describe('test', () => {
     describe('running without server', () => {
-      let runChild: TestProcess;
+      let result: ProcessResult;
 
-      beforeEach(async () => {
-        runChild = await run('test');
-        await runChild.join();
+      beforeEach(function*() {
+        result = yield command('test').join();
       });
 
-      it("provides a nice error with advice to start `bigtest server`", () => {
-        expect(runChild.stderr.output).toContain('bigtest server');
+      it("provides a nice error with advice to start `bigtest server`", function*() {
+        expect(result.stderr).toContain('bigtest server');
       });
     });
 
     describe('running the suite successfully', () => {
-      let startChild: TestProcess;
-      let runChild: TestProcess;
-      let status: ExitStatus;
+      let startChild: Process;
+      let result: ProcessResult;
 
-      beforeEach(async () => {
-        startChild = await run('server', '--launch', DRIVER);
+      beforeEach(function*() {
+        startChild = yield command('server', '--launch', DRIVER);
+        yield waitFor(startChild.stdout, "[orchestrator] running!");
 
-        await startChild.stdout.detect("[orchestrator] running!");
-
-        runChild = await run('test', './test/fixtures/passing.test.ts');
-
-        status = await runChild.join();
+        result = yield command('test', './test/fixtures/passing.test.ts').join();
       });
 
-      it('exits successfully', async () => {
-        expect(status.code).toEqual(0);
-        expect(runChild.stdout.output).toContain("SUCCESS")
+      it('exits successfully', function*() {
+        expect(result.stdout).toContain("SUCCESS")
+        expect(result.code).toEqual(0);
       });
     });
 
     describe('running the suite with failures', () => {
-      let startChild: TestProcess;
-      let runChild: TestProcess;
-      let status: ExitStatus;
+      let startChild: Process;
+      let result: ProcessResult;
 
-      beforeEach(async () => {
-        startChild = await World.spawn(run('server', '--launch', DRIVER));
+      beforeEach(function*() {
+        startChild = yield command('server', '--launch', DRIVER);
+        yield waitFor(startChild.stdout, "[orchestrator] running!");
 
-        await startChild.stdout.detect("[orchestrator] running!");
-
-        runChild = await run('test', './test/fixtures/failing.test.ts');
-
-        status = await runChild.join();
+        result = yield command('test', './test/fixtures/failing.test.ts').join();
       });
 
-      it('exits with error code', async () => {
-        expect(status.code).toEqual(1);
-        expect(runChild.stdout.output).toContain("FAILURE")
+      it('exits with error code', function*() {
+        expect(result.stdout).toContain("FAILURE")
+        expect(result.code).toEqual(1);
       });
     });
 
     describe('running the suite with build errors', () => {
-      let startChild: TestProcess;
-      let runChild: TestProcess;
-      let status: ExitStatus;
+      let startChild: Process;
+      let result: ProcessResult;
 
-      beforeEach(async () => {
-        startChild = await run('server', '--launch', DRIVER, '--test-files', './test/fixtures/syntax.broken.ts');
+      beforeEach(function*() {
+        startChild = yield command('server', '--launch', DRIVER, '--test-files', './test/fixtures/syntax.broken.ts');
 
-        await startChild.stdout.detect("[orchestrator] running!");
+        yield waitFor(startChild.stdout, "[orchestrator] running!");
 
-        runChild = await run('test');
-
-        status = await runChild.join();
+        result = yield command('test').join();
       });
 
 
-      it('exits with error code', async () => {
-        expect(status.code).toEqual(1);
-        expect(runChild.stdout.output).toContain('Cannot run tests due to build errors in the test suite')
-        expect(runChild.stdout.output).toContain('test/fixtures/syntax.broken.ts')
-        expect(runChild.stdout.output).toContain('⨯ FAILURE')
+      it('exits with error code', function*() {
+        expect(result.stdout).toContain('Cannot run tests due to build errors in the test suite')
+        expect(result.stdout).toContain('test/fixtures/syntax.broken.ts')
+        expect(result.stdout).toContain('⨯ FAILURE')
+        expect(result.code).toEqual(1);
       });
     });
   });
 
   describe('ci', () => {
     describe('running the suite successfully', () => {
-      let child: TestProcess;
-      let status: ExitStatus;
+      let result: ProcessResult;
 
-      beforeEach(async () => {
-        child = await run('ci', './test/fixtures/passing.test.ts', '--launch', DRIVER);
-        await child.stdout.detect("[orchestrator] running!");
-        status = await child.join();
+      beforeEach(function*() {
+        result = yield command('ci', './test/fixtures/passing.test.ts', '--launch', DRIVER).join();
       });
 
-      it('exits successfully', async () => {
-        expect(status.code).toEqual(0);
-        expect(child.stdout.output).toContain("✓ SUCCESS")
+      it('exits successfully', function*() {
+        expect(result.stdout).toContain("✓ SUCCESS")
+        expect(result.code).toEqual(0);
       });
     });
 
     describe('running the suite with failures', () => {
-      let child: TestProcess;
-      let status: ExitStatus;
+      let result: ProcessResult;
 
-      beforeEach(async () => {
-        child = await run('ci', './test/fixtures/failing.test.ts', '--launch', DRIVER);
-        await child.stdout.detect("[orchestrator] running!");
-        status = await child.join();
+      beforeEach(function*() {
+        result = yield command('ci', './test/fixtures/failing.test.ts', '--launch', DRIVER).join();
       });
 
-      it('exits with error code', async () => {
-        expect(status.code).toEqual(1);
-        expect(child.stdout.output).toContain("test/fixtures/failing.test.ts:15")
-        expect(child.stdout.output).toContain("⨯ FAILURE")
+      it('exits with error code', function*() {
+        expect(result.stdout).toContain("test/fixtures/failing.test.ts:15")
+        expect(result.stdout).toContain("⨯ FAILURE")
+        expect(result.code).toEqual(1);
       });
 
-      it('prints the error tree', async () => {
-        expect(child.stdout.output).toContain('☲ Failing Test');
-        expect(child.stdout.output).toContain('↪ first step');
-        expect(child.stdout.output).toContain('↪ second step');
-        expect(child.stdout.output).toContain('↪ third step');
-        expect(child.stdout.output).toContain('✓ check the thing');
-        expect(child.stdout.output).toContain('⨯ child second step');
+      it('prints the error tree', function*() {
+        expect(result.stdout).toContain('☲ Failing Test');
+        expect(result.stdout).toContain('↪ first step');
+        expect(result.stdout).toContain('↪ second step');
+        expect(result.stdout).toContain('↪ third step');
+        expect(result.stdout).toContain('✓ check the thing');
+        expect(result.stdout).toContain('⨯ child second step');
+      });
+    });
+
+    describe('running with an invalid bigtest.json file',  () => {
+      let result: ProcessResult;
+
+      beforeEach(function*() {
+        result = yield command('ci', '--launch', DRIVER, '--config-file', './doesnotexist.json',  './test/fixtures').join();
+      });
+
+      it('exits with error code', function*() {
+        expect(result.stderr).toContain('doesnotexist.json');
+        expect(result.code).toEqual(1);
       });
     });
 
     describe('running with an invalid tsconfig.json file',  () => {
-      let child: TestProcess;
-      let status: ExitStatus
+      let result: ProcessResult;
 
-      beforeEach(async () => {
-        child = await run('ci', '--launch', DRIVER, '--config-file', './test/config/invalid-tsconfig-path.json',  './test/fixtures');
-        status = await child.join();
+      beforeEach(function*() {
+        result = yield command('ci', '--launch', DRIVER, '--tsconfig', './doesnotexist.json',  './test/fixtures').join();
       });
 
-      it('exits with error code', async () => {
-        expect(status.code).toEqual(1);
-        expect(child.stderr.output).toContain('./does-not-exist.json');
+      it('exits with error code', function*() {
+        expect(result.stderr).toContain('doesnotexist.json');
+        expect(result.code).toEqual(1);
       });
     });
 
     describe('running the suite with build errors', () => {
-      let child: TestProcess;
-      let status: ExitStatus;
+      let result: ProcessResult;
 
-      beforeEach(async () => {
-        child = await run('ci', '--launch', DRIVER, '--test-files', './test/fixtures/syntax.broken.ts');
-        await child.stdout.detect("[orchestrator] running!");
-        status = await child.join();
+      beforeEach(function*() {
+        result = yield command('ci', '--launch', DRIVER, '--test-files', './test/fixtures/syntax.broken.ts').join();
       });
 
-      it('exits with error code', async () => {
-        expect(status.code).toEqual(1);
-        expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite')
-        expect(child.stdout?.output).toContain('test/fixtures/syntax.broken.ts')
-        expect(child.stdout?.output).toContain('⨯ FAILURE')
+      it('exits with error code', function*() {
+        expect(result.stdout).toContain('Cannot run tests due to build errors in the test suite')
+        expect(result.stdout).toContain('test/fixtures/syntax.broken.ts')
+        expect(result.stdout).toContain('⨯ FAILURE')
+        expect(result.code).toEqual(1);
       });
     });
 
     describe('running the suite with type errors', () => {
-      let child: TestProcess;
-      let status: ExitStatus;
+      let result: ProcessResult;
 
-      beforeEach(async () => {
-        child = await run('ci', '--launch', DRIVER, '--test-files', './test/fixtures/typescript.broken.ts');
-        await World.spawn(child.stdout?.waitFor('[orchestrator] running!'));
-        status = await child.join();
+      beforeEach(function*() {
+        result = yield command('ci', '--launch', DRIVER, '--test-files', './test/fixtures/typescript.broken.ts').join();
       });
 
-      it('exits with error code', async () => {
-        expect(status.code).toEqual(1);
-        expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite')
-        expect(child.stdout?.output).toContain('test/fixtures/typescript.broken.ts')
-        expect(child.stdout?.output).toContain('Type \'string\' is not assignable to type \'number\'')
-        expect(child.stdout?.output).toContain('⨯ FAILURE')
+      it('exits with error code', function*() {
+        expect(result.stdout).toContain('Cannot run tests due to build errors in the test suite')
+        expect(result.stdout).toContain('test/fixtures/typescript.broken.ts')
+        expect(result.stdout).toContain('Type \'string\' is not assignable to type \'number\'')
+        expect(result.stdout).toContain('⨯ FAILURE')
+        expect(result.code).toEqual(1);
       });
     });
 
     describe('running the suite with duplicate tests', () => {
-      let child: TestProcess;
-      let status: ExitStatus;
+      let result: ProcessResult;
 
-      beforeEach(async () => {
-        child = await run('ci', '--launch', DRIVER, '--test-files', './test/fixtures/duplicate.broken.ts');
-        status = await child.join();
+      beforeEach(function*() {
+        result = yield command('ci', '--launch', DRIVER, '--test-files', './test/fixtures/duplicate.broken.ts').join();
       });
 
-      it('exits with error code', async () => {
-        expect(status.code).toEqual(1);
-        expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite')
-        expect(child.stdout?.output).toContain('Invalid Test: contains duplicate test: "duplicate child"')
-        expect(child.stdout?.output).toContain('test/fixtures/duplicate.broken.ts')
-        expect(child.stdout?.output).toContain('⨯ FAILURE')
+      it('exits with error code', function*() {
+        expect(result.stdout).toContain('Cannot run tests due to build errors in the test suite')
+        expect(result.stdout).toContain('Invalid Test: contains duplicate test: "duplicate child"')
+        expect(result.stdout).toContain('test/fixtures/duplicate.broken.ts')
+        expect(result.stdout).toContain('⨯ FAILURE')
+        expect(result.code).toEqual(1);
       });
     });
 
     describe('running the suite with nesting depth exceeded', () => {
-      let child: TestProcess;
-      let status: ExitStatus;
+      let result: ProcessResult;
 
-      beforeEach(async () => {
-        child = await run('ci', '--launch', DRIVER, '--test-files', './test/fixtures/too-deep.broken.ts');
-        status = await child.join();
+      beforeEach(function*() {
+        result = yield command('ci', '--launch', DRIVER, '--test-files', './test/fixtures/too-deep.broken.ts').join();
       });
 
-      it('exits with error code', async () => {
-        expect(status.code).toEqual(1);
-        expect(child.stdout?.output).toContain('Cannot run tests due to build errors in the test suite')
-        expect(child.stdout?.output).toContain('Invalid Test: is too deeply nested, maximum allowed depth of nesting is 10')
-        expect(child.stdout?.output).toContain('test/fixtures/too-deep.broken.ts')
-        expect(child.stdout?.output).toContain('⨯ FAILURE')
+      it('exits with error code', function*() {
+        expect(result.stdout).toContain('Cannot run tests due to build errors in the test suite')
+        expect(result.stdout).toContain('Invalid Test: is too deeply nested, maximum allowed depth of nesting is 10')
+        expect(result.stdout).toContain('test/fixtures/too-deep.broken.ts')
+        expect(result.stdout).toContain('⨯ FAILURE')
+        expect(result.code).toEqual(1);
       });
     });
 
     describe('running the suite with app errors', () => {
-      let child: TestProcess;
-      let status: ExitStatus;
+      let result: ProcessResult;
 
-      beforeEach(async () => {
-        child = await run('ci', '--launch', DRIVER, '--app-command', 'yarn node doesnotexist.js');
-        status = await child.join();
+      beforeEach(function*() {
+        result = yield command('ci', '--launch', DRIVER, '--app-command', 'yarn node doesnotexist.js').join();
       });
-
-      it('exits with error code', async () => {
-        expect(status.code).toEqual(1);
-        expect(child.stdout?.output).toContain('Application exited unexpectedly with exit code 1 with the following output:')
-        expect(child.stdout?.output).toContain('Cannot find module')
-        expect(child.stdout?.output).toContain('⨯ FAILURE')
+      it('exits with error code', function*() {
+        expect(result.stdout).toContain('Application exited unexpectedly with exit code 1 with the following output:')
+        expect(result.stdout).toContain('Cannot find module')
+        expect(result.stdout).toContain('⨯ FAILURE')
+        expect(result.code).toEqual(1);
       });
     });
   });
 
   describe('coverage', () => {
-    beforeEach( async() => {
-      await fs.rmdir('./tmp/coverage', { recursive: true });
+    beforeEach(function*() {
+      yield () => ({ perform: (resolve) => rmrf('./tmp/coverage', resolve) });
     });
 
     describe('when coverage output is requested', () => {
-      let child: TestProcess;
-      beforeEach(async () => {
-        child = await run('ci', '--launch', DRIVER, '--coverage', './test/fixtures/coverage.test.ts');
-        await child.join();
+      let result: ProcessResult;
+
+      beforeEach(function*() {
+        result = yield command('ci', '--launch', DRIVER, '--coverage', './test/fixtures/coverage.test.ts').join();
       });
 
-      it('outputs the coverage reports', async () => {
-        await expect((fs.access('tmp/coverage/lcov/lcov.info'))).resolves.toBeUndefined();
-        expect(child.stdout.output).toContain('reported to -> ./tmp/coverage');
+      it('outputs the coverage reports', function*() {
+        let access = yield fs.access('tmp/coverage/lcov/lcov.info');
+        expect(access).toBeUndefined();
+        expect(result.stdout).toContain('reported to -> ./tmp/coverage');
       });
     });
 
     describe('when requested, but there is no coverage data in the test run', () => {
-      let child: TestProcess;
-      beforeEach(async () => {
-        child = await run('ci', '--launch', DRIVER, '--coverage', './test/fixtures/passing.test.ts');
-        await child.join();
+      let result: ProcessResult;
+
+      beforeEach(function*() {
+        result = yield command('ci', '--launch', DRIVER, '--coverage', './test/fixtures/passing.test.ts').join();
       });
 
-      it('warns the user that there is no coverage data', async () => {
-        expect(child.stderr.output).toContain('no coverage metrics were present');
+      it('warns the user that there is no coverage data', function*() {
+        expect(result.stderr).toContain('no coverage metrics were present');
       });
     });
 
     describe('when coverage data is present, but coverage output is not requested', () => {
-      let child: TestProcess;
-      beforeEach(async () => {
-        child = await run('ci', '--launch', DRIVER, './test/fixtures/coverage.test.ts');
-        await child.join();
+      let result: ProcessResult;
+
+      beforeEach(function*() {
+        result = yield command('ci', '--launch', DRIVER, './test/fixtures/coverage.test.ts').join();
       });
 
-      it('does nothing', async () => {
-        expect(child.stdout?.output).not.toContain('@bigtest/coverage');
-        await expect((fs.access('tmp/coverage/lcov/lcov.info'))).rejects.toMatchObject({
-          message: expect.stringContaining('no such file or directory')
-        });
+      it('does nothing', function*() {
+        expect(result.stdout).not.toContain('@bigtest/coverage');
+        let error = yield captureError(fs.access('tmp/coverage/lcov/lcov.info'));
+
+        expect(error).toHaveProperty('message', expect.stringContaining('no such file or directory'));
       });
     });
   });
 
   describe('init', () => {
     describe('running the init command', () => {
-      let child: TestProcess;
-      let status: ExitStatus;
+      let child: Process;
+      let status: ProcessResult;
 
-      beforeEach(async () => {
-        child = await run('init', '--config-file', './tmp/bigtest-config-test.json');
+      beforeEach(function*() {
+        child = yield command('init', '--config-file', './tmp/bigtest-config-test.json');
 
-        await child.stdout.detect('Which port would you like to run BigTest on?');
-        child.stdin.write('not-a-port\n');
+        yield waitFor(child.stdout, 'Which port would you like to run BigTest on?');
+        child.stdin.send('not-a-port\n');
 
-        await child.stdout.detect('Not a number!');
-        child.stdin.write('1234\n');
+        yield waitFor(child.stdout, 'Not a number!');
+        child.stdin.send('1234\n');
 
-        await child.stdout.detect('Where are your test files located?');
-        child.stdin.write('test.ts\n');
+        yield waitFor(child.stdout, 'Where are your test files located?');
+        child.stdin.send('test.ts\n');
 
-        await child.stdout.detect('Do you want BigTest to start your application for you?');
-        child.stdin.write('\n');
+        yield waitFor(child.stdout, 'Do you want BigTest to start your application for you?');
+        child.stdin.send('\n');
 
-        await child.stdout.detect('What command do you run to start your application?');
-        child.stdin.write('yarn run-my-app\n');
+        yield waitFor(child.stdout, 'What command do you run to start your application?');
+        child.stdin.send('yarn run-my-app\n');
 
-        await child.stdout.detect('Which port would you like to run your application on?');
-        child.stdin.write('9000\n');
+        yield waitFor(child.stdout, 'Which port would you like to run your application on?');
+        child.stdin.send('9000\n');
 
-        await child.stdout.detect('Which URL do you use to access your application?');
-        child.stdin.write('\n');
+        yield waitFor(child.stdout, 'Which URL do you use to access your application?');
+        child.stdin.send('\n');
 
-        await World.spawn(child.stdout?.waitFor('Do you want to write your tests in TypeScript?'));
-        child.stdin?.write('yes\n');
+        yield waitFor(child.stdout, 'Do you want to write your tests in TypeScript?');
+        child.stdin.send('yes\n');
 
-        await World.spawn(child.stdout?.waitFor('Do you want to set up a separate TypeScript `tsconfig` file for BigTest?'));
-        child.stdin?.write('yes\n');
+        yield waitFor(child.stdout, 'Do you want to set up a separate TypeScript `tsconfig` file for BigTest?');
+        child.stdin.send('yes\n');
 
-        await World.spawn(child.stdout?.waitFor('Where should the custom `tsconfig` be located?'));
-        child.stdin?.write('\n');
+        yield waitFor(child.stdout, 'Where should the custom `tsconfig` be located?');
+        child.stdin.send('\n');
 
-        status = await child.join();
+        status = yield child.join();
       });
 
-      afterEach(async () => {
-        await fs.rename('./bigtest.tsconfig.json', './tmp/bigtest.tsconfig.json');
-        await fs.rmdir('./tmp/', { recursive: true });
+      afterEach(function*() {
+        yield fs.rename('./bigtest.tsconfig.json', './tmp/bigtest.tsconfig.json');
+        yield () => ({ perform: (resolve) => rmrf('./tmp/', resolve) });
       });
 
-      it('exits successfully and writes a bigtest and typescript config files', async () => {
+      it('exits successfully and writes a bigtest and typescript config files', function*() {
         expect(status.code).toEqual(0);
-        let buffer = await fs.readFile('./tmp/bigtest-config-test.json');
+        let buffer = yield fs.readFile('./tmp/bigtest-config-test.json');
         let config = JSON.parse(buffer.toString());
         expect(config.port).toEqual(1234);
         expect(config.testFiles).toEqual(['test.ts']);
@@ -407,7 +377,7 @@ describe('@bigtest/cli', function() {
         expect(config.app.url).toEqual('http://localhost:9000');
         expect(config.tsconfig).toEqual('./bigtest.tsconfig.json');
 
-        let generatedTSConfig = await fs.readFile('./bigtest.tsconfig.json');
+        let generatedTSConfig = yield fs.readFile('./bigtest.tsconfig.json');
         expect(JSON.parse(generatedTSConfig.toString())).toEqual(defaultTSConfig());
       });
     });

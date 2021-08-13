@@ -1,23 +1,23 @@
-import { describe, it } from 'mocha';
+import { describe, it } from '@effection/mocha';
+import { createQueue, sleep, spawn } from 'effection';
 import expect from 'expect';
-import { actions } from './helpers';
 import { createLogger } from '../src/logger';
 import { createOrchestratorAtom } from '../src';
-import { OrchestratorState } from '../src/orchestrator/state';
-import { Slice } from '@bigtest/atom';
 
 describe('logger', () => {
-  it('should log bundler events', async () => {
-    let atom: Slice<OrchestratorState>;
+  it('should log bundler events', function*() {
+    let queue = createQueue<unknown>();
+    let logger: (<A extends unknown[]>(...a: A) => void) = (...args) => queue.send(args);
 
-    let logger:  (<A extends unknown[]>(...a: A) => void) = (...args) => {
-      expect(args).toEqual(["[manifest builder] build error:", "blah"]);
-    };
+    let atom = createOrchestratorAtom();
 
-    atom = createOrchestratorAtom();
+    yield spawn(createLogger({ atom, out: logger }));
 
-    actions.fork(createLogger({ atom, out: logger }));
+    yield sleep(5);
 
-    atom.slice('bundler').update(() => ({ status: 'ERRORED', error: 'blah' } as any));
+    atom.slice('bundler').update(() => ({ type: 'ERRORED', error: { message: 'blah' } } as any));
+
+    expect(yield queue.expect()).toEqual(["[manifest builder] build error:"]);
+    expect(yield queue.expect()).toEqual(["blah"]);
   });
 })

@@ -8,7 +8,6 @@
     "sourceMap": true,
     "paths": {
       "@bigtest/agent": ["packages/agent/src"],
-      "@bigtest/atom": ["packages/atom/src"],
       "@bigtest/bigtest": ["packages/bigtest/src"],
       "@bigtest/bundler": ["packages/bundler/src"],
       "@bigtest/cli": ["packages/cli/src"],

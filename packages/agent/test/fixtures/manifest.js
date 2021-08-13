@@ -1,7 +1,7 @@
 const { test } = require('@bigtest/suite');
 const { bigtestGlobals } = require('@bigtest/globals');
 const { strict: assert } = require('assert');
-const { createInteractor, App } = require('@interactors/html');
+const { createInteractor, Page } = require('@interactors/html');
 
 const localforage = require('localforage');
 
@@ -63,10 +63,8 @@ function coverageTest(filepath) {
     })
 }
 
-
-
 module.exports = test("tests")
-  .step(App.visit('/app.html'))
+  .step(Page.visit('/app.html'))
   .child(
     "test with failing assertion", test => test
       .step("successful step", async () => {

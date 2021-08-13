@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-const { daemon, main } = require('@effection/node');
+const { main, spawn } = require('effection');
+const { daemon } = require('@effection/process');
 const fs = require('fs');
 const fsp = fs.promises;
 const { install } = require('./install');
@@ -20,13 +21,13 @@ function* dev(task) {
   yield fsp.copyFile('app-pkg.json', 'package.json');
   yield install({ stdio: 'inherit' });
 
-  let { stdout, stderr } = daemon(`${command} ${args.join(' ')}`).run(task);
+  let { stdout, stderr } = yield daemon(`${command} ${args.join(' ')}`);
 
-  task.spawn(stdout.forEach((data) => {
+  yield spawn(stdout.forEach((data) => {
     process.stdout.write(data);
   }));
-  
-  task.spawn(stderr.forEach((data) => {
+
+  yield spawn(stderr.forEach((data) => {
     process.stderr.write(data);
   }));
 

@@ -1,19 +1,8 @@
 {
   "extends": "../../tsconfig-base.json",
-  "compilerOptions": {
-  "outDir": "dist",
-  "rootDir": "./src"
-  },
-  "include": [
-    "src/**/*.ts",
-    "bin/**/*.ts",
-  ],
-  "exclude": [
-    "../../node_modules"
-  ],
   "references": [
     { "path": "../cli/tsconfig.build.json" },
-    { "path": "../interactor" },
-    { "path": "../suite" }
+    { "path": "../interactor/tsconfig.build.json" },
+    { "path": "../suite/tsconfig.build.json" }
   ]
 }

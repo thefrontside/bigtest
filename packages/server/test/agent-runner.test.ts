@@ -1,28 +1,27 @@
-import { describe, beforeEach, it } from 'mocha';
+import { describe, beforeEach, it } from '@effection/mocha';
 import expect from 'expect';
 
-import { Mailbox, DuplexChannel, createDuplexChannel } from '@bigtest/effection';
-import { Slice } from '@bigtest/atom';
+import { Stream } from 'effection';
+import { DuplexChannel, createDuplexChannel } from '@bigtest/effection';
+import { Slice } from '@effection/atom';
 
-import { actions } from './helpers';
-import { AgentRunner, Runner } from '../src/runner';
+import { createAgentRunner, Runner } from '../src/runner';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { Incoming as ConnectionIncoming, Outgoing as ConnectionOutgoing } from '../src/connection-server';
-import { SpawnContext } from '../src/spawn-context';
 
 import { OrchestratorState, TestRunState } from '../src/orchestrator/state';
 
 describe('agent runner', () => {
-  let messages: Mailbox<ConnectionOutgoing>;
+  let messages: Stream<ConnectionOutgoing>;
   let atom: Slice<OrchestratorState>;
-  let channel: DuplexChannel<ConnectionOutgoing, ConnectionIncoming>;
-  let connections: DuplexChannel<ConnectionIncoming, ConnectionOutgoing>;
+  let channel: DuplexChannel<ConnectionIncoming, ConnectionOutgoing>;
+  let connections: DuplexChannel<ConnectionOutgoing, ConnectionIncoming>;
   let runner: Runner;
 
-  beforeEach(async () => {
-    [channel, connections] = createDuplexChannel<ConnectionOutgoing, ConnectionIncoming>({ maxListeners: 100000 });
+  beforeEach(function*(world) {
+    [channel, connections] = createDuplexChannel<ConnectionIncoming, ConnectionOutgoing>();
 
-    messages = await actions.fork(Mailbox.from(connections));
+    messages = connections.buffer(world);
     atom = createOrchestratorAtom({
       manifest: {
         fileName: 'manifest-1234.js',
@@ -38,10 +37,9 @@ describe('agent runner', () => {
         },
       }
     });
-    runner = new AgentRunner({
+    runner = yield createAgentRunner({
       atom,
       channel,
-      context: actions.fork(function*() { yield }) as SpawnContext,
       proxyPort: 24201,
       manifestPort: 24202,
     });
@@ -51,35 +49,35 @@ describe('agent runner', () => {
     let pendingMessage: any; // eslint-disable-line @typescript-eslint/no-explicit-any
     let testRun: TestRunState;
 
-    beforeEach(async () => {
+    beforeEach(function*() {
       atom.slice('bundler', 'type').set('GREEN');
-      runner.run({ testRunId: 'test-id-1', files: [] });
-      pendingMessage = await actions.fork(messages.receive({ type: 'run' }));
+      runner.runTest({ testRunId: 'test-id-1', files: [] });
+      pendingMessage = yield messages.match({ type: 'run' }).expect();
       connections.send({type: 'run:end', testRunId: 'test-id-1', agentId: 'agent-1' });
-      testRun = await actions.fork(atom.slice('testRuns', 'test-id-1').once((testRun) => testRun?.status === 'ok'));
+      testRun = yield atom.slice('testRuns', 'test-id-1').match({ status: 'ok' }).expect();
     });
 
-    it('runs on the available agents', () => {
+    it('runs on the available agents', function*() {
       expect(pendingMessage.agentId).toEqual('agent-1');
     });
 
-    it('sends the id of the test', () => {
+    it('sends the id of the test', function*() {
       expect(pendingMessage.testRunId).toEqual('test-id-1');
     });
 
-    it('sends appUrl', () => {
+    it('sends appUrl', function*() {
       expect(pendingMessage.appUrl).toEqual('http://localhost:24201');
     });
 
-    it('sends manifestUrl', () => {
+    it('sends manifestUrl', function*() {
       expect(pendingMessage.manifestUrl).toEqual('http://localhost:24202/manifest-1234.js');
     });
 
-    it('sends entire manifest as test tree for now', () => {
+    it('sends entire manifest as test tree for now', function*() {
       expect(pendingMessage.tree.description).toEqual('the manifest');
     });
 
-    it('adds agent and test tree to manifest', () => {
+    it('adds agent and test tree to manifest', function*() {
       expect(testRun.status).toEqual('ok');
       expect(Object.values(testRun.agents).length).toEqual(1);
       expect(testRun.agents['agent-1'].agent.agentId).toEqual('agent-1');
@@ -90,13 +88,13 @@ describe('agent runner', () => {
   describe('when sent a `run` message with a broken manifest', () => {
     let testRun: TestRunState;
 
-    beforeEach(async () => {
+    beforeEach(function*() {
       atom.slice('bundler').set({ type: 'ERRORED', error: { message: 'it broke' }});
-      runner.run({ testRunId: 'test-id-1', files: [] });
-      testRun = await actions.fork(atom.slice('testRuns', 'test-id-1').once((testRun) => testRun?.status === 'failed'));
+      runner.runTest({ testRunId: 'test-id-1', files: [] });
+      testRun = yield atom.slice('testRuns', 'test-id-1').match({ status: 'failed' }).expect();
     });
 
-    it('marks test run as failed', () => {
+    it('marks test run as failed', function*() {
       expect(testRun.status).toEqual('failed');
       expect(testRun.error?.message).toEqual('Cannot run tests due to build errors in the test suite:\nit broke');
       expect(Object.values(testRun.agents).length).toEqual(0);

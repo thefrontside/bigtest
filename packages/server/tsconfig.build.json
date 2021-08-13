@@ -1,0 +1,24 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDirs": ["./src", "./bin"],
+  },
+  "include": [
+    "src/**/*.ts",
+    "bin/**/*.ts"
+  ],
+  "references": [
+    { "path": "../agent/tsconfig.build.json" },
+    { "path": "../bundler/tsconfig.build.json" },
+    { "path": "../client/tsconfig.build.json" },
+    { "path": "../driver/tsconfig.build.json" },
+    { "path": "../effection/tsconfig.build.json" },
+    { "path": "../effection-express/tsconfig.build.json" },
+    { "path": "../globals/tsconfig.build.json" },
+    { "path": "../logging/tsconfig.build.json" },
+    { "path": "../project/tsconfig.build.json" },
+    { "path": "../suite/tsconfig.build.json" },
+    { "path": "../webdriver/tsconfig.build.json" }
+  ]
+}

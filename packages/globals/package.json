@@ -15,13 +15,15 @@
   "scripts": {
     "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{src,test}/**/*.ts\"",
-    "mocha": "mocha -r ts-node/register",
+    "check:types": "tsc --noEmit",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "prepack": "tsc --build && tsc --outdir dist/esm --module es2015 && tsc --outdir dist/cjs --module commonjs"
+    "prepack": "tsc --build ./tsconfig.build.json && yarn prepack:es2015 && yarn prepack:commonjs",
+    "prepack:es2015": "tsc --project ./tsconfig.build.json --outdir dist/esm --module es2015",
+    "prepack:commonjs": "tsc --project ./tsconfig.build.json --outdir dist/cjs --module commonjs"
   },
   "dependencies": {
     "@bigtest/suite": "^0.11.2",
-    "effection": "^1.0.0"
+    "effection": "^2.0.0-beta.12"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^2.0.0",

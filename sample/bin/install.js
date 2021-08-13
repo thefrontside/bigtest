@@ -1,20 +1,21 @@
-const { exec } = require('@effection/node');
+const { exec } = require('@effection/process');
+const { spawn } = require('effection');
 
-function install({ cwd, stdio }) {  
-  return function*(task){
+function install({ cwd, stdio }) {
+  return function*(){
     let command = process.argv.includes('-Y') || process.argv.includes('-yarn') ? 'yarn' : 'npm';
-    let install = exec(`${command} install`, { cwd }).run(task);
+    let install = yield exec(`${command} install`, { cwd });
     if(stdio === 'inherit'){
-      task.spawn(install.stdout.forEach((data) => {
+      spawn(install.stdout.forEach((data) => {
         process.stdout.write(data);
       }));
-      task.spawn(install.stderr.forEach((data) => {
+      spawn(install.stderr.forEach((data) => {
         process.stderr.write(data);
       }));
-    };
+    }
     yield install.expect();
-  }
-};
+  };
+}
 
 module.exports = {
   install

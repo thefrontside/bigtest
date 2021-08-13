@@ -1,89 +1,65 @@
-import { Response, RequestInfo, RequestInit } from 'node-fetch';
-import { Context, Operation } from 'effection';
+import { Resource, spawn } from 'effection';
+import { Slice } from '@effection/atom';
 import { ProjectOptions } from '@bigtest/project';
-import { Mailbox } from '@bigtest/effection';
-import { beforeEach, afterEach } from 'mocha';
 import { w3cwebsocket } from 'websocket';
-import { Agent } from '@bigtest/agent';
-import { World } from './helpers/world';
+import { createAgent as createAgentInternal, AgentProtocol, AgentOptions } from '@bigtest/agent';
 
 import { createOrchestrator } from '../src/index';
 import { createOrchestratorAtom, DeepPartial } from '../src/orchestrator/atom';
+import { OrchestratorState } from '../src/orchestrator/state';
 import merge from 'deepmerge';
 
-export const actions = {
-  atom: createOrchestratorAtom(),
+export function createAgent(options: AgentOptions): Resource<AgentProtocol> {
+  // the types are broken in the 'websocket' package.... the `w3cwebsocket` class
+  // _is_ in fact an EventTarget, but it is not declared as such. So we have
+  // to dynamically cast it.
+  type W3CWebSocket = w3cwebsocket & EventTarget;
+  let socket = new w3cwebsocket(`http://localhost:24103`) as W3CWebSocket;
+  socket.addEventListener('open', () => {
+    console.log("*** SOCKET DID OPEN ***");
+  });
+  socket.addEventListener('message', (m) => {
+    console.log("*** SOCKET GOT MESSAGE ***", m);
+  });
 
-  fork<T>(operation: Operation<T>): Context<T> {
-    return currentWorld.fork(operation);
-  },
+  return createAgentInternal(socket, options);
+};
 
-  receive(mailbox: Mailbox, pattern: unknown): Context {
-    return actions.fork(mailbox.receive(pattern));
-  },
+export function startOrchestrator(overrides?: DeepPartial<ProjectOptions>): Resource<Slice<OrchestratorState>> {
+  return {
+    *init() {
+      let atom = createOrchestratorAtom();
+      let options: ProjectOptions = {
+        port: 24102,
+        testFiles: ["test/fixtures/*.t.js"],
+        app: {
+          url: "http://localhost:24100",
+        },
+        proxy: {
+          port: 24001,
+          prefix: '/__bigtest/'
+        },
+        cacheDir: "./tmp/test/orchestrator",
+        watchTestFiles: true,
+        manifest: {
+          port: 24105,
+        },
+        connection: {
+          port: 24103,
+        },
+        drivers: {},
+        launch: [],
+        coverage: { reports: [], directory: "" }
+      };
 
-  fetch(resource: RequestInfo, init?: RequestInit): PromiseLike<Response> {
-    return actions.fork(currentWorld.fetch(resource, init));
-  },
+      yield spawn(createOrchestrator({
+        atom,
+        project: merge(options, overrides || {}),
+      }));
 
-  async createAgent(agentId: string): Promise<Agent> {
-    // the types are broken in the 'websocket' package.... the `w3cwebsocket` class
-    // _is_ in fact an EventTarget, but it is not declared as such. So we have
-    // to dynamically cast it.
-    type W3CWebSocket = w3cwebsocket & EventTarget;
-    let createSocket = () => new w3cwebsocket(`http://localhost:24103`) as W3CWebSocket;
+      yield atom.slice('status').match({ type: 'ready' }).expect();
 
-    return actions.fork(Agent.start({
-      createSocket,
-      agentId,
-      data: {}
-    }));
-  },
-
-  async startOrchestrator(overrides?: DeepPartial<ProjectOptions>): Promise<any> {
-    this.atom = createOrchestratorAtom();
-
-    let options: ProjectOptions = {
-      port: 24102,
-      testFiles: ["test/fixtures/*.t.js"],
-      app: {
-        url: "http://localhost:24100",
-      },
-      proxy: {
-        port: 24001,
-        prefix: '/__bigtest/'
-      },
-      cacheDir: "./tmp/test/orchestrator",
-      watchTestFiles: true,
-      manifest: {
-        port: 24105,
-      },
-      connection: {
-        port: 24103,
-      },
-      drivers: {},
-      launch: [],
-      coverage: { reports: [], directory: "" }
-    };
-
-    this.fork(createOrchestrator({
-      atom: this.atom,
-      project: merge(options, overrides || {}),
-    }));
-
-    await this.fork(this.atom.slice('status', 'type').once(type => type === 'ready'));
+      return atom;
+    }
   }
 }
-
-let currentWorld: World;
-
-beforeEach(() => {
-  currentWorld = new World();
-});
-
-afterEach(() => {
-  if(currentWorld.execution.state === 'errored') {
-    throw currentWorld.execution.result;
-  }
-  currentWorld.destroy();
-});

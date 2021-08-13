@@ -1,12 +1,12 @@
-import { describe as suite, beforeEach, it } from 'mocha';
+import { describe as suite, beforeEach, it } from '@effection/mocha';
 import expect from 'expect';
 import path from 'path';
 import rmrf from 'rimraf';
 import fs from 'fs';
 
-import { createAtom, Slice } from '@bigtest/atom';
+import { spawn } from 'effection';
+import { createAtom, Slice } from '@effection/atom';
 
-import { actions } from './helpers';
 import { createManifestBuilder, updateSourceMapURL } from '../src/manifest-builder';
 import { Manifest, BundlerState } from '../src/orchestrator/state';
 import { assertBundlerState } from '../src/assertions/bundler-assertions';
@@ -27,28 +27,26 @@ describe('manifest builder', () => {
   let status: Slice<BundlerState>;
   let resultPath: string;
 
-  beforeEach((done) => rmrf(TEST_DIR, done));
-  beforeEach(async function() {
+  beforeEach(function*() {
     this.timeout(30000);
 
-    await mkdir(SRC_DIR, { recursive: true });
-    await copyFile(path.join(FIXTURES_DIR, 'raw-tree-format.t.js'), MANIFEST_PATH);
+    yield () => ({ perform: (resolve) => rmrf(TEST_DIR, resolve) });
+    yield mkdir(SRC_DIR, { recursive: true });
+    yield copyFile(path.join(FIXTURES_DIR, 'raw-tree-format.t.js'), MANIFEST_PATH);
 
     manifest = createAtom({ description: "None", fileName: "<init>", steps: [], assertions: [], children: [] } as Manifest);
     status = createAtom({ type: 'UNBUNDLED' } as BundlerState);
 
-    actions.fork(function*() {
-      yield createManifestBuilder({
-        status,
-        manifest,
-        watch: true,
-        srcPath: MANIFEST_PATH,
-        buildDir: BUILD_DIR,
-        distDir: DIST_DIR,
-      });
-    });
+    yield spawn(createManifestBuilder({
+      status,
+      manifest,
+      watch: true,
+      srcPath: MANIFEST_PATH,
+      buildDir: BUILD_DIR,
+      distDir: DIST_DIR,
+    }));
 
-    let bundlerState = await actions.fork(status.once(({ type }) => type === 'GREEN' || type === 'ERRORED'));
+    let bundlerState = yield status.filter(({ type }) => type === 'GREEN' || type === 'ERRORED').expect();
 
     if(bundlerState.type === 'ERRORED') {
       throw new Error(bundlerState.error?.message || 'invalid bundle');
@@ -61,11 +59,11 @@ describe('manifest builder', () => {
 
   describe('retrieving test file manifest from disk', () => {
     let body: string;
-    beforeEach(async () => {
-      body = await readFile(path.resolve(DIST_DIR, resultPath), 'utf8')
+    beforeEach(function*() {
+      body = yield readFile(path.resolve(DIST_DIR, resultPath), 'utf8')
     });
 
-    it('contains the built manifest', () => {
+    it('contains the built manifest', function*() {
       expect(body).toContain('Signing In');
     });
   });
@@ -73,23 +71,23 @@ describe('manifest builder', () => {
   describe('updating the manifest', () => {
     let body: string;
 
-    beforeEach(async () => {
-      await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
+    beforeEach(function*() {
+      yield copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
 
-      let bundle = await actions.fork(status.once(({ type }) => type === 'GREEN'));
+      let bundle = yield status.match({ type: 'GREEN' }).expect();
 
       resultPath = (!!bundle && bundle.type === 'GREEN' && bundle.path) as string;
 
-      body = await readFile(path.resolve(DIST_DIR, resultPath), 'utf8')
+      body = yield readFile(path.resolve(DIST_DIR, resultPath), 'utf8')
     });
 
-    it('contains the built manifest', () => {
+    it('contains the built manifest', function*() {
       expect(body).toContain('An empty test with no steps and no children');
     });
   });
 
   describe('reading manifest from state on start', () => {
-    it('returns the manifest from the state', () => {
+    it('returns the manifest from the state', function*() {
       expect(manifest.get().fileName).toMatch(/manifest-[0-9a-f]+\.js/);
       expect(manifest.get().description).toEqual('Signing In');
     });
@@ -101,20 +99,20 @@ describe('manifest builder', () => {
     let dist: string;
     let distMapURL: string;
 
-    beforeEach(async () => {
-      build = await readFile(path.resolve(BUILD_DIR, 'manifest.js'), 'utf8');
+    beforeEach(function*() {
+      build = yield readFile(path.resolve(BUILD_DIR, 'manifest.js'), 'utf8');
       buildMapURL = build.split(" ").slice(-1)[0].trim();
-      dist = await readFile(path.resolve(DIST_DIR, resultPath), 'utf8');
+      dist = yield readFile(path.resolve(DIST_DIR, resultPath), 'utf8');
       distMapURL = dist.split(" ").slice(-1)[0].trim();
     });
 
-    it('copies over the *.js.map file to dist/', () => {
+    it('copies over the *.js.map file to dist/', function*() {
       expect(fs.existsSync(path.join(DIST_DIR, `${manifest.get().fileName}.map`))).toBeTruthy();
     });
-    it('contains the sourcemapURL at the bottom of the manifest', () => {
+    it('contains the sourcemapURL at the bottom of the manifest', function*() {
       expect(buildMapURL).toEqual("sourceMappingURL=manifest.js.map");
     });
-    it('updates the sourcemapURL of dist manifest with fingerprinted file', () => {
+    it('updates the sourcemapURL of dist manifest with fingerprinted file', function*() {
       expect(distMapURL).toMatch(/manifest-[0-9a-f]+\.js.map/);
     });
   });
@@ -123,43 +121,43 @@ describe('manifest builder', () => {
     let error: Error;
     let emptyFilePath: string;
 
-    beforeEach(async () => {
+    beforeEach(function*() {
       emptyFilePath = path.resolve(TEST_DIR, 'empty.t.js');
 
-      await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), emptyFilePath);
-      await actions.fork(function* (){
+      yield copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), emptyFilePath);
+      yield function* (){
         try {
           yield updateSourceMapURL(emptyFilePath, '');
         } catch(e) {
           error = e.toString();
         }
-      });
+      };
     });
 
-    it('throws error message when sourcemapURL is not generated at the bottom', async () => {
+    it('throws error message when sourcemapURL is not generated at the bottom', function*() {
       expect(error).toMatch(/^Error: Expected a sourcemapping near the end/);
     });
   });
 
   describe('updating the manifest and then reading it', () => {
-    beforeEach(async () => {
-      await copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
-      await actions.fork(status.once(({ type }) => type === 'GREEN'))
+    beforeEach(function*() {
+      yield copyFile(path.join(FIXTURES_DIR, 'empty.t.js'), MANIFEST_PATH);
+      yield status.match({ type: 'GREEN' }).expect();
     });
 
-    it('returns the updated manifest from the state', () => {
+    it('returns the updated manifest from the state', function*() {
       expect(manifest.get().fileName).toMatch(/manifest-[0-9a-f]+\.js/);
       expect(manifest.get().description).toEqual('An empty test with no steps and no children');
     });
   });
 
   describe('importing the manifest with an error adds the error to the state', () => {
-    beforeEach(async () => {
-      await copyFile(path.join(FIXTURES_DIR, 'exceptions', 'error.t.js'), MANIFEST_PATH);
-      await actions.fork(status.once(({ type }) => type === 'ERRORED'));
+    beforeEach(function*() {
+      yield copyFile(path.join(FIXTURES_DIR, 'exceptions', 'error.t.js'), MANIFEST_PATH);
+      yield status.match({ type: 'ERRORED' }).expect();
     });
 
-    it('should update the global state with the error detail', () => {
+    it('should update the global state with the error detail', function*() {
       let bundlerState = status.get();
 
       // this could be a custom expect
@@ -173,12 +171,12 @@ describe('manifest builder', () => {
   })
 
   describe('importing the manifest with an error adds the error to the state', () => {
-    beforeEach(async () => {
-      await copyFile(path.join(FIXTURES_DIR, 'exceptions', 'throw.t.js'), MANIFEST_PATH);
-      await actions.fork(status.once(({ type }) => type === 'ERRORED'));
+    beforeEach(function*() {
+      yield copyFile(path.join(FIXTURES_DIR, 'exceptions', 'throw.t.js'), MANIFEST_PATH);
+      yield status.match({ type: 'ERRORED' }).expect();
     });
 
-    it('should update the global state with the error detail', () => {
+    it('should update the global state with the error detail', function*() {
       let bundlerState = status.get();
       // this could be a custom expect
       // assert is used to type narrow also and does more than just assert

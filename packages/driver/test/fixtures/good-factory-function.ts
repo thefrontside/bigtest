@@ -1,12 +1,18 @@
-import { Operation } from 'effection';
-import { Driver, DriverFactory } from '../../index';
+import { DriverFactory } from '../../index';
 
-export const create: DriverFactory<string, number> = (spec) => {
-  return function* createDriver(): Operation<Driver<number>> {
-    return {
-      description: `Driver<${spec.options}>`,
-      data: 42,
-      *connect() { return; }
+type Options = {
+  name: string;
+}
+
+export const create: DriverFactory<number> = (spec) => {
+  let options = spec as Options;
+  return {
+    *init() {
+      return {
+        description: `Driver<${options.name}>`,
+        data: 42,
+        async connect() {}
+      }
     }
   }
 }

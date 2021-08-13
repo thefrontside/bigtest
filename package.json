@@ -13,7 +13,6 @@
       "packages/client",
       "packages/effection-express",
       "packages/performance",
-      "packages/atom",
       "packages/suite",
       "packages/globals",
       "packages/interactor",

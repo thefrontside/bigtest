@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { main, MainError } = require('@effection/node');
+const { main, MainError } = require('effection');
 const rmrfsync = require('rimraf').sync;
 const fsp = require('fs').promises;
 const fse = require('fs-extra');
@@ -35,7 +35,7 @@ function migrate(messages) {
   return function*(){
      yield spin(messages.before, function* () {
 
-      const { pkgjson, files, templateName } = processTemplate();
+      let { pkgjson, files, templateName } = processTemplate();
       template = templateName;
       yield fsp.writeFile(`${TARGET_DIR}/package.json`, JSON.stringify(pkgjson, null, 2));
 
@@ -58,20 +58,20 @@ function migrate(messages) {
           rmrfsync(`${TARGET_DIR}/src/test/cypress.spec.js`);
           rmrfsync(`${TARGET_DIR}/src/test/jest.test.js`);
           break;
-      };
+      }
     });
     console.log(formatSuccess(messages.after));
-  }
+  };
 }
 
 function installDependencies(messages) {
   return function*() {
     yield spin(messages.before, install({ cwd: TARGET_DIR }));
     console.log(formatSuccess(messages.after));
-  }
-};
+  };
+}
 
-function* run() {
+main(function*() {
   let rollback = true;
   yield createDirectory(messages.creating_dir);
   try {
@@ -86,6 +86,4 @@ function* run() {
       console.log(formatSuccess(messages.cleanup));
     }
   }
-}
-
-main(run);
+});

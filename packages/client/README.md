@@ -10,12 +10,12 @@ the capacity to run "live" queries which return new results for the
 query every time that the internal state changes.
 
 ``` javascript
-import { Client } from `@bigtest/client`;
+import { createClient } from `@bigtest/client`;
 
 export function* countAgentsAt(url) {
   // create the client. After this operation completes, the client
   // will be connected to the orchestrator over websockets.
-  let client = yield Client.create(url);
+  let client = yield createClient(url);
 
 
   let result = yield client.query(`{ agents { agentId } }`);

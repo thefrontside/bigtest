@@ -1,56 +1,48 @@
-import { describe, beforeEach, it } from 'mocha';
+import { describe, beforeEach, it } from '@effection/mocha';
 import expect from 'expect';
+import { spawn } from 'effection';
 import type { AppServerStatus } from '../src/orchestrator/state';
-import { createAtom, Slice } from '@bigtest/atom';
+import { createAtom, Slice } from '@effection/atom';
 import { assertStatus } from '../src/assertions/status-assertions';
 
-import { actions } from './helpers';
 import { appServer } from '../src/app-server';
 
 describe('app server', () => {
   let status: Slice<AppServerStatus>;
 
-  beforeEach(() => {
+  beforeEach(function*() {
     status = createAtom({ type: 'pending' } as AppServerStatus);
   });
 
   describe('ready', () => {
-    beforeEach(() => {
-      actions.fork(function * () {
-        yield appServer({
-          status,
-          url: "http://localhost:24100",
-          command: "yarn test:app:start 24100",
-        });
-      });
+    beforeEach(function*() {
+      yield spawn(appServer({
+        status,
+        url: "http://localhost:24100",
+        command: "yarn test:app:start 24100",
+      }));
     });
 
-    it("should be transition from 'started' to 'available'", async () => {
+    it("should be transition from 'started' to 'available'", function*() {
       expect(status.get().type).toBe('started');
 
-      await actions.fork(
-        status.once(status => status.type === 'available')
-      );
+      yield status.match({ type: 'available' }).expect();
 
       expect(status.get().type).toBe('available');
     });
   });
 
   describe('exited', () => {
-    beforeEach(() => {
-      actions.fork(function * () {
-        yield appServer({
-          status,
-          url: "http://localhost:24100",
-          command: "yarn no:such:command",
-        })
-      });
+    beforeEach(function*() {
+      yield spawn(appServer({
+        status,
+        url: "http://localhost:24100",
+        command: "yarn no:such:command",
+      }));
     });
 
-    it('should transition to exited', async () => {
-      await actions.fork(
-        status.once(status => status.type === 'exited')
-      );
+    it('should transition to exited', function*() {
+      yield status.match({ type: 'exited' }).expect();
 
       let current = status.get();
 

@@ -13,8 +13,9 @@
   "scripts": {
     "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{src,test}/**/*.ts\"",
+    "check:types": "tsc --noEmit",
     "test": "true",
-    "prepack": "tsc --build"
+    "prepack": "tsc --build ./tsconfig.build.json"
   },
   "devDependencies": {
     "@types/node": "^13.13.4",

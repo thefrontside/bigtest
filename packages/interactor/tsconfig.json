@@ -1,14 +1,8 @@
 {
   "extends": "../../tsconfig-base.json",
-  "compilerOptions": {
-    "outDir": "dist/cjs",
-    "rootDir": "./src",
-    "declarationDir": "dist"
-  },
-  "include": [
-    "src/**/*.ts"
-  ],
+  "exclude": ["types/**/*.ts"],
   "references": [
-    { "path": "../globals" }
+    { "path": "../globals/tsconfig.build.json" },
+    { "path": "../suite/tsconfig.build.json" }
   ]
 }

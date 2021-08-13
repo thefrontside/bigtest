@@ -1,26 +1,19 @@
 {
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDirs": ["./src", "./bin"],
     "typeRoots" : ["./node_modules/@types", "./typings"]
   },
-  "include": [
-    "src/**/*.ts",
-    "bin/**/*.ts"
-  ],
   "references": [
-    { "path": "../agent" },
-    { "path": "../atom" },
+    { "path": "../agent/tsconfig.build.json" },
     { "path": "../bundler/tsconfig.build.json" },
-    { "path": "../client" },
-    { "path": "../driver" },
-    { "path": "../effection" },
-    { "path": "../effection-express" },
-    { "path": "../globals" },
-    { "path": "../logging" },
-    { "path": "../project" },
-    { "path": "../suite" },
-    { "path": "../webdriver" }
+    { "path": "../client/tsconfig.build.json" },
+    { "path": "../driver/tsconfig.build.json" },
+    { "path": "../effection/tsconfig.build.json" },
+    { "path": "../effection-express/tsconfig.build.json" },
+    { "path": "../globals/tsconfig.build.json" },
+    { "path": "../logging/tsconfig.build.json" },
+    { "path": "../project/tsconfig.build.json" },
+    { "path": "../suite/tsconfig.build.json" },
+    { "path": "../webdriver/tsconfig.build.json" }
   ]
 }

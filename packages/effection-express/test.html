@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+  <script>
+    let socket = new WebSocket("ws://localhost:39000");
+
+    socket.addEventListener('open', (event) => {
+      console.log("OPEN", event);
+    });
+
+    socket.addEventListener('close', (event) => {
+      console.log("CLOSE", event);
+    });
+
+    socket.addEventListener('message', (event) => {
+      console.log("MESSAGE", event);
+    });
+
+    window.socket = socket;
+  </script>
+</html>

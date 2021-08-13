@@ -14,11 +14,12 @@
   "scripts": {
     "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{src,test}/**/*.ts\"",
+    "check:types": "tsc --noEmit",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "mocha": "mocha -r ts-node/register",
-    "prepack": "tsc --build"
+    "prepack": "tsc --build ./tsconfig.build.json"
   },
   "devDependencies": {
+    "@effection/mocha": "^2.0.0-beta.9",
     "@frontside/eslint-config": "^2.0.0",
     "@frontside/tsconfig": "^1.2.0",
     "@frontside/typescript": "^1.1.1",
@@ -29,9 +30,8 @@
     "ts-node": "^9.1.1"
   },
   "dependencies": {
-    "@effection/events": "^1.0.0",
     "@types/node": "^13.13.4",
-    "effection": "^1.0.0"
+    "effection": "^2.0.0-beta.12"
   },
   "volta": {
     "node": "12.16.0",

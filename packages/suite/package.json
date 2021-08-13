@@ -16,11 +16,11 @@
   "scripts": {
     "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{src,test}/**/*.ts\"",
-    "mocha": "mocha -r ts-node/register",
+    "check:types": "tsc --noEmit",
     "test:unit": "mocha -r ts-node/register test/**/*.test.ts",
     "test:types": "dtslint types --localTs ../../node_modules/typescript/lib --expectOnly",
     "test": "yarn test:unit && yarn test:types",
-    "prepack": "tsc --build"
+    "prepack": "tsc --build ./tsconfig.build.json"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^2.0.0",

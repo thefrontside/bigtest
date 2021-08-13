@@ -14,9 +14,9 @@
   "scripts": {
     "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{src,test}/**/*.ts\"",
+    "check:types": "tsc --noEmit",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "mocha": "mocha -r ts-node/register",
-    "prepack": "tsc --build"
+    "prepack": "tsc --build ./tsconfig.build.json"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^2.0.0",
@@ -30,11 +30,9 @@
   },
   "dependencies": {
     "@bigtest/effection": "^0.6.3",
-    "@effection/events": "^1.0.0",
-    "@effection/subscription": "^1.0.0",
     "@types/express-ws": "^3.0.0",
     "@types/node": "^13.13.4",
-    "effection": "^1.0.0",
+    "effection": "^2.0.0-beta.12",
     "express": "^4.17.1",
     "express-ws": "^4.0.0"
   },

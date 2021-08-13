@@ -16,11 +16,13 @@
   "scripts": {
     "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{src,test}/**/*.ts\"",
-    "mocha": "mocha -r ts-node/register",
+    "check:types": "tsc --noEmit",
     "test:unit": "mocha -r ts-node/register \"test/**/*.test.ts\"",
     "test:types": "dtslint types --localTs ../../node_modules/typescript/lib --expectOnly",
     "test": "yarn test:unit && yarn test:types",
-    "prepack": "tsc --build && tsc --outdir dist/esm --module es2015 && tsc --outdir dist/cjs --module commonjs"
+    "prepack": "tsc --build ./tsconfig.build.json && yarn prepack:es2015 && yarn prepack:commonjs",
+    "prepack:es2015": "tsc --project ./tsconfig.build.json --outdir dist/esm --module es2015",
+    "prepack:commonjs": "tsc --project ./tsconfig.build.json --outdir dist/cjs --module commonjs"
   },
   "dependencies": {
     "@bigtest/globals": "^0.7.6",

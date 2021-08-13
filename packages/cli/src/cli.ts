@@ -9,7 +9,7 @@ import { init } from './init';
 
 import { loadOptions, applyStartArgs, validateOptions } from './project-options';
 
-export function * CLI(argv: string[]): Operation {
+export function* CLI(argv: string[]): Operation<void> {
   let args = parseArgs(argv);
 
   setLogLevel(args.logLevel);

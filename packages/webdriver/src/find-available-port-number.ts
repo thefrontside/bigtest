@@ -1,6 +1,5 @@
 import { createServer, AddressInfo } from 'net';
-import { Operation } from 'effection';
-import { once, throwOnErrorEvent } from '@effection/events';
+import { Operation, spawn, once, throwOnErrorEvent } from 'effection';
 
 /**
  * Find a TCP port from the local operating system that is available
@@ -12,9 +11,9 @@ import { once, throwOnErrorEvent } from '@effection/events';
  */
 export function* findAvailablePortNumber(): Operation<number> {
   let server = createServer();
-  yield throwOnErrorEvent(server);
+  yield spawn(throwOnErrorEvent(server));
 
-  server.listen()
+  server.listen();
 
   try {
     yield once(server, 'listening');

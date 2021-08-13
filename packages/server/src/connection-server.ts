@@ -1,14 +1,14 @@
-import { Operation, spawn, resource } from 'effection';
-import { subscribe, ChainableSubscription } from '@effection/subscription';
+import { Resource, spawn } from 'effection';
+import { express, Express } from '@bigtest/effection-express';
 import { createDuplexChannel, DuplexChannel } from '@bigtest/effection';
-import { Slice } from '@bigtest/atom';
+import { Slice } from '@effection/atom';
 import { ConnectionServerStatus, AgentState } from './orchestrator/state';
-import { AgentConnection, createAgentHandler, Command, TestEvent } from '@bigtest/agent';
+import { createAgentHandler, Command, TestEvent } from '@bigtest/agent';
 
 export type Incoming = TestEvent & { agentId: string };
 export type Outgoing = Command & { agentId: string };
 
-export type ConnectionChannel = DuplexChannel<Outgoing, Incoming>;
+export type ConnectionChannel = DuplexChannel<Incoming, Outgoing>;
 
 interface ConnectionServerOptions {
   status: Slice<ConnectionServerStatus>;
@@ -18,42 +18,49 @@ interface ConnectionServerOptions {
   manifestPort: number;
 };
 
-interface ConnectionServer {
+export interface ConnectionServer {
   channel: ConnectionChannel;
 }
 
-export function* createConnectionServer(options: ConnectionServerOptions): Operation<ConnectionServer> {
-  let [tx, rx] = createDuplexChannel<Outgoing, Incoming>({ maxListeners: 100000 });
+export function createConnectionServer(options: ConnectionServerOptions): Resource<ConnectionServer> {
+  return {
+    *init() {
+      let [external, internal] = createDuplexChannel<Incoming, Outgoing>();
 
-  return yield resource({ channel: tx }, function*() {
-    options.status.set({ type: 'starting' });
-
-    let handler: ChainableSubscription<AgentConnection, void> = yield createAgentHandler(options.port);
-
-    options.status.set({ type: 'started' });
-
-    while(true) {
-      let connection: AgentConnection = yield handler.expect();
       yield spawn(function*() {
-        console.log(`[connection] connected ${connection.agentId}`);
-        let agent = options.agents.slice(connection.agentId);
+        options.status.set({ type: 'starting' });
 
-        agent.set({ ...connection.data, agentId: connection.agentId });
+        let app: Express = yield express();
 
-        yield spawn(rx.match({ agentId: connection.agentId }).forEach(function*(message) {
-          console.debug('[connection] sending message to agent', connection.agentId, message);
-          connection.send(message);
+        app.ws('*', createAgentHandler(function*(connection) {
+          console.log(`[connection] connected ${connection.agentId}`);
+          let agent = options.agents.slice(connection.agentId);
+
+          agent.set({ ...connection.data, agentId: connection.agentId });
+
+          yield spawn(internal.match({ agentId: connection.agentId }).forEach((message) => function*() {
+            console.debug('[connection] sending message to agent', connection.agentId, message);
+            yield connection.send(message);
+          }));
+
+          let { code, reason }: CloseEvent = yield connection.forEach((message) => {
+            console.debug('[connection] got message from agent', connection.agentId, message);
+            internal.send({ ...message, agentId: connection.agentId });
+          });
+
+          console.debug(`[connection] disconnected ${connection.agentId} [${code}${reason ? `: ${reason}` : ''}]`);
+
+          agent.remove();
         }));
 
-        let { code, reason }: CloseEvent = yield subscribe(connection.events).forEach(function*(message: TestEvent) {
-          console.debug('[connection] got message from agent', connection.agentId, message);
-          rx.send({ ...message, agentId: connection.agentId });
-        });
+        yield app.listen(options.port);
 
-        console.debug(`[connection] disconnected ${connection.agentId} [${code}${reason ? `: ${reason}` : ''}]`);
+        options.status.set({ type: 'started' });
 
-        agent.remove();
+        yield;
       });
+
+      return { channel: external };
     }
-  });
+  }
 }

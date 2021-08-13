@@ -1,5 +1,5 @@
 import { CLI } from './cli';
-import { main } from '@effection/node';
+import { main } from 'effection';
 
 import { warnUnexpectedExceptions } from './warn-unexpected-exceptions';
 

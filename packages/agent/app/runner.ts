@@ -1,20 +1,17 @@
-import { Operation } from 'effection';
-import { Channel } from '@effection/channel'
-import { once } from '@effection/events'
-import { subscribe } from '@effection/subscription'
+import { Operation, createChannel, once } from 'effection';
 import { Test } from '@bigtest/suite';
 
-import { Agent } from '../shared/agent';
-import { Run, TestEvent } from '../shared/protocol';
+import { Run, TestEvent, AgentProtocol } from '../shared/protocol';
 
 import { setLaneConfigFromAgentFrame } from './lane-config';
 import { setCoverageMap, getCoverageMap } from './coverage';
 import { findIFrame } from './find-iframe';
 
-export function* run(agent: Agent, command: Run): Operation<void> {
+export function* run(agent: AgentProtocol, command: Run): Operation<void> {
   let { testRunId, tree } = command;
 
   try {
+    console.log("[agent] starting test run", testRunId);
     setCoverageMap(window, undefined);
     agent.send({ type: 'run:begin', testRunId });
     for (let lanePath of lanePaths(tree)) {
@@ -30,19 +27,17 @@ export function* run(agent: Agent, command: Run): Operation<void> {
   }
 }
 
-function* runLane(agent: Agent, command: Run, path: string[]): Operation<void> {
+function* runLane(agent: AgentProtocol, command: Run, path: string[]): Operation<void> {
   let { testRunId } = command;
   agent.send({ type: 'lane:begin', testRunId, path });
 
   try {
-    let events = new Channel<TestEvent, undefined>();
+    let events = createChannel<TestEvent, undefined>();
     setLaneConfigFromAgentFrame({ command, path, events });
 
     yield loadTestFrame('test-frame', 'test-frame.html');
 
-    yield subscribe(events).forEach(function*(event) {
-      agent.send(event);
-    });
+    yield events.forEach((event) => { agent.send(event); });
 
   } finally {
     agent.send({ type: 'lane:end', testRunId, path })

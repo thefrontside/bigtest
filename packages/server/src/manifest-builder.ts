@@ -1,11 +1,9 @@
 import { bigtestGlobals } from '@bigtest/globals';
-import { Operation } from 'effection';
-import { subscribe } from '@effection/subscription';
+import { Operation, createFuture } from 'effection';
 import { once } from '@effection/events';
 import { validateTest } from '@bigtest/suite';
-import { Deferred } from '@bigtest/effection';
-import { Bundler } from '@bigtest/bundler';
-import { Slice } from '@bigtest/atom';
+import { createBundler, Bundler } from '@bigtest/bundler';
+import { Slice } from '@effection/atom';
 import { createFingerprint } from 'fprint';
 import path from 'path';
 import fs from 'fs';
@@ -26,21 +24,21 @@ interface ManifestBuilderOptions {
 };
 
 function* ftruncate(fd: number, len: number): Operation<void> {
-  let { resolve, reject, promise } = Deferred<void>();
+  let { produce, future } = createFuture<void>();
 
   fs.ftruncate(fd, len, err => {
     if (err) {
-      reject(err);
+      produce({ state: 'errored', error: err });
     } else {
-      resolve();
+      produce({ state: 'completed', value: undefined });
     }
   });
 
-  yield promise;
+  yield future;
 }
 
 // https://github.com/nodejs/node/issues/34189#issuecomment-654878715
-function* truncate(path: string, len: number): Operation {
+function* truncate(path: string, len: number): Operation<void> {
   let file: fs.promises.FileHandle = yield open(path, 'r+');
 
   try {
@@ -50,20 +48,23 @@ function* truncate(path: string, len: number): Operation {
   }
 }
 
-export function* updateSourceMapURL(filePath: string, sourcemapName: string): Operation{
-  let { size } = yield stat(filePath);
-  let readStream = fs.createReadStream(filePath, {start: size - 16});
-  let [currentURL]: [Buffer] = yield once(readStream, 'data');
+const SOURCE_MAP_PATH = 'manifest.js.map';
+const SOURCE_MAP_LENGTH = SOURCE_MAP_PATH.length + 1;
 
-  if (currentURL.toString().trim() === 'manifest.js.map') {
-    yield truncate(filePath, size - 16);
+export function* updateSourceMapURL(filePath: string, sourcemapName: string): Operation<void> {
+  let { size } = yield stat(filePath);
+  let readStream = fs.createReadStream(filePath, {start: size - SOURCE_MAP_LENGTH});
+  let currentURL: string = (yield once(readStream, 'data')).toString();
+
+  if (currentURL.trim() === SOURCE_MAP_PATH) {
+    yield truncate(filePath, size - SOURCE_MAP_LENGTH);
     yield appendFile(filePath, sourcemapName);
   } else {
     throw new Error(`Expected a sourcemapping near the end of the generated test bundle, but found "${currentURL}" instead.`);
   };
 }
 
-function* processManifest(options: ManifestBuilderOptions): Operation {
+function* processManifest(options: ManifestBuilderOptions): Operation<string> {
   let buildPath = path.resolve(options.buildDir, 'manifest.js');
   let sourcemapDir = path.resolve(options.buildDir, 'manifest.js.map');
   let fingerprint = yield createFingerprint(buildPath, 'sha256');
@@ -89,10 +90,10 @@ function* processManifest(options: ManifestBuilderOptions): Operation {
   return distPath;
 }
 
-export function* createManifestBuilder(options: ManifestBuilderOptions): Operation {
+export function* createManifestBuilder(options: ManifestBuilderOptions): Operation<void> {
   options.status.set({ type: 'UNBUNDLED' });
 
-  let bundler: Bundler = yield Bundler.create({
+  let bundler: Bundler = yield createBundler({
     watch: options.watch,
     entry: options.srcPath,
     globalName: bigtestGlobals.manifestProperty,
@@ -100,7 +101,7 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
     tsconfig: options.tsconfig,
   });
 
-  yield subscribe(bundler).forEach(function* (message) {
+  yield bundler.forEach((message) => function*() {
     switch (message.type) {
       case 'START':
         console.debug("[manifest builder] received bundler start");
