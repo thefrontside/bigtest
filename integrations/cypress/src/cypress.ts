@@ -32,7 +32,7 @@ function interact(
 };
 
 function isInteractions(interactions: unknown[]): interactions is ReadonlyInteraction<void>[] {
-  return interactions.every(interaction => typeof interaction == 'object' && interaction != null && isInteraction in interaction)
+  return interactions.every(isInteraction)
 }
 
 if (typeof Cypress !== 'undefined' ) {
