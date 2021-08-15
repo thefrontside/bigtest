@@ -1,5 +1,11 @@
 # @bigtest/interactor
 
+## 0.31.1
+
+### Patch Changes
+
+- 0bf23644: Add `isInteraction` type guard to identify interaction object
+
 ## 0.31.0
 
 ### Minor Changes
