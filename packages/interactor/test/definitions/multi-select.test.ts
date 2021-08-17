@@ -3,7 +3,7 @@ import expect from 'expect';
 import { MultiSelect, Heading } from '../../src/index';
 import { dom } from '../helpers';
 
-describe('@bigtest/interactor', () => {
+describe('@interactors/html', () => {
   describe('MultiSelect', () => {
     it('finds `select` tags with `multiple` by label', async () => {
       dom(`

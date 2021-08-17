@@ -5,7 +5,7 @@ title: Storybook
 
 Interactors not only make writing tests easier, it can also help you develop UI components. With the upcoming release of [`Component Story Format 3.0`](https://storybook.js.org/blog/component-story-format-3-0/), you will be able to use Interactors in [`Storybook`](https://storybook.js.org/).
 
-This requires no additional setup. Just install `@bigtest/interactor` to your project, and then you can use interactors in your stories immediately.
+This requires no additional setup. Just install `@interactors/html` to your project, and then you can use interactors in your stories immediately.
 
 In the same way Interactors make tests more reliable and easier to read, it will also enhance your developer experience with Storybook.
 
@@ -25,7 +25,7 @@ export const FormSignIn = {
 
 And this is the same story but written with interactors:
 ```js
-import { Button, TextField } from '@bigtest/interactor';
+import { Button, TextField } from '@/interactors/html';
 
 export const FormSignIn = {
   play: async () => {

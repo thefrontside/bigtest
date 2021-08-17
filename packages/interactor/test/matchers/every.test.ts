@@ -4,7 +4,7 @@ import { dom } from '../helpers';
 
 import { MultiSelect, every, including } from '../../src/index';
 
-describe('@bigtest/interactor', () => {
+describe('@interactors/html', () => {
   describe('every', () => {
     it('can check whether the given string is contained in an array', async () => {
       dom(`

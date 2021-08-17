@@ -10,7 +10,7 @@ import { dom } from './helpers';
 
 import { Page, read } from '../src/index';
 
-describe('@bigtest/interactor', function() {
+describe('@interactors/html', function() {
   describe('Page', () => {
     describe('visit', () => {
       let jsdom: JSDOM;

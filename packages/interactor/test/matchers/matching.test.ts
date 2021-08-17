@@ -16,7 +16,7 @@ function matchingWithDeprecatedFormat(regexp: RegExp): Matcher<string> {
   }
 }
 
-describe('@bigtest/interactor', () => {
+describe('@interactors/html', () => {
   beforeEach(() => {
     dom(`
       <div title="hello world"></div>

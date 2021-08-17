@@ -7,7 +7,7 @@ import { HTML, not, including } from '../../src/index';
 
 const div = HTML({ id: "test-div" });
 
-describe('@bigtest/interactor', () => {
+describe('@interactors/html', () => {
 
   describe('not', () => {
     it('can check whether the filter does not match the given matcher', async () => {
