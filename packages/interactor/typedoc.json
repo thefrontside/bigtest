@@ -1,6 +1,6 @@
 {
   "out": "docs",
-  "name": "@bigtest/interactor",
+  "name": "@interactors/html",
   "entryPoints": "src/index.ts",
   "readme": "API.md",
   "includeVersion": true,

@@ -1,4 +1,4 @@
-# @bigtest/interactor
+# @interactors/html
 
 ## 0.31.1
 

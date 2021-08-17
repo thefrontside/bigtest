@@ -3,7 +3,7 @@ import expect from 'expect';
 import { Link, Heading } from '../../src/index';
 import { dom } from '../helpers';
 
-describe('@bigtest/interactor', () => {
+describe('@interactors/html', () => {
   describe('Link', () => {
     it('finds `a` tags by text', async () => {
       dom(`

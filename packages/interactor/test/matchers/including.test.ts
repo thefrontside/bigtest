@@ -4,7 +4,7 @@ import { dom } from '../helpers';
 
 import { HTML, including } from '../../src/index';
 
-describe('@bigtest/interactor', () => {
+describe('@interactors/html', () => {
   describe('including', () => {
     it('can check whether the given string is contained', async () => {
       dom(`

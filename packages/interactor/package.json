@@ -1,5 +1,5 @@
 {
-  "name": "@bigtest/interactor",
+  "name": "@interactors/html",
   "version": "0.31.1",
   "description": "Interactors for working with applications",
   "main": "dist/cjs/index.js",
