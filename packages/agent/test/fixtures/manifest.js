@@ -1,7 +1,7 @@
 const { test } = require('@bigtest/suite');
 const { bigtestGlobals } = require('@bigtest/globals');
 const { strict: assert } = require('assert');
-const { createInteractor, App } = require('@bigtest/interactor');
+const { createInteractor, App } = require('@interactors/html');
 
 const localforage = require('localforage');
 
