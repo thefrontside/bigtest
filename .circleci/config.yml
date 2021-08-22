@@ -137,8 +137,8 @@ workflows:
           matrix:
             parameters:
               package:
-                - atom
                 - agent
+                - atom
                 - bundler
                 - cli
                 - client
