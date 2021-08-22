@@ -78,6 +78,9 @@ jobs:
   test:
     executor: <<parameters.executor>>
     parameters:
+      scope:
+        type: string
+        default: "bigtest"
       package:
         type: string
       driver:
@@ -102,7 +105,7 @@ jobs:
           at: .
       - run:
           name: Running tests
-          command: yarn workspace @<<parameters.package>> test
+          command: yarn workspace @<<parameters.scope>>/<<parameters.package>> test
   lint:
     executor: <<parameters.executor>>
     parameters:
@@ -134,23 +137,29 @@ workflows:
           matrix:
             parameters:
               package:
-                - "bigtest/agent"
-                - "bigtest/atom"
-                - "bigtest/bundler"
-                - "bigtest/cli"
-                - "bigtest/client"
-                - "bigtest/driver"
-                - "bigtest/effection"
-                - "bigtest/effection-express"
-                - "bigtest/eslint-plugin"
-                - "bigtest/globals"
-                - "bigtest/logging"
-                - "bigtest/performance"
-                - "bigtest/project"
-                - "bigtest/server"
-                - "bigtest/suite"
-                - "bigtest/webdriver"
-                - "interactors/html"
+                - atom
+                - agent
+                - bundler
+                - cli
+                - client
+                - driver
+                - effection
+                - effection-express
+                - eslint-plugin
+                - globals
+                - logging
+                - performance
+                - project
+                - server
+                - suite
+                - webdriver
+          requires:
+            - prepack
+      - test:
+          name: "test-interactor"
+          scope: interactors
+          package: html
+          prepack: false
           requires:
             - prepack
       - integrations:
@@ -170,18 +179,18 @@ workflows:
             - run:
                 name: "Install Microsoft Edge"
                 command: choco install microsoft-edge
-          package: "bigtest/cli"
+          package: cli
       - test:
           name: "test-cli-firefox"
           driver: "firefox.headless"
-          package: "bigtest/cli"
+          package: cli
           prepack: false
           requires:
             - prepack
       - test:
           name: "test-cli-macos"
           executor: macos
-          package: "bigtest/cli"
+          package: cli
           driver: safari
           pre-steps:
             - run:
