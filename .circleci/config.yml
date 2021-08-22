@@ -102,7 +102,7 @@ jobs:
           at: .
       - run:
           name: Running tests
-          command: yarn workspace <<parameters.package>> test
+          command: yarn workspace @<<parameters.package>> test
   lint:
     executor: <<parameters.executor>>
     parameters:
@@ -134,23 +134,23 @@ workflows:
           matrix:
             parameters:
               package:
-                - '@bigtest/agent'
-                - '@bigtest/atom'
-                - '@bigtest/bundler'
-                - '@bigtest/cli'
-                - '@bigtest/client'
-                - '@bigtest/driver'
-                - '@bigtest/effection'
-                - '@bigtest/effection-express'
-                - '@bigtest/eslint-plugin'
-                - '@bigtest/globals'
-                - '@bigtest/logging'
-                - '@bigtest/performance'
-                - '@bigtest/project'
-                - '@bigtest/server'
-                - '@bigtest/suite'
-                - '@bigtest/webdriver'
-                - '@interactors/html'
+                - "bigtest/agent"
+                - "bigtest/atom"
+                - "bigtest/bundler"
+                - "bigtest/cli"
+                - "bigtest/client"
+                - "bigtest/driver"
+                - "bigtest/effection"
+                - "bigtest/effection-express"
+                - "bigtest/eslint-plugin"
+                - "bigtest/globals"
+                - "bigtest/logging"
+                - "bigtest/performance"
+                - "bigtest/project"
+                - "bigtest/server"
+                - "bigtest/suite"
+                - "bigtest/webdriver"
+                - "interactors/html"
           requires:
             - prepack
       - integrations:
@@ -170,18 +170,18 @@ workflows:
             - run:
                 name: "Install Microsoft Edge"
                 command: choco install microsoft-edge
-          package: '@bigtest/cli'
+          package: "bigtest/cli"
       - test:
           name: "test-cli-firefox"
           driver: "firefox.headless"
-          package: '@bigtest/cli'
+          package: "bigtest/cli"
           prepack: false
           requires:
             - prepack
       - test:
           name: "test-cli-macos"
           executor: macos
-          package: '@bigtest/cli'
+          package: "bigtest/cli"
           driver: safari
           pre-steps:
             - run:
