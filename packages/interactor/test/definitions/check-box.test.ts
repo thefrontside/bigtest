@@ -3,7 +3,7 @@ import expect from 'expect';
 import { CheckBox, Heading } from '../../src/index';
 import { dom } from '../helpers';
 
-describe('@bigtest/interactor', () => {
+describe('@interactors/html', () => {
   describe('CheckBox', () => {
     it('finds `input[type=checkbox]` tags by label', async () => {
       dom(`

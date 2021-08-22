@@ -78,6 +78,9 @@ jobs:
   test:
     executor: <<parameters.executor>>
     parameters:
+      scope:
+        type: string
+        default: "bigtest"
       package:
         type: string
       driver:
@@ -102,7 +105,7 @@ jobs:
           at: .
       - run:
           name: Running tests
-          command: yarn workspace @bigtest/<<parameters.package>> test
+          command: yarn workspace @<<parameters.scope>>/<<parameters.package>> test
   lint:
     executor: <<parameters.executor>>
     parameters:
@@ -144,13 +147,19 @@ workflows:
                 - effection-express
                 - eslint-plugin
                 - globals
-                - interactor
                 - logging
                 - performance
                 - project
                 - server
                 - suite
                 - webdriver
+          requires:
+            - prepack
+      - test:
+          name: "test-interactor"
+          scope: interactors
+          package: html
+          prepack: false
           requires:
             - prepack
       - integrations:

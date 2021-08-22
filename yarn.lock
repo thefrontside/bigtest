@@ -1708,6 +1708,17 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
+"@bigtest/interactor@0.31.1", "@bigtest/interactor@^0.31.0":
+  version "0.31.1"
+  resolved "https://registry.yarnpkg.com/@bigtest/interactor/-/interactor-0.31.1.tgz#2eb3b59730dea2b028234f999b84869544981dbc"
+  integrity sha512-bvZxHDyb9HyqgQjxfYujFIQ5spnl0WdIB5ze1jUO2Igvmq+ND/oD84IHMyG58Jhu9KfBWdk+2smF++9QcgrPbQ==
+  dependencies:
+    "@bigtest/globals" "^0.7.6"
+    "@bigtest/performance" "^0.5.0"
+    change-case "^4.1.1"
+    element-is-visible "^1.0.0"
+    lodash.isequal "^4.5.0"
+
 "@changesets/apply-release-plan@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@changesets/apply-release-plan/-/apply-release-plan-4.0.0.tgz#e78efb56a4e459a8dab814ba43045f2ace0f27c9"

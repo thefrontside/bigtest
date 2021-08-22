@@ -59,7 +59,7 @@ const Datepicker = createInteractor<HTMLDivElement>("datepicker")
 const MainNav = createInteractor('main nav')
   .selector('nav')
 
-describe('@bigtest/interactor', () => {
+describe('@interactors/html', () => {
   describe('.exists', () => {
     it('can determine whether an element exists based on the interactor', async () => {
       dom(`

@@ -21,7 +21,7 @@ function shouted(value: string): Matcher<string> {
   }
 }
 
-describe('@bigtest/interactor', () => {
+describe('@interactors/html', () => {
   describe('matchers', () => {
     it('can use matcher on locator when locating element', async () => {
       dom(`

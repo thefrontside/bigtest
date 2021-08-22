@@ -4,7 +4,7 @@ import { dom } from '../helpers';
 
 import { HTML, and, including } from '../../src/index';
 
-describe('@bigtest/interactor', () => {
+describe('@interactors/html', () => {
   describe('and', () => {
     it('can check whether the given value matches all of the given matchers', async () => {
       dom(`

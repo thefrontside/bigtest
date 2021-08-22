@@ -9,7 +9,7 @@ const MainNav = createInteractor('main nav')({
   selector: 'nav'
 });
 
-describe('@bigtest/interactor', () => {
+describe('@interactors/html', () => {
   describe('instantiation', () => {
     describe('no arguments', () => {
       it('just uses the selector to locate', async () => {
