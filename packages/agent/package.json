@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/agent",
-  "version": "0.17.2",
+  "version": "0.17.3",
   "description": "Agent for connecting test environments (browsers) to BigTest",
   "main": "dist/src/index.js",
   "types": "dist/index.d.ts",

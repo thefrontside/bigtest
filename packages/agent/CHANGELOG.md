@@ -1,5 +1,11 @@
 # @bigtest/agent
 
+## 0.17.3
+
+### Patch Changes
+
+- 4f6d6e1e: Update @bigtest/interactor dependencies to @interactors/html
+
 ## 0.17.2
 
 ### Patch Changes
