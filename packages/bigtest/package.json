@@ -28,8 +28,8 @@
   },
   "dependencies": {
     "@bigtest/cli": "0.19.0",
-    "@bigtest/interactor": "0.31.1",
-    "@bigtest/suite": "0.11.3"
+    "@bigtest/suite": "0.11.3",
+    "@interactors/html": "^0.31.2"
   },
   "volta": {
     "node": "12.16.0",
