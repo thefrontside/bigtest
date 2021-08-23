@@ -95,7 +95,7 @@ export function createAgentRunner(options: RunnerOptions): Resource<Runner> {
               }
 
               // todo: we should perform filtering of the agents here
-              let agents: AgentState[] = Object.values(options.atom.get().agents);
+              let agents: AgentState[] = Object.values(options.atom.get().agents).filter(Boolean);
 
               let result = resultsFor(test);
 

@@ -48,7 +48,7 @@ export function createConnectionServer(options: ConnectionServerOptions): Resour
             internal.send({ ...message, agentId: connection.agentId });
           });
 
-          console.debug(`[connection] disconnected ${connection.agentId} [${code}${reason ? `: ${reason}` : ''}]`);
+          console.log(`[connection] disconnected ${connection.agentId} [${code}${reason ? `: ${reason}` : ''}]`);
 
           agent.remove();
         }));
