@@ -7,6 +7,7 @@ const cypressTemplate = ({ dependencies }) => {
       },
       "dependencies": {
         "@bigtest/cypress": `${dependencies['@bigtest/cypress']}`,
+        "cypress": `${dependencies['cypress']}`,
         "eslint-plugin-cypress": `${dependencies['eslint-plugin-cypress']}`,
         "start-server-and-test": `${dependencies['start-server-and-test']}`
       },
