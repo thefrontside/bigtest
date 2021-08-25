@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /// <reference types="cypress" />
 import { bigtestGlobals, RunnerState } from '@bigtest/globals';
-import { Interaction, ReadonlyInteraction } from '@interactors/html';
+import { Interaction, isInteraction, ReadonlyInteraction } from '@interactors/html';
 
 declare global {
   namespace Cypress {
@@ -31,6 +31,10 @@ function interact(
   })
 };
 
+function isInteractions(interactions: unknown[]): interactions is ReadonlyInteraction<void>[] {
+  return interactions.every(isInteraction)
+}
+
 if (typeof Cypress !== 'undefined' ) {
   Cypress.Commands.add('do', (
     interaction: Interaction<void> | Interaction<void>[]
@@ -42,13 +46,30 @@ if (typeof Cypress !== 'undefined' ) {
     }
   });
 
+  // NOTE: Save the original `expect` assertion method
+  let chaiExpect = cy.expect as (value: unknown) => unknown
+
+  // NOTE: Add interaction assertion function, Cypress also overrides `expect` method to a wrapper function
   Cypress.Commands.add('expect', (
     interaction: ReadonlyInteraction<void> | ReadonlyInteraction<void>[]
   ) => {
-    if(Array.isArray(interaction)){
-      interaction.map(interaction => interact(interaction, 'assertion'));
+    let interactions = Array.isArray(interaction) ? interaction : [interaction]
+    interactions.map(interaction => interact(interaction, 'assertion'));
+  })
+
+  // NOTE: Save the new `expect` method in which is wrapped our assertion function
+  let interactionExpect = cy.expect
+
+  // NOTE: Override Cypress's wrapper to our combined `expect`
+  // @ts-expect-error TypeScript complains that signature doesn't match with declared one
+  cy.expect = (
+    interaction: ReadonlyInteraction<void> | ReadonlyInteraction<void>[] | unknown
+  ) => {
+    let interactions = Array.isArray(interaction) ? interaction : [interaction]
+    if (isInteractions(interactions)) {
+      return interactionExpect(interactions)
     } else {
-      interact(interaction, 'assertion');
+      return chaiExpect(interaction)
     }
-  });
+  }
 };

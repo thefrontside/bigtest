@@ -27,4 +27,7 @@ describe('Cypress with Interactors', () => {
         Button(matching(/SI(.*)IN/)).exists()
       ]);
   });
+  it("cypress integration shouldn't break the built-in `should` assertion", () => {
+    cy.wrap({ a: 1 }).should('eql', { a: 1 })
+  });
 });
