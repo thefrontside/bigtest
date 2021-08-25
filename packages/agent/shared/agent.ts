@@ -11,16 +11,16 @@ export interface AgentOptions {
 
 export function createAgent(socket: Socket & EventTarget, options: AgentOptions): Resource<AgentProtocol> {
   return {
-    *init(scope: Task) {
-      let subscription = createStream<Command, CloseEvent>((publish) => function*(task) {
-        task.run(on(socket, 'message')
+    *init() {
+      let subscription = yield createStream<Command, CloseEvent>(function*(publish) {
+        yield spawn(on(socket, 'message')
           .map((event) => event as MessageEvent)
           .map(event => JSON.parse(event.data) as Command)
           .forEach(publish));
 
         let closed = yield once(socket, 'close');
         return closed;
-      }).subscribe(scope);
+      });
 
       function send(message: AgentEvent): void {
         socket.send(JSON.stringify({ ...message, agentId: options.agentId }));

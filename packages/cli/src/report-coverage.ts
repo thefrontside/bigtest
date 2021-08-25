@@ -8,7 +8,7 @@ import { create as createReport } from 'istanbul-reports';
 
 import { TestResults } from './query';
 
-export const reportCoverage = (config: ProjectOptions, results: TestResults): Operation<void> => function*() {
+export function* reportCoverage(config: ProjectOptions, results: TestResults): Operation<void> {
   let coverageData = results.testRun.coverage;
   if (!coverageData) {
     console.warn("\u26a0️" + chalk.yellowBright('  coverage reporting was requested, but no coverage metrics were present in your application. This usually means that it has not been instrumented. See https://github.com/thefrontside/bigtest/issues/569 for details on how to integrate code coverage with BigTest'))
@@ -22,7 +22,7 @@ export const reportCoverage = (config: ProjectOptions, results: TestResults): Op
   }
 }
 
-const renderReports = (config: ProjectOptions, data: string): Operation<void> => function*() {
+function* renderReports(config: ProjectOptions, data: string): Operation<void> {
   let { reports, directory } = config.coverage;
 
   let coverageMap = createCoverageMap(JSON.parse(data));
