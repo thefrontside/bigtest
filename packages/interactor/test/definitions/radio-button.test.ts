@@ -3,7 +3,7 @@ import expect from 'expect';
 import { RadioButton, Heading } from '../../src/index';
 import { dom } from '../helpers';
 
-describe('@bigtest/interactor', () => {
+describe('@interactors/html', () => {
   describe('RadioButton', () => {
     it('finds `input[type=radio]` tags by label', async () => {
       dom(`

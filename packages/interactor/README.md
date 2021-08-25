@@ -1,4 +1,4 @@
-# @bigtest/interactor
+# @interactors/html
 
 Interact with applications while avoiding many classes of race conditions which
 normally plague test suites.

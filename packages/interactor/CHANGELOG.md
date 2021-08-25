@@ -1,4 +1,10 @@
-# @bigtest/interactor
+# @interactors/html
+
+## 0.31.2
+
+### Patch Changes
+
+- 799644e2: Rename @bigtest/interactor package to @interactors/html
 
 ## 0.31.1
 

@@ -31,17 +31,6 @@
     "@bigtest/suite" "^0.11.2"
     effection "^1.0.0"
 
-"@bigtest/interactor@^0.31.1":
-  version "0.31.1"
-  resolved "https://registry.yarnpkg.com/@bigtest/interactor/-/interactor-0.31.1.tgz#2eb3b59730dea2b028234f999b84869544981dbc"
-  integrity sha512-bvZxHDyb9HyqgQjxfYujFIQ5spnl0WdIB5ze1jUO2Igvmq+ND/oD84IHMyG58Jhu9KfBWdk+2smF++9QcgrPbQ==
-  dependencies:
-    "@bigtest/globals" "^0.7.6"
-    "@bigtest/performance" "^0.5.0"
-    change-case "^4.1.1"
-    element-is-visible "^1.0.0"
-    lodash.isequal "^4.5.0"
-
 "@bigtest/performance@^0.5.0":
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@bigtest/performance/-/performance-0.5.0.tgz#195f2c445cbe2ebe4357e08f7b39449240bf62d7"
@@ -136,6 +125,17 @@
   integrity sha512-tFJlT47db0kMqVm3H4nQYgn6Pwg10GTZHb1pwmSiv1K4ks6drQOtfEF5ZnPjkvC+y4/bUPHK+bc87QvLcL+WMw==
   dependencies:
     "@hapi/hoek" "^9.0.0"
+
+"@interactors/html@^0.31.2":
+  version "0.31.2"
+  resolved "https://registry.yarnpkg.com/@interactors/html/-/html-0.31.2.tgz#55979155245b7cfe6a6d000b89dafb078f09adbd"
+  integrity sha512-8Z2eb61zKtcfQASvptEkFzlqlRJYnh/fgqo8AxuDwevCRnkFHTP0HWr7mrmVQ+sR1ehAg2/B+0U4NlDjDEsCJA==
+  dependencies:
+    "@bigtest/globals" "^0.7.6"
+    "@bigtest/performance" "^0.5.0"
+    change-case "^4.1.1"
+    element-is-visible "^1.0.0"
+    lodash.isequal "^4.5.0"
 
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"
@@ -657,9 +657,9 @@ cross-spawn@^7.0.0, cross-spawn@^7.0.2:
     which "^2.0.1"
 
 cypress@^8.0.0:
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/cypress/-/cypress-8.2.0.tgz#1e4e9f6218324e82a95c1b9cad7f3965ba663d7f"
-  integrity sha512-jg7S5VxxslwsgEyAkCE9ZCkFADxOUY1bSWScp1cWnga88K0TZgFQ0zdxyG9Mw/4spLGuvkriIZ62am+TR6C04w==
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/cypress/-/cypress-8.3.0.tgz#ba906d2170888073ad94b2be1b994a749bbb7c7d"
+  integrity sha512-zA5Rcq8AZIfRfPXU0CCcauofF+YpaU9HYbfqkunFTmFV0Kdlo14tNjH2E3++MkjXKFnv3/pXq+HgxWtw8CSe8Q==
   dependencies:
     "@cypress/request" "^2.88.5"
     "@cypress/xvfb" "^1.2.4"
@@ -2107,9 +2107,9 @@ tslib@^1.8.1, tslib@^1.9.0:
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
 tslib@^2.0.3:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.1.0.tgz#da60860f1c2ecaa5703ab7d39bc05b6bf988b97a"
-  integrity sha512-hcVC3wYEziELGGmEEXue7D75zbwIIVUMWAVbHItGPx0ziyXxrOMQx4rQEVEV45Ut/1IotuEvwqPopzIOkDMf0A==
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.1.tgz#e8a335add5ceae51aa261d32a490158ef042ef01"
+  integrity sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==
 
 tsutils@^3.17.1:
   version "3.19.1"

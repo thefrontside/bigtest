@@ -3,7 +3,7 @@ import expect from 'expect';
 import { Select, Heading } from '../../src/index';
 import { dom } from '../helpers';
 
-describe('@bigtest/interactor', () => {
+describe('@interactors/html', () => {
   describe('Select', () => {
     it('finds `select` tags by label', async () => {
       dom(`

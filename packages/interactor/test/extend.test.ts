@@ -41,7 +41,7 @@ const Header = createInteractor('header')
 //@ts-ignore
 const HTMLWithNoLabel = HTML.extend()
 
-describe('@bigtest/interactor', () => {
+describe('@interactors/html', () => {
   describe('.extend', () => {
     it('can use filters from base interactor', async () => {
       dom(`

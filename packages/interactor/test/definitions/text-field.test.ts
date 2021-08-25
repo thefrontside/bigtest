@@ -3,7 +3,7 @@ import expect from 'expect';
 import { TextField, Heading } from '../../src/index';
 import { dom } from '../helpers';
 
-describe('@bigtest/interactor', () => {
+describe('@interactors/html', () => {
   describe('TextField', () => {
     it('finds `input` tags without type by label', async () => {
       dom(`

@@ -6,7 +6,7 @@ import { createInspector, createInteractor, including, Link } from '../src/index
 
 const Div = createInteractor('div').selector('div')
 
-describe('@bigtest/interactor', () => {
+describe('@interactors/html', () => {
   describe('inspector', () => {
     it('.find', async () => {
       dom(`

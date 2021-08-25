@@ -18,13 +18,13 @@
       "@bigtest/effection-express": ["packages/effection-express/src"],
       "@bigtest/eslint-plugin": ["packages/eslint-plugin/src"],
       "@bigtest/globals": ["packages/globals/src"],
-      "@bigtest/interactor": ["packages/interactor/src"],
       "@bigtest/logging": ["packages/logging/src"],
       "@bigtest/performance": ["packages/performance/src"],
       "@bigtest/project": ["packages/project/src"],
       "@bigtest/server": ["packages/server/src"],
       "@bigtest/suite": ["packages/suite/src"],
-      "@bigtest/webdriver": ["packages/webdriver/src"]
+      "@bigtest/webdriver": ["packages/webdriver/src"],
+      "@interactors/html": ["packages/interactor/src"],
     }
   }
 }

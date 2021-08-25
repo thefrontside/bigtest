@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "@bigtest/globals": "^0.7.6",
-    "@bigtest/interactor": "^0.31.1"
+    "@interactors/html": "^0.31.2"
   },
   "peerDependencies": {
     "cypress": "^6.0.0 || ^7.0.0 || ^8.0.0"
@@ -25,7 +25,7 @@
     "cypress:run": "npx cypress run --spec 'cypress/integration/*.spec.ts'",
     "test": "start-server-and-test 'npm run start' http://localhost:3000 cypress:run",
     "prepack": "tsc --build",
-    "lint":  "eslint \"src/**/*.ts\""
+    "lint": "eslint \"src/**/*.ts\""
   },
   "devDependencies": {
     "@frontside/eslint-config": "^2.0.0",
