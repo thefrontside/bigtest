@@ -1,21 +1,18 @@
 import chokidar from 'chokidar';
-import { Slice } from '@bigtest/atom';
-import { ensure } from '@bigtest/effection';
-import { throwOnErrorEvent, once, on } from '@effection/events';
+import { Slice } from '@effection/atom';
+import { throwOnErrorEvent, once, on, spawn, ensure } from 'effection';
 import fs from 'fs';
 import globby from 'globby';
 import path from 'path';
 import { ManifestGeneratorStatus } from './orchestrator/state';
-import { Operation, spawn } from 'effection';
-import {Channel} from '@effection/channel';
-import { subscribe } from '@effection/subscription';
+import { Operation, createChannel } from 'effection';
 import { assert } from 'assert-ts';
 
 const { writeFile, mkdir } = fs.promises;
 
 type WriteOptions = Required<Pick<ManifestGeneratorOptions, 'files' | 'destinationPath'>>;
 
-function* writeManifest({ files, destinationPath }: WriteOptions) {
+function* writeManifest({ files, destinationPath }: WriteOptions): Operation<void> {
   let testFiles = yield globby(files);
 
   let manifest = 'let load = (res) => res.default || res;\n';
@@ -64,8 +61,7 @@ export function* manifestGenerator(options: ManifestGeneratorOptions): Operation
     let watcher = chokidar.watch(files, { ignoreInitial: true });
 
     yield ensure(() => watcher.close());
-
-    yield throwOnErrorEvent(watcher);
+    yield spawn(throwOnErrorEvent(watcher));
 
     yield once(watcher, 'ready');
     yield writeManifest({ files, destinationPath });
@@ -74,9 +70,9 @@ export function* manifestGenerator(options: ManifestGeneratorOptions): Operation
 
     options.status.update(() => ({ type: 'ready' }));
 
-    let fileChanges = new Channel<void>();
+    let fileChanges = createChannel<void>();
 
-    let writeOperation = function *() {
+    let writeOperation = () => function*() {
       fileChanges.send();
       console.debug("[manifest generator] manifest updated");
       options.status.update(() => ({ type: 'ready' }))
@@ -85,7 +81,7 @@ export function* manifestGenerator(options: ManifestGeneratorOptions): Operation
     yield spawn(on(watcher, 'add').forEach(writeOperation));
     yield spawn(on(watcher, 'unlink').forEach(writeOperation));
 
-    yield subscribe(fileChanges).forEach(() => writeManifest(writeOptions));
+    yield fileChanges.forEach(() => writeManifest(writeOptions));
   } else {
     yield writeManifest(writeOptions);
     options.status.update(() => ({ type: 'ready' }));

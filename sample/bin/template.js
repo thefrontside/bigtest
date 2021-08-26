@@ -1,4 +1,4 @@
-const { MainError } = require('@effection/node');
+const { MainError } = require('effection');
 const merge = require('lodash.merge');
 const chalk = require('chalk');
 
@@ -28,7 +28,7 @@ function processTemplate() {
           pkgjson = merge(baseTemplate.pkgjson, bigtestTemplate.pkgjson);
           files = [...baseTemplate.files, ...bigtestTemplate.files];
           break;
-      };
+      }
     }
   } else {
     pkgjson = merge(
@@ -38,9 +38,9 @@ function processTemplate() {
       jestTemplate.pkgjson
     );
     files = [...baseTemplate.files, ...bigtestTemplate.files, ...jestTemplate.files, ...cypressTemplate.files];
-  };
-  
-  return { 
+  }
+
+  return {
     pkgjson, files, templateName
   };
 }

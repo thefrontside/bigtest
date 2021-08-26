@@ -1,8 +1,8 @@
-import { Client } from '@bigtest/client';
-import { main } from '@effection/node';
+import { createClient, Client } from '@bigtest/client';
+import { main } from 'effection';
 
 main(function* main() {
-  let client: Client = yield Client.create('ws://localhost:24002');
+  let client: Client = yield createClient('ws://localhost:24002');
 
   let [ source ]  = process.argv.slice(2);
 

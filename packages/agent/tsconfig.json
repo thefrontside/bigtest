@@ -1,22 +1,10 @@
 {
   "extends": "../../tsconfig-base.json",
-  "compilerOptions": {
-    "target": "esnext",
-    "outDir": "dist",
-    "rootDirs": ["./app", "./shared", "./src"]
-  },
-  "include": [
-    "app/**/*.ts",
-    "shared/**/*.ts",
-    "src/**/*.ts",
-  ],
-  "exclude": [
-    "../../node_modules"
-  ],
   "references": [
-    { "path": "../globals" },
-    { "path": "../interactor"},
-    { "path": "../suite" },
-    { "path": "../webdriver" }
+    { "path": "../globals/tsconfig.build.json" },
+    { "path": "../effection-express/tsconfig.build.json" },
+    { "path": "../interactor/tsconfig.build.json" },
+    { "path": "../suite/tsconfig.build.json" },
+    { "path": "../webdriver/tsconfig.build.json" }
   ]
 }

@@ -1,29 +1,26 @@
-import { subscribe, ChainableSubscribable } from '@effection/subscription';
-import { Channel } from '@effection/channel';
+import { Stream, createChannel, ChannelOptions } from 'effection';
 
-export interface Sendable<T> {
-  send(message: T): void;
+type Close<T> = (...args: T extends undefined ? [] : [T]) => void;
+
+export interface DuplexChannel<TReceive, TSend, TClose = undefined> extends Stream<TReceive, TClose> {
+  send(message: TSend): void;
+  close: Close<TClose>;
+  stream: Stream<TReceive, TClose>;
 }
 
-export type DuplexChannel<S, R, RReturn = undefined> = ChainableSubscribable<R, RReturn> & Sendable<S>;
+export type DuplexChannelPair<TLeft, TRight, TClose = undefined> = [DuplexChannel<TLeft, TRight, TClose>, DuplexChannel<TRight, TLeft, TClose>]
 
-export type DuplexPair<Tx, Rx> = [DuplexChannel<Tx, Rx>, DuplexChannel<Rx, Tx>];
+export function createDuplexChannel<TLeft, TRight, TClose = undefined>(options: ChannelOptions = {}): DuplexChannelPair<TLeft, TRight, TClose> {
+  let leftChannel = createChannel<TLeft, TClose>(options);
+  let rightChannel = createChannel<TRight, TClose>(options);
 
-export function createDuplexChannel<Tx, Rx>(options: { maxListeners?: number } = {}): DuplexPair<Tx, Rx> {
-  let tx = new Channel<Tx>();
-  let rx = new Channel<Rx>();
-
-  if(options.maxListeners) {
-    tx.setMaxListeners(options.maxListeners);
-    rx.setMaxListeners(options.maxListeners);
+  let close: Close<TClose> = (...args) => {
+    leftChannel.close(...args);
+    rightChannel.close(...args);
   }
 
   return [
-    Object.assign(subscribe(rx), {
-      send: (value: Tx) => tx.send(value)
-    }),
-    Object.assign(subscribe(tx), {
-      send: (value: Rx) => rx.send(value)
-    }),
+    { send: rightChannel.send, stream: leftChannel.stream, close, ...leftChannel.stream },
+    { send: leftChannel.send, stream: rightChannel.stream, close, ...rightChannel.stream },
   ]
 }

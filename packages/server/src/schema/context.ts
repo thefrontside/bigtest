@@ -1,7 +1,7 @@
 import { TestEvent } from './test-event';
 import { Runner } from '../runner';
 
-let testRunIds = (function * () {
+let testRunIds = (function* () {
   for (let current = 1; ; current++) {
     yield `TestRun:${current}`;
   }
@@ -19,7 +19,7 @@ export class GraphqlContext {
   runTest(options: RunTestOptions): string {
     let { value: id } = this.testRunIds.next();
 
-    this.runner.run({ testRunId: id, files: options.files });
+    this.runner.runTest({ testRunId: id, files: options.files });
 
     return id;
   }

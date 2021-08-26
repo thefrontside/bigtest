@@ -1,35 +1,63 @@
-import { Operation } from 'effection';
-import { createAtom } from '@bigtest/atom';
+import { Operation, ensure } from 'effection';
+import { createAtom } from '@effection/atom';
 import { fetch } from '@effection/fetch';
-import { Driver } from '@bigtest/driver';
+import { Driver, DriverFactory } from '@bigtest/driver';
 import { assert } from 'assert-ts';
+import { findAvailablePortNumber } from './find-available-port-number';
+import { getDriverPath } from './local';
+import { daemon } from '@effection/process';
+import { untilURLAvailable } from './until-url-available';
 
-export class WebDriver implements Driver<WDSession> {
+export type WebDriver = Driver<Data>;
 
-  session: WDSession = { sessionId: '' };
+type Data = {
+  session: WDSession;
+  url: string;
+}
 
-  constructor(public serverURL: string) { }
+export const createWebDriver: DriverFactory<Data> = (options: Options) => {
+  return {
+    *init() {
+      let session: WDSession;
+      let url: string;
 
-  get description(): string {
-    return `WebDriver<${this.serverURL}/session/${this.session.sessionId}>`;
+      if(options.type === 'remote') {
+        url = options.url;
+      } else {
+        let port: number = yield findAvailablePortNumber();
+
+        url = `http://localhost:${port}`;
+
+        let bin = yield getDriverPath(parseBrowserName(options.browserName));
+
+        yield daemon(`${bin} --port=${port}`);
+
+        yield untilURLAvailable(`${url}/status`);
+      }
+
+      session = yield connect(url, options);
+
+      // local driver will shut down executable anyway, so no need to disconnect
+      if(options.type === 'remote') {
+        yield ensure(function*() {
+          yield disconnect(url, session.sessionId);
+        });
+      }
+
+      return {
+        description: `WebDriver<${url}/session/${session.sessionId}>`,
+        data: {
+          session,
+          url
+        },
+        connect(agentURL: string): Operation<void> {
+          return function*() {
+            yield post(`${url}/session/${session.sessionId}/url`, { url: agentURL });
+          }
+        }
+      }
+    }
   }
-
-  get data(): WDSession { return this.session; }
-
-  connect(agentURL: string): Operation<void> {
-    return this.navigateTo(agentURL);
-  }
-
-  *navigateTo(url: string): Operation<void> {
-    yield post(`${this.serverURL}/session/${this.session.sessionId}/url`, {
-      url,
-    });
-  }
-
-  //we need this to synchronize in testing because
-  //async finally blocks are not yet supported. It
-  //should not be used anywhere.
-  active = false;
 }
 
 /**
@@ -37,31 +65,32 @@ export class WebDriver implements Driver<WDSession> {
  * called by either the `Remote()` or `Local()` operations internally before
  * handing out a `WebDriver` resource to the public.
  */
-export function* connect(driver: WebDriver, options: Options): Operation<void> {
+export function connect(serverURL: string, options: Options): Operation<WDSession> {
+  return function*() {
+    let capabilities = createAtom(Capabilities);
 
-  let capabilities = createAtom(Capabilities);
+    if (options.headless) {
+      capabilities.slice('alwaysMatch', 'goog:chromeOptions', 'args')
+        .update(args => args.concat(['--headless']))
+      capabilities.slice('alwaysMatch', 'moz:firefoxOptions', 'args')
+        .update(args => args.concat(['--headless']))
+    }
 
-  if (options.headless) {
-    capabilities.slice('alwaysMatch', 'goog:chromeOptions', 'args')
-      .update(args => args.concat(['--headless']))
-    capabilities.slice('alwaysMatch', 'moz:firefoxOptions', 'args')
-      .update(args => args.concat(['--headless']))
+    return yield post(`${serverURL}/session`, {
+      capabilities: capabilities.get()
+    });
   }
-
-  driver.session = yield post(`${driver.serverURL}/session`, {
-    capabilities: capabilities.get()
-  });
-  driver.active = true;
 }
 
-export function* disconnect(driver: WebDriver): Operation<void> {
-  yield request(`${driver.serverURL}/session/${driver.session.sessionId}/window`, {
-    method: 'delete'
-  }, () => Promise.resolve());
-  driver.active = false;
+export function disconnect(serverURL: string, sessionId: string): Operation<void> {
+  return function*() {
+    yield request(`${serverURL}/session/${sessionId}/window`, {
+      method: 'delete'
+    }, () => Promise.resolve());
+  }
 }
 
-function* request<T>(url: string,init: RequestInit, handler: (response: Response) => Operation<T>): Operation<T> {
+function* request<T>(url: string, init: RequestInit, handler: (response: Response) => Operation<T>): Operation<T> {
   let response: Response = yield fetch(url, init);
   if (!response.ok) {
     let details: WDResponse;
@@ -79,14 +108,14 @@ function* request<T>(url: string,init: RequestInit, handler: (response: Response
   }
 }
 
-function* post(url: string, params: Record<string, unknown>): Operation<WDResponse> {
+function post(url: string, params: Record<string, unknown>): Operation<WDResponse> {
   let method = 'post';
   let body = JSON.stringify(params);
   let headers = {
     "Content-Type": "application/json"
   };
 
-  return yield request(url, { method, body, headers }, function*(response) {
+  return request(url, { method, body, headers }, (response) => function*() {
     let json = yield response.json();
     return json.value;
   });

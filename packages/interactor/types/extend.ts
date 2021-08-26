@@ -46,7 +46,7 @@ HTML.extend<HTMLLinkElement>('link')
 // overriding filters and actions
 const Thing = HTML.extend('thing')
   .filters({
-    id: (element) => 4
+    id: () => 4
   })
   .actions({
     click: async (interactor, value: number) => {

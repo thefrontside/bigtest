@@ -1,11 +1,10 @@
-import { describe, beforeEach, it } from 'mocha';
+import { describe, beforeEach, it } from '@effection/mocha';
 import expect from 'expect';
-import { Mailbox } from '@bigtest/effection';
-import { Slice } from '@bigtest/atom';
+import { Operation, createQueue, Queue, Subscription, spawn } from 'effection';
+import { Slice } from '@effection/atom';
+import { fetch } from '@effection/fetch';
 import { Test } from '@bigtest/suite';
-import { Client } from '@bigtest/client';
-import { ChainableSubscription } from '@effection/subscription';
-import { actions } from './helpers';
+import { createClient, Client } from '@bigtest/client';
 import { createCommandServer } from '../src/command-server';
 import { createOrchestratorAtom } from '../src/orchestrator/atom';
 import { AgentState, Manifest } from '../src/orchestrator/state';
@@ -16,18 +15,18 @@ let COMMAND_PORT = 24200;
 describe('command server', () => {
   let agents: Slice<Record<string, AgentState>>;
   let manifest: Slice<Manifest>;
-  let runs: Mailbox<RunOptions>;
+  let runs: Queue<RunOptions>;
 
-  beforeEach(async () => {
-    runs = new Mailbox();
+  beforeEach(function*() {
+    runs = createQueue();
     let atom = createOrchestratorAtom();
     agents = atom.slice('agents');
     manifest = atom.slice('manifest');
 
-    actions.fork(createCommandServer({
+    yield spawn(createCommandServer({
       status: atom.slice('commandServer'),
       runner: {
-        async run(options) {
+        async runTest(options) {
           runs.send(options);
         },
         async *subscribe() {
@@ -38,39 +37,39 @@ describe('command server', () => {
       port: COMMAND_PORT,
     }));
 
-    await actions.fork(atom.slice('commandServer', 'type').once((t) => t === 'started'));
+    yield atom.slice('commandServer').match({ type: 'started' }).expect();
   });
 
   describe('fetching the agents at the start', () => {
     let result: unknown;
-    beforeEach(async () => {
-      result = await query('agents { browser { name } }');
+    beforeEach(function*() {
+      result = yield query('agents { browser { name } }');
     });
 
-    it('contains an empty list', () => {
+    it('contains an empty list', function*() {
       expect(result).toEqual({ 'data': { 'agents': [] } });
     });
   });
 
   describe('running the entire suite', () => {
     let result: GraphQLPayload<{run: unknown}>;
-    beforeEach(async () => {
-      result = await mutation('run');
+    beforeEach(function*() {
+      result = yield mutation('run');
     });
 
-    it('returns a test run id', () => {
+    it('returns a test run id', function*() {
       expect(result.data.run).toMatch('TestRun');
     });
 
-    it('sends a message to the orchestrator telling it to start the test run', async () => {
-      let message = await actions.fork(runs.receive());
+    it('sends a message to the orchestrator telling it to start the test run', function*() {
+      let message = yield runs.expect();
       expect(message.testRunId).toEqual(result.data.run)
     });
   });
 
   describe('querying connected agents', () => {
     let result: GraphQLPayload;
-    beforeEach(async () => {
+    beforeEach(function*() {
       agents.set({
         safari: {
           "agentId": "agent.1",
@@ -93,9 +92,9 @@ describe('command server', () => {
           }
         }
       });
-      result = await query('agents { browser { name } os { name } platform { type }}');
+      result = yield query('agents { browser { name } os { name } platform { type }}');
     });
-    it('contains the agents', () => {
+    it('contains the agents', function*() {
       expect(result).toEqual({
         data: {
           agents: [
@@ -111,11 +110,11 @@ describe('command server', () => {
 
     describe('over websockets', () => {
       let wsResult: GraphQLPayload;
-      beforeEach(async () => {
-        wsResult = await websocketQuery('{agents { browser { name } os { name } platform { type }}}');
+      beforeEach(function*() {
+        wsResult = yield websocketQuery('{agents { browser { name } os { name } platform { type }}}');
       });
 
-      it('gets the same results as over http', () => {
+      it('gets the same results as over http', function*() {
         expect(wsResult).toEqual(result['data']);
       });
     });
@@ -126,7 +125,7 @@ describe('command server', () => {
     let result: unknown;
 
     let test1: Test, test2: Test;
-    beforeEach(async () => {
+    beforeEach(function*() {
       test1 = {
         description: "First Test",
         steps: [{
@@ -159,8 +158,8 @@ describe('command server', () => {
       });
     });
 
-    beforeEach(async () => {
-      result = await query(`
+    beforeEach(function*() {
+      result = yield query(`
         manifest {
           description
           children {
@@ -173,7 +172,7 @@ describe('command server', () => {
       `);
     });
 
-    it('contains the test tree', () => {
+    it('contains the test tree', function*() {
       expect(result).toMatchObject({
         data: {
           manifest: {
@@ -194,23 +193,23 @@ describe('command server', () => {
 
   describe('subscribing to a live query', () => {
     let client: Client;
-    let subscription: ChainableSubscription<unknown, unknown>;
+    let subscription: Subscription<unknown>;
     let initial: unknown;
 
-    beforeEach(async () => {
-      client = await actions.fork(Client.create(`ws://localhost:${COMMAND_PORT}`));
-      subscription = await actions.fork(client.liveQuery('{ agents { browser { name } } }'));
-      initial = await actions.fork(subscription.expect());
+    beforeEach(function*(world) {
+      client = yield createClient(`ws://localhost:${COMMAND_PORT}`);
+      subscription = client.liveQuery('{ agents { browser { name } } }').subscribe(world);
+      initial = yield subscription.expect();
     });
 
-    it('contains the initial result of the query', () => {
+    it('contains the initial result of the query', function*() {
       expect(initial).toEqual({ agents: [] });
     });
 
     describe('when another agent is added', () => {
       let second: unknown;
 
-      beforeEach(async () => {
+      beforeEach(function*() {
         agents.set({
           safari: {
             "agentId": "agent.1",
@@ -233,10 +232,10 @@ describe('command server', () => {
             }
           }
         });
-        second = await actions.fork(subscription.first());
+        second = yield subscription.first();
       });
 
-      it('publishes the new state', () => {
+      it('publishes the new state', function*() {
         expect(second).toBeDefined();
         expect(second).toEqual({
           agents: [{
@@ -254,27 +253,28 @@ interface GraphQLPayload<T = unknown> {
   data: T;
 }
 
-async function query<T>(text: string): Promise<GraphQLPayload<T>> {
-  let response = await actions.fetch(`http://localhost:${COMMAND_PORT}?query={${encodeURIComponent(text)}}`);
-  return await response.json();
+function query<T>(text: string): Operation<GraphQLPayload<T>> {
+  return function*() {
+    return yield fetch(`http://localhost:${COMMAND_PORT}?query={${encodeURIComponent(text)}}`).json();
+  }
 }
 
-async function mutation<T>(text: string): Promise<GraphQLPayload<T>> {
-  let body = `mutation { ${text} }`
-  let response = await actions.fetch(`http://localhost:${COMMAND_PORT}`, {
-    method: "POST",
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({ query: body })
-  });
-  return await response.json();
+function mutation<T>(text: string): Operation<GraphQLPayload<T>> {
+  return function*() {
+    return yield fetch(`http://localhost:${COMMAND_PORT}`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        query: `mutation { ${text} }`
+      })
+    }).json();
+  }
 }
 
-async function websocketQuery(text: string) {
-  return await actions.fork(function*() {
-    let client = yield Client.create(`ws://localhost:${COMMAND_PORT}`);
-    return yield client.query(text);
-  });
+function* websocketQuery(text: string): Operation<unknown> {
+  let client: Client = yield createClient(`ws://localhost:${COMMAND_PORT}`);
+  return yield client.query(text);
 }

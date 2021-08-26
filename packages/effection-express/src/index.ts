@@ -1,4 +1,4 @@
-import { Operation, resource, spawn } from 'effection';
+import { Operation, Resource, Subscription, createStream, ensure, spawn } from 'effection';
 import actualExpress from 'express';
 import WebSocket from 'ws';
 import ews from 'express-ws';
@@ -6,11 +6,9 @@ import { promisify } from 'util';
 import { Server } from 'http';
 
 import { throwOnErrorEvent, once, on } from '@effection/events';
-import { Subscribable, SymbolSubscribable, Subscription, subscribe, createSubscription } from '@effection/subscription';
-import { ensure } from '@bigtest/effection';
 
 type OperationRequestHandler = (req: actualExpress.Request, res: actualExpress.Response) => Operation<void>;
-type WsOperationRequestHandler = (socket: Socket, req: actualExpress.Request) => Operation<void>;
+type WsOperationRequestHandler<TReceive, TSend> = (socket: Socket<TReceive, TSend>, req: actualExpress.Request) => Operation<void>;
 
 export type Response = actualExpress.Response;
 export type Request = actualExpress.Request;
@@ -20,97 +18,91 @@ export interface CloseEvent {
   readonly reason: string;
 }
 
-// JSON.parse return type is `any`, so that's the type
-// of the subscription
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class Socket implements Subscribable<any, CloseEvent> {
-  constructor(public raw: WebSocket) {}
-
-  *send(data: unknown): Operation<void> {
-    if(this.raw.readyState === 1) {
-      yield promisify<string, void>(this.raw.send.bind(this.raw))(JSON.stringify(data));
-    }
-  }
-
-  // JSON.parse return type is `any`, so that's the type
-  // of the subscription
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  *[SymbolSubscribable](): Operation<Subscription<any, CloseEvent>> {
-    let { raw } = this;
-    return yield createSubscription(function*(publish) {
-      yield spawn(subscribe(on<MessageEvent[]>(raw, 'message')
-                            .map(([event]) => JSON.parse(event.data)))
-                  .forEach(function*(message) {
-                    publish(message);
-                  }));
-
-      let [close]: [CloseEvent] = yield once(raw, 'close');
-      return { code: close.code || 1006, reason: close.reason || ''};
-    });
-  }
+export type Socket<TReceive = unknown, TSend = TReceive> = Subscription<TReceive, CloseEvent> & {
+  send(data: TSend): Operation<void>;
+  subscription: Subscription<TReceive, CloseEvent>;
+  raw: WebSocket,
 }
 
-export class Express {
-  private server?: Server;
+export interface Express {
+  use(handler: OperationRequestHandler): void;
+  get(path: string, handler: OperationRequestHandler): void;
+  ws<TReceive = unknown, TSend = unknown>(path: string, handler: WsOperationRequestHandler<TReceive, TSend>): void;
+  listen(port: number): Operation<Server>;
+  join(): Operation<void>;
+  raw: ews.Application;
+}
 
-  constructor(public raw: ews.Application) {}
+export function express(): Resource<Express> {
+  return {
+    *init(scope) {
+      let raw = ews(actualExpress()).app;
+      let server: Server;
 
-  *use(handler: OperationRequestHandler): Operation<Record<string, never>> {
-    return yield resource({}, (controls) => {
-      this.raw.use((req, res) => {
-        controls.spawn(function*() {
-          yield handler(req, res);
-        });
-      });
-    });
-  }
+      return {
+        raw,
 
-  *get(path: string, handler: OperationRequestHandler): Operation<Record<string, never>> {
-    return yield resource({}, (controls) => {
-      this.raw.get(path, (req, res) => {
-        controls.spawn(function*() {
-          yield handler(req, res);
-        });
-      });
-    });
-  }
+        use(handler) {
+          raw.use((req, res) => {
+            scope.run(function*() {
+              yield handler(req, res);
+            });
+          });
+        },
 
-  *ws(path: string, handler: WsOperationRequestHandler): Operation<Record<string, never>> {
-    return yield resource({}, (controls) => {
-      this.raw.ws(path, (socket, req) => {
-        controls.spawn(function*(): Operation<void> {
-          try {
-            yield handler(new Socket(socket), req);
-          } finally {
-            socket.close();
-            req.destroy();
+        get(path, handler) {
+          raw.get(path, (req, res) => {
+            scope.run(function*() {
+              yield handler(req, res);
+            });
+          });
+        },
+
+        ws<TReceive = unknown, TSend = unknown>(path: string, handler: WsOperationRequestHandler<TReceive, TSend>): void {
+          raw.ws(path, (rawSocket, req) => {
+            scope.run(function*() {
+              try {
+                let subscription: Subscription<TReceive, CloseEvent> = yield createStream<TReceive, CloseEvent>(function*(publish) {
+                  yield spawn(on<MessageEvent>(rawSocket, 'message').map((event) => JSON.parse(event.data)).forEach(publish));
+                  let close: CloseEvent = yield once(rawSocket, 'close');
+                  return { code: close.code || 1006, reason: close.reason || ''};
+                });
+                let socket: Socket<TReceive, TSend> = {
+                  ...subscription,
+                  subscription,
+                  raw: rawSocket,
+                  send: (data: TSend) => function*() {
+                    if(rawSocket.readyState === 1) {
+                      yield promisify<string, void>(rawSocket.send.bind(rawSocket))(JSON.stringify(data));
+                    }
+                  }
+                }
+                yield handler(socket, req);
+              } finally {
+                rawSocket.close();
+                req.destroy();
+              }
+            });
+          })
+        },
+
+        *listen(port) {
+          server = raw.listen(port);
+
+          scope.run(throwOnErrorEvent(server));
+          scope.run(ensure(() => { server.close() }));
+
+          yield once(server, "listening");
+
+          return server;
+        },
+
+        *join() {
+          if (server) {
+            yield once(server, 'close');
           }
-        });
-      })
-    })
-  }
-
-  *listen(port: number): Operation<Server> {
-    let server = this.server = this.raw.listen(port);
-
-    let res = yield resource(server, function*() {
-      yield throwOnErrorEvent(server);
-      yield ensure(() => server.close());
-      yield;
-    });
-
-    yield once(server, "listening");
-
-    return res;
-  }
-
-  *join(): Operation<void> {
-    if (this.server) {
-      yield once(this.server, 'close');
+        }
+      }
     }
   }
-}
-
-export function express(): Express {
-  return new Express(ews(actualExpress()).app);
 }

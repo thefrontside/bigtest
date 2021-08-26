@@ -1,7 +1,5 @@
-import { Operation, resource, timeout } from 'effection';
+import { Resource, spawn, ensure, sleep, createChannel, Stream, Channel } from 'effection';
 import { on } from '@effection/events';
-import { Subscribable, SymbolSubscribable, Subscription } from '@effection/subscription';
-import { Channel } from '@effection/channel';
 import { watch, rollup, OutputOptions, InputOptions, RollupWatchOptions, RollupWatcherEvent, RollupWatcher, RollupBuild } from 'rollup';
 import { defaultTSConfig, jsTSConfig } from '@bigtest/project';
 import resolve, {
@@ -24,7 +22,7 @@ interface BundleOptions {
 
 function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMessage>): InputOptions {
   let hasTsConfig = typeof bundle.tsconfig !== 'undefined';
-  
+
   return {
     input: bundle.entry,
     onwarn(warning){
@@ -81,65 +79,64 @@ function prepareWatchOptions(bundle: BundleOptions, channel: Channel<BundlerMess
   }
 }
 
-export class Bundler implements Subscribable<BundlerMessage, undefined> {
-  private channel = new Channel<BundlerMessage>();
+export type Bundler = Stream<BundlerMessage>;
 
-  static *create(options: BundleOptions): Operation<Bundler> {
-    let bundler = new Bundler(options);
+export function createBundler(options: BundleOptions): Resource<Bundler> {
+  if(options.watch) {
+    return createBundlerWatch(options);
+  } else {
+    return createBundlerBuild(options);
+  }
+}
 
-    if(options.watch) {
-      return yield resource(bundler, bundler.watch());
-    } else {
-      return yield resource(bundler, bundler.build());
+export function createBundlerWatch(options: BundleOptions): Resource<Bundler> {
+  return {
+    *init() {
+      let channel = createChannel<BundlerMessage>();
+      let watcher: RollupWatcher = watch(prepareWatchOptions(options, channel));
+
+      yield ensure(() => { watcher.close() });
+      yield spawn(
+        on<RollupWatcherEvent>(watcher, 'event')
+          .filter(event => ['START', 'END', 'ERROR'].includes(event.code))
+          .map(event => {
+            switch (event.code) {
+              case 'START':
+                return { type: 'START' } as const;
+              case 'END':
+                return { type: 'UPDATE' } as const;
+              case 'ERROR':
+                return { type: 'ERROR', error: event.error } as const;
+              default:
+                throw new Error(`unexpect event ${event.code}`);
+            }
+          })
+          .forEach(m => channel.send(m))
+      )
+
+      return channel.stream;
     }
   }
+}
+export function createBundlerBuild(options: BundleOptions): Resource<Bundler> {
+  return {
+    *init() {
+      let channel = createChannel<BundlerMessage>();
 
-  constructor(public options: BundleOptions) {};
+      yield spawn(function*() {
+        yield sleep(1); // send start event asynchronously, so we have a chance to subscribe
 
-  [SymbolSubscribable](): Operation<Subscription<BundlerMessage, undefined>> {
-    return this.channel[SymbolSubscribable]();
-  }
+        channel.send({ type: 'START' });
+        try {
+          let result: RollupBuild = yield rollup(prepareInputOptions(options, channel));
+          yield result.write(prepareOutputOptions(options));
 
-  private *watch() {
-    let { channel } = this;
-    let rollup: RollupWatcher = watch(prepareWatchOptions(this.options, channel));
-
-    try {
-      let messages = on(rollup, 'event')
-        .map(([event]) => event as RollupWatcherEvent)
-        .filter(event => ['START', 'END', 'ERROR'].includes(event.code))
-        .map(event => {
-          switch (event.code) {
-            case 'START':
-              return { type: 'START' } as const;
-            case 'END':
-              return { type: 'UPDATE' } as const;
-            case 'ERROR':
-              return { type: 'ERROR', error: event.error } as const;
-            default:
-              throw new Error(`unexpect event ${event.code}`);
-          }
-        });
-
-      yield messages.forEach(function* (message) {
-        channel.send(message);
+          channel.send({ type: 'UPDATE' });
+        } catch(error) {
+          channel.send({ type: 'ERROR', error });
+        }
       });
-    } finally {
-      console.debug('[bundler] shutting down');
-      rollup.close();
-    }
-  }
-
-  private *build() {
-    yield timeout(0); // send start event asynchronously, so we have a chance to subscribe
-    this.channel.send({ type: 'START' });
-    try {
-      let result: RollupBuild = yield rollup(prepareInputOptions(this.options, this.channel));
-      yield result.write(prepareOutputOptions(this.options));
-
-      this.channel.send({ type: 'UPDATE' });
-    } catch(error) {
-      this.channel.send({ type: 'ERROR', error });
+      return channel.stream;
     }
   }
 }

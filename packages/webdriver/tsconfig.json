@@ -1,25 +1,13 @@
 {
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
-    "target": "esnext",
-    "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": false,
     "strictFunctionTypes": false,
     "strictNullChecks": false,
-    "outDir": "dist",
-    "rootDir": "./src"
   },
-  "include": [
-    "src/**/*.ts",
-    "bin/*.ts"
-  ],
-  "exclude": [
-    "../../node_modules"
-  ],
   "references": [
-    { "path": "../atom" },
-    { "path": "../driver" },
-    { "path": "../effection-express" }
+    { "path": "../driver/tsconfig.build.json" },
+    { "path": "../effection-express/tsconfig.build.json" }
   ]
 }

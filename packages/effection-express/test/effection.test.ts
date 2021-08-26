@@ -1,35 +1,33 @@
-import { describe, beforeEach, it } from 'mocha';
+import { describe, beforeEach, it } from '@effection/mocha';
 import expect from 'expect';
 import fetch, { Response } from 'node-fetch';
 
-import { run } from './helpers';
 import { Express, express } from '../src/index';
 
 describe('express', () => {
   let app: Express;
 
-  beforeEach(async () => {
+  beforeEach(function*() {
+    app = yield express();
 
-    app = express();
-
-    await run(app.use(function*(req, res) {
+    app.use((req, res) => function*() {
       res.send("hello");
       res.end();
-    }));
+    });
 
-    await run(app.listen(26000));
+    yield app.listen(26000);
   });
 
   describe('sending requests to the express app', () => {
     let response: Response;
     let text: string;
 
-    beforeEach(async () => {
-      response = await fetch("http://localhost:26000");
-      text = await response.text();
+    beforeEach(function*() {
+      response = yield fetch("http://localhost:26000");
+      text = yield response.text();
     });
 
-    it('contains response text from express', () => {
+    it('contains response text from express', function*() {
       expect(response.status).toEqual(200);
       expect(text).toEqual("hello");
     });

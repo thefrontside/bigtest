@@ -1,21 +1,19 @@
-import { describe, beforeEach, it } from 'mocha';
+import { describe, beforeEach, it } from '@effection/mocha';
 import expect from 'expect';
 
-import { ChainableSubscription } from '@effection/subscription';
+import { Subscription } from 'effection';
 
-import { createAtom, Slice } from '@bigtest/atom';
+import { createAtom, Slice } from '@effection/atom';
 
 import { resultStream } from '../src/result-stream';
 import { TestRunState } from '../src/orchestrator/state';
 import { TestEvent } from '../src/schema/test-event';
 
-import { actions } from './helpers';
-
 describe('result stream', () => {
   let slice: Slice<TestRunState>;
-  let subscription: ChainableSubscription<TestEvent, void>;
+  let subscription: Subscription<TestEvent, void>;
 
-  beforeEach(async () => {
+  beforeEach(function*(world) {
     slice = createAtom({
       testRunId: 'test-run-1',
       status: 'pending',
@@ -52,17 +50,17 @@ describe('result stream', () => {
       }
     } as TestRunState);
 
-    subscription = await actions.fork(resultStream('test-run-1', slice));
+    subscription = resultStream('test-run-1', slice).subscribe(world);
   });
 
   describe('steps', () => {
     describe('marking a step as running', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         slice.slice('agents', 'agent-1', 'result', 'steps', 0, 'status').set('running');
       });
 
-      it('generates a test event', async () => {
-        let { value } = await actions.fork(subscription.next());
+      it('generates a test event', function*() {
+        let { value } = yield subscription.next();
         expect(value).toMatchObject({
           type: 'step:running',
           agentId: 'agent-1',
@@ -73,12 +71,12 @@ describe('result stream', () => {
     });
 
     describe('marking a step as ok', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         slice.slice('agents', 'agent-1', 'result', 'steps', 0, 'status').set('ok');
       });
 
-      it('generates a test event', async () => {
-        let { value } = await actions.fork(subscription.next());
+      it('generates a test event', function*() {
+        let { value } = yield subscription.next();
         expect(value).toMatchObject({
           type: 'step:result',
           status: 'ok',
@@ -90,7 +88,7 @@ describe('result stream', () => {
     });
 
     describe('marking a step as failed', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         slice.slice('agents', 'agent-1', 'result', 'steps', 0).update((s) => ({
           ...s,
           status: 'failed',
@@ -99,8 +97,8 @@ describe('result stream', () => {
         }));
       });
 
-      it('generates a test event', async () => {
-        let { value } = await actions.fork(subscription.next());
+      it('generates a test event', function*() {
+        let { value } = yield subscription.next();
         expect(value).toMatchObject({
           type: 'step:result',
           status: 'failed',
@@ -116,12 +114,12 @@ describe('result stream', () => {
 
   describe('assertions', () => {
     describe('marking a assertion as running', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         slice.slice('agents', 'agent-1', 'result', 'assertions', 0, 'status').set('running');
       });
 
-      it('generates a test event', async () => {
-        let { value } = await actions.fork(subscription.next());
+      it('generates a test event', function*() {
+        let { value } = yield subscription.next();
         expect(value).toMatchObject({
           type: 'assertion:running',
           agentId: 'agent-1',
@@ -132,12 +130,12 @@ describe('result stream', () => {
     });
 
     describe('marking a assertion as ok', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         slice.slice('agents', 'agent-1', 'result', 'assertions', 0, 'status').set('ok');
       });
 
-      it('generates a test event', async () => {
-        let { value } = await actions.fork(subscription.next());
+      it('generates a test event', function*() {
+        let { value } = yield subscription.next();
         expect(value).toMatchObject({
           type: 'assertion:result',
           status: 'ok',
@@ -149,7 +147,7 @@ describe('result stream', () => {
     });
 
     describe('marking a assertion as failed', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         slice.slice('agents', 'agent-1', 'result', 'assertions', 0).update((s) => ({
           ...s,
           status: 'failed',
@@ -158,8 +156,8 @@ describe('result stream', () => {
         }));
       });
 
-      it('generates a test event', async () => {
-        let { value } = await actions.fork(subscription.next());
+      it('generates a test event', function*() {
+        let { value } = yield subscription.next();
         expect(value).toMatchObject({
           type: 'assertion:result',
           status: 'failed',
@@ -175,12 +173,12 @@ describe('result stream', () => {
 
   describe('tests', () => {
     describe('marking a test as running', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         slice.slice('agents', 'agent-1', 'result', 'status').set('running');
       });
 
-      it('generates a test event', async () => {
-        let { value } = await actions.fork(subscription.next());
+      it('generates a test event', function*() {
+        let { value } = yield subscription.next();
         expect(value).toMatchObject({
           type: 'test:running',
           agentId: 'agent-1',
@@ -191,12 +189,12 @@ describe('result stream', () => {
     });
 
     describe('marking a test as ok', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         slice.slice('agents', 'agent-1', 'result', 'status').set('ok');
       });
 
-      it('generates a test event', async () => {
-        let { value } = await actions.fork(subscription.next());
+      it('generates a test event', function*() {
+        let { value } = yield subscription.next();
         expect(value).toMatchObject({
           type: 'test:result',
           status: 'ok',
@@ -208,7 +206,7 @@ describe('result stream', () => {
     });
 
     describe('marking a test as failed', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         slice.slice('agents', 'agent-1', 'result').update((s) => ({
           ...s,
           status: 'failed',
@@ -217,8 +215,8 @@ describe('result stream', () => {
         }));
       });
 
-      it('generates a test event', async () => {
-        let { value } = await actions.fork(subscription.next());
+      it('generates a test event', function*() {
+        let { value } = yield subscription.next();
         expect(value).toMatchObject({
           type: 'test:result',
           status: 'failed',
@@ -234,12 +232,12 @@ describe('result stream', () => {
 
   describe('agents', () => {
     describe('marking a agent as running', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         slice.slice('agents', 'agent-1', 'status').set('running');
       });
 
-      it('generates a test event', async () => {
-        let { value } = await actions.fork(subscription.next());
+      it('generates a test event', function*() {
+        let { value } = yield subscription.next();
         expect(value).toMatchObject({
           type: 'testRunAgent:running',
           agentId: 'agent-1',
@@ -249,12 +247,12 @@ describe('result stream', () => {
     });
 
     describe('marking a agent as ok', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         slice.slice('agents', 'agent-1', 'status').set('ok');
       });
 
-      it('generates a test event', async () => {
-        let { value } = await actions.fork(subscription.next());
+      it('generates a test event', function*() {
+        let { value } = yield subscription.next();
         expect(value).toMatchObject({
           type: 'testRunAgent:result',
           status: 'ok',
@@ -265,7 +263,7 @@ describe('result stream', () => {
     });
 
     describe('marking a agent as failed', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         slice.slice('agents', 'agent-1').update((s) => ({
           ...s,
           status: 'failed',
@@ -274,8 +272,8 @@ describe('result stream', () => {
         }));
       });
 
-      it('generates a test event', async () => {
-        let { value } = await actions.fork(subscription.next());
+      it('generates a test event', function*() {
+        let { value } = yield subscription.next();
         expect(value).toMatchObject({
           type: 'testRunAgent:result',
           status: 'failed',
@@ -290,12 +288,12 @@ describe('result stream', () => {
 
   describe('test run', () => {
     describe('marking a test run as running', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         slice.slice('status').set('running');
       });
 
-      it('generates a test event', async () => {
-        let { value } = await actions.fork(subscription.next());
+      it('generates a test event', function*() {
+        let { value } = yield subscription.next();
         expect(value).toMatchObject({
           type: 'testRun:running',
           testRunId: 'test-run-1'
@@ -304,12 +302,12 @@ describe('result stream', () => {
     });
 
     describe('marking a test run as ok', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         slice.slice('status').set('ok');
       });
 
-      it('generates a test event', async () => {
-        let { value } = await actions.fork(subscription.next());
+      it('generates a test event', function*() {
+        let { value } = yield subscription.next();
         expect(value).toMatchObject({
           type: 'testRun:result',
           status: 'ok',
@@ -319,7 +317,7 @@ describe('result stream', () => {
     });
 
     describe('marking a test run as failed', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         slice.update((s) => ({
           ...s,
           status: 'failed',
@@ -328,8 +326,8 @@ describe('result stream', () => {
         }));
       });
 
-      it('generates a test event', async () => {
-        let { value } = await actions.fork(subscription.next());
+      it('generates a test event', function*() {
+        let { value } = yield subscription.next();
         expect(value).toMatchObject({
           type: 'testRun:result',
           status: 'failed',
@@ -342,7 +340,7 @@ describe('result stream', () => {
   });
 
   describe('finishing all items', () => {
-    beforeEach(() => {
+    beforeEach(function*() {
       slice.slice('status').set('ok');
       slice.slice('agents', 'agent-1', 'status').set('ok');
       slice.slice('agents', 'agent-1', 'result', 'status').set('ok');
@@ -355,16 +353,16 @@ describe('result stream', () => {
       slice.slice('agents', 'agent-1', 'result', 'children', 0, 'assertions', 0, 'status').set('ok');
     });
 
-    it('terminates subscription', async() => {
+    it('terminates subscription', function*() {
       while(true) {
-        let { done } = await actions.fork(subscription.next());
+        let { done } = yield subscription.next();
         if(done) break;
       }
     });
   });
 
   describe('on an already finished run', () => {
-    beforeEach(async () => {
+    beforeEach(function*(world) {
       slice.slice('status').set('ok');
       slice.slice('agents', 'agent-1', 'status').set('ok');
       slice.slice('agents', 'agent-1', 'result', 'status').set('ok');
@@ -375,24 +373,25 @@ describe('result stream', () => {
       slice.slice('agents', 'agent-1', 'result', 'children', 0, 'status').set('ok');
       slice.slice('agents', 'agent-1', 'result', 'children', 0, 'steps', 0, 'status').set('ok');
       slice.slice('agents', 'agent-1', 'result', 'children', 0, 'assertions', 0, 'status').set('ok');
-      subscription = await actions.fork(resultStream('test-run-1', slice));
+      subscription = resultStream('test-run-1', slice).subscribe(world);
     });
 
-    it('terminates subscription', async() => {
+    it('terminates subscription', function*() {
       while(true) {
-        let { done } = await actions.fork(subscription.next());
+        let { done } = yield subscription.next();
         if(done) break;
       }
     });
 
-    it('generates a result event for each result', async () => {
-      await actions.fork(subscription.match({
+    it('generates a result event for each result', function*() {
+      let { value } = yield subscription.next();
+      expect(value).toMatchObject({
         type: 'step:result',
         status: 'failed',
         agentId: 'agent-1',
         testRunId: 'test-run-1',
         path: ['some test', '0:step one'],
-      }).expect());
+      });
     });
   });
 });

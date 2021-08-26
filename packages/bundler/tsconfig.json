@@ -1,6 +1,7 @@
 {
-  "extends": "@frontside/tsconfig",
-  "compilerOptions": {
-    "outDir": "dist"
-  }
+  "extends": "../../tsconfig-base.json",
+  "references": [
+    { "path": "../project/tsconfig.build.json" },
+    { "path": "../effection/tsconfig.build.json" }
+  ]
 }

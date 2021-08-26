@@ -1,9 +1,8 @@
-import { Operation, timeout, spawn } from 'effection';
+import { Operation, sleep, spawn } from 'effection';
 import { fetch } from '@effection/fetch';
-import { exec, Process } from '@effection/node';
-import process from 'process';
+import { exec, Process  } from '@effection/process';
 import { AppServerStatus } from './orchestrator/state';
-import { Slice } from '@bigtest/atom';
+import { Slice } from '@effection/atom';
 import { assert } from 'assert-ts';
 
 interface AppServerOptions {
@@ -18,23 +17,24 @@ export function* appServer(options: AppServerOptions): Operation<void> {
   assert(!!options.url, 'no app url given');
 
   if (options.command) {
-    console.debug('[app] starting app with command:', options.command);
     let child: Process = yield exec(options.command as string, {
       cwd: options.dir,
       env: Object.assign({}, process.env, options.env),
+      buffered: true,
     });
 
     yield spawn(function* () {
       let exitStatus = yield child.join();
-
-      options.status.set({ type: 'exited', exitStatus });
+      let stdout = yield child.stdout.expect();
+      let stderr = yield child.stderr.expect();
+      options.status.set({ type: 'exited', exitStatus: { ...exitStatus, stdout, stderr }});
     });
   }
 
   options.status.set({ type: 'started' });
 
   while(!(yield isReachable(options.url))) {
-    yield timeout(100);
+    yield sleep(100);
   }
 
   options.status.set({ type: 'available' });
@@ -42,7 +42,7 @@ export function* appServer(options: AppServerOptions): Operation<void> {
   yield;
 }
 
-function* isReachable(url: string) {
+function* isReachable(url: string): Operation<boolean> {
   try {
     let response: Response = yield fetch(url);
     return response.ok;

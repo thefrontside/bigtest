@@ -4,7 +4,7 @@ import { promises as fs, existsSync } from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 
-import { Prompt } from './prompt';
+import { createPrompt } from './prompt';
 
 const GIT_IGNORE = '.gitignore';
 
@@ -13,7 +13,7 @@ function formatJSON(value: unknown): string {
 }
 
 export function* init(configFile: string): Operation<void> {
-  let prompt = yield Prompt.create();
+  let prompt = yield createPrompt();
 
   let isYarn = !!getConfigFilePath('yarn.lock');
 

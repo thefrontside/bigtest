@@ -19,7 +19,7 @@ export function getConfigFilePath(fileName = 'bigtest.json'): string | undefined
   } while(dir !== '/');
 }
 
-export function *loadConfigFile(configFilePath: string): Operation<ProjectOptions> {
+export function* loadConfigFile(configFilePath: string): Operation<ProjectOptions> {
   let contents = yield readFile(configFilePath);
   return JSON.parse(contents) as ProjectOptions;
 }

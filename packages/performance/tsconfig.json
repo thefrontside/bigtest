@@ -1,6 +1,3 @@
 {
-  "extends": "@frontside/tsconfig",
-  "include": [
-    "./index.ts"
-  ]
+  "extends": "../../tsconfig-base.json"
 }

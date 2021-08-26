@@ -1,22 +1,18 @@
 import expect from 'expect';
-import { spawn } from './helpers';
+import { describe, it, beforeEach, captureError } from '@effection/mocha';
 
-import { Driver, load } from '../index';
+import { Driver, importDriver } from '../index';
 
 describe('loading a driver', () => {
   describe('when the driver module cannot be found', () => {
     let error: Error;
-    beforeEach(async () => {
-      try {
-        await spawn(load({
-          module: 'wut'
-        }));
-      } catch (e) {
-        error = e;
-      }
+    beforeEach(function*() {
+      error = yield captureError(importDriver({
+        module: 'wut'
+      }));
     });
 
-    it('throws a driver not found error', () => {
+    it('throws a driver not found error', function*() {
       expect(error).toBeDefined();
       expect(error.name).toEqual('DriverNotFoundError');
     });
@@ -24,17 +20,13 @@ describe('loading a driver', () => {
 
   describe('missing factory function', () => {
     let error: Error;
-    beforeEach(async () => {
-      try {
-        await spawn(load({
-          module: './test/fixtures/missing-factory-function'
-        }));
-      } catch (e) {
-        error = e;
-      }
+    beforeEach(function*() {
+      error = yield captureError(importDriver({
+        module: './test/fixtures/missing-factory-function'
+      }));
     });
 
-    it('throws an invalid driver error', () => {
+    it('throws an invalid driver error', function*() {
       expect(error).toBeDefined();
       expect(error.name).toEqual('DriverError');
     });
@@ -42,17 +34,13 @@ describe('loading a driver', () => {
 
   describe('when the driver module does not export a driver factory function', () => {
     let error: Error;
-    beforeEach(async () => {
-      try {
-        await spawn(load({
-          module: './test/fixtures/bad-factory-function'
-        }));
-      } catch (e) {
-        error = e;
-      }
+    beforeEach(function*() {
+      error = yield captureError(importDriver({
+        module: './test/fixtures/bad-factory-function'
+      }));
     });
 
-    it('throws an invalid driver error', () => {
+    it('throws an invalid driver error', function*() {
       expect(error).toBeDefined();
       expect(error.name).toEqual('DriverError');
     });
@@ -60,14 +48,14 @@ describe('loading a driver', () => {
 
   describe('when the driver module is great!', () => {
     let driver: Driver<number>;
-    beforeEach(async () => {
-      driver = await spawn(load({
+    beforeEach(function*() {
+      driver = yield importDriver({
         module: './test/fixtures/good-factory-function',
-        options: 'speedracer'
-      }));
+        options: { name: 'speedracer' }
+      });
     });
 
-    it('loads the driver', () => {
+    it('loads the driver', function*() {
       expect(driver).toBeDefined();
       expect(driver.description).toEqual('Driver<speedracer>');
       expect(driver.data).toEqual(42);

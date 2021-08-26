@@ -138,7 +138,6 @@ workflows:
             parameters:
               package:
                 - agent
-                - atom
                 - bundler
                 - cli
                 - client
@@ -176,6 +175,18 @@ workflows:
             size: "medium"
           name: "test-cli-windows"
           pre-steps:
+            - run:
+                name: "Install NVM"
+                command: choco install nvm
+            - run:
+                name: "Install Node"
+                command: nvm install 16.4.0
+            - run:
+                name: "Use Node version"
+                command: nvm use 16.4.0
+            - run:
+                name: "Install yarn"
+                command: npm install --global yarn
             - run:
                 name: "Install Microsoft Edge"
                 command: choco install microsoft-edge

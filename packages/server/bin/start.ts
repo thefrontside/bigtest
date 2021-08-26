@@ -1,4 +1,4 @@
-import { main } from '@effection/node';
+import { main } from 'effection';
 import { setLogLevel, Levels } from '@bigtest/logging';
 
 import { createServer } from '../src/index';

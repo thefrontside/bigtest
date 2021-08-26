@@ -1,13 +1,6 @@
 {
   "extends": "../../tsconfig-base.json",
-  "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "./src"
-  },
-  "include": [
-    "src/**/*.ts"
-  ],
   "references": [
-    { "path": "../driver" }
+    { "path": "../driver/tsconfig.build.json" }
   ]
 }

@@ -1,15 +1,13 @@
-import { Operation, resource } from 'effection';
-import { spawn } from 'effection';
-import { Slice } from '@bigtest/atom';
-import { Deferred } from '@bigtest/effection';
-import { load, Driver, DriverSpec } from '@bigtest/driver';
+import { Operation, createFuture, Resource, spawn } from 'effection';
+import { Slice } from '@effection/atom';
+import { importDriver, Driver, DriverSpec } from '@bigtest/driver';
 
 import { OrchestratorState } from './orchestrator/state';
 
 interface CreateOptions {
   atom: Slice<OrchestratorState>;
   connectURL(agentId: string): string;
-  drivers: Record<string, DriverSpec<unknown>>;
+  drivers: Record<string, DriverSpec>;
   launch: string[];
 }
 
@@ -17,27 +15,28 @@ export interface BrowserManager {
   ready(): Operation<void>;
 }
 
-export function* createBrowserManager(options: CreateOptions): Operation<BrowserManager> {
+export function createBrowserManager(options: CreateOptions): Resource<BrowserManager> {
+  return {
+    *init() {
+      let ready = createFuture<void>();
 
-  let ready = Deferred<void>();
+      yield spawn(function*() {
+        for (let launch of options.launch) {
+          let driverConfig = options.drivers[launch];
+          let driver: Driver = yield importDriver(driverConfig);
+          yield spawn(driver.connect(options.connectURL(launch)));
+        }
 
-  let manager: BrowserManager = {
-    *ready() { yield ready.promise; }
+        for (let launch of options.launch) {
+          yield options.atom.filter(state => state.agents[launch] != null).expect();
+        }
+
+        ready.produce({ state: 'completed', value: undefined });
+
+        yield;
+      });
+
+      return { ready: () => ready.future }
+    }
   }
-
-  return yield resource(manager, function*() {
-
-    for (let launch of options.launch) {
-      let driver: Driver = yield load(options.drivers[launch]);
-      yield spawn(driver.connect(options.connectURL(launch)));
-    }
-
-    for (let launch of options.launch) {
-      yield options.atom.once(state => state.agents[launch] != null)
-    }
-
-    ready.resolve();
-
-    yield;
-  })
 }

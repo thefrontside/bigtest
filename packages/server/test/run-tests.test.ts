@@ -1,9 +1,10 @@
+import { describe, beforeEach, it } from '@effection/mocha';
 import expect from 'expect';
-import { Agent, Command, generateAgentId } from '@bigtest/agent';
-import { Client } from '@bigtest/client';
+import { AgentProtocol, Command, generateAgentId } from '@bigtest/agent';
+import { createClient, Client } from '@bigtest/client';
 import { ResultStatus } from '@bigtest/suite';
-import { ChainableSubscription } from '@effection/subscription';
-import { actions } from './helpers';
+import { Stream } from 'effection';
+import { startOrchestrator, createAgent } from './helpers';
 
 interface QueryResult {
   testRun: {
@@ -80,58 +81,55 @@ function resultsQuery(testRunId: string, agentId: string) {
 
 describe('running tests on an agent', () => {
   let client: Client;
-  let agent: Agent;
+  let agent: AgentProtocol;
   let agentId = generateAgentId();
-  let agentsSubscription: ChainableSubscription<AgentsQuery, unknown>;;
 
-  beforeEach(async () => {
-    await actions.startOrchestrator();
-    agent = await actions.createAgent(agentId);
-    client = await actions.fork(Client.create(`http://localhost:24102`));
+  beforeEach(function*() {
+    yield startOrchestrator();
+    agent = yield createAgent({ agentId });
+    client = yield createClient(`http://localhost:24102`);
 
-    agentsSubscription = await actions.fork(client.liveQuery(`{ agents { agentId } }`));
-
-    await actions.fork(agentsSubscription.filter(({ agents }) => {
+    yield client.liveQuery<AgentsQuery>(`{ agents { agentId } }`).filter(({ agents }) => {
       return agents && agents.length === 1
-    }).first());
+    }).expect();
   });
 
   describe('with the fixture tree', () => {
-    let results: ChainableSubscription<QueryResult, unknown>;
+    let query: Stream<QueryResult>;
     let runCommand: Command;
 
-    beforeEach(async () => {
-      await actions.fork(client.query(`mutation { run }`));
-      runCommand = await actions.fork(agent.receive());
+    beforeEach(function*() {
+      yield client.query(`mutation { run }`);
+      runCommand = yield agent.expect();
 
-      results = await actions.fork(client.liveQuery(resultsQuery(runCommand.testRunId, agentId)));
+      query = client.liveQuery(resultsQuery(runCommand.testRunId, agentId));
     });
 
-    it('receives a run event on the agent', () => {
+    it('receives a run event on the agent', function*() {
       expect(runCommand.type).toEqual('run');
       expect(runCommand.appUrl).toEqual(`http://localhost:24001`);
       expect(runCommand.tree.description).toEqual('All tests');
     });
 
-    it('is marks the run as pending', async () => {
-      await actions.fork(results.match({ testRun: { status: 'pending' }}).expect());
+    it('is marks the run as pending', function*() {
+      yield query.match({ testRun: { status: 'pending' }}).expect();
     });
 
     describe('when the agent reports that it is running', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         agent.send({
           type: 'run:begin',
           testRunId: runCommand.testRunId
         });
       });
 
-      it('is marks the agent as running', async () => {
-        await actions.fork(results.match({ testRun: { agent: { status: 'running' } }}).expect());
+      it('is marks the agent as running', function*() {
+        yield query.match({ testRun: { agent: { status: 'running' } }}).expect();
       });
     });
 
     describe('when a test is reported as running', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         agent.send({
           type: 'test:running',
           testRunId: runCommand.testRunId,
@@ -139,13 +137,13 @@ describe('running tests on an agent', () => {
         });
       });
 
-      it('marks that particular test as running', async () => {
-        await actions.fork(results.match({ testRun: { agent: { result: { status: 'running' } } } }).expect());
+      it('marks that particular test as running', function*() {
+        yield query.match({ testRun: { agent: { result: { status: 'running' } } } }).expect();
       });
     });
 
     describe('when a step succeeeds', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         agent.send({
           type: 'step:result',
           status: 'ok',
@@ -154,17 +152,17 @@ describe('running tests on an agent', () => {
         })
       });
 
-      it('marks that step as ok', async () => {
-        await actions.fork(results.filter(({ testRun }) => {
+      it('marks that step as ok', function*() {
+        yield query.filter(({ testRun }) => {
           return testRun.agent.result.children
             .find(child => child.description === "Signing In" )?.steps
             .find(child => child.description === "when I fill in the login form")?.status === 'ok';
-        }).expect());
+        }).expect();
       });
     });
 
     describe('when a step fails', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         agent.send({
           type: 'step:result',
           status: 'failed',
@@ -176,23 +174,23 @@ describe('running tests on an agent', () => {
         })
       });
 
-      it('marks that step as failed', async () => {
-        await actions.fork(results.filter(({ testRun }) => {
+      it('marks that step as failed', function*() {
+        yield query.filter(({ testRun }) => {
           return testRun.agent.result.children
             .find(child => child.description === "Signing In" )?.steps
             .find(child => child.description === "when I fill in the login form")?.status === 'failed';
-        }).expect());
+        }).expect();
       });
 
-      it('marks the entire test as failed', async () => {
-        await actions.fork(results.filter(({ testRun }) => {
+      it('marks the entire test as failed', function*() {
+        yield query.filter(({ testRun }) => {
           return testRun.agent.result.children
             .find(child => child.description === "Signing In" )?.status === 'failed';
-        }).first());
+        }).first();
       });
 
-      it('disregards the remaining steps, and remaining children', async() => {
-        await actions.fork(results.filter(({ testRun }) => {
+      it('disregards the remaining steps, and remaining children', function*() {
+        yield query.filter(({ testRun }) => {
           let results = testRun.agent.result.children
             .find(child => child.description === "Signing In");
 
@@ -204,12 +202,12 @@ describe('running tests on an agent', () => {
           } else {
             return false;
           }
-        }).expect());
+        }).expect();
       });
     });
 
     describe('when a assertion succeeeds', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         agent.send({
           type: 'assertion:result',
           status: 'ok',
@@ -218,17 +216,17 @@ describe('running tests on an agent', () => {
         })
       });
 
-      it('marks that assertion as ok', async () => {
-        await actions.fork(results.filter(({ testRun }) => {
+      it('marks that assertion as ok', function*() {
+        yield query.filter(({ testRun }) => {
           return testRun.agent.result.children
             .find(child => child.description === 'Signing In' )?.assertions
             .find(child => child.description === 'then I am logged in')?.status === 'ok';
-        }).expect());
+        }).expect();
       });
     });
 
     describe('when a assertion fails', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         agent.send({
           type: 'assertion:result',
           status: 'failed',
@@ -240,17 +238,17 @@ describe('running tests on an agent', () => {
         })
       });
 
-      it('marks that assertion as failed', async () => {
-        await actions.fork(results.filter(({ testRun }) => {
+      it('marks that assertion as failed', function*() {
+        yield query.filter(({ testRun }) => {
           return testRun.agent.result.children
             .find(child => child.description === 'Signing In')?.assertions
             .find(child => child.description === 'then I am logged in')?.status === 'failed';
-        }).expect());
+        }).expect();
       });
     });
 
     describe('when an entire test succeeds', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         agent.send({
           type: 'step:result',
           status: 'ok',
@@ -271,17 +269,17 @@ describe('running tests on an agent', () => {
         })
       });
 
-      it('marks that test as ok', async () => {
-        await actions.fork(results.filter(({ testRun }) => {
+      it('marks that test as ok', function*() {
+        yield query.filter(({ testRun }) => {
           return testRun.agent.result.children
             .find(child => child.description === 'Signing In')?.children
             .find(child => child.description === 'when I log out')?.status === 'ok'
-        }).expect());
+        }).expect();
       });
     });
 
     describe('when an entire test completes with mixed results', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         agent.send({
           type: 'step:result',
           status: 'ok',
@@ -302,17 +300,17 @@ describe('running tests on an agent', () => {
         })
       });
 
-      it('marks that test as failed', async () => {
-        await actions.fork(results.filter(({ testRun }) => {
+      it('marks that test as failed', function*() {
+        yield query.filter(({ testRun }) => {
           return testRun.agent.result.children
             .find(child => child.description === 'Signing In')?.children
             .find(child => child.description === 'when I log out')?.status === 'failed'
-        }).expect());
+        }).expect();
       });
     });
 
     describe('when a test completes successfully but one of its children fails', () => {
-      beforeEach(() => {
+      beforeEach(function*() {
         agent.send({
           type: 'step:result',
           status: 'ok',
@@ -367,33 +365,30 @@ describe('running tests on an agent', () => {
         })
       });
 
-      it('marks that test as failed', async () => {
-        await actions.fork(results.filter(({ testRun }) => {
+      it('marks that test as failed', function*() {
+        yield query.filter(({ testRun }) => {
           return testRun.agent.result.children
             .find(child => child.description === 'Signing In')?.status === 'failed';
-        }).expect());
+        }).expect();
       });
     });
   });
 
   describe('with multiple agents', function() {
     let secondAgentId = generateAgentId();
-    let secondAgent: Agent;
-    let agentResults: ChainableSubscription<QueryResult, unknown>;
-    let secondAgentResults: ChainableSubscription<QueryResult, unknown>;
+    let secondAgent: AgentProtocol;
+    let runCommand: Command;
 
-    beforeEach(async () => {
-      secondAgent = await actions.createAgent(secondAgentId);
+    beforeEach(function*() {
+      secondAgent = yield createAgent({ agentId: secondAgentId });
 
-      await actions.fork(agentsSubscription.filter(({ agents }) => {
+      yield client.liveQuery<AgentsQuery>(`{ agents { agentId } }`).filter(({ agents }) => {
         return agents && agents.length === 2
-      }).expect());
+      }).expect();
 
-      await actions.fork(client.query(`mutation { run }`));
+      yield client.query(`mutation { run }`);
 
-      let runCommand: Command = await actions.fork(agent.receive());
-      agentResults = await actions.fork(client.liveQuery(resultsQuery(runCommand.testRunId, agentId)));
-      secondAgentResults = await actions.fork(client.liveQuery(resultsQuery(runCommand.testRunId, secondAgentId)));
+      runCommand = yield agent.expect();
 
       secondAgent.send({
         type: 'step:result',
@@ -411,14 +406,14 @@ describe('running tests on an agent', () => {
       });
     });
 
-    it('tracks results for all agents separately', async () => {
+    it('tracks results for all agents separately', function*() {
       let matchFailed = ({ testRun }: QueryResult) => {
         return testRun.agent.result.children
           .find(child => child.description === "Signing In" )?.steps
           .find(child => child.description === "when I fill in the login form")?.status === 'failed';
       };
 
-      await actions.fork(agentResults.filter(matchFailed).expect());
+      yield client.liveQuery<QueryResult>(resultsQuery(runCommand.testRunId, agentId)).filter(matchFailed).expect();
 
       let matchSucess = ({ testRun }: QueryResult) => {
         return testRun.agent.result.children
@@ -426,7 +421,7 @@ describe('running tests on an agent', () => {
           .find(child => child.description === "when I fill in the login form")?.status === 'ok';
       }
 
-      await actions.fork(secondAgentResults.filter(matchSucess).first());
+      yield client.liveQuery<QueryResult>(resultsQuery(runCommand.testRunId, secondAgentId)).filter(matchSucess).expect();
     });
   });
 });

@@ -30,6 +30,6 @@ export class AgentServerConfig {
   }
 
   appDir(): string {
-    return Path.join(__dirname, '../app');
+    return Path.join(__dirname, '../');
   }
 }

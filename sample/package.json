@@ -11,7 +11,8 @@
     "test:jest": "cd app && npm run test:jest",
     "test:cypress": "cd app && npm run test:cypress",
     "test:bigtest": "cd app && npm run test:bigtest",
-    "dev:build": "DEV_BUILD=true node bin/create-sample-app"
+    "dev:build": "DEV_BUILD=true node bin/create-sample-app",
+    "update:locks": "npm i && yarn && cd app && cat app-pkg.json > package.json && npm i && yarn"
   },
   "bin": {
     "sample": "./bin/create-sample-app.js"
@@ -20,11 +21,9 @@
     "*"
   ],
   "dependencies": {
-    "@effection/events": "2.0.0-preview.5",
-    "@effection/node": "2.0.0-preview.7",
-    "@effection/subscription": "2.0.0-preview.6",
+    "@effection/process": "^2.0.0-beta.12",
     "chalk": "^4.1.0",
-    "effection": "2.0.0-preview.7",
+    "effection": "^2.0.0-beta.12",
     "fs-extra": "^10.0.0",
     "lodash.merge": "^4.6.2",
     "rimraf": "^3.0.2"

@@ -1,17 +1,6 @@
 {
   "extends": "../../tsconfig-base.json",
-  "compilerOptions": {
-    "outDir": "dist/cjs",
-    "rootDir": "./src",
-    "declarationDir": "dist"
-  },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "../../node_modules"
-  ],
   "references": [
-    { "path": "../effection-express" }
+    { "path": "../effection-express/tsconfig.build.json" }
   ]
 }

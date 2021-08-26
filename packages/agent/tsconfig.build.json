@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "esnext",
+    "outDir": "dist",
+    "rootDirs": ["./shared", "./src"]
+  },
+  "include": [
+    "shared/**/*.ts",
+    "src/**/*.ts",
+  ],
+  "references": [
+    { "path": "../globals/tsconfig.build.json" },
+    { "path": "../effection-express/tsconfig.build.json" },
+    { "path": "../interactor/tsconfig.build.json" },
+    { "path": "../suite/tsconfig.build.json" },
+    { "path": "../webdriver/tsconfig.build.json" }
+  ]
+}

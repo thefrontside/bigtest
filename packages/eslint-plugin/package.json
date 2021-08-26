@@ -9,6 +9,17 @@
   "keywords": [
     "eslint"
   ],
+  "files": [
+    "docs",
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "lint": "eslint \"{src,test}/**/*.ts\"",
+    "check:types": "tsc --noEmit",
+    "prepack": "tsc --build ./tsconfig.build.json",
+    "test": "mocha -r ts-node/register \"test/{,!(fixtures)/**}/*.test.ts\""
+  },
   "devDependencies": {
     "@frontside/eslint-config": "^2.0.0",
     "@frontside/typescript": "^1.1.1",
@@ -18,15 +29,5 @@
     "@typescript-eslint/parser": "^4.12.0",
     "eslint": "^7.17.0",
     "ts-node": "^9.1.1"
-  },
-  "scripts": {
-    "clean": "rm -rf dist *.tsbuildinfo",
-    "lint": "eslint \"{src,test}/**/*.ts\"",
-    "prepack": "tsc --build",
-    "test": "mocha -r ts-node/register \"test/{,!(fixtures)/**}/*.test.ts\""
-  },
-  "files": [
-    "docs",
-    "dist"
-  ]
+  }
 }

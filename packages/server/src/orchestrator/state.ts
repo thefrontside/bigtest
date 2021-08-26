@@ -75,8 +75,8 @@ export type AppServerStatus =
       exitStatus: {
         code?: number;
         signal?: string;
-        tail: string[];
-        command: string;
+        stderr: string;
+        stdout: string;
       };
     };
 

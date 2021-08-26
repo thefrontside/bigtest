@@ -1,71 +1,68 @@
-import { describe, it } from 'mocha';
+import { describe, it, beforeEach, afterEach } from '@effection/mocha';
 import expect from 'expect';
 import jest from 'jest-mock';
-import { Context } from 'effection';
-import { MainError } from '@effection/node';
-import { Deferred } from '@bigtest/effection';
-import { World } from './helpers';
+import { run, Task, createFuture, MainError } from 'effection';
 
 import { warnUnexpectedExceptions } from '../src/warn-unexpected-exceptions';
 
 describe('unexpected errors', () => {
-  let suspense: Deferred<void>;
-  let context: Context;
+  let suspense: ReturnType<typeof createFuture>;
+  let context: Task;
   let warn: jest.SpyInstance<void, string[]>;
 
-  beforeEach(() => {
+  beforeEach(function*() {
     warn = jest.spyOn(console, 'warn')
       .mockImplementation(() => undefined);
 
-    suspense = Deferred();
-    context = World.spawn(function*() {
+    suspense = createFuture<void>();
+    context = run(function*() {
       try {
-        return yield warnUnexpectedExceptions(function*(argv) {
-          yield suspense.promise;
+        return yield warnUnexpectedExceptions((argv) => function*() {
+          yield suspense.future;
           return argv;
         })(['hello', 'world']);
       } catch (error) {}
     });
   });
 
-  afterEach(() => {
+  afterEach(function*() {
     warn.mockRestore();
   });
 
   describe('when the process exits normally', () => {
     let result: string[];
-    beforeEach(async () => {
-      suspense.resolve();
-      result = await context;
+    beforeEach(function*() {
+      suspense.produce({ state: 'completed', value: undefined });
+      result = yield context;
     });
 
-    it('returns the result as expected', () => {
+    it('returns the result as expected', function*() {
       expect(result).toEqual(['hello', 'world']);
     });
 
-    it('does not warn anything', () => {
+    it('does not warn anything', function*() {
       expect(warn).not.toHaveBeenCalled();
     });
   });
 
   describe('when the process completes with an expected error', () => {
-    beforeEach(async () => {
-      suspense.reject(new MainError({ exitCode: 30}));
-      return await context;
+    beforeEach(function*() {
+      suspense.produce({ state: 'errored', error: new MainError({ exitCode: 30}) });
+      return yield context;
     })
 
-    it('does not print any warnings', () => {
+    it('does not print any warnings', function*() {
       expect(warn).not.toHaveBeenCalled();
     });
   });
 
   describe('when the process completes with an unexpected error', () => {
-    beforeEach(async () => {
-      suspense.reject(new Error('boom!'));
-      await context;
+    beforeEach(function*() {
+      suspense.produce({ state: 'errored', error: new Error('boom!') });
+      yield context;
     });
 
-    it('warns a biggie warning', () => {
+    it('warns a biggie warning', function*() {
       expect(warn).toHaveBeenCalledWith(expect.stringContaining("UNEXPECTED ERROR"));
     });
   });

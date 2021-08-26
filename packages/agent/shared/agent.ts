@@ -1,74 +1,48 @@
-import { Operation, resource, spawn } from 'effection';
+import { createStream, Task, Resource, spawn, ensure } from 'effection';
 import { on, once } from '@effection/events';
-import { ChainableSubscribable, createSubscription } from '@effection/subscription';
-import { AgentProtocol, AgentEvent, Command, Run } from './protocol';
+import { AgentProtocol, AgentEvent, Command } from './protocol';
 
 export * from './protocol';
 
 export interface AgentOptions {
   agentId?: string;
-  data: unknown;
-  createSocket: () => Socket;
+  data?: Record<string, unknown>;
 }
 
-export class Agent implements AgentProtocol {
-  constructor(private socket: Socket & EventTarget, private options: AgentOptions) {}
+export function createAgent(socket: Socket & EventTarget, options: AgentOptions): Resource<AgentProtocol> {
+  return {
+    *init() {
+      let subscription = yield createStream<Command, CloseEvent>(function*(publish) {
+        yield spawn(on(socket, 'message')
+          .map((event) => event as MessageEvent)
+          .map(event => JSON.parse(event.data) as Command)
+          .forEach(publish));
 
-  /**
-   * Produces an Agent resource that is connected to an orchestrator. This resource can be
-   * used to receive commands from the orchestrator and send events back.
-   */
-  static *start(options: AgentOptions): Operation<Agent> {
+        let closed = yield once(socket, 'close');
+        return closed;
+      });
 
-    let socket = options.createSocket() as unknown as (Socket & EventTarget);
-    let agent = yield resource(new Agent(socket, options), function*(): Operation<void> {
-      try {
-        let [event] = yield once(socket, 'close');
+      function send(message: AgentEvent): void {
+        socket.send(JSON.stringify({ ...message, agentId: options.agentId }));
+      }
+
+      yield ensure(() => { socket.close() });
+      yield spawn(function*() {
+        let event: CloseEvent = yield once(socket, 'close');
         if(!event.wasClean) {
           throw new Error(`[agent] socket closed unexpectedly: [${event.code}] ${event.reason}`);
         }
-      } finally {
-        socket.close();
-      }
-    });
+      });
 
-    yield once(socket, 'open');
+      yield once(socket, 'open');
 
-    agent.send({
-      type: 'connected',
-      agentId: options.agentId,
-      data: options.data
-    });
+      send({
+        type: 'connected',
+        agentId: options.agentId,
+        data: options.data || {},
+      });
 
-    return agent;
-  }
-
-  get commands(): ChainableSubscribable<Run, void> {
-    let { socket } = this;
-    return createSubscription<Command, void>(function*(publish) {
-      yield spawn(
-        on(socket, 'message')
-          .map(([event]) => event as MessageEvent)
-          .map(event => JSON.parse(event.data) as Command)
-          .forEach(function*(command) {
-            publish(command);
-          })
-      );
-
-      yield once(socket, 'close');
-    });
-  }
-
-  send(message: AgentEvent): void {
-    this.socket.send(JSON.stringify({ ...message, agentId: this.options.agentId }));
-  }
-
-  *receive(): Operation<Command> {
-    let first: Command | undefined = yield this.commands.first();
-    if (first) {
-      return first;
-    } else {
-      throw new Error('unexpected end of command stream');
+      return { ...subscription, send };
     }
   }
 }

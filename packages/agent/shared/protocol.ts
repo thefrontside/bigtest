@@ -1,9 +1,8 @@
-import { Operation } from 'effection';
+import { Subscription } from 'effection';
 import { Test, ResultStatus, ErrorDetails, LogEvent } from '@bigtest/suite';
 
-export interface AgentProtocol {
+export interface AgentProtocol extends Subscription<Command, CloseEvent> {
   send(event: AgentEvent): void;
-  receive(): Operation<Command>;
 }
 
 export interface Connect {

@@ -22,7 +22,7 @@ export function* reportCoverage(config: ProjectOptions, results: TestResults): O
   }
 }
 
-function * renderReports(config: ProjectOptions, data: string): Operation<void> {
+function* renderReports(config: ProjectOptions, data: string): Operation<void> {
   let { reports, directory } = config.coverage;
 
   let coverageMap = createCoverageMap(JSON.parse(data));

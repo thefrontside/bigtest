@@ -16,8 +16,9 @@
   "scripts": {
     "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"src/**/*.ts\"",
+    "check:types": "tsc --noEmit",
     "test": "echo no-op",
-    "prepack": "tsc --build"
+    "prepack": "tsc --build ./tsconfig.build.json"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^2.0.0",

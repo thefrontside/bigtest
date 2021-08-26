@@ -1,6 +1,5 @@
-import { fork, spawn, Operation } from 'effection';
-import { throwOnErrorEvent, once, on } from '@effection/events';
-import { express } from "@bigtest/effection-express";
+import { Operation, throwOnErrorEvent, once, on, onEmit, spawn } from 'effection';
+import { express, Express } from "@bigtest/effection-express";
 import { static as staticMiddleware } from 'express';
 import { AgentServerConfig } from '@bigtest/agent';
 
@@ -9,7 +8,7 @@ import http from 'http';
 import Trumpet from 'trumpet';
 import zlib from 'zlib';
 import { ProxyServerStatus } from './orchestrator/state';
-import { Slice } from '@bigtest/atom';
+import { Slice } from '@effection/atom';
 import { assert } from 'assert-ts';
 
 interface ProxyServerOptions {
@@ -19,8 +18,10 @@ interface ProxyServerOptions {
   agentServerConfig: AgentServerConfig;
 }
 
-export function* proxyServer(options: ProxyServerOptions): Operation<void> {
-  function* handleRequest(proxyRes: http.IncomingMessage, req: http.IncomingMessage, res: http.ServerResponse): Operation {
+type ProxyResEvent = [http.IncomingMessage, http.IncomingMessage, http.ServerResponse];
+
+export const proxyServer = (options: ProxyServerOptions): Operation<void> => function*(proxyTask) {
+  function* handleRequest(proxyRes: http.IncomingMessage, req: http.IncomingMessage, res: http.ServerResponse): Operation<void> {
     console.debug('[proxy]', 'start', req.method, req.url);
 
     for(let [key, value = ''] of Object.entries(proxyRes.headers)) {
@@ -30,7 +31,7 @@ export function* proxyServer(options: ProxyServerOptions): Operation<void> {
     let contentType = proxyRes.headers['content-type'];
     let contentEncoding = proxyRes.headers['content-encoding'];
 
-    yield throwOnErrorEvent(proxyRes);
+    yield spawn(throwOnErrorEvent(proxyRes));
 
     if(proxyRes.headers.location && options.target) {
       let newLocation = proxyRes.headers.location.replace(options.target, `http://localhost:${options.port}`);
@@ -50,10 +51,10 @@ export function* proxyServer(options: ProxyServerOptions): Operation<void> {
       let tr = new Trumpet();
       let unzip = zlib.createGunzip();
 
-      yield throwOnErrorEvent(tr);
+      yield spawn(throwOnErrorEvent(tr));
 
       yield spawn(function*() {
-        yield throwOnErrorEvent(unzip);
+        yield spawn(throwOnErrorEvent(proxyRes));
         yield once(unzip, 'finish');
       });
 
@@ -95,7 +96,7 @@ export function* proxyServer(options: ProxyServerOptions): Operation<void> {
 
   let proxyServer = proxy.createProxyServer({ target: options.target, selfHandleResponse: true, changeOrigin: true });
 
-  let server = express();
+  let server: Express = yield express();
 
   // TODO: validating the config could be done much earlier and in 1 step for the whole config
   assert(!!options.agentServerConfig.options.prefix, 'must set prefix');
@@ -103,12 +104,15 @@ export function* proxyServer(options: ProxyServerOptions): Operation<void> {
   server.raw.use(options.agentServerConfig.options.prefix, staticMiddleware(options.agentServerConfig.appDir()));
 
   // proxy http requests
-  yield server.use(function*(req, res) {
+  server.use((req, res) => function*() {
+    console.debug('[proxy] request', req.method, req.path);
     try {
-      yield spawn(on(proxyServer, 'error').map((args) => args[0] as Error).forEach(function*(err) {
+      yield spawn(function*() {
+        let err = yield once<Error>(proxyServer, 'error');
         res.writeHead(502, { 'Content-Type': 'text/plain' });
         res.end(`Proxy error: ${err}`);
-      }));
+        console.debug('[proxy] proxy error', req.method, req.path, err);
+      });
 
       proxyServer.web(req, res)
 
@@ -119,34 +123,23 @@ export function* proxyServer(options: ProxyServerOptions): Operation<void> {
   });
 
   // proxy ws requests
-  yield server.ws('*', function*(socket, req) {
-    proxyServer.ws(req, socket.raw, null);
-  });
+  server.raw.ws('*', (socket, req) => proxyServer.ws(req, socket, null));
 
   try {
     yield server.listen(options.port);
     options.status.set({ type: "started" });
 
-    yield spawn(on(proxyServer, 'open').forEach(function*() {
+    yield spawn(on(proxyServer, 'open').forEach(() => {
       console.debug('[proxy] socket connection opened');
     }));
 
-    yield spawn(on(proxyServer, 'close').forEach(function*() {
+    yield spawn(on(proxyServer, 'close').forEach(() => {
       console.debug('[proxy] socket connection closed');
     }));
 
-    let requests = yield on(proxyServer, 'proxyRes');
-    while(true) {
-      let iter = yield requests.next();
-      if(iter.done) {
-        break;
-      } else {
-        let [proxyRes, req, res] = iter.value;
-        yield fork(function*() {
-          yield handleRequest(proxyRes, req, res);
-        });
-      }
-    }
+    yield onEmit<ProxyResEvent>(proxyServer, 'proxyRes').forEach(function*([proxyRes, req, res]) {
+      yield spawn(handleRequest(proxyRes, req, res), { blockParent: true }).within(proxyTask);
+    });
   } finally {
     proxyServer.close();
   }

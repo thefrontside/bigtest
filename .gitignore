@@ -3,6 +3,7 @@ yarn-error.log
 /packages/*/dist
 /packages/*/docs
 *.tsbuildinfo
+.parcel-cache
 
 # Local Netlify folder
 .netlify

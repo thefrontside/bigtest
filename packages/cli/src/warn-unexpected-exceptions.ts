@@ -2,7 +2,7 @@ import { Operation } from 'effection';
 import terminalLink from 'terminal-link';
 
 export function warnUnexpectedExceptions<T>(operation: (argv: string[]) => Operation<T>): (argv: string[]) => Operation<T> {
-  return function*(argv: string[]) {
+  return (argv) => function*() {
     try {
       return yield operation(argv);
     } catch (error) {

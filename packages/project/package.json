@@ -14,12 +14,13 @@
   "scripts": {
     "clean": "rm -rf dist *.tsbuildinfo",
     "lint": "eslint \"{src,test}/**/*.ts\"",
+    "check:types": "tsc --noEmit",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "prepack": "tsc --build"
+    "prepack": "tsc --build ./tsconfig.build.json"
   },
   "dependencies": {
     "@bigtest/driver": "^0.5.7",
-    "effection": "^1.0.0"
+    "effection": "^2.0.0-beta.12"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^2.0.0",

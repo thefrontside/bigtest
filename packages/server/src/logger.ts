@@ -1,7 +1,6 @@
-import { fork, Operation } from 'effection';
+import { Operation, spawn } from 'effection';
 import { OrchestratorState } from './orchestrator/state';
-import { Slice } from '@bigtest/atom';
-import { subscribe } from '@effection/subscription';
+import { Slice } from '@effection/atom';
 
 export interface LoggerOptions {
   atom: Slice<OrchestratorState>;
@@ -9,7 +8,7 @@ export interface LoggerOptions {
 }
 
 export function* createLogger({ atom, out }: LoggerOptions): Operation<void> {
-  yield fork(subscribe(atom.slice('bundler')).forEach(function* (event) {
+  yield spawn(atom.slice('bundler').forEach((event) => {
     if(event.type === 'ERRORED'){
       out("[manifest builder] build error:");
       out(event.error.message);
@@ -19,7 +18,7 @@ export function* createLogger({ atom, out }: LoggerOptions): Operation<void> {
     }
   }));
 
-  yield fork(subscribe(atom.slice('appServer')).forEach(function* (status) {
+  yield spawn(atom.slice('appServer').forEach((status) => {
     if(status.type === 'available') {
       out("[app] successfully connected to application!");
     }
@@ -27,4 +26,6 @@ export function* createLogger({ atom, out }: LoggerOptions): Operation<void> {
       out(`[app] application has exited with status code ${status.exitStatus.code}`)
     }
   }));
+
+  yield;
 }

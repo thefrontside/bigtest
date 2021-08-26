@@ -1,68 +1,67 @@
-import { describe, it } from 'mocha';
+import { describe, it, beforeEach } from '@effection/mocha';
 import expect from 'expect'
 
-import { express } from '@bigtest/effection-express';
+import { express, Express } from '@bigtest/effection-express';
 import { Request, Response } from 'express';
-import { spawn } from './helpers';
 
-import { Local, WebDriver } from '../src/index';
+import { createWebDriver, WebDriver } from '../src/index';
 import { findAvailablePortNumber } from '../src/find-available-port-number';
 
 describe("Running a local wedriver", () => {
   let driver: WebDriver;
-  let server = express();
+  let server: Express;
   let latestRequest: Request;
-  server.raw.use(function(request: Request, response: Response) {
-    latestRequest = request;
-    response.write("thank you");
-    response.end();
-  });
 
   let serverURL: string;
 
-  beforeEach(async () => {
+  beforeEach(function*() {
+    server = yield express();
+    server.raw.use(function(request: Request, response: Response) {
+      latestRequest = request;
+      response.write("thank you");
+      response.end();
+    });
     latestRequest = undefined;
 
-    let port = await spawn(findAvailablePortNumber());
+    let port = yield findAvailablePortNumber();
 
     serverURL = `http://localhost:${port}`;
 
-    await spawn(server.listen(port));
-
+    yield server.listen(port);
   });
 
   if (process.platform === 'win32') {
     describe('with edgedriver', () => {
-      beforeEach(async () => {
-        driver = await spawn(Local({ type: 'local', browserName: 'edge', headless: true }));
-        await spawn(driver.navigateTo(serverURL));
+      beforeEach(function*() {
+        driver = yield createWebDriver({ type: 'local', browserName: 'edge', headless: true });
+        yield driver.connect(serverURL);
       });
 
-      it('can navigate to a url', () => {
+      it('can navigate to a url', function*() {
         expect(latestRequest).toBeDefined();
         expect(latestRequest.headers['user-agent']).toMatch('Chrome');
       });
     });
   } else {
     describe('with chromedriver', () => {
-      beforeEach(async () => {
-        driver = await spawn(Local({ type: 'local', browserName: 'chrome', headless: true }));
-        await spawn(driver.navigateTo(serverURL));
+      beforeEach(function*() {
+        driver = yield createWebDriver({ type: 'local', browserName: 'chrome', headless: true });
+        yield driver.connect(serverURL);
       });
 
-      it('can navigate to a url', () => {
+      it('can navigate to a url', function*() {
         expect(latestRequest).toBeDefined();
         expect(latestRequest.headers['user-agent']).toMatch('Chrome');
       });
     });
 
     describe('with geckodriver', () => {
-      beforeEach(async () => {
-        driver = await spawn(Local({ type: 'local', browserName: 'firefox', headless: true }));
-        await spawn(driver.navigateTo(serverURL));
+      beforeEach(function*() {
+        driver = yield createWebDriver({ type: 'local', browserName: 'firefox', headless: true });
+        yield driver.connect(serverURL);
       });
 
-      it('can navigate to a url', () => {
+      it('can navigate to a url', function*() {
         expect(latestRequest).toBeDefined();
         expect(latestRequest.headers['user-agent']).toMatch('Firefox');
       });

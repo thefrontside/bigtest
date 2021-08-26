@@ -1,14 +1,12 @@
-import { describe, beforeEach, it } from 'mocha';
+import { describe, beforeEach, it } from '@effection/mocha';
 import expect from 'expect';
 import fs from 'fs';
 import path from 'path';
 import rmrf from 'rimraf';
 
-import { timeout } from 'effection';
+import { sleep, spawn } from 'effection';
 import { Test } from '@bigtest/suite';
-import { createAtom } from '@bigtest/atom';
-
-import { actions } from './helpers';
+import { createAtom } from '@effection/atom';
 
 import { ManifestGeneratorStatus } from '../src/orchestrator/state';
 import { manifestGenerator } from '../src/manifest-generator';
@@ -28,16 +26,16 @@ async function loadManifest() {
 describe('manifest-generator', () => {
   let status = createAtom({ type: 'pending' } as ManifestGeneratorStatus);
 
-  beforeEach((done) => rmrf(TEST_DIR, done));
-  beforeEach(async () => {
-    await mkdir(TEST_DIR, { recursive: true });
-    await writeFile(join(TEST_DIR, "/test1.t.js"), "module.exports = { default: { description: 'hello' }};");
-    await writeFile(join(TEST_DIR, "/test2.t.js"), "module.exports = { default: { description: 'monkey' }};");
+  beforeEach(function*() {
+    yield () => ({ perform: (resolve) => rmrf(TEST_DIR, resolve) });
+    yield mkdir(TEST_DIR, { recursive: true });
+    yield writeFile(join(TEST_DIR, "/test1.t.js"), "module.exports = { default: { description: 'hello' }};");
+    yield writeFile(join(TEST_DIR, "/test2.t.js"), "module.exports = { default: { description: 'monkey' }};");
   });
 
   describe('watching', () => {
-    beforeEach(async() => {
-      actions.fork(manifestGenerator({
+    beforeEach(function*() {
+      yield spawn(manifestGenerator({
         status,
         files: [TEST_DIR + "/*.t.{js,ts}"],
         destinationPath: MANIFEST_PATH,
@@ -48,12 +46,12 @@ describe('manifest-generator', () => {
     describe('starting', () => {
       let manifest: Test;
 
-      beforeEach(async () => {
-        await actions.fork(status.once(({ type }) => type === 'ready'));
-        manifest = await loadManifest();
+      beforeEach(function*() {
+        yield status.match({ type: 'ready' }).expect();
+        manifest = yield loadManifest();
       });
 
-      it('writes the manifest', () => {
+      it('writes the manifest', function*() {
         expect(manifest.children.length).toEqual(2)
         expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
         expect(manifest.children[1]).toEqual({ path: './tmp/manifest-generator/test2.t.js', description: 'monkey' });
@@ -63,13 +61,13 @@ describe('manifest-generator', () => {
     describe('adding a test file', () => {
       let manifest: Test;
 
-      beforeEach(async () => {
-        await writeFile(join(TEST_DIR, "/test3.t.js"), "module.exports = { default: { description: 'test' } };");
-        await actions.fork(status.once(({ type }) => type === 'ready'));
-        manifest = await loadManifest();
+      beforeEach(function*() {
+        yield writeFile(join(TEST_DIR, "/test3.t.js"), "module.exports = { default: { description: 'test' } };");
+        yield status.match({ type: 'ready' }).expect();
+        manifest = yield loadManifest();
       });
 
-      it('rewrites the manifest', () => {
+      it('rewrites the manifest', function*() {
         expect(manifest.children.length).toEqual(3)
         expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
         expect(manifest.children[1]).toEqual({ path: './tmp/manifest-generator/test2.t.js', description: 'monkey' });
@@ -80,13 +78,13 @@ describe('manifest-generator', () => {
     describe('removing a test file', () => {
       let manifest: Test;
 
-      beforeEach(async () => {
-        await unlink(join(TEST_DIR, "/test2.t.js"));
-        await actions.fork(status.once(({ type }) => type === 'ready'));
-        manifest = await loadManifest();
+      beforeEach(function*() {
+        yield unlink(join(TEST_DIR, "/test2.t.js"));
+        yield status.match({ type: 'ready' }).expect();
+        manifest = yield loadManifest();
       });
 
-      it('rewrites the manifest', () => {
+      it('rewrites the manifest', function*() {
         expect(manifest.children.length).toEqual(1)
         expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
       });
@@ -94,27 +92,27 @@ describe('manifest-generator', () => {
   });
 
   describe('not watching', () => {
-    beforeEach(async() => {
+    beforeEach(function*() {
       let status = createAtom({ type: 'pending' } as ManifestGeneratorStatus);
 
-      actions.fork(manifestGenerator({
+      yield spawn(manifestGenerator({
         status,
         files: [TEST_DIR + "/*.t.{js,ts}"],
         destinationPath: MANIFEST_PATH,
         mode: 'build',
       }));
 
-      await actions.fork(status.once(({ type }) => type === 'ready'));
+      yield status.match({ type: 'ready' }).expect();
     });
 
     describe('starting', () => {
       let manifest: Test;
 
-      beforeEach(async () => {
-        manifest = await loadManifest();
+      beforeEach(function*() {
+        manifest = yield loadManifest();
       });
 
-      it('writes the manifest', () => {
+      it('writes the manifest', function*() {
         expect(manifest.children.length).toEqual(2)
         expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
         expect(manifest.children[1]).toEqual({ path: './tmp/manifest-generator/test2.t.js', description: 'monkey' });
@@ -124,13 +122,13 @@ describe('manifest-generator', () => {
     describe('adding a test file', () => {
       let manifest: Test;
 
-      beforeEach(async () => {
-        await writeFile(join(TEST_DIR, "/test3.t.js"), "module.exports = { default: { description: 'test' } };");
-        await actions.fork(timeout(200));
-        manifest = await loadManifest();
+      beforeEach(function*() {
+        yield writeFile(join(TEST_DIR, "/test3.t.js"), "module.exports = { default: { description: 'test' } };");
+        yield sleep(200);
+        manifest = yield loadManifest();
       });
 
-      it('does nothing', () => {
+      it('does nothing', function*() {
         expect(manifest.children.length).toEqual(2)
         expect(manifest.children[0]).toEqual({ path: './tmp/manifest-generator/test1.t.js', description: 'hello' });
         expect(manifest.children[1]).toEqual({ path: './tmp/manifest-generator/test2.t.js', description: 'monkey' });

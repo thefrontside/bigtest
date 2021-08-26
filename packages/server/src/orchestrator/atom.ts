@@ -1,4 +1,4 @@
-import { createAtom, Slice } from "@bigtest/atom";
+import { createAtom, Slice } from "@effection/atom";
 import { OrchestratorState } from "./state";
 import merge from 'deepmerge';
 
