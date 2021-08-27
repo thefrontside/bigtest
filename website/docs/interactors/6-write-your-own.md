@@ -9,7 +9,7 @@ In this section, you will learn how to write a new Interactor for any interface 
 
 ## Writing your first interactor
 
-In this tutorial, we will create our own `TextField` interactor. Although there already is a [built-in TextField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts) interactor, recreating it is a great way to learn all the pieces that make up an interactor while using familiar examples.
+In this tutorial, we will create our own `TextField` interactor. Although there already is a [built-in TextField](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/text-field.ts) interactor, recreating it is a great way to learn all the pieces that make up an interactor while using familiar examples.
 
 There are four things to decide when creating an interactor:
 1. What to name and label the interactor
@@ -68,7 +68,7 @@ import TabItem from '@theme/TabItem';
 Locators, filters, and actions are optional when creating your own interactor. While the locator for the `TextField` interactor offered by BigTest uses the `innerText` of the associated label, the example above has its locator configured as `element.placeholder`. This is just to demonstrate that you can set the properties of locators to anything that suits your needs. If you create an interactor without a locator, it would by default use the `innerText` value for its locator.
 
 :::note
-`fillIn` is a function exported by `bigtest`. See the implementation [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/fill-in.ts#L63-L76). You can use any of the functions defined by BigTest or implement your own.
+`fillIn` is a function exported by `bigtest`. See the implementation [here](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/fill-in.ts#L63-L76). You can use any of the functions defined by BigTest or implement your own.
 :::
 
 :::note Cypress
@@ -77,7 +77,7 @@ If you're using Cypress, all of the built-in Interactors and Interactor function
 
 ### `extend()` method
 
-In the example above, we're extending from the `HTML` interactor to compose the `MyTextField` interactor, but if you take a look at the implementation of the [built-in TextField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts) interactor, you'll see that the `value` filter and `fillIn` action are already available.
+In the example above, we're extending from the `HTML` interactor to compose the `MyTextField` interactor, but if you take a look at the implementation of the [built-in TextField](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/text-field.ts) interactor, you'll see that the `value` filter and `fillIn` action are already available.
 
 You could reimplement the `value` filter and `fillIn` action from scratch like we did in the example, however, it would be more practical to just extend from the built-in TextField interactor instead:
 
@@ -96,7 +96,7 @@ You can think of the `HTML` interactor as the basic building block for all other
 
 Many common HTML properties and interactions, such as `className` and `click`, are included in the `HTML` interactor. This provides the convenience of not having to re-specify these properties over and over again for each of your interactors.
 
-Take a look at the [source code](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/html.ts) for the `HTML` interactor to see which filters and actions were added.
+Take a look at the [source code](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/html.ts) for the `HTML` interactor to see which filters and actions were added.
 
 ### Interactor label
 
@@ -336,7 +336,7 @@ export const TableCell = HTML.extend('table cell')
 This example uses [optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) which is available in Node >=14.
 :::
 
-Once again, by extending from the `HTML` interactor, our new TableCell interactor inherits all of the pre-defined filters and actions of the `HTML` interactor as defined [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/html.ts). If we needed to access a table cell's `id` property in our tests, we would not need to create a separate filter for it as it is already available on the `HTML` interactor.
+Once again, by extending from the `HTML` interactor, our new TableCell interactor inherits all of the pre-defined filters and actions of the `HTML` interactor as defined [here](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/html.ts). If we needed to access a table cell's `id` property in our tests, we would not need to create a separate filter for it as it is already available on the `HTML` interactor.
 
 Inside the TableCell interactor we created `columnTitle` and `rowNumber` filters that will access its parent elements to get the appropriate value we're looking for. The locator was not specified, so it will default to `element.innerText || element.textContent`. We can now effectively use the TableCell interactor as we stated at the beginning of this page:
 

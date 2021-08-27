@@ -1,8 +1,0 @@
-{
-  "extends": "../../tsconfig-base.json",
-  "exclude": ["types/**/*.ts"],
-  "references": [
-    { "path": "../globals/tsconfig.build.json" },
-    { "path": "../suite/tsconfig.build.json" }
-  ]
-}

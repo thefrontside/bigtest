@@ -17,7 +17,7 @@ Button('Submit').exists();
 
 A typical user identifies a button by the words printed across it, so in this example they would consider a button with the word 'Submit' on it as the "Submit" button. Interactors use locators to make that connection.
 
-What is going on behind the scenes? Just like the user, the built-in Button interactor provided by BigTest looks for a button with "Submit" on it. It uses [element.innerText](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/button.ts#L11) to find the match. Or to put it another way, `Button('Submit')` returns a button element whose `element.innerText` is equal to `Submit`.
+What is going on behind the scenes? Just like the user, the built-in Button interactor provided by BigTest looks for a button with "Submit" on it. It uses [element.innerText](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/button.ts#L11) to find the match. Or to put it another way, `Button('Submit')` returns a button element whose `element.innerText` is equal to `Submit`.
 
 ### The locator is optional
 
@@ -78,7 +78,7 @@ The filter object can take as many properties as you want it to:
 TextField({ id: 'username-id', placeholder: 'USERNAME', visible: true }).exists();
 ```
 
-The filters available are defined by each interactor, so look at the source code for the built-in interactors to know what is available. For example, if you take a look at the [TextField source code](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts), you'll see that the TextField interactor provides two filters. In addition, TextField inherits all of the properties of the [FormField interactor](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/form-field.ts) and [HTML interactor](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/html.ts).
+The filters available are defined by each interactor, so look at the source code for the built-in interactors to know what is available. For example, if you take a look at the [TextField source code](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/text-field.ts), you'll see that the TextField interactor provides two filters. In addition, TextField inherits all of the properties of the [FormField interactor](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/form-field.ts) and [HTML interactor](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/html.ts).
 
 ## Actions
 

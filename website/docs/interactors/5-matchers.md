@@ -91,7 +91,7 @@ Heading().has({ or(id: 'foo', id: 'bar') }); // bad
 
 ### Iterable matchers
 
-For when you need to assert against iterables, you will find the `some()` and `every()` matchers very helpful. We will use the [`MultiSelect`](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/multi-select.ts#L48) interactor for the next example because its `values` filter returns an array based on its options' label:
+For when you need to assert against iterables, you will find the `some()` and `every()` matchers very helpful. We will use the [`MultiSelect`](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/multi-select.ts#L48) interactor for the next example because its `values` filter returns an array based on its options' label:
 
 ```js
 .filters({
@@ -169,7 +169,7 @@ export function including(subString) {
 };
 ```
 
-_You can find the source code for the `including()` matcher [here](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/matchers/including.ts)._
+_You can find the source code for the `including()` matcher [here](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/matchers/including.ts)._
 
 And the return value from the `description()` function is to display an error message for when no interactors are found:
 
