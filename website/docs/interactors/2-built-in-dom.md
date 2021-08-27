@@ -7,16 +7,16 @@ Built-in Interactors cover some of the most common UI testing needs for apps tha
 
 These are the default interactors that are offered out-of-the-box with BigTest:
 
-- [Button](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/button.ts)
-- [CheckBox](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/check-box.ts)
-- [FormField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/form-field.ts)
-- [Heading](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/heading.ts)
-- [Link](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/link.ts)
-- [MultiSelect](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/multi-select.ts)
-- [Page](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/page.ts)
-- [RadioButton](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/radio-button.ts)
-- [Select](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/select.ts)
-- [TextField](https://github.com/thefrontside/bigtest/blob/v0/packages/interactor/src/definitions/text-field.ts)
+- [Button](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/button.ts)
+- [CheckBox](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/check-box.ts)
+- [FormField](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/form-field.ts)
+- [Heading](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/heading.ts)
+- [Link](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/link.ts)
+- [MultiSelect](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/multi-select.ts)
+- [Page](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/page.ts)
+- [RadioButton](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/radio-button.ts)
+- [Select](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/select.ts)
+- [TextField](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/text-field.ts)
 
 As you might have seen on the [Quick Start](/docs/interactors/) page, you can import any of the interactors directly from the `bigtest` package:
 

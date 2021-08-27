@@ -154,13 +154,6 @@ workflows:
                 - webdriver
           requires:
             - prepack
-      - test:
-          name: "test-interactor"
-          scope: interactors
-          package: html
-          prepack: false
-          requires:
-            - prepack
       - integrations:
           prepack: false
           requires:

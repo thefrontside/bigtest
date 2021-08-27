@@ -15,7 +15,6 @@
       "packages/performance",
       "packages/suite",
       "packages/globals",
-      "packages/interactor",
       "packages/agent",
       "packages/driver",
       "packages/webdriver",

@@ -1,8 +1,0 @@
-{
-  "out": "docs",
-  "name": "@interactors/html",
-  "entryPoints": "src/index.ts",
-  "readme": "API.md",
-  "includeVersion": true,
-  "excludePrivate": true
-}

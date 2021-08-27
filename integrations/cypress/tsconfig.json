@@ -10,7 +10,6 @@
     "src/*.ts"
   ],
   "references": [
-    { "path" : "../../packages/interactor" },
     { "path" : "../../packages/globals" }
   ]
 }
