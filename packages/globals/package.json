@@ -29,6 +29,7 @@
     "@frontside/eslint-config": "^2.0.0",
     "@frontside/tsconfig": "^1.2.0",
     "@frontside/typescript": "^1.1.1",
+    "@types/jsdom": "^16.2.3",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.13.4",
     "expect": "^24.9.0",
