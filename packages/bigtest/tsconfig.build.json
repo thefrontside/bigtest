@@ -10,7 +10,6 @@
   ],
   "references": [
     { "path": "../cli/tsconfig.build.json" },
-    { "path": "../interactor/tsconfig.build.json" },
     { "path": "../suite/tsconfig.build.json" }
   ]
 }
