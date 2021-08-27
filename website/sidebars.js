@@ -7,7 +7,7 @@ module.exports = {
     'interactors/matchers',
     'interactors/write-your-own',
     'interactors/integrations',
-    'interactors/storybook',
+    'interactors/storybook-mui',
   ],
   platform: [
     'platform/installation',
