@@ -25,7 +25,7 @@ export const FormSignIn = {
 
 And this is the same story but written with interactors:
 ```js
-import { Button, TextField } from '@/interactors/html';
+import { Button, TextField } from '@interactors/html';
 
 export const FormSignIn = {
   play: async () => {
