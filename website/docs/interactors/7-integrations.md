@@ -90,3 +90,7 @@ TypeScript users should make sure to add `cypress` to the types array in `tsconf
 }
 ```
 See Cypress' guide on [TypeScript support](https://docs.cypress.io/guides/tooling/typescript-support.html#Configure-tsconfig-json) for more details.
+
+## Up Next
+
+Now that we have seen how Interactors can enhance your tests in various testing frameworks, in the next page we will show you how Interactors can also help you _develop_ your app's UI components with its integration of `Storybook` and `Material-UI`.
