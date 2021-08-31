@@ -45,36 +45,6 @@ jobs:
           root: .
           paths:
             - "packages/*/dist"
-  integrations:
-    executor: <<parameters.executor>>
-    parameters:
-      executor:
-        type: executor
-        default: "linux"
-      prepack:
-        type: boolean
-        default: true
-    steps:
-      - checkout
-      - yarn_install
-      - when:
-          condition: <<parameters.prepack>>
-          steps:
-            - prepack
-      - attach_workspace:
-          at: .
-      - run:
-          name: Installing integrations
-          command: yarn install:integrations
-      - run:
-          name: Prepack integrations
-          command: yarn prepack:integrations
-      - run:
-          name: Lint integrations
-          command: yarn lint:integrations
-      - run:
-          name: Running tests
-          command: yarn test:integrations
   test:
     executor: <<parameters.executor>>
     parameters:
@@ -152,10 +122,6 @@ workflows:
                 - server
                 - suite
                 - webdriver
-          requires:
-            - prepack
-      - integrations:
-          prepack: false
           requires:
             - prepack
       - lint:

@@ -15,7 +15,7 @@ jobs:
     - name: Publish PR Preview
       uses: thefrontside/actions/publish-pr-preview@v1.4
       with:
-        before_all: yarn prepack:all
+        before_all: yarn prepack
         npm_publish: yarn publish
         ignore: website
       env:
