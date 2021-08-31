@@ -3,7 +3,7 @@ id: locators-filters-actions
 title: Locators, Filters, and Actions
 ---
 
-Whether they are built-in or written by you, all interactors have some things in common. They have to be able to find elements in the page and manipulate them like a user would. To do these things, Interactors use a locator, filters, and actions.
+Whether they are predefined or written by you, all interactors have some things in common. They have to be able to find elements in the page and manipulate them like a user would. To do these things, Interactors use a locator, filters, and actions.
 
 ## The Locator
 
@@ -18,7 +18,7 @@ Button(/Submit/).exists(); // regex
 
 A typical user identifies a button by the words printed across it, so in this example they would consider a button with the word 'Submit' on it as the "Submit" button. Interactors use locators to make that connection.
 
-What is going on behind the scenes? Just like the user, the built-in Button interactor provided by BigTest looks for a button with "Submit" on it. It uses [element.innerText](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/button.ts#L11) to find the match. Or to put it another way, `Button('Submit')` returns a button element whose `element.innerText` is equal to `Submit`.
+What is going on behind the scenes? Just like the user, the predefined Button interactor looks for a button with "Submit" on it. It uses [element.innerText](https://github.com/thefrontside/interactors/blob/main/packages/html/src/definitions/button.ts#L11) to find the match. Or to put it another way, `Button('Submit')` returns a button element whose `element.innerText` is equal to `Submit`.
 
 ### The locator is optional
 
@@ -50,10 +50,10 @@ The locator of the `TextField` interactor is the `innerText` of its associated l
 </label>
 ```
 
-_This is just the way the built-in TextField interactor is configured. It is possible to modify pre-existing interactors such as this TextField interactor or create your own interactors from scratch to suit your needs. We will be going over how you can do all of this on the [Writing Interactors](/docs/interactors/write-your-own) page._
+_This is just the way the predefined TextField interactor is configured. It is possible to modify pre-existing interactors such as this TextField interactor or create your own interactors from scratch to suit your needs. We will be going over how you can do all of this on the [Writing Interactors](/docs/interactors/write-your-own) page._
 :::
 
-You can think of the locator as the "default filter" since filters and locators both provide the same functionality. The reason why BigTest offers both solutions is convenience, because having to pass in an object for each interactor can get repetitive.
+You can think of the locator as the "default filter" since filters and locators both provide the same functionality. The reason why Interactors offers both solutions is convenience, because having to pass in an object for each interactor can get repetitive.
 
 Filters are useful in a variety of contexts. For example, most forms have multiple textfields. You would need to use a filter if they do not have labels or if there are multiple labels with the same value, as a locator would not work in such a scenario.
 
@@ -66,7 +66,7 @@ Take for instance, this example of a form with textfields that do not have label
 </form>
 ```
 
-We cannot specify a locator based on the label, so using `TextField()` without a locator would return two elements and therefore produce an error. We can narrow down from two TextFields to one using either the `id` or `placeholder` filters provided by the BigTest `TextField` interactor:
+We cannot specify a locator based on the label, so using `TextField()` without a locator would return two elements and therefore produce an error. We can narrow down from two TextFields to one using either the `id` or `placeholder` filters provided by the predefined `TextField` interactor:
 
 ```js
 TextField({ id: 'username-id' }).exists();
@@ -79,7 +79,7 @@ The filter object can take as many properties as you want it to:
 TextField({ id: 'username-id', placeholder: 'USERNAME', visible: true }).exists();
 ```
 
-The filters available are defined by each interactor, so look at the source code for the built-in interactors to know what is available. For example, if you take a look at the [TextField source code](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/text-field.ts), you'll see that the TextField interactor provides two filters. In addition, TextField inherits all of the properties of the [FormField interactor](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/form-field.ts) and [HTML interactor](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/html.ts).
+The filters available are defined by each interactor, so look at the source code for the predefined interactors to know what is available. For example, if you take a look at the [TextField source code](https://github.com/thefrontside/interactors/blob/main/packages/html/src/definitions/text-field.ts), you'll see that the TextField interactor provides two filters. In addition, TextField inherits all of the properties of the [FormField interactor](https://github.com/thefrontside/interactors/blob/main/packages/html/src/definitions/form-field.ts) and [HTML interactor](https://github.com/thefrontside/interactors/blob/main/packages/html/src/definitions/html.ts).
 
 ## Actions
 

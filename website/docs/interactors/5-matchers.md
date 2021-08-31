@@ -3,7 +3,7 @@ id: matchers
 title: Matchers
 ---
 
-Here, we will do a deep dive on how you can utilize matchers that are offered out-of-the-box with BigTest, and also go over how you can compose your own reusable matchers.
+Here, we will do a deep dive on how you can utilize matchers that are offered out-of-the-box in Interactors, and also go over how you can compose your own reusable matchers.
 
 ## Writing flexible assertions using Matchers
 
@@ -91,7 +91,7 @@ Heading().has({ or(id: 'foo', id: 'bar') }); // bad
 
 ### Iterable matchers
 
-For when you need to assert against iterables, you will find the `some()` and `every()` matchers very helpful. We will use the [`MultiSelect`](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/multi-select.ts#L48) interactor for the next example because its `values` filter returns an array based on its options' label:
+For when you need to assert against iterables, you will find the `some()` and `every()` matchers very helpful. We will use the [`MultiSelect`](https://github.com/thefrontside/interactors/blob/main/packages/html/src/definitions/multi-select.ts#L45) interactor for the next example because its `values` filter returns an array based on its options' label:
 
 ```js
 .filters({
@@ -124,7 +124,7 @@ Though the matchers are already ergonomic, you can make your tests even tidier a
 We will first go over how you can compose matchers using preexisting matchers. Let us start by creating a matcher called `hasFoo`:
 
 ```js
-import { including } from 'bigtest';
+import { including } from '@interactors/html';
 
 export const hasFoo = including('Foo');
 ```
@@ -138,7 +138,7 @@ Heading(hasFoo).exists()
 You can compose a matcher using other matchers too. This is convenient because it delegates most of the matcher's logic as well as the error message. In the example below, you can see that we use `or`, `including`, and `every` to create a matcher for a MultiSelect.
 
 ```js
-import { including, or } from 'bigtest';
+import { including, or } from '@interactors/html';
 
 export const blueOrGreen = or(
   including('Blue'),
@@ -169,7 +169,7 @@ export function including(subString) {
 };
 ```
 
-_You can find the source code for the `including()` matcher [here](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/matchers/including.ts)._
+_You can find the source code for the `including()` matcher [here](https://github.com/thefrontside/interactors/blob/main/packages/html/src/matchers/including.ts)._
 
 And the return value from the `description()` function is to display an error message for when no interactors are found:
 

@@ -9,7 +9,7 @@ In this section, you will learn how to write a new Interactor for any interface 
 
 ## Writing your first interactor
 
-In this tutorial, we will create our own `TextField` interactor. Although there already is a [built-in TextField](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/text-field.ts) interactor, recreating it is a great way to learn all the pieces that make up an interactor while using familiar examples.
+In this tutorial, we will create our own `TextField` interactor. Although there already is a predefined [TextField](https://github.com/thefrontside/interactors/blob/main/packages/html/src/definitions/text-field.ts) interactor, recreating it is a great way to learn all the pieces that make up an interactor while using familiar examples.
 
 There are four things to decide when creating an interactor:
 1. What to name and label the interactor
@@ -17,7 +17,7 @@ There are four things to decide when creating an interactor:
 3. The locator and filters, which helps users be able to narrow down the element they want to reference
 4. The action or actions that a test should `perform` when using the interactor (like `click`)
 
-Putting this together, let's create a new Interactor called `MyTextField` with a label of 'my-textfield-interactor'. We'll specify the selector as `input[type=text]` so that it targets all the text input elements, define a `value` filter, and provide a `fillIn` action. And to differentiate from the built-in TextField interactor, we'll configure the placeholder value as its locator:
+Putting this together, let's create a new Interactor called `MyTextField` with a label of 'my-textfield-interactor'. We'll specify the selector as `input[type=text]` so that it targets all the text input elements, define a `value` filter, and provide a `fillIn` action. And to differentiate from the predefined TextField interactor, we'll configure the placeholder value as its locator:
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -32,7 +32,7 @@ import TabItem from '@theme/TabItem';
   <TabItem value="javascript">
 
   ```js
-  import { fillIn, HTML } from 'bigtest';
+  import { fillIn, HTML } from '@interactors/html';
 
   export const MyTextField = HTML.extend('my-textfield-interactor')
     .selector('input[type=text]')
@@ -49,7 +49,7 @@ import TabItem from '@theme/TabItem';
   <TabItem value="typescript">
 
   ```ts
-  import { fillIn, HTML } from 'bigtest';
+  import { fillIn, HTML } from '@interactors/html';
 
   export const MyTextField = HTML.extend<HTMLInputElement>('my-textfield-interactor')
     .selector('input[type=text]')
@@ -65,30 +65,30 @@ import TabItem from '@theme/TabItem';
   </TabItem>
 </Tabs>
 
-Locators, filters, and actions are optional when creating your own interactor. While the locator for the `TextField` interactor offered by BigTest uses the `innerText` of the associated label, the example above has its locator configured as `element.placeholder`. This is just to demonstrate that you can set the properties of locators to anything that suits your needs. If you create an interactor without a locator, it would by default use the `innerText` value for its locator.
+Locators, filters, and actions are optional when creating your own interactor. While the locator for the predefined `TextField` interactor uses the `innerText` of the associated label, the example above has its locator configured as `element.placeholder`. This is just to demonstrate that you can set the properties of locators to anything that suits your needs. If you create an interactor without a locator, it would by default use the `innerText` value for its locator.
 
 :::note
-`fillIn` is a function exported by `bigtest`. See the implementation [here](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/fill-in.ts#L63-L76). You can use any of the functions defined by BigTest or implement your own.
-:::
+`fillIn` is a function exported by `bigtest`. See the implementation [here](https://github.com/thefrontside/interactors/blob/main/packages/html/src/fill-in.ts#L63-L76). You can use any of the predefined functions or implement your own.
+::: 
 
 :::note Cypress
-If you're using Cypress, all of the built-in Interactors and Interactor functions will need to be imported from `@interactors/with-cypress` and not `bigtest`.
+If you're using Cypress, all of the predefined Interactors and Interactor functions will need to be imported from `@interactors/with-cypress` and not `@interactors/html`.
 :::
 
 ### `extend()` method
 
-In the example above, we're extending from the `HTML` interactor to compose the `MyTextField` interactor, but if you take a look at the implementation of the [built-in TextField](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/text-field.ts) interactor, you'll see that the `value` filter and `fillIn` action are already available.
+In the example above, we're extending from the `HTML` interactor to compose the `MyTextField` interactor, but if you take a look at the implementation of the predefined [TextField](https://github.com/thefrontside/interactors/blob/main/packages/html/src/definitions/text-field.ts) interactor, you'll see that the `value` filter and `fillIn` action are already available.
 
-You could reimplement the `value` filter and `fillIn` action from scratch like we did in the example, however, it would be more practical to just extend from the built-in TextField interactor instead:
+You could reimplement the `value` filter and `fillIn` action from scratch like we did in the example, however, it would be more practical to just extend from the predefined TextField interactor instead:
 
 ```js
-import { TextField } from 'bigtest';
+import { TextField } from '@interactors/html';
 
 export const MyTextField = TextField.extend('my-textfield-interactor')
   .locator((element) => element.placeholder)
 ```
 
-This approach would allow `MyTextField` to inherit the selector, locator, filters, and actions from the built-in `TextField`. You can overwrite any of the inherited properties to suit your needs, which is what we are doing with the locator in this instance.
+This approach would allow `MyTextField` to inherit the selector, locator, filters, and actions from the predefined `TextField`. You can overwrite any of the inherited properties to suit your needs, which is what we are doing with the locator in this instance.
 
 ### `HTML` interactor
 
@@ -96,7 +96,7 @@ You can think of the `HTML` interactor as the basic building block for all other
 
 Many common HTML properties and interactions, such as `className` and `click`, are included in the `HTML` interactor. This provides the convenience of not having to re-specify these properties over and over again for each of your interactors.
 
-Take a look at the [source code](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/html.ts) for the `HTML` interactor to see which filters and actions were added.
+Take a look at the [source code](https://github.com/thefrontside/interactors/blob/main/packages/html/src/definitions/html.ts) for the `HTML` interactor to see which filters and actions were added.
 
 ### Interactor label
 
@@ -142,7 +142,7 @@ The former syntax is necessary if you want to write an action that delegates to 
   <TabItem value="javascript">
 
   ```js
-  import { Button, HTML } from 'bigtest';
+  import { Button, HTML } from '@interactors/html';
 
   export const Form = HTML.extend('my-form-interactor')
     .selector('form')
@@ -157,7 +157,7 @@ The former syntax is necessary if you want to write an action that delegates to 
   <TabItem value="typescript">
 
   ```ts
-  import { Button, HTML } from 'bigtest';
+  import { Button, HTML } from '@interactors/html';
 
   export const Form = HTML.extend<HTMLFormElement>('my-form-interactor')
     .selector('form')
@@ -204,7 +204,7 @@ Let's get back to our example and add the new MyTextField interactor to a test. 
   import { render } from '@testing-library/react';
   import App from './App';
 
-  import { Button, Heading } from 'bigtest';
+  import { Button, Heading } from '@interactors/html';
   import { MyTextField } from './MyTextField';
 
   describe('email subscription form', () => {
@@ -264,11 +264,11 @@ TextField({ placeholder: 'email' }).fillIn('batman@gmail.com');
 MyTextField('email').fillIn('batman@gmail.com');
 ```
 
-Although the built-in interactors may cover most use cases, the composability of interactors means there is no limit to how much you can optimize and tailor them to your needs.
+Although the predefined interactors may cover most use cases, the composability of interactors means there is no limit to how much you can optimize and tailor them to your needs.
 
 ## Writing a more complex interactor
 
-One of the greatest benefits of Interactors is that you can turn complex testing scenarios into readable assertions. Let’s illustrate how that looks like with an historically cumbersome UI piece: a table. We want to be able to easily assert the contents of our tables, and that means that we should be able to know the value in a cell given its column and row. Once we’re done creating a TableCell Interactor, we’ll be able to make that happen and have it look like this:
+One of the greatest benefits of Interactors is that you can turn complex testing scenarios into readable assertions. Let’s illustrate how that looks like with a historically cumbersome UI piece: a table. We want to be able to easily assert the contents of our tables, and that means that we should be able to know the value in a cell given its column and row. Once we’re done creating a TableCell Interactor, we’ll be able to make that happen and have it look like this:
 
 ```js
 TableCell({ columnTitle: 'Name', rowNumber: 2 }).has({ value: 'Marge Simpson' });
@@ -300,7 +300,7 @@ First, consider some table markup defined as follows:
 Here is one way to create the `TableCell` interactor:
 
 ```js
-import { HTML } from 'bigtest';
+import { HTML } from '@interactors/html';
 
 export const TableCell = HTML.extend('table cell')
   .selector('[role=gridcell]')
@@ -336,7 +336,7 @@ export const TableCell = HTML.extend('table cell')
 This example uses [optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) which is available in Node >=14.
 :::
 
-Once again, by extending from the `HTML` interactor, our new TableCell interactor inherits all of the pre-defined filters and actions of the `HTML` interactor as defined [here](https://github.com/thefrontside/interactors/blob/v0/packages/html/src/definitions/html.ts). If we needed to access a table cell's `id` property in our tests, we would not need to create a separate filter for it as it is already available on the `HTML` interactor.
+Once again, by extending from the `HTML` interactor, our new TableCell interactor inherits all of the pre-defined filters and actions of the `HTML` interactor as defined [here](https://github.com/thefrontside/interactors/blob/main/packages/html/src/definitions/html.ts). If we needed to access a tablecell's `id` property in our tests, we would not need to create a separate filter for it as it is already available on the `HTML` interactor.
 
 Inside the TableCell interactor we created `columnTitle` and `rowNumber` filters that will access its parent elements to get the appropriate value we're looking for. The locator was not specified, so it will default to `element.innerText || element.textContent`. We can now effectively use the TableCell interactor as we stated at the beginning of this page:
 
@@ -410,7 +410,7 @@ Now that we have the TableCell Interactor ready, let’s put it in action to tes
   </TabItem>
 </Tabs>
 
-With some thinking beforehand about how to test a data-driven UI, you can write interactors and tests that can be quickly modified as changes occur over the lifetime of your app. The BigTest Interactor approach is flexible and can handle changes like adding new columns, rearranging the order, inserting table headings, and more.
+With some thinking beforehand about how to test a data-driven UI, you can write interactors and tests that can be quickly modified as changes occur over the lifetime of your app. The Interactor approach is flexible and can handle changes like adding new columns, rearranging the order, inserting table headings, and more.
 
 ## Chaining interactors together
 
@@ -433,11 +433,11 @@ DatePicker().find(Button('31')).click();
 
 ## Common questions
 
-### When should I write a new Interactor instead of using the Built In DOM interactors?
+### When should I write a new Interactor instead of using the predefined interactors?
 
-If the built-in DOM Interactors work for your use case, they are probably the best choice. They are maintenance-free and support the most common user actions.
+If the predefined interactors work for your use case, they are probably the best choice. They are maintenance-free and support the most common user actions.
 
-When the built-in Interactors are not enough, we encourage you to write your own. They will help prevent duplicated logic in your tests, and if your interface changes, you only need to make changes to the Interactor instead of throughout the code.
+When the predefined interactors are not enough, we encourage you to write your own. They will help prevent duplicated logic in your tests, and if your interface changes, you only need to make changes to the Interactor instead of throughout the code.
 
 For example, let's say that you want to replace a custom datepicker with a popular third-party library instead. Although you may have many tests for flows with the date picker, only your Interactor needs to change.
 

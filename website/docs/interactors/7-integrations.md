@@ -23,7 +23,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import App from './App';
 
-import { Button } from 'bigtest';
+import { Button } from '@interactors/html';
 
 describe('Interactors with Jest', () => {
   beforeEach(() => render(<App />));
@@ -45,7 +45,7 @@ JSDOM versions 15 and below do not have support for `InputEvent` on which intera
 
 ## Cypress
 
-Interactors fit right in with Cypress as well, though as we explain below you may need some slight configuration for ES Modules and TypeScript.
+Interactors fit right in with Cypress as well, though as we explain below you may need some slight configuration for ES Modules and TypeScript. In order to use interactors with Cypress, you will need to install `@bigtest/cypress` - this package is from where you would import any of the [predefined interactors](/bigtest/docs/interactors/predefined-interactors).
 
 Interactors can be used with the `cy.do()` and `cy.expect()` commands for interactions and assertions respectively. These Cypress commands are automatically registered whenever you are importing or creating interactors, and can take either a single interactor or an array of interactors. This helps your Cypress tests follow a arrange-act-assert pattern, which is inherent to [BigTest](/bigtest/docs/platform/architecture) and thus to Interactors.
 

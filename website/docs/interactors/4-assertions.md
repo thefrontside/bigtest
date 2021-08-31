@@ -62,4 +62,4 @@ Button('Sign In').absent();
 
 ## Up Next
 
-In the next page, [Matchers](/docs/interactors/matchers), we will be going over the different matchers that are offered with BigTest and ways in which you can compose your own matchers.
+In the next page, [Matchers](/docs/interactors/matchers), we will be going over the different matchers that are offered in Interactors and ways in which you can compose your own matchers.
