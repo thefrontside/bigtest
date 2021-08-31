@@ -1,7 +1,7 @@
 module.exports = {
   interactors: [
     'interactors/quick-start',
-    'interactors/built-in-dom',
+    'interactors/predefined-interactors',
     'interactors/locators-filters-actions',
     'interactors/assertions',
     'interactors/matchers',
