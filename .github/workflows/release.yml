@@ -14,7 +14,7 @@ jobs:
     - name: Publish Releases
       uses: thefrontside/actions/synchronize-with-npm@v1.6
       with:
-        before_all: yarn prepack:all
+        before_all: yarn prepack
         npm_publish: yarn publish
         ignore: website
       env:
