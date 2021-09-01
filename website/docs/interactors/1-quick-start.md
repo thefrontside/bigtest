@@ -90,7 +90,7 @@ If you are using Cypress, you will only need to install `@interactors/with-cypre
 
 Interactors can do a lot, but let's keep things simple for now and begin testing one of the most common user interactions - a button click.
 
-Interactors have methods like `click` that mimic user actions. If you are using your own app, in your codebase find a test that already has a button click in it. In that test, import the `Button` interactor from `bigtest` and use it to replace the click interaction as exemplified below (make sure to substitute "Sign In" with your own button text):
+Interactors have methods like `click` that mimic user actions. If you are using your own app, in your codebase find a test that already has a button click in it. In that test, import the `Button` interactor from `@interactors/html` and use it to replace the click interaction as exemplified below (make sure to substitute "Sign In" with your own button text):
 
 <Tabs
   groupId="runner"
@@ -141,8 +141,8 @@ Interactors have methods like `click` that mimic user actions. If you are using 
   <TabItem value="bigtest">
 
   ```js
-  import { Page, test } from 'bigtest';
-  import { Button } from '@interactors/html';
+  import { test } from 'bigtest';
+  import { Button, Page } from '@interactors/html';
 
   export default test('BigTest')
     .step(
@@ -215,8 +215,8 @@ In the sample project, when you click the “Sign In” button it disappears and
   <TabItem value="bigtest">
 
   ```js
-  import { Page, test } from 'bigtest';
-  import { Button } from '@interactors/html';
+  import { test } from 'bigtest';
+  import { Button, Page } from '@interactors/html';
 
   export default test('BigTest')
     .step(
@@ -293,8 +293,8 @@ Here are examples of what a test for an airline datepicker interface could look 
   <TabItem value="bigtest">
 
   ```js
-  import { Page, test } from 'bigtest';
-  import { Heading, RadioButton, TextField } from '@interactors/html';
+  import { test } from 'bigtest';
+  import { Heading, Page, RadioButton, TextField } from '@interactors/html';
   import { DatePicker, Modal } from './MyInteractors';
 
   export default test('BigTest')

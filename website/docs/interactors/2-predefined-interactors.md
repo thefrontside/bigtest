@@ -5,7 +5,7 @@ title: Predefined Interactors
 
 Predefined interactors cover some of the most common UI testing needs for apps that run in the browser.
 
-These are the default interactors that are offered out-of-the-box with BigTest:
+These are the default interactors that are offered in `@interactors/html`:
 
 - [Button](https://github.com/thefrontside/interactors/blob/main/packages/html/src/definitions/button.ts)
 - [CheckBox](https://github.com/thefrontside/interactors/blob/main/packages/html/src/definitions/check-box.ts)
@@ -28,7 +28,7 @@ If your app has unique interfaces that are not covered by these built-in tools, 
 
 ### Page
 
-The `Page` interactor is unique. Unlike BigTest’s other predefined interactors, it's not designed to target one specific element but rather the whole page. It is useful for asserting for the url or title in your test environment:
+The `Page` interactor is unique. Unlike the other predefined interactors, it's not designed to target one specific element but rather the whole page. It is useful for asserting for the url or title in your test environment:
 
 ```js
 Page.has({ title: 'BigTest Example App' });
@@ -42,7 +42,8 @@ We introduced `.exists()` and `.absent()` in the [Quick Start](/docs/interactors
 And when using the BigTest runner, the Page interactor can be used to navigate between routes:
 
 ```js
-import { Page, test } from 'bigtest';
+import { test } from 'bigtest';
+import { Page } from '@interactors/html';
 
 export default test('BigTest Runner')
   .step(Page.visit('/contact'))

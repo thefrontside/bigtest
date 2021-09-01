@@ -96,7 +96,8 @@ import TabItem from '@theme/TabItem';
   <TabItem value="bigtest">
 
   ```js
-  import { Page, test } from 'bigtest';
+  import { test } from 'bigtest';
+  import { Page } from '@interactors/html';
 
   import { Button } from 'material-ui-interactors';
 

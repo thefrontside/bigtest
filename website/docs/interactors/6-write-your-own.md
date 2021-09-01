@@ -68,7 +68,7 @@ import TabItem from '@theme/TabItem';
 Locators, filters, and actions are optional when creating your own interactor. While the locator for the predefined `TextField` interactor uses the `innerText` of the associated label, the example above has its locator configured as `element.placeholder`. This is just to demonstrate that you can set the properties of locators to anything that suits your needs. If you create an interactor without a locator, it would by default use the `innerText` value for its locator.
 
 :::note
-`fillIn` is a function exported by `bigtest`. See the implementation [here](https://github.com/thefrontside/interactors/blob/main/packages/html/src/fill-in.ts#L63-L76). You can use any of the predefined functions or implement your own.
+`fillIn` is a function exported by `@interactors/html`. See the implementation [here](https://github.com/thefrontside/interactors/blob/main/packages/html/src/fill-in.ts#L63-L76). You can use any of the predefined functions or implement your own.
 ::: 
 
 :::note Cypress
@@ -242,7 +242,8 @@ Let's get back to our example and add the new MyTextField interactor to a test. 
   <TabItem value="bigtest">
 
   ```js
-  import { Button, Heading, Page, test } from 'bigtest';
+  import { test } from 'bigtest';
+  import { Button, Heading, Page } from '@interactors/html';
   import { MyTextField } from './MyTextField';
 
   export default test('email subscription form')
@@ -396,7 +397,8 @@ Now that we have the TableCell Interactor ready, let’s put it in action to tes
 
 
   ```js
-  import { Page, test } from 'bigtest';
+  import { test } from 'bigtest';
+  import { Page } from '@interactors/html';
   import { TableCell } from './tablecell';
 
   export default test('Jeopardy chart')
