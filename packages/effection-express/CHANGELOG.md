@@ -1,5 +1,16 @@
 # @bigtest/effection-express
 
+## 0.10.0
+
+### Minor Changes
+
+- 08b9cd32: Upgrade to Effection v2 beta
+
+### Patch Changes
+
+- Updated dependencies [08b9cd32]
+  - @bigtest/effection@0.7.0
+
 ## 0.9.4
 
 ### Patch Changes

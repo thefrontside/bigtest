@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.25.0
+
+### Minor Changes
+
+- 08b9cd32: Upgrade to Effection v2 beta
+
+### Patch Changes
+
+- Updated dependencies [08b9cd32]
+  - @bigtest/agent@0.18.0
+  - @bigtest/bundler@0.14.0
+  - @bigtest/client@0.4.0
+  - @bigtest/driver@0.6.0
+  - @bigtest/effection@0.7.0
+  - @bigtest/effection-express@0.10.0
+  - @bigtest/globals@0.8.0
+  - @bigtest/logging@0.6.0
+  - @bigtest/project@0.16.0
+  - @bigtest/suite@0.12.0
+  - @bigtest/webdriver@0.9.0
+
 ## 0.24.2
 
 ### Patch Changes

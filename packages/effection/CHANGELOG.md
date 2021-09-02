@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.0
+
+### Minor Changes
+
+- 08b9cd32: Upgrade to Effection v2 beta
+
 ## 0.6.3
 
 ### Patch Changes

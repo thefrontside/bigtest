@@ -1,5 +1,16 @@
 # @bigtest/webdriver
 
+## 0.9.0
+
+### Minor Changes
+
+- 08b9cd32: Upgrade to Effection v2 beta
+
+### Patch Changes
+
+- Updated dependencies [08b9cd32]
+  - @bigtest/driver@0.6.0
+
 ## 0.8.4
 
 ### Patch Changes

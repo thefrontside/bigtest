@@ -1,5 +1,17 @@
 # @bigtest/bundler
 
+## 0.14.0
+
+### Minor Changes
+
+- 08b9cd32: Upgrade to Effection v2 beta
+
+### Patch Changes
+
+- Updated dependencies [08b9cd32]
+  - @bigtest/effection@0.7.0
+  - @bigtest/project@0.16.0
+
 ## 0.13.1
 
 ### Patch Changes
