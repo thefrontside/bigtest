@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.8.0",
-    "@types/node": "^13.13.4"
+    "@types/node": "^14.17.5"
   },
   "resolutions": {
     "@definitelytyped/typescript-versions": "^0.0.40",
