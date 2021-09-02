@@ -6,7 +6,7 @@ const cypressTemplate = ({ dependencies }) => {
         "test:cypress": "start-server-and-test 'npm run start -- -p 3000' http://localhost:3000 cypress:run",
       },
       "dependencies": {
-        "@bigtest/cypress": `${dependencies['@bigtest/cypress']}`,
+        "@interactors/with-cypress": `${dependencies['@interactors/with-cypress']}`,
         "cypress": `${dependencies['cypress']}`,
         "eslint-plugin-cypress": `${dependencies['eslint-plugin-cypress']}`,
         "start-server-and-test": `${dependencies['start-server-and-test']}`

@@ -72,7 +72,7 @@ Locators, filters, and actions are optional when creating your own interactor. W
 :::
 
 :::note Cypress
-If you're using Cypress, all of the built-in Interactors and Interactor functions will need to be imported from `@bigtest/cypress` and not `bigtest`.
+If you're using Cypress, all of the built-in Interactors and Interactor functions will need to be imported from `@interactors/with-cypress` and not `bigtest`.
 :::
 
 ### `extend()` method
@@ -222,7 +222,7 @@ Let's get back to our example and add the new MyTextField interactor to a test. 
   <TabItem value="cypress">
 
   ```js
-  import { Button, Heading } from '@bigtest/cypress';
+  import { Button, Heading } from '@interactors/with-cypress';
   import { MyTextField } from './MyTextField';
 
   describe('email subscription form', () => {

@@ -60,7 +60,7 @@ import TabItem from '@theme/TabItem';
 </Tabs>
 
 :::note Cypress
-If you are using Cypress, you will only need to install `@bigtest/cypress`:
+If you are using Cypress, you will only need to install `@interactors/with-cypress`:
 
 <Tabs
   groupId="package-manager"
@@ -72,14 +72,14 @@ If you are using Cypress, you will only need to install `@bigtest/cypress`:
   <TabItem value="npm">
 
   ```
-  npm install @bigtest/cypress --save-dev
+  npm install @interactors/with-cypress --save-dev
   ```
 
   </TabItem>
   <TabItem value="yarn">
 
   ```
-  yarn add @bigtest/cypress --dev
+  yarn add @interactors/with-cypress --dev
   ```
 
   </TabItem>
@@ -123,7 +123,7 @@ Interactors have methods like `click` that mimic user actions. If you are using 
   <TabItem value="cypress">
 
   ```js
-  import { Button } from '@bigtest/cypress';
+  import { Button } from '@interactors/with-cypress';
 
   describe('Interactors with Cypress', () => {
     beforeEach(() => cy.visit('/'));
@@ -266,7 +266,7 @@ Here are examples of what a test for an airline datepicker interface could look 
   <TabItem value="cypress">
 
   ```js
-  import { Heading, RadioButton, TextField } from '@bigtest/cypress';
+  import { Heading, RadioButton, TextField } from '@interactors/with-cypress';
   import { DatePicker, Modal } from './MyInteractors';
 
   describe('Interactors with Cypress', () => {

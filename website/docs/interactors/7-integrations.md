@@ -52,7 +52,7 @@ Interactors can be used with the `cy.do()` and `cy.expect()` commands for intera
 In the following example, we demonstrate how to to use `cy.do()` and `cy.expect()` in a Cypress test together with Interactors:
 
 ```js
-import { Button } from '@bigtest/cypress';
+import { Button } from '@interactors/with-cypress';
 
 describe('Interactors with Cypress', () => {
   beforeEach(() => cy.visit('/'));
