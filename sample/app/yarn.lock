@@ -1207,14 +1207,6 @@
     effection "^1.0.0"
     websocket "^1.0.31"
 
-"@bigtest/cypress@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@bigtest/cypress/-/cypress-0.1.1.tgz#22e83fa4cbeecad305cf95863443960d900a1d91"
-  integrity sha512-nQjJLcytVY8GYuectFzACgqP34H5lDPybS0O0BVhwikhM7fzORJQ7UYjWGh8tG7qiNxWkkOMP4xiysMUluO8WQ==
-  dependencies:
-    "@bigtest/globals" "^0.7.6"
-    "@interactors/html" "^0.31.2"
-
 "@bigtest/driver@^0.5.7":
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/@bigtest/driver/-/driver-0.5.7.tgz#b28e3cae8bb33daa6fdfa0d082d82797b47fef01"
@@ -1470,6 +1462,25 @@
     change-case "^4.1.1"
     element-is-visible "^1.0.0"
     lodash.isequal "^4.5.0"
+
+"@interactors/html@^0.32.0":
+  version "0.32.0"
+  resolved "https://registry.yarnpkg.com/@interactors/html/-/html-0.32.0.tgz#fcd7f84ad82d2fdfde5f20199db8c5fb7261a82d"
+  integrity sha512-W2dQoUpjDXzvdR1Ban7HnmTkltAsEC2ukIKkc20GYXqvOcTXcBscZWunt9wDQZy8aaL7nClpYXQOVZi+CmGsmQ==
+  dependencies:
+    "@bigtest/globals" "^0.7.6"
+    "@bigtest/performance" "^0.5.0"
+    change-case "^4.1.1"
+    element-is-visible "^1.0.0"
+    lodash.isequal "^4.5.0"
+
+"@interactors/with-cypress@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@interactors/with-cypress/-/with-cypress-0.1.2.tgz#16e8e9d849518395c8dfed973083beb7d1e66057"
+  integrity sha512-d1QgStthlsDvD7Ir7jBwxVfJfd+rpeXs2rTrbxsYPa9LNkUafUEL8yV3oZM/EW1zfh0bSCG+JT8BR/NtWLp5Sw==
+  dependencies:
+    "@bigtest/globals" "^0.7.6"
+    "@interactors/html" "^0.32.0"
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
