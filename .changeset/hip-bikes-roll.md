@@ -9,7 +9,6 @@
 "@bigtest/effection-express": minor
 "@bigtest/eslint-plugin": minor
 "@bigtest/globals": minor
-"@interactors/html": minor
 "@bigtest/logging": minor
 "@bigtest/performance": minor
 "@bigtest/project": minor
