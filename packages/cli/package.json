@@ -33,7 +33,7 @@
     "@types/istanbul-reports": "^3.0.0",
     "@types/json5": "^0.0.30",
     "@types/mocha": "^7.0.1",
-    "@types/node": "^13.13.4",
+    "@types/node": "^14.17.5",
     "@types/yargs": "^15.0.3",
     "eslint-plugin-prefer-let": "^1.1.0",
     "expect": "^24.9.0",
@@ -60,7 +60,7 @@
     "terminal-link": "^2.1.1"
   },
   "volta": {
-    "node": "12.16.0",
-    "yarn": "1.19.1"
+    "node": "14.17.5",
+    "yarn": "1.22.11"
   }
 }

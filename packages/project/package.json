@@ -27,13 +27,13 @@
     "@frontside/tsconfig": "^1.2.0",
     "@frontside/typescript": "^1.1.1",
     "@types/mocha": "^7.0.1",
-    "@types/node": "^13.13.4",
+    "@types/node": "^14.17.5",
     "expect": "^24.9.0",
     "mocha": "^6.2.2",
     "ts-node": "^9.1.1"
   },
   "volta": {
-    "node": "12.16.0",
-    "yarn": "1.19.1"
+    "node": "14.17.5",
+    "yarn": "1.22.11"
   }
 }
