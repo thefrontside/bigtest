@@ -1,5 +1,11 @@
 # @bigtest/eslint-plugin
 
+## 0.4.0
+
+### Minor Changes
+
+- 08b9cd32: Upgrade to Effection v2 beta
+
 ## 0.3.2
 
 ### Patch Changes

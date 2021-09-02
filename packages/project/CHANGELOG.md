@@ -1,5 +1,16 @@
 # @bigtest/project
 
+## 0.16.0
+
+### Minor Changes
+
+- 08b9cd32: Upgrade to Effection v2 beta
+
+### Patch Changes
+
+- Updated dependencies [08b9cd32]
+  - @bigtest/driver@0.6.0
+
 ## 0.15.3
 
 ### Patch Changes

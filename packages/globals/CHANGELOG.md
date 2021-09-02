@@ -1,5 +1,16 @@
 # @bigtest/globals
 
+## 0.8.0
+
+### Minor Changes
+
+- 08b9cd32: Upgrade to Effection v2 beta
+
+### Patch Changes
+
+- Updated dependencies [08b9cd32]
+  - @bigtest/suite@0.12.0
+
 ## 0.7.6
 
 ### Patch Changes

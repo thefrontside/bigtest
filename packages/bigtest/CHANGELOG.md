@@ -1,5 +1,17 @@
 # bigtest
 
+## 0.15.0
+
+### Minor Changes
+
+- 08b9cd32: Upgrade to Effection v2 beta
+
+### Patch Changes
+
+- Updated dependencies [08b9cd32]
+  - @bigtest/cli@0.20.0
+  - @bigtest/suite@0.12.0
+
 ## 0.14.4
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/driver",
-  "version": "0.5.7",
+  "version": "0.6.0",
   "description": "Startup and connect BigTest agents to an orchestrator",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

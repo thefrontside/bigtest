@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/performance",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Cross platform interface to the DOM performance API",
   "main": "node-ponyfill.js",
   "browser": "browser-ponyfill.js",
