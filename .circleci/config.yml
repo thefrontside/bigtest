@@ -4,7 +4,7 @@ orbs:
 executors:
   linux:
     docker:
-      - image: circleci/node:15-browsers
+      - image: circleci/node:14-browsers
   macos:
     macos:
       xcode: "12.4.0"
@@ -139,10 +139,10 @@ workflows:
                 command: choco install nvm
             - run:
                 name: "Install Node"
-                command: nvm install 16.4.0
+                command: nvm install 14.17.5
             - run:
                 name: "Use Node version"
-                command: nvm use 16.4.0
+                command: nvm use 14.17.5
             - run:
                 name: "Install yarn"
                 command: npm install --global yarn

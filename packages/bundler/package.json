@@ -35,8 +35,8 @@
     "rollup-plugin-typescript2": "^0.29.0"
   },
   "volta": {
-    "node": "12.16.0",
-    "yarn": "1.19.1"
+    "node": "14.17.5",
+    "yarn": "1.22.11"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^2.0.0",

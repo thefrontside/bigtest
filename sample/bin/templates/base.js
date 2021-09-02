@@ -22,8 +22,8 @@ const baseTemplate = ({ dependencies }) => {
         "@babel/core": `${dependencies['@babel/core']}`,
       },
       "volta": {
-        "node": "12.16.0",
-        "yarn": "1.19.1"
+        "node": "14.17.5",
+        "yarn": "1.22.11"
       }
     },
     files: [
