@@ -22,8 +22,7 @@
     "prepack:commonjs": "tsc --project ./tsconfig.build.json --outdir dist/cjs --module commonjs"
   },
   "dependencies": {
-    "@bigtest/suite": "^0.12.0",
-    "effection": "^2.0.0-beta.12"
+    "@bigtest/suite": "^0.12.0"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^2.0.0",
