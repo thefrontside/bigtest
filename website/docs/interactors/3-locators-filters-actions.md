@@ -9,10 +9,11 @@ Whether they are built-in or written by you, all interactors have some things in
 
 One benefit of Interactors is that they help you align your tests with how a user actually interacts with the app, starting with finding what to act upon. A locator is the simplest way to find a specific element in a user interface.
 
-When you use an Interactor in a test, you can pass it a string. This string argument would be the Locator - like "Submit" in the example below:
+When you use an Interactor in a test, you can pass it a string or a regular expression. This argument would be the Locator - like for "Submit" in the examples below:
 
 ```js
-Button('Submit').exists();
+Button('Submit').exists(); // string
+Button(/Submit/).exists(); // regex
 ```
 
 A typical user identifies a button by the words printed across it, so in this example they would consider a button with the word 'Submit' on it as the "Submit" button. Interactors use locators to make that connection.
