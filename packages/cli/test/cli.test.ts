@@ -1,25 +1,13 @@
+import { command, rmrf } from './helpers';
 import { describe, it, beforeEach, afterEach, captureError } from '@effection/mocha';
-import { Operation, Stream } from 'effection';
-import { daemon, exec, Exec, Process, ProcessResult } from '@effection/process';
+import { daemon, Process, ProcessResult } from '@effection/process';
 import { defaultTSConfig } from '@bigtest/project';
-import rmrf from 'rimraf';
 
 import expect from 'expect';
 import process from 'process';
 import { promises as fs } from 'fs';
 
 const DRIVER = process.env.DRIVER || 'default';
-
-function command(...args: string[]): Exec {
-  return exec("yarn ts-node ./src/index.ts", {
-    arguments: args,
-    buffered: true,
-  });
-}
-
-const waitFor = (stream: Stream<string>, substring: string): Operation<void> => function*() {
-  yield stream.filter((s) => s.includes(substring)).expect();
-}
 
 describe('@bigtest/cli', function() {
   this.timeout(process.env.CI ? 120000 : 30000);
@@ -33,7 +21,7 @@ describe('@bigtest/cli', function() {
       });
 
       it('outputs that the server was started successfully', function*() {
-        yield waitFor(child.stdout, "[orchestrator] running!");
+        yield child.stdout.lines().grep("[orchestrator] running!").expect();
       });
     });
 
@@ -41,12 +29,12 @@ describe('@bigtest/cli', function() {
       let child: Process;
 
       beforeEach(function*() {
-        daemon('yarn test:app:start 36001');
+        yield daemon('yarn test:app:start 36001');
         child = yield command('server', '--app.url', 'http://localhost:36001', '--app.command', '');
       });
 
       it('outputs that the server was started successfully', function*() {
-        yield waitFor(child.stdout, "[orchestrator] running!");
+        yield child.stdout.lines().grep("[orchestrator] running!").expect();
       });
     });
 
@@ -58,7 +46,7 @@ describe('@bigtest/cli', function() {
       });
 
       it('outputs that the server was started successfully', function*() {
-        yield waitFor(child.stdout, "[orchestrator] running!");
+        yield child.stdout.lines().grep("[orchestrator] running!").expect();
       });
     });
   });
@@ -82,7 +70,7 @@ describe('@bigtest/cli', function() {
 
       beforeEach(function*() {
         startChild = yield command('server', '--launch', DRIVER);
-        yield waitFor(startChild.stdout, "[orchestrator] running!");
+        yield startChild.stdout.lines().grep("[orchestrator] running!").expect();
 
         result = yield command('test', './test/fixtures/passing.test.ts').join();
       });
@@ -99,7 +87,7 @@ describe('@bigtest/cli', function() {
 
       beforeEach(function*() {
         startChild = yield command('server', '--launch', DRIVER);
-        yield waitFor(startChild.stdout, "[orchestrator] running!");
+        yield startChild.stdout.lines().grep("[orchestrator] running!").expect();
 
         result = yield command('test', './test/fixtures/failing.test.ts').join();
       });
@@ -117,7 +105,7 @@ describe('@bigtest/cli', function() {
       beforeEach(function*() {
         startChild = yield command('server', '--launch', DRIVER, '--test-files', './test/fixtures/syntax.broken.ts');
 
-        yield waitFor(startChild.stdout, "[orchestrator] running!");
+        yield startChild.stdout.lines().grep("[orchestrator] running!").expect();
 
         result = yield command('test').join();
       });
@@ -275,7 +263,7 @@ describe('@bigtest/cli', function() {
 
   describe('coverage', () => {
     beforeEach(function*() {
-      yield () => ({ perform: (resolve) => rmrf('./tmp/coverage', resolve) });
+      yield rmrf('./tmp/coverage');
     });
 
     describe('when coverage output is requested', () => {
@@ -328,34 +316,34 @@ describe('@bigtest/cli', function() {
       beforeEach(function*() {
         child = yield command('init', '--config-file', './tmp/bigtest-config-test.json');
 
-        yield waitFor(child.stdout, 'Which port would you like to run BigTest on?');
+        yield child.stdout.lines().grep('Which port would you like to run BigTest on?').expect();
         child.stdin.send('not-a-port\n');
 
-        yield waitFor(child.stdout, 'Not a number!');
+        yield child.stdout.lines().grep('Not a number!').expect();
         child.stdin.send('1234\n');
 
-        yield waitFor(child.stdout, 'Where are your test files located?');
+        yield child.stdout.lines().grep('Where are your test files located?').expect();
         child.stdin.send('test.ts\n');
 
-        yield waitFor(child.stdout, 'Do you want BigTest to start your application for you?');
+        yield child.stdout.lines().grep('Do you want BigTest to start your application for you?').expect();
         child.stdin.send('\n');
 
-        yield waitFor(child.stdout, 'What command do you run to start your application?');
+        yield child.stdout.lines().grep('What command do you run to start your application?').expect();
         child.stdin.send('yarn run-my-app\n');
 
-        yield waitFor(child.stdout, 'Which port would you like to run your application on?');
+        yield child.stdout.lines().grep('Which port would you like to run your application on?').expect();
         child.stdin.send('9000\n');
 
-        yield waitFor(child.stdout, 'Which URL do you use to access your application?');
+        yield child.stdout.lines().grep('Which URL do you use to access your application?').expect();
         child.stdin.send('\n');
 
-        yield waitFor(child.stdout, 'Do you want to write your tests in TypeScript?');
+        yield child.stdout.lines().grep('Do you want to write your tests in TypeScript?').expect();
         child.stdin.send('yes\n');
 
-        yield waitFor(child.stdout, 'Do you want to set up a separate TypeScript `tsconfig` file for BigTest?');
+        yield child.stdout.lines().grep('Do you want to set up a separate TypeScript `tsconfig` file for BigTest?').expect();
         child.stdin.send('yes\n');
 
-        yield waitFor(child.stdout, 'Where should the custom `tsconfig` be located?');
+        yield child.stdout.lines().grep('Where should the custom `tsconfig` be located?').expect();
         child.stdin.send('\n');
 
         status = yield child.join();
@@ -363,7 +351,7 @@ describe('@bigtest/cli', function() {
 
       afterEach(function*() {
         yield fs.rename('./bigtest.tsconfig.json', './tmp/bigtest.tsconfig.json');
-        yield () => ({ perform: (resolve) => rmrf('./tmp/', resolve) });
+        yield rmrf('./tmp/');
       });
 
       it('exits successfully and writes a bigtest and typescript config files', function*() {

@@ -1,4 +1,4 @@
-import { Resource, spawn } from 'effection';
+import { Resource, Operation, spawn, createFuture } from 'effection';
 import { Slice } from '@effection/atom';
 import { ProjectOptions } from '@bigtest/project';
 import { w3cwebsocket } from 'websocket';
@@ -8,6 +8,19 @@ import { createOrchestrator } from '../src/index';
 import { createOrchestratorAtom, DeepPartial } from '../src/orchestrator/atom';
 import { OrchestratorState } from '../src/orchestrator/state';
 import merge from 'deepmerge';
+import rimraf from 'rimraf';
+
+export function rmrf(path: string): Operation<undefined> {
+  let { future, resolve, reject } = createFuture<undefined>();
+  rimraf(path, (err) => {
+    if(err) {
+      reject(err);
+    } else {
+      resolve(undefined);
+    }
+  });
+  return future;
+}
 
 export function createAgent(options: AgentOptions): Resource<AgentProtocol> {
   // the types are broken in the 'websocket' package.... the `w3cwebsocket` class

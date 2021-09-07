@@ -48,7 +48,7 @@ export function createAgentRunner(options: RunnerOptions): Resource<Runner> {
     *init(scope: Task) {
       return {
         runTest({ testRunId, files }: RunOptions): Promise<void> {
-          return scope.run(function*(task) {
+          return scope.run(function*() {
             console.debug('[command processor] running test', testRunId);
             let stepTimeout = 60_000;
             let testRunSlice = options.atom.slice('testRuns', testRunId);
@@ -58,7 +58,7 @@ export function createAgentRunner(options: RunnerOptions): Resource<Runner> {
             let bundler: BundlerState = yield bundlerSlice.filter((state) => state.type === 'GREEN' || state.type === 'ERRORED').expect();
 
             if(bundler.type === 'GREEN') {
-              let events = options.channel.match({ testRunId }).buffer(task);
+              let events = yield options.channel.match({ testRunId }).buffered();
 
               let manifest = options.atom.get().manifest;
 

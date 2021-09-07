@@ -3,7 +3,7 @@ import { describe, it, beforeEach } from '@effection/mocha';
 import { createWebDriver, WebDriver } from '@bigtest/webdriver';
 import { express, Express } from '@bigtest/effection-express';
 
-import { Resource, Stream, createChannel, createQueue, Queue } from 'effection';
+import { Resource, Stream, createChannel, createQueue, Queue, spawn } from 'effection';
 import { static as staticMiddleware } from 'express';
 
 import expect from 'expect';
@@ -93,10 +93,10 @@ describe("@bigtest/agent", function() {
         let testRunId = 'test-run-1';
         let events: Stream<AgentEvent>;
 
-        beforeEach(function*(world) {
+        beforeEach(function*() {
           let channel = createChannel<AgentEvent>();
-          world.run(connection.forEach(channel.send));
-          events = channel.buffer(world);
+          yield spawn(connection.forEach(channel.send));
+          events = yield channel.buffered();
 
           let manifestUrl = 'http://localhost:8000/global-manifest.js';
           let appUrl = 'http://localhost:8000/app';

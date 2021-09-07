@@ -17,7 +17,7 @@
     "lint": "eslint \"{src,test,bin}/**/*.ts\"",
     "check:types": "tsc --noEmit",
     "test": "mocha -r ts-node/register \"test/{,!(fixtures)/**}/*.test.ts\"",
-    "bigtest": "ts-node src/index.ts",
+    "bigtest": "ts-node src/index.ts -r @effection/inspect",
     "prepack": "tsc --build ./tsconfig.build.json",
     "test:app:start": "node ./bin/app.js"
   },
@@ -25,6 +25,7 @@
     "bigtest": "bin/bigtest.js"
   },
   "devDependencies": {
+    "@effection/inspect": "^2.0.0-beta.22",
     "@frontside/eslint-config": "^2.0.0",
     "@frontside/tsconfig": "^1.2.0",
     "@frontside/typescript": "^1.1.1",
@@ -48,11 +49,11 @@
     "@bigtest/effection": "^0.8.0",
     "@bigtest/project": "^0.16.1",
     "@bigtest/server": "^0.25.1",
-    "@effection/process": "^2.0.0-beta.12",
+    "@effection/process": "^2.0.0-beta.20",
     "capture-console": "^1.0.1",
     "chalk": "^4.1.0",
     "deepmerge": "^4.2.2",
-    "effection": "^2.0.0-beta.12",
+    "effection": "^2.0.0-beta.21",
     "istanbul-lib-coverage": "^3.0.0",
     "istanbul-lib-report": "^3.0.0",
     "istanbul-reports": "^3.0.2",
