@@ -10,6 +10,7 @@ This requires no additional setup. Just install `@interactors/html` to your proj
 In the same way Interactors make tests more reliable and easier to read, it will also enhance your developer experience with Storybook.
 
 Here is an example of how you would normally write a story:
+
 ```js
 import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
@@ -24,6 +25,7 @@ export const FormSignIn = {
 ```
 
 And this is the same story but written with interactors:
+
 ```js
 import { Button, TextField } from '@interactors/html';
 
@@ -35,3 +37,9 @@ export const FormSignIn = {
   }
 };
 ```
+
+## Up Next
+
+On this page we have gone over how Interactors can enhance your experience with Storybook. If you use `Material UI` to design your apps, you will be pleased to know that `Material UI` too can be used with Interactors and Storybook.
+
+So go on over to the next page where we will share with you some of the notable existing interactors written for other projects and libraries.

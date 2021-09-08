@@ -4,12 +4,12 @@ title: Quick Start
 slug: /interactors
 ---
 
-BigTest's Interactors make writing your UI tests easier, faster, and more reliable. You can use them across many different testing frameworks.
+Interactors make writing your UI tests easier, faster, and more reliable. You can use them across many different testing frameworks.
 
 By the end of this page you will be testing one of your own apps with Interactors.
 
 :::note We're here to help
- If you need help or have questions along the way, please let us know in [the Discord chat](https://discord.gg/r6AvtnU) or [open a discussion](https://github.com/thefrontside/bigtest/discussions/) on Github.
+ If you need help or have questions along the way, please let us know in [the Discord chat](https://discord.gg/r6AvtnU) or [open a discussion](https://github.com/thefrontside/interactors/discussions/) on Github.
 :::
 
 ## Prerequisites
@@ -31,7 +31,7 @@ After you’ve installed the project, you’ll be able to run the test suite of 
 
 ## Installation
 
-If you're using your own app, install `bigtest` with the following command:
+If you're using your own app, install Interactors with the following command:
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -46,14 +46,14 @@ import TabItem from '@theme/TabItem';
   <TabItem value="npm">
 
   ```
-  npm install bigtest --save-dev
+  npm install @interactors/html --save-dev
   ```
 
   </TabItem>
   <TabItem value="yarn">
 
   ```
-  yarn add bigtest --dev
+  yarn add @interactors/html --dev
   ```
 
   </TabItem>
@@ -90,7 +90,7 @@ If you are using Cypress, you will only need to install `@interactors/with-cypre
 
 Interactors can do a lot, but let's keep things simple for now and begin testing one of the most common user interactions - a button click.
 
-Interactors have methods like `click` that mimic user actions. If you are using your own app, in your codebase find a test that already has a button click in it. In that test, import the `Button` interactor from `bigtest` and use it to replace the click interaction as exemplified below (make sure to substitute "Sign In" with your own button text):
+Interactors have methods like `click` that mimic user actions. If you are using your own app, in your codebase find a test that already has a button click in it. In that test, import the `Button` interactor from `@interactors/html` and use it to replace the click interaction as exemplified below (make sure to substitute "Sign In" with your own button text):
 
 <Tabs
   groupId="runner"
@@ -107,7 +107,7 @@ Interactors have methods like `click` that mimic user actions. If you are using 
   import { render } from '@testing-library/react';
   import App from './App';
 
-  import { Button } from 'bigtest';
+  import { Button } from '@interactors/html';
 
   describe('Interactors with Jest', () => {
     beforeEach(() => render(<App />));
@@ -141,7 +141,8 @@ Interactors have methods like `click` that mimic user actions. If you are using 
   <TabItem value="bigtest">
 
   ```js
-  import { Button, Page, test } from 'bigtest';
+  import { test } from 'bigtest';
+  import { Button, Page } from '@interactors/html';
 
   export default test('BigTest')
     .step(
@@ -158,7 +159,7 @@ If you are using the sample project, you can find these examples inside `bigtest
 Now run your tests as you usually would or use any of the sample project options. Congratulations – you used your first Interactor!
 
 :::note The BigTest Runner
-There's more to BigTest than just Interactors. BigTest can also run your tests on any _real_ browser – just like your users use. We have built a new integrated platform from the ground up to help you test more with less effort. And best of all it's free and Open Source! [Check it out](/platform), and let us know what you think.
+BigTest can run your tests on any _real_ browser – just like your users use. We have built a new integrated platform from the ground up to help you test more with less effort. And best of all it's free and Open Source! [Check it out](/platform), and let us know what you think.
 :::
 
 ## Making test assertions
@@ -214,7 +215,8 @@ In the sample project, when you click the “Sign In” button it disappears and
   <TabItem value="bigtest">
 
   ```js
-  import { Button, Page, test } from 'bigtest';
+  import { test } from 'bigtest';
+  import { Button, Page } from '@interactors/html';
 
   export default test('BigTest')
     .step(
@@ -245,7 +247,7 @@ Here are examples of what a test for an airline datepicker interface could look 
   <TabItem value="jest">
 
   ```js
-  import { Heading, RadioButton, TextField } from 'bigtest';
+  import { Heading, RadioButton, TextField } from '@interactors/html';
   import { DatePicker, Modal } from './MyInteractors';
 
   describe('Interactors with Jest', () => {
@@ -291,7 +293,8 @@ Here are examples of what a test for an airline datepicker interface could look 
   <TabItem value="bigtest">
 
   ```js
-  import { Heading, RadioButton, Page, test, TextField } from 'bigtest';
+  import { test } from 'bigtest';
+  import { Heading, Page, RadioButton, TextField } from '@interactors/html';
   import { DatePicker, Modal } from './MyInteractors';
 
   export default test('BigTest')
@@ -315,7 +318,7 @@ As you can see, Interactors not only make it simple to use DOM elements like Rad
 
 ### Continue learning about Interactors
 
-Try using more of the [Built-in Interactors](/docs/interactors/built-in-dom) within your tests such as `Link`, `CheckBox`, `TextField`, and more.
+Try using more of the [Predefined Interactors](/docs/interactors/predefined-interactors) within your tests such as `Link`, `CheckBox`, `TextField`, and more.
 
 You’ll quickly realize how much more powerful Interactors are when combined with [Locators, Filters, and Actions](/docs/interactors/locators-filters-actions).
 
@@ -323,4 +326,4 @@ Once you are comfortable with those, you’ll want to [write your own Interactor
 
 ### Join the BigTest community
 
-If you want to know more about BigTest or run into any problem with Interactors, you can reach out to us on our Discord channel. We're eager to help you get started and hear your feedback on how to improve BigTest. [Join us today!](https://discord.gg/r6AvtnU)
+If you want to know more about Interactors or have any questions, you can reach out to us on our Discord channel. We're eager to help you get started and hear your feedback on how to improve Interactors. [Join us today!](https://discord.gg/r6AvtnU)
