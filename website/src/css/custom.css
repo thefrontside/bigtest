@@ -93,12 +93,12 @@ body {
   font-weight: normal;
 }
 
-.navbar__link[href$="platform"] {
+.navbar__link[href$="docs"] {
   width: 156px;
   text-align: center;
 }
 
-.navbar__link[href$="platform"]:after {
+.navbar__link[href$="docs"]:after {
   content: 'alpha';
   font-size: 0.7em;
   padding: 1px 2px;

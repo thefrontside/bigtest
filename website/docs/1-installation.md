@@ -1,7 +1,7 @@
 ---
 id: installation
 title: Installation
-slug: /platform
+slug: /
 ---
 
 BigTest is a free, Open Source testing platform built from scratch for the modern age — with no traces of Selenium, Playwright, or earlier tools.
