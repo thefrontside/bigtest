@@ -68,7 +68,7 @@ function Interactors() {
             </p>
             <Link
               className={styles.ctaButton}
-              to={useBaseUrl('docs/platform')}>
+              to={useBaseUrl('docs')}>
               Start exploring
             </Link>
           </div>
