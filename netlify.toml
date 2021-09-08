@@ -21,3 +21,19 @@
 
   [headers.values]
     X-Frame-Options = "SAMEORIGIN"
+
+[[redirects]]
+  from = "/bigtest/interactors/*"
+  to = "https://frontside.com/interactors/:splat"
+
+[[redirects]]
+  from = "/bigtest/docs/interactors/*"
+  to = "https://frontside.com/interactors/docs/:splat"
+
+[[redirects]]
+  from = "/bigtest/platform"
+  to = "/bigtest"  
+
+[[redirects]]
+  from = "/bigtest/docs/platform/*"
+  to = "/bigtest/docs/:splat"
