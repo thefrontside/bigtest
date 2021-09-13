@@ -119,6 +119,6 @@ The configuration shown above will run your tests in both Chrome and Firefox in 
 
 Now you are ready to write more complex tests, or create tests for more views in your app.
 
-The main way to test user interaction flows and make assertions is using Interactors. Follow the [Interactors Guides](../interactors) to learn how to use built-in interactors or write your own.
+The main way to test user interaction flows and make assertions is using Interactors. Follow the [Interactors Guides](https://frontside.com/interactors) to learn how to use built-in interactors or write your own.
 
 Please feel free to reach out to us in [the Discord chat](https://discord.gg/r6AvtnU) if you have any questions or feedback.

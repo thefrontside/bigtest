@@ -70,7 +70,7 @@ export default test('home page rendering')
 
 ## Interactors
 
-In the examples above, we used Interactors like `Button` and `Heading` to locate something in the UI, interact with it like a user would, and make a test assertion. Learn more about how interactors work in our [Interactors](../interactors) guides.
+In the examples above, we used Interactors like `Button` and `Heading` to locate something in the UI, interact with it like a user would, and make a test assertion. Learn more about how interactors work in our [Interactors](https://frontside.com/interactors) guides.
 
 ## Test order
 

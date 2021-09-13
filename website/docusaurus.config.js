@@ -24,14 +24,8 @@ module.exports = {
       },
       items: [
         {
-          to: '/interactors',
-          activeBaseRegex: '(interactors)|(docs\/interactors)',
-          label: 'Interactors',
-          position: 'left',
-        },{
-          to: '/platform',
-          activeBaseRegex: '(platform)|(docs\/platform)',
-          label: 'Runner',
+          to: '/docs',
+          label: 'Docs',
           position: 'left',
         }, {
           to: '/about',
@@ -53,28 +47,15 @@ module.exports = {
       style: 'light',
       links: [
         {
-          title: 'Interactors',
-          items: [
-            {
-              label: 'About Interactors',
-              to: 'interactors/',
-            },
-            {
-              label: 'Docs',
-              to: 'docs/interactors/',
-            }
-          ],
-        },
-        {
           title: 'Runner',
           items: [
             {
               label: 'About the Runner',
-              to: 'platform/',
+              to: '/',
             },
             {
               label: 'Introduction',
-              to: 'docs/platform/',
+              to: 'docs',
             }
           ],
         },
