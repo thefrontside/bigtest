@@ -3,6 +3,7 @@
   "version": "0.20.0",
   "description": "Use BigTest",
   "repository": "https://github.com/thefrontside/bigtest.git",
+  "homepage": "https://frontside.com/bigtest",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "main": "dist/index.js",
   "license": "MIT",

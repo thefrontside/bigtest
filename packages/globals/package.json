@@ -6,6 +6,7 @@
   "browser": "dist/esm/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/thefrontside/bigtest.git",
+  "homepage": "https://frontside.com/bigtest",
   "author": "Frontside Engineering <engineering@frontside.com>",
   "license": "MIT",
   "files": [
