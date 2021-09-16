@@ -11,13 +11,13 @@ interface Options {
 export function startServer(project: ProjectOptions, options: Options): Resource<void> {
   return {
     name: 'server',
-    *init() {
+    *init(_, local) {
       ensureConfiguration(project);
 
       let atom = createOrchestratorAtom();
       yield spawn(createOrchestrator({ atom, project }));
 
-      yield spawn(function*() {
+      yield local.spawn(function*() {
         yield sleep(options.timeout);
         throw new MainError({ exitCode: 3, message: chalk.red(`ERROR: Timed out waiting for server to start after ${options.timeout}ms`) });
       });
