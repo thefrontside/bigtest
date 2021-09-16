@@ -1,5 +1,14 @@
 # @bigtest/globals
 
+## 0.8.1
+
+### Patch Changes
+
+- feaa260b: Add homepage links to packages
+- d86085fa: Remove unnecessary effection dependency
+- Updated dependencies [feaa260b]
+  - @bigtest/suite@0.12.1
+
 ## 0.8.0
 
 ### Minor Changes

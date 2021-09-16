@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/project",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "Utilities for with BigTest projects",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,7 +20,7 @@
     "prepack": "tsc --build ./tsconfig.build.json"
   },
   "dependencies": {
-    "@bigtest/driver": "^0.6.0",
+    "@bigtest/driver": "^0.6.1",
     "effection": "^2.0.0-beta.12"
   },
   "devDependencies": {

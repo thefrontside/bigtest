@@ -1,5 +1,17 @@
 # @bigtest/agent
 
+## 0.18.1
+
+### Patch Changes
+
+- feaa260b: Add homepage links to packages
+- Updated dependencies [9682c92d]
+- Updated dependencies [feaa260b]
+- Updated dependencies [d86085fa]
+  - @bigtest/effection@0.8.0
+  - @bigtest/effection-express@0.11.0
+  - @bigtest/globals@0.8.1
+
 ## 0.18.0
 
 ### Minor Changes

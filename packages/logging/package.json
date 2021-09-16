@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/logging",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Utilities for logging within BigTest projects",
   "main": "dist/index.js",
   "repository": "https://github.com/thefrontside/bigtest.git",

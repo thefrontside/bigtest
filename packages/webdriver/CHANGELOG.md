@@ -1,5 +1,17 @@
 # @bigtest/webdriver
 
+## 0.10.0
+
+### Minor Changes
+
+- 9a9c4488: Require chromedriver 93
+
+### Patch Changes
+
+- feaa260b: Add homepage links to packages
+- Updated dependencies [feaa260b]
+  - @bigtest/driver@0.6.1
+
 ## 0.9.0
 
 ### Minor Changes

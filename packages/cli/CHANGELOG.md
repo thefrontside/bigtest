@@ -1,5 +1,19 @@
 # @bigtest/cli
 
+## 0.20.1
+
+### Patch Changes
+
+- 3f8cf9a5: Fix start server timeout doesn't cancel
+- feaa260b: Add homepage links to packages
+- 243ca0c8: Remove @bigtest/performance dependency
+- Updated dependencies [9682c92d]
+- Updated dependencies [feaa260b]
+  - @bigtest/effection@0.8.0
+  - @bigtest/client@0.4.1
+  - @bigtest/project@0.16.1
+  - @bigtest/server@0.25.1
+
 ## 0.20.0
 
 ### Minor Changes

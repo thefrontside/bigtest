@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.25.1
+
+### Patch Changes
+
+- feaa260b: Add homepage links to packages
+- Updated dependencies [9a9c4488]
+- Updated dependencies [9682c92d]
+- Updated dependencies [feaa260b]
+- Updated dependencies [d86085fa]
+  - @bigtest/webdriver@0.10.0
+  - @bigtest/effection@0.8.0
+  - @bigtest/effection-express@0.11.0
+  - @bigtest/agent@0.18.1
+  - @bigtest/bundler@0.14.1
+  - @bigtest/client@0.4.1
+  - @bigtest/driver@0.6.1
+  - @bigtest/globals@0.8.1
+  - @bigtest/logging@0.6.1
+  - @bigtest/project@0.16.1
+  - @bigtest/suite@0.12.1
+
 ## 0.25.0
 
 ### Minor Changes
