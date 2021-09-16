@@ -10,7 +10,6 @@
 "@bigtest/eslint-plugin": patch
 "@bigtest/globals": patch
 "@bigtest/logging": patch
-"@bigtest/performance": patch
 "@bigtest/project": patch
 "@bigtest/server": patch
 "@bigtest/suite": patch

@@ -18,7 +18,6 @@
       "@bigtest/eslint-plugin": ["packages/eslint-plugin/src"],
       "@bigtest/globals": ["packages/globals/src"],
       "@bigtest/logging": ["packages/logging/src"],
-      "@bigtest/performance": ["packages/performance/src"],
       "@bigtest/project": ["packages/project/src"],
       "@bigtest/server": ["packages/server/src"],
       "@bigtest/suite": ["packages/suite/src"],
