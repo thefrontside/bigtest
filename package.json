@@ -12,7 +12,6 @@
       "packages/effection",
       "packages/client",
       "packages/effection-express",
-      "packages/performance",
       "packages/suite",
       "packages/globals",
       "packages/agent",
