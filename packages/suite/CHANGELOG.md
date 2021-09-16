@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.12.1
+
+### Patch Changes
+
+- feaa260b: Add homepage links to packages
+
 ## 0.12.0
 
 ### Minor Changes

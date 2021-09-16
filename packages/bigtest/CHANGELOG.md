@@ -1,5 +1,16 @@
 # bigtest
 
+## 0.15.1
+
+### Patch Changes
+
+- feaa260b: Add homepage links to packages
+- Updated dependencies [3f8cf9a5]
+- Updated dependencies [feaa260b]
+- Updated dependencies [243ca0c8]
+  - @bigtest/cli@0.20.1
+  - @bigtest/suite@0.12.1
+
 ## 0.15.0
 
 ### Minor Changes

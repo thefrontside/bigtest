@@ -1,5 +1,11 @@
 # @bigtest/eslint-plugin
 
+## 0.4.1
+
+### Patch Changes
+
+- feaa260b: Add homepage links to packages
+
 ## 0.4.0
 
 ### Minor Changes

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.8.0
+
+### Minor Changes
+
+- 9682c92d: Bump @types/node in effection packages
+
+### Patch Changes
+
+- feaa260b: Add homepage links to packages
+
 ## 0.7.0
 
 ### Minor Changes

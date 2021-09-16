@@ -1,5 +1,13 @@
 # @bigtest/project
 
+## 0.16.1
+
+### Patch Changes
+
+- feaa260b: Add homepage links to packages
+- Updated dependencies [feaa260b]
+  - @bigtest/driver@0.6.1
+
 ## 0.16.0
 
 ### Minor Changes

@@ -1,5 +1,15 @@
 # @bigtest/bundler
 
+## 0.14.1
+
+### Patch Changes
+
+- feaa260b: Add homepage links to packages
+- Updated dependencies [9682c92d]
+- Updated dependencies [feaa260b]
+  - @bigtest/effection@0.8.0
+  - @bigtest/project@0.16.1
+
 ## 0.14.0
 
 ### Minor Changes

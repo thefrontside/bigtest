@@ -1,5 +1,18 @@
 # @bigtest/effection-express
 
+## 0.11.0
+
+### Minor Changes
+
+- 9682c92d: Bump @types/node in effection packages
+
+### Patch Changes
+
+- feaa260b: Add homepage links to packages
+- Updated dependencies [9682c92d]
+- Updated dependencies [feaa260b]
+  - @bigtest/effection@0.8.0
+
 ## 0.10.0
 
 ### Minor Changes
