@@ -1,8 +1,8 @@
+import { rmrf } from './helpers';
 import { describe, beforeEach, it } from '@effection/mocha';
 import expect from 'expect';
 import fs from 'fs';
 import path from 'path';
-import rmrf from 'rimraf';
 
 import { sleep, spawn } from 'effection';
 import { Test } from '@bigtest/suite';
@@ -27,7 +27,7 @@ describe('manifest-generator', () => {
   let status = createAtom({ type: 'pending' } as ManifestGeneratorStatus);
 
   beforeEach(function*() {
-    yield () => ({ perform: (resolve) => rmrf(TEST_DIR, resolve) });
+    yield rmrf(TEST_DIR);
     yield mkdir(TEST_DIR, { recursive: true });
     yield writeFile(join(TEST_DIR, "/test1.t.js"), "module.exports = { default: { description: 'hello' }};");
     yield writeFile(join(TEST_DIR, "/test2.t.js"), "module.exports = { default: { description: 'monkey' }};");

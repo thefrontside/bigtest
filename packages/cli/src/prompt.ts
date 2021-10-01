@@ -1,4 +1,4 @@
-import { Operation, Resource, ensure } from 'effection';
+import { Operation, Resource, ensure, createFuture } from 'effection';
 import chalk from 'chalk';
 import readline from 'readline';
 
@@ -22,18 +22,18 @@ export function createPrompt(): Resource<Prompt> {
       };
 
       function ask(options: { name?: string; defaultValue?: string } = {}): Operation<string> {
-        return {
-          perform: (resolve) => {
-            let question = '  ';
-            if(options.name) {
-              question = question + chalk.white(options.name) + ' ';
-            }
-            if(options.defaultValue) {
-              question = question + chalk.grey(`(${options.defaultValue})`);
-            }
-            question = question + chalk.white(' > ');
-            rl.question(question, (value) => resolve(value));
+        return () => {
+          let { future, resolve } = createFuture<string>();
+          let question = '  ';
+          if(options.name) {
+            question = question + chalk.white(options.name) + ' ';
           }
+          if(options.defaultValue) {
+            question = question + chalk.grey(`(${options.defaultValue})`);
+          }
+          question = question + chalk.white(' > ');
+          rl.question(question, (value) => resolve(value));
+          return future;
         }
       };
 

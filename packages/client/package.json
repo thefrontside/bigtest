@@ -23,7 +23,7 @@
     "prepack:commonjs": "tsc --project ./tsconfig.build.json --outdir dist/cjs --module commonjs"
   },
   "dependencies": {
-    "effection": "^2.0.0-beta.12",
+    "effection": "^2.0.0-beta.21",
     "websocket": "^1.0.31"
   },
   "devDependencies": {

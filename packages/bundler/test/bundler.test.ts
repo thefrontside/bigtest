@@ -1,5 +1,5 @@
 import { describe, it, beforeEach } from '@effection/mocha';
-import { sleep } from 'effection';
+import { sleep, createFuture } from 'effection';
 import { promises as fs, existsSync } from 'fs';
 import expect from 'expect';
 import rmrf from 'rimraf';
@@ -9,7 +9,9 @@ describe("Bundler", function() {
   let bundler: Bundler;
 
   beforeEach(function*() {
-    yield () => ({ perform: (resolve) => rmrf('./build', resolve) })
+    let { resolve, future } = createFuture();
+    rmrf('./build', resolve);
+    yield future;
     yield fs.mkdir("./build/test/sources", { recursive: true });
     yield fs.mkdir("./build/test/output", { recursive: true });
   });

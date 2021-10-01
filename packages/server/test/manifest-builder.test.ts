@@ -1,7 +1,7 @@
+import { rmrf } from './helpers';
 import { describe as suite, beforeEach, it } from '@effection/mocha';
 import expect from 'expect';
 import path from 'path';
-import rmrf from 'rimraf';
 import fs from 'fs';
 
 import { spawn } from 'effection';
@@ -30,7 +30,7 @@ describe('manifest builder', () => {
   beforeEach(function*() {
     this.timeout(30000);
 
-    yield () => ({ perform: (resolve) => rmrf(TEST_DIR, resolve) });
+    yield rmrf(TEST_DIR);
     yield mkdir(SRC_DIR, { recursive: true });
     yield copyFile(path.join(FIXTURES_DIR, 'raw-tree-format.t.js'), MANIFEST_PATH);
 

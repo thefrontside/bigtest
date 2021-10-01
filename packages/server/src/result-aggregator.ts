@@ -1,7 +1,6 @@
-import { Operation, all, spawn } from 'effection';
+import { Operation, Stream, all, spawn } from 'effection';
 import { Slice } from '@effection/atom';
 import { RunEnd, StepResult as StepResultEvent, AssertionResult as AssertionResultEvent } from '@bigtest/agent';
-import { Stream } from '@effection/subscription';
 import { TestResult, StepResult, AssertionResult, ResultStatus } from '@bigtest/suite';
 import { TestRunState, TestRunAgentState } from './orchestrator/state';
 import { Incoming } from './connection-server';

@@ -20,14 +20,21 @@ export function* appServer(options: AppServerOptions): Operation<void> {
     let child: Process = yield exec(options.command as string, {
       cwd: options.dir,
       env: Object.assign({}, process.env, options.env),
-      buffered: true,
     });
+
+    let stdoutBuffer = yield child.stdout.lines().toBuffer(1000);
+    let stderrBuffer = yield child.stderr.lines().toBuffer(1000);
 
     yield spawn(function* () {
       let exitStatus = yield child.join();
-      let stdout = yield child.stdout.expect();
-      let stderr = yield child.stderr.expect();
-      options.status.set({ type: 'exited', exitStatus: { ...exitStatus, stdout, stderr }});
+      options.status.set({
+        type: 'exited',
+        exitStatus: {
+          ...exitStatus,
+          stdout: Array.from(stdoutBuffer).join("\n"),
+          stderr: Array.from(stderrBuffer).join("\n"),
+        }
+      });
     });
   }
 

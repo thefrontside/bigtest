@@ -18,10 +18,10 @@ describe('agent runner', () => {
   let connections: DuplexChannel<ConnectionOutgoing, ConnectionIncoming>;
   let runner: Runner;
 
-  beforeEach(function*(world) {
+  beforeEach(function*() {
     [channel, connections] = createDuplexChannel<ConnectionIncoming, ConnectionOutgoing>();
 
-    messages = connections.buffer(world);
+    messages = yield connections.buffered();
     atom = createOrchestratorAtom({
       manifest: {
         fileName: 'manifest-1234.js',

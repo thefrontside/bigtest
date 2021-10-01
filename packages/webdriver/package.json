@@ -32,13 +32,13 @@
     "ts-node": "^9.1.1"
   },
   "dependencies": {
-    "@bigtest/driver": "^0.6.1",
-    "@effection/atom": "^2.0.0-beta.12",
-    "@effection/fetch": "^2.0.0-beta.12",
-    "@effection/process": "^2.0.0-beta.12",
+    "@bigtest/driver": "^0.6.0",
+    "@effection/atom": "^2.0.0-beta.20",
+    "@effection/fetch": "^2.0.0-beta.19",
+    "@effection/process": "^2.0.0-beta.20",
     "abort-controller": "^3.0.0",
-    "chromedriver": "^93.0.0",
-    "effection": "^2.0.0-beta.12",
+    "chromedriver": "^93.0.1",
+    "effection": "^2.0.0-beta.21",
     "geckodriver": ">=1.22.2",
     "ms-chromium-edge-driver": "^0.3.0",
     "node-fetch": "^2.6.1"
