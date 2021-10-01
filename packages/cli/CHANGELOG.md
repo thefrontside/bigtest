@@ -1,5 +1,19 @@
 # @bigtest/cli
 
+## 0.21.0
+
+### Minor Changes
+
+- 11925e0e: Upgrade effection to beta.21
+
+### Patch Changes
+
+- Updated dependencies [11925e0e]
+  - @bigtest/client@0.5.0
+  - @bigtest/effection@0.9.0
+  - @bigtest/project@0.17.0
+  - @bigtest/server@0.26.0
+
 ## 0.20.1
 
 ### Patch Changes

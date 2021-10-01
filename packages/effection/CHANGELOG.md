@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.0
+
+### Minor Changes
+
+- 11925e0e: Upgrade effection to beta.21
+
 ## 0.8.0
 
 ### Minor Changes

@@ -1,5 +1,17 @@
 # @bigtest/bundler
 
+## 0.15.0
+
+### Minor Changes
+
+- 11925e0e: Upgrade effection to beta.21
+
+### Patch Changes
+
+- Updated dependencies [11925e0e]
+  - @bigtest/effection@0.9.0
+  - @bigtest/project@0.17.0
+
 ## 0.14.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @bigtest/driver
 
+## 0.7.0
+
+### Minor Changes
+
+- 11925e0e: Upgrade effection to beta.21
+
 ## 0.6.1
 
 ### Patch Changes
