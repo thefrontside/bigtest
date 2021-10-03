@@ -1,5 +1,11 @@
 # @bigtest/client
 
+## 0.5.0
+
+### Minor Changes
+
+- 11925e0e: Upgrade effection to beta.21
+
 ## 0.4.1
 
 ### Patch Changes

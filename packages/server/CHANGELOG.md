@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.26.0
+
+### Minor Changes
+
+- 11925e0e: Upgrade effection to beta.21
+
+### Patch Changes
+
+- Updated dependencies [11925e0e]
+  - @bigtest/agent@0.19.0
+  - @bigtest/bundler@0.15.0
+  - @bigtest/client@0.5.0
+  - @bigtest/driver@0.7.0
+  - @bigtest/effection@0.9.0
+  - @bigtest/effection-express@0.12.0
+  - @bigtest/project@0.17.0
+  - @bigtest/webdriver@0.11.0
+
 ## 0.25.1
 
 ### Patch Changes

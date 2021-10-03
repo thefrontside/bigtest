@@ -1,5 +1,16 @@
 # @bigtest/project
 
+## 0.17.0
+
+### Minor Changes
+
+- 11925e0e: Upgrade effection to beta.21
+
+### Patch Changes
+
+- Updated dependencies [11925e0e]
+  - @bigtest/driver@0.7.0
+
 ## 0.16.1
 
 ### Patch Changes

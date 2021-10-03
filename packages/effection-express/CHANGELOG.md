@@ -1,5 +1,16 @@
 # @bigtest/effection-express
 
+## 0.12.0
+
+### Minor Changes
+
+- 11925e0e: Upgrade effection to beta.21
+
+### Patch Changes
+
+- Updated dependencies [11925e0e]
+  - @bigtest/effection@0.9.0
+
 ## 0.11.0
 
 ### Minor Changes
