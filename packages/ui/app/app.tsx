@@ -9,7 +9,6 @@ export interface AppProps {
 
 export function App({ server }: AppProps): ReactElement {
   let url = server();
-
   return <GraphiQL fetcher={createGraphiQLFetcher({
     url: `${url}`,
   })}/>;
