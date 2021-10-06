@@ -22,7 +22,8 @@
       "packages/logging",
       "packages/server",
       "packages/cli",
-      "packages/bigtest"
+      "packages/bigtest",
+      "packages/ui"
     ],
     "nohoist": [
       "@bigtest/server/@types/node"
