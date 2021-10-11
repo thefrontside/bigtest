@@ -1,5 +1,4 @@
-import { Operation, withTimeout } from 'effection';
-import { fetch } from '@effection/fetch';
+import { Operation, withTimeout, fetch } from 'effection';
 
 /**
  * An operation that completes when the server at `url` begins

@@ -1,5 +1,4 @@
-import { Operation, sleep, spawn } from 'effection';
-import { fetch } from '@effection/fetch';
+import { Operation, sleep, spawn, fetch } from 'effection';
 import { exec, Process  } from '@effection/process';
 import { AppServerStatus } from './orchestrator/state';
 import { Slice } from '@effection/atom';
