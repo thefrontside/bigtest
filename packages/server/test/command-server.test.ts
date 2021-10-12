@@ -1,8 +1,7 @@
 import { describe, beforeEach, it } from '@effection/mocha';
 import expect from 'expect';
-import { Operation, createQueue, Queue, Subscription, spawn } from 'effection';
+import { Operation, createQueue, Queue, Subscription, spawn, fetch } from 'effection';
 import { Slice } from '@effection/atom';
-import { fetch } from '@effection/fetch';
 import { Test } from '@bigtest/suite';
 import { createClient, Client } from '@bigtest/client';
 import { createCommandServer } from '../src/command-server';

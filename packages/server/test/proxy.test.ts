@@ -3,9 +3,8 @@ import expect from 'expect';
 
 import { gzipSync } from 'zlib';
 
-import { Resource, spawn } from 'effection';
+import { Resource, spawn, fetch } from 'effection';
 import { createAtom, Slice } from '@effection/atom';
-import { fetch } from '@effection/fetch';
 import { AgentServerConfig } from '@bigtest/agent';
 
 import { proxyServer } from '../src/proxy';

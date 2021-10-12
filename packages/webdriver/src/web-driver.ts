@@ -1,6 +1,5 @@
-import { Operation, ensure } from 'effection';
+import { Operation, ensure, fetch } from 'effection';
 import { createAtom } from '@effection/atom';
-import { fetch } from '@effection/fetch';
 import { Driver, DriverFactory } from '@bigtest/driver';
 import { assert } from 'assert-ts';
 import { findAvailablePortNumber } from './find-available-port-number';
