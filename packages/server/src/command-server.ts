@@ -1,6 +1,9 @@
 import { Operation } from 'effection';
 import { express, Express, Socket } from '@bigtest/effection-express';
+import actualExpress from 'express';
+import { appDir } from '@bigtest/ui';
 import graphqlHTTP from 'express-graphql';
+import cors from 'cors';
 import { parse as parseGraphql, graphql as executeGraphql, subscribe as executeGraphqlSubscription, ExecutionResult } from 'graphql';
 
 import { schema } from './schema';
@@ -29,9 +32,13 @@ export const createCommandServer = (options: CommandServerOptions): Operation<vo
 
   app.ws('*', handleSocketConnection(options));
 
-  app.raw.use(graphqlHTTP(async () => await task.run(function* getOptionsData() {
-    return { ...graphqlOptions(options, options.atom.get()), graphiql: true};
-  })));
+  app.raw
+    .use(cors())
+    .disable('x-powered-by')
+    .use(actualExpress.static(appDir()))
+    .use(graphqlHTTP(async () => await task.run(function* getOptionsData() {
+      return { ...graphqlOptions(options, options.atom.get()), graphiql: true};
+    })));
 
   yield app.listen(options.port);
 
