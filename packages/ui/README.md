@@ -1,6 +1,6 @@
 ## @bigtest/ui
 
-A Web application to manage a simulacrum server
+A Web application interface to BigTest
 
 ### Development
 

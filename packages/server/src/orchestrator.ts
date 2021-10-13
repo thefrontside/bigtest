@@ -143,7 +143,7 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation<voi
   let connectURL = agentServerConfig.agentUrl(connectTo);
 
   console.log(`[orchestrator] launch agents via: ${connectURL}`);
-  console.log(`[orchestrator] BigTest UI: ${commandUrl}`);
+  console.log(`[orchestrator] Dashboard: ${commandUrl}`);
 
   status.set({ type: 'ready' });
 
