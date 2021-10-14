@@ -1,4 +1,4 @@
-import { Operation, Task, Stream, all, spawn, createFuture } from 'effection';
+import { Operation, Task, Subscription, all, spawn, createFuture } from 'effection';
 import { Slice } from '@effection/atom';
 import { RunEnd, StepResult as StepResultEvent, AssertionResult as AssertionResultEvent } from '@bigtest/agent';
 import { TestResult, StepResult, AssertionResult, ResultStatus } from '@bigtest/suite';
@@ -22,7 +22,7 @@ function createAggregatorMap(key: MessageKey, map: Map<string, (value: Incoming)
       if(resolve) {
         resolve(message);
       } else {
-        console.warn(`received unknown message: ${JSON.stringify(message)}`);
+        console.warn(`[aggregator] received unknown message: ${JSON.stringify(message)}`);
       }
     },
     *receive(type: string) {
@@ -63,10 +63,10 @@ function messageKey(key: MessageKey): string {
   return JSON.stringify([key.type, key.agentId, key.path].filter((v) => v != null));
 }
 
-export function* aggregate(stream: Stream<Incoming>, slice: Slice<TestRunState>): Operation<ResultStatus> {
+export function* aggregate(subscription: Subscription<Incoming>, slice: Slice<TestRunState>): Operation<ResultStatus> {
   let map = createAggregatorMap({});
 
-  yield spawn(stream.forEach(function*(message) {
+  yield spawn(subscription.forEach(function*(message) {
     map.dispatch(message);
   }));
 

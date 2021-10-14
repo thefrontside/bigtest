@@ -1,4 +1,4 @@
-import { Channel, createChannel, spawn } from 'effection';
+import { Queue, createQueue, spawn } from 'effection';
 import { describe, beforeEach, it } from '@effection/mocha';
 import expect from 'expect';
 
@@ -12,7 +12,7 @@ const testRunId = 'test-run-1';
 
 describe('result aggregator', () => {
   let slice: Slice<TestRunState>;
-  let channel: Channel<Incoming>;
+  let queue: Queue<Incoming>;
 
   beforeEach(function*() {
     slice = createAtom({
@@ -51,92 +51,92 @@ describe('result aggregator', () => {
       }
     } as TestRunState);
 
-    channel = createChannel();
+    queue = createQueue();
 
-    yield spawn(aggregate(channel, slice));
+    yield spawn(aggregate(queue, slice));
   });
 
   describe('run messages', () => {
     it('marks agent as running', function*() {
-      channel.send({ type: 'run:begin', agentId: 'agent-1', testRunId });
+      queue.send({ type: 'run:begin', agentId: 'agent-1', testRunId });
       expect(slice.slice('agents', 'agent-1').get()).toMatchObject({ status: 'running' });
     });
 
     it('waits for tests to complete before finishing run', function*() {
-      channel.send({ type: 'run:end', agentId: 'agent-1', testRunId });
+      queue.send({ type: 'run:end', agentId: 'agent-1', testRunId });
       expect(slice.slice('agents', 'agent-1').get()).toMatchObject({ status: 'pending' });
     });
 
     it('marks agent as ok when tests are all ok', function*() {
-      channel.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '0:step one'] });
-      channel.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '1:step two'] });
-      channel.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'another test', '0:a child step'] });
-      channel.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion one'] });
-      channel.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion two'] });
-      channel.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'another test', 'a child assertion'] });
+      queue.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '0:step one'] });
+      queue.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '1:step two'] });
+      queue.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'another test', '0:a child step'] });
+      queue.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion one'] });
+      queue.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion two'] });
+      queue.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'another test', 'a child assertion'] });
 
       expect(slice.slice('agents', 'agent-1', 'result').get()).toMatchObject({ status: 'ok' });
       expect(slice.slice('agents', 'agent-1').get()).toMatchObject({ status: 'pending' });
 
-      channel.send({ type: 'run:end', agentId: 'agent-1', testRunId });
+      queue.send({ type: 'run:end', agentId: 'agent-1', testRunId });
 
       expect(slice.slice('agents', 'agent-1').get()).toMatchObject({ status: 'ok' });
     });
 
     it('marks agent as failed when step fails', function*() {
-      channel.send({ type: 'step:result', agentId: 'agent-1', status: 'failed', testRunId, path: ['some test', '0:step one'] });
+      queue.send({ type: 'step:result', agentId: 'agent-1', status: 'failed', testRunId, path: ['some test', '0:step one'] });
 
       expect(slice.slice('agents', 'agent-1', 'result').get()).toMatchObject({ status: 'failed' });
       expect(slice.slice('agents', 'agent-1').get()).toMatchObject({ status: 'pending' });
 
-      channel.send({ type: 'run:end', agentId: 'agent-1', testRunId });
+      queue.send({ type: 'run:end', agentId: 'agent-1', testRunId });
 
       expect(slice.slice('agents', 'agent-1').get()).toMatchObject({ status: 'failed' });
     });
 
     it('marks agent as failed when child step fails', function*() {
-      channel.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '0:step one'] });
-      channel.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '1:step two'] });
-      channel.send({ type: 'step:result', agentId: 'agent-1', status: 'failed', testRunId, path: ['some test', 'another test', '0:a child step'] });
-      channel.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion one'] });
-      channel.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion two'] });
+      queue.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '0:step one'] });
+      queue.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '1:step two'] });
+      queue.send({ type: 'step:result', agentId: 'agent-1', status: 'failed', testRunId, path: ['some test', 'another test', '0:a child step'] });
+      queue.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion one'] });
+      queue.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion two'] });
 
       expect(slice.slice('agents', 'agent-1', 'result').get()).toMatchObject({ status: 'failed' });
       expect(slice.slice('agents', 'agent-1').get()).toMatchObject({ status: 'pending' });
 
-      channel.send({ type: 'run:end', agentId: 'agent-1', testRunId });
+      queue.send({ type: 'run:end', agentId: 'agent-1', testRunId });
 
       expect(slice.slice('agents', 'agent-1').get()).toMatchObject({ status: 'failed' });
     });
 
     it('marks agent as failed when assertion fails', function*() {
-      channel.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '0:step one'] });
-      channel.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '1:step two'] });
-      channel.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'another test', '0:a child step'] });
-      channel.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion one'] });
-      channel.send({ type: 'assertion:result', agentId: 'agent-1', status: 'failed', testRunId, path: ['some test', 'assertion two'] });
-      channel.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'another test', 'a child assertion'] });
+      queue.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '0:step one'] });
+      queue.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '1:step two'] });
+      queue.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'another test', '0:a child step'] });
+      queue.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion one'] });
+      queue.send({ type: 'assertion:result', agentId: 'agent-1', status: 'failed', testRunId, path: ['some test', 'assertion two'] });
+      queue.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'another test', 'a child assertion'] });
 
       expect(slice.slice('agents', 'agent-1', 'result').get()).toMatchObject({ status: 'failed' });
       expect(slice.slice('agents', 'agent-1').get()).toMatchObject({ status: 'pending' });
 
-      channel.send({ type: 'run:end', agentId: 'agent-1', testRunId });
+      queue.send({ type: 'run:end', agentId: 'agent-1', testRunId });
 
       expect(slice.slice('agents', 'agent-1').get()).toMatchObject({ status: 'failed' });
     });
 
     it('marks agent as failed when child assertion fails', function*() {
-      channel.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '0:step one'] });
-      channel.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '1:step two'] });
-      channel.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'another test', '0:a child step'] });
-      channel.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion one'] });
-      channel.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion two'] });
-      channel.send({ type: 'assertion:result', agentId: 'agent-1', status: 'failed', testRunId, path: ['some test', 'another test', 'a child assertion'] });
+      queue.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '0:step one'] });
+      queue.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '1:step two'] });
+      queue.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'another test', '0:a child step'] });
+      queue.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion one'] });
+      queue.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion two'] });
+      queue.send({ type: 'assertion:result', agentId: 'agent-1', status: 'failed', testRunId, path: ['some test', 'another test', 'a child assertion'] });
 
       expect(slice.slice('agents', 'agent-1', 'result').get()).toMatchObject({ status: 'failed' });
       expect(slice.slice('agents', 'agent-1').get()).toMatchObject({ status: 'pending' });
 
-      channel.send({ type: 'run:end', agentId: 'agent-1', testRunId });
+      queue.send({ type: 'run:end', agentId: 'agent-1', testRunId });
 
       expect(slice.slice('agents', 'agent-1').get()).toMatchObject({ status: 'failed' });
     });
@@ -144,23 +144,23 @@ describe('result aggregator', () => {
 
   describe('step messages', () => {
     it('marks step as running', function*() {
-      channel.send({ type: 'step:running', agentId: 'agent-1', testRunId, path: ['some test', '0:step one'] });
+      queue.send({ type: 'step:running', agentId: 'agent-1', testRunId, path: ['some test', '0:step one'] });
       expect(slice.slice('agents', 'agent-1', 'result', 'steps', 0).get()).toMatchObject({ status: 'running' });
     });
 
     it('does not mark as runnign when already finished', function*() {
-      channel.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '0:step one'] });
-      channel.send({ type: 'step:running', agentId: 'agent-1', testRunId, path: ['some test', '0:step one'] });
+      queue.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '0:step one'] });
+      queue.send({ type: 'step:running', agentId: 'agent-1', testRunId, path: ['some test', '0:step one'] });
       expect(slice.slice('agents', 'agent-1', 'result', 'steps', 0).get()).toMatchObject({ status: 'ok' });
     });
 
     it('marks step as ok', function*() {
-      channel.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '0:step one'] });
+      queue.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '0:step one'] });
       expect(slice.slice('agents', 'agent-1', 'result', 'steps', 0).get()).toMatchObject({ status: 'ok' });
     });
 
     it('marks step as errored', function*() {
-      channel.send({
+      queue.send({
         type: 'step:result',
         agentId: 'agent-1',
         status: 'failed',
@@ -174,7 +174,7 @@ describe('result aggregator', () => {
     });
 
     it('marks following steps and assertions as disregarded', function*() {
-      channel.send({ type: 'step:result', agentId: 'agent-1', status: 'failed', testRunId, path: ['some test', '0:step one'] });
+      queue.send({ type: 'step:result', agentId: 'agent-1', status: 'failed', testRunId, path: ['some test', '0:step one'] });
 
       expect(slice.slice('agents', 'agent-1', 'result', 'steps', 0).get()).toMatchObject({ status: 'failed' });
       expect(slice.slice('agents', 'agent-1', 'result', 'steps', 1).get()).toMatchObject({ status: 'disregarded' });
@@ -186,23 +186,23 @@ describe('result aggregator', () => {
 
   describe('assertion messages', () => {
     it('marks assertion as running', function*() {
-      channel.send({ type: 'assertion:running', agentId: 'agent-1', testRunId, path: ['some test', 'assertion one'] });
+      queue.send({ type: 'assertion:running', agentId: 'agent-1', testRunId, path: ['some test', 'assertion one'] });
       expect(slice.slice('agents', 'agent-1', 'result', 'assertions', 0).get()).toMatchObject({ status: 'running' });
     });
 
     it('does not mark as runnign when already finished', function*() {
-      channel.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion one'] });
-      channel.send({ type: 'assertion:running', agentId: 'agent-1', testRunId, path: ['some test', 'assertion one'] });
+      queue.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion one'] });
+      queue.send({ type: 'assertion:running', agentId: 'agent-1', testRunId, path: ['some test', 'assertion one'] });
       expect(slice.slice('agents', 'agent-1', 'result', 'assertions', 0).get()).toMatchObject({ status: 'ok' });
     });
 
     it('marks assertion as ok', function*() {
-      channel.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion one'] });
+      queue.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion one'] });
       expect(slice.slice('agents', 'agent-1', 'result', 'assertions', 0).get()).toMatchObject({ status: 'ok' });
     });
 
     it('marks assertion as errored', function*() {
-      channel.send({
+      queue.send({
         type: 'assertion:result',
         agentId: 'agent-1',
         status: 'failed',

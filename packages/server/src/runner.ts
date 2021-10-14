@@ -58,7 +58,7 @@ export function createAgentRunner(options: RunnerOptions): Resource<Runner> {
             let bundler: BundlerState = yield bundlerSlice.filter((state) => state.type === 'GREEN' || state.type === 'ERRORED').expect();
 
             if(bundler.type === 'GREEN') {
-              let events = yield options.channel.match({ testRunId }).buffered();
+              let events = yield options.channel.match({ testRunId });
 
               let manifest = options.atom.get().manifest;
 
