@@ -6,7 +6,7 @@ import { createAtom, Slice } from '@effection/atom';
 
 import { TestRunState } from '../src/orchestrator/state';
 import { Incoming } from '../src/connection-server';
-import { aggregateTestRun } from '../src/result-aggregator';
+import { aggregate } from '../src/result-aggregator';
 
 const testRunId = 'test-run-1';
 
@@ -53,7 +53,7 @@ describe('result aggregator', () => {
 
     channel = createChannel();
 
-    yield spawn(aggregateTestRun(channel, slice));
+    yield spawn(aggregate(channel, slice));
   });
 
   describe('run messages', () => {

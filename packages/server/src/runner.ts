@@ -2,7 +2,7 @@ import { Task, Resource } from 'effection';
 import { Test, TestResult } from '@bigtest/suite';
 import { Slice } from '@effection/atom';
 import { AgentState, OrchestratorState, BundlerState } from './orchestrator/state';
-import { aggregateTestRun } from './result-aggregator';
+import { aggregate } from './result-aggregator';
 import { filterTest } from './filter-test';
 import { resultStream } from './result-stream';
 import { TestEvent } from './schema/test-event';
@@ -112,7 +112,7 @@ export function createAgentRunner(options: RunnerOptions): Resource<Runner> {
                 options.channel.send({ type: 'run', agentId, appUrl, manifestUrl, testRunId, tree: test, stepTimeout });
               }
 
-              yield aggregateTestRun(events, testRunSlice);
+              yield aggregate(events, testRunSlice);
             }
             if(bundler.type === 'ERRORED') {
               testRunSlice.set({
