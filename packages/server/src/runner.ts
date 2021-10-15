@@ -57,7 +57,7 @@ return {
   *init(scope: Task) {
     let { send, stream } = createChannel<TestEvent>();
     return {
-      runTest({ testRunId, files }: RunOptions): Promise<void> {
+      async runTest({ testRunId, files }: RunOptions): Promise<void> {
         return scope.run(function*() {
           console.debug('[command processor] running test', testRunId);
           let stepTimeout = 60_000;
@@ -87,6 +87,10 @@ return {
               // todo: we should perform filtering of the agents here
               let agents: AgentState[] = Object.values(options.atom.get().agents).filter(Boolean);
 
+              if(agents.length === 0) {
+                throw new Error("no agent connected");
+              }
+
               let result = resultsFor(test);
 
               testRunSlice.set({
@@ -108,32 +112,38 @@ return {
               throw bundler.error;
             }
           } catch(err) {
+            console.debug('[command processor] caught error', err);
             let error = { name: err.name, message: err.message }
             testRunSlice.set({ testRunId: testRunId, status: 'failed', agents: {}, error });
             send({ testRunId: testRunId, type: 'testRun', status: 'failed', error });
+          } finally {
+            console.debug('[command processor] test run complete', testRunId, testRunSlice.get().status);
           }
         });
       },
 
-      async *subscribe(id: string): AsyncIterator<TestEvent> {
+      subscribe(id: string): AsyncIterator<TestEvent> {
+        // this needs to run synchronously, which is why this entire thing is not an async function
         let innerScope = scope.run();
         let subscription = stream.match({ testRunId: id }).subscribe(innerScope);
 
-        try {
-          while(true) {
-            let iter = await scope.run(subscription.next());
-            if(iter.done) {
-              break;
-            } else {
-              yield iter.value;
-              if(iter.value.type === 'testRun' && isComplete(iter.value.status)) {
+        return (async function*() {
+          try {
+            while(true) {
+              let iter = await scope.run(subscription.next());
+              if(iter.done) {
                 break;
+              } else {
+                yield iter.value;
+                if(iter.value.type === 'testRun' && isComplete(iter.value.status)) {
+                  break;
+                }
               }
             }
+          } finally {
+            innerScope.halt();
           }
-        } finally {
-          innerScope.halt();
-        }
+        })();
       }
     }
   }
