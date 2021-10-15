@@ -96,7 +96,7 @@ describe('agent runner', () => {
 
     it('marks test run as failed', function*() {
       expect(testRun.status).toEqual('failed');
-      expect(testRun.error?.message).toEqual('Cannot run tests due to build errors in the test suite:\nit broke');
+      expect(testRun.error?.message).toEqual('it broke');
       expect(Object.values(testRun.agents).length).toEqual(0);
     });
   });

@@ -4,10 +4,10 @@ export type TestEventType = 'testRun' | 'agent' | 'test' | 'step' | 'assertion';
 
 export interface TestEvent {
   testRunId: string;
-  agentId: string;
+  agentId?: string;
   type: TestEventType;
   status: ResultStatus;
-  path: string[];
+  path?: string[];
   error?: ErrorDetails;
   timeout?: boolean;
   logEvents?: LogEvent[];

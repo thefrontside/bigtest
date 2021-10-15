@@ -112,7 +112,7 @@ describe('@bigtest/cli', function() {
 
 
       it('exits with error code', function*() {
-        expect(result.stdout).toContain('Cannot run tests due to build errors in the test suite')
+        expect(result.stdout).toContain('syntax error')
         expect(result.stdout).toContain('test/fixtures/syntax.broken.ts')
         expect(result.stdout).toContain('⨯ FAILURE')
         expect(result.code).toEqual(1);
@@ -191,7 +191,7 @@ describe('@bigtest/cli', function() {
       });
 
       it('exits with error code', function*() {
-        expect(result.stdout).toContain('Cannot run tests due to build errors in the test suite')
+        expect(result.stdout).toContain('syntax error')
         expect(result.stdout).toContain('test/fixtures/syntax.broken.ts')
         expect(result.stdout).toContain('⨯ FAILURE')
         expect(result.code).toEqual(1);
@@ -206,7 +206,7 @@ describe('@bigtest/cli', function() {
       });
 
       it('exits with error code', function*() {
-        expect(result.stdout).toContain('Cannot run tests due to build errors in the test suite')
+        expect(result.stdout).toContain('semantic error')
         expect(result.stdout).toContain('test/fixtures/typescript.broken.ts')
         expect(result.stdout).toContain('Type \'string\' is not assignable to type \'number\'')
         expect(result.stdout).toContain('⨯ FAILURE')
@@ -222,7 +222,6 @@ describe('@bigtest/cli', function() {
       });
 
       it('exits with error code', function*() {
-        expect(result.stdout).toContain('Cannot run tests due to build errors in the test suite')
         expect(result.stdout).toContain('Invalid Test: contains duplicate test: "duplicate child"')
         expect(result.stdout).toContain('test/fixtures/duplicate.broken.ts')
         expect(result.stdout).toContain('⨯ FAILURE')
@@ -238,7 +237,6 @@ describe('@bigtest/cli', function() {
       });
 
       it('exits with error code', function*() {
-        expect(result.stdout).toContain('Cannot run tests due to build errors in the test suite')
         expect(result.stdout).toContain('Invalid Test: is too deeply nested, maximum allowed depth of nesting is 10')
         expect(result.stdout).toContain('test/fixtures/too-deep.broken.ts')
         expect(result.stdout).toContain('⨯ FAILURE')

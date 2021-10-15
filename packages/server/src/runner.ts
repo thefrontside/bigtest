@@ -1,7 +1,7 @@
 import { Task, Resource, createChannel } from 'effection';
 import { Test, TestResult, ResultStatus } from '@bigtest/suite';
 import { Slice } from '@effection/atom';
-import { AgentState, OrchestratorState, BundlerState } from './orchestrator/state';
+import { AgentState, OrchestratorState, BundlerState, AppServerStatusExited } from './orchestrator/state';
 import { aggregate } from './result-aggregator';
 import { filterTest } from './filter-test';
 import { TestEvent } from './schema/test-event';
@@ -26,35 +26,44 @@ export interface Runner {
   subscribe(id: string): AsyncIterator<TestEvent>;
 }
 
-const isComplete = (status: ResultStatus) => status === 'ok' || status === 'failed' || status === 'disregarded';
+class AppError extends Error {
+  name = 'AppError';
 
-function resultsFor(tree: Test): TestResult {
-  return {
-    description: tree.description,
-    status: 'pending',
-    steps: tree.steps.map(step => ({
-      description: step.description,
-      status: 'pending'
-    })),
-    assertions: tree.assertions.map(assertion => ({
-      description: assertion.description,
-      status: 'pending'
-    })),
-    children: tree.children.map(resultsFor)
+  constructor(appStatus: AppServerStatusExited) {
+    super(`Application exited unexpectedly with exit code ${appStatus.exitStatus.code} with the following output:\n\n${appStatus.exitStatus.stdout}\n${appStatus.exitStatus.stderr}`);
   }
 }
 
-export function createAgentRunner(options: RunnerOptions): Resource<Runner> {
-  return {
-    *init(scope: Task) {
-      let { send, stream } = createChannel<TestEvent>();
-      return {
-        runTest({ testRunId, files }: RunOptions): Promise<void> {
-          return scope.run(function*() {
-            console.debug('[command processor] running test', testRunId);
-            let stepTimeout = 60_000;
-            let testRunSlice = options.atom.slice('testRuns', testRunId);
+const isComplete = (status: ResultStatus) => status === 'ok' || status === 'failed' || status === 'disregarded';
 
+function resultsFor(tree: Test): TestResult {
+return {
+  description: tree.description,
+  status: 'pending',
+  steps: tree.steps.map(step => ({
+    description: step.description,
+    status: 'pending'
+  })),
+  assertions: tree.assertions.map(assertion => ({
+    description: assertion.description,
+    status: 'pending'
+  })),
+  children: tree.children.map(resultsFor)
+}
+}
+
+export function createAgentRunner(options: RunnerOptions): Resource<Runner> {
+return {
+  *init(scope: Task) {
+    let { send, stream } = createChannel<TestEvent>();
+    return {
+      runTest({ testRunId, files }: RunOptions): Promise<void> {
+        return scope.run(function*() {
+          console.debug('[command processor] running test', testRunId);
+          let stepTimeout = 60_000;
+          let testRunSlice = options.atom.slice('testRuns', testRunId);
+
+          try {
             let bundlerSlice = options.atom.slice('bundler');
 
             let bundler: BundlerState = yield bundlerSlice.filter((state) => state.type === 'GREEN' || state.type === 'ERRORED').expect();
@@ -67,33 +76,12 @@ export function createAgentRunner(options: RunnerOptions): Resource<Runner> {
               let appUrl = `http://localhost:${options.proxyPort}`;
               let manifestUrl = `http://localhost:${options.manifestPort}/${manifest.fileName}`;
 
-              let test;
-              try {
-                test = filterTest(manifest, { files, testFiles: options.testFiles });
-              } catch(error) {
-                testRunSlice.set({
-                  testRunId: testRunId,
-                  status: 'failed',
-                  error: { name: 'FilterError', message: error.message },
-                  agents: {}
-                });
-                return;
-              }
+              let test = filterTest(manifest, { files, testFiles: options.testFiles });
 
               let appStatus = options.atom.slice("appServer").get();
 
               if(appStatus.type === 'exited') {
-                // todo: format stdout and stderr separately instead of appending?
-                testRunSlice.set({
-                  testRunId: testRunId,
-                  status: 'failed',
-                  error: {
-                    name: 'AppError',
-                    message: `Application exited unexpectedly with exit code ${appStatus.exitStatus.code} with the following output:\n\n${appStatus.exitStatus.stdout}\n${appStatus.exitStatus.stderr}`
-                  },
-                  agents: {}
-                });
-                return;
+                throw new AppError(appStatus);
               }
 
               // todo: we should perform filtering of the agents here
@@ -117,51 +105,37 @@ export function createAgentRunner(options: RunnerOptions): Resource<Runner> {
               yield aggregate(events, testRunSlice, send);
             }
             if(bundler.type === 'ERRORED') {
-              testRunSlice.set({
-                testRunId: testRunId,
-                status: 'failed',
-                agents: {},
-                error: {
-                  name: 'BundlerError',
-                  message: [
-                    'Cannot run tests due to build errors in the test suite:',
-                    bundler.error.message,
-                    bundler.error.frame,
-                  ].filter(Boolean).join('\n'),
-                  stack: bundler.error.loc && [
-                    {
-                      fileName: bundler.error.loc.file,
-                      line: bundler.error.loc.line,
-                      column: bundler.error.loc.column,
-                    }
-                  ]
-                }
-              });
+              throw bundler.error;
             }
-          });
-        },
+          } catch(err) {
+            let error = { name: err.name, message: err.message }
+            testRunSlice.set({ testRunId: testRunId, status: 'failed', agents: {}, error });
+            send({ testRunId: testRunId, type: 'testRun', status: 'failed', error });
+          }
+        });
+      },
 
-        async *subscribe(id: string): AsyncIterator<TestEvent> {
-          let innerScope = scope.run();
-          let subscription = stream.match({ testRunId: id }).subscribe(innerScope);
+      async *subscribe(id: string): AsyncIterator<TestEvent> {
+        let innerScope = scope.run();
+        let subscription = stream.match({ testRunId: id }).subscribe(innerScope);
 
-          try {
-            while(true) {
-              let iter = await scope.run(subscription.next());
-              if(iter.done) {
+        try {
+          while(true) {
+            let iter = await scope.run(subscription.next());
+            if(iter.done) {
+              break;
+            } else {
+              yield iter.value;
+              if(iter.value.type === 'testRun' && isComplete(iter.value.status)) {
                 break;
-              } else {
-                yield iter.value;
-                if(iter.value.type === 'testRun' && isComplete(iter.value.status)) {
-                  break;
-                }
               }
             }
-          } finally {
-            innerScope.halt();
           }
+        } finally {
+          innerScope.halt();
         }
       }
     }
   }
+}
 }

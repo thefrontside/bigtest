@@ -70,7 +70,10 @@ export type AppServerStatus =
   | {
       type: "stopped";
     }
-  | {
+  | AppServerStatusExited;
+
+export type AppServerStatusExited =
+    {
       type: "exited";
       exitStatus: {
         code?: number;
