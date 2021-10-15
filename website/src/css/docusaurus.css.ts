@@ -56,6 +56,10 @@ globalStyle('.markdown h1', {
   letterSpacing: vars.letterSpacing['3xl']
 });
 
+globalStyle('.markdown a', {
+  textDecoration: 'underline',
+});
+
 globalStyle(`.markdown > h2`, {
   fontSize: '1.4545455rem',
   lineHeight: '1.8181818rem',
