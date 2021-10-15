@@ -8,10 +8,10 @@ const formatter: FormatterConstructor = (printer) => {
     },
 
     event(event) {
-      if(event.type === 'step:result' && event.status) {
+      if(event.type === 'step' && event.status) {
         printer.words(stepStatusIcon(event.status), chalk.grey(event.agentId + ':'), event.path?.slice(1).join(chalk.grey(' → ')));
       }
-      if(event.type === 'assertion:result' && event.status) {
+      if(event.type === 'assertion' && event.status) {
         printer.words(assertionStatusIcon(event.status), chalk.grey(event.agentId + ':'), event.path?.slice(1).join(chalk.grey(' → ')));
       }
     },

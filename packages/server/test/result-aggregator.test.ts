@@ -7,12 +7,22 @@ import { createAtom, Slice } from '@effection/atom';
 import { TestRunState } from '../src/orchestrator/state';
 import { Incoming } from '../src/connection-server';
 import { aggregate } from '../src/result-aggregator';
+import { TestEvent } from '../src/schema/test-event';
 
 const testRunId = 'test-run-1';
+
+function expectContainsObject<R>(actual: R, matching: Record<string, unknown>) {
+  expect(actual).toEqual(expect.arrayContaining([expect.objectContaining(matching)]));
+}
+
+function expectNotContainsObject<R>(actual: R, matching: Record<string, unknown>) {
+  expect(actual).not.toEqual(expect.arrayContaining([expect.objectContaining(matching)]));
+}
 
 describe('result aggregator', () => {
   let slice: Slice<TestRunState>;
   let queue: Queue<Incoming>;
+  let events: TestEvent[];
 
   beforeEach(function*() {
     slice = createAtom({
@@ -52,8 +62,9 @@ describe('result aggregator', () => {
     } as TestRunState);
 
     queue = createQueue();
+    events = [];
 
-    yield spawn(aggregate(queue, slice));
+    yield spawn(aggregate(queue, slice, (event) => events.push(event)));
   });
 
   describe('run messages', () => {
@@ -146,17 +157,35 @@ describe('result aggregator', () => {
     it('marks step as running', function*() {
       queue.send({ type: 'step:running', agentId: 'agent-1', testRunId, path: ['some test', '0:step one'] });
       expect(slice.slice('agents', 'agent-1', 'result', 'steps', 0).get()).toMatchObject({ status: 'running' });
+
+      expectContainsObject(events, {
+        testRunId: 'test-run-1',
+        agentId: 'agent-1',
+        path: [ 'some test', '0:step one' ],
+        type: 'step',
+        status: 'running',
+      });
     });
 
     it('does not mark as runnign when already finished', function*() {
       queue.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '0:step one'] });
       queue.send({ type: 'step:running', agentId: 'agent-1', testRunId, path: ['some test', '0:step one'] });
       expect(slice.slice('agents', 'agent-1', 'result', 'steps', 0).get()).toMatchObject({ status: 'ok' });
+
+      expectNotContainsObject(events, { status: 'running' });
     });
 
     it('marks step as ok', function*() {
       queue.send({ type: 'step:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', '0:step one'] });
       expect(slice.slice('agents', 'agent-1', 'result', 'steps', 0).get()).toMatchObject({ status: 'ok' });
+
+      expectContainsObject(events, {
+        testRunId: 'test-run-1',
+        agentId: 'agent-1',
+        path: [ 'some test', '0:step one' ],
+        type: 'step',
+        status: 'ok',
+      });
     });
 
     it('marks step as errored', function*() {
@@ -171,6 +200,15 @@ describe('result aggregator', () => {
         }
       });
       expect(slice.slice('agents', 'agent-1', 'result', 'steps', 0).get()).toMatchObject({ status: 'failed', error: { message: 'boom' } });
+
+      expectContainsObject(events, {
+        testRunId: 'test-run-1',
+        agentId: 'agent-1',
+        path: [ 'some test', '0:step one' ],
+        type: 'step',
+        status: 'failed',
+        error: { message: 'boom' },
+      });
     });
 
     it('marks following steps and assertions as disregarded', function*() {
@@ -181,6 +219,14 @@ describe('result aggregator', () => {
       expect(slice.slice('agents', 'agent-1', 'result', 'assertions', 0).get()).toMatchObject({ status: 'disregarded' });
       expect(slice.slice('agents', 'agent-1', 'result', 'assertions', 1).get()).toMatchObject({ status: 'disregarded' });
       expect(slice.slice('agents', 'agent-1', 'result', 'children', 0).get()).toMatchObject({ status: 'disregarded' });
+
+      expectContainsObject(events, {
+        testRunId: 'test-run-1',
+        agentId: 'agent-1',
+        path: [ 'some test', '1:step two' ],
+        type: 'step',
+        status: 'disregarded',
+      });
     });
   });
 
@@ -188,17 +234,35 @@ describe('result aggregator', () => {
     it('marks assertion as running', function*() {
       queue.send({ type: 'assertion:running', agentId: 'agent-1', testRunId, path: ['some test', 'assertion one'] });
       expect(slice.slice('agents', 'agent-1', 'result', 'assertions', 0).get()).toMatchObject({ status: 'running' });
+
+      expectContainsObject(events, {
+        testRunId: 'test-run-1',
+        agentId: 'agent-1',
+        path: [ 'some test', 'assertion one' ],
+        type: 'assertion',
+        status: 'running',
+      });
     });
 
     it('does not mark as runnign when already finished', function*() {
       queue.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion one'] });
       queue.send({ type: 'assertion:running', agentId: 'agent-1', testRunId, path: ['some test', 'assertion one'] });
       expect(slice.slice('agents', 'agent-1', 'result', 'assertions', 0).get()).toMatchObject({ status: 'ok' });
+
+      expectNotContainsObject(events, { status: 'running' });
     });
 
     it('marks assertion as ok', function*() {
       queue.send({ type: 'assertion:result', agentId: 'agent-1', status: 'ok', testRunId, path: ['some test', 'assertion one'] });
       expect(slice.slice('agents', 'agent-1', 'result', 'assertions', 0).get()).toMatchObject({ status: 'ok' });
+
+      expectContainsObject(events, {
+        testRunId: 'test-run-1',
+        agentId: 'agent-1',
+        path: [ 'some test', 'assertion one' ],
+        type: 'assertion',
+        status: 'ok',
+      });
     });
 
     it('marks assertion as errored', function*() {
@@ -213,6 +277,15 @@ describe('result aggregator', () => {
         }
       });
       expect(slice.slice('agents', 'agent-1', 'result', 'assertions', 0).get()).toMatchObject({ status: 'failed', error: { message: 'boom' } });
+
+      expectContainsObject(events, {
+        testRunId: 'test-run-1',
+        agentId: 'agent-1',
+        path: [ 'some test', 'assertion one' ],
+        type: 'assertion',
+        status: 'failed',
+        error: { message: 'boom' },
+      });
     });
   });
 });

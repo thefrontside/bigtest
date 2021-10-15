@@ -5,24 +5,27 @@ import { TestResult, StepResult, AssertionResult, ResultStatus } from '@bigtest/
 import { TestRunState, TestRunAgentState } from './orchestrator/state';
 import { Incoming } from './connection-server';
 import { createCoverageMap, CoverageMap, CoverageMapData } from 'istanbul-lib-coverage';
+import { TestEvent, TestEventType } from './schema/test-event';
 
 type Aggregator<T extends { status: string }> = (map: AggregatorMap, slice: Slice<T>) => Operation<ResultStatus>;
+type Emit = (event: TestEvent) => void;
 
 interface AggregatorMap {
   dispatch(message: Incoming): void;
   receive(type: string): Operation<Incoming>;
   withAgent(agentId: string): AggregatorMap;
   withPath(path: string | string[]): AggregatorMap;
+  emit(event: Partial<TestEvent>): void;
 };
 
-function createAggregatorMap(key: MessageKey, map: Map<string, (value: Incoming) => void> = new Map()): AggregatorMap {
+function createAggregatorMap(key: MessageKey, emit: Emit, map: Map<string, (value: Incoming) => void> = new Map()): AggregatorMap {
   return {
     dispatch(message: Incoming) {
       let resolve = map.get(messageKey(message));
       if(resolve) {
         resolve(message);
       } else {
-        console.warn(`[aggregator] received unknown message: ${JSON.stringify(message)}`);
+        console.debug(`[aggregator] received unknown message: ${JSON.stringify(message)}`);
       }
     },
     *receive(type: string) {
@@ -31,15 +34,18 @@ function createAggregatorMap(key: MessageKey, map: Map<string, (value: Incoming)
       return yield future;
     },
     withAgent(agentId: string) {
-      return createAggregatorMap({ ...key, agentId }, map);
+      return createAggregatorMap({ ...key, agentId }, emit, map);
     },
     withPath(path: string | string[]) {
-      return createAggregatorMap({ ...key, path: (key.path || []).concat(path) }, map)
+      return createAggregatorMap({ ...key, path: (key.path || []).concat(path) }, emit, map)
+    },
+    emit(event) {
+      emit({ ...key, ...event } as TestEvent);
     }
   }
 }
 
-function makeAggregator<T extends { status: string }>(agg: Aggregator<T>): Aggregator<T> {
+function makeAggregator<T extends { status: string }>(type: TestEventType, agg: Aggregator<T>): Aggregator<T> {
   return function*(map, slice): Operation<ResultStatus> {
     let statusSlice = slice.slice('status');
 
@@ -48,6 +54,7 @@ function makeAggregator<T extends { status: string }>(agg: Aggregator<T>): Aggre
     } finally {
       if (statusSlice.get() === 'pending' || statusSlice.get() === 'running') {
         statusSlice.set('disregarded');
+        map.emit({ type, status: 'disregarded' });
       }
     }
   };
@@ -56,6 +63,7 @@ function makeAggregator<T extends { status: string }>(agg: Aggregator<T>): Aggre
 interface MessageKey {
   type?: string;
   agentId?: string;
+  testRunId?: string;
   path?: string[];
 }
 
@@ -63,8 +71,8 @@ function messageKey(key: MessageKey): string {
   return JSON.stringify([key.type, key.agentId, key.path].filter((v) => v != null));
 }
 
-export function* aggregate(subscription: Subscription<Incoming>, slice: Slice<TestRunState>): Operation<ResultStatus> {
-  let map = createAggregatorMap({});
+export function* aggregate(subscription: Subscription<Incoming>, slice: Slice<TestRunState>, emit: Emit): Operation<ResultStatus> {
+  let map = createAggregatorMap({ testRunId: slice.get().testRunId }, emit);
 
   yield spawn(subscription.forEach(function*(message) {
     map.dispatch(message);
@@ -73,7 +81,7 @@ export function* aggregate(subscription: Subscription<Incoming>, slice: Slice<Te
   return yield aggregateTestRun(map, slice);
 }
 
-const aggregateTestRun: Aggregator<TestRunState> = makeAggregator(function*(map, slice) {
+const aggregateTestRun: Aggregator<TestRunState> = makeAggregator('testRun', function*(map, slice) {
   let agentRuns = Object.keys(slice.get().agents).map(agentId => {
     let testRunAgentSlice = slice.slice('agents', agentId);
 
@@ -96,15 +104,17 @@ const aggregateTestRun: Aggregator<TestRunState> = makeAggregator(function*(map,
     }, undefined)
 
   slice.update(state => ({ ...state, status, coverage }));
+  map.emit({ type: 'testRun', status });
   return status;
 });
 
-const aggregateTestRunAgent: Aggregator<TestRunAgentState> = makeAggregator(function*(map, slice) {
+const aggregateTestRunAgent: Aggregator<TestRunAgentState> = makeAggregator('agent', function*(map, slice) {
   let testResultSlice = slice.slice('result');
 
   yield spawn(function*() {
     yield map.receive('run:begin');
     slice.slice('status').set('running');
+    map.emit({ type: 'agent', status: 'running' });
   });
 
   let endTask: Task<RunEnd> = yield spawn(map.receive('run:end'));
@@ -113,12 +123,14 @@ const aggregateTestRunAgent: Aggregator<TestRunAgentState> = makeAggregator(func
 
   let end: RunEnd = yield endTask;
 
-  slice.update(state => ({ ...state, status, coverage: end.coverage }))
+  slice.update(state => ({ ...state, status, coverage: end.coverage }));
+
+  map.emit({ type: 'agent', status });
 
   return status;
 });
 
-const aggregateTest: Aggregator<TestResult> = makeAggregator(function*(map, slice) {
+const aggregateTest: Aggregator<TestResult> = makeAggregator('test', function*(map, slice) {
   let statusSlice = slice.slice('status');
 
   try {
@@ -126,6 +138,7 @@ const aggregateTest: Aggregator<TestResult> = makeAggregator(function*(map, slic
       yield spawn(function*() {
         yield map.receive('test:running');
         statusSlice.set('running');
+        map.emit({ type: 'test', status: 'running' });
       });
 
       let steps = Array.from(slice.get().steps.entries()).map(([index, step]) => {
@@ -147,45 +160,50 @@ const aggregateTest: Aggregator<TestResult> = makeAggregator(function*(map, slic
     }
 
     statusSlice.set(status);
+    map.emit({ type: 'test', status });
 
     return status;
   } catch (error) {
     statusSlice.set('failed');
+    map.emit({ type: 'test', status: 'failed' });
     return 'failed';
   }
 });
 
-const aggregateStep: Aggregator<StepResult> = makeAggregator(function*(map, slice) {
-  let result: StepResultEvent = yield function*(): Operation<StepResultEvent> {
+const aggregateStep: Aggregator<StepResult> = makeAggregator('step', function*(map, slice) {
+  let { status, logEvents, error, timeout }: StepResultEvent = yield function*(): Operation<StepResultEvent> {
     yield spawn(function*() {
       yield map.receive('step:running');
       slice.slice('status').set('running');
+      map.emit({ type: 'step', status: 'running' });
     });
 
     return yield map.receive('step:result');
   }
 
-  slice.update((s) => ({ ...s, ...result }));
+  slice.update((s) => ({ ...s, status, logEvents, error, timeout }));
+  map.emit({ type: 'step', status, logEvents, error, timeout });
 
-  if (result.status === 'failed') {
+  if (status === 'failed') {
     throw new Error('Step Failed');
   }
 
-  return result.status;
+  return status;
 });
 
-const aggregateAssertion: Aggregator<AssertionResult> = makeAggregator(function*(map, slice) {
-  let result: AssertionResultEvent = yield function*(): Operation<AssertionResultEvent> {
+const aggregateAssertion: Aggregator<AssertionResult> = makeAggregator('assertion', function*(map, slice) {
+  let { status, logEvents, error, timeout }: AssertionResultEvent = yield function*(): Operation<AssertionResultEvent> {
     yield spawn(function*() {
       yield map.receive('assertion:running');
       slice.slice('status').set('running');
+      map.emit({ type: 'assertion', status: 'running' });
     });
 
     return yield map.receive('assertion:result');
   }
 
+  slice.update((s) => ({ ...s, status, logEvents, error, timeout }));
+  map.emit({ type: 'assertion', status, logEvents, error, timeout });
 
-  slice.update((s) => ({ ...s, ...result }));
-
-  return result.status;
+  return status;
 });

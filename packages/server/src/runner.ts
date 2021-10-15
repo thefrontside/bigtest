@@ -1,10 +1,9 @@
-import { Task, Resource } from 'effection';
-import { Test, TestResult } from '@bigtest/suite';
+import { Task, Resource, createChannel } from 'effection';
+import { Test, TestResult, ResultStatus } from '@bigtest/suite';
 import { Slice } from '@effection/atom';
 import { AgentState, OrchestratorState, BundlerState } from './orchestrator/state';
 import { aggregate } from './result-aggregator';
 import { filterTest } from './filter-test';
-import { resultStream } from './result-stream';
 import { TestEvent } from './schema/test-event';
 
 import { ConnectionChannel } from './connection-server';
@@ -27,6 +26,8 @@ export interface Runner {
   subscribe(id: string): AsyncIterator<TestEvent>;
 }
 
+const isComplete = (status: ResultStatus) => status === 'ok' || status === 'failed' || status === 'disregarded';
+
 function resultsFor(tree: Test): TestResult {
   return {
     description: tree.description,
@@ -46,6 +47,7 @@ function resultsFor(tree: Test): TestResult {
 export function createAgentRunner(options: RunnerOptions): Resource<Runner> {
   return {
     *init(scope: Task) {
+      let { send, stream } = createChannel<TestEvent>();
       return {
         runTest({ testRunId, files }: RunOptions): Promise<void> {
           return scope.run(function*() {
@@ -112,7 +114,7 @@ export function createAgentRunner(options: RunnerOptions): Resource<Runner> {
                 options.channel.send({ type: 'run', agentId, appUrl, manifestUrl, testRunId, tree: test, stepTimeout });
               }
 
-              yield aggregate(events, testRunSlice);
+              yield aggregate(events, testRunSlice, send);
             }
             if(bundler.type === 'ERRORED') {
               testRunSlice.set({
@@ -140,10 +142,8 @@ export function createAgentRunner(options: RunnerOptions): Resource<Runner> {
         },
 
         async *subscribe(id: string): AsyncIterator<TestEvent> {
-          let slice = options.atom.slice('testRuns', id);
           let innerScope = scope.run();
-
-          let subscription = resultStream(id, slice).subscribe(innerScope);
+          let subscription = stream.match({ testRunId: id }).subscribe(innerScope);
 
           try {
             while(true) {
@@ -152,6 +152,9 @@ export function createAgentRunner(options: RunnerOptions): Resource<Runner> {
                 break;
               } else {
                 yield iter.value;
+                if(iter.value.type === 'testRun' && isComplete(iter.value.status)) {
+                  break;
+                }
               }
             }
           } finally {

@@ -1,22 +1,14 @@
-// this just re-exports so it can be used from the schema
-import { TestEvent as AgentTestEvent } from '@bigtest/agent';
-import { ResultStatus } from '@bigtest/suite';
+import { LogEvent, ErrorDetails, ResultStatus } from '@bigtest/suite';
 
-export interface TestRunResult {
-  type: 'testRun:result';
-  status: ResultStatus;
-  testRunId: string;
-}
+export type TestEventType = 'testRun' | 'agent' | 'test' | 'step' | 'assertion';
 
-export interface TestResult {
-  type: 'test:result';
-  status: ResultStatus;
+export interface TestEvent {
   testRunId: string;
   agentId: string;
+  type: TestEventType;
+  status: ResultStatus;
   path: string[];
+  error?: ErrorDetails;
+  timeout?: boolean;
+  logEvents?: LogEvent[];
 }
-
-export type TestEvent =
-  TestRunResult |
-  TestResult |
-  (AgentTestEvent & { agentId: string });
