@@ -1381,10 +1381,24 @@
     "@effection/events" "2.0.0-beta.20"
     "@effection/stream" "2.0.0-beta.5"
 
+"@effection/channel@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@effection/channel/-/channel-2.0.1.tgz#69d03ab16b5a0e70537c9db781dc10062f29b781"
+  integrity sha512-oyGTskv5qSD6k2fo4w9m3L1d4OdLxBvlRfDpXu96yPVatEo4z+i25hEYE2oGXdBjsnIK/PMd50Ehaw/q4QakxA==
+  dependencies:
+    "@effection/core" "2.0.1"
+    "@effection/events" "2.0.1"
+    "@effection/stream" "2.0.1"
+
 "@effection/core@2.0.0-beta.16":
   version "2.0.0-beta.16"
   resolved "https://registry.yarnpkg.com/@effection/core/-/core-2.0.0-beta.16.tgz#8df7377f3ef9e69e31ebf6e55b4e47d301a8f0f5"
   integrity sha512-iN+rzG1sT0mFu3HqFclkKMTarNFjGZ0D9CEQC7ty/9MCwd5Z59nZ1otMCa9BPyLnC6QpeOidWW+MzOkJHE6JFw==
+
+"@effection/core@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@effection/core/-/core-2.0.1.tgz#f200e4df020666ec5dc232da3057bafb63aa19af"
+  integrity sha512-Bl2pfu9gbTwlieTgcEhFOwz70QDPXpyVRuOiOqccGVBvZpa3/mzepH6LFZSCyothnc7YO0b31xXV551POiLEow==
 
 "@effection/events@2.0.0-beta.20":
   version "2.0.0-beta.20"
@@ -1394,12 +1408,30 @@
     "@effection/core" "2.0.0-beta.16"
     "@effection/stream" "2.0.0-beta.5"
 
-"@effection/fetch@2.0.0-beta.19", "@effection/fetch@^2.0.0-beta.19":
+"@effection/events@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@effection/events/-/events-2.0.1.tgz#9eaaed36270c0d0d4ee06c2657e819b22c52f1ac"
+  integrity sha512-ufaYE8srITlbt1kuJv5vn12HobQPTot5MJZC7tHcNDGqvF+/ewTuVaxKGD5Vq4JP5H29GAZfjjUrkQaopBdjTw==
+  dependencies:
+    "@effection/core" "2.0.1"
+    "@effection/stream" "2.0.1"
+
+"@effection/fetch@2.0.0-beta.19":
   version "2.0.0-beta.19"
   resolved "https://registry.yarnpkg.com/@effection/fetch/-/fetch-2.0.0-beta.19.tgz#a07d0a3811867a5841134bdb409e75d72d8427f4"
   integrity sha512-vmZmr4aN7en04SOFKOH/322BTSGDD4XPritA9+eT2IcvyPDFqVZ9QXnaP9rSV/BXjppVuaSXzy5CheUL+RynFw==
   dependencies:
     "@effection/core" "2.0.0-beta.16"
+    abort-controller "^3.0.0"
+    cross-fetch "^3.0.4"
+    node-fetch "^2.6.1"
+
+"@effection/fetch@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@effection/fetch/-/fetch-2.0.1.tgz#f67a307ef6b4450007bbf2207c6be00c143d4ce2"
+  integrity sha512-doIE8g3ljm8YUJp+JJQr2i9PKLo/bWCtXjUbI+8wtVqAM5ifDElGWRH++o57JRDwNuHLPj9TdLfdwWxrTRM2Fw==
+  dependencies:
+    "@effection/core" "2.0.1"
     abort-controller "^3.0.0"
     cross-fetch "^3.0.4"
     node-fetch "^2.6.1"
@@ -1452,6 +1484,15 @@
     chalk "^4.1.2"
     stacktrace-parser "^0.1.10"
 
+"@effection/main@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@effection/main/-/main-2.0.1.tgz#becbaf0b28665e401b05e429d4cad8c2c5c84ee2"
+  integrity sha512-HIoK7cf4dCzCLvDuXO2YTIly7cJVU3vB47M58bqILCyGeMwcfW1iQU92SeykUZRCxfPTrQbU4vDWAS1hSvE0ow==
+  dependencies:
+    "@effection/core" "2.0.1"
+    chalk "^4.1.2"
+    stacktrace-parser "^0.1.10"
+
 "@effection/mocha@^2.0.0-beta.15":
   version "2.0.0-beta.15"
   resolved "https://registry.yarnpkg.com/@effection/mocha/-/mocha-2.0.0-beta.15.tgz#be5cf688f7c6d44e4993c23d6b6e91324f776889"
@@ -1471,6 +1512,14 @@
     ctrlc-windows "^2.0.0"
     shellwords "^0.1.1"
 
+"@effection/react@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@effection/react/-/react-2.0.1.tgz#c40ec0217ba9e002cec060685a0cea8c494ba94d"
+  integrity sha512-vd6aonTyKTjXuXygn4hag8Mcpu56WdnQLT+7t3kkNod8GsNNBV7kh/nXskn/+xdsggyYQ/ATcjj3S1y/Jy3hIw==
+  dependencies:
+    effection "2.0.1"
+    react "^17.0.2"
+
 "@effection/stream@2.0.0-beta.5":
   version "2.0.0-beta.5"
   resolved "https://registry.yarnpkg.com/@effection/stream/-/stream-2.0.0-beta.5.tgz#7e1ff5ab41503f8745225da1d8f23b78455e3873"
@@ -1479,12 +1528,27 @@
     "@effection/core" "2.0.0-beta.16"
     "@effection/subscription" "2.0.0-beta.18"
 
+"@effection/stream@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@effection/stream/-/stream-2.0.1.tgz#f0a7b9f63135f7cefb74a9898b386a86aa48f23d"
+  integrity sha512-GZ65WAK5npuJVET4Cgx50G3ruKzb7LoihpyKHBSzOOmXIIJIhJ5yf1hYf9/EPh8KRzBDG3yGDZ2JpUINpElgng==
+  dependencies:
+    "@effection/core" "2.0.1"
+    "@effection/subscription" "2.0.1"
+
 "@effection/subscription@2.0.0-beta.18":
   version "2.0.0-beta.18"
   resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-2.0.0-beta.18.tgz#d44f8da40df56e828ed9f9d090c5889f8d852e0e"
   integrity sha512-FeSL4lcgJdNWmu1gZDUki3AhN+CcpjmApzS4phDoNomF19z0EYU41DP2+BbZVEtrVuEkrxG/M1Gm1A59VWcxcw==
   dependencies:
     "@effection/core" "2.0.0-beta.16"
+
+"@effection/subscription@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@effection/subscription/-/subscription-2.0.1.tgz#677cfdaa21a0a16f5aee4834e9da10afbfb5678b"
+  integrity sha512-cU54UzXhQ7EX2TC6lejDIO1dV4pdRmQ3ev7hS9EVAsxg0XP0UGdCNE/ddfWYoSHoOVKgkbeOjZkvaKvjvs4G0A==
+  dependencies:
+    "@effection/core" "2.0.1"
 
 "@effection/websocket-server@2.0.0-beta.21":
   version "2.0.0-beta.21"
@@ -2626,6 +2690,11 @@
   resolved "https://registry.yarnpkg.com/@types/parsimmon/-/parsimmon-1.10.6.tgz#8fcf95990514d2a7624aa5f630c13bf2427f9cdd"
   integrity sha512-FwAQwMRbkhx0J6YELkwIpciVzCcgEqXEbIrIn3a2P5d3kGEHQ3wVhlN3YdVepYP+bZzCYO6OjmD4o9TGOZ40rA==
 
+"@types/prop-types@*":
+  version "15.7.4"
+  resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.4.tgz#fcf7205c25dff795ee79af1e30da2c9790808f11"
+  integrity sha512-rZ5drC/jWjrArrS8BR6SIr4cWpW09RNTYt9AMZo3Jwwif+iacXAqgVjm0B0Bv/S1jhDXKHqRVNCbACkJ89RAnQ==
+
 "@types/qs@*":
   version "6.9.6"
   resolved "https://registry.yarnpkg.com/@types/qs/-/qs-6.9.6.tgz#df9c3c8b31a247ec315e6996566be3171df4b3b1"
@@ -2635,6 +2704,15 @@
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.3.tgz#7ee330ba7caafb98090bece86a5ee44115904c2c"
   integrity sha512-ewFXqrQHlFsgc09MK5jP5iR7vumV/BYayNC6PgJO2LPe8vrnNFyjQjSppfEngITi0qvfKtzFvgKymGheFM9UOA==
+
+"@types/react@^17.0.30":
+  version "17.0.30"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.30.tgz#2f8e6f5ab6415c091cc5e571942ee9064b17609e"
+  integrity sha512-3Dt/A8gd3TCXi2aRe84y7cK1K8G+N9CZRDG8kDGguOKa0kf/ZkSwTmVIDPsm/KbQOVMaDJXwhBtuOXxqwdpWVg==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
 
 "@types/resolve@1.17.1":
   version "1.17.1"
@@ -2657,6 +2735,11 @@
   dependencies:
     "@types/glob" "*"
     "@types/node" "*"
+
+"@types/scheduler@*":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@types/scheduler/-/scheduler-0.16.2.tgz#1a62f89525723dde24ba1b01b092bf5df8ad4d39"
+  integrity sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==
 
 "@types/semver@^6.0.0":
   version "6.2.2"
@@ -4365,6 +4448,11 @@ cssstyle@^2.3.0:
   dependencies:
     cssom "~0.3.6"
 
+csstype@^3.0.2:
+  version "3.0.9"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.0.9.tgz#6410af31b26bd0520933d02cbc64fce9ce3fbf0b"
+  integrity sha512-rpw6JPxK6Rfg1zLOYCSwle2GFOOsnjmDYDaBwEcwoOg4qlsIVCN789VkBZDJAGi4T07gI4YSutR43t9Zz4Lzuw==
+
 csv-generate@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/csv-generate/-/csv-generate-3.4.0.tgz#360ed73ef8ec7119515a47c3bd5970ac4b988f00"
@@ -4761,6 +4849,19 @@ ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
+
+effection@2.0.1, effection@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/effection/-/effection-2.0.1.tgz#6063a17afb0bdaee30cc4c94cdffdb2a6cab08af"
+  integrity sha512-KV5P1FZ7nZlSar9Li/cTj88D/0A1Ac+dv+QVDcK7hGBh2OLHtns//54trublT6L0PBP/0RYa5yPUixDdzMSDug==
+  dependencies:
+    "@effection/channel" "2.0.1"
+    "@effection/core" "2.0.1"
+    "@effection/events" "2.0.1"
+    "@effection/fetch" "2.0.1"
+    "@effection/main" "2.0.1"
+    "@effection/stream" "2.0.1"
+    "@effection/subscription" "2.0.1"
 
 effection@^1.0.0:
   version "1.0.0"
@@ -9085,6 +9186,14 @@ react@^16.8.0:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
+
+react@^17.0.2:
+  version "17.0.2"
+  resolved "https://registry.yarnpkg.com/react/-/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"
+  integrity sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
 
 read-pkg-up@^7.0.1:
   version "7.0.1"
