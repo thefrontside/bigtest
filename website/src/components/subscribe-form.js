@@ -67,7 +67,7 @@ export default function SubscribeForm({ highlight, embedded }) {
       <h2 className={clsx(styles['subscribe-form--title'], (highlight ? styles['subscribe-form--title__highlight'] : ''))}>Join our <br /> newsletter</h2>
       <div className={clsx(styles['subscribe-form--inputs'], (status === 'sent' ? styles['subscribe-form--inputs__sent'] : ''))}>
         <p className={styles['subscribe-form--intro']}>
-          Get a monthly update on BigTest's developments! We'll let you know about new features and learning resources.
+          Get a monthly update on Bigtest's developments! We'll let you know about new features and learning resources.
         </p>
         {status === 'sent' ?
           <>

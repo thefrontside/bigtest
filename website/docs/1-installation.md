@@ -4,21 +4,21 @@ title: Installation
 slug: /
 ---
 
-BigTest is a free, Open Source testing platform built from scratch for the modern age — with no traces of Selenium, Playwright, or earlier tools.
+Bigtest is a free, Open Source testing platform built from scratch for the modern age — with no traces of Selenium, Playwright, or earlier tools.
 
 After following along with these guides, you will be up and running with some new user interface tests.
 
-The BigTest runner and its documentation are in the alpha phase. We welcome any feedback or questions! Please feel free to reach out to us in [the Discord chat](https://discord.gg/r6AvtnU).
+The Bigtest runner and its documentation are in the alpha phase. We welcome any feedback or questions! Please feel free to reach out to us in [the Discord chat](https://discord.gg/r6AvtnU).
 
 ## Prerequisites
 - [`npm`](https://www.npmjs.com/get-npm) or [`yarn`](https://classic.yarnpkg.com/en/docs/install)
 - A web app*
 
-*If you would like to see BigTest in action right away or in an environment separate from your project, you can install our sample app that was originally created to demonstrate interactors in various testing frameworks. The sample app will have the BigTest platform and its configurations all ready to go. You can install the sample app by running the command `npx bigtest-sample` in your terminal and skip the installation step below.
+*If you would like to see Bigtest in action right away or in an environment separate from your project, you can install our sample app that was originally created to demonstrate interactors in various testing frameworks. The sample app will have the Bigtest platform and its configurations all ready to go. You can install the sample app by running the command `npx bigtest-sample` in your terminal and skip the installation step below.
 
 ## Installation
 
-The `bigtest` package includes everything you need to get started. Go ahead and install BigTest to your project:
+The `bigtest` package includes everything you need to get started. Go ahead and install Bigtest to your project:
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
