@@ -1,6 +1,6 @@
 import { describe, beforeEach, it } from '@effection/mocha';
 import expect from 'expect';
-import { Operation, createQueue, Queue, Subscription, spawn, fetch } from 'effection';
+import { Operation, createQueue, Queue, Subscription, spawn, fetch, run } from 'effection';
 import { Slice } from '@effection/atom';
 import { Test } from '@bigtest/suite';
 import { createClient, Client } from '@bigtest/client';
@@ -25,8 +25,9 @@ describe('command server', () => {
     yield spawn(createCommandServer({
       status: atom.slice('commandServer'),
       runner: {
-        async runTest(options) {
+        runTest(options) {
           runs.send(options);
+          return run();
         },
         async *subscribe() {
           throw new Error('not implemented');
