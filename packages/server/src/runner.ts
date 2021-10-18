@@ -22,7 +22,7 @@ export interface RunOptions {
 }
 
 export interface Runner {
-  runTest(options: RunOptions): Promise<void>;
+  runTest(options: RunOptions): Task<void>;
   subscribe(id: string): AsyncIterator<TestEvent>;
 }
 
@@ -57,7 +57,7 @@ return {
   *init(scope: Task) {
     let { send, stream } = createChannel<TestEvent>();
     return {
-      async runTest({ testRunId, files }: RunOptions): Promise<void> {
+      runTest({ testRunId, files }: RunOptions): Task<void> {
         return scope.run(function*() {
           console.debug('[command processor] running test', testRunId);
           let stepTimeout = 60_000;
