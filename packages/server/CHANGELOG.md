@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.27.0
+
+### Minor Changes
+
+- 1473a93b: Rewrite result aggregator and result stream for improved performance
+
+### Patch Changes
+
+- 74781e51: Extract the dashboard into its own web-app living in `@bigtest/ui`
+- 27657eec: Use fetch from effection package
+- Updated dependencies [74781e51]
+- Updated dependencies [27657eec]
+  - @bigtest/ui@0.0.1
+  - @bigtest/webdriver@0.11.1
+
 ## 0.26.0
 
 ### Minor Changes

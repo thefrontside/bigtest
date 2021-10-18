@@ -1,5 +1,11 @@
 # @bigtest/webdriver
 
+## 0.11.1
+
+### Patch Changes
+
+- 27657eec: Use fetch from effection package
+
 ## 0.11.0
 
 ### Minor Changes
