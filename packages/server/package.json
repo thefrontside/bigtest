@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/server",
-  "version": "0.26.0",
+  "version": "0.27.0",
   "description": "BigTest Server",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -60,8 +60,8 @@
     "@bigtest/logging": "^0.6.1",
     "@bigtest/project": "^0.17.0",
     "@bigtest/suite": "^0.12.1",
-    "@bigtest/ui": "0.0.0",
-    "@bigtest/webdriver": "^0.11.0",
+    "@bigtest/ui": "0.0.1",
+    "@bigtest/webdriver": "^0.11.1",
     "@effection/atom": "^2.0.0-beta.20",
     "@effection/process": "^2.0.0-beta.20",
     "@nexus/schema": "^0.13.1",
