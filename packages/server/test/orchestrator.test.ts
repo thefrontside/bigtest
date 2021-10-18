@@ -20,7 +20,16 @@ describe('orchestrator', () => {
     let response: Response;
     let body: string;
     beforeEach(function*() {
-      response = yield fetch('http://localhost:24102?query={echo(text:"Hello World")}');
+      response = yield fetch('http://localhost:24102', {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          query: 'query { echo(text: "Hello World") }'
+        })
+      });
       body = yield response.json();
     });
 
