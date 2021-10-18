@@ -3,26 +3,14 @@ import expect from 'expect';
 import { AgentProtocol, Command, generateAgentId } from '@bigtest/agent';
 import { createClient, Client } from '@bigtest/client';
 import { startOrchestrator, createAgent } from './helpers';
-import { Stream } from 'effection';
-import { ResultStatus } from '@bigtest/suite';
+import { Subscription, Stream, createChannel, spawn } from 'effection';
+
+import { TestEvent } from '../src/schema/test-event';
 
 interface AgentsQuery {
   agents: {
     agentId: string;
   }[];
-}
-
-interface SubscriptionEvent {
-  event: {
-    type: string,
-    status: ResultStatus
-    testRunId: string;
-    path: string[];
-    error?: {
-      message: string,
-    },
-    timeout: boolean,
-  };
 }
 
 function subscriptionQuery() {
@@ -58,15 +46,19 @@ describe('running tests with subscription on an agent', () => {
     }).expect();
   });
 
-  // timeout error
-  describe.skip('with the fixture tree', () => {
-    let query: Stream<SubscriptionEvent>;
+  describe('with the fixture tree', () => {
+    let query: Subscription<{ event: TestEvent }>;
+    let results: Stream<{ event: TestEvent }>;
     let runCommand: Command;
     let testRunId: string;
 
     beforeEach(function*() {
-      query = client.subscription(subscriptionQuery());
+      let { send, stream } = createChannel();
+      query = yield client.subscription(subscriptionQuery());
+      results = yield stream.buffered();
+      yield spawn(query.forEach(send));
       runCommand = yield agent.expect();
+
       testRunId = runCommand.testRunId;
     });
 
@@ -79,8 +71,8 @@ describe('running tests with subscription on an agent', () => {
       });
 
       it('sends a running event', function*() {
-        let event = yield query.match({ event: { type: 'testRunAgent:running' } }).expect();
-        expect(event).toMatchObject({ event: { type: 'testRunAgent:running', agentId, testRunId } });
+        let event = yield results.match({ event: { type: 'agent', status: 'running' } }).expect();
+        expect(event).toMatchObject({ event: { agentId, testRunId } });
       });
     });
 
@@ -95,10 +87,10 @@ describe('running tests with subscription on an agent', () => {
       });
 
       it('sends an event for that step', function*() {
-        let event = yield query.match({ event: { type: 'step:result' } }).expect();
+        let event = yield results.match({ event: { type: 'step' } }).expect();
         expect(event).toMatchObject({
           event: {
-            type: 'step:result',
+            type: 'step',
             status: 'ok',
             path: ['All tests', 'Signing In', '1:when I fill in the login form'],
             agentId,
@@ -122,9 +114,9 @@ describe('running tests with subscription on an agent', () => {
       });
 
       it('sends an event for that step', function*() {
-        yield query.match({
+        yield results.match({
           event: {
-            type: 'step:result',
+            type: 'step',
             status: 'failed',
             path: ['All tests', 'Signing In', '1:when I fill in the login form'],
             error: {
@@ -135,9 +127,9 @@ describe('running tests with subscription on an agent', () => {
       });
 
       it('sends a failed event for the entire test', function*() {
-        yield query.match({
+        yield results.match({
           event: {
-            type: 'test:result',
+            type: 'test',
             status: 'failed',
             path: ['All tests', 'Signing In'],
           }
@@ -145,9 +137,9 @@ describe('running tests with subscription on an agent', () => {
       });
 
       it('sends a disregarded event for the remaining steps', function*() {
-        yield query.match({
+        yield results.match({
           event: {
-            type: 'step:result',
+            type: 'step',
             status: 'disregarded',
             path: ['All tests', 'Signing In', '2:when I press the submit button'],
           }
@@ -155,9 +147,9 @@ describe('running tests with subscription on an agent', () => {
       });
 
       it('sends a disregarded event for the remaining assertions', function*() {
-        yield query.match({
+        yield results.match({
           event: {
-            type: 'assertion:result',
+            type: 'assertion',
             status: 'disregarded',
             path: ['All tests', 'Signing In', 'then I am logged in'],
           }
@@ -165,9 +157,9 @@ describe('running tests with subscription on an agent', () => {
       });
 
       it('sends a disregarded event for the remaining children', function*() {
-        yield query.match({
+        yield results.match({
           event: {
-            type: 'test:result',
+            type: 'test',
             status: 'disregarded',
             path: ['All tests', 'Signing In', 'when I log out'],
           }

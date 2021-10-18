@@ -25,8 +25,10 @@ export class GraphqlContext {
   }
 
   runTestSubscribe(options: RunTestOptions): AsyncIterator<TestEvent> {
-    let id = this.runTest(options);
+    let { value: id } = this.testRunIds.next();
 
-    return this.runner.subscribe(id);
+    let iterator = this.runner.subscribe(id);
+    this.runner.runTest({ testRunId: id, files: options.files });
+    return iterator;
   }
 }

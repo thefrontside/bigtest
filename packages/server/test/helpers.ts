@@ -28,13 +28,6 @@ export function createAgent(options: AgentOptions): Resource<AgentProtocol> {
   // to dynamically cast it.
   type W3CWebSocket = w3cwebsocket & EventTarget;
   let socket = new w3cwebsocket(`http://localhost:24103`) as W3CWebSocket;
-  socket.addEventListener('open', () => {
-    console.log("*** SOCKET DID OPEN ***");
-  });
-  socket.addEventListener('message', (m) => {
-    console.log("*** SOCKET GOT MESSAGE ***", m);
-  });
-
   return createAgentInternal(socket, options);
 };
 

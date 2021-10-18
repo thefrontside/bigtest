@@ -11,6 +11,10 @@ function comparePaths(a: string, b: string) {
   return path.resolve(a) === path.resolve(b);
 }
 
+class FilterError extends Error {
+  name = 'FilterError';
+}
+
 export function filterTest(test: Test, options: Options): Test {
   let children: Test[] = [];
 
@@ -22,10 +26,10 @@ export function filterTest(test: Test, options: Options): Test {
         children.push(child);
       } else if(fs.existsSync(file)) {
         let patterns = options.testFiles?.map((p) => JSON.stringify(p)).join(', ') || '';
-        throw new Error(`file with path ${JSON.stringify(path.resolve(file))} exists but does not match the \`testFiles\` pattern(s) ${patterns}`.trim() +
+        throw new FilterError(`file with path ${JSON.stringify(path.resolve(file))} exists but does not match the \`testFiles\` pattern(s) ${patterns}`.trim() +
           '. If you want to include this file in your test suite you can adjust the `testFiles` setting in `bigtest.json`.')
       } else {
-        throw new Error(`file with path ${JSON.stringify(path.resolve(file))} does not exist`);
+        throw new FilterError(`file with path ${JSON.stringify(path.resolve(file))} does not exist`);
       }
     };
   } else {
