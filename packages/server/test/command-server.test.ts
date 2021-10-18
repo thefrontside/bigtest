@@ -254,7 +254,16 @@ interface GraphQLPayload<T = unknown> {
 
 function query<T>(text: string): Operation<GraphQLPayload<T>> {
   return function*() {
-    return yield fetch(`http://localhost:${COMMAND_PORT}?query={${encodeURIComponent(text)}}`).json();
+    return yield fetch(`http://localhost:${COMMAND_PORT}`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        query: `query { ${text} }`
+      })
+    }).json();
   }
 }
 

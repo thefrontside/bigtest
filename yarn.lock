@@ -1394,7 +1394,7 @@
     "@effection/core" "2.0.0-beta.16"
     "@effection/stream" "2.0.0-beta.5"
 
-"@effection/fetch@2.0.0-beta.19", "@effection/fetch@^2.0.0-beta.19":
+"@effection/fetch@2.0.0-beta.19":
   version "2.0.0-beta.19"
   resolved "https://registry.yarnpkg.com/@effection/fetch/-/fetch-2.0.0-beta.19.tgz#a07d0a3811867a5841134bdb409e75d72d8427f4"
   integrity sha512-vmZmr4aN7en04SOFKOH/322BTSGDD4XPritA9+eT2IcvyPDFqVZ9QXnaP9rSV/BXjppVuaSXzy5CheUL+RynFw==
