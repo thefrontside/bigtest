@@ -2,7 +2,7 @@ import { describe, beforeEach, it } from '@effection/mocha';
 import expect from 'expect';
 
 import { Stream } from 'effection';
-import { DuplexChannel, createDuplexChannel } from '@bigtest/effection';
+import { DuplexChannel, createDuplexChannel } from '@effection/duplex-channel';
 import { Slice } from '@effection/atom';
 
 import { createAgentRunner, Runner } from '../src/runner';

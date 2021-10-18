@@ -13,7 +13,6 @@
       "@bigtest/cli": ["packages/cli/src"],
       "@bigtest/client": ["packages/client/src"],
       "@bigtest/driver": ["packages/driver/src"],
-      "@bigtest/effection": ["packages/effection/src"],
       "@bigtest/effection-express": ["packages/effection-express/src"],
       "@bigtest/eslint-plugin": ["packages/eslint-plugin/src"],
       "@bigtest/globals": ["packages/globals/src"],
