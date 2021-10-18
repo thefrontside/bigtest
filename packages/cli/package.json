@@ -25,7 +25,7 @@
     "bigtest": "bin/bigtest.js"
   },
   "devDependencies": {
-    "@effection/inspect": "^2.0.0-beta.22",
+    "@effection/inspect": "^2.0.1",
     "@frontside/eslint-config": "^2.0.0",
     "@frontside/tsconfig": "^1.2.0",
     "@frontside/typescript": "^1.1.1",
@@ -49,11 +49,11 @@
     "@bigtest/effection": "^0.9.0",
     "@bigtest/project": "^0.17.0",
     "@bigtest/server": "^0.27.0",
-    "@effection/process": "^2.0.0-beta.20",
+    "@effection/process": "^2.0.1",
     "capture-console": "^1.0.1",
     "chalk": "^4.1.0",
     "deepmerge": "^4.2.2",
-    "effection": "^2.0.0-beta.21",
+    "effection": "^2.0.1",
     "istanbul-lib-coverage": "^3.0.0",
     "istanbul-lib-report": "^3.0.0",
     "istanbul-reports": "^3.0.2",
