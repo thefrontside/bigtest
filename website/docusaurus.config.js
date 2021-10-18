@@ -1,10 +1,10 @@
 module.exports = {
-  title: 'BigTest',
+  title: 'Bigtest',
   tagline: 'Truly cross-browser testing',
-  url: 'https://frontside.com',
+  url: 'https://frontside.com/',
   baseUrl: '/bigtest/',
   onBrokenLinks: 'throw',
-  favicon: 'images/favicon.png',
+  favicon: 'images/favicon-bigtest.png',
   organizationName: 'thefrontside',
   projectName: 'bigtest',
   themeConfig: {
@@ -16,21 +16,20 @@ module.exports = {
       theme: require('prism-react-renderer/themes/nightOwl'),
     },
     navbar: {
-      title: '',
+      title: 'Bigtest',
       logo: {
-        alt: 'BigTest',
-        src: 'images/bigtest-logo@2x.png',
-        srcDark: 'images/logo-dark@2x.png'
+        alt: 'Bigtest',
+        src: 'images/bigtest-logo.svg'
       },
       items: [
         {
           to: '/docs',
           label: 'Docs',
-          position: 'left',
+          position: 'right',
         }, {
           to: '/about',
-          label: 'About',
-          position: 'left'
+          label: 'Philosophy',
+          position: 'right',
         }, {
           href: 'https://github.com/thefrontside/bigtest',
           label: 'GitHub',
@@ -47,23 +46,36 @@ module.exports = {
       style: 'light',
       links: [
         {
-          title: 'Runner',
+          title: 'About',
           items: [
             {
-              label: 'About the Runner',
-              to: '/',
+              label: "Maintained by Frontside",
+              href: "https://fronside.com/",
+            },
+          ]
+        },
+        {
+          title: "OSS Projects",
+          items: [
+            {
+              label: "Interactors",
+              href: "https://frontside.com/interactors",
             },
             {
-              label: 'Introduction',
-              to: 'docs',
-            }
+              label: "Bigtest",
+              to: "/",
+            },
+            {
+              label: "Effection",
+              href: "https://frontside.com/effection",
+            },
           ],
         },
         {
-          title: 'BigTest Platform',
+          title: 'Bigtest Platform',
           items: [
             {
-              label: 'About BigTest',
+              label: 'About Bigtest',
               to: 'about/',
             },
             {
@@ -92,7 +104,7 @@ module.exports = {
       ],
       copyright: `Copyright © ${new Date().getFullYear()} The Frontside Software, Inc.`,
     },
-    image: 'images/meta-image.png'
+    image: 'images/meta-bigtest.png'
   },
   presets: [
     [
@@ -113,7 +125,15 @@ module.exports = {
     ],
   ],
   stylesheets: [
-    'https://use.typekit.net/gyc5wys.css'
+    'https://use.typekit.net/ugs0ewy.css'
+  ],
+  plugins: [
+    [
+      require.resolve("./plugins/docusaurus-plugin-vanilla-extract"),
+      {
+        /* options */
+      },
+    ],
   ],
   scripts: [
     {

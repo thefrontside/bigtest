@@ -24,7 +24,7 @@ After you've run `yarn bigtest init`, you should have a `bigtest.json` file that
 }
 ```
 
-The `testFiles` property tells BigTest where to look for your testing files and what they are named.
+The `testFiles` property tells Bigtest where to look for your testing files and what they are named.
 
 Go ahead and create a `test` directory inside your project and make a new test file, such as `my-first-bigtest.test.js`.
 
@@ -74,7 +74,7 @@ In the examples above, we used Interactors like `Button` and `Heading` to locate
 
 ## Test order
 
-If you are familiar with other testing libraries, might have a few questions at this point about testing order. Here is some basic information to help you connect the dots for how BigTest works.
+If you are familiar with other testing libraries, might have a few questions at this point about testing order. Here is some basic information to help you connect the dots for how Bigtest works.
 
 - Steps will always run before assertions
 - Children will run in parallel on their own branch
