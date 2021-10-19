@@ -15,5 +15,8 @@ jobs:
       run: yarn
     - name: Create Release Pull Request
       uses: changesets/action@master
+      with:
+        commit: "Version packages"
+        title: "Version packages"
       env:
         GITHUB_TOKEN: ${{ secrets.FRONTSIDEJACK_GITHUB_TOKEN }}
