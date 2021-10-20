@@ -13,10 +13,6 @@
   framework = "#custom"
 
 [[redirects]]
-  from = "/*"
-  to = "/bigtest/:splat"
-
-[[redirects]]
   from = "/bigtest/interactors/*"
   to = "https://frontside.com/interactors/:splat"
 
@@ -31,6 +27,10 @@
 [[redirects]]
   from = "/bigtest/docs/platform/*"
   to = "/bigtest/docs/:splat"
+
+[[redirects]]
+  from = "/*"
+  to = "/bigtest/:splat"
 
 [[headers]]
   for = "/bigtest/asciinema/iframes/cross-platform.html"
