@@ -32,9 +32,9 @@
   },
   "homepage": "https://github.com/thefrontside/bigtest#readme",
   "devDependencies": {
-    "@frontside/eslint-config": "^2.0.0",
+    "@frontside/eslint-config": "2.1.0-2fd3c42",
     "@frontside/tsconfig": "^1.2.0",
-    "@frontside/typescript": "^2.0.0",
+    "@frontside/typescript": "2.0.0-2fd3c42",
     "react": "^16.8.0",
     "graphiql": "^1.4.0",
     "@graphiql/toolkit": "^0.2.2",
