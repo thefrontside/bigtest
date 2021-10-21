@@ -165,3 +165,8 @@ workflows:
             - run:
                 name: "Enable safaridriver"
                 command: defaults write com.apple.Safari AllowRemoteAutomation 1
+            - run:
+                name: "Use Node version"
+                command: |
+                  npm i -g n
+                  n 14.17.5
