@@ -1563,6 +1563,13 @@
   resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
   integrity sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==
 
+"@interactors/globals@0.0.0-9556935":
+  version "0.0.0-9556935"
+  resolved "https://registry.yarnpkg.com/@interactors/globals/-/globals-0.0.0-9556935.tgz#31ddb91fdb20f5029336dc1ca9815880ec85745a"
+  integrity sha512-5TspakaSPvLoLZTow3NTQp7GQjf3XuK1Ps0utRkF10wkqNjAiDgj/LIq99X5dShlTnZ/q4nN2YcOX7FIK7J2MA==
+  dependencies:
+    "@bigtest/globals" "^0.8.1"
+
 "@interactors/html@^0.31.2":
   version "0.31.2"
   resolved "https://registry.yarnpkg.com/@interactors/html/-/html-0.31.2.tgz#55979155245b7cfe6a6d000b89dafb078f09adbd"

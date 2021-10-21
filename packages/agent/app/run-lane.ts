@@ -1,6 +1,7 @@
 import { Operation, spawn, all, withTimeout } from 'effection';
 import { on } from '@effection/events';
 import { bigtestGlobals } from '@bigtest/globals';
+import { globals, setInteractionWrapper } from '@interactors/globals';
 import { TestImplementation, Context as TestContext } from '@bigtest/suite';
 
 import { findIFrame } from './find-iframe';
@@ -24,7 +25,7 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
     originalConsole.debug('[agent] running test', currentPath);
     events.send({ testRunId, type: 'test:running', path: currentPath })
 
-    if (bigtestGlobals.defaultInteractorTimeout >= stepTimeout) {
+    if (globals.interactorTimeout >= stepTimeout) {
       originalConsole.warn(`[agent] the interactor timeout should be less than, but is greater than or equal to, the step timeout of ${stepTimeout}`);
     }
 
@@ -34,9 +35,7 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
         originalConsole.debug('[agent] running step', step);
         events.send({ testRunId, type: 'step:running', path: stepPath });
 
-        bigtestGlobals.runnerState = 'step';
         let result: TestContext | void = yield withTimeout(stepTimeout, Promise.resolve(step.action(context)));
-        bigtestGlobals.runnerState = 'pending';
 
         if (result != null) {
           context = {...context, ...result};
@@ -79,9 +78,7 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
         originalConsole.debug('[agent] running assertion', assertion);
         events.send({ testRunId, type: 'assertion:running', path: assertionPath });
 
-        bigtestGlobals.runnerState = 'assertion';
         yield withTimeout(stepTimeout, Promise.resolve(assertion.check(context)));
-        bigtestGlobals.runnerState = 'pending';
 
         events.send({
           testRunId,
@@ -112,6 +109,12 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
   }
 
   setLogConfig({ events: [] });
+  setInteractionWrapper((interaction) => ({
+    ...interaction,
+    check() {
+      throw new Error(`tried to ${interaction.description} in an assertion, actions/perform should only be run in steps`)
+    }
+  }))
 
   let { events, command, path } = config;
   let { testRunId, manifestUrl, appUrl, stepTimeout } = command;
@@ -127,7 +130,6 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
       })
     );
 
-    bigtestGlobals.runnerState = 'pending';
     bigtestGlobals.appUrl = appUrl;
     bigtestGlobals.testFrame = findIFrame('app-frame');
 
