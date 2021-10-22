@@ -35,7 +35,9 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
         originalConsole.debug('[agent] running step', step);
         events.send({ testRunId, type: 'step:running', path: stepPath });
 
+        bigtestGlobals.runnerState = 'step';
         let result: TestContext | void = yield withTimeout(stepTimeout, Promise.resolve(step.action(context)));
+        bigtestGlobals.runnerState = 'pending';
 
         if (result != null) {
           context = {...context, ...result};
@@ -78,7 +80,9 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
         originalConsole.debug('[agent] running assertion', assertion);
         events.send({ testRunId, type: 'assertion:running', path: assertionPath });
 
+        bigtestGlobals.runnerState = 'assertion';
         yield withTimeout(stepTimeout, Promise.resolve(assertion.check(context)));
+        bigtestGlobals.runnerState = 'pending';
 
         events.send({
           testRunId,
@@ -130,6 +134,7 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
       })
     );
 
+    bigtestGlobals.runnerState = 'pending';
     bigtestGlobals.appUrl = appUrl;
     bigtestGlobals.testFrame = findIFrame('app-frame');
 

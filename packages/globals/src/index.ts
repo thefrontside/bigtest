@@ -1,6 +1,6 @@
 import './globals';
 import { TestImplementation } from '@bigtest/suite';
-import { globals, setDocumentResolver, setInteractorTimeout } from '@interactors/globals'
+import { globals as interactorsGlobals, setDocumentResolver, setInteractorTimeout } from '@interactors/globals'
 
 export type RunnerState = 'pending' | 'step' | 'assertion';
 
@@ -40,7 +40,7 @@ export const bigtestGlobals = {
 
   get document(): Document {
     let testFrame = options().testFrame;
-    let doc = (testFrame && testFrame.contentDocument) || globals.document;
+    let doc = (testFrame && testFrame.contentDocument) || interactorsGlobals.document;
     if (!doc) throw new Error('no document found')
     return doc
   },
@@ -50,7 +50,7 @@ export const bigtestGlobals = {
   },
 
   get defaultInteractorTimeout(): number {
-    return globals.interactorTimeout;
+    return interactorsGlobals.interactorTimeout;
   },
 
   set defaultInteractorTimeout(value: number) {
@@ -90,7 +90,7 @@ export const bigtestGlobals = {
   },
 
   reset(): void {
-    globals.reset();
+    interactorsGlobals.reset();
     delete globalThis.__bigtest;
     delete globalThis.__bigtestManifest;
   }
