@@ -24,9 +24,9 @@
     "effection": "^2.0.1"
   },
   "devDependencies": {
-    "@frontside/eslint-config": "2.1.0-2fd3c42",
+    "@frontside/eslint-config": "3.0.0",
     "@frontside/tsconfig": "^1.2.0",
-    "@frontside/typescript": "2.0.0-2fd3c42",
+    "@frontside/typescript": "3.0.0",
     "@types/mocha": "^7.0.1",
     "@types/node": "^14.17.5",
     "expect": "^24.9.0",
