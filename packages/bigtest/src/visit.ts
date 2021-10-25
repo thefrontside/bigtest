@@ -4,6 +4,15 @@ import { Step } from '@bigtest/suite';
 
 let visitCounter = 1;
 
+/**
+ * This function allows to go to different url of the app
+ *
+ * ```typescript
+ * test('Test scenario')
+ *   .step(visit('/'))
+ *   .step(Button('Login').click())
+ * ```
+ */
 export function visit(path = '/'): Step {
   return globals.wrapInteraction(
     {
