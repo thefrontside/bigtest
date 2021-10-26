@@ -22,9 +22,9 @@
     "prepack": "tsc --build ./tsconfig.build.json"
   },
   "devDependencies": {
-    "@frontside/eslint-config": "3.0.0",
-    "@frontside/tsconfig": "^1.2.0",
-    "@frontside/typescript": "3.0.0",
+    "@frontside/eslint-config": "^3.0.0",
+    "@frontside/tsconfig": "^3.0.0",
+    "@frontside/typescript": "^3.0.0",
     "@types/node": "^14.17.5",
     "ts-node": "^9.1.1"
   },

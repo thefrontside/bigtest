@@ -1130,12 +1130,7 @@
     "@types/parsimmon" "^1.10.1"
     parsimmon "^1.13.0"
 
-"@definitelytyped/typescript-versions@^0.0.81":
-  version "0.0.81"
-  resolved "https://registry.yarnpkg.com/@definitelytyped/typescript-versions/-/typescript-versions-0.0.81.tgz#c139ff1352380c52afef4733ec7b2306f567d39d"
-  integrity sha512-STXwuKjE32PQ+NJ+5/aH+g1DjNeZ3mcONmxlmIBsNShxlSXJ3dkStXf8sh4OSRQpvj9d1c/vKBa/ILg/67Uoxg==
-
-"@definitelytyped/typescript-versions@latest":
+"@definitelytyped/typescript-versions@^0.0.40", "@definitelytyped/typescript-versions@^0.0.81", "@definitelytyped/typescript-versions@latest":
   version "0.0.40"
   resolved "https://registry.yarnpkg.com/@definitelytyped/typescript-versions/-/typescript-versions-0.0.40.tgz#e7888b5bd0355777f78c76c50b13b9b1aa78b18e"
   integrity sha512-bhgrKayF1LRHlWgvsMtH1sa/y3JzJhsEVZiZE3xdoWyv9NjZ76dpGvXTNix2dz5585KgQJLP+cKeIdZbwHnCUA==
@@ -1293,7 +1288,7 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@frontside/eslint-config@3.0.0":
+"@frontside/eslint-config@^3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@frontside/eslint-config/-/eslint-config-3.0.0.tgz#deff67a26062248d3bb29110b86455488755128b"
   integrity sha512-wt05S9wTlMsX1+TRtoAw15NZab0LUqMVyb6rLio4eEGccOAYvzbtVRRJr12Dg6u2oNWSoFSI9ftMe9351EleQg==
@@ -1305,12 +1300,17 @@
     eslint-plugin-mocha-no-only "^1.1.1"
     eslint-plugin-prefer-let "^1.1.0"
 
-"@frontside/tsconfig@1.2.0", "@frontside/tsconfig@^1.2.0":
+"@frontside/tsconfig@1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@frontside/tsconfig/-/tsconfig-1.2.0.tgz#4faf77841e9a3ff9159cd9e0ff8f10d336a84cfe"
   integrity sha512-Ua/q/M99ohPLdNtMNuJ1EToTjVkuiUECqQTZB7jsKLpGIn0dazon1KyqNtWYfMExMYXdk4uZimxljoVtFxM/OQ==
 
-"@frontside/typescript@3.0.0":
+"@frontside/tsconfig@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@frontside/tsconfig/-/tsconfig-3.0.0.tgz#81851b980bb03882eba115e18c5120c3d1eb2117"
+  integrity sha512-yVSk+FLUyL5TzqYC85IpMI6qfgnIZwNPuj5RMwEY02z6zdi5Wa0Uj2G+N5VJNc5g6XKHKue9Rmr4vqn9GUU20g==
+
+"@frontside/typescript@3.0.0", "@frontside/typescript@^3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@frontside/typescript/-/typescript-3.0.0.tgz#fb13eb8ef42545ebdcb66e34fea1d739d3bd8aa6"
   integrity sha512-fE3XQG4/akgkL3eakPPJtBTcIWtkJ60i4yaumLh3aWfaxstrUBzWx+RYWz5vhTtk4nGcPtpDVHQOXFP1u/Jnog==
@@ -10789,18 +10789,10 @@ yaml@^1.10.2:
   resolved "https://registry.yarnpkg.com/yaml/-/yaml-1.10.2.tgz#2301c5ffbf12b467de8da2333a459e29e7920e4b"
   integrity sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==
 
-yargs-parser@13.1.2, yargs-parser@^13.1.2:
+yargs-parser@13.1.2, yargs-parser@^13.1.2, yargs-parser@^18.1.2, yargs-parser@^18.1.3:
   version "13.1.2"
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-13.1.2.tgz#130f09702ebaeef2650d54ce6e3e5706f7a4fb38"
   integrity sha512-3lbsNRf/j+A4QuSZfDRA7HRSfWrzO0YjqTJd5kjAq37Zep1CEgaYmrH9Q3GwPiB9cHyd1Y1UwggGhJGoxipbzg==
-  dependencies:
-    camelcase "^5.0.0"
-    decamelize "^1.2.0"
-
-yargs-parser@^18.1.2, yargs-parser@^18.1.3:
-  version "18.1.3"
-  resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-18.1.3.tgz#be68c4975c6b2abf469236b0c870362fab09a7b0"
-  integrity sha512-o50j0JeToy/4K6OZcaQmW6lyXXKhq7csREXcDwk2omFPJEwUNOVtJKvmDr9EI1fAJZUyZcRF7kxGBWmRXudrCQ==
   dependencies:
     camelcase "^5.0.0"
     decamelize "^1.2.0"

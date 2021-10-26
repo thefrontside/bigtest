@@ -23,8 +23,8 @@
     "test": "mocha -r ts-node/register \"test/{,!(fixtures)/**}/*.test.ts\""
   },
   "devDependencies": {
-    "@frontside/eslint-config": "3.0.0",
-    "@frontside/typescript": "3.0.0",
+    "@frontside/eslint-config": "^3.0.0",
+    "@frontside/typescript": "^3.0.0",
     "@types/node": "^14.17.5",
     "ts-node": "^9.1.1"
   }
