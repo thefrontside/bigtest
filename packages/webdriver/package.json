@@ -36,7 +36,7 @@
     "@effection/atom": "^2.0.1",
     "@effection/process": "^2.0.1",
     "abort-controller": "^3.0.0",
-    "chromedriver": "^93.0.1",
+    "chromedriver": "^95.0.0",
     "effection": "^2.0.1",
     "geckodriver": ">=1.22.2",
     "ms-chromium-edge-driver": "^0.3.0",
