@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   win: circleci/windows@2.2.0
+  node: circleci/node@4.7.0
 executors:
   linux:
     docker:
@@ -162,6 +163,8 @@ workflows:
           package: cli
           driver: safari
           pre-steps:
+            - node/install:
+                lts: true
             - run:
                 name: "Enable safaridriver"
                 command: defaults write com.apple.Safari AllowRemoteAutomation 1
