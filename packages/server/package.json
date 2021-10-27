@@ -26,9 +26,9 @@
     "dist/**/*"
   ],
   "devDependencies": {
-    "@frontside/eslint-config": "^2.0.0",
-    "@frontside/tsconfig": "^1.2.0",
-    "@frontside/typescript": "^1.1.1",
+    "@frontside/eslint-config": "^3.0.0",
+    "@frontside/tsconfig": "^3.0.0",
+    "@frontside/typescript": "^3.0.0",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.6",
     "@types/graphql": "^14.5.0",

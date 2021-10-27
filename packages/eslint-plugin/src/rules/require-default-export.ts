@@ -8,7 +8,6 @@ export const requireDefaultTextExport = createRule({
   name: __filename,
   meta: {
     docs: {
-      category: 'Possible Errors',
       description: 'Require a BigTest test file to have a default export',
       recommended: 'error',
     },
@@ -25,7 +24,7 @@ export const requireDefaultTextExport = createRule({
     if (context.parserOptions.sourceType !== 'module') {
       return {}
     }
-    
+
     let defaultExport: TSESTree.ExportDefaultDeclaration;
     let namedExport: TSESTree.ExportNamedDeclaration;
     let hasDefaultTestDeclaration = false;
@@ -35,7 +34,7 @@ export const requireDefaultTextExport = createRule({
         if(hasDefaultTestDeclaration){
           return;
         }
-        
+
         if (defaultExport) {
           context.report({ node: defaultExport || namedExport, messageId: 'exportIsNotTest'});
           return;
@@ -65,7 +64,7 @@ export const requireDefaultTextExport = createRule({
         if(node.parent.type !== AST_NODE_TYPES.AssignmentExpression) {
           return;
         }
-        
+
         if(node.parent.operator !== '=') {
           return;
         }
