@@ -20,9 +20,9 @@
     "prepack": "tsc --build ./tsconfig.build.json"
   },
   "devDependencies": {
-    "@frontside/eslint-config": "^2.0.0",
-    "@frontside/tsconfig": "^1.2.0",
-    "@frontside/typescript": "^1.1.1",
+    "@frontside/eslint-config": "^3.0.0",
+    "@frontside/tsconfig": "^3.0.0",
+    "@frontside/typescript": "^3.0.0",
     "@types/mocha": "^7.0.1",
     "@types/node": "^14.17.5",
     "expect": "^24.9.0",
