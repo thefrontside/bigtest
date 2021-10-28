@@ -1,7 +1,7 @@
 import { Operation, spawn, all, withTimeout } from 'effection';
 import { on } from '@effection/events';
 import { bigtestGlobals } from '@bigtest/globals';
-import { globals, setInteractionWrapper } from '@interactors/globals';
+import { globals, addActionWrapper } from '@interactors/globals';
 import { TestImplementation, Context as TestContext } from '@bigtest/suite';
 
 import { findIFrame } from './find-iframe';
@@ -113,12 +113,13 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
   }
 
   setLogConfig({ events: [] });
-  setInteractionWrapper((interaction) => ({
-    ...interaction,
-    check() {
-      throw new Error(`tried to ${interaction.description} in an assertion, actions/perform should only be run in steps`)
+  addActionWrapper((description, action, type) =>
+    async () => {
+      if (bigtestGlobals.runnerState == 'assertion' && type == 'interaction')
+        throw new Error(`tried to ${description} in an assertion, actions/perform should only be run in steps`)
+      return action()
     }
-  }))
+  )
 
   let { events, command, path } = config;
   let { testRunId, manifestUrl, appUrl, stepTimeout } = command;

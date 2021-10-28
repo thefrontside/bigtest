@@ -1,6 +1,16 @@
 import { bigtestGlobals } from '@bigtest/globals';
 import { globals } from '@interactors/globals'
-import { Step } from '@bigtest/suite';
+
+interface Interaction<T> extends Promise<T> {
+  /**
+   * Return a description of the interaction
+   */
+  description: string;
+  /**
+   * Perform the interaction
+   */
+  action: () => Promise<T>;
+}
 
 let visitCounter = 1;
 
@@ -13,11 +23,13 @@ let visitCounter = 1;
  *   .step(Button('Login').click())
  * ```
  */
-export function visit(path = '/'): Step {
-  return globals.wrapInteraction(
-    {
-      description: `visiting ${JSON.stringify(path)}`,
-      action: async () => {
+export function visit(path = '/'): Interaction<void> {
+  let promise: Promise<void>;
+  let description = `visiting ${JSON.stringify(path)}`
+  return {
+      description,
+      [Symbol.toStringTag]: `[interaction ${description}]`,
+      action: globals.wrapAction(description, async () => {
         // eslint-disable-next-line prefer-let/prefer-let
         const { appUrl, testFrame } = bigtestGlobals;
 
@@ -44,7 +56,18 @@ export function visit(path = '/'): Step {
             reject(new Error('timed out trying to load application'));
           }, bigtestGlobals.defaultAppTimeout);
         });
+      }, 'interaction'),
+      then(onFulfill, onReject) {
+        if(!promise) { promise = this.action(); }
+        return promise.then(onFulfill, onReject);
       },
-    }
-  );
+      catch(onReject) {
+        if(!promise) { promise = this.action(); }
+        return promise.catch(onReject);
+      },
+      finally(handler) {
+        if(!promise) { promise = this.action(); }
+        return promise.finally(handler);
+      }
+    };
 }
