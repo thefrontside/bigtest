@@ -50,7 +50,7 @@ module.exports = {
           items: [
             {
               label: "Maintained by Frontside",
-              href: "https://fronside.com/",
+              href: "https://frontside.com/",
             },
           ]
         },
