@@ -1,6 +1,7 @@
 import { Operation, spawn, all, withTimeout } from 'effection';
 import { on } from '@effection/events';
 import { bigtestGlobals } from '@bigtest/globals';
+import { globals, addActionWrapper } from '@interactors/globals';
 import { TestImplementation, Context as TestContext } from '@bigtest/suite';
 
 import { findIFrame } from './find-iframe';
@@ -24,7 +25,7 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
     originalConsole.debug('[agent] running test', currentPath);
     events.send({ testRunId, type: 'test:running', path: currentPath })
 
-    if (bigtestGlobals.defaultInteractorTimeout >= stepTimeout) {
+    if (globals.interactorTimeout >= stepTimeout) {
       originalConsole.warn(`[agent] the interactor timeout should be less than, but is greater than or equal to, the step timeout of ${stepTimeout}`);
     }
 
@@ -112,6 +113,13 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
   }
 
   setLogConfig({ events: [] });
+  addActionWrapper((description, action, type) =>
+    async () => {
+      if (bigtestGlobals.runnerState == 'assertion' && type == 'interaction')
+        throw new Error(`tried to ${description} in an assertion, actions/perform should only be run in steps`)
+      return action()
+    }
+  )
 
   let { events, command, path } = config;
   let { testRunId, manifestUrl, appUrl, stepTimeout } = command;
