@@ -36,7 +36,7 @@
     "@frontside/tsconfig": "^3.0.0",
     "@frontside/typescript": "^3.0.0",
     "@graphiql/toolkit": "^0.2.2",
-    "graphiql": "^1.4.0",
+    "graphiql": "^1.4.7",
     "parcel": "2.0.0-rc.0",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
