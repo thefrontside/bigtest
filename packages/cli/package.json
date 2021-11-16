@@ -17,7 +17,7 @@
     "lint": "eslint \"{src,test,bin}/**/*.ts\"",
     "check:types": "tsc --noEmit",
     "test": "mocha -r ts-node/register \"test/{,!(fixtures)/**}/*.test.ts\"",
-    "bigtest": "ts-node src/index.ts",
+    "bigtest": "ts-node -r @effection/inspect src/index.ts",
     "prepack": "tsc --build ./tsconfig.build.json",
     "test:app:start": "node ./bin/app.js"
   },

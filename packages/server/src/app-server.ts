@@ -1,4 +1,4 @@
-import { Operation, sleep, spawn, fetch } from 'effection';
+import { Operation, withLabels, sleep, spawn, fetch } from 'effection';
 import { exec, Process  } from '@effection/process';
 import { AppServerStatus } from './orchestrator/state';
 import { Slice } from '@effection/atom';
@@ -12,7 +12,7 @@ interface AppServerOptions {
   dir?: string;
 }
 
-export function* appServer(options: AppServerOptions): Operation<void> {
+export const appServer = (options: AppServerOptions): Operation<void> => withLabels(function*() {
   assert(!!options.url, 'no app url given');
 
   if (options.command) {
@@ -46,7 +46,7 @@ export function* appServer(options: AppServerOptions): Operation<void> {
   options.status.set({ type: 'available' });
 
   yield;
-}
+}, { name: 'appServer', url: options.url || "" });
 
 function* isReachable(url: string): Operation<boolean> {
   try {

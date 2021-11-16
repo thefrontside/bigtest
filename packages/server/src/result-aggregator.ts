@@ -1,4 +1,4 @@
-import { Operation, Task, Subscription, all, spawn, createFuture } from 'effection';
+import { Operation, Task, Subscription, all, spawn, createFuture, withLabels } from 'effection';
 import { Slice } from '@effection/atom';
 import { RunEnd, StepResult as StepResultEvent, AssertionResult as AssertionResultEvent } from '@bigtest/agent';
 import { TestResult, StepResult, AssertionResult, ResultStatus } from '@bigtest/suite';
@@ -46,7 +46,7 @@ function createAggregatorMap(key: MessageKey, emit: Emit, map: Map<string, (valu
 }
 
 function makeAggregator<T extends { status: string }>(type: TestEventType, agg: Aggregator<T>): Aggregator<T> {
-  return function*(map, slice): Operation<ResultStatus> {
+  return (map, slice) => withLabels(function*(): Operation<ResultStatus> {
     let statusSlice = slice.slice('status');
 
     try {
@@ -57,7 +57,7 @@ function makeAggregator<T extends { status: string }>(type: TestEventType, agg: 
         map.emit({ type, status: 'disregarded' });
       }
     }
-  };
+  }, { name: `${type}Aggregator` });
 }
 
 interface MessageKey {
@@ -71,7 +71,7 @@ function messageKey(key: MessageKey): string {
   return JSON.stringify([key.type, key.agentId, key.path].filter((v) => v != null));
 }
 
-export function* aggregate(subscription: Subscription<Incoming>, slice: Slice<TestRunState>, emit: Emit): Operation<ResultStatus> {
+export const aggregate = (subscription: Subscription<Incoming>, slice: Slice<TestRunState>, emit: Emit): Operation<ResultStatus> => withLabels(function*() {
   let map = createAggregatorMap({ testRunId: slice.get().testRunId }, emit);
 
   yield spawn(subscription.forEach(function*(message) {
@@ -79,7 +79,7 @@ export function* aggregate(subscription: Subscription<Incoming>, slice: Slice<Te
   }));
 
   return yield aggregateTestRun(map, slice);
-}
+}, { name: 'aggregate' });
 
 const aggregateTestRun: Aggregator<TestRunState> = makeAggregator('testRun', function*(map, slice) {
   let agentRuns = Object.keys(slice.get().agents).map(agentId => {
@@ -115,7 +115,7 @@ const aggregateTestRunAgent: Aggregator<TestRunAgentState> = makeAggregator('age
     yield map.receive('run:begin');
     slice.slice('status').set('running');
     map.emit({ type: 'agent', status: 'running' });
-  });
+  }, { labels: { name: 'setRunning', expand: false } });
 
   let endTask: Task<RunEnd> = yield spawn(map.receive('run:end'));
 
@@ -139,7 +139,7 @@ const aggregateTest: Aggregator<TestResult> = makeAggregator('test', function*(m
         yield map.receive('test:running');
         statusSlice.set('running');
         map.emit({ type: 'test', status: 'running' });
-      });
+      }, { labels: { name: 'setRunning', expand: false } });
 
       let steps = Array.from(slice.get().steps.entries()).map(([index, step]) => {
         return aggregateStep(map.withPath(`${index}:${step.description}`), slice.slice('steps', index));
@@ -176,7 +176,7 @@ const aggregateStep: Aggregator<StepResult> = makeAggregator('step', function*(m
       yield map.receive('step:running');
       slice.slice('status').set('running');
       map.emit({ type: 'step', status: 'running' });
-    });
+    }, { labels: { name: 'setRunning', expand: false } });
 
     return yield map.receive('step:result');
   }
@@ -197,7 +197,7 @@ const aggregateAssertion: Aggregator<AssertionResult> = makeAggregator('assertio
       yield map.receive('assertion:running');
       slice.slice('status').set('running');
       map.emit({ type: 'assertion', status: 'running' });
-    });
+    }, { labels: { name: 'setRunning', expand: false } });
 
     return yield map.receive('assertion:result');
   }

@@ -1,4 +1,4 @@
-import { Operation, throwOnErrorEvent, once, on, onEmit, spawn } from 'effection';
+import { Operation, withLabels, throwOnErrorEvent, once, on, onEmit, spawn } from 'effection';
 import { express, Express } from "@bigtest/effection-express";
 import { static as staticMiddleware } from 'express';
 import { AgentServerConfig } from '@bigtest/agent';
@@ -20,7 +20,7 @@ interface ProxyServerOptions {
 
 type ProxyResEvent = [http.IncomingMessage, http.IncomingMessage, http.ServerResponse];
 
-export const proxyServer = (options: ProxyServerOptions): Operation<void> => function*(proxyTask) {
+export const proxyServer = (options: ProxyServerOptions): Operation<void> => withLabels(function*(proxyTask) {
   function* handleRequest(proxyRes: http.IncomingMessage, req: http.IncomingMessage, res: http.ServerResponse): Operation<void> {
     console.debug('[proxy]', 'start', req.method, req.url);
 
@@ -143,5 +143,5 @@ export const proxyServer = (options: ProxyServerOptions): Operation<void> => fun
   } finally {
     proxyServer.close();
   }
-};
+}, { name: "proxyServer", port: options.port, target: options.target || "" })
 

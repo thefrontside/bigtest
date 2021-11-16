@@ -1,4 +1,4 @@
-import { Operation } from 'effection';
+import { Operation, withLabels } from 'effection';
 import { express, Express, Socket } from '@bigtest/effection-express';
 import actualExpress from 'express';
 import { appDir } from '@bigtest/ui';
@@ -25,7 +25,7 @@ function isAsyncIterator(value: AsyncIterableIterator<unknown> | ExecutionResult
   return value && ("next" in value) && typeof(value["next"]) === 'function';
 }
 
-export const createCommandServer = (options: CommandServerOptions): Operation<void> => function*(task) {
+export const createCommandServer = (options: CommandServerOptions): Operation<void> => withLabels(function*(task) {
   let app: Express = yield express();
 
   options.status.set({ type: 'starting' });
@@ -45,7 +45,7 @@ export const createCommandServer = (options: CommandServerOptions): Operation<vo
   options.status.set({ type: 'started' });
 
   yield;
-}
+}, { name: 'commandServer' })
 
 /**
  * Run the query or mutation in `source` against the orchestrator
