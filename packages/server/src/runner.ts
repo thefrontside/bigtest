@@ -54,6 +54,9 @@ return {
 
 export function createAgentRunner(options: RunnerOptions): Resource<Runner> {
 return {
+  labels: {
+    name: 'agentRunner',
+  },
   *init(scope: Task) {
     let { send, stream } = createChannel<TestEvent>();
     return {
@@ -119,7 +122,7 @@ return {
           } finally {
             console.debug('[command processor] test run complete', testRunId, testRunSlice.get().status);
           }
-        });
+        }, { labels: { name: 'testRun', id: testRunId } });
       },
 
       subscribe(id: string): AsyncIterator<TestEvent> {

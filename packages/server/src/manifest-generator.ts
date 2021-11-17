@@ -1,6 +1,6 @@
 import chokidar from 'chokidar';
 import { Slice } from '@effection/atom';
-import { throwOnErrorEvent, once, on, spawn, ensure } from 'effection';
+import { withLabels, throwOnErrorEvent, once, on, spawn, ensure } from 'effection';
 import fs from 'fs';
 import globby from 'globby';
 import path from 'path';
@@ -47,7 +47,7 @@ export interface ManifestGeneratorOptions {
   destinationPath?: string;
 };
 
-export function* manifestGenerator(options: ManifestGeneratorOptions): Operation<void> {
+export const manifestGenerator = (options: ManifestGeneratorOptions): Operation<void> => withLabels(function*() {
   assert(!!options.files, 'no files options in ManifestGeneratorOptions');
   assert(!!options.destinationPath, 'no destinationPath in ManifestGeneratorOptions');
 
@@ -86,4 +86,4 @@ export function* manifestGenerator(options: ManifestGeneratorOptions): Operation
     yield writeManifest(writeOptions);
     options.status.update(() => ({ type: 'ready' }));
   }
-}
+}, { name: 'manifestGenerator' });

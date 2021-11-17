@@ -17,6 +17,9 @@ export interface BrowserManager {
 
 export function createBrowserManager(options: CreateOptions): Resource<BrowserManager> {
   return {
+    labels: {
+      name: "browserManager"
+    },
     *init() {
       let ready = createFuture<void>();
 

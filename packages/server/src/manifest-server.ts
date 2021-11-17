@@ -1,4 +1,4 @@
-import { Operation } from 'effection';
+import { Operation, withLabels } from 'effection';
 import { Slice } from '@effection/atom';
 import { express, Express } from '@bigtest/effection-express';
 import { static as staticMiddleware } from 'express';
@@ -11,7 +11,7 @@ interface ManifestServerOptions {
   proxyPort: number;
 };
 
-export function* createManifestServer(options: ManifestServerOptions): Operation<void> {
+export const createManifestServer = (options: ManifestServerOptions): Operation<void> => withLabels(function*() {
   let app: Express = yield express();
 
   options.status.set({ type: 'starting' });
@@ -27,4 +27,4 @@ export function* createManifestServer(options: ManifestServerOptions): Operation
   options.status.set({ type: 'started' });
 
   yield
-}
+}, { name: 'manifestServer' });

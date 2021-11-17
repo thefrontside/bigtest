@@ -24,6 +24,10 @@ export interface ConnectionServer {
 
 export function createConnectionServer(options: ConnectionServerOptions): Resource<ConnectionServer> {
   return {
+    labels: {
+      name: 'connectionServer',
+      port: options.port,
+    },
     *init() {
       let [external, internal] = createDuplexChannel<Incoming, Outgoing>();
 

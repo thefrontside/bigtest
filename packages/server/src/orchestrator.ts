@@ -1,5 +1,5 @@
 import path from 'path';
-import { Operation, spawn, all } from 'effection';
+import { Operation, spawn, all, withLabels } from 'effection';
 import { AgentServerConfig } from '@bigtest/agent';
 import { Slice } from '@effection/atom';
 import { ProjectOptions } from '@bigtest/project';
@@ -21,7 +21,7 @@ type OrchestratorOptions = {
   project: ProjectOptions;
 }
 
-export function* createOrchestrator(options: OrchestratorOptions): Operation<void> {
+export const createOrchestrator = (options: OrchestratorOptions): Operation<void> => withLabels(function*() {
   console.log('[orchestrator] starting');
 
   let status = options.atom.slice('status');
@@ -152,4 +152,4 @@ export function* createOrchestrator(options: OrchestratorOptions): Operation<voi
   } finally {
     console.log("[orchestrator] shutting down!");
   }
-}
+}, { name: 'orchestrator' });

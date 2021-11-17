@@ -1,5 +1,5 @@
 import { bigtestGlobals } from '@bigtest/globals';
-import { Operation, createFuture } from 'effection';
+import { Operation, createFuture, withLabels } from 'effection';
 import { once } from '@effection/events';
 import { validateTest } from '@bigtest/suite';
 import { createBundler, Bundler } from '@bigtest/bundler';
@@ -90,7 +90,7 @@ function* processManifest(options: ManifestBuilderOptions): Operation<string> {
   return distPath;
 }
 
-export function* createManifestBuilder(options: ManifestBuilderOptions): Operation<void> {
+export const createManifestBuilder = (options: ManifestBuilderOptions): Operation<void> => withLabels(function*() {
   options.status.set({ type: 'UNBUNDLED' });
 
   let bundler: Bundler = yield createBundler({
@@ -147,4 +147,4 @@ export function* createManifestBuilder(options: ManifestBuilderOptions): Operati
         break;
     }
   });
-}
+}, { name: 'manifestBuilder' });
