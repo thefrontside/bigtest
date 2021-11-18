@@ -1,6 +1,6 @@
 import { Resource, spawn } from 'effection';
 import { express, Express } from '@bigtest/effection-express';
-import { createDuplexChannel, DuplexChannel } from '@bigtest/effection';
+import { createDuplexChannel, DuplexChannel } from '@effection/duplex-channel';
 import { Slice } from '@effection/atom';
 import { ConnectionServerStatus, AgentState } from './orchestrator/state';
 import { createAgentHandler, Command, TestEvent } from '@bigtest/agent';

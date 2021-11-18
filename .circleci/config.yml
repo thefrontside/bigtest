@@ -113,7 +113,6 @@ workflows:
                 - cli
                 - client
                 - driver
-                - effection
                 - effection-express
                 - eslint-plugin
                 - globals

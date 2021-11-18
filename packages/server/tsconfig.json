@@ -8,7 +8,6 @@
     { "path": "../bundler/tsconfig.build.json" },
     { "path": "../client/tsconfig.build.json" },
     { "path": "../driver/tsconfig.build.json" },
-    { "path": "../effection/tsconfig.build.json" },
     { "path": "../effection-express/tsconfig.build.json" },
     { "path": "../globals/tsconfig.build.json" },
     { "path": "../logging/tsconfig.build.json" },

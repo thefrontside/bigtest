@@ -5,7 +5,6 @@
     { "path": "../client/tsconfig.build.json" },
     { "path": "../globals/tsconfig.build.json" },
     { "path": "../logging/tsconfig.build.json" },
-    { "path": "../effection/tsconfig.build.json" },
     { "path": "../project/tsconfig.build.json" },
     { "path": "../server/tsconfig.build.json" },
     { "path": "../suite/tsconfig.build.json" }
