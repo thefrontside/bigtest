@@ -1173,6 +1173,13 @@
   resolved "https://registry.yarnpkg.com/@effection/core/-/core-2.0.1.tgz#f200e4df020666ec5dc232da3057bafb63aa19af"
   integrity sha512-Bl2pfu9gbTwlieTgcEhFOwz70QDPXpyVRuOiOqccGVBvZpa3/mzepH6LFZSCyothnc7YO0b31xXV551POiLEow==
 
+"@effection/dispatch@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@effection/dispatch/-/dispatch-2.0.1.tgz#aa16dc34517a84462a42307420243aa10a17a2ba"
+  integrity sha512-22EIHjEGlxl/5r+kTxLKHyWTt3D341os5LiDgV2RqElZnD1F7ki5JwYfqg3chm7M4Usl2Xj5mdgb8g7DiV/tnA==
+  dependencies:
+    effection "2.0.1"
+
 "@effection/events@2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@effection/events/-/events-2.0.1.tgz#9eaaed36270c0d0d4ee06c2657e819b22c52f1ac"
@@ -1191,38 +1198,39 @@
     cross-fetch "^3.0.4"
     node-fetch "^2.6.1"
 
-"@effection/inspect-server@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@effection/inspect-server/-/inspect-server-2.0.1.tgz#d56fd28aad356b505f7e4c976068af538bdf4326"
-  integrity sha512-lhSYV+Y52qIxePZ4EIiIjcPoOy/SItlexz/uchY+Tbgicmg5GSiwCfwHAFX4ogjXHPZu0tOzSQ7amIReZD2dUQ==
+"@effection/inspect-server@2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@effection/inspect-server/-/inspect-server-2.1.1.tgz#7d51d7703de94e138e8b96222bab91113bd9929b"
+  integrity sha512-cKEvfzMjP1UxU6fIBf3ZXUeooZ0YrNzK151G4WvC886gadsP2gGBmPsI2yoOivi89aIA9ZYbQEJWEeK+dLdrlA==
   dependencies:
     "@effection/atom" "2.0.1"
-    "@effection/inspect-ui" "2.0.1"
-    "@effection/inspect-utils" "2.0.1"
+    "@effection/inspect-ui" "2.1.1"
+    "@effection/inspect-utils" "2.1.1"
     "@effection/websocket-server" "2.0.1"
     effection "2.0.1"
     node-static "^0.7.11"
     websocket "^1.0.34"
 
-"@effection/inspect-ui@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@effection/inspect-ui/-/inspect-ui-2.0.1.tgz#2c2be78e75e0dfc0e91fb725f3d0eaef03e279e0"
-  integrity sha512-S5PT1HQ56A+JGnBer4IC7ZAABp9BFx/TmPQKdqxd0zCTtdInBC9Mvbt7pB61D18MnmAUU5YbgGd68yFPE+DqIg==
+"@effection/inspect-ui@2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@effection/inspect-ui/-/inspect-ui-2.1.1.tgz#dee724428f5f7d1e1e058bcaf4a75e52f3e8cec5"
+  integrity sha512-HwMn1+swVLy4ttr7WvklxSWAOb6aKXFAGf7H9qk7fQ4JJupEBpoI2Xt8SjPM5QOZ1gJbmVTSrpFnvK8uw2NASg==
 
-"@effection/inspect-utils@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@effection/inspect-utils/-/inspect-utils-2.0.1.tgz#c0aba74ea7f37691233776ae78008c3018407f96"
-  integrity sha512-HGVk7i1CaRw0XG2UYo5B+Im4Kio9RfvXC5XPa6J3je5tDU4Fc2OKpJwUesoUGcuMtnhbnGUISVknJSdocCuIhg==
+"@effection/inspect-utils@2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@effection/inspect-utils/-/inspect-utils-2.1.1.tgz#e847fbc0d8ef6291880ba8a4829ba1d8deb3156a"
+  integrity sha512-V56CjZw4MAaHVigal0he93IJCG3eeuKMLJ/bRdnaoTcN7nRPqRhvuf06zv/t3ZN+bquZGOm+gyAJwTLEXw9Phg==
   dependencies:
     "@effection/atom" "2.0.1"
+    "@effection/dispatch" "2.0.1"
     effection "2.0.1"
 
-"@effection/inspect@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@effection/inspect/-/inspect-2.0.1.tgz#69d06d6ff9e50b9e6bf378c2385538a82ec0854f"
-  integrity sha512-RTkSs3BauwpxKaJDrLn6nald1wJKfFWhSFWlQ1UK+DiCKZMuiW6kXWyywU8AminAJ3Qrog8p3EYwLcqv7NO8Qw==
+"@effection/inspect@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@effection/inspect/-/inspect-2.1.1.tgz#7ba501dcb27a457ae5d4e4c28b8a65a2d14cf62a"
+  integrity sha512-wuprM4uNCPAFZp554xIfBKMUS++iyZsru8vdeOpCqB/fr4hDx+g927MAr/hMKcDn66MT4vCiO3UQEF7Hhy4s9g==
   dependencies:
-    "@effection/inspect-server" "2.0.1"
+    "@effection/inspect-server" "2.1.1"
 
 "@effection/main@2.0.1":
   version "2.0.1"
