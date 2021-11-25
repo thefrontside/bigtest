@@ -919,14 +919,6 @@
     "@babel/helper-validator-identifier" "^7.14.9"
     to-fast-properties "^2.0.0"
 
-"@bigtest/effection@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@bigtest/effection/-/effection-0.9.0.tgz#25500b797ae26b6e2c18d3ac34bd2d0fec331dcc"
-  integrity sha512-JVHws5yBrAgRUXghHyaqAKUKQAQ0AQ49g1ws3ibUDEHhe56s5fgFMYY28ph1YnV55wGYXXht7KPpbnDaYnlaxA==
-  dependencies:
-    "@types/node" "^14.17.5"
-    effection "^2.0.0-beta.21"
-
 "@bigtest/globals@^0.7.6":
   version "0.7.6"
   resolved "https://registry.yarnpkg.com/@bigtest/globals/-/globals-0.7.6.tgz#e435d370059cfde66b20d31ba1d91cf0db63ba53"
@@ -4520,7 +4512,7 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-effection@2.0.1, effection@^2.0.0-beta.21, effection@^2.0.1:
+effection@2.0.1, effection@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/effection/-/effection-2.0.1.tgz#6063a17afb0bdaee30cc4c94cdffdb2a6cab08af"
   integrity sha512-KV5P1FZ7nZlSar9Li/cTj88D/0A1Ac+dv+QVDcK7hGBh2OLHtns//54trublT6L0PBP/0RYa5yPUixDdzMSDug==
