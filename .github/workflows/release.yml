@@ -8,11 +8,11 @@ on:
 jobs:
   publish-releases:
     name: Publish Releases
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v1
     - name: Publish Releases
-      uses: thefrontside/actions/synchronize-with-npm@mk/fix-dockerfiles
+      uses: thefrontside/actions/synchronize-with-npm@v1.9
       with:
         before_all: yarn prepack
         npm_publish: yarn publish
