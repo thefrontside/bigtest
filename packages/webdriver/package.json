@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/webdriver",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "description": "Control Webdriver instances",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,7 +20,7 @@
     "prepack": "tsc --build ./tsconfig.build.json"
   },
   "devDependencies": {
-    "@bigtest/effection-express": "^0.12.0",
+    "@bigtest/effection-express": "^0.12.1",
     "@frontside/eslint-config": "^3.0.0",
     "@frontside/tsconfig": "^3.0.0",
     "@frontside/typescript": "^3.0.0",
@@ -32,7 +32,7 @@
     "ts-node": "^9.1.1"
   },
   "dependencies": {
-    "@bigtest/driver": "^0.7.0",
+    "@bigtest/driver": "^0.7.1",
     "@effection/atom": "^2.0.1",
     "@effection/process": "^2.0.1",
     "abort-controller": "^3.0.0",

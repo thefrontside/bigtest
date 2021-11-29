@@ -1,5 +1,21 @@
 # @bigtest/agent
 
+## 0.19.1
+
+### Patch Changes
+
+- 03984b25: Upgrade to Effection 2.0.1
+- 40594b89: Use `setInteractionWrapper` from `@interactors/globals` to restrict from running interactions in assertions instead of checking runner state.
+  Add `visit` function
+- 8b748748: Use duplex channel from @effection/duplex-channel
+- 62320b87: upgrade @frontside/eslint-config and, @frontside/typescript packages
+- Updated dependencies [03984b25]
+- Updated dependencies [40594b89]
+- Updated dependencies [8b748748]
+- Updated dependencies [62320b87]
+  - @bigtest/effection-express@0.12.1
+  - @bigtest/globals@0.8.2
+
 ## 0.19.0
 
 ### Minor Changes

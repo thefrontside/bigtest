@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.27.1
+
+### Patch Changes
+
+- 26de9edd: Add effection labels to parts of the system, for better debugging with the effection inspector
+- 03984b25: Upgrade to Effection 2.0.1
+- 8b748748: Use duplex channel from @effection/duplex-channel
+- 62320b87: upgrade @frontside/eslint-config and, @frontside/typescript packages
+- Updated dependencies [39617776]
+- Updated dependencies [03984b25]
+- Updated dependencies [40594b89]
+- Updated dependencies [8b748748]
+- Updated dependencies [9350bd9a]
+- Updated dependencies [62320b87]
+  - @bigtest/bundler@0.15.1
+  - @bigtest/agent@0.19.1
+  - @bigtest/client@0.5.1
+  - @bigtest/driver@0.7.1
+  - @bigtest/effection-express@0.12.1
+  - @bigtest/project@0.17.1
+  - @bigtest/webdriver@0.11.2
+  - @bigtest/globals@0.8.2
+  - @bigtest/logging@0.6.2
+  - @bigtest/suite@0.12.2
+  - @bigtest/ui@0.0.2
+
 ## 0.27.0
 
 ### Minor Changes

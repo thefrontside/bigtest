@@ -1,5 +1,12 @@
 # @bigtest/client
 
+## 0.5.1
+
+### Patch Changes
+
+- 03984b25: Upgrade to Effection 2.0.1
+- 62320b87: upgrade @frontside/eslint-config and, @frontside/typescript packages
+
 ## 0.5.0
 
 ### Minor Changes

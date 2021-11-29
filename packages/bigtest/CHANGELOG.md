@@ -1,5 +1,19 @@
 # bigtest
 
+## 0.15.4
+
+### Patch Changes
+
+- 40594b89: Use `setInteractionWrapper` from `@interactors/globals` to restrict from running interactions in assertions instead of checking runner state.
+  Add `visit` function
+- 62320b87: upgrade @frontside/eslint-config and, @frontside/typescript packages
+- Updated dependencies [26de9edd]
+- Updated dependencies [03984b25]
+- Updated dependencies [8b748748]
+- Updated dependencies [62320b87]
+  - @bigtest/cli@0.22.1
+  - @bigtest/suite@0.12.2
+
 ## 0.15.3
 
 ### Patch Changes
