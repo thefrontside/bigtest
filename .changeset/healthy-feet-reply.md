@@ -4,7 +4,6 @@
 "@bigtest/cli": patch
 "@bigtest/client": patch
 "@bigtest/driver": patch
-"@bigtest/effection": patch
 "@bigtest/effection-express": patch
 "@bigtest/project": patch
 "@bigtest/server": patch
