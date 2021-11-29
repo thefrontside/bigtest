@@ -1,5 +1,11 @@
 # @bigtest/client
 
+## 0.6.0
+
+### Minor Changes
+
+- 76b165a0: Minor bump everything to fix version issues
+
 ## 0.5.1
 
 ### Patch Changes

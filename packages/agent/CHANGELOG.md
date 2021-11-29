@@ -1,5 +1,17 @@
 # @bigtest/agent
 
+## 0.20.0
+
+### Minor Changes
+
+- 76b165a0: Minor bump everything to fix version issues
+
+### Patch Changes
+
+- Updated dependencies [76b165a0]
+  - @bigtest/effection-express@0.13.0
+  - @bigtest/globals@0.9.0
+
 ## 0.19.1
 
 ### Patch Changes

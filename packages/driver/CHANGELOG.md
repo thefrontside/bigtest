@@ -1,5 +1,11 @@
 # @bigtest/driver
 
+## 0.8.0
+
+### Minor Changes
+
+- 76b165a0: Minor bump everything to fix version issues
+
 ## 0.7.1
 
 ### Patch Changes

@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.28.0
+
+### Minor Changes
+
+- 76b165a0: Minor bump everything to fix version issues
+
+### Patch Changes
+
+- Updated dependencies [76b165a0]
+  - @bigtest/agent@0.20.0
+  - @bigtest/bundler@0.16.0
+  - @bigtest/client@0.6.0
+  - @bigtest/driver@0.8.0
+  - @bigtest/effection-express@0.13.0
+  - @bigtest/globals@0.9.0
+  - @bigtest/logging@0.7.0
+  - @bigtest/project@0.18.0
+  - @bigtest/suite@0.13.0
+  - @bigtest/ui@0.1.0
+  - @bigtest/webdriver@0.12.0
+
 ## 0.27.1
 
 ### Patch Changes

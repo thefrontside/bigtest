@@ -1,5 +1,17 @@
 # bigtest
 
+## 0.16.0
+
+### Minor Changes
+
+- 76b165a0: Minor bump everything to fix version issues
+
+### Patch Changes
+
+- Updated dependencies [76b165a0]
+  - @bigtest/cli@0.23.0
+  - @bigtest/suite@0.13.0
+
 ## 0.15.4
 
 ### Patch Changes
