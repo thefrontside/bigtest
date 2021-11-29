@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/globals",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Global variable accesors for bigtest",
   "main": "dist/cjs/index.js",
   "browser": "dist/esm/index.js",
@@ -23,7 +23,7 @@
     "prepack:commonjs": "tsc --project ./tsconfig.build.json --outdir dist/cjs --module commonjs"
   },
   "dependencies": {
-    "@bigtest/suite": "^0.12.1",
+    "@bigtest/suite": "^0.12.2",
     "@interactors/globals": "0.1.0"
   },
   "devDependencies": {

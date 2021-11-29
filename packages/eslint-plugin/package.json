@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/eslint-plugin",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "eslint rules for bigtest",
   "main": "dist/index.js",
   "repository": "https://github.com/thefrontside/bigtest.git",

@@ -1,5 +1,21 @@
 # @bigtest/cli
 
+## 0.22.1
+
+### Patch Changes
+
+- 26de9edd: Add effection labels to parts of the system, for better debugging with the effection inspector
+- 03984b25: Upgrade to Effection 2.0.1
+- 8b748748: Use duplex channel from @effection/duplex-channel
+- 62320b87: upgrade @frontside/eslint-config and, @frontside/typescript packages
+- Updated dependencies [26de9edd]
+- Updated dependencies [03984b25]
+- Updated dependencies [8b748748]
+- Updated dependencies [62320b87]
+  - @bigtest/server@0.27.1
+  - @bigtest/client@0.5.1
+  - @bigtest/project@0.17.1
+
 ## 0.22.0
 
 ### Minor Changes

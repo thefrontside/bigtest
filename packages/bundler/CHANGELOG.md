@@ -1,5 +1,17 @@
 # @bigtest/bundler
 
+## 0.15.1
+
+### Patch Changes
+
+- 39617776: Remove dependency on @bigtest/effection
+- 03984b25: Upgrade to Effection 2.0.1
+- 8b748748: Use duplex channel from @effection/duplex-channel
+- 62320b87: upgrade @frontside/eslint-config and, @frontside/typescript packages
+- Updated dependencies [03984b25]
+- Updated dependencies [62320b87]
+  - @bigtest/project@0.17.1
+
 ## 0.15.0
 
 ### Minor Changes

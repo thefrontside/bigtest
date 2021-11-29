@@ -1,5 +1,16 @@
 # @bigtest/webdriver
 
+## 0.11.2
+
+### Patch Changes
+
+- 03984b25: Upgrade to Effection 2.0.1
+- 9350bd9a: update chromedriver to 95.0
+- 62320b87: upgrade @frontside/eslint-config and, @frontside/typescript packages
+- Updated dependencies [03984b25]
+- Updated dependencies [62320b87]
+  - @bigtest/driver@0.7.1
+
 ## 0.11.1
 
 ### Patch Changes

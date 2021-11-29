@@ -1,5 +1,11 @@
 # @bigtest/logging
 
+## 0.6.2
+
+### Patch Changes
+
+- 62320b87: upgrade @frontside/eslint-config and, @frontside/typescript packages
+
 ## 0.6.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.2
+
+### Patch Changes
+
+- 62320b87: upgrade @frontside/eslint-config and, @frontside/typescript packages
+
 ## 0.0.1
 
 ### Patch Changes
