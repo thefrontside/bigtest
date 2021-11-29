@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.0
+
+### Minor Changes
+
+- 76b165a0: Minor bump everything to fix version issues
+
 ## 0.0.2
 
 ### Patch Changes

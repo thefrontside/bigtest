@@ -1,5 +1,18 @@
 # @bigtest/cli
 
+## 0.23.0
+
+### Minor Changes
+
+- 76b165a0: Minor bump everything to fix version issues
+
+### Patch Changes
+
+- Updated dependencies [76b165a0]
+  - @bigtest/client@0.6.0
+  - @bigtest/project@0.18.0
+  - @bigtest/server@0.28.0
+
 ## 0.22.1
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @bigtest/bundler
 
+## 0.16.0
+
+### Minor Changes
+
+- 76b165a0: Minor bump everything to fix version issues
+
+### Patch Changes
+
+- Updated dependencies [76b165a0]
+  - @bigtest/project@0.18.0
+
 ## 0.15.1
 
 ### Patch Changes

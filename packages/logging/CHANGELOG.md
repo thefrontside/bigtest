@@ -1,5 +1,11 @@
 # @bigtest/logging
 
+## 0.7.0
+
+### Minor Changes
+
+- 76b165a0: Minor bump everything to fix version issues
+
 ## 0.6.2
 
 ### Patch Changes

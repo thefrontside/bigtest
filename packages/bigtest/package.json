@@ -1,6 +1,6 @@
 {
   "name": "bigtest",
-  "version": "0.15.4",
+  "version": "0.16.0",
   "description": "Tests that speed up development, not slow it down",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -29,8 +29,8 @@
     "ts-node": "^9.1.1"
   },
   "dependencies": {
-    "@bigtest/cli": "0.22.1",
-    "@bigtest/suite": "0.12.2",
+    "@bigtest/cli": "0.23.0",
+    "@bigtest/suite": "0.13.0",
     "@interactors/html": "^0.31.2",
     "@interactors/globals": "0.1.0"
   },

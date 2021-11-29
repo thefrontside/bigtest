@@ -1,5 +1,11 @@
 # @bigtest/eslint-plugin
 
+## 0.5.0
+
+### Minor Changes
+
+- 76b165a0: Minor bump everything to fix version issues
+
 ## 0.4.2
 
 ### Patch Changes

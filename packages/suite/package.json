@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/suite",
-  "version": "0.12.2",
+  "version": "0.13.0",
   "description": "Test data structures ",
   "main": "dist/index.js",
   "module": "dist/index.js",

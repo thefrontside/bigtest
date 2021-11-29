@@ -1,5 +1,11 @@
 # @bigtest/effection-express
 
+## 0.13.0
+
+### Minor Changes
+
+- 76b165a0: Minor bump everything to fix version issues
+
 ## 0.12.1
 
 ### Patch Changes
