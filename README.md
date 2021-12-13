@@ -2,7 +2,7 @@
   <img alt="BigTest" src="logo.svg" width="500">
 </p>
 
-<p align="center">  
+<p align="center">
   <a href="https://app.circleci.com/pipelines/github/thefrontside/bigtest?branch=v0"><img alt="CircleCI" src="https://circleci.com/gh/thefrontside/bigtest.svg?style=shield"/></a>
   <a href="https://discord.gg/r6AvtnU"><img alt="Chat on Discord" src="https://img.shields.io/discord/700803887132704931?Label=Discord)](https://discord.gg/r6AvtnU"/></a>
   <a href="https://frontside.com"><img alt="created by Frontside" src="https://img.shields.io/badge/created%20by-frontside-26abe8.svg"/></a>
@@ -68,10 +68,10 @@ yarn bigtest init
 Add a test file in `test/my-test.test.js`:
 
 ``` javascript
-import { test, Page, Heading } from 'bigtest';
+import { test, visit, Heading } from 'bigtest';
 
 export default test('My Test')
-  .step(Page.visit('/'))
+  .step(visit('/'))
   .step(Heading("My Application").exists());
 ```
 

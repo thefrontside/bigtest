@@ -31,10 +31,10 @@ Go ahead and create a `test` directory inside your project and make a new test f
 Before you write your own test, let's look at an example. Here is what a test for a To-Do app could look like. It visits the index route of the app, checks to make sure the heading's text has rendered, and adds a task to the list:
 
 ```js
-import { Button, CheckBox, Heading, Page, test } from `bigtest`;
+import { Button, CheckBox, Heading, visit, test } from `bigtest`;
 
 export default test('bigtest todomvc')
-  .step(Page.visit('/'))
+  .step(visit('/'))
   .assertion(Heading('todos').exists())
   .child('create todo', test => test
     .step(
@@ -51,20 +51,20 @@ First, look for some text on your app's index page that is wrapped in an `<h1>`.
 Then, copy and paste the example below into your own test file, substituting "My Heading Text" in the example below with your own text.
 
 ```js
-import { Heading, Page, test } from `bigtest`;
+import { Heading, visit, test } from `bigtest`;
 
 export default test('home page rendering')
-  .step(Page.visit('/'))
+  .step(visit('/'))
   .assertion(Heading('My Heading Text').exists())
 ```
 
 If your app does not have any heading text, you could check for a button instead:
 
 ```js
-import { Button, Page, test } from `bigtest`;
+import { Button, visit, test } from `bigtest`;
 
 export default test('home page rendering')
-  .step(Page.visit('/'))
+  .step(visit('/'))
   .assertion(Button('My Button Text').exists())
 ```
 

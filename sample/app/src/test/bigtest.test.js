@@ -1,7 +1,7 @@
-import { Button, Heading, Link, Page, test } from 'bigtest';
+import { Button, Heading, Link, visit, test } from 'bigtest';
 
 export default test('Interactors with BigTest')
-  .step(Page.visit('/'))
+  .step(visit('/'))
   .child('click sign in button', test => test
     .step(Button('SIGN IN').click())
     .assertion(
