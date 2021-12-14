@@ -2,7 +2,7 @@ const { visit } = require('bigtest')
 const { test } = require('@bigtest/suite');
 const { bigtestGlobals } = require('@bigtest/globals');
 const { strict: assert } = require('assert');
-const { createInteractor } = require('@interactors/html');
+const { HTML } = require('@interactors/html');
 
 const localforage = require('localforage');
 
@@ -16,8 +16,6 @@ globalThis.fetch = async function(url) {
     }
   }
 }
-
-const H2 = createInteractor('h2')({ selector: 'h2' });
 
 function storageTest(test) {
   return test
@@ -105,7 +103,7 @@ module.exports = test("tests")
       .step("this takes literally forever", async () => await new Promise(() => {})))
   .child(
     "test fetch", test => test
-      .step("fetch is mocked", async () => await H2('hello from mocked fetch').exists()))
+      .step("fetch is mocked", async () => await HTML('hello from mocked fetch').exists()))
   .child("local storage and session storage 1", storageTest)
   .child("local storage and session storage 2", storageTest)
   .child("indexedDB 1", indexedDBTest)

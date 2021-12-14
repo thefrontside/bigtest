@@ -1,7 +1,7 @@
 import { Operation, spawn, all, withTimeout } from 'effection';
 import { on } from '@effection/events';
 import { bigtestGlobals } from '@bigtest/globals';
-import { globals, addActionWrapper } from '@interactors/globals';
+import { globals, addActionWrapper, setDocumentResolver } from '@interactors/globals';
 import { TestImplementation, Context as TestContext } from '@bigtest/suite';
 
 import { findIFrame } from './find-iframe';
@@ -113,6 +113,7 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
   }
 
   setLogConfig({ events: [] });
+  setDocumentResolver(() => bigtestGlobals.document)
   addActionWrapper((description, action, type) =>
     async () => {
       if (bigtestGlobals.runnerState == 'assertion' && type == 'interaction')
