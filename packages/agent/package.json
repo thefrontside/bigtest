@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/agent",
-  "version": "0.20.0",
+  "version": "0.20.1",
   "description": "Agent for connecting test environments (browsers) to BigTest",
   "main": "dist/src/index.js",
   "types": "dist/index.d.ts",
@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "@bigtest/effection-express": "^0.13.0",
-    "@bigtest/globals": "^0.9.0",
+    "@bigtest/globals": "^0.9.1",
     "@interactors/globals": "1.0.0-rc1.0",
     "bowser": "^2.9.0",
     "effection": "^2.0.1",

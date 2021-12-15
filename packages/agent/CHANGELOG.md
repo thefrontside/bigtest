@@ -1,5 +1,13 @@
 # @bigtest/agent
 
+## 0.20.1
+
+### Patch Changes
+
+- b71b2228: update interactors to 1.0rc
+- Updated dependencies [b71b2228]
+  - @bigtest/globals@0.9.1
+
 ## 0.20.0
 
 ### Minor Changes

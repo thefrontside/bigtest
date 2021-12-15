@@ -1,6 +1,6 @@
 {
   "name": "bigtest",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "Tests that speed up development, not slow it down",
   "main": "dist/index.js",
   "module": "dist/index.js",
