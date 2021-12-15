@@ -138,7 +138,7 @@ export class TestBuilder<C extends Context> implements TestImplementation {
    *   return { post: await Post.create({ user }) }
    * })
    * .step("when I visit the post", async ({ user, post }) {
-   *   await Page.visit(`/users/${user.id}/posts/${post.id}`);
+   *   await visit(`/users/${user.id}/posts/${post.id}`);
    * })
    * ```
    *

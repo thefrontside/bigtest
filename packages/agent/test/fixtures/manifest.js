@@ -1,7 +1,8 @@
+const { visit } = require('bigtest')
 const { test } = require('@bigtest/suite');
 const { bigtestGlobals } = require('@bigtest/globals');
 const { strict: assert } = require('assert');
-const { createInteractor, Page } = require('@interactors/html');
+const { HTML } = require('@interactors/html');
 
 const localforage = require('localforage');
 
@@ -15,8 +16,6 @@ globalThis.fetch = async function(url) {
     }
   }
 }
-
-const H2 = createInteractor('h2')({ selector: 'h2' });
 
 function storageTest(test) {
   return test
@@ -64,7 +63,7 @@ function coverageTest(filepath) {
 }
 
 module.exports = test("tests")
-  .step(Page.visit('/app.html'))
+  .step(visit('/app.html'))
   .child(
     "test with failing assertion", test => test
       .step("successful step", async () => {
@@ -104,7 +103,7 @@ module.exports = test("tests")
       .step("this takes literally forever", async () => await new Promise(() => {})))
   .child(
     "test fetch", test => test
-      .step("fetch is mocked", async () => await H2('hello from mocked fetch').exists()))
+      .step("fetch is mocked", async () => await HTML('hello from mocked fetch').exists()))
   .child("local storage and session storage 1", storageTest)
   .child("local storage and session storage 2", storageTest)
   .child("indexedDB 1", indexedDBTest)

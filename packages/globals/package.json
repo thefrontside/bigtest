@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@bigtest/suite": "^0.13.0",
-    "@interactors/globals": "0.1.0"
+    "@interactors/globals": "1.0.0-rc1.0"
   },
   "devDependencies": {
     "@frontside/eslint-config": "^3.0.0",
