@@ -1,5 +1,11 @@
 # bigtest
 
+## 0.16.1
+
+### Patch Changes
+
+- b71b2228: update interactors to 1.0rc
+
 ## 0.16.0
 
 ### Minor Changes

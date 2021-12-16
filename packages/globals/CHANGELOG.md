@@ -1,5 +1,11 @@
 # @bigtest/globals
 
+## 0.9.1
+
+### Patch Changes
+
+- b71b2228: update interactors to 1.0rc
+
 ## 0.9.0
 
 ### Minor Changes
