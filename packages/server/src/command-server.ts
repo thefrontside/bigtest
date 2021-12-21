@@ -11,6 +11,7 @@ import { GraphqlContext } from './schema/context';
 import { Slice } from '@effection/atom';
 import { OrchestratorState, CommandServerStatus } from './orchestrator/state';
 import { Runner } from './runner';
+import { TaskGroup, createTaskGroup } from './task-group';
 
 import { Variables, Message, Response, QueryMessage, MutationMessage, SubscriptionMessage, isQuery, isMutation, isSubscription } from '@bigtest/client';
 
@@ -120,17 +121,21 @@ function handleSocketConnection(options: CommandServerOptions): (socket: Socket<
     yield socket.send(result);
   }
 
-  return (socket) => function*(scope) {
-    yield socket.forEach((message) => {
+  return (socket) => function*() {
+    let handlers: TaskGroup = yield createTaskGroup('message handlers');
+
+    yield socket.forEach(function*(message) {
       if (isQuery(message)) {
-        scope.run(handleQuery(message, socket), { blockParent: true });
+        yield handlers.spawn(handleQuery(message, socket));
       }
       if (isSubscription(message)) {
-        scope.run(handleSubscription(message, socket), { blockParent: true });
+        yield handlers.spawn(handleSubscription(message, socket));
       }
       if (isMutation(message)) {
-        scope.run(handleMutation(message, socket), { blockParent: true });
+        yield handlers.spawn(handleMutation(message, socket));
       }
     });
+
+    yield handlers;
   }
 }
