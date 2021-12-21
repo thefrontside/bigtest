@@ -138,7 +138,7 @@ export const proxyServer = (options: ProxyServerOptions): Operation<void> => wit
     }));
 
     yield onEmit<ProxyResEvent>(proxyServer, 'proxyRes').forEach(function*([proxyRes, req, res]) {
-      yield spawn(handleRequest(proxyRes, req, res), { blockParent: true }).within(proxyTask);
+      yield proxyTask.spawn(handleRequest(proxyRes, req, res));
     });
   } finally {
     proxyServer.close();
