@@ -15,12 +15,12 @@ export function createTaskGroup(name = 'task group'): Resource<TaskGroup> {
         *spawn<T>(operation: Operation<T>) {
           let task: Task<T> | undefined;
           yield spawn(function*() {
-            let t: Task<T> = task = yield scope.spawn(operation);
-            tasks.add(t);
+            task = (yield scope.spawn(operation)) as Task<T>;
+            tasks.add(task);
             try {
-              yield t.future;
+              yield task.future;
             } finally {
-              tasks.delete(t);
+              tasks.delete(task);
             }
           });
           assert(!!task, "task was not initialized");
