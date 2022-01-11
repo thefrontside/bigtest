@@ -122,7 +122,7 @@ function handleSocketConnection(options: CommandServerOptions): (socket: Socket<
   }
 
   return (socket) => function*() {
-    let handlers: TaskGroup = yield createTaskGroup('message handlers');
+    let handlers = yield* createTaskGroup('message handlers');
 
     yield socket.forEach(function*(message) {
       if (isQuery(message)) {
@@ -136,6 +136,6 @@ function handleSocketConnection(options: CommandServerOptions): (socket: Socket<
       }
     });
 
-    yield handlers;
+    yield handlers.allSettled();
   }
 }

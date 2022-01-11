@@ -1,11 +1,12 @@
-import { Operation, Resource, Task, spawn } from 'effection';
+import { Operation, Task, spawn, label } from 'effection';
 import assert from 'assert-ts';
 
-export interface TaskGroup extends Resource<void> {
+export interface TaskGroup {
   spawn<T>(operation: Operation<T>): Operation<Task<T>>;
+  allSettled(): Operation<void>;
 }
 
-export function createTaskGroup(name = 'task group'): Resource<TaskGroup> {
+export function createTaskGroup(name = 'task group'): Operation<TaskGroup> {
   let tasks = new Set<Task>();
 
   return {
@@ -26,13 +27,15 @@ export function createTaskGroup(name = 'task group'): Resource<TaskGroup> {
           assert(!!task, "task was not initialized");
           return task;
         },
-        *init() {
-          for (let task of tasks) {
-            yield task.future;
+        *allSettled() {
+          yield label({ name: `${name}.allSettled()`});
+          while (tasks.size > 0) {
+            for (let task of tasks) {
+              yield task.future;
+            }
           }
-        },
-        name: `await ${name}`,
-      }
+        }
+      };
     }
   }
 }
