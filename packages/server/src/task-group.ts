@@ -6,10 +6,14 @@ export interface TaskGroup {
   allSettled(): Operation<void>;
 }
 
-export function createTaskGroup(name = 'task group'): Operation<TaskGroup> {
+export interface Create<T> {
+  [Symbol.iterator](): Iterator<Operation<T>, T, T>;
+}
+
+export function* createTaskGroup(name = 'task group'): Create<TaskGroup> {
   let tasks = new Set<Task>();
 
-  return {
+  return yield {
     name,
     *init(scope) {
       return {
