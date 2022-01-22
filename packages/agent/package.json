@@ -45,7 +45,7 @@
     "istanbul-lib-coverage": "^3.0.0",
     "localforage": "^1.9.0",
     "mocha": "^6.2.2",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.1.1",
     "parcel": "^2.0.0-rc.0",
     "ts-node": "^9.1.1"
   },
