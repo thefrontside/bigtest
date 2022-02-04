@@ -6,6 +6,7 @@ import resolve, {
   DEFAULTS as RESOLVE_DEFAULTS,
 } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
 import typescript from 'rollup-plugin-typescript2';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
 import babel from '@rollup/plugin-babel';
@@ -33,6 +34,7 @@ function prepareInputOptions(bundle: BundleOptions, channel: Channel<BundlerMess
         mainFields: ["browser", "module", "main"],
         extensions: [...RESOLVE_DEFAULTS.extensions, '.ts', '.tsx', '.jsx'],
       }),
+      json(),
       commonjs(),
       typescript({
         tsconfig: bundle.tsconfig,
