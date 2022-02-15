@@ -1,5 +1,11 @@
 # @bigtest/bundler
 
+## 0.16.1
+
+### Patch Changes
+
+- 2dab416f: Add @rollup/plugin-json
+
 ## 0.16.0
 
 ### Minor Changes

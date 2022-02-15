@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/server",
-  "version": "0.28.0",
+  "version": "0.28.1",
   "description": "BigTest Server",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -51,7 +51,7 @@
     "@babel/plugin-transform-runtime": "^7.12.1",
     "@babel/preset-env": "^7.12.7",
     "@bigtest/agent": "^0.20.0",
-    "@bigtest/bundler": "^0.16.0",
+    "@bigtest/bundler": "^0.16.1",
     "@bigtest/client": "^0.6.0",
     "@bigtest/driver": "^0.8.0",
     "@bigtest/effection-express": "^0.13.0",
