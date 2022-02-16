@@ -1,6 +1,6 @@
 {
   "name": "@bigtest/bundler",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "Effection wrappers for working with a bundler",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

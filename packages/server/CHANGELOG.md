@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.28.1
+
+### Patch Changes
+
+- b9084b4f: remove deprecated usage of `spawn(operation).within(task)` from proxy server
+- Updated dependencies [2dab416f]
+  - @bigtest/bundler@0.16.1
+
 ## 0.28.0
 
 ### Minor Changes
