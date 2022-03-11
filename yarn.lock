@@ -1155,6 +1155,13 @@
   resolved "https://registry.yarnpkg.com/@effection/core/-/core-2.0.1.tgz#f200e4df020666ec5dc232da3057bafb63aa19af"
   integrity sha512-Bl2pfu9gbTwlieTgcEhFOwz70QDPXpyVRuOiOqccGVBvZpa3/mzepH6LFZSCyothnc7YO0b31xXV551POiLEow==
 
+"@effection/core@2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@effection/core/-/core-2.2.0.tgz#4d11d7948144aecd70a26daf8abaa29ee89bc259"
+  integrity sha512-1RBMrDS0Ya02NEM0TQQRwzlGDSZmwoHhuD3qmWp9NLjZowhO1gJBZ16fQL2NbKvcpS71xho+oZsDedId+C1q8Q==
+  dependencies:
+    abort-controller "^3.0.0"
+
 "@effection/dispatch@2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@effection/dispatch/-/dispatch-2.0.1.tgz#aa16dc34517a84462a42307420243aa10a17a2ba"
@@ -1345,12 +1352,13 @@
   resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
   integrity sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==
 
-"@interactors/core@^1.0.0-rc1.0":
-  version "1.0.0-rc1.0"
-  resolved "https://registry.yarnpkg.com/@interactors/core/-/core-1.0.0-rc1.0.tgz#cb8204e051382021c6e21285c17ef9d5a1e92f7a"
-  integrity sha512-F+m0hcp7hndmLkz1AsLWKdV8/YgsId9CygEwbP6S2NwhGN8ALzIfML96qhbf9rfsqbAuhVubPaDf1Spz5NkD1Q==
+"@interactors/core@1.0.0-effection.2", "@interactors/core@1.0.0-rc1.2":
+  version "1.0.0-effection.2"
+  resolved "https://registry.yarnpkg.com/@interactors/core/-/core-1.0.0-effection.2.tgz#76a7a7e9a6fb4a8273e841317e7eb8b8bbb8a2ce"
+  integrity sha512-M5bTw6ZnxgZfhb85VyvsC+vpyLsWVquqwHh005oQA+UgmRgIkqogsapW1FLwrqjwhcoSHLNSlHXySc1emV3M+g==
   dependencies:
-    "@interactors/globals" "^1.0.0-rc1.0"
+    "@effection/core" "2.2.0"
+    "@interactors/globals" "1.0.0-rc1.1"
     "@testing-library/dom" "^8.5.0"
     "@testing-library/user-event" "^13.2.1"
     change-case "^4.1.1"
@@ -1358,25 +1366,28 @@
     lodash.isequal "^4.5.0"
     performance-api "^1.0.0"
 
-"@interactors/globals@1.0.0-rc1.0", "@interactors/globals@^1.0.0-rc1.0":
-  version "1.0.0-rc1.0"
-  resolved "https://registry.yarnpkg.com/@interactors/globals/-/globals-1.0.0-rc1.0.tgz#5b3cb25245fd6c2ac801d4abd1af8838d240ed77"
-  integrity sha512-js1pND/mgaOcLEmaX/HKbfEyD57zGStsQ06QISFRBl942zlQpnQQsmXUcr7NI/vASvcEYDsZo6aqadiQOmw28Q==
-
-"@interactors/html@^1.0.0-rc1.0":
-  version "1.0.0-rc1.0"
-  resolved "https://registry.yarnpkg.com/@interactors/html/-/html-1.0.0-rc1.0.tgz#3f4bdddec8d90cbc48c03c4ff75a33b9fbaf66fc"
-  integrity sha512-hkoyvHX0cIzjH/cbA/yzXza1Ky+QzfRSjIUAdrZvXe0CUvGX5CcpJ9f2FfzWaHQ6QRsNo6HlrTFlIEp5fCDdCA==
+"@interactors/globals@1.0.0-effection.2", "@interactors/globals@1.0.0-rc1.1":
+  version "1.0.0-effection.2"
+  resolved "https://registry.yarnpkg.com/@interactors/globals/-/globals-1.0.0-effection.2.tgz#efb5bdb5a2e6352fe38edeb9040c1146f0dece34"
+  integrity sha512-uvM+GujQZNT1g0TpqEaYjJ+71SnNxvgcHCKQi6CRrww10cKMecu16REQWVAaOCz4w7VmoKeJoj09KUgd6jXT5A==
   dependencies:
-    "@interactors/core" "^1.0.0-rc1.0"
-    "@interactors/keyboard" "^1.0.0-rc1.0"
+    "@effection/core" "2.2.0"
 
-"@interactors/keyboard@^1.0.0-rc1.0":
-  version "1.0.0-rc1.0"
-  resolved "https://registry.yarnpkg.com/@interactors/keyboard/-/keyboard-1.0.0-rc1.0.tgz#6fec28e751f929b393c78648e4453f98f9bb4e15"
-  integrity sha512-s0m+3wSXXDoNEyoMV5BFm8ctnObkxCCSC+fd8ZwhmAK+JHHBpv6DpRa/NSsg/UdUr4i+bdrYebPg9Hy5wYFpGQ==
+"@interactors/html@^1.0.0-rc1.2":
+  version "1.0.0-rc1.2"
+  resolved "https://registry.yarnpkg.com/@interactors/html/-/html-1.0.0-rc1.2.tgz#3791e4e432ffbf326b172dc2490005763247b38b"
+  integrity sha512-/MPv+AfjC9gtpNeYrtb2f8PB8OOwqojibaz1/Qyu0f7tfq4zR1BdEfHnORfv3EWA/WFuUWHN4BsxvKTPS0fPvw==
   dependencies:
-    "@interactors/core" "^1.0.0-rc1.0"
+    "@interactors/core" "1.0.0-rc1.2"
+    "@interactors/keyboard" "1.0.0-rc1.2"
+
+"@interactors/keyboard@1.0.0-rc1.2":
+  version "1.0.0-rc1.2"
+  resolved "https://registry.yarnpkg.com/@interactors/keyboard/-/keyboard-1.0.0-rc1.2.tgz#6cacb59c78754d490c4f7715ab4e6095bea70280"
+  integrity sha512-CaT057/OIbo/jovrVjPbcngaRpbT2LML5xq20cZ8s+0RD932DEEnhplm+B333JXcSrucmaWXCsP34BU3DQMbew==
+  dependencies:
+    "@interactors/core" "1.0.0-rc1.2"
+    "@interactors/globals" "1.0.0-rc1.1"
 
 "@jest/console@^24.9.0":
   version "24.9.0"
