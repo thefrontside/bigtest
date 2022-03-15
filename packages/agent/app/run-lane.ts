@@ -113,7 +113,7 @@ export function* runLane(config: LaneConfig): Operation<TestImplementation> {
   }
 
   setLogConfig({ events: [] });
-  setDocumentResolver(() => bigtestGlobals.document)
+  setDocumentResolver(() => bigtestGlobals.testFrame?.contentDocument ?? globalThis.document)
   addInteractionWrapper((next, interaction) =>
     () => {
       if (bigtestGlobals.runnerState == 'assertion' && interaction.type == 'action')
