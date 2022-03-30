@@ -18,7 +18,7 @@ jobs:
       with:
         registry-url: https://registry.npmjs.org
     - name: Publish PR Preview
-      uses: thefrontside/actions/publish-pr-preview@main
+      uses: thefrontside/actions/publish-pr-preview@v2
       with:
         INSTALL_SCRIPT: yarn install && yarn prepack
       env:
