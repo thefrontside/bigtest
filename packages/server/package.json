@@ -71,7 +71,7 @@
     "cors": "^2.8.5",
     "deepmerge": "^4.2.2",
     "effection": "^2.0.1",
-    "express": "^4.17.1",
+    "express": "^4.19.2",
     "express-graphql": "^0.9.0",
     "fprint": "^2.0.1",
     "globby": "^11.0.1",
